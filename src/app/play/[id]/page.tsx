@@ -19,6 +19,7 @@ import {
 } from "@/lib/module10-data";
 import type { AvatarOptions } from "@/components/avatar-dicebear";
 import { CharacterCard } from "@/components/module10/character-card";
+import { StoryboardViewer } from "@/components/module10/storyboard-viewer";
 
 
 // ——— Confetti helper ———
@@ -34,6 +35,43 @@ function fireConfetti() {
 
 function haptic(ms = 10) {
   if (navigator.vibrate) navigator.vibrate(ms);
+}
+
+/** Micro-celebration: animated green checkmark shown between situations */
+function SuccessCheck() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+      className="flex flex-col items-center justify-center gap-3 py-12"
+    >
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 15 }}
+        className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center"
+      >
+        <motion.svg
+          width="32" height="32" viewBox="0 0 24 24" fill="none"
+          stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.4, delay: 0.15 }}
+        >
+          <polyline points="20 6 9 17 4 12" />
+        </motion.svg>
+      </motion.div>
+      <motion.p
+        initial={{ opacity: 0, y: 5 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="text-sm text-emerald-400 font-medium"
+      >
+        Envoyé !
+      </motion.p>
+    </motion.div>
+  );
 }
 
 // ——— Cinematic Title Screen ———
@@ -1984,7 +2022,7 @@ function CountUp({ target, duration = 1200 }: { target: number; duration?: numbe
 }
 
 // ——— State: DONE ———
-function DoneState({ sessionId, stats }: { sessionId: string; stats?: { responses: number; retained: number; bestStreak: number } }) {
+function DoneState({ sessionId, stats, characterCard }: { sessionId: string; stats?: { responses: number; retained: number; bestStreak: number }; characterCard?: { personnage: { prenom: string; age: string; trait: string; avatar: AvatarOptions }; objectif?: string; obstacle?: string; pitchText?: string; chronoSeconds?: number; revealLevel: 0 | 1 | 2 | 3 } | null }) {
   useEffect(() => {
     // Fire confetti on mount
     const t = setTimeout(() => fireConfetti(), 500);
@@ -2054,6 +2092,44 @@ function DoneState({ sessionId, stats }: { sessionId: string; stats?: { response
         </motion.div>
       )}
 
+      {/* Character card (Module 10) */}
+      {characterCard && (
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: hasStats ? 1.2 : 0.6 }}
+          className="flex justify-center"
+        >
+          <CharacterCard
+            {...characterCard}
+            objectif={characterCard.objectif ?? undefined}
+            obstacle={characterCard.obstacle ?? undefined}
+            pitchText={characterCard.pitchText ?? undefined}
+            chronoSeconds={characterCard.chronoSeconds ?? undefined}
+            revealLevel={3}
+            showDownload
+          />
+        </motion.div>
+      )}
+
+      {/* Storyboard IA (Module 10) */}
+      {characterCard && characterCard.pitchText && (
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: hasStats ? 1.8 : 1.0 }}
+          className="w-full max-w-md"
+        >
+          <StoryboardViewer
+            prenom={characterCard.personnage.prenom}
+            trait={characterCard.personnage.trait}
+            objectif={characterCard.objectif}
+            obstacle={characterCard.obstacle}
+            pitchText={characterCard.pitchText}
+          />
+        </motion.div>
+      )}
+
       {/* Film Vivant + Recap links */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -2095,6 +2171,7 @@ function EtsiWriterState({
 }) {
   const [text, setText] = useState(module10.etsiText || "");
   const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [helpLoading, setHelpLoading] = useState(false);
   const [helpHint, setHelpHint] = useState<string | null>(null);
   const [helpCount, setHelpCount] = useState(0);
@@ -2110,10 +2187,12 @@ function EtsiWriterState({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentId, imageId: image?.id, etsiText: text.trim(), helpUsed: helpCount > 0 }),
       });
-      onDone();
-    } catch { toast.error("Erreur d'envoi"); }
-    finally { setSubmitting(false); }
+      setSuccess(true);
+      setTimeout(() => onDone(), 600);
+    } catch { toast.error("Erreur d'envoi"); setSubmitting(false); }
   }
+
+  if (success) return <SuccessCheck />;
 
   async function handleHelp(type: string) {
     setHelpLoading(true);
@@ -2293,6 +2372,7 @@ function AvatarBuilderState({
   const [age, setAge] = useState(module10.personnage?.age || "");
   const [trait, setTrait] = useState(module10.personnage?.trait || "");
   const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [tab, setTab] = useState<"peau" | "coiffure" | "visage" | "style">("peau");
 
   // DiceBear Avataaars state
@@ -2400,10 +2480,12 @@ function AvatarBuilderState({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentId, prenom: prenom.trim(), age, traitDominant: trait, avatarData: finalAvatar }),
       });
-      onDone({ prenom: prenom.trim(), age, trait, avatar: finalAvatar });
-    } catch { toast.error("Erreur"); }
-    finally { setSubmitting(false); }
+      setSuccess(true);
+      setTimeout(() => onDone({ prenom: prenom.trim(), age, trait, avatar: finalAvatar }), 600);
+    } catch { toast.error("Erreur"); setSubmitting(false); }
   }
+
+  if (success) return <SuccessCheck />;
 
   const TABS = [
     { key: "peau" as const, label: "Peau" },
@@ -2481,6 +2563,16 @@ function AvatarBuilderState({
           <span role="img" aria-label="dé">🎲</span>
         </motion.button>
       </div>
+
+      {/* Large randomize button */}
+      <motion.button
+        whileTap={{ scale: 0.95 }}
+        onClick={randomize}
+        className="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-500/15 to-cyan-500/15 border border-purple-500/20 text-sm font-medium text-purple-300 flex items-center justify-center gap-2 cursor-pointer hover:from-purple-500/20 hover:to-cyan-500/20 hover:border-purple-500/30 transition-all"
+      >
+        <span className="text-base">🎲</span>
+        Personnage aléatoire
+      </motion.button>
 
       {/* Name + Age */}
       <div className="flex gap-2 w-full">
@@ -2615,6 +2707,7 @@ function ObjectifObstacleState({
   const [objectif, setObjectif] = useState(module10.objectif || "");
   const [obstacle, setObstacle] = useState(module10.obstacle || "");
   const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const OBJECTIFS = [
     { key: "sauver", label: "Sauver quelqu'un" }, { key: "prouver", label: "Prouver quelque chose" },
@@ -2638,10 +2731,12 @@ function ObjectifObstacleState({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentId, objectif, obstacle, pitchText: `${module10.personnage?.prenom || "Mon personnage"} veut ${objectif} mais ${obstacle}.` }),
       });
-      onDone({ objectif, obstacle });
-    } catch { toast.error("Erreur"); }
-    finally { setSubmitting(false); }
+      setSuccess(true);
+      setTimeout(() => onDone({ objectif, obstacle }), 600);
+    } catch { toast.error("Erreur"); setSubmitting(false); }
   }
+
+  if (success) return <SuccessCheck />;
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
@@ -2692,6 +2787,7 @@ function PitchAssemblyState({
   const template = `${perso?.prenom || "Mon personnage"} veut ${module10.objectif || "..."} mais ${module10.obstacle || "..."} l'en empêche.`;
   const [pitchText, setPitchText] = useState(module10.pitchText || template);
   const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [helpHint, setHelpHint] = useState<string | null>(null);
   const [helpLoading, setHelpLoading] = useState(false);
   const [helpCount, setHelpCount] = useState(0);
@@ -2705,10 +2801,12 @@ function PitchAssemblyState({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentId, objectif: module10.objectif || "", obstacle: module10.obstacle || "", pitchText: pitchText.trim() }),
       });
-      onDone({ pitchText: pitchText.trim() });
-    } catch { toast.error("Erreur"); }
-    finally { setSubmitting(false); }
+      setSuccess(true);
+      setTimeout(() => onDone({ pitchText: pitchText.trim() }), 600);
+    } catch { toast.error("Erreur"); setSubmitting(false); }
   }
+
+  if (success) return <SuccessCheck />;
 
   async function handleHelp(type: string) {
     setHelpLoading(true);
@@ -3415,7 +3513,7 @@ export default function PlayPage() {
     }
 
     // Done
-    if (session.status === "done") return <DoneState sessionId={sessionId} stats={gameStats} />;
+    if (session.status === "done") return <DoneState sessionId={sessionId} stats={gameStats} characterCard={characterCard} />;
 
     // Paused
     if (session.status === "paused") return <PausedState />;

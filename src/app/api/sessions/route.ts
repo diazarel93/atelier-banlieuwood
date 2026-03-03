@@ -17,7 +17,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("sessions")
-    .select("*, students(count)")
+    .select("*, students(id, is_active, last_seen_at)")
     .eq("facilitator_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -25,12 +25,73 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // Flatten students count for frontend
+  // Compute per-session student status counts
+  const now = Date.now();
+  const TWO_MINUTES = 2 * 60 * 1000;
+
+  // Get current situation responses for active sessions
+  const activeSessionIds = (data || []).filter((s: Record<string, unknown>) => s.status === "responding").map((s: Record<string, unknown>) => s.id as string);
+
+  let responseMap: Record<string, Set<string>> = {};
+  if (activeSessionIds.length > 0) {
+    const { data: responses } = await supabase
+      .from("responses")
+      .select("session_id, student_id, situation_id")
+      .in("session_id", activeSessionIds);
+
+    // Group by session_id — we only care about latest situation's responses
+    if (responses) {
+      // We need to know each session's current situation — stored in sessions table as current_situation_index
+      const sessionSituationMap: Record<string, number> = {};
+      for (const s of data || []) {
+        const sess = s as Record<string, unknown>;
+        sessionSituationMap[sess.id as string] = (sess.current_situation_index as number) ?? 0;
+      }
+
+      for (const r of responses) {
+        const key = r.session_id;
+        if (!responseMap[key]) responseMap[key] = new Set();
+        responseMap[key].add(r.student_id);
+      }
+    }
+  }
+
   const sessions = (data || []).map((s: Record<string, unknown>) => {
-    const students = s.students as { count: number }[] | undefined;
+    const students = s.students as { id: string; is_active: boolean; last_seen_at: string }[] | undefined;
+    const studentList = students || [];
+    const respondedStudents = responseMap[s.id as string] || new Set();
+
+    let respondedCount = 0;
+    let activeCount = 0;
+    let disconnectedCount = 0;
+    let stuckCount = 0;
+
+    for (const st of studentList) {
+      const lastSeen = st.last_seen_at ? now - new Date(st.last_seen_at).getTime() : Infinity;
+      const isDisconnected = !st.is_active || lastSeen > 5 * 60 * 1000;
+      const hasResponded = respondedStudents.has(st.id);
+
+      if (isDisconnected) {
+        disconnectedCount++;
+      } else if (hasResponded) {
+        respondedCount++;
+      } else {
+        activeCount++;
+        // Stuck: active but last_seen > 2 min without responding
+        if (s.status === "responding" && lastSeen > TWO_MINUTES && !hasResponded) {
+          stuckCount++;
+        }
+      }
+    }
+
     return {
       ...s,
-      studentCount: students?.[0]?.count ?? 0,
+      students: undefined, // don't send raw student list
+      studentCount: studentList.length,
+      respondedCount,
+      activeCount,
+      disconnectedCount,
+      stuckCount,
     };
   });
 

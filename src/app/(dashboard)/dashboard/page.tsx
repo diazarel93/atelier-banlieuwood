@@ -26,6 +26,10 @@ interface SessionItem {
   created_at: string;
   studentCount: number;
   template: string | null;
+  respondedCount?: number;
+  activeCount?: number;
+  disconnectedCount?: number;
+  stuckCount?: number;
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
@@ -239,7 +243,7 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="grid grid-cols-3 gap-3 mt-6"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6"
           >
             <KpiCard label="En cours" value={activeSessions.length} color="#4ECDC4" icon="play" />
             <KpiCard label="Joueurs" value={totalStudents} color="#FF6B35" icon="users" />
@@ -388,13 +392,13 @@ function KpiCard({
       {/* Gradient fill */}
       <div className="absolute inset-0 pointer-events-none" style={{ background: `linear-gradient(160deg, ${color}0C, transparent 55%)` }} />
 
-      <div className="relative z-10 px-5 py-4 flex items-start justify-between gap-2">
+      <div className="relative z-10 px-3 py-3 sm:px-5 sm:py-4 flex items-start justify-between gap-2">
         <div className="space-y-1">
           <span className="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold block">
             {label}
           </span>
           <span
-            className="block leading-none font-mono font-bold text-[28px]"
+            className="block leading-none font-mono font-bold text-xl sm:text-[28px]"
             style={{ color: dim ? "rgba(255,255,255,0.25)" : color, letterSpacing: "-0.03em" }}
           >
             {value}
@@ -669,10 +673,51 @@ function SessionCard({
                 {timeAgo(session.created_at)}
               </span>
             </div>
+
+            {/* Row 3: Student status indicators */}
+            {isLive && session.studentCount > 0 && (
+              <div className="flex items-center gap-3 flex-wrap">
+                {(session.respondedCount ?? 0) > 0 && (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-400">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    {session.respondedCount} répondu
+                  </span>
+                )}
+                {(session.activeCount ?? 0) > 0 && (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-amber-400">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                    {session.activeCount} en attente
+                  </span>
+                )}
+                {(session.disconnectedCount ?? 0) > 0 && (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-slate-500">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
+                    {session.disconnectedCount} déco
+                  </span>
+                )}
+                {(session.stuckCount ?? 0) > 0 && (
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-500/15 text-[10px] font-bold text-amber-400">
+                    {session.stuckCount} bloqué{(session.stuckCount ?? 0) > 1 ? "s" : ""}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Actions */}
           <div className="flex items-center gap-2 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+            {/* Quick relance button for stuck students */}
+            {(session.stuckCount ?? 0) > 0 && (
+              <button
+                onClick={onOpen}
+                className="p-2 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-400 hover:bg-amber-500/25 hover:border-amber-500/50 transition-all cursor-pointer"
+                title={`${session.stuckCount} élève(s) bloqué(s) — piloter`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                </svg>
+              </button>
+            )}
             <button
               onClick={onOpen}
               className="group/btn relative inline-flex items-center gap-2.5 px-4 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-[0.06em] cursor-pointer transition-all duration-300"

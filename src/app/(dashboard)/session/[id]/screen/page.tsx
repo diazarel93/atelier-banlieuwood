@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { useSessionPolling, Module1Data, Module10Data } from "@/hooks/use-session-polling";
@@ -1129,26 +1130,7 @@ export default function ScreenPage() {
 
               {/* Avatar gallery — show created characters as mini cards */}
               {module10.allSubmissions && module10.allSubmissions.length > 0 ? (
-                <div className="flex flex-wrap justify-center gap-4">
-                  {module10.allSubmissions.map((sub, i) => {
-                    const parts = sub.text.split(",");
-                    const prenom = parts[0] || "";
-                    const age = parts[1] || "";
-                    const trait = parts[2] || "";
-                    return (
-                      <motion.div key={sub.studentId}
-                        initial={{ opacity: 0, scale: 0, rotate: -10 }}
-                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                        transition={{ type: "spring", stiffness: 200, damping: 15, delay: i * 0.1 }}>
-                        <CharacterCard
-                          personnage={{ prenom, age, trait, avatar: (sub.avatar || {}) as AvatarOptions }}
-                          revealLevel={0}
-                          size="sm"
-                        />
-                      </motion.div>
-                    );
-                  })}
-                </div>
+                <PosterGallery submissions={module10.allSubmissions} />
               ) : (
                 <motion.div
                   animate={{ scale: [1, 1.05, 1] }}
@@ -1772,6 +1754,68 @@ export default function ScreenPage() {
               : "Module " + session.currentModule}
         </span>
       </footer>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PosterGallery — character card gallery with download button
+   ═══════════════════════════════════════════════════════════════ */
+
+function PosterGallery({ submissions }: { submissions: { studentId: string; text: string; avatar?: Record<string, unknown> }[] }) {
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
+
+  async function handleDownloadPoster() {
+    if (!galleryRef.current) return;
+    setDownloading(true);
+    try {
+      const { exportElementAsImage } = await import("@/lib/export-image");
+      await exportElementAsImage(galleryRef.current, "classe-banlieuwood.png");
+    } catch { /* silent */ }
+    finally { setDownloading(false); }
+  }
+
+  return (
+    <div className="space-y-4">
+      <div ref={galleryRef} className="flex flex-wrap justify-center gap-4 p-4 rounded-2xl" style={{ backgroundColor: "#0F172A" }}>
+        {submissions.map((sub, i) => {
+          const parts = sub.text.split(",");
+          const prenom = parts[0] || "";
+          const age = parts[1] || "";
+          const trait = parts[2] || "";
+          return (
+            <motion.div key={sub.studentId}
+              initial={{ opacity: 0, scale: 0, rotate: -10 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: i * 0.1 }}>
+              <CharacterCard
+                personnage={{ prenom, age, trait, avatar: (sub.avatar || {}) as AvatarOptions }}
+                revealLevel={0}
+                size="sm"
+              />
+            </motion.div>
+          );
+        })}
+      </div>
+      <button
+        onClick={handleDownloadPoster}
+        disabled={downloading}
+        className="mx-auto flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium text-white/70 bg-white/[0.06] border border-white/[0.08] hover:bg-white/[0.1] hover:text-white transition-all cursor-pointer disabled:opacity-40"
+      >
+        {downloading ? (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin">
+            <path d="M21 12a9 9 0 11-6.219-8.56" />
+          </svg>
+        ) : (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+        )}
+        Télécharger le poster
+      </button>
     </div>
   );
 }

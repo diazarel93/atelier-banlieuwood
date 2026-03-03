@@ -29,10 +29,19 @@ const STATE_BG: Record<StudentState, string> = {
   disconnected: "bg-bw-bg opacity-40",
 };
 
+const STATE_ORDER: Record<StudentState, number> = {
+  stuck: 0,
+  active: 1,
+  responded: 2,
+  disconnected: 3,
+};
+
 export function StudentPulseGrid({ students, onRemove }: StudentPulseGridProps) {
   if (students.length === 0) {
     return <p className="text-sm text-bw-muted text-center py-4">Aucun joueur</p>;
   }
+
+  const sorted = [...students].sort((a, b) => STATE_ORDER[a.state] - STATE_ORDER[b.state]);
 
   return (
     <div className="space-y-2">
@@ -41,7 +50,7 @@ export function StudentPulseGrid({ students, onRemove }: StudentPulseGridProps) 
         <span className="px-1.5 py-0.5 rounded-full bg-bw-teal/10 text-bw-teal text-[9px] tabular-nums">{students.length}</span>
       </h4>
       <div className="grid grid-cols-2 gap-1.5">
-        {students.map((s) => (
+        {sorted.map((s) => (
           <motion.div
             key={s.id}
             layout

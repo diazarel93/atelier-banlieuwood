@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { DiceBearAvatarCard } from "@/components/avatar-dicebear";
 import { getTraitLabel, getObjectifLabel, getObstacleLabel } from "@/lib/module10-data";
@@ -17,12 +18,13 @@ export interface CharacterCardProps {
   size?: "sm" | "md" | "lg";
   responsesCount?: number;
   connectedCount?: number;
+  showDownload?: boolean;
 }
 
 const SIZES = {
-  sm: { avatar: 80, width: "w-[180px]", text: "text-xs", heading: "text-sm", gap: "gap-2", pad: "p-3", badge: "px-1.5 py-0.5 text-[10px]" },
-  md: { avatar: 120, width: "w-[260px]", text: "text-sm", heading: "text-lg", gap: "gap-3", pad: "p-4", badge: "px-2 py-0.5 text-xs" },
-  lg: { avatar: 160, width: "w-[320px]", text: "text-sm", heading: "text-xl", gap: "gap-4", pad: "p-5", badge: "px-2.5 py-1 text-xs" },
+  sm: { avatar: 80, width: "w-full max-w-[180px]", text: "text-xs", heading: "text-sm", gap: "gap-2", pad: "p-3", badge: "px-1.5 py-0.5 text-[10px]" },
+  md: { avatar: 120, width: "w-full max-w-[260px]", text: "text-sm", heading: "text-lg", gap: "gap-3", pad: "p-4", badge: "px-2 py-0.5 text-xs" },
+  lg: { avatar: 160, width: "w-full max-w-[320px]", text: "text-sm", heading: "text-xl", gap: "gap-4", pad: "p-5", badge: "px-2.5 py-1 text-xs" },
 } as const;
 
 const CARD_BG = "rgb(15,23,42)";
@@ -74,18 +76,54 @@ export function CharacterCard({
   size = "md",
   responsesCount,
   connectedCount,
+  showDownload,
 }: CharacterCardProps) {
   const s = SIZES[size];
   const scene = personnage.avatar.scene || "cite";
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
+
+  async function handleDownload() {
+    if (!cardRef.current) return;
+    setDownloading(true);
+    try {
+      const { exportElementAsImage } = await import("@/lib/export-image");
+      const safeName = personnage.prenom.replace(/[^a-zA-Z0-9À-ÿ]/g, "-").toLowerCase();
+      await exportElementAsImage(cardRef.current, `${safeName}-banlieuwood.png`);
+    } catch { /* silent */ }
+    finally { setDownloading(false); }
+  }
 
   return (
     <motion.div
+      ref={cardRef}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 200, damping: 20 }}
       className={`${s.width} rounded-2xl overflow-hidden border border-white/[0.08] relative`}
       style={{ background: CARD_BG }}
     >
+      {/* Download button */}
+      {showDownload && (
+        <button
+          onClick={handleDownload}
+          disabled={downloading}
+          className="absolute top-2 right-2 z-20 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-black/60 transition-all cursor-pointer disabled:opacity-40"
+          title="Télécharger la carte"
+        >
+          {downloading ? (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin">
+              <path d="M21 12a9 9 0 11-6.219-8.56" />
+            </svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+          )}
+        </button>
+      )}
       {/* Scene backdrop */}
       <div className="absolute top-0 inset-x-0 h-20 overflow-hidden opacity-70">
         <SceneBackground scene={scene} className="w-full h-full" />
