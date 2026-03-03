@@ -1,82 +1,192 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 
-type SoundName =
-  | "submit"
-  | "score-1"
-  | "score-2"
-  | "score-3"
-  | "chapter-complete"
-  | "badge-gold"
-  | "combo"
-  | "streak-break";
+// Lightweight sound effects using Web Audio API — no external files needed
+// Each sound is generated procedurally
 
-const SOUND_FILES: Record<SoundName, string> = {
-  submit: "/sounds/atelier/submit.mp3",
-  "score-1": "/sounds/atelier/score-1.mp3",
-  "score-2": "/sounds/atelier/score-2.mp3",
-  "score-3": "/sounds/atelier/score-3.mp3",
-  "chapter-complete": "/sounds/atelier/chapter-complete.mp3",
-  "badge-gold": "/sounds/atelier/badge-gold.mp3",
-  combo: "/sounds/atelier/combo.mp3",
-  "streak-break": "/sounds/atelier/streak-break.mp3",
+type SoundName = "send" | "success" | "vote" | "reveal" | "jingle" | "drumroll" | "cardReveal";
+
+function createAudioContext(): AudioContext | null {
+  try {
+    return new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+  } catch {
+    return null;
+  }
+}
+
+function playSend(ctx: AudioContext) {
+  // Quick ascending "woosh" — two short tones
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(400, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.15);
+
+  gain.gain.setValueAtTime(0.15, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.2);
+}
+
+function playSuccess(ctx: AudioContext) {
+  // Two-note "ding ding" — cheerful confirmation
+  [0, 0.12].forEach((delay, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(i === 0 ? 523 : 659, ctx.currentTime + delay); // C5, E5
+
+    gain.gain.setValueAtTime(0.12, ctx.currentTime + delay);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + delay + 0.25);
+
+    osc.start(ctx.currentTime + delay);
+    osc.stop(ctx.currentTime + delay + 0.25);
+  });
+}
+
+function playVote(ctx: AudioContext) {
+  // Soft "pop" — quick tap
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(600, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.1);
+
+  gain.gain.setValueAtTime(0.1, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
+
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.12);
+}
+
+function playReveal(ctx: AudioContext) {
+  // Triumphant three-note chord — C E G
+  [523, 659, 784].forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.08);
+
+    gain.gain.setValueAtTime(0.1, ctx.currentTime + i * 0.08);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.08 + 0.4);
+
+    osc.start(ctx.currentTime + i * 0.08);
+    osc.stop(ctx.currentTime + i * 0.08 + 0.4);
+  });
+}
+
+function playJingle(ctx: AudioContext) {
+  // Cinema jingle — ascending C major arpeggio with reverb-like tail
+  // C4 → E4 → G4 → C5 with increasing volume
+  const notes = [
+    { freq: 262, delay: 0, dur: 0.3 },
+    { freq: 330, delay: 0.15, dur: 0.3 },
+    { freq: 392, delay: 0.3, dur: 0.35 },
+    { freq: 523, delay: 0.45, dur: 0.6 },
+  ];
+  notes.forEach(({ freq, delay, dur }) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+    gain.gain.setValueAtTime(0.12, ctx.currentTime + delay);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + delay + dur);
+    osc.start(ctx.currentTime + delay);
+    osc.stop(ctx.currentTime + delay + dur);
+  });
+}
+
+function playDrumroll(ctx: AudioContext) {
+  // Quick suspense drumroll — noise bursts
+  for (let i = 0; i < 8; i++) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sawtooth";
+    const t = ctx.currentTime + i * 0.08;
+    osc.frequency.setValueAtTime(80 + i * 5, t);
+    gain.gain.setValueAtTime(0.04 + i * 0.01, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.06);
+    osc.start(t);
+    osc.stop(t + 0.06);
+  }
+}
+
+function playCardReveal(ctx: AudioContext) {
+  // Short stamp (thump) + shimmer — card level-up sound
+  // Thump: low sine hit
+  const thump = ctx.createOscillator();
+  const thumpGain = ctx.createGain();
+  thump.connect(thumpGain);
+  thumpGain.connect(ctx.destination);
+  thump.type = "sine";
+  thump.frequency.setValueAtTime(120, ctx.currentTime);
+  thump.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.12);
+  thumpGain.gain.setValueAtTime(0.18, ctx.currentTime);
+  thumpGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+  thump.start(ctx.currentTime);
+  thump.stop(ctx.currentTime + 0.15);
+
+  // Shimmer: high sparkle chord (E5 + G#5)
+  [659, 831].forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + 0.08 + i * 0.04);
+    gain.gain.setValueAtTime(0.07, ctx.currentTime + 0.08 + i * 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08 + i * 0.04 + 0.3);
+    osc.start(ctx.currentTime + 0.08 + i * 0.04);
+    osc.stop(ctx.currentTime + 0.08 + i * 0.04 + 0.3);
+  });
+}
+
+const SOUNDS: Record<SoundName, (ctx: AudioContext) => void> = {
+  send: playSend,
+  success: playSuccess,
+  vote: playVote,
+  reveal: playReveal,
+  jingle: playJingle,
+  drumroll: playDrumroll,
+  cardReveal: playCardReveal,
 };
 
-const STORAGE_KEY = "atelier-muted";
-
 export function useSound() {
-  const audioCache = useRef<Map<SoundName, HTMLAudioElement>>(new Map());
-  const [muted, setMuted] = useState(false);
+  const ctxRef = useRef<AudioContext | null>(null);
 
-  // Load mute state from localStorage
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored === "true") setMuted(true);
-    } catch {
-      // no localStorage
+  const play = useCallback((name: SoundName) => {
+    // Lazy init — AudioContext requires user interaction first
+    if (!ctxRef.current) {
+      ctxRef.current = createAudioContext();
     }
-  }, []);
+    const ctx = ctxRef.current;
+    if (!ctx) return;
 
-  // Preload audio elements
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    for (const [name, src] of Object.entries(SOUND_FILES)) {
-      if (!audioCache.current.has(name as SoundName)) {
-        const audio = new Audio(src);
-        audio.preload = "auto";
-        audio.volume = 0.5;
-        audioCache.current.set(name as SoundName, audio);
-      }
+    // Resume if suspended (browser policy)
+    if (ctx.state === "suspended") {
+      ctx.resume();
     }
+
+    SOUNDS[name]?.(ctx);
   }, []);
 
-  const play = useCallback(
-    (name: SoundName) => {
-      if (muted) return;
-      const audio = audioCache.current.get(name);
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch(() => {
-          // Autoplay blocked — ignore
-        });
-      }
-    },
-    [muted]
-  );
-
-  const toggleMute = useCallback(() => {
-    setMuted((prev) => {
-      const next = !prev;
-      try {
-        localStorage.setItem(STORAGE_KEY, String(next));
-      } catch {
-        // no localStorage
-      }
-      return next;
-    });
-  }, []);
-
-  return { play, muted, toggleMute };
+  return { play };
 }

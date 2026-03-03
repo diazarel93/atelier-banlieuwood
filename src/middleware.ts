@@ -1,0 +1,17 @@
+import { updateSession } from "@/lib/supabase/middleware";
+import type { NextRequest } from "next/server";
+
+export async function middleware(request: NextRequest) {
+  return await updateSession(request);
+}
+
+export const config = {
+  matcher: [
+    // Protected routes
+    "/dashboard/:path*",
+    "/session/:path*",
+    // Auth routes (redirect if already logged in)
+    "/login",
+    "/reset-password",
+  ],
+};

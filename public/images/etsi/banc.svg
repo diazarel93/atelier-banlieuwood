@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="40%" stop-color="#16213e"/>
+      <stop offset="100%" stop-color="#2c3e50"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a4a5a"/>
+      <stop offset="100%" stop-color="#2d2d3d"/>
+    </linearGradient>
+    <radialGradient id="lampLight" cx="0.5" cy="0" r="0.8">
+      <stop offset="0%" stop-color="#FFE4A0" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#FFE4A0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="moonGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#E8E8F0"/>
+      <stop offset="60%" stop-color="#C0C0D0" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#C0C0D0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="800" height="600" fill="url(#sky)"/>
+
+  <!-- Moon -->
+  <circle cx="650" cy="80" r="35" fill="url(#moonGlow)"/>
+  <circle cx="650" cy="80" r="22" fill="#E8E8F0"/>
+  <circle cx="658" cy="74" r="20" fill="#1a1a2e" opacity="0.15"/>
+  <!-- Moon craters -->
+  <circle cx="642" cy="78" r="3" fill="#D0D0E0" opacity="0.4"/>
+  <circle cx="655" cy="88" r="2" fill="#D0D0E0" opacity="0.3"/>
+
+  <!-- Stars -->
+  <circle cx="100" cy="50" r="1.2" fill="white" opacity="0.7"/>
+  <circle cx="250" cy="30" r="1" fill="white" opacity="0.5"/>
+  <circle cx="400" cy="60" r="0.8" fill="white" opacity="0.6"/>
+  <circle cx="500" cy="25" r="1.3" fill="white" opacity="0.4"/>
+  <circle cx="180" cy="100" r="0.9" fill="white" opacity="0.5"/>
+  <circle cx="340" cy="45" r="1.1" fill="white" opacity="0.3"/>
+  <circle cx="720" cy="40" r="0.7" fill="white" opacity="0.6"/>
+  <circle cx="550" cy="90" r="1" fill="white" opacity="0.4"/>
+
+  <!-- Building silhouettes background -->
+  <rect x="0" y="180" width="120" height="220" fill="#0d1117" opacity="0.7"/>
+  <rect x="0" y="200" width="100" height="200" fill="#111827"/>
+  <!-- Windows lit -->
+  <rect x="15" y="220" width="12" height="15" fill="#FFE4A0" opacity="0.4" rx="1"/>
+  <rect x="40" y="250" width="12" height="15" fill="#87CEEB" opacity="0.2" rx="1"/>
+  <rect x="70" y="220" width="12" height="15" fill="#FFE4A0" opacity="0.3" rx="1"/>
+  <rect x="15" y="280" width="12" height="15" fill="#87CEEB" opacity="0.15" rx="1"/>
+  <rect x="70" y="300" width="12" height="15" fill="#FFE4A0" opacity="0.2" rx="1"/>
+
+  <rect x="680" y="160" width="130" height="240" fill="#111827"/>
+  <rect x="700" y="180" width="100" height="220" fill="#0d1117" opacity="0.7"/>
+  <rect x="695" y="190" width="12" height="15" fill="#FFE4A0" opacity="0.3" rx="1"/>
+  <rect x="725" y="220" width="12" height="15" fill="#87CEEB" opacity="0.2" rx="1"/>
+  <rect x="755" y="190" width="12" height="15" fill="#FFE4A0" opacity="0.15" rx="1"/>
+  <rect x="695" y="260" width="12" height="15" fill="#FFE4A0" opacity="0.25" rx="1"/>
+
+  <!-- School building mid-ground -->
+  <rect x="150" y="230" width="500" height="170" fill="#1a2332"/>
+  <rect x="170" y="245" width="460" height="8" fill="#222d3d"/>
+  <!-- School windows (dark — it's closed) -->
+  <rect x="185" y="270" width="35" height="45" fill="#0a0f1a" rx="2"/>
+  <rect x="240" y="270" width="35" height="45" fill="#0a0f1a" rx="2"/>
+  <rect x="295" y="270" width="35" height="45" fill="#0a0f1a" rx="2"/>
+  <rect x="350" y="270" width="35" height="45" fill="#0a0f1a" rx="2"/>
+  <rect x="405" y="270" width="35" height="45" fill="#0a0f1a" rx="2"/>
+  <rect x="460" y="270" width="35" height="45" fill="#0a0f1a" rx="2"/>
+  <rect x="515" y="270" width="35" height="45" fill="#0a0f1a" rx="2"/>
+  <rect x="570" y="270" width="35" height="45" fill="#0a0f1a" rx="2"/>
+  <!-- One window with a faint light (janitor?) -->
+  <rect x="350" y="270" width="35" height="45" fill="#1a2a40" rx="2"/>
+  <rect x="352" y="272" width="31" height="41" fill="#2a3a50" rx="1" opacity="0.4"/>
+  <!-- School door -->
+  <rect x="365" y="340" width="70" height="60" fill="#111827" rx="3"/>
+  <circle cx="425" cy="370" r="3" fill="#888"/>
+
+  <!-- Ground — concrete schoolyard -->
+  <rect x="0" y="400" width="800" height="200" fill="url(#ground)"/>
+  <!-- Ground cracks -->
+  <path d="M200 420 L230 440 L220 460" fill="none" stroke="#3a3a4a" stroke-width="0.8"/>
+  <path d="M500 430 L520 450 L540 445" fill="none" stroke="#3a3a4a" stroke-width="0.6"/>
+
+  <!-- Lamp post with light cone -->
+  <rect x="358" y="320" width="5" height="85" fill="#555"/>
+  <path d="M350 320 Q360 310 372 320" fill="none" stroke="#555" stroke-width="3"/>
+  <ellipse cx="361" cy="316" rx="8" ry="5" fill="#FFE4A0" opacity="0.8"/>
+  <!-- Light cone on ground -->
+  <ellipse cx="361" cy="430" rx="90" ry="35" fill="url(#lampLight)"/>
+
+  <!-- THE BENCH — under the light -->
+  <!-- Seat planks -->
+  <rect x="300" y="430" width="130" height="5" fill="#6B4226" rx="1"/>
+  <rect x="300" y="437" width="130" height="5" fill="#5A3720" rx="1"/>
+  <!-- Back rest -->
+  <rect x="300" y="415" width="130" height="4" fill="#6B4226" rx="1"/>
+  <rect x="300" y="421" width="130" height="4" fill="#5A3720" rx="1"/>
+  <!-- Metal frame -->
+  <path d="M298 412 L295 455" fill="none" stroke="#444" stroke-width="4" stroke-linecap="round"/>
+  <path d="M432 412 L435 455" fill="none" stroke="#444" stroke-width="4" stroke-linecap="round"/>
+  <!-- Feet -->
+  <rect x="290" y="453" width="14" height="3" fill="#444" rx="1"/>
+  <rect x="428" y="453" width="14" height="3" fill="#444" rx="1"/>
+
+  <!-- SAC OUBLIÉ on the bench -->
+  <rect x="340" y="400" width="45" height="38" fill="#2563EB" rx="6"/>
+  <rect x="343" y="403" width="39" height="12" fill="#1D4ED8" rx="4"/>
+  <!-- Flap -->
+  <path d="M343 403 Q362 396 385 403" fill="#1E40AF" stroke="#1E40AF" stroke-width="1"/>
+  <!-- Zipper -->
+  <line x1="346" y1="415" x2="382" y2="415" stroke="#FFD700" stroke-width="1.2"/>
+  <!-- Front pocket -->
+  <rect x="350" y="420" width="25" height="14" fill="#1D4ED8" rx="2"/>
+  <!-- Strap hanging -->
+  <path d="M345 438 Q340 448 338 458" fill="none" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/>
+  <path d="M380 438 Q385 448 388 458" fill="none" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/>
+  <!-- Paper sticking out top -->
+  <rect x="358" y="392" width="22" height="15" fill="#FEFCE8" rx="1" transform="rotate(-8 369 399)"/>
+  <line x1="363" y1="397" x2="376" y2="395" stroke="#888" stroke-width="0.5"/>
+  <line x1="363" y1="400" x2="374" y2="399" stroke="#888" stroke-width="0.5"/>
+
+  <!-- Keychain on ground (fell from bag?) -->
+  <circle cx="410" cy="455" r="5" fill="#C0C0C0" opacity="0.6"/>
+  <rect x="414" y="452" width="10" height="3" fill="#C0C0C0" opacity="0.5" rx="1"/>
+  <circle cx="418" cy="450" r="2" fill="#EF4444" opacity="0.5"/>
+
+  <!-- Shadows -->
+  <ellipse cx="365" cy="458" rx="80" ry="5" fill="#1a1a2e" opacity="0.5"/>
+
+  <!-- Fallen leaves (autumn mood) -->
+  <ellipse cx="250" cy="445" rx="4" ry="2" fill="#D97706" opacity="0.4" transform="rotate(30 250 445)"/>
+  <ellipse cx="470" cy="450" rx="3" ry="1.5" fill="#B45309" opacity="0.3" transform="rotate(-20 470 450)"/>
+  <ellipse cx="310" cy="460" rx="3.5" ry="1.8" fill="#D97706" opacity="0.35" transform="rotate(45 310 460)"/>
+
+  <!-- Cat silhouette watching from a distance -->
+  <ellipse cx="600" cy="445" rx="12" ry="8" fill="#1a1a2e"/>
+  <circle cx="610" cy="438" r="6" fill="#1a1a2e"/>
+  <!-- Cat ears -->
+  <polygon points="606,433 608,426 612,433" fill="#1a1a2e"/>
+  <polygon points="612,433 615,426 618,433" fill="#1a1a2e"/>
+  <!-- Cat eyes glowing -->
+  <circle cx="608" cy="438" r="1.5" fill="#22C55E" opacity="0.7"/>
+  <circle cx="614" cy="438" r="1.5" fill="#22C55E" opacity="0.7"/>
+  <!-- Tail -->
+  <path d="M588 445 Q580 435 582 425" fill="none" stroke="#1a1a2e" stroke-width="3" stroke-linecap="round"/>
+</svg>

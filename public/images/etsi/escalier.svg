@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="stairDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0a12"/>
+      <stop offset="100%" stop-color="#14141e"/>
+    </linearGradient>
+    <radialGradient id="topLight" cx="0.5" cy="0" r="0.7">
+      <stop offset="0%" stop-color="#FFE8B0" stop-opacity="0.5"/>
+      <stop offset="60%" stop-color="#FFE8B0" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#FFE8B0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="emergLight" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#22C55E" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#22C55E" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="800" height="600" fill="url(#stairDark)"/>
+
+  <!-- Walls -->
+  <rect x="100" y="0" width="600" height="600" fill="#111118"/>
+
+  <!-- Left wall -->
+  <rect x="100" y="0" width="15" height="600" fill="#1a1a25"/>
+  <!-- Right wall -->
+  <rect x="685" y="0" width="15" height="600" fill="#1a1a25"/>
+
+  <!-- Railing shadows on wall -->
+  <line x1="130" y1="0" x2="130" y2="600" stroke="#161620" stroke-width="2"/>
+  <line x1="670" y1="0" x2="670" y2="600" stroke="#161620" stroke-width="2"/>
+
+  <!-- Light from top of stairs (the "lumière au bout") -->
+  <rect x="300" y="0" width="200" height="120" fill="#FFE8B0" opacity="0.12"/>
+  <rect x="320" y="0" width="160" height="80" fill="#FFE8B0" opacity="0.15"/>
+  <!-- Light cone spreading down stairs -->
+  <polygon points="300,80 500,80 600,350 200,350" fill="url(#topLight)"/>
+
+  <!-- Door at top (light source) -->
+  <rect x="320" y="15" width="160" height="70" fill="#2a2518" rx="3"/>
+  <rect x="325" y="20" width="150" height="60" fill="#3a3525" rx="2"/>
+  <!-- Door frame glow -->
+  <rect x="318" y="13" width="164" height="74" fill="none" stroke="#FFE8B0" stroke-width="2" stroke-opacity="0.3" rx="3"/>
+  <!-- Silhouette in doorway -->
+  <circle cx="400" cy="48" r="8" fill="#1a1510" opacity="0.7"/>
+  <path d="M390 56 Q395 52 400 54 Q405 52 410 56 L412 78 L388 78 Z" fill="#1a1510" opacity="0.6"/>
+
+  <!-- STAIRS going down — perspective from bottom looking up -->
+  <!-- Step 1 (top, near light) -->
+  <rect x="260" y="120" width="280" height="12" fill="#252530"/>
+  <rect x="260" y="118" width="280" height="4" fill="#2a2a38"/>
+  <!-- Step 2 -->
+  <rect x="240" y="160" width="320" height="14" fill="#222230"/>
+  <rect x="240" y="157" width="320" height="5" fill="#282838"/>
+  <!-- Step 3 -->
+  <rect x="220" y="205" width="360" height="16" fill="#1e1e2c"/>
+  <rect x="220" y="202" width="360" height="5" fill="#252535"/>
+  <!-- Step 4 -->
+  <rect x="200" y="255" width="400" height="18" fill="#1a1a28"/>
+  <rect x="200" y="252" width="400" height="5" fill="#222232"/>
+  <!-- Step 5 -->
+  <rect x="180" y="310" width="440" height="20" fill="#161624"/>
+  <rect x="180" y="307" width="440" height="5" fill="#1e1e2e"/>
+  <!-- Step 6 -->
+  <rect x="160" y="370" width="480" height="22" fill="#131320"/>
+  <rect x="160" y="367" width="480" height="5" fill="#1a1a2a"/>
+  <!-- Step 7 (closest, bottom) -->
+  <rect x="140" y="435" width="520" height="25" fill="#10101c"/>
+  <rect x="140" y="432" width="520" height="5" fill="#161626"/>
+
+  <!-- Landing at bottom -->
+  <rect x="120" y="460" width="560" height="140" fill="#0d0d18"/>
+
+  <!-- Metal railing — left side -->
+  <line x1="260" y1="90" x2="140" y2="460" stroke="#444" stroke-width="3"/>
+  <!-- Railing posts left -->
+  <line x1="250" y1="115" x2="250" y2="130" stroke="#444" stroke-width="2"/>
+  <line x1="232" y1="165" x2="232" y2="180" stroke="#444" stroke-width="2"/>
+  <line x1="215" y1="215" x2="215" y2="230" stroke="#444" stroke-width="2"/>
+  <line x1="198" y1="270" x2="198" y2="285" stroke="#444" stroke-width="2"/>
+  <line x1="180" y1="325" x2="180" y2="340" stroke="#444" stroke-width="2"/>
+  <line x1="162" y1="385" x2="162" y2="400" stroke="#444" stroke-width="2"/>
+
+  <!-- Metal railing — right side -->
+  <line x1="540" y1="90" x2="660" y2="460" stroke="#444" stroke-width="3"/>
+  <line x1="550" y1="115" x2="550" y2="130" stroke="#444" stroke-width="2"/>
+  <line x1="568" y1="165" x2="568" y2="180" stroke="#444" stroke-width="2"/>
+  <line x1="585" y1="215" x2="585" y2="230" stroke="#444" stroke-width="2"/>
+  <line x1="602" y1="270" x2="602" y2="285" stroke="#444" stroke-width="2"/>
+  <line x1="620" y1="325" x2="620" y2="340" stroke="#444" stroke-width="2"/>
+  <line x1="638" y1="385" x2="638" y2="400" stroke="#444" stroke-width="2"/>
+
+  <!-- Emergency exit light on wall (green glow) -->
+  <rect x="125" y="250" width="20" height="12" fill="#111"/>
+  <rect x="127" y="252" width="16" height="8" fill="#22C55E" opacity="0.6" rx="1"/>
+  <ellipse cx="135" cy="280" rx="15" ry="10" fill="url(#emergLight)"/>
+
+  <!-- Graffiti tag on wall -->
+  <text x="650" y="350" font-family="sans-serif" font-size="14" fill="#333" opacity="0.3" transform="rotate(90 650 350)">ZKR</text>
+
+  <!-- Cigarette butt on step -->
+  <rect x="350" y="310" width="8" height="2" fill="#DDD" opacity="0.3" rx="1"/>
+  <circle cx="358" cy="311" r="1.5" fill="#FF6B35" opacity="0.2"/>
+
+  <!-- Piece of paper on lower step -->
+  <rect x="420" y="440" width="18" height="12" fill="#FEFCE8" opacity="0.15" rx="1" transform="rotate(5 429 446)"/>
+
+  <!-- Floor number painted on wall -->
+  <text x="660" y="200" font-family="sans-serif" font-weight="bold" font-size="28" fill="#333" opacity="0.2">3</text>
+
+  <!-- Shadow figure at bottom (the viewer's own shadow cast by top light) -->
+  <ellipse cx="400" cy="540" rx="60" ry="15" fill="#000" opacity="0.3"/>
+  <path d="M370 540 L385 480 L400 475 L415 480 L430 540 Z" fill="#000" opacity="0.15"/>
+</svg>

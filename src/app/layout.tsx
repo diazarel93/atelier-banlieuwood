@@ -1,9 +1,8 @@
-import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Courier_Prime } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans, Bebas_Neue, Courier_Prime } from "next/font/google";
+import { Providers } from "./providers";
+import { Analytics } from "@/components/analytics";
 import "./globals.css";
-import { Providers } from "@/components/providers";
-import { Sidebar } from "@/components/layout/sidebar";
-import { Toaster } from "@/components/ui/sonner";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -11,15 +10,54 @@ const jakarta = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const courierPrime = Courier_Prime({
-  variable: "--font-courier-prime",
+const bebasNeue = Bebas_Neue({
+  variable: "--font-cinema",
+  weight: "400",
   subsets: ["latin"],
-  weight: ["400", "700"],
 });
 
+const courierPrime = Courier_Prime({
+  variable: "--font-courier-prime",
+  weight: ["400", "700"],
+  subsets: ["latin"],
+});
+
+export const viewport: Viewport = {
+  themeColor: "#08090E",
+  colorScheme: "dark",
+};
+
 export const metadata: Metadata = {
-  title: "Banlieuwood — Copilote Scenario IA",
-  description: "Systeme de copilote d'ecriture de scenario avec agents IA",
+  title: {
+    default: "Banlieuwood — Le jeu collaboratif de creation cinematographique",
+    template: "%s | Banlieuwood",
+  },
+  description:
+    "Ecrivez un court-metrage ensemble. De 5 a 30 joueurs sur telephone. En classe, en famille ou entre amis. Gratuit, sans compte pour les joueurs.",
+  keywords: [
+    "jeu educatif", "creation collaborative", "cinema", "court-metrage",
+    "classe", "famille", "storytelling", "EdTech", "serious game",
+    "ecriture collaborative", "pedagogie", "IA",
+  ],
+  authors: [{ name: "Banlieuwood" }],
+  creator: "Banlieuwood",
+  metadataBase: new URL("https://banlieuwood.fr"),
+  openGraph: {
+    title: "Banlieuwood — Ecrivez un court-metrage ensemble",
+    description: "Le jeu ou 5 a 30 joueurs construisent une histoire de film ensemble, chacun sur son telephone. Gratuit, sans inscription.",
+    type: "website",
+    siteName: "Banlieuwood",
+    locale: "fr_FR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Banlieuwood — Le jeu cinema collaboratif",
+    description: "5 a 30 joueurs ecrivent un court-metrage ensemble sur telephone. EdTech cinema.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -28,24 +66,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" suppressHydrationWarning>
-      <body
-        className={`${jakarta.variable} ${courierPrime.variable} antialiased`}
-      >
-        <Providers>
-          <div className="flex h-screen">
-            <Sidebar />
-            <main className="flex-1 overflow-auto relative">
-              {children}
-              {/* Ambient glow - dark mode only */}
-              <div className="fixed inset-0 pointer-events-none z-0 hidden dark:block">
-                <div className="absolute top-[-10%] right-[10%] w-[500px] h-[500px] rounded-full bg-primary/3 blur-[150px]" />
-                <div className="absolute bottom-[-10%] left-[10%] w-[400px] h-[400px] rounded-full bg-accent/3 blur-[120px]" />
-              </div>
-            </main>
-          </div>
-          <Toaster richColors position="bottom-right" />
-        </Providers>
+    <html lang="fr" className="dark">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      </head>
+      <body className={`${jakarta.variable} ${bebasNeue.variable} ${courierPrime.variable} font-sans antialiased bg-bw-bg text-bw-text`}>
+        <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );

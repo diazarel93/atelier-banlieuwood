@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2C3E50"/>
+      <stop offset="100%" stop-color="#4A6FA5"/>
+    </linearGradient>
+    <linearGradient id="wall2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D4C5A0"/>
+      <stop offset="100%" stop-color="#C4B590"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outside sky visible through window frame -->
+  <rect width="800" height="600" fill="url(#sky2)"/>
+
+  <!-- Window frame (we're looking FROM INSIDE through the window) -->
+  <!-- Wall around window -->
+  <rect x="0" y="0" width="100" height="600" fill="url(#wall2)"/>
+  <rect x="700" y="0" width="100" height="600" fill="url(#wall2)"/>
+  <rect x="0" y="0" width="800" height="60" fill="url(#wall2)"/>
+  <rect x="0" y="520" width="800" height="80" fill="url(#wall2)"/>
+
+  <!-- Window sill -->
+  <rect x="80" y="515" width="640" height="15" fill="#B8A880" rx="2"/>
+  <rect x="80" y="520" width="640" height="10" fill="#A89870"/>
+
+  <!-- Window bars / cross -->
+  <rect x="395" y="55" width="10" height="470" fill="#8B7B60"/>
+  <rect x="95" y="280" width="610" height="8" fill="#8B7B60"/>
+
+  <!-- View through window — courtyard scene -->
+  <!-- Ground of courtyard -->
+  <rect x="100" y="370" width="600" height="155" fill="#7A8B6A"/>
+  <!-- Concrete edge -->
+  <rect x="100" y="365" width="600" height="8" fill="#999"/>
+
+  <!-- Building opposite (HLM style) -->
+  <rect x="120" y="60" width="560" height="310" fill="#B0A88A"/>
+  <!-- Floors -->
+  <line x1="120" y1="135" x2="680" y2="135" stroke="#A09880" stroke-width="2"/>
+  <line x1="120" y1="210" x2="680" y2="210" stroke="#A09880" stroke-width="2"/>
+  <line x1="120" y1="285" x2="680" y2="285" stroke="#A09880" stroke-width="2"/>
+
+  <!-- Windows of opposite building — life inside -->
+  <!-- Row 1 -->
+  <rect x="150" y="75" width="35" height="45" fill="#3A5060" rx="1"/>
+  <rect x="220" y="75" width="35" height="45" fill="#E8C87A" opacity="0.7" rx="1"/>
+  <rect x="290" y="75" width="35" height="45" fill="#3A5060" rx="1"/>
+  <rect x="420" y="75" width="35" height="45" fill="#4A6070" rx="1"/>
+  <rect x="490" y="75" width="35" height="45" fill="#E8C87A" opacity="0.5" rx="1"/>
+  <rect x="560" y="75" width="35" height="45" fill="#3A5060" rx="1"/>
+  <rect x="630" y="75" width="35" height="45" fill="#E8C87A" opacity="0.3" rx="1"/>
+  <!-- Row 2 -->
+  <rect x="150" y="150" width="35" height="45" fill="#E8C87A" opacity="0.6" rx="1"/>
+  <rect x="220" y="150" width="35" height="45" fill="#3A5060" rx="1"/>
+  <rect x="290" y="150" width="35" height="45" fill="#E8C87A" opacity="0.4" rx="1"/>
+  <rect x="420" y="150" width="35" height="45" fill="#E8C87A" opacity="0.8" rx="1"/>
+  <rect x="490" y="150" width="35" height="45" fill="#3A5060" rx="1"/>
+  <rect x="560" y="150" width="35" height="45" fill="#E8C87A" opacity="0.5" rx="1"/>
+  <rect x="630" y="150" width="35" height="45" fill="#3A5060" rx="1"/>
+  <!-- Row 3 -->
+  <rect x="150" y="225" width="35" height="45" fill="#3A5060" rx="1"/>
+  <rect x="220" y="225" width="35" height="45" fill="#4A6070" rx="1"/>
+  <rect x="290" y="225" width="35" height="45" fill="#E8C87A" opacity="0.6" rx="1"/>
+  <rect x="420" y="225" width="35" height="45" fill="#3A5060" rx="1"/>
+  <rect x="490" y="225" width="35" height="45" fill="#E8C87A" opacity="0.4" rx="1"/>
+  <rect x="560" y="225" width="35" height="45" fill="#E8C87A" opacity="0.7" rx="1"/>
+  <rect x="630" y="225" width="35" height="45" fill="#3A5060" rx="1"/>
+
+  <!-- Person visible in lit window (silhouette) -->
+  <circle cx="237" cy="95" r="4" fill="#2C2C2C"/>
+  <rect x="233" y="99" width="8" height="12" fill="#2C2C2C" rx="2"/>
+  <!-- Person in another window looking down -->
+  <circle cx="507" cy="168" r="4" fill="#2C2C2C"/>
+  <rect x="503" y="172" width="8" height="10" fill="#2C2C2C" rx="2"/>
+
+  <!-- Laundry line between buildings -->
+  <path d="M180 140 Q350 155 540 140" fill="none" stroke="#666" stroke-width="1"/>
+  <rect x="250" y="140" width="12" height="18" fill="#4A90D9" opacity="0.6"/>
+  <rect x="280" y="141" width="14" height="20" fill="white" opacity="0.7"/>
+  <rect x="350" y="142" width="10" height="16" fill="#E74C3C" opacity="0.5"/>
+  <rect x="420" y="141" width="12" height="18" fill="#F1C40F" opacity="0.5"/>
+
+  <!-- ====== THE SCENE IN THE COURTYARD ====== -->
+
+  <!-- GROUP 1 (left) — 3 kids/teens standing together -->
+  <!-- Person A — hoodie, confident posture -->
+  <circle cx="230" cy="388" r="8" fill="#3A2818"/>
+  <rect x="222" y="396" width="16" height="22" fill="#E74C3C" rx="4"/>
+  <path d="M222 400 Q230 394 238 400" fill="#C0392B"/>
+  <rect x="225" y="416" width="5" height="16" fill="#2C3E50" rx="1"/>
+  <rect x="232" y="416" width="5" height="16" fill="#2C3E50" rx="1"/>
+  <rect x="223" y="430" width="8" height="3" fill="white" rx="1"/>
+  <rect x="231" y="430" width="8" height="3" fill="white" rx="1"/>
+  <!-- Arms crossed -->
+  <path d="M222 400 Q216 408 220 413" fill="none" stroke="#E74C3C" stroke-width="4" stroke-linecap="round"/>
+  <path d="M238 400 Q244 408 240 413" fill="none" stroke="#E74C3C" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Person B — slightly behind, looking over -->
+  <circle cx="210" cy="392" r="7" fill="#4A3728"/>
+  <rect x="203" y="399" width="14" height="20" fill="#27AE60" rx="4"/>
+  <rect x="206" y="417" width="4" height="14" fill="#2C3E50" rx="1"/>
+  <rect x="211" y="417" width="4" height="14" fill="#2C3E50" rx="1"/>
+  <rect x="204" y="429" width="7" height="3" fill="#333" rx="1"/>
+  <rect x="211" y="429" width="7" height="3" fill="#333" rx="1"/>
+
+  <!-- Person C — cap, hands in pockets -->
+  <circle cx="250" cy="390" r="7" fill="#3A2818"/>
+  <rect x="242" y="385" width="16" height="5" fill="#2C3E50" rx="1"/>
+  <rect x="243" y="397" width="14" height="20" fill="#3498DB" rx="4"/>
+  <rect x="246" y="415" width="4" height="14" fill="#2C3E50" rx="1"/>
+  <rect x="251" y="415" width="4" height="14" fill="#2C3E50" rx="1"/>
+  <rect x="244" y="427" width="7" height="3" fill="white" rx="1"/>
+  <rect x="251" y="427" width="7" height="3" fill="white" rx="1"/>
+
+  <!-- GROUP 2 (right) — 2 teens, one on a bike -->
+  <!-- Person D — on bike, one foot on ground -->
+  <circle cx="560" cy="385" r="8" fill="#4A3728"/>
+  <!-- Body -->
+  <rect x="552" y="393" width="16" height="20" fill="#8E44AD" rx="4"/>
+  <!-- Bike simplified -->
+  <circle cx="545" cy="430" r="14" fill="none" stroke="#555" stroke-width="2"/>
+  <circle cx="580" cy="430" r="14" fill="none" stroke="#555" stroke-width="2"/>
+  <line x1="545" y1="430" x2="562" y2="415" stroke="#555" stroke-width="2"/>
+  <line x1="580" y1="430" x2="562" y2="415" stroke="#555" stroke-width="2"/>
+  <line x1="562" y1="415" x2="560" y2="405" stroke="#555" stroke-width="2"/>
+  <!-- Legs -->
+  <path d="M555 413 Q550 422 545 430" fill="none" stroke="#2C3E50" stroke-width="4" stroke-linecap="round"/>
+  <path d="M562 413 Q568 425 575 432" fill="none" stroke="#2C3E50" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Person E — standing next to biker, phone in hand -->
+  <circle cx="610" cy="388" r="7" fill="#3A2818"/>
+  <rect x="603" y="395" width="14" height="20" fill="#F39C12" rx="4"/>
+  <rect x="606" y="413" width="4" height="14" fill="#2C3E50" rx="1"/>
+  <rect x="611" y="413" width="4" height="14" fill="#2C3E50" rx="1"/>
+  <rect x="604" y="425" width="7" height="3" fill="#E74C3C" rx="1"/>
+  <rect x="611" y="425" width="7" height="3" fill="#E74C3C" rx="1"/>
+  <!-- Phone in hand (lit screen) -->
+  <rect x="617" y="402" width="6" height="10" fill="#222" rx="1"/>
+  <rect x="618" y="403" width="4" height="8" fill="#4488FF" opacity="0.6" rx="0.5"/>
+  <!-- Arm holding phone -->
+  <path d="M617 398 Q620 400 620 405" fill="none" stroke="#F39C12" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- === THE TENSION === -->
+  <!-- Something on the ground between the two groups -->
+  <!-- A ball / object -->
+  <circle cx="400" cy="425" r="6" fill="#E74C3C"/>
+  <path d="M396 422 Q400 418 404 422" fill="none" stroke="#C0392B" stroke-width="0.8"/>
+  <path d="M396 428 Q400 432 404 428" fill="none" stroke="#C0392B" stroke-width="0.8"/>
+
+  <!-- Kid in the middle — small, torn between two groups -->
+  <circle cx="400" cy="395" r="6" fill="#4A3728"/>
+  <rect x="394" y="401" width="12" height="16" fill="#BDC3C7" rx="3"/>
+  <rect x="396" y="415" width="4" height="12" fill="#2C3E50" rx="1"/>
+  <rect x="401" y="415" width="4" height="12" fill="#2C3E50" rx="1"/>
+  <rect x="394" y="425" width="7" height="3" fill="#333" rx="1"/>
+  <rect x="401" y="425" width="7" height="3" fill="#333" rx="1"/>
+  <!-- Arms apart — torn gesture -->
+  <path d="M394 405 Q380 400 370 398" fill="none" stroke="#BDC3C7" stroke-width="3" stroke-linecap="round"/>
+  <path d="M406 405 Q420 400 430 398" fill="none" stroke="#BDC3C7" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Shadow of groups -->
+  <ellipse cx="230" cy="435" rx="30" ry="4" fill="#5A6B5A" opacity="0.3"/>
+  <ellipse cx="570" cy="440" rx="35" ry="4" fill="#5A6B5A" opacity="0.3"/>
+
+  <!-- Graffiti on courtyard wall base -->
+  <path d="M140 360 Q160 350 180 358" fill="none" stroke="#E74C3C" stroke-width="2" opacity="0.4"/>
+  <text x="145" y="355" font-family="Arial" font-size="8" fill="#3498DB" opacity="0.3" font-weight="bold">ZON3</text>
+
+  <!-- Basketball hoop on wall (broken/tilted) -->
+  <rect x="650" y="300" width="25" height="2" fill="#888"/>
+  <rect x="673" y="290" width="2" height="30" fill="#888"/>
+  <circle cx="662" cy="310" r="8" fill="none" stroke="#FF6B35" stroke-width="2"/>
+  <!-- Net remnants -->
+  <path d="M656 317 L658 325 L662 318 L666 326 L668 317" fill="none" stroke="#ccc" stroke-width="0.8" opacity="0.5"/>
+
+  <!-- Cat on windowsill (our window, bottom left) -->
+  <ellipse cx="120" cy="515" rx="10" ry="6" fill="#FF8C00"/>
+  <circle cx="113" cy="510" r="5" fill="#FF8C00"/>
+  <!-- Ears -->
+  <path d="M110 506 L108 500 L112 504" fill="#FF8C00"/>
+  <path d="M116 506 L118 500 L114 504" fill="#FF8C00"/>
+  <!-- Eyes looking down at scene -->
+  <circle cx="111" cy="510" r="1.5" fill="#2ECC71"/>
+  <circle cx="115" cy="510" r="1.5" fill="#2ECC71"/>
+  <circle cx="111" cy="510.5" r="0.8" fill="#111"/>
+  <circle cx="115" cy="510.5" r="0.8" fill="#111"/>
+  <!-- Tail -->
+  <path d="M130 515 Q138 508 135 500" fill="none" stroke="#FF8C00" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Items on windowsill — coffee mug + book -->
+  <rect x="660" y="505" width="20" height="14" fill="#6A4E3A" rx="2"/>
+  <ellipse cx="670" cy="505" rx="10" ry="3" fill="#5A3E2A"/>
+  <path d="M680 508 Q686 512 680 516" fill="none" stroke="#6A4E3A" stroke-width="2"/>
+  <!-- Book -->
+  <rect x="620" y="508" width="25" height="6" fill="#2C3E50" rx="1"/>
+  <rect x="622" y="510" width="21" height="2" fill="#34495E"/>
+
+  <!-- Curtain edge visible (our window) -->
+  <path d="M100 60 Q90 300 95 520" fill="#E8D5B5" opacity="0.4"/>
+  <path d="M700 60 Q710 300 705 520" fill="#E8D5B5" opacity="0.4"/>
+
+  <!-- Cloud in sky -->
+  <ellipse cx="300" cy="35" rx="40" ry="12" fill="white" opacity="0.3"/>
+  <ellipse cx="550" cy="45" rx="50" ry="14" fill="white" opacity="0.25"/>
+
+  <!-- Bird on building ledge -->
+  <ellipse cx="470" cy="134" rx="4" ry="3" fill="#333"/>
+  <circle cx="474" cy="132" r="2" fill="#333"/>
+  <path d="M476 132 L478 131" fill="none" stroke="#F1C40F" stroke-width="0.8"/>
+</svg>

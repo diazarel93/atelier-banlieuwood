@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#87CEEB"/>
+      <stop offset="60%" stop-color="#B8D4E3"/>
+      <stop offset="100%" stop-color="#D4C5A9"/>
+    </linearGradient>
+    <linearGradient id="grass1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5A8A3C"/>
+      <stop offset="100%" stop-color="#4A7A2C"/>
+    </linearGradient>
+    <linearGradient id="path1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C4B898"/>
+      <stop offset="100%" stop-color="#B8AC8A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="800" height="600" fill="url(#sky1)"/>
+
+  <!-- Clouds -->
+  <ellipse cx="150" cy="80" rx="80" ry="30" fill="white" opacity="0.7"/>
+  <ellipse cx="180" cy="70" rx="60" ry="25" fill="white" opacity="0.8"/>
+  <ellipse cx="600" cy="100" rx="90" ry="28" fill="white" opacity="0.6"/>
+  <ellipse cx="640" cy="90" rx="60" ry="22" fill="white" opacity="0.7"/>
+  <ellipse cx="400" cy="50" rx="50" ry="18" fill="white" opacity="0.5"/>
+
+  <!-- Trees in background -->
+  <rect x="0" y="280" width="800" height="40" fill="#3D7A28" opacity="0.4"/>
+  <!-- Tree 1 -->
+  <circle cx="80" cy="250" r="45" fill="#4A8A35"/>
+  <circle cx="60" cy="270" r="35" fill="#3D7A28"/>
+  <circle cx="100" cy="265" r="30" fill="#4A8A35"/>
+  <rect x="75" y="285" width="10" height="35" fill="#6B4226"/>
+  <!-- Tree 2 -->
+  <circle cx="720" cy="240" r="50" fill="#4A8A35"/>
+  <circle cx="695" cy="260" r="38" fill="#3D7A28"/>
+  <circle cx="745" cy="255" r="32" fill="#4A8A35"/>
+  <rect x="715" y="280" width="12" height="40" fill="#6B4226"/>
+  <!-- Tree 3 -->
+  <circle cx="350" cy="230" r="55" fill="#3D7A28" opacity="0.5"/>
+  <circle cx="380" cy="240" r="40" fill="#4A8A35" opacity="0.5"/>
+  <rect x="360" y="275" width="10" height="30" fill="#6B4226" opacity="0.5"/>
+
+  <!-- Ground / grass -->
+  <rect x="0" y="320" width="800" height="280" fill="url(#grass1)"/>
+
+  <!-- Path -->
+  <path d="M-10 500 Q200 460 400 440 Q600 420 810 380" fill="none" stroke="url(#path1)" stroke-width="45" stroke-linecap="round"/>
+  <path d="M-10 500 Q200 460 400 440 Q600 420 810 380" fill="none" stroke="#B8AC8A" stroke-width="40" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Park bench - wooden with metal frame -->
+  <rect x="320" y="360" width="130" height="6" fill="#8B6914" rx="2"/>
+  <rect x="320" y="368" width="130" height="6" fill="#7A5C12" rx="2"/>
+  <rect x="320" y="345" width="130" height="5" fill="#8B6914" rx="1"/>
+  <rect x="320" y="352" width="130" height="5" fill="#8B6914" rx="1"/>
+  <!-- Armrests -->
+  <path d="M318 340 Q315 340 315 375 L320 375 L320 340 Z" fill="#444"/>
+  <path d="M452 340 Q455 340 455 375 L450 375 L450 340 Z" fill="#444"/>
+  <!-- Legs -->
+  <rect x="330" y="374" width="4" height="20" fill="#444"/>
+  <rect x="436" y="374" width="4" height="20" fill="#444"/>
+
+  <!-- THE SAC A DOS - red backpack on bench, slightly open -->
+  <rect x="370" y="330" width="40" height="35" fill="#CC3333" rx="5"/>
+  <rect x="373" y="333" width="34" height="10" fill="#BB2222" rx="3"/>
+  <!-- Pocket -->
+  <rect x="378" y="348" width="24" height="14" fill="#AA2222" rx="2"/>
+  <!-- Zipper slightly open -->
+  <line x1="375" y1="333" x2="405" y2="333" stroke="#FFD700" stroke-width="1.5"/>
+  <!-- Straps hanging down -->
+  <path d="M375 365 Q372 380 370 395" fill="none" stroke="#CC3333" stroke-width="4" stroke-linecap="round"/>
+  <path d="M405 365 Q408 380 410 395" fill="none" stroke="#CC3333" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- LETTER sticking out of the bag -->
+  <rect x="388" y="322" width="30" height="20" fill="#FFFFF0" rx="1" transform="rotate(-15 403 332)"/>
+  <line x1="393" y1="328" x2="412" y2="325" stroke="#333" stroke-width="0.8" opacity="0.4"/>
+  <line x1="394" y1="332" x2="410" y2="330" stroke="#333" stroke-width="0.8" opacity="0.3"/>
+  <!-- Red stamp/mark on letter -->
+  <circle cx="414" cy="326" r="3" fill="#CC3333" opacity="0.5"/>
+
+  <!-- Phone on bench next to bag -->
+  <rect x="350" y="358" width="14" height="8" fill="#222" rx="2"/>
+  <rect x="351" y="359" width="12" height="6" fill="#4488FF" opacity="0.4" rx="1"/>
+
+  <!-- PERSON RUNNING in distance (away from bench) -->
+  <!-- Body -->
+  <circle cx="620" cy="330" r="8" fill="#2C3E50"/>
+  <!-- Torso leaning forward -->
+  <rect x="615" y="337" width="12" height="18" fill="#3498DB" rx="4" transform="rotate(-15 621 346)"/>
+  <!-- Arms running pose -->
+  <path d="M614 340 Q606 348 610 352" fill="none" stroke="#2C3E50" stroke-width="4" stroke-linecap="round"/>
+  <path d="M626 340 Q634 345 630 350" fill="none" stroke="#2C3E50" stroke-width="4" stroke-linecap="round"/>
+  <!-- Legs running -->
+  <path d="M617 355 Q610 368 608 375" fill="none" stroke="#2C3E50" stroke-width="4" stroke-linecap="round"/>
+  <path d="M623 355 Q632 365 636 373" fill="none" stroke="#2C3E50" stroke-width="4" stroke-linecap="round"/>
+  <!-- Sneakers -->
+  <rect x="604" y="374" width="8" height="4" fill="#E74C3C" rx="2"/>
+  <rect x="634" y="372" width="8" height="4" fill="#E74C3C" rx="2"/>
+  <!-- Hair / cap flying -->
+  <path d="M614 326 Q608 322 612 318" fill="none" stroke="#2C3E50" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- PERSON WATCHING from left side — standing, looking confused -->
+  <circle cx="180" cy="350" r="10" fill="#4A3728"/>
+  <!-- Hair -->
+  <ellipse cx="180" cy="344" rx="10" ry="5" fill="#222"/>
+  <!-- Body (hoodie) -->
+  <rect x="170" y="360" width="20" height="28" fill="#9B59B6" rx="6"/>
+  <!-- Hood -->
+  <path d="M170 362 Q172 355 180 352 Q188 355 190 362" fill="#8E44AD"/>
+  <!-- Arms — one pointing at bench -->
+  <path d="M170 368 Q160 374 165 380" fill="none" stroke="#9B59B6" stroke-width="5" stroke-linecap="round"/>
+  <path d="M190 368 Q210 360 230 355" fill="none" stroke="#9B59B6" stroke-width="5" stroke-linecap="round"/>
+  <!-- Hand pointing -->
+  <circle cx="232" cy="354" r="3" fill="#4A3728"/>
+  <!-- Legs -->
+  <rect x="174" y="386" width="6" height="18" fill="#2C3E50" rx="2"/>
+  <rect x="183" y="386" width="6" height="18" fill="#2C3E50" rx="2"/>
+  <!-- Shoes -->
+  <rect x="172" y="402" width="10" height="4" fill="white" rx="2"/>
+  <rect x="181" y="402" width="10" height="4" fill="white" rx="2"/>
+
+  <!-- DOG near bench sniffing the bag -->
+  <ellipse cx="440" cy="382" rx="16" ry="10" fill="#D4A03C"/>
+  <circle cx="455" cy="374" r="7" fill="#D4A03C"/>
+  <!-- Ears -->
+  <ellipse cx="451" cy="369" rx="4" ry="6" fill="#C49030" transform="rotate(-10 451 369)"/>
+  <ellipse cx="460" cy="370" rx="4" ry="6" fill="#C49030" transform="rotate(10 460 370)"/>
+  <!-- Nose toward bag -->
+  <circle cx="461" cy="376" r="2" fill="#222"/>
+  <!-- Tail up -->
+  <path d="M424 378 Q418 368 420 360" fill="none" stroke="#D4A03C" stroke-width="3" stroke-linecap="round"/>
+  <!-- Legs -->
+  <rect x="430" y="390" width="3" height="10" fill="#C49030"/>
+  <rect x="437" y="390" width="3" height="10" fill="#C49030"/>
+  <rect x="445" y="390" width="3" height="10" fill="#C49030"/>
+  <rect x="450" y="390" width="3" height="10" fill="#C49030"/>
+
+  <!-- Scattered items on ground near bench — fell from bag? -->
+  <!-- Keys -->
+  <circle cx="430" cy="405" r="3" fill="#C0C0C0"/>
+  <rect x="430" y="405" width="8" height="2" fill="#C0C0C0" rx="1"/>
+  <!-- Crumpled paper -->
+  <path d="M340 408 L348 404 L354 410 L346 414 Z" fill="#F5F5DC" opacity="0.7"/>
+
+  <!-- Pigeon near items -->
+  <ellipse cx="465" cy="412" rx="6" ry="4" fill="#888"/>
+  <circle cx="470" cy="408" r="3" fill="#999"/>
+  <path d="M473 408 L476 407" fill="none" stroke="#F59E0B" stroke-width="1"/>
+  <!-- Pigeon eye -->
+  <circle cx="471" cy="407" r="0.8" fill="#222"/>
+
+  <!-- Flower bed beside path -->
+  <circle cx="280" cy="430" r="4" fill="#E74C3C"/>
+  <circle cx="290" cy="435" r="3" fill="#F1C40F"/>
+  <circle cx="275" cy="438" r="3.5" fill="#E74C3C"/>
+  <circle cx="296" cy="428" r="3" fill="#E67E22"/>
+  <circle cx="268" cy="432" r="2.5" fill="#F1C40F"/>
+  <!-- Stems -->
+  <line x1="280" y1="434" x2="280" y2="445" stroke="#3D7A28" stroke-width="1"/>
+  <line x1="290" y1="438" x2="290" y2="448" stroke="#3D7A28" stroke-width="1"/>
+  <line x1="275" y1="441" x2="275" y2="450" stroke="#3D7A28" stroke-width="1"/>
+
+  <!-- Lamp post -->
+  <rect x="530" y="290" width="5" height="110" fill="#555"/>
+  <path d="M520 290 Q533 280 545 290" fill="none" stroke="#555" stroke-width="3"/>
+  <circle cx="533" cy="284" r="6" fill="#FFF3B0" opacity="0.3"/>
+
+  <!-- Shadow from bench -->
+  <ellipse cx="410" cy="400" rx="75" ry="6" fill="#3A6A22" opacity="0.3"/>
+
+  <!-- Birds in sky -->
+  <path d="M480 120 Q485 114 490 120" fill="none" stroke="#444" stroke-width="1.5"/>
+  <path d="M500 130 Q504 125 508 130" fill="none" stroke="#444" stroke-width="1.2"/>
+  <path d="M520 115 Q523 111 526 115" fill="none" stroke="#444" stroke-width="1"/>
+
+  <!-- Sun glow top right -->
+  <circle cx="700" cy="60" r="40" fill="#FFF3B0" opacity="0.3"/>
+  <circle cx="700" cy="60" r="25" fill="#FFE680" opacity="0.5"/>
+</svg>

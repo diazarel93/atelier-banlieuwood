@@ -1,0 +1,119 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
+
+// POST — create/update avatar + character info
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const rl = checkRateLimit(getIP(req), "personnage", { max: 15, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
+  const { id: sessionId } = await params;
+  const { studentId, prenom, age, traitDominant, avatarData } = await req.json();
+
+  if (!studentId || !prenom) {
+    return NextResponse.json(
+      { error: "studentId et prenom requis" },
+      { status: 400 }
+    );
+  }
+
+  if (typeof prenom !== "string" || prenom.trim().length < 1) {
+    return NextResponse.json(
+      { error: "Le prénom est requis" },
+      { status: 400 }
+    );
+  }
+
+  const admin = createAdminClient();
+
+  // Verify session is module 10, séance 2
+  const { data: session } = await admin
+    .from("sessions")
+    .select("status, current_module, current_seance")
+    .eq("id", sessionId)
+    .single();
+
+  if (!session || session.current_module !== 10 || (session.current_seance || 1) !== 2) {
+    return NextResponse.json(
+      { error: "La création de personnage n'est pas disponible pour cette séance" },
+      { status: 400 }
+    );
+  }
+
+  if (session.status !== "responding") {
+    return NextResponse.json(
+      { error: "Les réponses ne sont pas ouvertes" },
+      { status: 400 }
+    );
+  }
+
+  // Verify student
+  const { data: student } = await admin
+    .from("students")
+    .select("id")
+    .eq("id", studentId)
+    .eq("session_id", sessionId)
+    .single();
+
+  if (!student) {
+    return NextResponse.json(
+      { error: "Joueur introuvable dans cette partie" },
+      { status: 404 }
+    );
+  }
+
+  // Upsert personnage
+  const { data, error } = await admin
+    .from("module10_personnages")
+    .upsert(
+      {
+        session_id: sessionId,
+        student_id: studentId,
+        prenom: prenom.trim(),
+        age: age || null,
+        trait_dominant: traitDominant || null,
+        avatar_data: avatarData || {},
+      },
+      { onConflict: "session_id,student_id" }
+    )
+    .select()
+    .single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
+
+// GET — get student's character or all characters
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id: sessionId } = await params;
+  const studentId = req.nextUrl.searchParams.get("studentId");
+  const admin = createAdminClient();
+
+  if (studentId) {
+    const { data, error } = await admin
+      .from("module10_personnages")
+      .select("*")
+      .eq("session_id", sessionId)
+      .eq("student_id", studentId)
+      .maybeSingle();
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ personnage: data });
+  }
+
+  // All characters (facilitator view)
+  const { data, error } = await admin
+    .from("module10_personnages")
+    .select("*, students(display_name, avatar)")
+    .eq("session_id", sessionId)
+    .order("submitted_at", { ascending: true });
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ personnages: data || [], count: data?.length || 0 });
+}

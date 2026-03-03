@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="nightSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0a1a"/>
+      <stop offset="100%" stop-color="#1a1a30"/>
+    </linearGradient>
+    <radialGradient id="windowGlow" cx="0.5" cy="0.5" r="0.6">
+      <stop offset="0%" stop-color="#FFE4A0" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#FFE4A0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="roomLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a2520"/>
+      <stop offset="100%" stop-color="#1a1815"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Night sky -->
+  <rect width="800" height="600" fill="url(#nightSky)"/>
+
+  <!-- Stars -->
+  <circle cx="120" cy="40" r="1" fill="white" opacity="0.6"/>
+  <circle cx="300" cy="25" r="1.2" fill="white" opacity="0.4"/>
+  <circle cx="500" cy="55" r="0.8" fill="white" opacity="0.7"/>
+  <circle cx="680" cy="35" r="1.1" fill="white" opacity="0.5"/>
+  <circle cx="50" cy="90" r="0.7" fill="white" opacity="0.4"/>
+  <circle cx="750" cy="80" r="0.9" fill="white" opacity="0.3"/>
+
+  <!-- Building facade — dark concrete -->
+  <rect x="80" y="0" width="640" height="600" fill="#1c1c28"/>
+
+  <!-- Building texture — vertical lines -->
+  <line x1="200" y1="0" x2="200" y2="600" stroke="#222233" stroke-width="1"/>
+  <line x1="400" y1="0" x2="400" y2="600" stroke="#222233" stroke-width="1"/>
+  <line x1="600" y1="0" x2="600" y2="600" stroke="#222233" stroke-width="1"/>
+
+  <!-- Floor separators -->
+  <rect x="80" y="145" width="640" height="3" fill="#252535"/>
+  <rect x="80" y="290" width="640" height="3" fill="#252535"/>
+  <rect x="80" y="435" width="640" height="3" fill="#252535"/>
+
+  <!-- Upper floor windows (dark) -->
+  <rect x="120" y="30" width="55" height="70" fill="#0a0a15" rx="1"/>
+  <rect x="210" y="30" width="55" height="70" fill="#0a0a15" rx="1"/>
+  <rect x="535" y="30" width="55" height="70" fill="#0a0a15" rx="1"/>
+  <rect x="625" y="30" width="55" height="70" fill="#0a0a15" rx="1"/>
+  <!-- One with TV glow -->
+  <rect x="535" y="30" width="55" height="70" fill="#0a0f20" rx="1"/>
+  <rect x="537" y="32" width="51" height="66" fill="#0d1525" rx="1" opacity="0.5"/>
+
+  <!-- Middle floor windows (dark) -->
+  <rect x="120" y="175" width="55" height="70" fill="#0a0a15" rx="1"/>
+  <rect x="625" y="175" width="55" height="70" fill="#0a0a15" rx="1"/>
+  <!-- One lit window (kitchen?) -->
+  <rect x="210" y="175" width="55" height="70" fill="#2a2015" rx="1"/>
+  <rect x="212" y="177" width="51" height="66" fill="#352a1a" rx="1" opacity="0.4"/>
+
+  <!-- ═══ THE MAIN WINDOW — person looking out ═══ -->
+  <!-- Window frame -->
+  <rect x="310" y="155" width="180" height="140" fill="#333344" rx="2"/>
+  <!-- Window interior — warm light -->
+  <rect x="316" y="161" width="168" height="128" fill="url(#roomLight)"/>
+  <!-- Window divider (cross) -->
+  <rect x="398" y="161" width="4" height="128" fill="#333344"/>
+  <rect x="316" y="222" width="168" height="4" fill="#333344"/>
+
+  <!-- Room details visible through window -->
+  <!-- Curtain left (half drawn) -->
+  <path d="M316 161 L316 289 L350 289 Q345 250 348 220 Q345 190 350 161 Z" fill="#8B4513" opacity="0.4"/>
+  <!-- Curtain right -->
+  <path d="M484 161 L484 289 L455 289 Q458 250 456 220 Q458 190 455 161 Z" fill="#8B4513" opacity="0.4"/>
+  <!-- Lamp glow inside room (top right) -->
+  <circle cx="460" cy="185" r="8" fill="#FFD700" opacity="0.25"/>
+  <!-- Bookshelf silhouette -->
+  <rect x="440" y="240" width="35" height="45" fill="#1a1510" opacity="0.5"/>
+
+  <!-- THE PERSON — silhouette looking out -->
+  <!-- Head -->
+  <circle cx="385" cy="210" r="14" fill="#111118"/>
+  <!-- Hair -->
+  <ellipse cx="385" cy="203" rx="15" ry="8" fill="#111118"/>
+  <!-- Shoulders + body -->
+  <path d="M365 224 Q375 218 385 220 Q395 218 405 224 L408 270 L362 270 Z" fill="#111118"/>
+  <!-- Arms on windowsill -->
+  <path d="M365 248 Q355 255 350 258 L350 265 L370 260 Z" fill="#111118"/>
+  <path d="M405 248 Q415 255 420 258 L420 265 L400 260 Z" fill="#111118"/>
+  <!-- Hand visible -->
+  <ellipse cx="350" cy="262" rx="6" ry="4" fill="#8B7355" opacity="0.6"/>
+  <!-- Phone in hand, glowing slightly -->
+  <rect x="345" y="256" width="8" height="13" fill="#222" rx="1"/>
+  <rect x="346" y="257" width="6" height="10" fill="#3B82F6" opacity="0.3" rx="1"/>
+
+  <!-- Window glow projected outside -->
+  <ellipse cx="400" cy="400" rx="120" ry="60" fill="url(#windowGlow)"/>
+
+  <!-- Lower floor windows -->
+  <rect x="120" y="320" width="55" height="70" fill="#0a0a15" rx="1"/>
+  <rect x="210" y="320" width="55" height="70" fill="#0a0a15" rx="1"/>
+  <rect x="310" y="320" width="55" height="70" fill="#0a0a15" rx="1"/>
+  <!-- Lit window lower right -->
+  <rect x="535" y="320" width="55" height="70" fill="#1a1810" rx="1"/>
+  <rect x="537" y="322" width="51" height="66" fill="#252015" rx="1" opacity="0.4"/>
+  <rect x="625" y="320" width="55" height="70" fill="#0a0a15" rx="1"/>
+
+  <!-- Ground level -->
+  <rect x="0" y="440" width="800" height="160" fill="#141420"/>
+
+  <!-- Sidewalk -->
+  <rect x="0" y="440" width="800" height="25" fill="#1e1e2e"/>
+  <line x1="0" y1="465" x2="800" y2="465" stroke="#252535" stroke-width="1"/>
+
+  <!-- Wet ground reflections -->
+  <rect x="300" y="470" width="200" height="80" fill="#FFE4A0" opacity="0.03" rx="5"/>
+  <!-- Puddle -->
+  <ellipse cx="400" cy="510" rx="60" ry="8" fill="#1a1a30"/>
+  <ellipse cx="400" cy="510" rx="55" ry="6" fill="#222240" opacity="0.5"/>
+  <!-- Reflection of window in puddle -->
+  <rect x="375" y="505" width="20" height="8" fill="#FFE4A0" opacity="0.06" rx="1"/>
+
+  <!-- Street lamp far right -->
+  <rect x="730" y="320" width="4" height="125" fill="#444"/>
+  <ellipse cx="732" cy="318" rx="10" ry="6" fill="#FFE4A0" opacity="0.15"/>
+  <circle cx="732" cy="316" r="4" fill="#FFE4A0" opacity="0.3"/>
+
+  <!-- Bicycle parked against building -->
+  <circle cx="140" cy="428" r="12" fill="none" stroke="#555" stroke-width="2"/>
+  <circle cx="170" cy="428" r="12" fill="none" stroke="#555" stroke-width="2"/>
+  <line x1="140" y1="428" x2="155" y2="415" stroke="#555" stroke-width="2"/>
+  <line x1="155" y1="415" x2="170" y2="428" stroke="#555" stroke-width="2"/>
+  <line x1="155" y1="415" x2="150" y2="405" stroke="#555" stroke-width="2"/>
+
+  <!-- Mailboxes on wall -->
+  <rect x="100" y="400" width="25" height="20" fill="#333" rx="1"/>
+  <rect x="130" y="400" width="25" height="20" fill="#333" rx="1"/>
+
+  <!-- Distant city lights (sky) -->
+  <rect x="0" y="0" width="80" height="600" fill="#0a0a18"/>
+  <rect x="720" y="0" width="80" height="600" fill="#0a0a18"/>
+  <!-- Distant building left -->
+  <rect x="0" y="100" width="60" height="500" fill="#111120"/>
+  <rect x="10" y="130" width="8" height="10" fill="#FFE4A0" opacity="0.15"/>
+  <rect x="30" y="200" width="8" height="10" fill="#FFE4A0" opacity="0.1"/>
+  <!-- Distant building right -->
+  <rect x="740" y="80" width="60" height="520" fill="#111120"/>
+  <rect x="755" y="150" width="8" height="10" fill="#FFE4A0" opacity="0.12"/>
+  <rect x="775" y="250" width="8" height="10" fill="#87CEEB" opacity="0.08"/>
+</svg>

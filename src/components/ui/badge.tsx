@@ -5,21 +5,56 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-full border border-transparent px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
+  "inline-flex items-center justify-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none transition-colors duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
+        // Primary -- orange
+        default:
+          "bg-bw-primary/10 text-bw-primary",
+        primary:
+          "bg-bw-primary/10 text-bw-primary",
+        // Teal -- success, players
+        teal:
+          "bg-bw-teal/10 text-bw-teal",
+        // Gold -- cinema, prestige
+        gold:
+          "bg-bw-gold/10 text-bw-gold",
+        // Violet -- AI, accent
+        violet:
+          "bg-bw-violet/10 text-bw-violet",
+        // Pink -- emotion
+        pink:
+          "bg-bw-pink/10 text-bw-pink",
+        // Amber -- warning
+        amber:
+          "bg-bw-amber/10 text-bw-amber",
+        // Green -- completed
+        green:
+          "bg-bw-green/10 text-bw-green",
+        // Danger -- error
+        danger:
+          "bg-bw-danger/10 text-bw-danger",
+        // Ghost -- ultra-subtle
+        ghost:
+          "bg-white/[0.04] text-bw-muted",
+        // Secondary -- muted neutral
         secondary:
-          "bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
-        destructive:
-          "bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "bg-bw-surface text-bw-muted",
+        // Outline -- border only
         outline:
-          "border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
-        ghost: "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 [a&]:hover:underline",
-        brand: "bg-primary/15 text-primary border-primary/20 [a&]:hover:bg-primary/25",
-        info: "bg-accent/15 text-accent border-accent/20 [a&]:hover:bg-accent/25",
+          "border border-white/[0.08] text-bw-text bg-transparent",
+        // Solid fills
+        "primary-solid":
+          "bg-bw-primary text-white",
+        "teal-solid":
+          "bg-bw-teal text-white",
+        "gold-solid":
+          "bg-bw-gold text-white",
+        "violet-solid":
+          "bg-bw-violet text-white",
+        destructive:
+          "bg-bw-danger text-white",
       },
     },
     defaultVariants: {

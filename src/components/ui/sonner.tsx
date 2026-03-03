@@ -7,38 +7,35 @@ import {
   OctagonXIcon,
   TriangleAlertIcon,
 } from "lucide-react"
-import { useTheme } from "next-themes"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
-
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
+      theme="dark"
       className="toaster group"
       icons={{
-        success: <CircleCheckIcon className="size-4" />,
-        info: <InfoIcon className="size-4" />,
-        warning: <TriangleAlertIcon className="size-4" />,
-        error: <OctagonXIcon className="size-4" />,
-        loading: <Loader2Icon className="size-4 animate-spin" />,
-      }}
-      toastOptions={{
-        classNames: {
-          toast: "backdrop-blur-md border-border/50",
-          success: "border-l-4 border-l-green-500",
-          error: "border-l-4 border-l-destructive",
-          warning: "border-l-4 border-l-yellow-500",
-          info: "border-l-4 border-l-accent",
-        },
+        success: <CircleCheckIcon className="size-4 text-bw-teal" />,
+        info: <InfoIcon className="size-4 text-bw-violet" />,
+        warning: <TriangleAlertIcon className="size-4 text-bw-amber" />,
+        error: <OctagonXIcon className="size-4 text-bw-danger" />,
+        loading: <Loader2Icon className="size-4 animate-spin text-bw-primary" />,
       }}
       style={
         {
-          "--normal-bg": "var(--popover)",
-          "--normal-text": "var(--popover-foreground)",
-          "--normal-border": "var(--border)",
-          "--border-radius": "var(--radius)",
+          "--normal-bg": "#15181F",
+          "--normal-text": "#E8EAED",
+          "--normal-border": "rgba(255,255,255,0.06)",
+          "--border-radius": "0.75rem",
+          "--success-bg": "#15181F",
+          "--success-text": "#4ECDC4",
+          "--success-border": "rgba(78,205,196,0.15)",
+          "--error-bg": "#15181F",
+          "--error-text": "#EF4444",
+          "--error-border": "rgba(239,68,68,0.15)",
+          "--warning-bg": "#15181F",
+          "--warning-text": "#F59E0B",
+          "--warning-border": "rgba(245,158,11,0.15)",
         } as React.CSSProperties
       }
       {...props}

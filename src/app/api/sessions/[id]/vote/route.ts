@@ -1,0 +1,101 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
+import { isValidUUID } from "@/lib/api-utils";
+
+// POST — student submits a vote
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const rl = checkRateLimit(getIP(req), "vote", { max: 20, windowSec: 60 });
+  if (rl) {
+    return NextResponse.json({ error: rl.error }, { status: 429 });
+  }
+
+  const { id: sessionId } = await params;
+  const { studentId, situationId, chosenResponseId } = await req.json();
+
+  if (!studentId || !situationId || !chosenResponseId) {
+    return NextResponse.json(
+      { error: "studentId, situationId et chosenResponseId requis" },
+      { status: 400 }
+    );
+  }
+  if (!isValidUUID(studentId) || !isValidUUID(situationId) || !isValidUUID(chosenResponseId)) {
+    return NextResponse.json(
+      { error: "Paramètres invalides" },
+      { status: 400 }
+    );
+  }
+
+  const admin = createAdminClient();
+
+  // Check session status
+  const { data: session } = await admin
+    .from("sessions")
+    .select("status")
+    .eq("id", sessionId)
+    .single();
+
+  if (!session || session.status !== "voting") {
+    return NextResponse.json(
+      { error: "Le vote n'est pas ouvert" },
+      { status: 400 }
+    );
+  }
+
+  // Verify student belongs to this session
+  const { data: student } = await admin
+    .from("students")
+    .select("id")
+    .eq("id", studentId)
+    .eq("session_id", sessionId)
+    .single();
+
+  if (!student) {
+    return NextResponse.json(
+      { error: "Joueur introuvable dans cette partie" },
+      { status: 404 }
+    );
+  }
+
+  // Verify chosen response is a valid vote option (not hidden, is_vote_option = true)
+  const { data: response } = await admin
+    .from("responses")
+    .select("id")
+    .eq("id", chosenResponseId)
+    .eq("session_id", sessionId)
+    .eq("situation_id", situationId)
+    .eq("is_vote_option", true)
+    .eq("is_hidden", false)
+    .single();
+
+  if (!response) {
+    return NextResponse.json(
+      { error: "Option de vote invalide" },
+      { status: 400 }
+    );
+  }
+
+  // Upsert vote (student can change their vote)
+  const { data, error } = await admin
+    .from("votes")
+    .upsert(
+      {
+        session_id: sessionId,
+        student_id: studentId,
+        situation_id: situationId,
+        chosen_response_id: chosenResponseId,
+      },
+      { onConflict: "session_id,student_id,situation_id" }
+    )
+    .select()
+    .single();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json(data);
+}
