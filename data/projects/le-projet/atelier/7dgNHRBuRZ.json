@@ -1,0 +1,112 @@
+{
+  "id": "7dgNHRBuRZ",
+  "projectSlug": "le-projet",
+  "module": 1,
+  "level": "college",
+  "chapters": [
+    {
+      "chapterId": "idea",
+      "status": "in-progress",
+      "steps": [
+        {
+          "stepId": "idea_q1",
+          "question": "Quel genre de film veux-tu ecrire ? Pourquoi ce genre te parle ?",
+          "answer": "ojij",
+          "feedback": "Tu me dis que tu veux écrire un film, mais 'ojij' n'est pas une réponse claire. Qu'est-ce qui te fait choisir ce genre de film ? Est-ce parce que tu as aimé un film dans ce genre ?",
+          "score": 1,
+          "status": "validated",
+          "answeredAt": "2026-02-27T15:17:13.097Z",
+          "exchanges": [
+            {
+              "answer": "ojij",
+              "feedback": "Tu me dis que tu veux écrire un film, mais 'ojij' n'est pas une réponse claire. Qu'est-ce qui te fait choisir ce genre de film ? Est-ce parce que tu as aimé un film dans ce genre ?",
+              "score": 1,
+              "followUp": null,
+              "answeredAt": "2026-02-27T15:17:13.096Z"
+            }
+          ],
+          "currentFollowUp": null
+        },
+        {
+          "stepId": "idea_q2",
+          "question": "Pitch-moi ton histoire en 2-3 phrases. Qu'est-ce qui se passe ?",
+          "answer": "",
+          "feedback": "",
+          "score": 0,
+          "status": "pending",
+          "answeredAt": null,
+          "exchanges": [],
+          "currentFollowUp": null
+        }
+      ],
+      "totalScore": 1,
+      "maxScore": 15,
+      "badge": null
+    },
+    {
+      "chapterId": "hero",
+      "status": "locked",
+      "steps": [],
+      "totalScore": 0,
+      "maxScore": 24,
+      "badge": null
+    },
+    {
+      "chapterId": "adversary",
+      "status": "locked",
+      "steps": [],
+      "totalScore": 0,
+      "maxScore": 21,
+      "badge": null
+    },
+    {
+      "chapterId": "world",
+      "status": "locked",
+      "steps": [],
+      "totalScore": 0,
+      "maxScore": 18,
+      "badge": null
+    },
+    {
+      "chapterId": "links",
+      "status": "locked",
+      "steps": [],
+      "totalScore": 0,
+      "maxScore": 15,
+      "badge": null
+    },
+    {
+      "chapterId": "conflict",
+      "status": "locked",
+      "steps": [],
+      "totalScore": 0,
+      "maxScore": 15,
+      "badge": null
+    },
+    {
+      "chapterId": "journey",
+      "status": "locked",
+      "steps": [],
+      "totalScore": 0,
+      "maxScore": 15,
+      "badge": null
+    }
+  ],
+  "totalScore": 1,
+  "maxScore": 123,
+  "currentChapter": "idea",
+  "streak": 0,
+  "bestStreak": 0,
+  "gameConfig": {
+    "objective": "tournage",
+    "genre": "",
+    "audience": "",
+    "protagonist": "",
+    "theme": "",
+    "location": "",
+    "teamSize": 1,
+    "constraints": ""
+  },
+  "createdAt": "2026-02-27T15:16:33.879Z",
+  "updatedAt": "2026-02-27T15:17:13.120Z"
+}

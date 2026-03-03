@@ -1,0 +1,34 @@
+{
+  "id": "la-tenanciere",
+  "projectSlug": "le-projet",
+  "name": "La Tenancière",
+  "age": "",
+  "occupation": "Tenancière du bar familial",
+  "role": "secondaire",
+  "color": "#ec4899",
+  "avatar": "",
+  "backstory": "Réalité économique brute. Elle ne croit ni aux idéaux du père ni aux process de Lucia. Elle veut que le bar survive. Point.",
+  "psychology": {
+    "goal": "La survie du bar — la seule chose concrète dans ce chaos",
+    "need": "Stabilité et contrôle sur son territoire",
+    "flaw": "Absence de limite, Cynisme, Peur de l'abandon, Violence verbale",
+    "fear": "Perdre le bar — le seul ancrage qui lui reste",
+    "secret": ""
+  },
+  "traits": [
+    { "name": "Autorité naturelle", "intensity": 9 },
+    { "name": "Franchise", "intensity": 9 },
+    { "name": "Mémoire terrain", "intensity": 8 },
+    { "name": "Cynisme", "intensity": 8 }
+  ],
+  "voice": {
+    "vocabulary": "Direct, brut, sans filtre. Langage du bar et de la rue.",
+    "register": "Familier, percutant. Ne mâche pas ses mots.",
+    "verbalTics": [],
+    "examplePhrases": []
+  },
+  "arc": [],
+  "notes": "Archétype+ : Observateur, Roi, Révélateur de vérité. Archétype- : Déni incarné, Saboteur, Tyran.\nRapport au pouvoir : Cherche. Rapport à la violence : Théorique.\nStatut : Équipe interne.\n\nElle est la réalité économique que tout le monde ignore. Ni la vision du père ni les tableaux de Lucia ne comptent si le bar ferme.",
+  "createdAt": "2026-02-26T22:00:00.000Z",
+  "updatedAt": "2026-02-26T22:00:00.000Z"
+}

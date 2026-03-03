@@ -1,0 +1,134 @@
+[
+  {
+    "id": "lucia-tony",
+    "characterA": "lucia",
+    "characterB": "tony",
+    "type": "famille",
+    "label": "Père vs Fille — Instinct vs Structure",
+    "power": 2,
+    "trust": 4,
+    "tension": 9,
+    "notes": "Conflit majeur de la série. Un homme qui a bâti son pouvoir sur l'instinct, la réputation et la peur face à une femme qui comprend que le pouvoir moderne repose sur la structure, l'anticipation et la maîtrise des systèmes. Ce conflit n'est pas seulement générationnel, il est philosophique : le pouvoir doit-il être incarné ou organisé ? Le père pense encore régner parce qu'il incarne l'histoire. La fille gouverne déjà parce qu'elle comprend l'avenir."
+  },
+  {
+    "id": "lucia-vieux",
+    "characterA": "lucia",
+    "characterB": "le-vieux",
+    "type": "mentor",
+    "label": "Créatrice / Créature",
+    "power": 8,
+    "trust": 5,
+    "tension": 6,
+    "notes": "Lucia sait qu'il n'est qu'une construction. Elle l'a choisi comme figure de façade, relais d'autorité, stabilisateur symbolique. S'il prend goût au rôle, il peut vouloir exister sans elle. Rapport marionnettiste/marionnette qui peut s'inverser."
+  },
+  {
+    "id": "lucia-civil",
+    "characterA": "lucia",
+    "characterB": "le-civil",
+    "type": "mentor",
+    "label": "Projet caché — Levier stratégique",
+    "power": 9,
+    "trust": 5,
+    "tension": 3,
+    "notes": "Lucia ne l'a pas choisi pour ce qu'il est, mais pour ce qu'il peut devenir. Elle voit en lui un potentiel politique, un futur pont vers le monde légal. Elle veut lui donner confiance, l'endurcir, sans le salir. Il ne doit découvrir le plan qu'à la fin de la saison 1."
+  },
+  {
+    "id": "lucia-guerriere",
+    "characterA": "lucia",
+    "characterB": "la-guerriere",
+    "type": "allié",
+    "label": "Commandement / Canalisation",
+    "power": 6,
+    "trust": 7,
+    "tension": 5,
+    "notes": "La guerrière est l'arme stratégique de Lucia. Discipline maîtrisée, efficacité, loyauté. Mais si elle est mal gérée, elle devient incontrôlable. Lucia doit canaliser, pas déclencher. L'arc S1 : la transformer de pure arme en force régulée, apprendre le discernement plutôt que l'obéissance mécanique."
+  },
+  {
+    "id": "lucia-genie",
+    "characterA": "lucia",
+    "characterB": "le-genie-fou",
+    "type": "allié",
+    "label": "Stimulation / Contrôle — Variable incontrôlable",
+    "power": 3,
+    "trust": 4,
+    "tension": 7,
+    "notes": "Seul profil que Lucia ne contrôle pas totalement. Elle doit alterner pression et liberté. Le génie est un catalyseur de tension, une variable incontrôlable. Il peut optimiser le système ou le faire exploser par maladresse. Question majeure : quand prend-il conscience de son pouvoir sur Lucia ?"
+  },
+  {
+    "id": "lucia-traficante",
+    "characterA": "lucia",
+    "characterB": "el-traficante",
+    "type": "rival",
+    "label": "Fascination / Projection",
+    "power": 4,
+    "trust": 3,
+    "tension": 8,
+    "notes": "Il voit en Lucia tout ce qu'il aurait dû être. Fascination/projection/amour symbolique. Elle a vu en lui une intelligence stratégique et une compréhension des flux. Elle veut corriger son impulsivité et son ego fragile. Tension permanente entre ce qu'elle représente et ce qu'il veut devenir."
+  },
+  {
+    "id": "guerriere-civil",
+    "characterA": "la-guerriere",
+    "characterB": "le-civil",
+    "type": "neutre",
+    "label": "Arc amoureux lent — Du mépris au respect",
+    "power": 8,
+    "trust": 3,
+    "tension": 5,
+    "notes": "Pas de romantisme immédiat. Du mépris initial (elle le voit comme faible), puis du respect progressif (il est le seul à réagir normalement à la violence). Attraction lente, tardive. Elle représente tout ce qui l'intimide. Il est le seul qui peut la faire s'ouvrir émotionnellement."
+  },
+  {
+    "id": "genie-civil",
+    "characterA": "le-genie-fou",
+    "characterB": "le-civil",
+    "type": "allié",
+    "label": "Clé OFF — Acceptation sans jugement",
+    "power": 0,
+    "trust": 8,
+    "tension": 1,
+    "notes": "Le Civil est la clé OFF du Génie. Le seul qui peut le calmer. Il ne le juge pas, ne cherche pas à le corriger, l'accepte sans attente. Si ce lien disparaît, le Génie devient instable et potentiellement destructeur. Le Génie est plus affecté par cette présence qu'il ne le comprend — son secret."
+  },
+  {
+    "id": "traficante-civil",
+    "characterA": "el-traficante",
+    "characterB": "le-civil",
+    "type": "rival",
+    "label": "Jalousie implicite",
+    "power": 7,
+    "trust": 2,
+    "tension": 6,
+    "notes": "Le trafiquant envie la capacité du Civil à être aimé naturellement. Jalousie implicite. Le Civil fragilise la relation entre Lucia et le trafiquant par sa simple existence."
+  },
+  {
+    "id": "vieux-tony",
+    "characterA": "le-vieux",
+    "characterB": "tony",
+    "type": "famille",
+    "label": "Miroir déformant du pouvoir",
+    "power": -6,
+    "trust": 5,
+    "tension": 5,
+    "notes": "Le Vieux est le miroir déformant du boss. Il met en danger la légitimité réelle du boss par sa façade de parrain. Peut dialoguer réellement avec le boss vieillissant — seul pont entre l'ancien monde et la mutation voulue par Lucia."
+  },
+  {
+    "id": "guerriere-genie",
+    "characterA": "la-guerriere",
+    "characterB": "le-genie-fou",
+    "type": "neutre",
+    "label": "Deux inadaptés, deux logiques",
+    "power": 0,
+    "trust": 4,
+    "tension": 4,
+    "notes": "Deux socialement inadaptés pour des raisons opposées : elle par le trauma, lui par le câblage. Peuvent se comprendre dans l'efficacité et le silence. La guerrière est le danger brut que le génie évite."
+  },
+  {
+    "id": "traficante-vieux",
+    "characterA": "el-traficante",
+    "characterB": "le-vieux",
+    "type": "rival",
+    "label": "Instinct imprévisible vs Prudence extrême",
+    "power": 3,
+    "trust": 2,
+    "tension": 5,
+    "notes": "Le trafiquant est impulsif, le vieux est prudent. Le vieux évite le trafiquant par instinct de survie. Le trafiquant méprise la prudence comme de la lâcheté."
+  }
+]

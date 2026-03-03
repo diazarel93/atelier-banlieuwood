@@ -1,0 +1,223 @@
+{
+  "id": "Dr2pTi4ZRK",
+  "projectSlug": "le-projet",
+  "module": 1,
+  "level": "college",
+  "chapters": [
+    {
+      "chapterId": "idea",
+      "status": "in-progress",
+      "steps": [
+        {
+          "stepId": "idea_q1",
+          "question": "Quel genre de film veux-tu ecrire ? Pourquoi ce genre te parle ?",
+          "answer": "science fiction",
+          "feedback": "Bonne reponse ! Continue a developper tes idees avec encore plus de details.",
+          "score": 2,
+          "status": "validated",
+          "answeredAt": "2026-02-27T01:53:43.173Z",
+          "exchanges": [
+            {
+              "answer": "science fiction",
+              "feedback": "Bonne reponse ! Continue a developper tes idees avec encore plus de details.",
+              "score": 2,
+              "followUp": null,
+              "answeredAt": "2026-02-27T01:53:43.173Z"
+            }
+          ],
+          "currentFollowUp": null
+        },
+        {
+          "stepId": "idea_q2",
+          "question": "Pitch-moi ton histoire en 2-3 phrases. Qu'est-ce qui se passe ?",
+          "answer": "julien a un probleme avec un gars dun cité",
+          "feedback": "Tu veux que Julien se venge en tapant les genoux des garçons qui l'ont volé, mais cela ne répond pas vraiment à la question. Qu'est-ce que tu veux dire par 'se venger' ? Tu veux peut-être qu'il veut se protéger ou se défendre de manière plus profonde ?",
+          "score": 2,
+          "status": "validated",
+          "answeredAt": "2026-02-27T20:09:01.241Z",
+          "exchanges": [
+            {
+              "answer": "julien a un probleme avec un gars dun cité",
+              "feedback": "Tu me dis que Julien a un problème avec un garçon d'une cité. C'est intéressant parce que cela implique une confrontation sociale ou conflictuelle, ce qui pourrait créer de la tension pour le spectateur. Est-ce que tu veux dire qu'il s'agit d'un conflit personnel ou plus large, lié à la vie dans la cité ?\n",
+              "score": 1,
+              "criteria": {
+                "pertinence": 1,
+                "profondeur": 1,
+                "creativite": 1
+              },
+              "followUp": "sous-question guidee",
+              "answeredAt": "2026-02-27T19:30:07.180Z"
+            },
+            {
+              "answer": "non quelqun lui a volé son velo il veut le recuperer car il appartient a son petit s-frere qui est malade",
+              "feedback": "Je n'ai pas pu analyser ta reponse en detail. Essaie de developper davantage — donne des exemples concrets et explique le pourquoi de tes choix.",
+              "score": 1,
+              "followUp": "Peux-tu reprendre ta reponse avec plus de details ? Donne-moi au moins 2-3 phrases qui expliquent ton idee.",
+              "answeredAt": "2026-02-27T19:31:24.311Z"
+            },
+            {
+              "answer": "un garcon a vole le velo de julen. lais ce velo appartenait a son petit frere",
+              "feedback": "Je n'ai pas pu analyser ta reponse en detail. Essaie de developper davantage — donne des exemples concrets et explique le pourquoi de tes choix.",
+              "score": 1,
+              "followUp": "Peux-tu reprendre ta reponse avec plus de details ? Donne-moi au moins 2-3 phrases qui expliquent ton idee.",
+              "answeredAt": "2026-02-27T19:32:08.455Z"
+            },
+            {
+              "answer": "julien sest fait volé son velo. mais ce velo apaprtenait a son petit frere. et qui plus est malade",
+              "feedback": "Tu me dis que Julien a été volé son vélo, mais ce qui est intéressant, c'est que le vélo appartient à son petit frère, qui est malade. Cela crée une faille dans l'histoire, un conflit personnel et émotionnel pour Julien. Il ne peut pas seulement se concentrer sur la récupération de son vélo, mais doit également penser à sa sœur malade. C'est comme si le réalisateur disait : « Regardez non seulement ce qui se passe avec Julien et son vélo, mais aussi les conséquences de cette action sur sa vie personnelle », comme dans un film comme « Hunger Games » où la situation est encore plus dramatique.",
+              "score": 2,
+              "criteria": {
+                "pertinence": 2,
+                "profondeur": 1,
+                "creativite": 2
+              },
+              "followUp": "Qu'est-ce que tu veux faire ensuite avec Julien ?",
+              "answeredAt": "2026-02-27T19:37:49.789Z"
+            },
+            {
+              "answer": "il veuut se venger prepare une bagarre",
+              "feedback": "Tu veux que Julien se venge et prépare une bagarre. C'est intéressant parce que cela implique une confrontation physique et émotionnelle pour lui. Mais est-ce que tu veux dire qu'il va vraiment se venger ou qu'il va trouver une autre solution ? Quel serait le résultat de cette confrontation pour Julien ?",
+              "score": 2,
+              "criteria": {
+                "pertinence": 1,
+                "profondeur": 2,
+                "creativite": 2
+              },
+              "followUp": "Qu'est-ce que tu veux dire par 'se venger' ?",
+              "answeredAt": "2026-02-27T20:07:31.447Z"
+            },
+            {
+              "answer": "taper le sgens qui lont volé",
+              "feedback": "Tu veux que Julien se venge en tapant les genoux des garçons qui l'ont volé, mais cela ne répond pas vraiment à la question. Qu'est-ce que tu veux dire par 'se venger' ? Tu veux peut-être qu'il veut se protéger ou se défendre de manière plus profonde ?",
+              "score": 1,
+              "criteria": {
+                "pertinence": 1,
+                "profondeur": 1,
+                "creativite": 2
+              },
+              "followUp": null,
+              "answeredAt": "2026-02-27T20:09:01.240Z"
+            }
+          ],
+          "currentFollowUp": null
+        },
+        {
+          "stepId": "idea_q3",
+          "question": "Quel est le THEME profond de ton histoire ? Qu'est-ce que tu veux dire au monde ?",
+          "answer": "il ne faut pas volé les velo de sgens",
+          "feedback": "Tu veux dire que la question du vol de vélo est un symbole pour quelque chose de plus profond, comme la richesse des ressources ou l'exploitation des gens les moins avertis. C'est une idée qui pourrait être développée davantage pour donner du sens à ton histoire.",
+          "score": 3,
+          "status": "validated",
+          "answeredAt": "2026-02-27T20:10:16.229Z",
+          "exchanges": [
+            {
+              "answer": "il ne faut pas volé les velo de sgens",
+              "feedback": "Tu veux dire que la question du vol de vélo est un symbole pour quelque chose de plus profond, comme la richesse des ressources ou l'exploitation des gens les moins avertis. C'est une idée qui pourrait être développée davantage pour donner du sens à ton histoire.",
+              "score": 3,
+              "criteria": {
+                "pertinence": 2,
+                "profondeur": 1,
+                "creativite": 2
+              },
+              "followUp": null,
+              "answeredAt": "2026-02-27T20:10:16.229Z"
+            }
+          ],
+          "currentFollowUp": null
+        },
+        {
+          "stepId": "idea_q4",
+          "question": "Qu'est-ce que tu penses de l'idée de faire correspondre le vol de vélo à une menace plus large,",
+          "answer": "tu veux dire quoi par la?",
+          "feedback": "Tu veux savoir si tu penses que le vol de vélo pourrait être lié à une menace plus large, comme une organisation criminelle ou un problème social. C'est interessant parce que cela ajouterait une couche de profondeur à l'histoire et rendrait le crime moins isolé.",
+          "score": 1,
+          "status": "pending",
+          "answeredAt": null,
+          "exchanges": [
+            {
+              "answer": "tu veux dire quoi par la?",
+              "feedback": "Tu veux savoir si tu penses que le vol de vélo pourrait être lié à une menace plus large, comme une organisation criminelle ou un problème social. C'est interessant parce que cela ajouterait une couche de profondeur à l'histoire et rendrait le crime moins isolé.",
+              "score": 1,
+              "criteria": {
+                "pertinence": 2,
+                "profondeur": 1,
+                "creativite": 2
+              },
+              "followUp": "Par exemple, dans Hunger Games, la capture de victimes est liée à un système plus large de oppression. Et toi ?",
+              "answeredAt": "2026-02-27T20:10:35.805Z"
+            }
+          ],
+          "currentFollowUp": "Par exemple, dans Hunger Games, la capture de victimes est liée à un système plus large de oppression. Et toi ?"
+        }
+      ],
+      "totalScore": 7,
+      "maxScore": 15,
+      "badge": null
+    },
+    {
+      "chapterId": "hero",
+      "status": "locked",
+      "steps": [],
+      "totalScore": 0,
+      "maxScore": 24,
+      "badge": null
+    },
+    {
+      "chapterId": "adversary",
+      "status": "locked",
+      "steps": [],
+      "totalScore": 0,
+      "maxScore": 21,
+      "badge": null
+    },
+    {
+      "chapterId": "world",
+      "status": "locked",
+      "steps": [],
+      "totalScore": 0,
+      "maxScore": 18,
+      "badge": null
+    },
+    {
+      "chapterId": "links",
+      "status": "locked",
+      "steps": [],
+      "totalScore": 0,
+      "maxScore": 15,
+      "badge": null
+    },
+    {
+      "chapterId": "conflict",
+      "status": "locked",
+      "steps": [],
+      "totalScore": 0,
+      "maxScore": 15,
+      "badge": null
+    },
+    {
+      "chapterId": "journey",
+      "status": "locked",
+      "steps": [],
+      "totalScore": 0,
+      "maxScore": 15,
+      "badge": null
+    }
+  ],
+  "totalScore": 7,
+  "maxScore": 123,
+  "currentChapter": "idea",
+  "streak": 1,
+  "bestStreak": 1,
+  "gameConfig": {
+    "objective": "ecriture",
+    "genre": "Policier",
+    "audience": "Jeunes adultes (16-25 ans)",
+    "protagonist": "julien",
+    "theme": "embrouille",
+    "location": "st denis",
+    "teamSize": 1,
+    "constraints": ""
+  },
+  "createdAt": "2026-02-27T01:53:19.974Z",
+  "updatedAt": "2026-02-27T20:10:35.813Z"
+}

@@ -1,0 +1,48 @@
+{
+  "id": "el-traficante",
+  "projectSlug": "le-projet",
+  "name": "El Traficante",
+  "age": "30-35 ans",
+  "occupation": "Responsable des flux et deals illégaux",
+  "role": "protagoniste",
+  "color": "#ef4444",
+  "avatar": "",
+  "backstory": "Fils d'un chef de réseau criminel international.\n\nEnfance dans un environnement structuré, organisé, hiérarchisé. La violence n'était pas spectaculaire, mais intégrée au fonctionnement.\n\nPréparé dès jeune à reprendre les affaires familiales. Formation en gestion, négociation, stratégie.\n\nMais trop nerveux. Trop sensible à la critique. Trop réactif.\n\nA commis des erreurs. A perdu en crédibilité dans sa propre famille.\n\nEst devenu un contre-exemple interne.\n\nA quitté le cercle familial après une série d'échecs.\n\nQuand il apprend que Lucia recrute, il y voit :\n– une seconde chance\n– une figure capable de comprendre son parcours\n– une possibilité de redevenir légitime\n\nIl pense qu'elle peut canaliser son potentiel. Il veut prouver qu'il peut redevenir un leader.",
+  "psychology": {
+    "goal": "Redevenir légitime. Redevenir un leader crédible. Être vu comme l'égal de Lucia.",
+    "need": "Effacer l'humiliation de son rejet familial — prouver sa valeur au-delà du nom",
+    "flaw": "Cynisme, Déshumanisation, Ego fragile — impulsivité, besoin excessif de validation, confusion entre honneur et reconnaissance",
+    "fear": "Être définitivement catalogué comme incapable. Ne jamais être pris au sérieux. Finir seul et inutile.",
+    "secret": "Sa famille ne l'a pas envoyé en mission. Elle l'a écarté."
+  },
+  "traits": [
+    { "name": "Ambition", "intensity": 9 },
+    { "name": "Réseau", "intensity": 7 },
+    { "name": "Sens du profit", "intensity": 8 },
+    { "name": "Intelligence stratégique", "intensity": 7 },
+    { "name": "Instabilité émotionnelle", "intensity": 8 },
+    { "name": "Intensité", "intensity": 9 }
+  ],
+  "voice": {
+    "vocabulary": "Langage de réunion stratégique mêlé d'explosions émotionnelles. Vocabulaire business et criminel international. Parle comme quelqu'un habitué aux négociations de haut niveau mais dont l'émotion le trahit.",
+    "register": "Soutenu à courant. Alterne entre calme convaincant et nervosité débordante. Parle trop vite sous pression. Cherche à surperformer verbalement.",
+    "verbalTics": [
+      "Tu me respectes ou quoi ?",
+      "Moi je connais le business",
+      "C'est pas comme ça qu'on fait"
+    ],
+    "examplePhrases": [
+      "Le monde appartient à ceux qui osent prendre.",
+      "Le respect ne s'hérite pas, il se prouve.",
+      "La morale est un luxe pour ceux qui ont déjà gagné."
+    ]
+  },
+  "arc": [
+    { "act": 1, "description": "Arrive dans le clan de Lucia comme postulant sérieux mais instable. Héritier déchu qui voit une seconde chance. Tente de prouver sa valeur, alterne entre compétence stratégique réelle et explosions émotionnelles. Fascination pour Lucia qui représente tout ce qu'il aurait dû être.", "state": "Ambition fiévreuse, instabilité, besoin de validation" },
+    { "act": 2, "description": "Monte en tension. Son ego fragile entre en collision avec la hiérarchie du groupe. L'humiliation publique ou la comparaison avec son père peuvent le faire vriller. Sa relation avec Lucia oscille entre fascination, projection amoureuse et rivalité implicite.", "state": "Escalade émotionnelle, danger croissant, oscillation entre contrôle et perte de contrôle" },
+    { "act": 3, "description": "Point de rupture. Doit choisir entre accepter son rôle sous Lucia ou tenter une prise de pouvoir par blessure d'ego. Risque de violence incontrôlée ou de trahison. La question reste ouverte : peut-il devenir un leader stable ou restera-t-il un héritier frustré ?", "state": "Crise d'identité, potentiel de destruction ou de rédemption" }
+  ],
+  "notes": "ZONE DE TENSION :\n- Contradiction centrale : Il veut être un leader respecté → mais agit souvent pour être validé.\n- Secret actif : Sa famille ne l'a pas envoyé en mission. Elle l'a écarté.\n- Axe de relation dominant : Lucia. Fascination / projection / amour symbolique. Elle représente tout ce qu'il aurait dû être.\n- Limite absolue : Son honneur. Quand cette limite est menacée, il cesse d'être rationnel.\n- Masque social : Le businessman sûr de lui.\n- Réaction en crise : Impulsivité verbale. Possibilité d'agression.\n- Potentiel de dérive : Violence incontrôlée. Trahison par blessure d'ego. Tentative de prise de pouvoir.\n\nFONCTION DANS L'HISTOIRE :\n- Rôle structurel : Catalyseur de tension. Révélateur d'ego. Il teste les limites de Lucia. Il met en danger la stabilité. Indispensable — sans lui, il manque le miroir masculin déchu de Lucia.\n- Fonction dans les épisodes : Révéler les failles. Introduire du comique noir. Introduire tension émotionnelle. Acteur dangereux. Provoque montée de tension et risque de débordement.\n- Ce qu'il révèle du système : Le système détruit ses propres héritiers. Non, il n'est pas preuve que le système fonctionne. Oui, il prouve qu'il est pourri, absurde ou violent.\n- Point de vue incarné : Le respect ne s'hérite pas, il se prouve. Un homme doit être à la hauteur du nom qu'il porte. La faiblesse est une faute morale. Vision pragmatique, violente et morale.\n- À travers lui, la série dit que : Grandir dans un clan forge une identité avant même d'avoir choisi qui l'on veut être. L'honneur transmis par un père peut devenir une prison. On peut être né pour régner… et ne jamais se sentir légitime. La pression d'être \"le digne fils de\" peut détruire plus sûrement que l'ennemi.\n- Ce qu'il fait exploser : Lucia (projection amoureuse et rivalité implicite). L'équilibre hiérarchique du groupe. Menace l'autorité calme de Lucia et la cohésion du groupe sous pression. Quand il va trop loin : il transforme un test en crise réelle, pousse les autres à se radicaliser.\n- Miroir déformant : Lucia (héritiers d'empires, trajectoires opposées). Contre-exemple pour les autres postulants : ce qu'on devient quand l'ego domine la stratégie. Bayou (s'il perd sa stabilité) et la guerrière (si elle confond honneur et impulsivité) pourraient devenir comme lui.\n- Coût : Un risque permanent de débordement. Une tension constante. Lucia souffre (elle doit le contenir). Le groupe souffre (instabilité émotionnelle). Rend impossible la sérénité et la confiance totale.\n- Sans lui : Le miroir masculin déchu de Lucia et la tension d'ego la plus dangereuse disparaissent. Le thème de la légitimité héritée et la question du père et du nom deviennent moins forts. La gestion du pouvoir par Lucia et la montée en danger interne deviennent trop simples.\n\nIDÉES :\n- Il regarde les gens dans les yeux mais de manière intense.\n- Héritier déchu à fort potentiel. Postulant sérieux mais instable.\n- Source de tension hiérarchique. Peut devenir dangereux s'il se sent humilié.\n- Ce que Lucia a vu en lui : Intelligence stratégique réelle. Capacité à comprendre les flux d'argent et d'influence. Autorité naturelle. Expérience d'un système criminel structuré à grande échelle.\n- Ce qu'elle veut corriger : Impulsivité. Besoin excessif de validation. Ego fragile. Confusion entre honneur et reconnaissance.\n- Axes à creuser : Son attirance pour Lucia est-elle stratégique, affective ou symbolique ? Est-il prêt à changer ou veut-il juste retrouver un statut ? Peut-il devenir un leader stable ou restera-t-il un héritier frustré ? À quel moment exact il vrille ?\n\nESSENCE :\n- Qui est-il vraiment : Un héritier déchu qui tente de prouver qu'il mérite le trône qu'on lui a retiré. Il ne veut pas seulement réussir. Il veut effacer l'humiliation.\n- Vision du monde : Le monde appartient à ceux qui osent prendre. La faiblesse est impardonnable. Mais il sait, au fond, qu'il est fragile.\n- Ce qu'il méprise : La médiocrité. Les petits voyous sans vision. Les héritiers qui ne travaillent pas.\n- Ce qu'il respecte : Le contrôle. La discipline mentale. Les leaders calmes. La lucidité stratégique.\n- Ce qu'il ne dira jamais : Qu'il a été rejeté par sa propre famille. Qu'il doute de lui. Qu'il a peur d'être irrécupérable.\n- Sacrifie sans hésiter : Son confort, sa réputation actuelle, sa loyauté temporaire.\n- Ne sacrifiera jamais : Son honneur. Sa dignité face au groupe.\n\nRÉACTIONS :\n- Sous pression : Devient nerveux. Parle trop vite. Cherche à surperformer.\n- Face à l'humiliation : Explose intérieurement. Peut devenir dangereux. Risque de vriller publiquement.\n- Face à l'autorité : Respecte si l'autorité est forte. Déteste si elle est floue.\n- Face à quelqu'un plus faible : Peut écraser pour se rassurer.\n- Face à quelqu'un plus dangereux : Tente d'impressionner. Cherche à prouver qu'il n'a pas peur.\n- Face au danger : Réagit vite. Trop vite parfois.\n- Face au chaos : S'excite. Peut soit prendre le contrôle… soit perdre totalement ses moyens.\n- En amour : irrationnel.\n\nPLACE DANS LE GROUPE :\n- Écrase les hésitants et les profils trop mous.\n- Évite ceux qui le lisent trop bien.\n- Respecte Lucia et le boss comme figure paternelle.\n- Pourrait trahir celui qui le ridiculise publiquement.\n\nCE QUE LE PERSONNAGE RÉVÈLE DU MONDE :\n- Du pouvoir : Le pouvoir se mérite. Mais il peut se perdre en un instant.\n- De la violence : La violence est un outil. Pas une émotion.\n- De la normalité : La normalité est une illusion sociale.\n- De la morale : La morale est un luxe pour ceux qui ont déjà gagné.\n- L'héritage est un poison s'il n'est pas assumé.\n\nDÉCLENCHEUR DE DANGER NARRATIF : Humiliation publique. Mise en doute de sa légitimité. Comparaison avec son père.",
+  "createdAt": "2026-02-26T21:00:00.000Z",
+  "updatedAt": "2026-02-26T21:00:00.000Z"
+}

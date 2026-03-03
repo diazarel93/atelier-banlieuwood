@@ -1,0 +1,42 @@
+[
+  {
+    "id": "bar-familial",
+    "name": "Le bar familial",
+    "description": "QG historique du clan. Bar de quartier en facade, centre nevralgique de l'organisation en realite. Menace de fermer. C'est ici que Lucia installe son 'bureau' et lance la restructuration. La tension dramatique nait du jeu, des dialogues et des confrontations humaines dans ce lieu central.",
+    "type": "interieur",
+    "atmosphere": "Vieux bois, neons fatigues, photos d'une epoque revolue. Le passe transpire des murs. Lucia y installe un ecran blanc et un videoprojecteur -- choc des mondes. Le decor ancien contraste avec les outils modernes de management.",
+    "notes": "Lieu central et recurrent de la serie. Symbolise le conflit ancien monde vs nouveau monde. Decor principal qui limite les couts logistiques tout en conservant une identite visuelle forte. Le pere y regne encore symboliquement, mais Lucia en redefinit l'usage."
+  },
+  {
+    "id": "salle-recrutement",
+    "name": "La salle de recrutement / tests",
+    "description": "Ancienne arriere-salle du bar transformee en salle d'entretien corporate. Table, chaises, paperboard, camera. L'absurdite visuelle resume toute la serie. C'est ici que se deroulent les tests imagines par Lucia : recrutement, negociation, gestion de crise, loyaute, leadership.",
+    "type": "interieur",
+    "atmosphere": "Froid, propre, artificiel -- en contraste total avec le reste du bar. Open space criminel. Le cadre semble professionnel mais le contenu est tout sauf normal. L'eclairage clinique et le mobilier cheap tentent d'imiter un vrai bureau RH.",
+    "notes": "Lieu des 'entretiens d'embauche' et des tests episodiques. Chaque episode s'articule autour d'un dispositif dans cet espace. Les masques tombent ici : ego, peur, ambition, instinct de survie. Le test officiel n'est souvent qu'un pretexte -- le vrai test est invisible."
+  },
+  {
+    "id": "quartier-territoire",
+    "name": "Le quartier / territoire",
+    "description": "Territoire historique du clan. Chaque rue a une histoire, chaque coin un deal. Le Terrain le connait par coeur. Pour Lucia, c'est un 'perimetre operationnel'. Les gens se connaissent, se surveillent, se protegent ou se trahissent.",
+    "type": "exterieur",
+    "atmosphere": "Beton, vie de rue, tension latente. Un monde ou la reputation se construit a vue, ou la parole donnee et l'honneur comptent encore. Le territoire incarne l'ancien systeme : codes implicites, loyaute affective, memoire du milieu.",
+    "notes": "Le territoire du Terrain. Contraste avec le monde corporate de Lucia. Lieu ou les personnages secondaires (policiers, clients, anciens membres du clan, partenaires douteux) agissent comme catalyseurs. La serie peut exploser vers l'exterieur a tout moment via ce decor."
+  },
+  {
+    "id": "bureau-lucia",
+    "name": "Le bureau de Lucia",
+    "description": "Espace que Lucia s'est amenage dans le bar ou a proximite pour piloter sa restructuration. C'est son poste de commandement strategique, ou elle orchestre les tests, analyse les resultats, et planifie les prochaines etapes. Un espace qui incarne sa vision : tout est mesurable, tout est optimise.",
+    "type": "interieur",
+    "atmosphere": "Minimaliste, organise, fonctionnel. Ecrans, tableaux de bord, notes. Tout respire le controle et la methode. Un ilot de rationalite au milieu du chaos du clan. L'ordre apparent masque une tension permanente.",
+    "notes": "Lieu de reflexion et de manipulation. Lucia y elabore ses strategies globales. C'est ici qu'on comprend que chaque tension sert un plan plus large : elle ne restructure pas seulement une organisation, elle teste un modele. Le vrai projet n'est peut-etre pas le poste -- c'est la transformation complete du systeme."
+  },
+  {
+    "id": "espace-reunion",
+    "name": "L'espace de reunion",
+    "description": "Zone du bar ou les reunions de groupe se tiennent. Mi-salle de conseil d'administration, mi-arriere-boutique de dealer. C'est ici que les candidats sont mis en concurrence, que les alliances se forment et se defont, que les classements invisibles s'installent.",
+    "type": "interieur",
+    "atmosphere": "Tendue, chargee. L'air est lourd des rivalites. Chaque place assise est un positionnement strategique. La competition permanente transforme progressivement le groupe en champ de bataille silencieux.",
+    "notes": "Lieu de confrontation collective. Les comparaisons sont parfois explicites, parfois insinuees. La performance devient une arme, la solidarite un risque. Le cadre est volontairement instable : les regles changent, les objectifs se deplacent, les criteres evoluent."
+  }
+]

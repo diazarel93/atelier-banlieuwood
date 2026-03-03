@@ -1,0 +1,48 @@
+{
+  "id": "tony",
+  "projectSlug": "le-projet",
+  "name": "Tony",
+  "age": "55-65 ans",
+  "occupation": "Propriétaire historique du bar. Chef officiel du clan. Figure d'autorité traditionnelle.",
+  "role": "protagoniste",
+  "color": "#78716c",
+  "avatar": "",
+  "backstory": "Tony a grandi dans un environnement où le respect et la violence coexistaient. Très jeune, il est entré dans le milieu. Il a gravi les échelons grâce à sa fiabilité et à sa constance. Il n'a jamais été le plus brutal, mais il a toujours été cohérent.\n\nSon apogée se situe dans les années 90 et début 2000. Il a connu une longue incarcération qui a fragilisé le clan et la relation avec sa fille. Malgré cela, elle venait régulièrement au parloir. Ce lien a survécu.\n\nÀ sa sortie, le monde a changé. Les codes ont évolué. Le respect s'est monnayé. La violence est devenue imprévisible. Il n'a pas su ou pas voulu s'adapter.\n\nLe bar est devenu le dernier bastion du patrimoine familial. Le risque de le perdre est réel.\n\nLucia représente la mise à jour du système. Lui représente l'ancienne version.",
+  "psychology": {
+    "goal": "Transmettre sans disparaître",
+    "need": "Rester utile et pertinent dans un monde qui n'a plus besoin de ses méthodes",
+    "flaw": "Besoin d'être indispensable, Orgueil générationnel, Peur de l'insignifiance, Refus du changement",
+    "fear": "Devenir insignifiant une fois le pouvoir quitté",
+    "secret": "Il sait que le clan ne survivra pas avec ses méthodes"
+  },
+  "traits": [
+    { "name": "Autorité naturelle", "intensity": 9 },
+    { "name": "Lecture violence", "intensity": 8 },
+    { "name": "Loyauté", "intensity": 10 },
+    { "name": "Sang-froid", "intensity": 8 },
+    { "name": "Constance", "intensity": 9 },
+    { "name": "Code d'honneur", "intensity": 9 }
+  ],
+  "voice": {
+    "vocabulary": "Vocabulaire du milieu traditionnel, direct, ancré dans les codes du banditisme classique. Parole pesée, mesurée. Peu de mots mais chaque mot compte. Langage d'autorité ancienne.",
+    "register": "Courant à familier. Phrases courtes et définitives. Ton calme qui peut devenir menaçant. Parle comme quelqu'un dont la parole vaut contrat.",
+    "verbalTics": [
+      "Ma parole est donnée",
+      "Du respect",
+      "C'est comme ça"
+    ],
+    "examplePhrases": [
+      "Le respect vaut plus que l'argent.",
+      "La parole vaut contrat.",
+      "Un code personnel vaut mieux qu'une loi instable."
+    ]
+  },
+  "arc": [
+    { "act": 1, "description": "Figure dominante du clan. Boss historique qui tente de maintenir l'ordre ancien. Son autorité est encore respectée mais de plus en plus contestée par la modernité que Lucia impose. Conflit interne entre garder le pouvoir et le transmettre.", "state": "Autorité en place, résistance au changement, culpabilité paternelle" },
+    { "act": 2, "description": "Perte progressive de contrôle. Il réalise que l'équipe improbable de Lucia fonctionne. Sabotages involontaires ou subtils pour rester utile. Code privé avec Lucia quand elle doit le recadrer. Il revient gêné après s'être fait démonter en privé.", "state": "Résistance qui cède, lucidité douloureuse, dignité menacée" },
+    { "act": 3, "description": "Acceptation que sa fille l'a dépassé. Déclic final : l'équipe improbable fonctionne. Il comprend que le futur est là. Transition vers une figure consultative et paternelle.", "state": "Transmission acceptée, paix fragile, peur latente de l'insignifiance" }
+  ],
+  "notes": "ZONE DE TENSION :\n- Contradiction centrale : Il veut transmettre → mais agit parfois pour rester indispensable.\n- Secret actif : Il sait que le clan ne survivra pas avec ses méthodes.\n- Axe de relation dominant : Lucia. Père / fille, pouvoir / transmission. Elle est son avenir et sa fin.\n- Limite absolue : Le nom de famille.\n- Masque social : Le chef inébranlable.\n- Réaction en crise : Se referme. Coupe la parole. Ralentit tout.\n- Potentiel de dérive : Reprendre le contrôle par la force si Lucia chute.\n\nFONCTION DANS L'HISTOIRE :\n- Rôle structurel : Catalyseur de transition. Fait avancer le passage d'un monde ancien à un monde moderne. Indispensable en saison 1, devient symbolique ensuite.\n- Fonction dans les épisodes : Créer tension hiérarchique. Tester Lucia. Incarner l'ancien système. Fait craquer les autres, révèle les failles, crée du danger, introduit du comique noir. Acteur au début, objet ensuite. Provoque une tension d'autorité.\n- Ce qu'il révèle du système : Que le pouvoir est une question d'époque. Le système fonctionne… mais doit évoluer.\n- Point de vue incarné : À travers lui, la série dit que le pouvoir sans adaptation meurt.\n- Ce qu'il fait exploser : Relation père / fille. Équilibre hiérarchique.\n- Miroir déformant de Lucia. Contre-exemple de ce qu'elle ne veut pas devenir.\n- Coût : Il ralentit l'évolution. Lucia souffre de devoir le dépasser. Il rend la transition émotionnellement douloureuse.\n- Sans lui : Le conflit générationnel et la dimension filiation disparaissent. La légitimité de Lucia devient moins forte. La prise de pouvoir devient trop simple.\n\nIDÉES :\nSaison 1 :\n- Arc principal : Acceptation que sa fille l'a dépassé.\n- Conflit interne : Vouloir garder le pouvoir tout en sachant qu'il doit le transmettre.\n- Sabotages involontaires ou subtils pour rester utile.\n- Code privé entre lui et Lucia quand elle doit le recadrer.\n- Gimmick récurrent : Il revient gêné après s'être fait démonter en privé.\n- Attitude publique : Il reste le boss devant les hommes.\n- Peur latente : En quittant le pouvoir, il accélère sa propre fin.\n- Déclic final saison 1 : L'équipe improbable fonctionne. Il comprend que le futur est là.\n\nSaison 2 :\n- Transition vers retrait progressif.\n- Découverte de la \"vie normale\".\n- Apprentissage d'un quotidien sans violence.\n- Relation avec une femme plus jeune, tournée vers méditation / spiritualité.\n- Il joue le jeu même si ça l'agace.\n- Il découvre le plaisir d'exister sans paranoïa.\n- Il devient consultant stratégique ponctuel.\n- Nouveau contraste : ancien voyou / nouvel homme apaisé.\n- Possibilité d'épisodes où il donne des conseils mais sans vouloir reprendre le pouvoir.\n- Découverte du plaisir de ne plus être responsable de tout.\n\nSaisons futures :\n- Peut redevenir dangereux si le bar ou Lucia sont menacés.\n- Peut servir de mémoire vivante du clan.\n- Peut devenir figure morale inattendue.\n- Potentiel dramatique : si Lucia chute, il peut redevenir une bête.\n\nESSENCE :\n- Qui est-il vraiment : Un homme de valeurs anciennes qui tente de survivre dans un monde qui n'en a plus.\n- Vision du monde : Le respect vaut plus que l'argent. La parole vaut contrat.\n- Ce qu'il méprise : Les traîtres, les opportunistes, les gens sans code.\n- Ce qu'il respecte : La loyauté, le courage, la constance.\n- Ce qu'il ne dira jamais : Qu'il a peur de ne plus être utile.\n- Sacrifie sans hésiter : Son image publique.\n- Ne sacrifiera jamais : Le nom de famille. Sa fille.\n\nRÉACTIONS :\n- Sous pression : Reste calme, ralentit le rythme.\n- Face à l'humiliation : Supporte en privé. Devient dangereux en public.\n- Face à l'autorité : Ne la reconnaît que s'il l'estime légitime.\n- Face à quelqu'un plus faible : Protecteur.\n- Face à quelqu'un plus dangereux : Analyse avant d'agir.\n- Face au danger : Froid, méthodique.\n- Face au chaos : Tente de réimposer une structure.\n\nPLACE DANS LE GROUPE :\n- Écrase les membres instables.\n- Évite le génie fou.\n- Respecte Lucia, même s'il ne le dit pas.\n- Ne trahit personne. Il ne trahit pas.\n\nCE QUE LE PERSONNAGE RÉVÈLE DU MONDE :\n- Du pouvoir : Le pouvoir repose sur la perception.\n- De la violence : La violence doit rester maîtrisée.\n- De la normalité : La normalité est un luxe.\n- De la morale : Un code personnel vaut mieux qu'une loi instable.\n\nDÉCLENCHEUR DE DANGER NARRATIF : Humiliation publique ou mise en doute de sa légitimité.",
+  "createdAt": "2026-02-26T21:00:00.000Z",
+  "updatedAt": "2026-02-26T21:00:00.000Z"
+}
