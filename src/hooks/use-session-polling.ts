@@ -108,6 +108,8 @@ export interface SessionState {
     timerEndsAt?: string | null;
     mode: "guided" | "free";
     sharingEnabled?: boolean;
+    broadcastMessage?: string | null;
+    broadcastAt?: string | null;
   };
   situation: {
     id: string;

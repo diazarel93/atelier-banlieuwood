@@ -204,6 +204,8 @@ export async function GET(
       timerEndsAt: session.timer_ends_at || null,
       mode: session.mode || "guided",
       sharingEnabled: session.sharing_enabled || false,
+      broadcastMessage: session.broadcast_message || null,
+      broadcastAt: session.broadcast_at || null,
     },
     situation: situation
       ? {
@@ -259,6 +261,8 @@ async function handleModule1(req: NextRequest, session: any, sessionId: string, 
     timerEndsAt: session.timer_ends_at || null,
     mode: session.mode || "guided",
     sharingEnabled: session.sharing_enabled || false,
+    broadcastMessage: session.broadcast_message || null,
+    broadcastAt: session.broadcast_at || null,
   };
 
   // ── SÉANCE 1: Positionnement (8 QCM) ──
@@ -592,6 +596,8 @@ async function handleModule2EC(req: NextRequest, session: any, sessionId: string
     timerEndsAt: session.timer_ends_at || null,
     mode: session.mode || "guided",
     sharingEnabled: session.sharing_enabled || false,
+    broadcastMessage: session.broadcast_message || null,
+    broadcastAt: session.broadcast_at || null,
   };
 
   // ── SÉANCE 1, INDEX 0: Checklist (special component) ──
@@ -945,6 +951,8 @@ async function handleModule10(req: NextRequest, session: any, sessionId: string,
     timerEndsAt: session.timer_ends_at || null,
     mode: session.mode || "guided",
     sharingEnabled: session.sharing_enabled || false,
+    broadcastMessage: session.broadcast_message || null,
+    broadcastAt: session.broadcast_at || null,
   };
 
   const baseResponse = {

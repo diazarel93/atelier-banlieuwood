@@ -37,6 +37,8 @@ interface PilotTopBarProps {
   showStudents: boolean;
   currentQuestionIndex?: number;
   totalQuestions?: number;
+  onBroadcast?: () => void;
+  onShortcuts?: () => void;
 }
 
 export function PilotTopBar({
@@ -64,6 +66,8 @@ export function PilotTopBar({
   showStudents,
   currentQuestionIndex,
   totalQuestions,
+  onBroadcast,
+  onShortcuts,
 }: PilotTopBarProps) {
   const hasTimer = timerEndsAt && new Date(timerEndsAt).getTime() > Date.now();
 
@@ -87,7 +91,7 @@ export function PilotTopBar({
             <BrandLogo />
           </Link>
           <div className="w-px h-4 bg-white/10 hidden sm:block flex-shrink-0" />
-          <span className="text-xs text-bw-muted truncate max-w-[120px]">{sessionTitle}</span>
+          <span className="text-xs text-bw-muted truncate max-w-[160px]">{sessionTitle}</span>
         </div>
 
         {/* Center: active module info */}
@@ -133,7 +137,7 @@ export function PilotTopBar({
         <div className="flex-1" />
 
         {/* Right: students, code, timer, controls */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           {/* Timer badge */}
           {hasTimer && (
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-xl bg-bw-primary/10 border border-bw-primary/20">
@@ -162,9 +166,18 @@ export function PilotTopBar({
 
           {/* QR */}
           <button onClick={onToggleQR}
-            className="hidden sm:block px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">
+            className="hidden sm:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">
             QR
           </button>
+
+          {/* Broadcast */}
+          {onBroadcast && activeModuleLabel && (
+            <button onClick={onBroadcast}
+              className="px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/10 text-[11px] cursor-pointer text-bw-muted hover:text-bw-primary transition-colors duration-200"
+              title="Message à toute la classe (B)">
+              📢
+            </button>
+          )}
 
           {/* Projection */}
           <button onClick={onOpenScreen}
@@ -194,6 +207,15 @@ export function PilotTopBar({
                 isPaused ? "bg-bw-amber/10 border-bw-amber/30 text-bw-amber" : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:text-white"
               }`}>
               {isPaused ? "Reprendre" : "Pause"}
+            </button>
+          )}
+
+          {/* Shortcuts */}
+          {onShortcuts && (
+            <button onClick={onShortcuts}
+              className="hidden sm:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-[10px] cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
+              title="Raccourcis clavier (?)">
+              ⌨️
             </button>
           )}
         </div>

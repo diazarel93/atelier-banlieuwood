@@ -99,7 +99,7 @@ export function ContextPanel({
   if (selectedStudent) {
     const studentState = getState(selectedStudent.id);
     return (
-      <aside className="w-[280px] glass-card border-l border-white/[0.06] flex flex-col h-full flex-shrink-0 rounded-none">
+      <aside className="w-[300px] glass-card border-l border-white/[0.06] flex flex-col h-full flex-shrink-0 rounded-none">
         <div className="flex items-center justify-between px-3 py-2.5 border-b border-white/[0.06] flex-shrink-0">
           <button
             onClick={() => onSelectStudent(null)}
@@ -251,7 +251,7 @@ export function ContextPanel({
 
   // ── Tab header + content ──
   return (
-    <aside className="w-[280px] glass-card border-l border-white/[0.06] flex flex-col h-full flex-shrink-0 rounded-none">
+    <aside className="w-[300px] glass-card border-l border-white/[0.06] flex flex-col h-full flex-shrink-0 rounded-none">
       {/* Header with close + tabs */}
       <div className="border-b border-white/[0.06] flex-shrink-0">
         <div className="flex items-center justify-between px-3 py-2">

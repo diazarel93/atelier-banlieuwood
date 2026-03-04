@@ -1,16 +1,17 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { useSessionPolling, Module1Data, Module10Data } from "@/hooks/use-session-polling";
+import { useSessionPolling, Module10Data } from "@/hooks/use-session-polling";
 import { useQuery } from "@tanstack/react-query";
-import { CATEGORY_COLORS, TEMPLATE_LABELS, SEANCE_SITUATIONS, MODULE_SEANCE_SITUATIONS, PRODUCTION_CATEGORIES, getSeanceMax } from "@/lib/constants";
+import { CATEGORY_COLORS, TEMPLATE_LABELS, MODULE_SEANCE_SITUATIONS, PRODUCTION_CATEGORIES, getSeanceMax } from "@/lib/constants";
 import { QRCodeSVG } from "qrcode.react";
 import { CountdownTimer } from "@/components/countdown-timer";
 import { BrandLogo } from "@/components/brand-logo";
 import { getSeanceIntro } from "@/lib/seance-intros";
-import { DiceBearAvatar } from "@/components/avatar-dicebear";
+import { getModuleByDb } from "@/lib/modules-data";
+import confetti from "canvas-confetti";
 import { CharacterCard } from "@/components/module10/character-card";
 import type { AvatarOptions } from "@/components/avatar-dicebear";
 
@@ -48,18 +49,106 @@ export default function ScreenPage() {
     enabled: !!data?.situation?.id && (data?.session?.status === "voting" || data?.session?.status === "reviewing"),
   });
 
-  // Highlighted responses — teacher-projected to class screen
+  // Highlighted responses — teacher-projected to class screen (current situation only)
+  const currentSituationId = data?.situation?.id;
   const { data: highlightedResponses } = useQuery<HighlightedResponse[]>({
-    queryKey: ["screen-highlighted", sessionId],
+    queryKey: ["screen-highlighted", sessionId, currentSituationId],
     queryFn: async () => {
-      const res = await fetch(`/api/sessions/${sessionId}/responses`);
+      if (!currentSituationId) return [];
+      const res = await fetch(`/api/sessions/${sessionId}/responses?situationId=${currentSituationId}`);
       if (!res.ok) return [];
       const all: HighlightedResponse[] = await res.json();
       return all.filter((r) => r.is_highlighted);
     },
     refetchInterval: 2000,
+    enabled: !!data?.session && data.session.status !== "done" && !!currentSituationId,
+  });
+
+  // Broadcast message overlay
+  const [broadcastMsg, setBroadcastMsg] = useState<string | null>(null);
+  const lastBroadcastAt = useRef<string | null>(null);
+  useEffect(() => {
+    if (!data?.session?.broadcastMessage || !data.session.broadcastAt) return;
+    if (data.session.broadcastAt === lastBroadcastAt.current) return;
+    lastBroadcastAt.current = data.session.broadcastAt;
+    setBroadcastMsg(data.session.broadcastMessage);
+    const t = setTimeout(() => setBroadcastMsg(null), 15000);
+    return () => clearTimeout(t);
+  }, [data?.session?.broadcastMessage, data?.session?.broadcastAt]);
+
+  // ── Briefing state ──
+  const [showBriefing, setShowBriefing] = useState(false);
+  const prevModuleKey = useRef<string | null>(null);
+
+  // ── Transition state ──
+  const [showTransition, setShowTransition] = useState(false);
+  const prevSituationIndex = useRef<number>(-1);
+  const [completedQuestion, setCompletedQuestion] = useState(0);
+
+  // ── Done phase state ──
+  const [donePhase, setDonePhase] = useState<"clap" | "title" | "credits">("clap");
+
+  // ── Collective choice celebration ──
+  const prevChoiceId = useRef<string | null>(null);
+
+  // Collective choices for filmstrip
+  const { data: allChoices } = useQuery<{ id: string; category: string; chosen_text: string; restitution_label?: string }[]>({
+    queryKey: ["screen-all-choices", sessionId],
+    queryFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/collective-choice`);
+      if (!res.ok) return [];
+      return res.json();
+    },
+    refetchInterval: 10000,
     enabled: !!data?.session && data.session.status !== "done",
   });
+
+  // Detect module/séance changes → show briefing
+  useEffect(() => {
+    if (!data?.session || data.session.currentModule === 0) return;
+    const key = `${data.session.currentModule}-${data.session.currentSeance || 1}`;
+    if (prevModuleKey.current !== null && prevModuleKey.current !== key) {
+      setShowBriefing(true);
+      const t = setTimeout(() => setShowBriefing(false), 8000);
+      return () => clearTimeout(t);
+    }
+    prevModuleKey.current = key;
+  }, [data?.session?.currentModule, data?.session?.currentSeance, data?.session]);
+
+  // Detect question changes → show micro-celebration
+  useEffect(() => {
+    if (!data?.session || data.session.currentModule === 0) return;
+    const idx = data.session.currentSituationIndex ?? 0;
+    if (prevSituationIndex.current >= 0 && prevSituationIndex.current !== idx && idx > prevSituationIndex.current) {
+      setCompletedQuestion(prevSituationIndex.current + 1);
+      setShowTransition(true);
+      const t = setTimeout(() => setShowTransition(false), 800);
+      return () => clearTimeout(t);
+    }
+    prevSituationIndex.current = idx;
+  }, [data?.session?.currentSituationIndex, data?.session?.currentModule, data?.session]);
+
+  // Done phase sequencing
+  useEffect(() => {
+    if (data?.session?.status !== "done") {
+      setDonePhase("clap");
+      return;
+    }
+    // Phase 1: clap + confetti
+    confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+    const t1 = setTimeout(() => setDonePhase("title"), 2000);
+    const t2 = setTimeout(() => setDonePhase("credits"), 5000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [data?.session?.status]);
+
+  // Collective choice celebration — confetti on new choice
+  useEffect(() => {
+    if (!data?.collectiveChoice?.id) return;
+    if (prevChoiceId.current !== null && prevChoiceId.current !== data.collectiveChoice.id) {
+      confetti({ particleCount: 80, spread: 60, origin: { y: 0.5 }, colors: ["#FF6B35", "#F59E0B", "#8B5CF6"] });
+    }
+    prevChoiceId.current = data.collectiveChoice.id;
+  }, [data?.collectiveChoice?.id]);
 
   if (!data) {
     return (
@@ -92,7 +181,7 @@ export default function ScreenPage() {
   const isM10Special = isM10 && !(isM10Etsi && session.currentSituationIndex === 1); // pos 1 séance 1 = QCM standard
   const isM10QA = isM10 && !isM10Special;
   const module10 = data.module10 as Module10Data | undefined;
-  const isScreenQA = session.currentModule === 3 || session.currentModule === 4 || session.currentModule === 9 || (session.currentModule === 2 && !isM2ECSpecial && !isM2ECComparison) || isM10QA;
+  const isScreenQA = session.currentModule === 3 || session.currentModule === 4 || (session.currentModule === 9 && currentSeance !== 2) || (session.currentModule === 2 && !isM2ECSpecial && !isM2ECComparison) || isM10QA;
   const maxSituations = session.currentModule === 2 ? MODULE_SEANCE_SITUATIONS?.[2]?.[currentSeance] || getSeanceMax(session.currentModule, currentSeance) : getSeanceMax(session.currentModule, currentSeance);
   const progressPct = (isScreenQA || isM10)
     ? Math.min(100, Math.round(((session.currentSituationIndex + 1) / maxSituations) * 100))
@@ -104,76 +193,179 @@ export default function ScreenPage() {
   // Séance intro slide data
   const seanceIntro = !noModuleSelected ? getSeanceIntro(session.currentModule, currentSeance) : undefined;
 
+  // Module info for header + ambient
+  const moduleDef = !noModuleSelected ? getModuleByDb(session.currentModule, currentSeance) : undefined;
+  const moduleColor = moduleDef?.color || seanceIntro?.color || "#FF6B35";
+
+  // Cinema fun facts for waiting screen
+  const CINEMA_FACTS = [
+    "Le premier film de l'histoire dure 46 secondes (1895).",
+    "Un film utilise en moyenne 1 500 plans.",
+    "Le clap sert à synchroniser le son et l'image.",
+    "Hitchcock disait : « Le cinéma, c'est la vie sans les moments ennuyeux. »",
+    "Pixar a mis 4 ans à créer Toy Story.",
+    "Le mot « scénario » vient de l'italien « scenario » (décor).",
+  ];
+
+  // Reusable waiting state objective banner
+  const renderObjectiveBanner = () => {
+    if (!seanceIntro) {
+      return (
+        <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 2 }} className="flex items-center justify-center gap-3">
+          <div className="w-2.5 h-2.5 rounded-full bg-bw-amber" />
+          <span className="text-lg text-bw-muted">En attente du facilitateur</span>
+        </motion.div>
+      );
+    }
+    return (
+      <div className="space-y-5">
+        {/* Objective */}
+        <div className="flex items-center justify-center gap-3">
+          <span className="text-2xl">{seanceIntro.icon}</span>
+          <span className="text-lg font-medium" style={{ color: moduleColor }}>
+            Objectif : {seanceIntro.description}
+          </span>
+        </div>
+        {/* First step highlighted */}
+        {seanceIntro.steps[0] && (
+          <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="flex items-center justify-center gap-2"
+          >
+            <span className="w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center"
+              style={{ backgroundColor: `${moduleColor}25`, color: moduleColor }}>1</span>
+            <span className="text-base text-bw-text">{seanceIntro.steps[0]}</span>
+          </motion.div>
+        )}
+        {/* Connected count */}
+        {connectedCount > 0 && (
+          <motion.div
+            key={connectedCount}
+            initial={{ scale: 1.2 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            className="flex items-center justify-center gap-2"
+          >
+            <div className="w-2.5 h-2.5 rounded-full bg-bw-teal" />
+            <span className="text-base text-bw-teal font-medium">
+              {connectedCount} élève{connectedCount > 1 ? "s" : ""} connecté{connectedCount > 1 ? "s" : ""}
+            </span>
+          </motion.div>
+        )}
+        {/* Fun fact */}
+        <motion.p
+          animate={{ opacity: [0.3, 0.7, 0.3] }}
+          transition={{ repeat: Infinity, duration: 8 }}
+          className="text-xs text-bw-muted/60 italic text-center"
+        >
+          {CINEMA_FACTS[Math.abs((session.currentSituationIndex ?? 0) + session.currentModule) % CINEMA_FACTS.length]}
+        </motion.p>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-dvh flex flex-col relative">
-      {/* Ambient colored light spots */}
+      {/* Broadcast message overlay */}
+      <AnimatePresence>
+        {broadcastMsg && (
+          <motion.div
+            initial={{ opacity: 0, y: -40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -40 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[600px] max-w-[90vw]"
+          >
+            <div className="px-8 py-5 rounded-2xl bg-bw-primary/20 border border-bw-primary/40 text-center backdrop-blur-md shadow-lg shadow-bw-primary/10">
+              <p className="text-xs text-bw-primary font-semibold uppercase tracking-[0.2em] mb-2">Message du professeur</p>
+              <p className="text-xl text-white font-medium">{broadcastMsg}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Ambient colored light spots — follow module color */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-16 -left-16 w-[480px] h-[480px]" style={{ background: "radial-gradient(ellipse at center, rgba(255,107,53,0.06) 0%, transparent 70%)" }} />
-        <div className="absolute -bottom-16 -right-16 w-[480px] h-[480px]" style={{ background: "radial-gradient(ellipse at center, rgba(139,92,246,0.05) 0%, transparent 70%)" }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px]" style={{ background: "radial-gradient(ellipse at center, rgba(78,205,196,0.03) 0%, transparent 60%)" }} />
+        <motion.div
+          key={`amb-tl-${moduleColor}`}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 }}
+          className="absolute -top-16 -left-16 w-[480px] h-[480px]"
+          style={{ background: `radial-gradient(ellipse at center, ${moduleColor}10 0%, transparent 70%)` }}
+        />
+        <motion.div
+          key={`amb-br-${moduleColor}`}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 }}
+          className="absolute -bottom-16 -right-16 w-[480px] h-[480px]"
+          style={{ background: `radial-gradient(ellipse at center, ${moduleColor}0D 0%, transparent 70%)` }}
+        />
+        <motion.div
+          key={`amb-ct-${moduleColor}`}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px]"
+          style={{ background: `radial-gradient(ellipse at center, ${moduleColor}08 0%, transparent 60%)` }}
+        />
       </div>
 
       {/* Header */}
-      <header className="px-8 py-5 flex justify-between items-center flex-shrink-0 relative z-10 backdrop-blur-sm"
+      <header className="px-8 py-4 flex justify-between items-center flex-shrink-0 relative z-10 backdrop-blur-sm"
         style={{ background: "linear-gradient(90deg, rgba(18,20,24,0.85), rgba(18,20,24,0.6) 50%, rgba(18,20,24,0.85))", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-        <h1 className="text-2xl font-bold tracking-[0.2em] uppercase font-cinema">
-          <BrandLogo />
-        </h1>
-        <div className="flex items-center gap-6">
-          {/* Module 2 EC progress */}
-          {session.currentModule === 2 && session.status !== "done" && (
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-bw-pink">
-                {currentSeance === 1 ? "Mise en bain"
-                  : currentSeance === 2 ? "Émotion Cachée"
-                  : currentSeance === 3 ? "Phase Collective"
-                  : "Clôture"}
-              </span>
+        <div className="flex items-center gap-4">
+          <h1 className="text-2xl font-bold tracking-[0.2em] uppercase font-cinema">
+            <BrandLogo />
+          </h1>
+          {/* Session title + genre */}
+          {session.title && (
+            <div className="flex items-center gap-2 ml-2">
+              <span className="text-xs text-bw-muted">{session.title}</span>
+              {templateInfo && (
+                <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)" }}>
+                  {templateInfo}
+                </span>
+              )}
             </div>
           )}
-          {/* Module 10 progress */}
-          {isM10 && session.status !== "done" && (
-            <div className="flex items-center gap-3">
-              <span className="text-sm" style={{ color: "#06B6D4" }}>
-                {isM10Etsi ? "Et si..." : "Pitch"} · {(session.currentSituationIndex || 0) + 1}/{maxSituations}
-              </span>
-              <div className="w-32 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+        </div>
+        <div className="flex items-center gap-5">
+          {/* Active module name */}
+          {!noModuleSelected && session.status !== "done" && seanceIntro && (
+            <span className="text-sm font-medium" style={{ color: moduleColor }}>
+              {seanceIntro.icon} {seanceIntro.title}
+            </span>
+          )}
+          {/* Step dots */}
+          {!noModuleSelected && session.status !== "done" && maxSituations > 1 && (
+            <div className="flex items-center gap-1.5">
+              {Array.from({ length: maxSituations }).map((_, i) => (
                 <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progressPct}%` }}
-                  transition={{ duration: 0.5 }}
-                  className="h-full rounded-full"
-                  style={{ background: "linear-gradient(90deg, #06B6D4, #0891B2)" }}
+                  key={i}
+                  animate={i === (session.currentSituationIndex ?? 0)
+                    ? { scale: [1, 1.3, 1], opacity: 1 }
+                    : { scale: 1, opacity: i < (session.currentSituationIndex ?? 0) ? 1 : 0.3 }
+                  }
+                  transition={i === (session.currentSituationIndex ?? 0) ? { repeat: Infinity, duration: 1.5 } : {}}
+                  className="w-2 h-2 rounded-full"
+                  style={{
+                    backgroundColor: i <= (session.currentSituationIndex ?? 0) ? moduleColor : "rgba(255,255,255,0.15)",
+                  }}
                 />
-              </div>
+              ))}
             </div>
           )}
-          {/* Module 1 progress */}
-          {session.currentModule === 1 && session.status !== "done" && data.module1 && (
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-bw-violet">
-                {data.module1.type === "positioning" ? `Q${(session.currentSituationIndex || 0) + 1}/8`
-                  : data.module1.type === "image" && data.module1.image ? data.module1.image.title
-                  : data.module1.type === "notebook" ? "Carnet d'idées"
-                  : `Séance ${data.module1.currentSeance}/5`}
-              </span>
-            </div>
-          )}
-          {/* Progress indicator for Q&A modules */}
-          {isScreenQA && session.status !== "done" && (
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-bw-muted">
-                Q{(session.currentSituationIndex || 0) + 1}/{maxSituations}
-              </span>
-              <div className="w-32 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progressPct}%` }}
-                  transition={{ duration: 0.5 }}
-                  className="h-full rounded-full"
-                  style={{ background: "linear-gradient(90deg, #FF6B35, #D4A843)" }}
-                />
-              </div>
+          {/* Progress bar */}
+          {!noModuleSelected && session.status !== "done" && progressPct > 0 && (
+            <div className="w-24 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${progressPct}%` }}
+                transition={{ duration: 0.5 }}
+                className="h-full rounded-full"
+                style={{ background: `linear-gradient(90deg, ${moduleColor}, ${moduleColor}99)` }}
+              />
             </div>
           )}
           <div className="flex items-center gap-2">
@@ -186,6 +378,117 @@ export default function ScreenPage() {
           </div>
         </div>
       </header>
+
+      {/* ═══ BRIEFING SÉANCE — fullscreen overlay ═══ */}
+      <AnimatePresence>
+        {showBriefing && seanceIntro && (
+          <motion.div
+            key="briefing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 flex items-center justify-center"
+            style={{ background: "rgba(10,12,16,0.95)" }}
+          >
+            <div className="max-w-3xl w-full text-center space-y-8 px-8">
+              {/* Phase 1: Icon with halo */}
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                className="w-28 h-28 rounded-3xl mx-auto flex items-center justify-center text-5xl relative"
+                style={{ background: `${seanceIntro.color}20`, border: `2px solid ${seanceIntro.color}40`, boxShadow: `0 0 80px ${seanceIntro.color}30, 0 0 160px ${seanceIntro.color}10` }}
+              >
+                {seanceIntro.icon}
+              </motion.div>
+              {/* Phase 2: Title + details */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.5 }}
+                className="space-y-4"
+              >
+                <span className="text-sm font-bold uppercase tracking-[0.3em] px-4 py-1.5 rounded-full inline-block"
+                  style={{ backgroundColor: `${seanceIntro.color}20`, color: seanceIntro.color }}>
+                  {seanceIntro.activityType}
+                </span>
+                <h2 className="text-5xl font-bold text-white">{seanceIntro.title}</h2>
+                <p className="text-xs uppercase tracking-wider font-medium" style={{ color: seanceIntro.color }}>
+                  {seanceIntro.subtitle} · {seanceIntro.duration}
+                </p>
+                <p className="text-xl text-bw-muted max-w-xl mx-auto">{seanceIntro.description}</p>
+              </motion.div>
+              {/* Phase 3: Steps appear one by one */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 3.5 }}
+                className="flex items-center justify-center gap-3 flex-wrap"
+              >
+                {seanceIntro.steps.map((step, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -15 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 4 + i * 0.4 }}
+                    className="flex items-center gap-2"
+                  >
+                    <span className="w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: `${seanceIntro.color}25`, color: seanceIntro.color, border: `1px solid ${seanceIntro.color}40` }}>
+                      {i + 1}
+                    </span>
+                    <span className="text-sm text-bw-text">{step}</span>
+                    {i < seanceIntro.steps.length - 1 && (
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.3 }}
+                        transition={{ delay: 4.2 + i * 0.4 }}
+                        className="mx-1 text-bw-muted"
+                      >→</motion.span>
+                    )}
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ═══ QUESTION TRANSITION — micro-celebration ═══ */}
+      <AnimatePresence>
+        {showTransition && (
+          <motion.div
+            key="q-transition"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-30 flex items-center justify-center pointer-events-none"
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="flex items-center gap-4"
+            >
+              <motion.div
+                initial={{ scale: 0, rotate: -90 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                className="w-16 h-16 rounded-full flex items-center justify-center"
+                style={{ background: `${moduleColor}25`, border: `2px solid ${moduleColor}` }}
+              >
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={moduleColor} strokeWidth="3" strokeLinecap="round">
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+              </motion.div>
+              <span className="text-3xl font-bold text-white">
+                Question {completedQuestion} <span style={{ color: moduleColor }}>✓</span>
+              </span>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main */}
       <main className="flex-1 flex items-center justify-center px-12 relative z-10">
@@ -328,19 +631,7 @@ export default function ScreenPage() {
                   <h2 className="text-3xl font-bold">
                     {data.module1.type === "positioning" ? "Positionnement" : "Carnet d'idées"}
                   </h2>
-                  <motion.div
-                    animate={{ opacity: [0.4, 1, 0.4] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                    className="flex items-center justify-center gap-3"
-                  >
-                    <div className="w-2.5 h-2.5 rounded-full bg-bw-amber" />
-                    <span className="text-lg text-bw-muted">En attente du facilitateur</span>
-                  </motion.div>
-                  {connectedCount > 0 && (
-                    <p className="text-base text-bw-teal">
-                      {connectedCount} élève{connectedCount > 1 ? "s" : ""} connecté{connectedCount > 1 ? "s" : ""}
-                    </p>
-                  )}
+                  {renderObjectiveBanner()}
                 </motion.div>
               )}
             </>
@@ -366,19 +657,7 @@ export default function ScreenPage() {
               ) : (
                 <p className="text-3xl leading-snug font-medium px-4 text-bw-muted">Préparez-vous...</p>
               )}
-              <motion.div
-                animate={{ opacity: [0.4, 1, 0.4] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="flex items-center justify-center gap-3"
-              >
-                <div className="w-2.5 h-2.5 rounded-full bg-bw-amber" />
-                <span className="text-lg text-bw-muted">En attente du facilitateur</span>
-              </motion.div>
-              {connectedCount > 0 && (
-                <p className="text-base text-bw-teal">
-                  {connectedCount} élève{connectedCount > 1 ? "s" : ""} connecté{connectedCount > 1 ? "s" : ""}
-                </p>
-              )}
+              {renderObjectiveBanner()}
             </motion.div>
           )}
 
@@ -394,19 +673,7 @@ export default function ScreenPage() {
                 </svg>
               </div>
               <h2 className="text-3xl font-bold">Contrainte & Responsabilité</h2>
-              <motion.div
-                animate={{ opacity: [0.4, 1, 0.4] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="flex items-center justify-center gap-3"
-              >
-                <div className="w-2.5 h-2.5 rounded-full bg-bw-amber" />
-                <span className="text-lg text-bw-muted">En attente du facilitateur</span>
-              </motion.div>
-              {connectedCount > 0 && (
-                <p className="text-base text-bw-teal">
-                  {connectedCount} élève{connectedCount > 1 ? "s" : ""} connecté{connectedCount > 1 ? "s" : ""}
-                </p>
-              )}
+              {renderObjectiveBanner()}
             </motion.div>
           )}
 
@@ -576,7 +843,7 @@ export default function ScreenPage() {
           )}
 
           {/* RESPONDING (Module 9 Q&A / 3 / 4 / M10 QCM) — question + live counter */}
-          {session.status === "responding" && (session.currentModule === 3 || session.currentModule === 4 || session.currentModule === 9 || isM10QA) && situation && (
+          {session.status === "responding" && (session.currentModule === 3 || session.currentModule === 4 || (session.currentModule === 9 && currentSeance !== 2) || (session.currentModule === 2 && !isM2ECSpecial && !isM2ECComparison) || isM10QA) && situation && (
             <motion.div key="responding" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
               className="max-w-4xl w-full text-center space-y-8">
@@ -589,30 +856,31 @@ export default function ScreenPage() {
               <p className="text-4xl leading-snug font-medium px-4">
                 {situation.prompt}
               </p>
-              {/* Live response counter + timer */}
-              <div className="flex items-center justify-center gap-4">
+              {/* Live response counter + progress ring + timer */}
+              <div className="flex items-center justify-center gap-6">
                 {session.timerEndsAt && new Date(session.timerEndsAt).getTime() > Date.now() && (
                   <CountdownTimer endsAt={session.timerEndsAt} size="lg" />
                 )}
-                <motion.div
-                  animate={{ opacity: [0.4, 1, 0.4] }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                  className="flex items-center gap-2"
-                >
-                  <div className="w-2 h-2 rounded-full bg-bw-teal" />
-                  <span className="text-lg text-bw-muted">
-                    {responsesCount}/{connectedCount} réponse{responsesCount > 1 ? "s" : ""}
-                  </span>
-                </motion.div>
-                {connectedCount > 0 && (
-                  <div className="w-24 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(34,37,43,0.8)" }}>
-                    <motion.div
-                      animate={{ width: `${Math.round((responsesCount / connectedCount) * 100)}%` }}
-                      transition={{ duration: 0.4 }}
-                      className="h-full rounded-full bg-bw-teal"
+                <div className="relative w-20 h-20">
+                  <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
+                    <motion.circle cx="40" cy="40" r="34" fill="none" stroke={moduleColor} strokeWidth="5"
+                      strokeLinecap="round" strokeDasharray={2 * Math.PI * 34}
+                      initial={{ strokeDashoffset: 2 * Math.PI * 34 }}
+                      animate={{ strokeDashoffset: connectedCount > 0 ? 2 * Math.PI * 34 * (1 - responsesCount / connectedCount) : 2 * Math.PI * 34 }}
+                      transition={{ duration: 0.8, ease: "easeOut" }}
                     />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <motion.span key={responsesCount} initial={{ scale: 1.3, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                      className="text-lg font-bold tabular-nums" style={{ color: moduleColor }}>
+                      {responsesCount}
+                    </motion.span>
                   </div>
-                )}
+                </div>
+                <span className="text-lg text-bw-muted">
+                  {responsesCount}/{connectedCount} réponse{responsesCount > 1 ? "s" : ""}
+                </span>
               </div>
             </motion.div>
           )}
@@ -692,19 +960,7 @@ export default function ScreenPage() {
               </motion.div>
               <h2 className="text-3xl font-bold">Tes contenus préférés</h2>
               <p className="text-xl text-bw-muted">Préparez-vous à sélectionner vos films, séries et anime favoris...</p>
-              <motion.div
-                animate={{ opacity: [0.4, 1, 0.4] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="flex items-center justify-center gap-3"
-              >
-                <div className="w-2.5 h-2.5 rounded-full bg-bw-amber" />
-                <span className="text-lg text-bw-muted">En attente du facilitateur</span>
-              </motion.div>
-              {connectedCount > 0 && (
-                <p className="text-base text-bw-teal">
-                  {connectedCount} élève{connectedCount > 1 ? "s" : ""} connecté{connectedCount > 1 ? "s" : ""}
-                </p>
-              )}
+              {renderObjectiveBanner()}
             </motion.div>
           )}
 
@@ -770,19 +1026,7 @@ export default function ScreenPage() {
               </motion.div>
               <h2 className="text-3xl font-bold">Construction de scène</h2>
               <p className="text-xl text-bw-muted">Préparez-vous à construire une scène avec des jetons et des contraintes...</p>
-              <motion.div
-                animate={{ opacity: [0.4, 1, 0.4] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="flex items-center justify-center gap-3"
-              >
-                <div className="w-2.5 h-2.5 rounded-full bg-bw-amber" />
-                <span className="text-lg text-bw-muted">En attente du facilitateur</span>
-              </motion.div>
-              {connectedCount > 0 && (
-                <p className="text-base text-bw-teal">
-                  {connectedCount} élève{connectedCount > 1 ? "s" : ""} connecté{connectedCount > 1 ? "s" : ""}
-                </p>
-              )}
+              {renderObjectiveBanner()}
             </motion.div>
           )}
 
@@ -846,7 +1090,7 @@ export default function ScreenPage() {
           )}
 
           {/* ═══ MODULE 2 EC séance 3 — Waiting for comparison ═══ */}
-          {session.currentModule === 2 && currentSeance === 3 && !data.module5?.comparison && (
+          {session.currentModule === 2 && currentSeance === 3 && (session.status === "waiting" || session.status === "responding" || session.status === "reviewing") && !data.module5?.comparison && (
             <motion.div key="m2ec-compare-wait" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
               className="max-w-3xl w-full text-center space-y-8">
@@ -876,7 +1120,7 @@ export default function ScreenPage() {
           )}
 
           {/* ═══ MODULE 2 EC séance 3 — Comparison display (2 anonymous scenes) ═══ */}
-          {session.currentModule === 2 && currentSeance === 3 && data.module5?.comparison?.sceneA && data.module5?.comparison?.sceneB && (() => {
+          {session.currentModule === 2 && currentSeance === 3 && (session.status === "waiting" || session.status === "responding" || session.status === "reviewing") && data.module5?.comparison?.sceneA && data.module5?.comparison?.sceneB && (() => {
             const scA = data.module5!.comparison!.sceneA;
             const scB = data.module5!.comparison!.sceneB;
             return (
@@ -1488,38 +1732,56 @@ export default function ScreenPage() {
             </motion.div>
           )}
 
-          {/* FIX #4: REVIEWING — show vote results while waiting for choice, then show choice */}
+          {/* REVIEWING — collective choice celebration */}
           {session.status === "reviewing" && collectiveChoice && (
-            <motion.div key="result" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+            <motion.div key={`result-${collectiveChoice.id}`} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               className="max-w-3xl w-full text-center space-y-8">
               <motion.div
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                className="w-20 h-20 rounded-full bg-gradient-to-br from-bw-violet to-bw-violet/60 mx-auto flex items-center justify-center"
+                className="w-20 h-20 rounded-full mx-auto flex items-center justify-center relative"
+                style={{ background: "linear-gradient(135deg, rgba(245,158,11,0.2), rgba(255,107,53,0.15))", border: "2px solid rgba(245,158,11,0.5)" }}
               >
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
+                {/* Golden halo */}
+                <motion.div
+                  animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                  className="absolute inset-0 rounded-full"
+                  style={{ boxShadow: "0 0 40px rgba(245,158,11,0.4), 0 0 80px rgba(245,158,11,0.2)" }}
+                />
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                 </svg>
               </motion.div>
               <div className="space-y-4">
-                <span
+                <motion.span
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
                   className="text-lg font-semibold uppercase tracking-wider px-5 py-2 rounded-full inline-block"
                   style={{ backgroundColor: `${categoryColor}20`, color: categoryColor }}
                 >
                   {collectiveChoice.restitution_label || collectiveChoice.category}
-                </span>
+                </motion.span>
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
+                  transition={{ delay: 0.4, type: "spring", stiffness: 150 }}
                   className="text-4xl leading-snug font-medium"
                 >
                   {collectiveChoice.chosen_text}
                 </motion.p>
               </div>
-              <p className="text-lg text-bw-muted">Choix collectif de la classe</p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="text-lg text-bw-muted"
+              >
+                Choix collectif de la classe
+              </motion.p>
             </motion.div>
           )}
 
@@ -1575,28 +1837,142 @@ export default function ScreenPage() {
             </motion.div>
           )}
 
-          {/* DONE */}
+          {/* DONE — Cinema celebration */}
           {session.status === "done" && (
             <motion.div key="done" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="text-center space-y-6">
-              <motion.div
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ repeat: Infinity, duration: 3 }}
-                className="w-24 h-24 rounded-full bg-gradient-to-br from-bw-primary to-bw-primary/60 mx-auto flex items-center justify-center"
-              >
-                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
-                  <rect x="2" y="2" width="20" height="20" rx="2.18" />
-                  <path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 7h5M17 17h5" />
-                </svg>
-              </motion.div>
-              <h2 className="text-5xl font-bold">
-                C&apos;est dans la <span className="text-bw-primary">boite</span> !
-              </h2>
-              <p className="text-xl text-bw-muted">Merci à tous !</p>
+              className="text-center space-y-8 max-w-3xl w-full">
+
+              {/* Phase 1: Clap */}
+              {donePhase === "clap" && (
+                <motion.div
+                  initial={{ scale: 1.5, rotate: -15 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                  className="space-y-6"
+                >
+                  <motion.div
+                    animate={{ rotate: [0, 5, -5, 0] }}
+                    transition={{ repeat: Infinity, duration: 1 }}
+                    className="w-32 h-32 rounded-full mx-auto flex items-center justify-center"
+                    style={{ background: "linear-gradient(135deg, rgba(255,107,53,0.2), rgba(139,92,246,0.15))", border: "2px solid rgba(255,107,53,0.4)", boxShadow: "0 0 80px rgba(255,107,53,0.3)" }}
+                  >
+                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
+                      <rect x="2" y="2" width="20" height="20" rx="2.18" />
+                      <path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 7h5M17 17h5" />
+                    </svg>
+                  </motion.div>
+                  <h2 className="text-5xl font-bold">
+                    C&apos;est dans la <span className="text-bw-primary">boite</span> !
+                  </h2>
+                </motion.div>
+              )}
+
+              {/* Phase 2: Title card */}
+              {donePhase === "title" && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 150, damping: 15 }}
+                  className="space-y-6"
+                >
+                  <p className="text-sm uppercase tracking-[0.5em] text-bw-muted font-medium">Un film de</p>
+                  <h2 className="text-6xl font-bold font-cinema tracking-wider text-white">{session.title || "Notre Film"}</h2>
+                  {templateInfo && (
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                      className="text-xl px-6 py-2 rounded-full inline-block"
+                      style={{ backgroundColor: `${moduleColor}20`, color: moduleColor, border: `1px solid ${moduleColor}40` }}
+                    >
+                      {templateInfo}
+                    </motion.span>
+                  )}
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                    className="text-2xl text-bw-teal"
+                  >
+                    {connectedCount} cinéaste{connectedCount > 1 ? "s" : ""}
+                  </motion.p>
+                </motion.div>
+              )}
+
+              {/* Phase 3: Credits scroll */}
+              {donePhase === "credits" && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="space-y-8"
+                >
+                  <p className="text-sm uppercase tracking-[0.5em] text-bw-muted font-medium">Les choix de la classe</p>
+                  <div className="max-h-[50vh] overflow-y-auto space-y-3 px-4 scrollbar-thin">
+                    {allChoices && allChoices.length > 0 ? allChoices.map((choice, i) => (
+                      <motion.div
+                        key={choice.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.3 }}
+                        className="rounded-xl p-4 backdrop-blur-md text-left"
+                        style={{ background: "rgba(34,37,43,0.6)", borderLeft: `3px solid ${CATEGORY_COLORS[choice.category] || moduleColor}` }}
+                      >
+                        <span className="text-[10px] uppercase tracking-wider font-medium" style={{ color: CATEGORY_COLORS[choice.category] || moduleColor }}>
+                          {choice.restitution_label || choice.category}
+                        </span>
+                        <p className="text-lg text-white mt-1">{choice.chosen_text}</p>
+                      </motion.div>
+                    )) : (
+                      <p className="text-bw-muted text-lg">Bravo à toute la classe !</p>
+                    )}
+                  </div>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: (allChoices?.length || 0) * 0.3 + 0.5 }}
+                    className="text-xl text-bw-muted mt-8"
+                  >
+                    Merci à tous !
+                  </motion.p>
+                </motion.div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
       </main>
+
+      {/* ═══ STORY FILMSTRIP — collective choices ═══ */}
+      <AnimatePresence>
+        {allChoices && allChoices.length > 0 && session.status !== "done" && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="relative z-10 px-6 py-2 flex-shrink-0"
+          >
+            <div className="flex gap-3 overflow-x-auto scrollbar-none pb-1" style={{ scrollBehavior: "smooth" }}>
+              {allChoices.map((choice, i) => {
+                const color = CATEGORY_COLORS[choice.category] || moduleColor;
+                return (
+                  <motion.div
+                    key={choice.id}
+                    initial={{ opacity: 0, scale: 0.8, x: 30 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15, delay: i * 0.05 }}
+                    className="flex-shrink-0 rounded-lg px-4 py-2.5 backdrop-blur-md max-w-[280px]"
+                    style={{ background: "rgba(34,37,43,0.7)", borderLeft: `3px solid ${color}`, border: `1px solid rgba(255,255,255,0.05)` }}
+                  >
+                    <span className="text-[9px] uppercase tracking-wider font-medium block" style={{ color }}>
+                      {choice.restitution_label || choice.category}
+                    </span>
+                    <p className="text-sm text-bw-text mt-0.5 line-clamp-1">{choice.chosen_text}</p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Small floating QR when session is active but no students yet */}
       {!noModuleSelected && session.status !== "done" && connectedCount === 0 && joinUrl && (
@@ -1607,16 +1983,18 @@ export default function ScreenPage() {
         </div>
       )}
 
-      {/* Highlighted responses — teacher-projected overlay */}
+      {/* Highlighted responses — teacher-projected, anchored bottom */}
       <AnimatePresence>
         {highlightedResponses && highlightedResponses.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            className="fixed bottom-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-2xl px-4"
+            exit={{ opacity: 0, y: 30 }}
+            className="fixed bottom-16 left-0 right-0 z-30 px-8 pointer-events-none"
           >
-            <div className="space-y-3">
+            <div className={`max-w-5xl mx-auto pointer-events-auto ${
+              highlightedResponses.length <= 2 ? "flex flex-col gap-3" : "grid grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-2"
+            }`}>
               {highlightedResponses.map((hr) => (
                 <motion.div
                   key={hr.id}
@@ -1624,21 +2002,21 @@ export default function ScreenPage() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="rounded-2xl p-5 backdrop-blur-xl"
-                  style={{ background: "rgba(34,37,43,0.8)", border: "1px solid rgba(255,107,53,0.25)", boxShadow: "0 0 24px rgba(255,107,53,0.12), 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)" }}
+                  className="rounded-2xl p-4 backdrop-blur-xl"
+                  style={{ background: "rgba(34,37,43,0.85)", border: "1px solid rgba(255,107,53,0.25)", boxShadow: "0 0 24px rgba(255,107,53,0.1), 0 4px 20px rgba(0,0,0,0.4)" }}
                 >
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-2xl">{hr.students?.avatar}</span>
-                    <span className="text-lg font-medium">{hr.students?.display_name}</span>
-                    <span className="ml-auto text-[10px] text-bw-primary bg-bw-primary/10 px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-lg">{hr.students?.avatar}</span>
+                    <span className="text-sm font-medium">{hr.students?.display_name}</span>
+                    <span className="ml-auto text-[9px] text-bw-primary bg-bw-primary/10 px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider">
                       Projeté
                     </span>
                   </div>
-                  <p className="text-xl leading-relaxed text-bw-heading">{hr.text}</p>
+                  <p className="text-base leading-relaxed text-bw-heading">{hr.text}</p>
                   {hr.teacher_comment && (
-                    <div className="mt-3 flex items-start gap-2 bg-bw-teal/5 rounded-xl px-3 py-2 border border-bw-teal/10">
-                      <span className="text-xs text-bw-teal flex-shrink-0 mt-0.5 font-medium">Prof :</span>
-                      <span className="text-sm text-bw-teal/80 leading-snug">{hr.teacher_comment}</span>
+                    <div className="mt-2 flex items-start gap-2 bg-bw-teal/5 rounded-lg px-2.5 py-1.5 border border-bw-teal/10">
+                      <span className="text-[10px] text-bw-teal flex-shrink-0 mt-0.5 font-medium">Prof :</span>
+                      <span className="text-xs text-bw-teal/80 leading-snug">{hr.teacher_comment}</span>
                     </div>
                   )}
                 </motion.div>
@@ -1648,110 +2026,13 @@ export default function ScreenPage() {
         )}
       </AnimatePresence>
 
-      {/* ═══ SÉANCE INTRO — floating panel during waiting ═══ */}
-      <AnimatePresence>
-        {session.status === "waiting" && !noModuleSelected && seanceIntro && (
-          <motion.div
-            key="seance-intro"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="fixed bottom-16 left-1/2 -translate-x-1/2 z-20 w-full max-w-4xl px-6"
-          >
-            <div className="rounded-2xl backdrop-blur-xl p-6"
-              style={{
-                background: "rgba(18,20,24,0.85)",
-                border: `1px solid ${seanceIntro.color}25`,
-                boxShadow: `0 0 40px ${seanceIntro.color}10, 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03)`,
-              }}>
-              <div className="flex items-start gap-6">
-                {/* Icon + type badge */}
-                <div className="flex-shrink-0 text-center space-y-2">
-                  <motion.div
-                    animate={{ scale: [1, 1.08, 1] }}
-                    transition={{ repeat: Infinity, duration: 3 }}
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
-                    style={{ background: `${seanceIntro.color}15`, border: `1px solid ${seanceIntro.color}30` }}>
-                    {seanceIntro.icon}
-                  </motion.div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full inline-block"
-                    style={{ backgroundColor: `${seanceIntro.color}20`, color: seanceIntro.color }}>
-                    {seanceIntro.activityType}
-                  </span>
-                </div>
-                {/* Title + description + steps */}
-                <div className="flex-1 min-w-0 space-y-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-wider font-medium" style={{ color: seanceIntro.color }}>
-                      {seanceIntro.subtitle} · {seanceIntro.duration}
-                    </p>
-                    <h3 className="text-2xl font-bold text-white mt-0.5">{seanceIntro.title}</h3>
-                    <p className="text-sm text-bw-muted mt-1 leading-relaxed">{seanceIntro.description}</p>
-                  </div>
-                  {/* Steps */}
-                  <div className="flex flex-wrap gap-2">
-                    {seanceIntro.steps.map((step, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.5 + i * 0.1 }}
-                        className="flex items-center gap-1.5"
-                      >
-                        <span className="w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: `${seanceIntro.color}20`, color: seanceIntro.color }}>
-                          {i + 1}
-                        </span>
-                        <span className="text-xs text-bw-text">{step}</span>
-                        {i < seanceIntro.steps.length - 1 && (
-                          <span className="text-bw-muted/30 mx-1">→</span>
-                        )}
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Footer */}
-      <footer className="px-8 py-4 flex justify-between items-center text-bw-muted flex-shrink-0 relative z-10 backdrop-blur-sm" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
-        <div className="flex items-center gap-3">
-          <span className="text-sm">{session.title}</span>
-          {templateInfo && (
-            <span className="text-xs px-2.5 py-1 rounded-full backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-              {templateInfo}
-            </span>
-          )}
-        </div>
-        <span className="text-sm">
-          {session.currentModule === 4
-            ? "Vis ma vie"
-            : session.currentModule === 3
-              ? currentSeance === 1 ? "C'est l'histoire de qui ?" : currentSeance === 2 ? "Il se passe quoi ?" : "Ça raconte quoi en vrai ?"
-              : session.currentModule === 2
-                ? currentSeance === 1 ? "Mise en bain"
-                : currentSeance === 2 ? "Émotion Cachée"
-                : currentSeance === 3 ? "Phase Collective"
-                : currentSeance === 4 ? "Clôture"
-                : "Émotion Cachée"
-              : session.currentModule === 1
-                ? data.module1?.type === "positioning" ? "Positionnement"
-                : data.module1?.type === "image" ? (data.module1.image?.title || "Image")
-                : data.module1?.type === "notebook" ? "Carnet d'idées"
-                : "L'Idée"
-              : session.currentModule === 9
-                ? currentSeance === 1 ? "Le Cinéma"
-                : currentSeance === 2 ? "Les Choix"
-                : currentSeance === 3 ? "Les Imprévus"
-                : currentSeance === 4 ? "Le Plan"
-                : "Module 9"
-              : session.currentModule === 10
-                ? currentSeance === 1 ? "Et si..." : "Pitch"
-              : "Module " + session.currentModule}
+      <footer className="px-8 py-3 flex justify-between items-center text-bw-muted flex-shrink-0 relative z-10 backdrop-blur-sm" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+        <span className="text-xs text-bw-muted/60">
+          {session.joinCode && `Code : ${session.joinCode}`}
+        </span>
+        <span className="text-xs text-bw-muted/60">
+          {seanceIntro ? `${seanceIntro.subtitle} · ${seanceIntro.title}` : "Banlieuwood"}
         </span>
       </footer>
     </div>

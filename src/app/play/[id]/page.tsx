@@ -3019,6 +3019,8 @@ export default function PlayPage() {
   const [studentLoaded, setStudentLoaded] = useState(false);
   const [waitingFullscreen, setWaitingFullscreen] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [broadcastMsg, setBroadcastMsg] = useState<string | null>(null);
+  const lastBroadcastAt = useRef<string | null>(null);
   const isOnline = useOnlineStatus();
   const { play } = useSound();
 
@@ -3064,6 +3066,18 @@ export default function PlayPage() {
   const { data, isLoading, error } = useSessionPolling(sessionId, studentId);
 
   const isFreeMode = data?.session?.mode === "free";
+
+  // Broadcast message from teacher
+  useEffect(() => {
+    if (!data?.session?.broadcastMessage || !data.session.broadcastAt) return;
+    if (data.session.broadcastAt === lastBroadcastAt.current) return;
+    lastBroadcastAt.current = data.session.broadcastAt;
+    setBroadcastMsg(data.session.broadcastMessage);
+    play("vote");
+    // Auto-dismiss after 12s
+    const t = setTimeout(() => setBroadcastMsg(null), 12000);
+    return () => clearTimeout(t);
+  }, [data?.session?.broadcastMessage, data?.session?.broadcastAt, play]);
 
   // Smart scroll to top on game state change
   const prevViewKeyRef = useRef<string>("");
@@ -3692,6 +3706,27 @@ export default function PlayPage() {
             <div className="px-4 py-3 rounded-xl bg-bw-amber/10 border border-bw-amber/30 text-center space-y-1">
               <p className="text-[10px] text-bw-amber font-semibold uppercase tracking-wider">Message du prof</p>
               <p className="text-sm text-bw-amber">{data.teacherNudge}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Broadcast message from teacher */}
+      <AnimatePresence>
+        {broadcastMsg && (
+          <motion.div
+            initial={{ height: 0, opacity: 0, scale: 0.95 }}
+            animate={{ height: "auto", opacity: 1, scale: 1 }}
+            exit={{ height: 0, opacity: 0, scale: 0.95 }}
+            className="w-full max-w-md mb-3"
+          >
+            <div className="px-4 py-3 rounded-xl bg-bw-primary/15 border border-bw-primary/30 text-center space-y-1 relative">
+              <p className="text-[10px] text-bw-primary font-semibold uppercase tracking-wider">Message du prof</p>
+              <p className="text-sm text-white font-medium">{broadcastMsg}</p>
+              <button
+                onClick={() => setBroadcastMsg(null)}
+                className="absolute top-1.5 right-2 text-bw-muted hover:text-white text-xs cursor-pointer"
+              >✕</button>
             </div>
           </motion.div>
         )}

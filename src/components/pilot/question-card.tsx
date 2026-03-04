@@ -28,8 +28,8 @@ export function QuestionCard({
       {/* Color accent bar */}
       <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${color}, ${color}60)` }} />
       {/* Question header */}
-      <div className="p-5 pb-4">
-        <div className="flex items-center gap-2 mb-3">
+      <div className="p-4 pb-3">
+        <div className="flex items-center gap-2 mb-2">
           <span
             className="text-xs font-bold uppercase px-2.5 py-1 rounded-full"
             style={{ background: `linear-gradient(135deg, ${color}25, ${color}10)`, color, border: `1px solid ${color}30` }}
@@ -38,7 +38,7 @@ export function QuestionCard({
           </span>
           <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-white/[0.06] text-bw-text">Q{position}</span>
         </div>
-        <p className="text-lg leading-relaxed">{prompt}</p>
+        <p className="text-base leading-relaxed">{prompt}</p>
       </div>
 
       {/* Inline guide strip */}
@@ -46,7 +46,7 @@ export function QuestionCard({
         <div className="border-t" style={{ borderColor: `${color}15` }}>
           <button
             onClick={() => setGuideExpanded(!guideExpanded)}
-            className="w-full px-5 py-3 flex items-center justify-between cursor-pointer hover:bg-white/[0.03] transition-colors"
+            className="w-full px-4 py-2.5 flex items-center justify-between cursor-pointer hover:bg-white/[0.03] transition-colors"
           >
             <div className="flex items-center gap-3 text-xs text-bw-muted min-w-0">
               <span className="text-[10px] uppercase tracking-wider font-bold flex-shrink-0 px-1.5 py-0.5 rounded" style={{ color: "#FF6B35", background: "rgba(255,107,53,0.1)" }}>

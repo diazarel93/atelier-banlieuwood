@@ -1,7 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
-
 interface SelectionBarProps {
   status: string;
   responsesCount: number;
@@ -50,30 +48,24 @@ export function SelectionBar({
   const disabled = actionDisabled || isPending || (status === "responding" && selectedCount < 2);
 
   return (
-    <motion.div
-      initial={{ y: 20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      className="sticky bottom-0 z-10 bg-bw-surface/95 backdrop-blur-sm border-t border-white/10 px-4 py-3 -mx-4 mt-4"
-    >
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3 text-sm">
-          {leftText && <span className="text-bw-muted">{leftText}</span>}
-          {status === "responding" && selectedCount > 0 && (
-            <span className="text-bw-primary font-medium">{selectedCount} sélect.</span>
-          )}
-        </div>
-        <button
-          onClick={onAction}
-          disabled={disabled}
-          className="btn-glow px-5 py-2.5 rounded-xl text-sm font-bold cursor-pointer transition-all hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed"
-          style={{
-            backgroundColor: disabled ? "#22252B" : ctaColor,
-            color: ctaColor === "#7D828A" || disabled ? "#7D828A" : "white",
-          }}
-        >
-          {isPending ? "..." : ctaLabel} {!disabled && status !== "reviewing" && "→"}
-        </button>
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center gap-3 text-sm">
+        {leftText && <span className="text-bw-muted">{leftText}</span>}
+        {status === "responding" && selectedCount > 0 && (
+          <span className="text-bw-primary font-medium">{selectedCount} sélect.</span>
+        )}
       </div>
-    </motion.div>
+      <button
+        onClick={onAction}
+        disabled={disabled}
+        className="btn-glow px-4 py-2 rounded-lg text-xs font-bold cursor-pointer transition-all hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed"
+        style={{
+          backgroundColor: disabled ? "#22252B" : ctaColor,
+          color: ctaColor === "#7D828A" || disabled ? "#7D828A" : "white",
+        }}
+      >
+        {isPending ? "..." : ctaLabel} {!disabled && status !== "reviewing" && "→"}
+      </button>
+    </div>
   );
 }

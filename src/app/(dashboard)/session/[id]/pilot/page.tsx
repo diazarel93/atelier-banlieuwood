@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
@@ -23,6 +23,14 @@ import { ChoicesHistory, type CollectiveChoice } from "@/components/pilot/choice
 import type { StudentState } from "@/components/pilot/pulse-ring";
 import { CONTENT_CATALOG, EMOTIONS, SCENE_ELEMENTS, TIER_COLORS, TIER_LABELS, MAX_SLOTS, MAX_TOKENS, getElement } from "@/lib/module5-data";
 import { DiceBearAvatarMini } from "@/components/avatar-dicebear";
+import { useSound } from "@/hooks/use-sound";
+
+// New cockpit features
+import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
+import { BroadcastModal } from "@/components/pilot/broadcast-modal";
+import { StuckAlert } from "@/components/pilot/stuck-alert";
+import { CompareResponsesModal } from "@/components/pilot/compare-responses-modal";
+import { SessionExport } from "@/components/pilot/session-export";
 
 // Layout components
 import { PilotTopBar } from "@/components/pilot/pilot-top-bar";
@@ -255,6 +263,19 @@ function CockpitContent({
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const [responseFilter, setResponseFilter] = useState<"all" | "visible" | "highlighted">("all");
   const [responseSortMode, setResponseSortMode] = useState<"time" | "highlighted">("time");
+
+  // ── New feature state ──
+  const [showBroadcast, setShowBroadcast] = useState(false);
+  const [showExport, setShowExport] = useState(false);
+  const [showCompare, setShowCompare] = useState(false);
+  const [showRevealAnswer, setShowRevealAnswer] = useState(false);
+  const [showShortcuts, setShowShortcuts] = useState(false);
+  const [customTimerOpen, setCustomTimerOpen] = useState(false);
+  const [customTimerValue, setCustomTimerValue] = useState("");
+  const allRespondedNotified = useRef(false);
+  const [respondingOpenedAt, setRespondingOpenedAt] = useState<number | null>(null);
+  const { play } = useSound();
+
   const queryClient = useQueryClient();
 
   const situation = (situationData as { situation?: { id: string; position: number; category: string; restitutionLabel: string; prompt: string } })?.situation;
@@ -544,6 +565,124 @@ function CockpitContent({
     }
   }, [currentQIndex, previewIndex]);
 
+  // ── Track when responses opened (for elapsed timer) ──
+  useEffect(() => {
+    if (session.status === "responding") {
+      setRespondingOpenedAt((prev) => prev ?? Date.now());
+    } else {
+      setRespondingOpenedAt(null);
+      allRespondedNotified.current = false;
+    }
+  }, [session.status]);
+
+  // ── Notification: all students responded ──
+  useEffect(() => {
+    if (session.status !== "responding" || activeStudents.length === 0) return;
+    if (responses.length >= activeStudents.length && !allRespondedNotified.current) {
+      allRespondedNotified.current = true;
+      play("success");
+      toast.success("Tout le monde a répondu !", { icon: "🎉" });
+    }
+  }, [responses.length, activeStudents.length, session.status, play]);
+
+  // ── Stuck students (>60s without responding during responding) ──
+  const stuckStudents = useMemo(() => {
+    if (session.status !== "responding" || !respondingOpenedAt) return [];
+    const elapsed = Date.now() - respondingOpenedAt;
+    if (elapsed < 60_000) return []; // wait at least 1min before flagging
+    const respondedIds = new Set(responses.map((r) => r.student_id));
+    return activeStudents
+      .filter((s) => !respondedIds.has(s.id))
+      .map((s) => ({ id: s.id, name: s.display_name, avatar: s.avatar }));
+  }, [session.status, respondingOpenedAt, responses, activeStudents]);
+
+  // ── Keyboard shortcuts ──
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      // Ignore if typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      switch (e.key) {
+        case " ": // Space = pause/resume
+          e.preventDefault();
+          if (session.status === "paused") updateSession.mutate({ status: "waiting" });
+          else if (session.status !== "done") updateSession.mutate({ status: "paused" });
+          break;
+        case "b": // B = broadcast
+          e.preventDefault();
+          setShowBroadcast(true);
+          break;
+        case "e": // E = export
+          e.preventDefault();
+          setShowExport(true);
+          break;
+        case "c": // C = compare
+          if (responses.length >= 2) { e.preventDefault(); setShowCompare(true); }
+          break;
+        case "?": // ? = shortcuts help
+          e.preventDefault();
+          setShowShortcuts((v) => !v);
+          break;
+        case "Escape":
+          setShowBroadcast(false);
+          setShowExport(false);
+          setShowCompare(false);
+          setShowShortcuts(false);
+          setShowRevealAnswer(false);
+          break;
+      }
+    }
+    function handleBroadcastEvent() { setShowBroadcast(true); }
+    function handleShortcutsEvent() { setShowShortcuts((v) => !v); }
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("pilot-broadcast", handleBroadcastEvent);
+    window.addEventListener("pilot-shortcuts", handleShortcutsEvent);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("pilot-broadcast", handleBroadcastEvent);
+      window.removeEventListener("pilot-shortcuts", handleShortcutsEvent);
+    };
+  }, [session.status, responses.length, updateSession]);
+
+  // ── Broadcast handler ──
+  function handleBroadcast(message: string) {
+    updateSession.mutate({ broadcast_message: message, broadcast_at: new Date().toISOString() });
+    setShowBroadcast(false);
+    play("send");
+    toast.success("Message envoyé à toute la classe");
+  }
+
+  // ── Batch nudge stuck students ──
+  function handleNudgeAllStuck() {
+    // For students with responses, use nudge; broadcast covers all
+    updateSession.mutate({ broadcast_message: "N'oubliez pas de répondre à la question !", broadcast_at: new Date().toISOString() });
+    play("send");
+    toast.success(`Relance envoyée à ${stuckStudents.length} élève${stuckStudents.length > 1 ? "s" : ""}`);
+  }
+
+  // ── Clear all highlights ──
+  function handleClearAllHighlights() {
+    const highlighted = responses.filter((r) => r.is_highlighted);
+    for (const r of highlighted) {
+      highlightResponse.mutate({ responseId: r.id, highlighted: false });
+    }
+    toast.success(`${highlighted.length} réponse${highlighted.length > 1 ? "s" : ""} dé-projetée${highlighted.length > 1 ? "s" : ""}`);
+  }
+
+  // ── Compare: highlight both selected responses ──
+  function handleHighlightBoth(idA: string, idB: string) {
+    highlightResponse.mutate({ responseId: idA, highlighted: true });
+    highlightResponse.mutate({ responseId: idB, highlighted: true });
+    toast.success("2 réponses projetées pour comparaison");
+  }
+
+  // ── Go back to previous question ──
+  function handlePrevQuestion() {
+    const prevIndex = (session.current_situation_index || 0) - 1;
+    if (prevIndex >= 0) {
+      updateSession.mutate({ current_situation_index: prevIndex, status: "waiting", timer_ends_at: null });
+    }
+  }
+
   // Guide data for the previewed question
   const previewGuide = isPreviewing
     ? getQuestionGuide(session.current_seance || 1, displayIndex + 1, session.current_module)
@@ -587,7 +726,7 @@ function CockpitContent({
       )}
 
       {/* ── SINGLE COLUMN — scrollable center ── */}
-      <main className="flex-1 overflow-y-auto pb-36">
+      <main className="flex-1 overflow-y-auto pb-24">
         <div className="max-w-2xl mx-auto px-4 py-5 space-y-4">
 
           {/* ── CONTEXT ZONE — what the teacher needs to see ── */}
@@ -1579,7 +1718,7 @@ function CockpitContent({
 
           {/* Voting empty state — no votes yet */}
           {isStandardQA && (session.status === "voting" || session.status === "reviewing") && (!voteData || voteData.totalVotes === 0) && (
-            <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-6 text-center space-y-2">
+            <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-4 text-center space-y-2">
               <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                 className="text-2xl">🗳️</motion.div>
               <p className="text-sm text-bw-muted">Vote en cours...</p>
@@ -1602,18 +1741,79 @@ function CockpitContent({
           {/* ── RESPONSE STREAM (Standard Q&A — responding) ── */}
           {isStandardQA && session.status !== "done" && session.status !== "paused" && !(session.status === "voting" || session.status === "reviewing") && (
             <div className="space-y-2">
-              {/* Header: title + animated counter */}
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Réponses</span>
-                <motion.span
-                  key={respondedCount}
-                  initial={{ scale: 1.3, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="text-sm text-bw-teal font-medium tabular-nums"
-                >
-                  {respondedCount}/{activeStudents.length}
-                </motion.span>
+              {/* Prominent response counter + elapsed + action bar */}
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Réponses</span>
+                  <motion.span
+                    key={respondedCount}
+                    initial={{ scale: 1.3, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
+                      respondedCount >= activeStudents.length
+                        ? "bg-green-500/15 text-green-400"
+                        : "bg-bw-teal/10 text-bw-teal"
+                    }`}
+                  >
+                    {respondedCount}/{activeStudents.length}
+                  </motion.span>
+                  <ElapsedTimer startedAt={respondingOpenedAt} />
+                </div>
+                <div className="flex items-center gap-1">
+                  <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
+                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                    📢
+                  </button>
+                  {responses.length >= 2 && (
+                    <button onClick={() => setShowCompare(true)} title="Comparer (C)"
+                      className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-violet hover:bg-bw-violet/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                      ⚖️
+                    </button>
+                  )}
+                  {highlightedCount > 0 && (
+                    <button onClick={handleClearAllHighlights} title="Tout dé-projeter"
+                      className="px-2 py-1 rounded-lg text-[10px] text-bw-amber hover:bg-bw-amber/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                      ✖️ {highlightedCount}
+                    </button>
+                  )}
+                  {questionGuide && (
+                    <button onClick={() => setShowRevealAnswer((v) => !v)} title="Réponse attendue"
+                      className={`px-2 py-1 rounded-lg text-[10px] cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06] ${
+                        showRevealAnswer ? "text-green-400 bg-green-500/10 border-green-500/30" : "text-bw-muted hover:text-green-400 hover:bg-green-500/10"
+                      }`}>
+                      💡
+                    </button>
+                  )}
+                  <button onClick={() => setShowExport(true)} title="Export (E)"
+                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                    📋
+                  </button>
+                </div>
               </div>
+
+              {/* Stuck students alert */}
+              <StuckAlert students={stuckStudents} onNudgeAll={handleNudgeAllStuck} />
+
+              {/* Reveal expected answer */}
+              <AnimatePresence>
+                {showRevealAnswer && questionGuide && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-3 rounded-xl border border-green-500/20" style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.06), transparent)" }}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[10px] uppercase tracking-wider text-green-400 font-semibold">Réponse attendue</span>
+                        <button onClick={() => { navigator.clipboard.writeText(questionGuide.whatToExpect); toast.success("Copié !"); }}
+                          className="text-[10px] text-bw-muted hover:text-green-400 cursor-pointer">Copier</button>
+                      </div>
+                      <p className="text-xs text-bw-text leading-relaxed">{questionGuide.whatToExpect}</p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Filter chips + sort toggle */}
               {responses.length > 0 && (
@@ -1702,9 +1902,9 @@ function CockpitContent({
                   <p className="text-xs text-bw-muted">Aucune réponse dans ce filtre</p>
                 </div>
               ) : session.status === "responding" ? (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-8 text-center space-y-2">
+                <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-5 text-center space-y-2">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
-                    className="text-3xl">✍️</motion.div>
+                    className="text-2xl">✍️</motion.div>
                   <p className="text-sm text-bw-muted">En attente des réponses...</p>
                   <p className="text-sm text-bw-muted">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
                 </div>
@@ -1788,9 +1988,9 @@ function CockpitContent({
 
           {/* M1/Budget empty state */}
           {!isStandardQA && session.status === "responding" && responses.length === 0 && !isBudgetQuiz && !isM2ECChecklist && !isM2ECSceneBuilder && !isM2ECComparison && (
-            <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-8 text-center space-y-2">
+            <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-5 text-center space-y-2">
               <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
-                className="text-3xl">✍️</motion.div>
+                className="text-2xl">✍️</motion.div>
               <p className="text-sm text-bw-muted">En attente des reponses...</p>
             </div>
           )}
@@ -1806,13 +2006,12 @@ function CockpitContent({
       {session.status !== "done" && session.status !== "paused" && (
         <div className="fixed bottom-0 z-30 glass border-t border-white/[0.08]"
           style={{ left: `${sidebarWidth}px`, right: `${rightPanelWidth}px` }}>
-          <div className="max-w-2xl mx-auto px-4 py-3 space-y-2">
+          <div className="max-w-2xl mx-auto px-4 py-2 space-y-1">
             {/* Main CTA */}
             {session.status === "waiting" ? (
               <motion.button whileTap={{ scale: 0.97 }}
                 onClick={() => {
                   if (isPreviewing) {
-                    // First navigate to the previewed question, then open responses
                     setPreviewIndex(null);
                     updateSession.mutate({ current_situation_index: displayIndex, status: "responding", timer_ends_at: null });
                   } else {
@@ -1820,7 +2019,7 @@ function CockpitContent({
                   }
                 }}
                 disabled={updateSession.isPending}
-                className={`w-full max-w-lg mx-auto py-3.5 px-8 rounded-xl font-semibold text-[15px] cursor-pointer transition-all duration-300 disabled:opacity-50 text-white ${
+                className={`w-full max-w-lg mx-auto py-2.5 px-8 rounded-lg font-semibold text-sm cursor-pointer transition-all duration-300 disabled:opacity-50 text-white ${
                   isPreviewing
                     ? "bg-bw-amber btn-glow-amber"
                     : "bg-bw-teal btn-glow-teal"
@@ -1846,12 +2045,12 @@ function CockpitContent({
               <motion.button whileTap={{ scale: 0.97 }}
                 onClick={handleNextAction}
                 disabled={updateSession.isPending || !!(nextAction as { disabled?: boolean }).disabled}
-                className="btn-glow w-full py-4 rounded-2xl font-bold text-base cursor-pointer transition-all duration-200 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                className="btn-glow w-full py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                 style={{ backgroundColor: nextAction.color, color: nextAction.color === "#F59E0B" || nextAction.color === "#888" ? "black" : "white" }}>
                 {nextAction.label}
               </motion.button>
             ) : (
-              <div className="w-full py-4 rounded-2xl text-base text-center bg-bw-elevated text-bw-muted border border-white/[0.06]">
+              <div className="w-full py-2.5 rounded-xl text-sm text-center bg-bw-elevated text-bw-muted border border-white/[0.06]">
                 {session.status === "responding"
                   ? `En attente... (${respondedCount}/${activeStudents.length})`
                   : session.status === "voting"
@@ -1860,38 +2059,68 @@ function CockpitContent({
               </div>
             )}
 
-            {/* Timer row */}
-            {(session.status === "responding" || session.status === "voting") && !session.timer_ends_at && (
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-xs text-bw-muted">Timer</span>
-                {[30, 60, 90].map((sec) => (
-                  <button key={sec}
-                    onClick={() => updateSession.mutate({ timer_ends_at: new Date(Date.now() + sec * 1000).toISOString() })}
-                    className="px-3 py-1.5 rounded-xl text-sm bg-bw-elevated border border-white/[0.06] hover:border-white/15 text-bw-text cursor-pointer transition-colors duration-200">
-                    {sec}s
-                  </button>
-                ))}
+            {/* Timer row + actions — same line */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                {(session.status === "responding" || session.status === "voting") && !session.timer_ends_at ? (
+                  <>
+                    <span className="text-[11px] text-bw-muted">Timer</span>
+                    {[30, 60, 120, 180, 300].map((sec) => (
+                      <button key={sec}
+                        onClick={() => updateSession.mutate({ timer_ends_at: new Date(Date.now() + sec * 1000).toISOString() })}
+                        className="px-2 py-1 rounded-lg text-[11px] bg-bw-elevated border border-white/[0.06] hover:border-white/15 text-bw-text cursor-pointer transition-colors duration-200">
+                        {sec < 60 ? `${sec}s` : `${sec / 60}m`}
+                      </button>
+                    ))}
+                    {customTimerOpen ? (
+                      <div className="flex items-center gap-1">
+                        <input type="number" min="10" max="600" value={customTimerValue} onChange={(e) => setCustomTimerValue(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === "Enter" && customTimerValue) { updateSession.mutate({ timer_ends_at: new Date(Date.now() + parseInt(customTimerValue) * 1000).toISOString() }); setCustomTimerOpen(false); setCustomTimerValue(""); } }}
+                          placeholder="sec" autoFocus
+                          className="w-14 px-1.5 py-1 rounded-lg text-[11px] bg-bw-surface border border-white/[0.06] text-white outline-none focus:border-bw-primary/40" />
+                        <button onClick={() => setCustomTimerOpen(false)} className="text-[10px] text-bw-muted cursor-pointer">✕</button>
+                      </div>
+                    ) : (
+                      <button onClick={() => setCustomTimerOpen(true)} title="Timer personnalisé"
+                        className="px-2 py-1 rounded-lg text-[11px] bg-bw-elevated border border-white/[0.06] hover:border-white/15 text-bw-muted cursor-pointer transition-colors duration-200">
+                        ⏱️
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {/* Retour question précédente */}
+                    {(session.current_situation_index || 0) > 0 && session.status === "waiting" && (
+                      <button onClick={handlePrevQuestion} title="Question précédente"
+                        className="px-2.5 py-1 rounded-lg text-[11px] bg-bw-elevated border border-white/[0.06] hover:border-white/15 text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">
+                        ← Précédente
+                      </button>
+                    )}
+                    {/* Fermer les réponses (non-QA modules during responding) */}
+                    {!isStandardQA && session.status === "responding" && (
+                      <button onClick={() => updateSession.mutate({ status: "reviewing", timer_ends_at: null })} title="Fermer les réponses"
+                        className="px-2.5 py-1 rounded-lg text-[11px] bg-bw-amber/10 border border-bw-amber/20 hover:border-bw-amber/40 text-bw-amber cursor-pointer transition-colors duration-200">
+                        Fermer les réponses
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
-            )}
 
-            {/* Sharing toggle — allow students to see class responses */}
-            <div className="flex items-center justify-between px-1">
+              {/* Sharing toggle */}
               <div className="flex items-center gap-2">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-bw-muted">
-                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
-                </svg>
-                <span className="text-xs text-bw-muted">Partage des réponses</span>
+                <span className="text-[11px] text-bw-muted">Partage</span>
+                <button
+                  onClick={() => updateSession.mutate({ sharing_enabled: !session.sharing_enabled })}
+                  className={`relative w-9 h-[18px] rounded-full transition-colors duration-200 cursor-pointer ${
+                    session.sharing_enabled ? "bg-bw-teal" : "bg-bw-elevated border border-white/[0.1]"
+                  }`}
+                >
+                  <div className={`absolute top-[1px] w-4 h-4 rounded-full bg-white transition-transform duration-200 ${
+                    session.sharing_enabled ? "translate-x-[18px]" : "translate-x-[1px]"
+                  }`} />
+                </button>
               </div>
-              <button
-                onClick={() => updateSession.mutate({ sharing_enabled: !session.sharing_enabled })}
-                className={`relative w-10 h-5 rounded-full transition-colors duration-200 cursor-pointer ${
-                  session.sharing_enabled ? "bg-bw-teal" : "bg-bw-elevated border border-white/[0.1]"
-                }`}
-              >
-                <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform duration-200 ${
-                  session.sharing_enabled ? "translate-x-5" : "translate-x-0.5"
-                }`} />
-              </button>
             </div>
           </div>
         </div>
@@ -1946,6 +2175,83 @@ function CockpitContent({
         )}
       </AnimatePresence>
 
+      {/* ── MODALS ── */}
+      <BroadcastModal
+        open={showBroadcast}
+        onClose={() => setShowBroadcast(false)}
+        onSend={handleBroadcast}
+        isPending={updateSession.isPending}
+      />
+
+      <CompareResponsesModal
+        open={showCompare}
+        onClose={() => setShowCompare(false)}
+        responses={visibleResponses.map((r) => ({
+          id: r.id,
+          text: r.text,
+          studentName: r.students.display_name,
+          studentAvatar: r.students.avatar,
+          is_highlighted: r.is_highlighted,
+        }))}
+        onHighlightBoth={handleHighlightBoth}
+        onClearHighlights={handleClearAllHighlights}
+      />
+
+      <SessionExport
+        open={showExport}
+        onClose={() => setShowExport(false)}
+        sessionTitle={session.title || "Session"}
+        level={session.level || ""}
+        moduleLabel={moduleLabel}
+        questionPrompt={situation?.prompt || ""}
+        responses={responses.map((r) => ({
+          id: r.id,
+          text: r.text,
+          studentName: r.students.display_name,
+          teacher_comment: r.teacher_comment,
+          teacher_score: r.teacher_score,
+          ai_score: r.ai_score,
+          is_highlighted: r.is_highlighted,
+          submitted_at: r.submitted_at,
+        }))}
+        studentCount={activeStudents.length}
+      />
+
+      {/* Keyboard shortcuts overlay */}
+      <AnimatePresence>
+        {showShortcuts && (
+          <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={() => setShowShortcuts(false)} />
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.97 }}
+              className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] max-w-[90vw] glass-card rounded-2xl border border-white/[0.08] p-5 space-y-3"
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold">Raccourcis clavier</h3>
+                <button onClick={() => setShowShortcuts(false)} className="text-bw-muted hover:text-white text-sm cursor-pointer">✕</button>
+              </div>
+              <div className="space-y-1.5">
+                {[
+                  { key: "Espace", action: "Pause / Reprendre" },
+                  { key: "B", action: "Message broadcast" },
+                  { key: "E", action: "Export de séance" },
+                  { key: "C", action: "Comparer 2 réponses" },
+                  { key: "?", action: "Raccourcis clavier" },
+                  { key: "Échap", action: "Fermer le modal" },
+                ].map(({ key, action }) => (
+                  <div key={key} className="flex items-center justify-between">
+                    <span className="text-xs text-bw-text">{action}</span>
+                    <kbd className="text-[10px] px-2 py-0.5 rounded bg-bw-elevated border border-white/[0.06] text-bw-muted font-mono">{key}</kbd>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
     </div>
   );
@@ -1957,7 +2263,7 @@ function CockpitContent({
 
 const SIDEBAR_WIDTH_EXPANDED = 240;
 const SIDEBAR_WIDTH_COLLAPSED = 56;
-const RIGHT_PANEL_WIDTH = 280;
+const RIGHT_PANEL_WIDTH = 300;
 
 export default function PilotPage() {
   const { id: sessionId } = useParams<{ id: string }>();
@@ -2502,6 +2808,12 @@ export default function PilotPage() {
         showStudents={showStudents}
         currentQuestionIndex={hasActiveModule ? currentQuestionIndex : undefined}
         totalQuestions={hasActiveModule ? totalQuestions : undefined}
+        onBroadcast={() => {
+          // Broadcast is handled in CockpitContent, but we still expose a top-bar shortcut
+          // It dispatches a custom event that CockpitContent listens to
+          window.dispatchEvent(new CustomEvent("pilot-broadcast"));
+        }}
+        onShortcuts={() => window.dispatchEvent(new CustomEvent("pilot-shortcuts"))}
       />
 
       {/* ── QR Panel ── */}

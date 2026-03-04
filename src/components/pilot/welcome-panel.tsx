@@ -28,14 +28,14 @@ export function WelcomePanel({
   onCopyCode,
 }: WelcomePanelProps) {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 space-y-6 relative">
+    <div className="max-w-2xl mx-auto px-4 py-4 space-y-4 relative">
       {/* Background film strips */}
       <FilmStripDecoration className="left-0 top-0" />
       <FilmStripDecoration className="right-0 bottom-0" />
 
       {/* Session info — cinematic header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-        <h1 className="text-2xl font-bold font-cinema tracking-wider text-gradient-cinema">
+        <h1 className="text-xl font-bold font-cinema tracking-wider text-gradient-cinema">
           {(sessionTitle || "Session").replace(/\s*[-—]\s*$/, "")}
         </h1>
         <p className="text-xs text-bw-muted mt-1">{level}</p>
@@ -53,14 +53,14 @@ export function WelcomePanel({
           <div className="absolute inset-0 bg-gradient-to-br from-bw-primary/10 via-bw-bg to-bw-violet/10" />
           <div className="absolute inset-0 border border-bw-primary/20 rounded-2xl" />
 
-          <div className="relative p-6 space-y-5">
+          <div className="relative p-4 space-y-3">
             {/* Clapperboard illustration */}
             <div className="flex justify-center">
               <motion.div
                 animate={{ rotate: [0, 2, -2, 0] }}
                 transition={{ repeat: Infinity, duration: 4, repeatDelay: 2 }}
               >
-                <ClapperboardIllustration size={100} />
+                <ClapperboardIllustration size={72} />
               </motion.div>
             </div>
 
@@ -103,7 +103,7 @@ export function WelcomePanel({
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 + i * 0.06 }}
-                      className="w-10 h-12 rounded-lg flex items-center justify-center text-xl font-bold font-mono border border-white/10 group-hover:border-bw-primary/40 transition-colors"
+                      className="w-8 h-10 rounded-lg flex items-center justify-center text-lg font-bold font-mono border border-white/10 group-hover:border-bw-primary/40 transition-colors"
                       style={{ background: "linear-gradient(180deg, rgba(255,107,53,0.08), rgba(255,107,53,0.02))" }}
                     >
                       {char}
@@ -163,11 +163,11 @@ export function WelcomePanel({
       )}
 
       {/* CTA to select module */}
-      <div className="text-center py-6 space-y-4">
+      <div className="text-center py-4 space-y-3">
         <motion.div
           animate={{ y: [0, -5, 0] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center border border-white/[0.08]"
+          className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center border border-white/[0.08]"
           style={{ background: "linear-gradient(135deg, rgba(139,92,246,0.1), rgba(78,205,196,0.05))" }}
         >
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="1.5" strokeLinecap="round">

@@ -44,6 +44,8 @@ export async function PATCH(
     "timer_ends_at",
     "completed_modules",
     "sharing_enabled",
+    "broadcast_message",
+    "broadcast_at",
   ];
   const updates: Record<string, unknown> = {};
   for (const key of allowed) {
@@ -76,6 +78,12 @@ export async function PATCH(
   }
   if (updates.sharing_enabled !== undefined && typeof updates.sharing_enabled !== "boolean") {
     return NextResponse.json({ error: "sharing_enabled doit être un booléen" }, { status: 400 });
+  }
+  if (updates.broadcast_message !== undefined && updates.broadcast_message !== null) {
+    updates.broadcast_message = String(updates.broadcast_message).trim().slice(0, 200);
+  }
+  if (updates.broadcast_at !== undefined && updates.broadcast_at !== null && typeof updates.broadcast_at !== "string") {
+    return NextResponse.json({ error: "broadcast_at invalide" }, { status: 400 });
   }
   if (updates.completed_modules !== undefined) {
     const VALID_MODULE_IDS = ["m1", "m1a", "m1b", "m1c", "m1d", "m1e", "m2a", "m2b", "m2c", "m2d", "m2-perso", "m2", "m3", "m4", "m5", "u2a", "u2b", "u2c", "u2d", "m10a", "m10b"];
