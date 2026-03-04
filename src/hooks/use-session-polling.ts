@@ -94,6 +94,25 @@ export interface Module10Data {
   allSubmissions?: { studentName: string; text: string; studentId: string; avatar?: Record<string, unknown> }[];
 }
 
+export interface Module11Data {
+  type: "citation" | "scene" | "poster" | "debat";
+  theme: "raconter" | "émotion" | "héros" | "coulisses";
+  /** The stimulus text (quote for citation, instruction for poster/scene, statement for debat) */
+  text: string;
+  author: string | null;
+  authorRole: string | null;
+  authorBio: string | null;
+  authorImageUrl: string | null;
+  filmography: { title: string; year: number; posterPath: string }[] | null;
+  imageUrl: string | null;
+  videoId: string | null;
+  videoStart: number | null;
+  videoEnd: number | null;
+  sourceTitle: string | null;
+  sourceYear: number | null;
+  debatOptions: { key: string; label: string }[] | null;
+}
+
 export interface SessionState {
   session: {
     id: string;
@@ -123,6 +142,7 @@ export interface SessionState {
   module1?: Module1Data;
   module5?: Module5Data;
   module10?: Module10Data;
+  module11?: Module11Data;
   hasResponded: boolean;
   hasVoted: boolean;
   voteOptions: { id: string; text: string }[];

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { useSessionPolling, Module10Data } from "@/hooks/use-session-polling";
+import { useSessionPolling, Module10Data, Module11Data } from "@/hooks/use-session-polling";
 import { useRealtimeInvalidation } from "@/hooks/use-realtime-invalidation";
 import { useQuery } from "@tanstack/react-query";
 import { CATEGORY_COLORS, TEMPLATE_LABELS, MODULE_SEANCE_SITUATIONS, PRODUCTION_CATEGORIES, getSeanceMax } from "@/lib/constants";
@@ -220,9 +220,12 @@ export default function ScreenPage() {
   const isM10Special = isM10 && !(isM10Etsi && session.currentSituationIndex === 1); // pos 1 séance 1 = QCM standard
   const isM10QA = isM10 && !isM10Special;
   const module10 = data.module10 as Module10Data | undefined;
+  // Module 11 flags
+  const isM11 = session.currentModule === 11;
+  const module11 = data.module11 as Module11Data | undefined;
   const isScreenQA = session.currentModule === 3 || session.currentModule === 4 || (session.currentModule === 9 && currentSeance !== 2) || (session.currentModule === 2 && !isM2ECSpecial && !isM2ECComparison) || isM10QA;
   const maxSituations = session.currentModule === 2 ? MODULE_SEANCE_SITUATIONS?.[2]?.[currentSeance] || getSeanceMax(session.currentModule, currentSeance) : getSeanceMax(session.currentModule, currentSeance);
-  const progressPct = (isScreenQA || isM10)
+  const progressPct = (isScreenQA || isM10 || isM11)
     ? Math.min(100, Math.round(((session.currentSituationIndex + 1) / maxSituations) * 100))
     : 0;
 
@@ -1368,6 +1371,155 @@ export default function ScreenPage() {
                 <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#06B6D4" }} />
                 <span className="text-lg text-bw-muted">En attente de la sélection</span>
               </motion.div>
+            </motion.div>
+          )}
+
+          {/* ═══════════════════════════════════════════════════════ */}
+          {/* MODULE 11 — CINÉ-DÉBAT — SCREEN PROJECTOR             */}
+          {/* ═══════════════════════════════════════════════════════ */}
+
+          {/* M11 — Stimulus projection (all types) */}
+          {(session.status === "waiting" || session.status === "responding") && isM11 && module11 && (
+            <motion.div key={`m11-stim-${session.currentSituationIndex}`} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              className="max-w-5xl w-full space-y-6">
+              {/* Type badge */}
+              <div className="text-center">
+                <span className="text-lg font-semibold uppercase tracking-wider px-5 py-2 rounded-full inline-block"
+                  style={{ backgroundColor: "rgba(225,29,72,0.15)", color: "#E11D48" }}>
+                  {module11.type === "citation" ? "💬 Citation" : module11.type === "scene" ? "🎬 Scène" : module11.type === "poster" ? "🖼️ Affiche" : "⚖️ Débat"}
+                </span>
+              </div>
+
+              {/* Citation: quote + author portrait + filmography */}
+              {module11.type === "citation" && (
+                <div className="text-center space-y-6">
+                  <motion.blockquote
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="relative px-8 py-6 mx-auto max-w-3xl rounded-2xl border border-white/[0.08]"
+                    style={{ background: "linear-gradient(135deg, rgba(225,29,72,0.06), rgba(26,26,26,0.9))" }}>
+                    <span className="absolute top-3 left-5 text-5xl opacity-20" style={{ color: "#E11D48" }}>&ldquo;</span>
+                    <p className="text-2xl sm:text-3xl font-medium text-bw-heading italic leading-relaxed pl-6">{module11.text}</p>
+                  </motion.blockquote>
+                  {module11.author && (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                      className="flex items-center justify-center gap-4">
+                      {module11.authorImageUrl && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={module11.authorImageUrl} alt={module11.author}
+                          className="w-16 h-16 rounded-full object-cover border-2" style={{ borderColor: "#E11D48" }} />
+                      )}
+                      <div className="text-left">
+                        <p className="text-xl font-bold text-bw-heading">{module11.author}</p>
+                        {module11.authorRole && <p className="text-sm text-bw-muted">{module11.authorRole}</p>}
+                        {module11.authorBio && <p className="text-sm text-bw-text mt-0.5">{module11.authorBio}</p>}
+                      </div>
+                    </motion.div>
+                  )}
+                  {module11.filmography && module11.filmography.length > 0 && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+                      className="flex gap-4 justify-center">
+                      {module11.filmography.map((film, i) => (
+                        <div key={i} className="text-center">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={`https://image.tmdb.org/t/p/w185${film.posterPath}`} alt={film.title}
+                            className="w-24 h-36 rounded-xl object-cover border border-white/[0.08]" />
+                          <p className="text-xs text-bw-muted mt-1">{film.title} ({film.year})</p>
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </div>
+              )}
+
+              {/* Scene: YouTube video */}
+              {module11.type === "scene" && module11.videoId && (
+                <div className="text-center space-y-4">
+                  <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                    className="relative w-full max-w-4xl mx-auto aspect-video rounded-2xl overflow-hidden border border-white/[0.08]"
+                    style={{ boxShadow: "0 0 60px rgba(225,29,72,0.1), 0 8px 32px rgba(0,0,0,0.4)" }}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${module11.videoId}?rel=0&modestbranding=1${module11.videoStart ? `&start=${module11.videoStart}` : ""}${module11.videoEnd ? `&end=${module11.videoEnd}` : ""}`}
+                      title={module11.sourceTitle || "Scène"}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </motion.div>
+                  {module11.sourceTitle && (
+                    <p className="text-lg text-bw-muted">
+                      {module11.sourceTitle}{module11.sourceYear && <span className="ml-1">({module11.sourceYear})</span>}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Poster: film poster image */}
+              {module11.type === "poster" && module11.imageUrl && (
+                <div className="text-center space-y-4">
+                  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                    className="inline-block rounded-2xl overflow-hidden border border-white/[0.08]"
+                    style={{ boxShadow: "0 0 60px rgba(225,29,72,0.1), 0 8px 32px rgba(0,0,0,0.4)" }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={module11.imageUrl} alt={module11.sourceTitle || "Affiche"}
+                      className="max-h-[55vh] object-contain" />
+                  </motion.div>
+                  {module11.sourceTitle && (
+                    <p className="text-lg text-bw-muted">
+                      {module11.sourceTitle}{module11.sourceYear && <span className="ml-1">({module11.sourceYear})</span>}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Debat: statement + options display */}
+              {module11.type === "debat" && (
+                <div className="text-center space-y-6">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="px-8 py-8 mx-auto max-w-3xl rounded-2xl border border-white/[0.08]"
+                    style={{ background: "linear-gradient(135deg, rgba(225,29,72,0.06), rgba(26,26,26,0.9))" }}>
+                    <span className="text-4xl mb-4 block">⚖️</span>
+                    <p className="text-2xl sm:text-3xl font-bold text-bw-heading leading-relaxed">{module11.text}</p>
+                  </motion.div>
+                  <div className="flex gap-4 justify-center">
+                    {module11.debatOptions?.map((opt, i) => (
+                      <motion.div key={opt.key}
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 + i * 0.1 }}
+                        className="px-6 py-4 rounded-2xl border border-white/[0.08] bg-bw-surface text-center min-w-[140px]">
+                        <span className="text-3xl block mb-2">
+                          {opt.key === "daccord" ? "👍" : opt.key === "pasdaccord" ? "👎" : "🤔"}
+                        </span>
+                        <p className="text-lg font-medium text-bw-heading">{opt.label}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Live counter */}
+              {session.status === "responding" && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="text-center">
+                  <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-bw-surface border border-white/[0.06]">
+                    <motion.div
+                      animate={{ scale: [1, 1.3, 1] }}
+                      transition={{ repeat: Infinity, duration: 1.5 }}
+                      className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                    <span className="text-lg tabular-nums">
+                      <span className="font-bold text-bw-heading">{data.responsesCount}</span>
+                      <span className="text-bw-muted">/{data.connectedCount}</span>
+                    </span>
+                    <span className="text-bw-muted">réponses</span>
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           )}
 

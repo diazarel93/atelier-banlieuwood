@@ -47,6 +47,7 @@ import { ObjectifObstacleState } from "@/components/play/module-10/objectif-obst
 import { PitchAssemblyState } from "@/components/play/module-10/pitch-assembly-state";
 import { ChronoTestState } from "@/components/play/module-10/chrono-test-state";
 import { PitchConfrontationState } from "@/components/play/module-10/pitch-confrontation-state";
+import { CineDebatState } from "@/components/play/module-11/cine-debat-state";
 
 
 // ——— Main Page ———
@@ -630,6 +631,21 @@ export default function PlayPage() {
           return <PitchConfrontationState key="m10-confrontation" module10={m10} />;
         }
       }
+    }
+
+    // ── MODULE 11: Ciné-Débat — rich stimulus component ──
+    if (session.currentModule === 11 && data.module11 && session.status === "responding") {
+      if (hasResponded) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} />;
+      return (
+        <CineDebatState
+          key={`m11-${situation?.id}`}
+          module11={data.module11}
+          prompt={situation?.prompt || ""}
+          nudgeText={situation?.nudgeText || null}
+          onSubmit={handleRespond}
+          submitting={submitting}
+        />
+      );
     }
 
     // Module 9 séance 2 — Budget game (other séances use regular Q&A)

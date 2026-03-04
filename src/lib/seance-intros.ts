@@ -197,6 +197,52 @@ export const SEANCE_INTROS: SeanceIntro[] = [
     duration: "20 min",
   },
 
+  // ── MODULE 11 — CINÉ-DÉBAT ──
+  {
+    key: "11-1",
+    title: "L'Art de Raconter",
+    subtitle: "Ciné-Débat",
+    activityType: "Débat · Analyse filmique",
+    description: "Citations, affiches, scènes : découvrez comment les grands réalisateurs racontent une histoire.",
+    steps: ["Observer le stimulus (citation, affiche ou scène)", "Lire la question d'analyse", "Répondre ou débattre", "Confronter les réponses de la classe"],
+    color: "#E11D48",
+    icon: "📽️",
+    duration: "25 min",
+  },
+  {
+    key: "11-2",
+    title: "Émotions à l'Écran",
+    subtitle: "Ciné-Débat",
+    activityType: "Débat · Émotion",
+    description: "Pourquoi cette scène fait pleurer ? Les mécanismes de l'émotion au cinéma.",
+    steps: ["Regarder la scène ou lire la citation", "Décrypter les mécanismes émotionnels", "Répondre ou voter", "Débattre en classe"],
+    color: "#E11D48",
+    icon: "🎭",
+    duration: "25 min",
+  },
+  {
+    key: "11-3",
+    title: "Héros & Anti-Héros",
+    subtitle: "Ciné-Débat",
+    activityType: "Débat · Personnages",
+    description: "Sacrifice, pardon, trahison. Qu'est-ce qui fait un vrai héros ? Et un bon méchant ?",
+    steps: ["Analyser le personnage présenté", "Prendre position (héros ou anti-héros ?)", "Argumenter votre choix", "Débat collectif + vote"],
+    color: "#E11D48",
+    icon: "🦸",
+    duration: "25 min",
+  },
+  {
+    key: "11-4",
+    title: "Les Coulisses",
+    subtitle: "Ciné-Débat",
+    activityType: "Débat · Production",
+    description: "Budget, cascades, IA, montage. Les secrets de fabrication du cinéma.",
+    steps: ["Découvrir les coulisses présentées", "Réfléchir à la question posée", "Répondre ou voter", "Discussion finale"],
+    color: "#E11D48",
+    icon: "🎬",
+    duration: "25 min",
+  },
+
   // ── MODULE 3 — LE HÉROS ──
   {
     key: "3-1",
