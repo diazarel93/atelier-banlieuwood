@@ -5,7 +5,7 @@ import { useCallback, useRef } from "react";
 // Lightweight sound effects using Web Audio API — no external files needed
 // Each sound is generated procedurally
 
-type SoundName = "send" | "success" | "vote" | "reveal" | "jingle" | "drumroll" | "cardReveal";
+type SoundName = "send" | "success" | "vote" | "reveal" | "jingle" | "drumroll" | "cardReveal" | "tick" | "fanfare" | "levelUp";
 
 function createAudioContext(): AudioContext | null {
   try {
@@ -159,6 +159,67 @@ function playCardReveal(ctx: AudioContext) {
   });
 }
 
+function playTick(ctx: AudioContext) {
+  // Short 800Hz sine tick — 50ms
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(800, ctx.currentTime);
+  gain.gain.setValueAtTime(0.1, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.05);
+}
+
+function playFanfare(ctx: AudioContext) {
+  // Bright C-E-G-C triangle fanfare — 0.6s
+  [523, 659, 784, 1047].forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "triangle";
+    const t = ctx.currentTime + i * 0.12;
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(0.14, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
+    osc.start(t);
+    osc.stop(t + 0.25);
+  });
+}
+
+function playLevelUp(ctx: AudioContext) {
+  // Sweep 200→1200Hz + sparkle E6+G6
+  const sweep = ctx.createOscillator();
+  const sweepGain = ctx.createGain();
+  sweep.connect(sweepGain);
+  sweepGain.connect(ctx.destination);
+  sweep.type = "sine";
+  sweep.frequency.setValueAtTime(200, ctx.currentTime);
+  sweep.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.35);
+  sweepGain.gain.setValueAtTime(0.12, ctx.currentTime);
+  sweepGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+  sweep.start(ctx.currentTime);
+  sweep.stop(ctx.currentTime + 0.4);
+
+  // Sparkle: E6 + G6
+  [1319, 1568].forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    const t = ctx.currentTime + 0.3 + i * 0.06;
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(0.08, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+    osc.start(t);
+    osc.stop(t + 0.3);
+  });
+}
+
 const SOUNDS: Record<SoundName, (ctx: AudioContext) => void> = {
   send: playSend,
   success: playSuccess,
@@ -167,12 +228,19 @@ const SOUNDS: Record<SoundName, (ctx: AudioContext) => void> = {
   jingle: playJingle,
   drumroll: playDrumroll,
   cardReveal: playCardReveal,
+  tick: playTick,
+  fanfare: playFanfare,
+  levelUp: playLevelUp,
 };
 
-export function useSound() {
+export function useSound(opts?: { muted?: boolean }) {
   const ctxRef = useRef<AudioContext | null>(null);
+  const mutedRef = useRef(opts?.muted ?? false);
+  mutedRef.current = opts?.muted ?? false;
 
   const play = useCallback((name: SoundName) => {
+    if (mutedRef.current) return;
+
     // Lazy init — AudioContext requires user interaction first
     if (!ctxRef.current) {
       ctxRef.current = createAudioContext();

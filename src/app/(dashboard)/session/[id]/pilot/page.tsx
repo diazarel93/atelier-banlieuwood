@@ -5,16 +5,23 @@ import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { useRealtimeInvalidation } from "@/hooks/use-realtime-invalidation";
+import { usePilotKeyboardShortcuts } from "@/hooks/use-pilot-keyboard-shortcuts";
+import { useCockpitModuleFlags } from "@/hooks/use-cockpit-module-flags";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CATEGORY_COLORS, PRODUCTION_CATEGORIES, getSeanceMax } from "@/lib/constants";
-import { QRCodeSVG } from "qrcode.react";
+import dynamic from "next/dynamic";
 import { getModuleGuide, getQuestionGuide } from "@/lib/guide-data";
+
+const QRCodeSVG = dynamic(
+  () => import("qrcode.react").then(mod => ({ default: mod.QRCodeSVG })),
+  { ssr: false, loading: () => <div className="w-full h-full bg-white/5 rounded animate-pulse" /> }
+);
 import { MODULES, PHASES, getModuleByDb, getPhaseForModule } from "@/lib/modules-data";
 
 // Cockpit components
 import { InlineActions, TeacherCommentBadge } from "@/components/pilot/response-actions";
 import { QuestionCard } from "@/components/pilot/question-card";
-import { ResponseStream } from "@/components/pilot/response-stream";
 import { type ResponseCardResponse } from "@/components/pilot/response-card";
 import { InlineReformulation } from "@/components/pilot/inline-reformulation";
 import { SelectionBar } from "@/components/pilot/selection-bar";
@@ -25,12 +32,22 @@ import { CONTENT_CATALOG, EMOTIONS, SCENE_ELEMENTS, TIER_COLORS, TIER_LABELS, MA
 import { DiceBearAvatarMini } from "@/components/avatar-dicebear";
 import { useSound } from "@/hooks/use-sound";
 
+// Extracted cockpit sections
+import { Module9BudgetOverview } from "@/components/pilot/module9-budget-overview";
+import { Module5EmotionDistribution } from "@/components/pilot/module5-emotion-distribution";
+import { KeyboardShortcutsModal } from "@/components/pilot/keyboard-shortcuts-modal";
+import { VotingResults } from "@/components/pilot/voting-results";
+import { ResponseStreamSection } from "@/components/pilot/response-stream-section";
+import { QuestionNavigation } from "@/components/pilot/question-navigation";
+import { TimerSection } from "@/components/pilot/timer-section";
+
 // New cockpit features
-import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
 import { BroadcastModal } from "@/components/pilot/broadcast-modal";
-import { StuckAlert } from "@/components/pilot/stuck-alert";
 import { CompareResponsesModal } from "@/components/pilot/compare-responses-modal";
 import { SessionExport } from "@/components/pilot/session-export";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { HelpButton } from "@/components/help-button";
+import { ConfirmModal } from "@/components/confirm-modal";
 
 // Layout components
 import { PilotTopBar } from "@/components/pilot/pilot-top-bar";
@@ -38,6 +55,8 @@ import { ModuleSidebar, MobileSidebarDrawer } from "@/components/pilot/module-si
 import { WelcomePanel } from "@/components/pilot/welcome-panel";
 import { ModuleBriefing } from "@/components/pilot/module-briefing";
 import { ContextPanel } from "@/components/pilot/context-panel";
+import { getNextAction, type NextAction } from "@/components/pilot/get-next-action";
+import { TeamManager } from "@/components/pilot/team-manager";
 
 interface Session {
   id: string;
@@ -51,6 +70,7 @@ interface Session {
   timer_ends_at: string | null;
   completed_modules: string[];
   sharing_enabled: boolean;
+  mute_sounds: boolean;
   students: Student[];
 }
 
@@ -93,103 +113,6 @@ interface VoteResult {
 // ——————————————————————————————————————————————————————
 // COCKPIT — The in-game facilitator view
 // ——————————————————————————————————————————————————————
-
-// Guided flow: the next logical action based on current status
-function getNextAction(status: string, visibleCount: number, voteOptionCount: number, hasVoteResults: boolean, currentModule: number, budgetSubmitted: number, canGoNext?: boolean, currentSeance?: number, currentSituationIndex?: number) {
-  // Module 9 séance 2 = budget quiz (special flow, old Module 2)
-  const isBudgetQuiz = currentModule === 9 && currentSeance === 2;
-
-  // Module 2 special flows — Émotion Cachée (checklist s1i0, scene builder s2i1)
-  if (currentModule === 2) {
-    const isChecklist = currentSeance === 1 && currentSituationIndex === 0;
-    const isSceneBuilder = currentSeance === 2 && currentSituationIndex === 1;
-
-    if (isChecklist || isSceneBuilder) {
-      switch (status) {
-        case "waiting":
-          return { label: "Ouvrir", action: "responding", color: "#EC4899" };
-        case "responding":
-          return { label: "Question suivante", action: "next", color: "#4ECDC4" };
-        default:
-          return null;
-      }
-    }
-    // Standard Q&A for other module 2 EC steps — fall through to default handler
-  }
-
-  if (currentModule === 1) {
-    const isImageSeance = currentSeance && currentSeance >= 2 && currentSeance <= 4;
-    switch (status) {
-      case "waiting":
-        return { label: "Ouvrir les réponses", action: "responding", color: "#8B5CF6" };
-      case "responding":
-        if (isImageSeance) {
-          // Image séances: go to reviewing for confrontation
-          if (visibleCount === 0) return null;
-          return { label: "Voir les réponses", action: "reviewing", color: "#8B5CF6" };
-        }
-        // Positioning: auto-advance handled by situation_index, or done
-        if (canGoNext === false) {
-          return { label: "Terminer le module", action: "done-module", color: "#10B981" };
-        }
-        return { label: "Question suivante", action: "next", color: "#4ECDC4" };
-      case "reviewing":
-        // Image confrontation: teacher is reviewing, highlight 2 responses → project
-        return { label: "Terminer le module", action: "done-module", color: "#10B981" };
-      case "done":
-        return null;
-      default:
-        return null;
-    }
-  }
-
-  // Module 10 — Et si... + Pitch: special components advance with "next"
-  if (currentModule === 10) {
-    switch (status) {
-      case "waiting":
-        return { label: "Ouvrir", action: "responding", color: "#06B6D4" };
-      case "responding":
-        if (canGoNext === false) {
-          return { label: "Terminer le module", action: "done-module", color: "#10B981" };
-        }
-        return { label: "Étape suivante", action: "next", color: "#06B6D4" };
-      case "done":
-        return null;
-      default:
-        return null;
-    }
-  }
-
-  if (isBudgetQuiz) {
-    switch (status) {
-      case "waiting":
-        return { label: "Lancer les choix", action: "responding", color: "#4ECDC4" };
-      case "responding":
-        if (budgetSubmitted === 0) return null;
-        return { label: `Terminer (${budgetSubmitted} soumis)`, action: "reviewing", color: "#8B5CF6" };
-      case "reviewing":
-        return { label: "Terminé", action: "done-module", color: "#10B981" };
-      default:
-        return null;
-    }
-  }
-
-  switch (status) {
-    case "waiting":
-      return { label: "Ouvrir les réponses", action: "responding", color: "#4ECDC4" };
-    case "responding":
-      if (visibleCount === 0) return null;
-      if (voteOptionCount < 2) return { label: `Sélectionner pour le vote (${voteOptionCount}/2 min)`, action: "", color: "#888", disabled: true };
-      return { label: `Lancer le vote (${voteOptionCount} options)`, action: "voting", color: "#FF6B35" };
-    case "voting":
-      if (!hasVoteResults) return null;
-      return { label: "Voir les résultats", action: "reviewing", color: "#8B5CF6" };
-    case "reviewing":
-      return { label: "Question suivante", action: "next", color: "#4ECDC4" };
-    default:
-      return null;
-  }
-}
 
 function CockpitContent({
   session,
@@ -270,8 +193,8 @@ function CockpitContent({
   const [showCompare, setShowCompare] = useState(false);
   const [showRevealAnswer, setShowRevealAnswer] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
-  const [customTimerOpen, setCustomTimerOpen] = useState(false);
-  const [customTimerValue, setCustomTimerValue] = useState("");
+  const [focusMode, setFocusMode] = useState(false);
+  const [kickTarget, setKickTarget] = useState<{ id: string; name: string } | null>(null);
   const allRespondedNotified = useRef(false);
   const [respondingOpenedAt, setRespondingOpenedAt] = useState<number | null>(null);
   const { play } = useSound();
@@ -313,7 +236,7 @@ function CockpitContent({
       return res.json();
     },
     enabled: session.current_module === 9 && (session.current_seance || 1) === 2,
-    refetchInterval: session.current_module === 9 && (session.current_seance || 1) === 2 ? 4000 : false,
+    refetchInterval: session.current_module === 9 && (session.current_seance || 1) === 2 ? 30_000 : false,
   });
 
   // Fetch all scenes for Module 2 EC (séances 2-3)
@@ -337,7 +260,7 @@ function CockpitContent({
       return res.json();
     },
     enabled: isM2ECWithScenes,
-    refetchInterval: isM2ECWithScenes ? 5000 : false,
+    refetchInterval: isM2ECWithScenes ? 30_000 : false,
   });
 
   const selectComparison = useMutation({
@@ -358,30 +281,13 @@ function CockpitContent({
     onError: () => toast.error("Erreur de sélection"),
   });
 
-  const isBudgetQuiz = session.current_module === 9 && (session.current_seance || 1) === 2;
-  const isM1Positioning = session.current_module === 1 && (session.current_seance || 1) === 1;
-  const isM1Image = session.current_module === 1 && (session.current_seance || 1) >= 2 && (session.current_seance || 1) <= 4;
-  const isM1Notebook = session.current_module === 1 && (session.current_seance || 1) === 5;
-  const isM2ECChecklist = session.current_module === 2 && (session.current_seance || 1) === 1 && (session.current_situation_index || 0) === 0;
-  const isM2ECSceneBuilder = session.current_module === 2 && (session.current_seance || 1) === 2 && (session.current_situation_index || 0) === 1;
-  const isM2ECComparison = session.current_module === 2 && (session.current_seance || 1) === 3 && (session.current_situation_index || 0) === 0;
-  const isM10Etsi = session.current_module === 10 && (session.current_seance || 1) === 1;
-  const isM10Pitch = session.current_module === 10 && (session.current_seance || 1) === 2;
-  const isM10Any = session.current_module === 10;
-  // M10 special = positions with custom components (not standard Q&A)
-  // Séance 1: pos 0 (etsi), pos 2 (idea-bank) are special; pos 1 (qcm) is standard
-  // Séance 2: all positions are special (avatar, objectif, pitch, chrono, confrontation)
-  const isM10SpecialPosition = isM10Any && !(isM10Etsi && (session.current_situation_index || 0) === 1);
-  const isM2ECSpecial = isM2ECChecklist || isM2ECSceneBuilder;
-  const isQAModule = session.current_module === 3 || session.current_module === 4 || isM1Positioning || session.current_module === 9 || (session.current_module === 2 && !isM2ECSpecial && !isM2ECComparison) || (isM10Any && !isM10SpecialPosition);
-  const seance = session.current_seance || 1;
-  const maxSituations = isM1Positioning ? 8
-    : (isM1Image || isM1Notebook) ? 1
-    : session.current_module === 4 ? 8
-    : getSeanceMax(session.current_module, seance);
-  const isM2ECAny = session.current_module === 2;
-  const canGoNext = (isQAModule || isM2ECAny || isM10Any) && (session.current_situation_index || 0) < maxSituations - 1;
-  const canGoPrev = (isQAModule || isM2ECAny || isM10Any) && (session.current_situation_index || 0) > 0;
+  const {
+    isBudgetQuiz, isM1Positioning, isM1Image, isM1Notebook,
+    isM2ECChecklist, isM2ECSceneBuilder, isM2ECComparison,
+    isM10Etsi, isM10Pitch, isM10Any, isM10SpecialPosition,
+    isM2ECSpecial, isM2ECAny, isQAModule,
+    maxSituations, canGoNext, canGoPrev, seance,
+  } = useCockpitModuleFlags(session);
 
   const nextAction = getNextAction(session.status, visibleResponses.length, voteOptionCount, !!(voteData && voteData.totalVotes > 0), session.current_module, budgetSubmitted, canGoNext, session.current_seance || 1, session.current_situation_index || 0);
 
@@ -488,7 +394,14 @@ function CockpitContent({
   function skipSituation() {
     if (!canGoNext) return;
     goToSituation(session.current_situation_index + 1);
-    toast("Situation passée");
+    toast("Question passée");
+  }
+
+  function prevSituation() {
+    const idx = session.current_situation_index || 0;
+    if (idx <= 0) return;
+    goToSituation(idx - 1);
+    toast("Retour à la question précédente");
   }
 
 
@@ -596,52 +509,35 @@ function CockpitContent({
       .map((s) => ({ id: s.id, name: s.display_name, avatar: s.avatar }));
   }, [session.status, respondingOpenedAt, responses, activeStudents]);
 
-  // ── Keyboard shortcuts ──
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      // Ignore if typing in an input
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      switch (e.key) {
-        case " ": // Space = pause/resume
-          e.preventDefault();
-          if (session.status === "paused") updateSession.mutate({ status: "waiting" });
-          else if (session.status !== "done") updateSession.mutate({ status: "paused" });
-          break;
-        case "b": // B = broadcast
-          e.preventDefault();
-          setShowBroadcast(true);
-          break;
-        case "e": // E = export
-          e.preventDefault();
-          setShowExport(true);
-          break;
-        case "c": // C = compare
-          if (responses.length >= 2) { e.preventDefault(); setShowCompare(true); }
-          break;
-        case "?": // ? = shortcuts help
-          e.preventDefault();
-          setShowShortcuts((v) => !v);
-          break;
-        case "Escape":
-          setShowBroadcast(false);
-          setShowExport(false);
-          setShowCompare(false);
-          setShowShortcuts(false);
-          setShowRevealAnswer(false);
-          break;
-      }
-    }
-    function handleBroadcastEvent() { setShowBroadcast(true); }
-    function handleShortcutsEvent() { setShowShortcuts((v) => !v); }
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("pilot-broadcast", handleBroadcastEvent);
-    window.addEventListener("pilot-shortcuts", handleShortcutsEvent);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("pilot-broadcast", handleBroadcastEvent);
-      window.removeEventListener("pilot-shortcuts", handleShortcutsEvent);
-    };
-  }, [session.status, responses.length, updateSession]);
+  // ── Keyboard shortcuts (extracted hook) ──
+  const handlePauseToggle = useCallback(() => {
+    if (session.status === "paused") updateSession.mutate({ status: "waiting" });
+    else if (session.status !== "done") updateSession.mutate({ status: "paused" });
+  }, [session.status, updateSession]);
+
+  const handleCloseAllModals = useCallback(() => {
+    setShowBroadcast(false);
+    setShowExport(false);
+    setShowCompare(false);
+    setShowShortcuts(false);
+    setShowRevealAnswer(false);
+  }, []);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleNextActionCb = useCallback(() => handleNextAction(), [nextAction, canGoNext, updateSession]);
+
+  usePilotKeyboardShortcuts({
+    sessionStatus: session.status,
+    responsesCount: responses.length,
+    onPauseToggle: handlePauseToggle,
+    onShowBroadcast: useCallback(() => setShowBroadcast(true), []),
+    onShowExport: useCallback(() => setShowExport(true), []),
+    onShowCompare: useCallback(() => setShowCompare(true), []),
+    onToggleShortcuts: useCallback(() => setShowShortcuts((v) => !v), []),
+    onCloseAll: handleCloseAllModals,
+    onNextAction: handleNextActionCb,
+    onToggleFocus: useCallback(() => setFocusMode(f => !f), []),
+  });
 
   // ── Broadcast handler ──
   function handleBroadcast(message: string) {
@@ -791,39 +687,16 @@ function CockpitContent({
               )}
 
               {/* Question nav pills — LOCAL preview only */}
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {Array.from({ length: maxSituations }, (_, i) => {
-                  const isLive = i === currentQIndex;
-                  const isPreview = i === displayIndex;
-                  const isPast = i < currentQIndex;
-                  return (
-                    <button key={i} onClick={() => previewSituation(i)}
-                      className={`w-9 h-9 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 flex items-center justify-center ${
-                        isPreview ? "text-white scale-110 shadow-lg"
-                          : isLive ? "ring-2 ring-offset-1 ring-offset-bw-bg text-white"
-                          : isPast ? "bg-bw-teal/15 text-bw-teal"
-                          : "bg-bw-elevated text-bw-muted hover:text-bw-text hover:bg-bw-surface"
-                      }`}
-                      style={isPreview
-                        ? { backgroundColor: isPreviewing ? "#F59E0B" : moduleColor, boxShadow: `0 0 12px ${isPreviewing ? "#F59E0B" : moduleColor}40` }
-                        : isLive && isPreviewing ? { backgroundColor: moduleColor } : undefined
-                      }>
-                      {isPast && !isPreview ? (
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M5 12l5 5L20 7"/></svg>
-                      ) : i + 1}
-                    </button>
-                  );
-                })}
-                <div className="flex-1" />
-                <button onClick={previewPrev} disabled={displayIndex <= 0}
-                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
-                  ←
-                </button>
-                <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
-                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
-                  →
-                </button>
-              </div>
+              <QuestionNavigation
+                maxSituations={maxSituations}
+                currentQIndex={currentQIndex}
+                displayIndex={displayIndex}
+                isPreviewing={isPreviewing}
+                moduleColor={moduleColor}
+                onPreviewSituation={previewSituation}
+                onPreviewPrev={previewPrev}
+                onPreviewNext={previewNext}
+              />
 
               {/* Quick phrases */}
               <QuickPhrases questionGuide={questionGuide} />
@@ -1011,56 +884,11 @@ function CockpitContent({
           {/* M9 séance 2: Budget overview + individual budgets */}
           {isBudgetQuiz && (
             <>
-              {/* Activity description */}
-              <div className="glass-card p-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">💰</span>
-                  <span className="text-sm font-semibold text-bw-heading">Budget de production</span>
-                </div>
-                <p className="text-xs text-bw-muted leading-relaxed">
-                  Chaque élève dispose de crédits pour composer son budget de film.
-                  Il choisit un niveau (basique, standard ou premium) pour chaque poste de production :
-                  acteurs, décors, effets, musique, lumière, caméra.
-                </p>
-              </div>
-              {/* Submission counter */}
-              <div className="bg-bw-teal/10 rounded-xl p-4 border border-bw-teal/20">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-bw-teal font-medium">Budgets soumis</span>
-                  <span className="text-xl font-bold text-bw-teal tabular-nums">{budgetSubmitted}/{activeStudents.length}</span>
-                </div>
-                <div className="mt-2 h-2 bg-bw-bg rounded-full overflow-hidden">
-                  <div className="h-full bg-bw-teal rounded-full transition-all"
-                    style={{ width: `${activeStudents.length > 0 ? Math.round((budgetSubmitted / activeStudents.length) * 100) : 0}%` }} />
-                </div>
-              </div>
-
-              {/* Class averages */}
-              {budgetSubmitted > 0 && (
-                <div className="bg-bw-surface rounded-xl p-4 border border-white/[0.06] space-y-3">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Moyenne de la classe</span>
-                  {PRODUCTION_CATEGORIES.map((cat) => {
-                    const avg = budgetAverages[cat.key] || 0;
-                    const maxCost = Math.max(...cat.options.map((o) => o.cost));
-                    const pct = maxCost > 0 ? Math.round((avg / maxCost) * 100) : 0;
-                    const closestOpt = cat.options.reduce((prev, curr) =>
-                      Math.abs(curr.cost - avg) < Math.abs(prev.cost - avg) ? curr : prev
-                    );
-                    return (
-                      <div key={cat.key} className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium" style={{ color: cat.color }}>{cat.label}</span>
-                          <span className="text-xs text-bw-text">{closestOpt.label} ({avg} cr.)</span>
-                        </div>
-                        <div className="h-2 bg-bw-bg rounded-full overflow-hidden">
-                          <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.5 }}
-                            className="h-full rounded-full" style={{ backgroundColor: cat.color }} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+              <Module9BudgetOverview
+                budgetSubmitted={budgetSubmitted}
+                activeStudentCount={activeStudents.length}
+                budgetAverages={budgetAverages}
+              />
 
               {/* Individual budgets */}
               {budgetData && budgetData.budgets.length > 0 && (
@@ -1488,32 +1316,9 @@ function CockpitContent({
               )}
 
               {/* Emotion distribution when available */}
-              {module5Data?.emotionDistribution && Object.keys(module5Data.emotionDistribution).length > 0 && (() => {
-                const totalEmotions = Object.values(module5Data.emotionDistribution!).reduce((a, b) => a + b, 0);
-                return (
-                  <div className="bg-bw-surface rounded-xl p-4 border border-white/[0.06] space-y-3">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Distribution des émotions choisies</span>
-                    {Object.entries(module5Data.emotionDistribution!).sort(([,a], [,b]) => b - a).map(([key, count], i) => {
-                      const emo = EMOTIONS.find(e => e.key === key);
-                      const pct = totalEmotions > 0 ? Math.round((count / totalEmotions) * 100) : 0;
-                      return (
-                        <motion.div key={key} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: i * 0.06 }} className="space-y-1.5">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium" style={{ color: emo?.color || "#EC4899" }}>{emo?.label || key}</span>
-                            <span className="text-xs tabular-nums" style={{ color: emo?.color || "#EC4899" }}>{pct}% ({count})</span>
-                          </div>
-                          <div className="h-2 bg-bw-bg rounded-full overflow-hidden">
-                            <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }}
-                              transition={{ duration: 0.5, delay: i * 0.08 }}
-                              className="h-full rounded-full" style={{ backgroundColor: emo?.color || "#EC4899" }} />
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                );
-              })()}
+              {module5Data?.emotionDistribution && Object.keys(module5Data.emotionDistribution).length > 0 && (
+                <Module5EmotionDistribution emotionDistribution={module5Data.emotionDistribution} />
+              )}
 
               {/* Scene cards from scenesData */}
               {scenesData && scenesData.scenes.length > 0 && (
@@ -1668,52 +1473,15 @@ function CockpitContent({
 
           {/* ── VOTE RESULTS (Standard Q&A) ── */}
           {isStandardQA && (session.status === "voting" || session.status === "reviewing") && voteData && voteData.results.length > 0 && (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Resultats du vote</span>
-                <span className="text-sm text-bw-muted">{voteData.totalVotes} vote{voteData.totalVotes > 1 ? "s" : ""}</span>
-              </div>
-              {voteData.results.map((vr, i) => {
-                const pct = voteData.totalVotes > 0 ? Math.round((vr.count / voteData.totalVotes) * 100) : 0;
-                return (
-                  <motion.div key={vr.response.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    className={`bg-bw-surface rounded-xl p-4 border ${i === 0 ? "border-bw-primary/30" : "border-white/[0.06]"}`}>
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex items-center gap-2">
-                        <span>{vr.response.students?.avatar}</span>
-                        <span className="text-sm font-medium text-bw-text">{vr.response.students?.display_name}</span>
-                      </div>
-                      <span className="text-lg font-bold tabular-nums" style={{ color: i === 0 ? "#FF6B35" : "#888" }}>{pct}%</span>
-                    </div>
-                    <p className="text-sm mb-2 text-bw-heading">{vr.response.text}</p>
-                    <div className="w-full bg-bw-bg rounded-full h-2 overflow-hidden mb-2">
-                      <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }}
-                        transition={{ duration: 0.5, delay: i * 0.1 }}
-                        className="h-full rounded-full"
-                        style={{ backgroundColor: i === 0 ? "#FF6B35" : "#4ECDC4" }} />
-                    </div>
-                    {vr.voters.length > 0 && (
-                      <div className="flex gap-1 flex-wrap">
-                        {vr.voters.map((v, j) => (
-                          <span key={j} className="text-xs bg-bw-bg px-2 py-0.5 rounded-full text-bw-text">{v.avatar} {v.display_name}</span>
-                        ))}
-                      </div>
-                    )}
-                    {i === 0 && vr.count > 0 && session.status === "reviewing" && (
-                      <button onClick={() => {
-                        const fakeResponse: Response = { id: vr.response.id, student_id: "", situation_id: "", text: vr.response.text, submitted_at: "", is_hidden: false, is_vote_option: true, is_highlighted: false, teacher_comment: null, students: vr.response.students };
-                        setReformulating(fakeResponse);
-                        setReformulatedText(vr.response.text);
-                      }}
-                        className="btn-glow mt-3 px-4 py-2 bg-bw-primary text-white rounded-xl text-sm font-medium cursor-pointer transition-all duration-200 hover:brightness-110 shadow-md shadow-bw-primary/20">
-                        Valider comme choix collectif
-                      </button>
-                    )}
-                  </motion.div>
-                );
-              })}
-            </div>
+            <VotingResults
+              voteData={voteData}
+              sessionStatus={session.status}
+              onValidateWinner={(responseId, text, students) => {
+                const fakeResponse: Response = { id: responseId, student_id: "", situation_id: "", text, submitted_at: "", is_hidden: false, is_vote_option: true, is_highlighted: false, teacher_comment: null, students };
+                setReformulating(fakeResponse);
+                setReformulatedText(text);
+              }}
+            />
           )}
 
           {/* Voting empty state — no votes yet */}
@@ -1738,178 +1506,64 @@ function CockpitContent({
             )}
           </AnimatePresence>
 
-          {/* ── RESPONSE STREAM (Standard Q&A — responding) ── */}
-          {isStandardQA && session.status !== "done" && session.status !== "paused" && !(session.status === "voting" || session.status === "reviewing") && (
-            <div className="space-y-2">
-              {/* Prominent response counter + elapsed + action bar */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Réponses</span>
-                  <motion.span
-                    key={respondedCount}
-                    initial={{ scale: 1.3, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
-                      respondedCount >= activeStudents.length
-                        ? "bg-green-500/15 text-green-400"
-                        : "bg-bw-teal/10 text-bw-teal"
-                    }`}
-                  >
-                    {respondedCount}/{activeStudents.length}
-                  </motion.span>
-                  <ElapsedTimer startedAt={respondingOpenedAt} />
-                </div>
-                <div className="flex items-center gap-1">
-                  <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                    📢
-                  </button>
-                  {responses.length >= 2 && (
-                    <button onClick={() => setShowCompare(true)} title="Comparer (C)"
-                      className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-violet hover:bg-bw-violet/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                      ⚖️
-                    </button>
-                  )}
-                  {highlightedCount > 0 && (
-                    <button onClick={handleClearAllHighlights} title="Tout dé-projeter"
-                      className="px-2 py-1 rounded-lg text-[10px] text-bw-amber hover:bg-bw-amber/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                      ✖️ {highlightedCount}
-                    </button>
-                  )}
-                  {questionGuide && (
-                    <button onClick={() => setShowRevealAnswer((v) => !v)} title="Réponse attendue"
-                      className={`px-2 py-1 rounded-lg text-[10px] cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06] ${
-                        showRevealAnswer ? "text-green-400 bg-green-500/10 border-green-500/30" : "text-bw-muted hover:text-green-400 hover:bg-green-500/10"
-                      }`}>
-                      💡
-                    </button>
-                  )}
-                  <button onClick={() => setShowExport(true)} title="Export (E)"
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                    📋
-                  </button>
-                </div>
+          {/* ── FOCUS MODE SUMMARY ── */}
+          {focusMode && session.status !== "done" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-12 space-y-4"
+            >
+              <div className="text-6xl font-mono font-bold text-bw-teal tabular-nums">
+                {respondedCount}/{activeStudents.length}
               </div>
-
-              {/* Stuck students alert */}
-              <StuckAlert students={stuckStudents} onNudgeAll={handleNudgeAllStuck} />
-
-              {/* Reveal expected answer */}
-              <AnimatePresence>
-                {showRevealAnswer && questionGuide && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-3 rounded-xl border border-green-500/20" style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.06), transparent)" }}>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[10px] uppercase tracking-wider text-green-400 font-semibold">Réponse attendue</span>
-                        <button onClick={() => { navigator.clipboard.writeText(questionGuide.whatToExpect); toast.success("Copié !"); }}
-                          className="text-[10px] text-bw-muted hover:text-green-400 cursor-pointer">Copier</button>
-                      </div>
-                      <p className="text-xs text-bw-text leading-relaxed">{questionGuide.whatToExpect}</p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Filter chips + sort toggle */}
-              {responses.length > 0 && (
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  {([
-                    { key: "all" as const, label: `Toutes (${responses.length})` },
-                    { key: "visible" as const, label: `Visibles (${visibleResponses.length})` },
-                    { key: "highlighted" as const, label: `En avant (${highlightedCount})` },
-                  ]).map((f) => (
-                    <button
-                      key={f.key}
-                      onClick={() => setResponseFilter(f.key)}
-                      className={`px-2 py-1 rounded-full text-[10px] font-medium cursor-pointer transition-colors duration-200 ${
-                        responseFilter === f.key
-                          ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30"
-                          : "bg-bw-elevated text-bw-muted border border-white/[0.06] hover:text-bw-text"
-                      }`}
-                    >
-                      {f.label}
-                    </button>
-                  ))}
-                  <div className="flex-1" />
-                  <button
-                    onClick={() => {
-                      const ids = visibleResponses.filter((r) => !r.ai_score).map((r) => r.id);
-                      if (ids.length === 0) { toast("Toutes les réponses sont déjà évaluées"); return; }
-                      aiEvaluate.mutate(ids.slice(0, 20));
-                    }}
-                    disabled={aiEvaluate.isPending}
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-violet hover:bg-bw-violet/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06] disabled:opacity-40"
-                    title="Évaluer les réponses par IA"
-                  >
-                    {aiEvaluate.isPending ? "IA..." : "🤖 Évaluer IA"}
-                  </button>
-                  {session.status === "responding" && situation && (
-                    <button
-                      onClick={() => {
-                        if (confirm("Relancer la question pour toute la classe ? Les réponses précédentes seront conservées.")) {
-                          resetAllResponses.mutate(situation!.id);
-                        }
-                      }}
-                      disabled={resetAllResponses.isPending}
-                      className="px-2 py-1 rounded-lg text-[10px] text-amber-400 hover:bg-amber-400/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06] disabled:opacity-40"
-                      title="Relancer la question pour toute la classe"
-                    >
-                      {resetAllResponses.isPending ? "Relance..." : "🔄 Relancer tous"}
-                    </button>
-                  )}
-                  <button
-                    onClick={() => setResponseSortMode((prev) => prev === "time" ? "highlighted" : "time")}
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-text cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]"
-                    title={responseSortMode === "time" ? "Tri chronologique" : "Tri par mise en avant"}
-                  >
-                    {responseSortMode === "time" ? "⏱ Chrono" : "⭐ Priorité"}
-                  </button>
-                </div>
+              <p className="text-sm text-bw-muted">ont repondu</p>
+              {session.status === "voting" && voteData && (
+                <div className="text-2xl font-mono font-bold text-bw-violet">{voteData.totalVotes} votes</div>
               )}
+            </motion.div>
+          )}
 
-              {filteredResponses.length > 0 ? (
-                <ResponseStream
-                  responses={filteredResponses as ResponseCardResponse[]}
-                  sessionStatus={session.status}
-                  winnerResponseId={winnerResponseId}
-                  onToggleSelect={(id, current) => toggleVoteOption.mutate({ responseId: id, is_vote_option: !current })}
-                  onToggleHide={(id, current) => toggleHide.mutate({ responseId: id, is_hidden: !current })}
-                  onValidate={session.status === "reviewing" ? (r) => {
-                    setReformulating(r as unknown as Response);
-                    setReformulatedText(r.text);
-                  } : undefined}
-                  isPending={toggleVoteOption.isPending || toggleHide.isPending}
-                  onComment={(id, comment) => commentResponse.mutate({ responseId: id, comment })}
-                  onHighlight={(id, highlighted) => highlightResponse.mutate({ responseId: id, highlighted })}
-                  onNudge={(id, text) => nudgeStudent.mutate({ responseId: id, nudgeText: text })}
-                  onWarn={(sid) => warnStudent.mutate(sid)}
-                  onScore={(id, score) => scoreResponse.mutate({ responseId: id, score })}
-                  onReset={(id) => resetResponse.mutate(id)}
-                  isNudgePending={nudgeStudent.isPending}
-                  isCommentPending={commentResponse.isPending}
-                  isWarnPending={warnStudent.isPending}
-                  isScorePending={scoreResponse.isPending}
-                  isResetPending={resetResponse.isPending}
-                  studentWarnings={studentWarnings}
-                />
-              ) : responses.length > 0 && filteredResponses.length === 0 ? (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-4 text-center">
-                  <p className="text-xs text-bw-muted">Aucune réponse dans ce filtre</p>
-                </div>
-              ) : session.status === "responding" ? (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-5 text-center space-y-2">
-                  <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
-                    className="text-2xl">✍️</motion.div>
-                  <p className="text-sm text-bw-muted">En attente des réponses...</p>
-                  <p className="text-sm text-bw-muted">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
-                </div>
-              ) : null}
-            </div>
+          {/* ── RESPONSE STREAM (Standard Q&A — responding) ── */}
+          {!focusMode && isStandardQA && session.status !== "done" && session.status !== "paused" && !(session.status === "voting" || session.status === "reviewing") && (
+            <ResponseStreamSection
+              filteredResponses={filteredResponses as ResponseCardResponse[]}
+              responses={responses}
+              activeStudents={activeStudents}
+              respondedCount={respondedCount}
+              highlightedCount={highlightedCount}
+              respondingOpenedAt={respondingOpenedAt}
+              sessionStatus={session.status}
+              winnerResponseId={winnerResponseId}
+              stuckStudents={stuckStudents}
+              questionGuide={questionGuide}
+              situation={situation}
+              studentWarnings={studentWarnings}
+              responseFilter={responseFilter}
+              setResponseFilter={setResponseFilter}
+              responseSortMode={responseSortMode}
+              setResponseSortMode={setResponseSortMode}
+              onShowBroadcast={() => setShowBroadcast(true)}
+              onShowCompare={() => setShowCompare(true)}
+              onShowExport={() => setShowExport(true)}
+              showRevealAnswer={showRevealAnswer}
+              onToggleRevealAnswer={() => setShowRevealAnswer((v) => !v)}
+              onClearAllHighlights={handleClearAllHighlights}
+              onNudgeAllStuck={handleNudgeAllStuck}
+              toggleVoteOption={toggleVoteOption}
+              toggleHide={toggleHide}
+              commentResponse={commentResponse}
+              highlightResponse={highlightResponse}
+              nudgeStudent={nudgeStudent}
+              warnStudent={warnStudent}
+              scoreResponse={scoreResponse}
+              resetResponse={resetResponse}
+              aiEvaluate={aiEvaluate}
+              resetAllResponses={resetAllResponses}
+              onReformulate={(r) => {
+                setReformulating(r as unknown as Response);
+                setReformulatedText(r.text);
+              }}
+            />
           )}
 
           {/* ── RESPONSES LIST (M1/Budget — simpler display) ── */}
@@ -1996,7 +1650,7 @@ function CockpitContent({
           )}
 
           {/* Choices history (Standard Q&A) */}
-          {isStandardQA && collectiveChoices.length > 0 && (
+          {!focusMode && isStandardQA && collectiveChoices.length > 0 && (
             <ChoicesHistory choices={collectiveChoices} />
           )}
         </div>
@@ -2042,13 +1696,38 @@ function CockpitContent({
                 isPending={updateSession.isPending}
               />
             ) : nextAction ? (
-              <motion.button whileTap={{ scale: 0.97 }}
-                onClick={handleNextAction}
-                disabled={updateSession.isPending || !!(nextAction as { disabled?: boolean }).disabled}
-                className="btn-glow w-full py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-                style={{ backgroundColor: nextAction.color, color: nextAction.color === "#F59E0B" || nextAction.color === "#888" ? "black" : "white" }}>
-                {nextAction.label}
-              </motion.button>
+              <div className="flex gap-2 items-center">
+                {/* Back button */}
+                {(session.current_situation_index || 0) > 0 && (
+                  <button
+                    onClick={prevSituation}
+                    disabled={updateSession.isPending}
+                    title="Question précédente"
+                    className="px-3 py-2.5 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                  </button>
+                )}
+                {/* Main action */}
+                <motion.button whileTap={{ scale: 0.97 }}
+                  onClick={handleNextAction}
+                  disabled={updateSession.isPending || !!(nextAction as { disabled?: boolean }).disabled}
+                  className="btn-glow flex-1 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  style={{ backgroundColor: nextAction.color, color: nextAction.color === "#F59E0B" || nextAction.color === "#888" ? "black" : "white" }}>
+                  {nextAction.label}
+                </motion.button>
+                {/* Skip button */}
+                {canGoNext && session.status === "responding" && (
+                  <button
+                    onClick={skipSituation}
+                    disabled={updateSession.isPending}
+                    title="Passer cette question"
+                    className="px-3 py-2.5 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </button>
+                )}
+              </div>
             ) : (
               <div className="w-full py-2.5 rounded-xl text-sm text-center bg-bw-elevated text-bw-muted border border-white/[0.06]">
                 {session.status === "responding"
@@ -2061,53 +1740,28 @@ function CockpitContent({
 
             {/* Timer row + actions — same line */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                {(session.status === "responding" || session.status === "voting") && !session.timer_ends_at ? (
-                  <>
-                    <span className="text-[11px] text-bw-muted">Timer</span>
-                    {[30, 60, 120, 180, 300].map((sec) => (
-                      <button key={sec}
-                        onClick={() => updateSession.mutate({ timer_ends_at: new Date(Date.now() + sec * 1000).toISOString() })}
-                        className="px-2 py-1 rounded-lg text-[11px] bg-bw-elevated border border-white/[0.06] hover:border-white/15 text-bw-text cursor-pointer transition-colors duration-200">
-                        {sec < 60 ? `${sec}s` : `${sec / 60}m`}
-                      </button>
-                    ))}
-                    {customTimerOpen ? (
-                      <div className="flex items-center gap-1">
-                        <input type="number" min="10" max="600" value={customTimerValue} onChange={(e) => setCustomTimerValue(e.target.value)}
-                          onKeyDown={(e) => { if (e.key === "Enter" && customTimerValue) { updateSession.mutate({ timer_ends_at: new Date(Date.now() + parseInt(customTimerValue) * 1000).toISOString() }); setCustomTimerOpen(false); setCustomTimerValue(""); } }}
-                          placeholder="sec" autoFocus
-                          className="w-14 px-1.5 py-1 rounded-lg text-[11px] bg-bw-surface border border-white/[0.06] text-white outline-none focus:border-bw-primary/40" />
-                        <button onClick={() => setCustomTimerOpen(false)} className="text-[10px] text-bw-muted cursor-pointer">✕</button>
-                      </div>
-                    ) : (
-                      <button onClick={() => setCustomTimerOpen(true)} title="Timer personnalisé"
-                        className="px-2 py-1 rounded-lg text-[11px] bg-bw-elevated border border-white/[0.06] hover:border-white/15 text-bw-muted cursor-pointer transition-colors duration-200">
-                        ⏱️
-                      </button>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    {/* Retour question précédente */}
-                    {(session.current_situation_index || 0) > 0 && session.status === "waiting" && (
-                      <button onClick={handlePrevQuestion} title="Question précédente"
-                        className="px-2.5 py-1 rounded-lg text-[11px] bg-bw-elevated border border-white/[0.06] hover:border-white/15 text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">
-                        ← Précédente
-                      </button>
-                    )}
-                    {/* Fermer les réponses (non-QA modules during responding) */}
-                    {!isStandardQA && session.status === "responding" && (
-                      <button onClick={() => updateSession.mutate({ status: "reviewing", timer_ends_at: null })} title="Fermer les réponses"
-                        className="px-2.5 py-1 rounded-lg text-[11px] bg-bw-amber/10 border border-bw-amber/20 hover:border-bw-amber/40 text-bw-amber cursor-pointer transition-colors duration-200">
-                        Fermer les réponses
-                      </button>
-                    )}
-                  </>
-                )}
-              </div>
+              <TimerSection
+                sessionStatus={session.status}
+                timerEndsAt={session.timer_ends_at}
+                currentSituationIndex={session.current_situation_index || 0}
+                isStandardQA={isStandardQA}
+                onSetTimer={(timerEndsAt) => updateSession.mutate({ timer_ends_at: timerEndsAt })}
+                onPrevQuestion={handlePrevQuestion}
+                onCloseResponses={() => updateSession.mutate({ status: "reviewing", timer_ends_at: null })}
+              />
 
-              {/* Sharing toggle */}
+              {/* Focus + Sharing toggles */}
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setFocusMode(f => !f)}
+                  title={focusMode ? "Quitter le mode focus" : "Mode focus"}
+                  className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium transition-all cursor-pointer ${
+                    focusMode ? "bg-bw-violet/20 text-bw-violet border border-bw-violet/30" : "text-bw-muted hover:text-white"
+                  }`}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="10" /></svg>
+                  Focus
+                </button>
               <div className="flex items-center gap-2">
                 <span className="text-[11px] text-bw-muted">Partage</span>
                 <button
@@ -2120,6 +1774,7 @@ function CockpitContent({
                     session.sharing_enabled ? "translate-x-[18px]" : "translate-x-[1px]"
                   }`} />
                 </button>
+              </div>
               </div>
             </div>
           </div>
@@ -2143,31 +1798,41 @@ function CockpitContent({
                     className="text-bw-muted hover:text-white text-sm cursor-pointer">Fermer</button>
                 </div>
                 <span className="text-xs text-bw-muted tabular-nums">{activeStudents.length}/{totalStudents} connectes</span>
+                <div className="flex items-center gap-3 flex-wrap text-[10px] text-slate-500">
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400" /> Repondu</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400" /> En attente</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-slate-500" /> Deconnecte</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400" /> Bloque</span>
+                </div>
                 <div className="space-y-1">
-                  {session.students?.map((s) => {
-                    const st = studentStates.find((ss) => ss.id === s.id);
-                    const ledClass = st?.state === "responded" ? "led led-done"
-                      : st?.state === "stuck" ? "led led-writing"
-                      : st?.state === "active" ? "led led-active" : "led led-idle";
-                    return (
-                      <div key={s.id}
-                        onClick={() => onSelectStudent(s)}
-                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm group transition-all duration-200 cursor-pointer hover:bg-bw-elevated ${
-                          s.is_active ? "bg-bw-bg" : "opacity-40"
-                        }`}>
-                        <div className={ledClass} />
-                        <span className="text-base">{s.avatar}</span>
-                        <span className="truncate flex-1 text-bw-text">{s.display_name}</span>
-                        {st?.state === "responded" && <span className="text-bw-teal text-xs font-medium flex-shrink-0">OK</span>}
-                        {st?.state === "stuck" && <span className="text-bw-amber text-xs flex-shrink-0">...</span>}
-                        {s.warnings > 0 && <span className="text-[10px] text-bw-amber">⚠️ {s.warnings}</span>}
-                        {s.is_active && (
-                          <button onClick={(e) => { e.stopPropagation(); if (confirm(`Retirer ${s.display_name} ?`)) removeStudent.mutate(s.id); }}
-                            className="opacity-0 group-hover:opacity-100 text-bw-muted hover:text-red-400 cursor-pointer transition-all duration-200">✕</button>
-                        )}
-                      </div>
-                    );
-                  })}
+                  {(() => {
+                    const allStudents = session.students || [];
+                    const renderStudent = (s: Student) => {
+                      const st = studentStates.find((ss) => ss.id === s.id);
+                      const ledClass = st?.state === "responded" ? "led led-done"
+                        : st?.state === "stuck" ? "led led-writing"
+                        : st?.state === "active" ? "led led-active" : "led led-idle";
+                      return (
+                        <div key={s.id}
+                          onClick={() => onSelectStudent(s)}
+                          className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm group transition-all duration-200 cursor-pointer hover:bg-bw-elevated ${
+                            s.is_active ? "bg-bw-bg" : "opacity-40"
+                          }`}>
+                          <div className={ledClass} />
+                          <span className="text-base">{s.avatar}</span>
+                          <span className="truncate flex-1 text-bw-text">{s.display_name}</span>
+                          {st?.state === "responded" && <span className="text-bw-teal text-xs font-medium flex-shrink-0">OK</span>}
+                          {st?.state === "stuck" && <span className="text-bw-amber text-xs flex-shrink-0">...</span>}
+                          {s.warnings > 0 && <span className="text-[10px] text-bw-amber">⚠️ {s.warnings}</span>}
+                          {s.is_active && (
+                            <button onClick={(e) => { e.stopPropagation(); setKickTarget({ id: s.id, name: s.display_name }); }}
+                              className="opacity-0 group-hover:opacity-100 text-bw-muted hover:text-red-400 cursor-pointer transition-all duration-200">✕</button>
+                          )}
+                        </div>
+                      );
+                    };
+                    return allStudents.map(renderStudent);
+                  })()}
                 </div>
               </div>
             </motion.div>
@@ -2218,40 +1883,18 @@ function CockpitContent({
       />
 
       {/* Keyboard shortcuts overlay */}
-      <AnimatePresence>
-        {showShortcuts && (
-          <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={() => setShowShortcuts(false)} />
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.97 }}
-              className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] max-w-[90vw] glass-card rounded-2xl border border-white/[0.08] p-5 space-y-3"
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold">Raccourcis clavier</h3>
-                <button onClick={() => setShowShortcuts(false)} className="text-bw-muted hover:text-white text-sm cursor-pointer">✕</button>
-              </div>
-              <div className="space-y-1.5">
-                {[
-                  { key: "Espace", action: "Pause / Reprendre" },
-                  { key: "B", action: "Message broadcast" },
-                  { key: "E", action: "Export de séance" },
-                  { key: "C", action: "Comparer 2 réponses" },
-                  { key: "?", action: "Raccourcis clavier" },
-                  { key: "Échap", action: "Fermer le modal" },
-                ].map(({ key, action }) => (
-                  <div key={key} className="flex items-center justify-between">
-                    <span className="text-xs text-bw-text">{action}</span>
-                    <kbd className="text-[10px] px-2 py-0.5 rounded bg-bw-elevated border border-white/[0.06] text-bw-muted font-mono">{key}</kbd>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      <KeyboardShortcutsModal showShortcuts={showShortcuts} setShowShortcuts={setShowShortcuts} />
+
+      {/* Kick student confirm modal */}
+      <ConfirmModal
+        open={kickTarget !== null}
+        onClose={() => setKickTarget(null)}
+        onConfirm={() => { if (kickTarget) { removeStudent.mutate(kickTarget.id); setKickTarget(null); } }}
+        title="Retirer cet eleve ?"
+        description={`${kickTarget?.name || "L'eleve"} sera retire de la session.`}
+        confirmLabel="Retirer"
+        confirmVariant="danger"
+      />
 
     </div>
   );
@@ -2269,6 +1912,7 @@ export default function PilotPage() {
   const { id: sessionId } = useParams<{ id: string }>();
   const router = useRouter();
   const queryClient = useQueryClient();
+  useRealtimeInvalidation(sessionId);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [codeCopied, setCodeCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
@@ -2318,8 +1962,20 @@ export default function PilotPage() {
       if (!res.ok) throw new Error("Session introuvable");
       return res.json();
     },
-    refetchInterval: 3000,
+    refetchInterval: 30_000,
     enabled: !checkingAuth,
+  });
+
+  // Teams query
+  const { data: teams } = useQuery<{ id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[]>({
+    queryKey: ["pilot-teams", sessionId],
+    queryFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/teams`);
+      if (!res.ok) return [];
+      return res.json();
+    },
+    refetchInterval: 30_000,
+    enabled: !checkingAuth && !!session,
   });
 
   // Determine active module
@@ -2334,7 +1990,7 @@ export default function PilotPage() {
       if (!res.ok) return null;
       return res.json();
     },
-    refetchInterval: 5000,
+    refetchInterval: 30_000,
     enabled: !checkingAuth && !!session && hasActiveModule,
   });
 
@@ -2373,7 +2029,7 @@ export default function PilotPage() {
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: 3000,
+    refetchInterval: 30_000,
     enabled: !checkingAuth && (!!situation || (isModule1 && m1SituationIds.length > 0)) && hasActiveModule,
   });
 
@@ -2386,7 +2042,7 @@ export default function PilotPage() {
       if (!res.ok) return { totalVotes: 0, results: [] };
       return res.json();
     },
-    refetchInterval: 3000,
+    refetchInterval: 30_000,
     enabled: !checkingAuth && !!situation && hasActiveModule && (session?.status === "voting" || session?.status === "reviewing"),
   });
 
@@ -2398,7 +2054,7 @@ export default function PilotPage() {
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: 5000,
+    refetchInterval: 30_000,
     enabled: !checkingAuth && !!session && hasActiveModule && (session?.current_module === 3 || session?.current_module === 4),
   });
 
@@ -2814,6 +2470,8 @@ export default function PilotPage() {
           window.dispatchEvent(new CustomEvent("pilot-broadcast"));
         }}
         onShortcuts={() => window.dispatchEvent(new CustomEvent("pilot-shortcuts"))}
+        muteSounds={session.mute_sounds ?? false}
+        onToggleMute={() => updateSession.mutate({ mute_sounds: !session.mute_sounds })}
       />
 
       {/* ── QR Panel ── */}
@@ -2890,6 +2548,7 @@ export default function PilotPage() {
             onResume={handleResumeModule}
           />
         ) : hasActiveModule ? (
+          <ErrorBoundary>
           <CockpitContent
             session={session}
             situationData={situationData}
@@ -2923,6 +2582,7 @@ export default function PilotPage() {
             rightPanelWidth={rightPanelOpen ? RIGHT_PANEL_WIDTH : 0}
             onSelectStudent={(s) => { setSelectedStudentId(s.id); setShowStudents(false); }}
           />
+          </ErrorBoundary>
         ) : (
           <div className="flex-1 overflow-y-auto">
             <WelcomePanel
@@ -2933,6 +2593,14 @@ export default function PilotPage() {
               onOpenQR={() => setShowQR(!showQR)}
               onCopyCode={copyCode}
             />
+            {/* Team Manager — visible in waiting state */}
+            <div className="max-w-lg mx-auto px-4 pb-6">
+              <TeamManager
+                sessionId={sessionId}
+                teams={teams || []}
+                students={activeStudents}
+              />
+            </div>
           </div>
         )}
 
@@ -2983,6 +2651,13 @@ export default function PilotPage() {
           </div>
         )}
       </div>
+
+      <HelpButton pageKey="pilot" tips={[
+        { title: "Pilotez la session", description: "Utilisez le bouton central pour avancer les questions. Les eleves recoivent la question en temps reel." },
+        { title: "Retour et Passer", description: "Les fleches a cote du bouton principal permettent de revenir en arriere ou de passer une question." },
+        { title: "Panneau lateral", description: "Le panneau droit affiche le guide pedagogique et les reponses des eleves. Cliquez sur une reponse pour la mettre en avant." },
+        { title: "Diffusion et Timer", description: "Envoyez un message a toute la classe ou lancez un compte a rebours depuis la barre du haut." },
+      ]} />
     </div>
   );
 }

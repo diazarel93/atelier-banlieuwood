@@ -39,6 +39,8 @@ interface PilotTopBarProps {
   totalQuestions?: number;
   onBroadcast?: () => void;
   onShortcuts?: () => void;
+  muteSounds?: boolean;
+  onToggleMute?: () => void;
 }
 
 export function PilotTopBar({
@@ -68,6 +70,8 @@ export function PilotTopBar({
   totalQuestions,
   onBroadcast,
   onShortcuts,
+  muteSounds,
+  onToggleMute,
 }: PilotTopBarProps) {
   const hasTimer = timerEndsAt && new Date(timerEndsAt).getTime() > Date.now();
 
@@ -169,6 +173,17 @@ export function PilotTopBar({
             className="hidden sm:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">
             QR
           </button>
+
+          {/* Mute toggle */}
+          {onToggleMute && (
+            <button onClick={onToggleMute}
+              className={`px-2 py-1.5 rounded-xl border text-[11px] cursor-pointer transition-colors duration-200 ${
+                muteSounds ? "bg-bw-amber/10 border-bw-amber/30 text-bw-amber" : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:text-white"
+              }`}
+              title={muteSounds ? "Réactiver les sons élèves" : "Couper les sons élèves"}>
+              {muteSounds ? "\uD83D\uDD07" : "\uD83D\uDD0A"}
+            </button>
+          )}
 
           {/* Broadcast */}
           {onBroadcast && activeModuleLabel && (

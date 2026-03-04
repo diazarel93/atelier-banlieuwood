@@ -4,36 +4,47 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { useSessionPolling, Module10Data } from "@/hooks/use-session-polling";
+import { useRealtimeInvalidation } from "@/hooks/use-realtime-invalidation";
 import { useQuery } from "@tanstack/react-query";
 import { CATEGORY_COLORS, TEMPLATE_LABELS, MODULE_SEANCE_SITUATIONS, PRODUCTION_CATEGORIES, getSeanceMax } from "@/lib/constants";
-import { QRCodeSVG } from "qrcode.react";
+import dynamic from "next/dynamic";
 import { CountdownTimer } from "@/components/countdown-timer";
-import { BrandLogo } from "@/components/brand-logo";
 import { getSeanceIntro } from "@/lib/seance-intros";
 import { getModuleByDb } from "@/lib/modules-data";
-import confetti from "canvas-confetti";
-import { CharacterCard } from "@/components/module10/character-card";
-import type { AvatarOptions } from "@/components/avatar-dicebear";
+
+const QRCodeSVG = dynamic(
+  () => import("qrcode.react").then(mod => ({ default: mod.QRCodeSVG })),
+  { ssr: false, loading: () => <div className="w-full h-full bg-white/5 rounded animate-pulse" /> }
+);
+
+import { PosterGallery } from "@/components/screen/poster-gallery";
+import { BroadcastMessageOverlay } from "@/components/screen/broadcast-overlay";
+import { AmbientGradients } from "@/components/screen/ambient-gradients";
+import { BriefingOverlay } from "@/components/screen/briefing-overlay";
+import { QuestionTransitionCelebration } from "@/components/screen/question-transition";
+import { StoryFilmstrip } from "@/components/screen/story-filmstrip";
+import { HighlightedResponsesPanel } from "@/components/screen/highlighted-panel";
+import { ScreenHeader } from "@/components/screen/screen-header";
+import { ObjectiveBanner } from "@/components/screen/objective-banner";
+import { FloatingReactions } from "@/components/screen/floating-reactions";
+import { WordCloud } from "@/components/screen/word-cloud";
+import { ReactionBar } from "@/components/reaction-bar";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { HelpButton } from "@/components/help-button";
 
 interface VoteResult {
   response: { id: string; text: string; students: { display_name: string; avatar: string } };
   count: number;
-  voters: { display_name: string; avatar: string }[];
+  voters: { display_name: string; avatar: string; team_name?: string; team_color?: string }[];
 }
 
-interface HighlightedResponse {
-  id: string;
-  text: string;
-  student_id: string;
-  is_highlighted: boolean;
-  teacher_comment: string | null;
-  students: { display_name: string; avatar: string };
-}
+import type { HighlightedResponse } from "@/components/screen/highlighted-panel";
 
 // PRODUCTION_CATEGORIES imported from constants
 
 export default function ScreenPage() {
   const { id: sessionId } = useParams<{ id: string }>();
+  useRealtimeInvalidation(sessionId);
   const { data } = useSessionPolling(sessionId, null, { skipStudentCheck: true });
 
   // Vote results for projection
@@ -45,7 +56,7 @@ export default function ScreenPage() {
       if (!res.ok) return { totalVotes: 0, results: [] };
       return res.json();
     },
-    refetchInterval: 2000,
+    refetchInterval: 30_000,
     enabled: !!data?.situation?.id && (data?.session?.status === "voting" || data?.session?.status === "reviewing"),
   });
 
@@ -60,8 +71,36 @@ export default function ScreenPage() {
       const all: HighlightedResponse[] = await res.json();
       return all.filter((r) => r.is_highlighted);
     },
-    refetchInterval: 2000,
+    refetchInterval: 30_000,
     enabled: !!data?.session && data.session.status !== "done" && !!currentSituationId,
+  });
+
+  // Word cloud — fetch response texts while responding
+  const { data: wordCloudTexts } = useQuery<string[]>({
+    queryKey: ["screen-wordcloud", sessionId, currentSituationId],
+    queryFn: async () => {
+      if (!currentSituationId) return [];
+      const res = await fetch(`/api/sessions/${sessionId}/responses?situationId=${currentSituationId}`);
+      if (!res.ok) return [];
+      const all: { text: string }[] = await res.json();
+      return all.map((r) => r.text).filter(Boolean);
+    },
+    refetchInterval: 10_000,
+    enabled: !!data?.session && data.session.status === "responding" && !!currentSituationId,
+  });
+
+  // Reaction counts for vote results
+  const { data: screenReactions } = useQuery<Record<string, Record<string, { count: number; studentIds: string[] }>>>({
+    queryKey: ["screen-reactions", sessionId, currentSituationId],
+    queryFn: async () => {
+      if (!currentSituationId) return {};
+      const res = await fetch(`/api/sessions/${sessionId}/reactions?situationId=${currentSituationId}`);
+      if (!res.ok) return {};
+      const json = await res.json();
+      return json.reactions || {};
+    },
+    refetchInterval: 8_000,
+    enabled: !!data?.session && ["voting", "reviewing", "results"].includes(data.session.status) && !!currentSituationId,
   });
 
   // Broadcast message overlay
@@ -99,7 +138,7 @@ export default function ScreenPage() {
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: 10000,
+    refetchInterval: 30_000,
     enabled: !!data?.session && data.session.status !== "done",
   });
 
@@ -135,7 +174,7 @@ export default function ScreenPage() {
       return;
     }
     // Phase 1: clap + confetti
-    confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+    import("canvas-confetti").then(mod => mod.default({ particleCount: 120, spread: 80, origin: { y: 0.6 } }));
     const t1 = setTimeout(() => setDonePhase("title"), 2000);
     const t2 = setTimeout(() => setDonePhase("credits"), 5000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
@@ -145,7 +184,7 @@ export default function ScreenPage() {
   useEffect(() => {
     if (!data?.collectiveChoice?.id) return;
     if (prevChoiceId.current !== null && prevChoiceId.current !== data.collectiveChoice.id) {
-      confetti({ particleCount: 80, spread: 60, origin: { y: 0.5 }, colors: ["#FF6B35", "#F59E0B", "#8B5CF6"] });
+      import("canvas-confetti").then(mod => mod.default({ particleCount: 80, spread: 60, origin: { y: 0.5 }, colors: ["#FF6B35", "#F59E0B", "#8B5CF6"] }));
     }
     prevChoiceId.current = data.collectiveChoice.id;
   }, [data?.collectiveChoice?.id]);
@@ -207,291 +246,42 @@ export default function ScreenPage() {
     "Le mot « scénario » vient de l'italien « scenario » (décor).",
   ];
 
-  // Reusable waiting state objective banner
-  const renderObjectiveBanner = () => {
-    if (!seanceIntro) {
-      return (
-        <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 2 }} className="flex items-center justify-center gap-3">
-          <div className="w-2.5 h-2.5 rounded-full bg-bw-amber" />
-          <span className="text-lg text-bw-muted">En attente du facilitateur</span>
-        </motion.div>
-      );
-    }
-    return (
-      <div className="space-y-5">
-        {/* Objective */}
-        <div className="flex items-center justify-center gap-3">
-          <span className="text-2xl">{seanceIntro.icon}</span>
-          <span className="text-lg font-medium" style={{ color: moduleColor }}>
-            Objectif : {seanceIntro.description}
-          </span>
-        </div>
-        {/* First step highlighted */}
-        {seanceIntro.steps[0] && (
-          <motion.div
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex items-center justify-center gap-2"
-          >
-            <span className="w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center"
-              style={{ backgroundColor: `${moduleColor}25`, color: moduleColor }}>1</span>
-            <span className="text-base text-bw-text">{seanceIntro.steps[0]}</span>
-          </motion.div>
-        )}
-        {/* Connected count */}
-        {connectedCount > 0 && (
-          <motion.div
-            key={connectedCount}
-            initial={{ scale: 1.2 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 300, damping: 15 }}
-            className="flex items-center justify-center gap-2"
-          >
-            <div className="w-2.5 h-2.5 rounded-full bg-bw-teal" />
-            <span className="text-base text-bw-teal font-medium">
-              {connectedCount} élève{connectedCount > 1 ? "s" : ""} connecté{connectedCount > 1 ? "s" : ""}
-            </span>
-          </motion.div>
-        )}
-        {/* Fun fact */}
-        <motion.p
-          animate={{ opacity: [0.3, 0.7, 0.3] }}
-          transition={{ repeat: Infinity, duration: 8 }}
-          className="text-xs text-bw-muted/60 italic text-center"
-        >
-          {CINEMA_FACTS[Math.abs((session.currentSituationIndex ?? 0) + session.currentModule) % CINEMA_FACTS.length]}
-        </motion.p>
-      </div>
-    );
-  };
+  // Cinema fun fact for ObjectiveBanner
+  const cinemaFact = CINEMA_FACTS[Math.abs((session.currentSituationIndex ?? 0) + session.currentModule) % CINEMA_FACTS.length];
 
   return (
+    <ErrorBoundary variant="full">
     <div className="min-h-dvh flex flex-col relative">
       {/* Broadcast message overlay */}
-      <AnimatePresence>
-        {broadcastMsg && (
-          <motion.div
-            initial={{ opacity: 0, y: -40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -40 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[600px] max-w-[90vw]"
-          >
-            <div className="px-8 py-5 rounded-2xl bg-bw-primary/20 border border-bw-primary/40 text-center backdrop-blur-md shadow-lg shadow-bw-primary/10">
-              <p className="text-xs text-bw-primary font-semibold uppercase tracking-[0.2em] mb-2">Message du professeur</p>
-              <p className="text-xl text-white font-medium">{broadcastMsg}</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <BroadcastMessageOverlay broadcastMsg={broadcastMsg} />
 
       {/* Ambient colored light spots — follow module color */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <motion.div
-          key={`amb-tl-${moduleColor}`}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5 }}
-          className="absolute -top-16 -left-16 w-[480px] h-[480px]"
-          style={{ background: `radial-gradient(ellipse at center, ${moduleColor}10 0%, transparent 70%)` }}
-        />
-        <motion.div
-          key={`amb-br-${moduleColor}`}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5 }}
-          className="absolute -bottom-16 -right-16 w-[480px] h-[480px]"
-          style={{ background: `radial-gradient(ellipse at center, ${moduleColor}0D 0%, transparent 70%)` }}
-        />
-        <motion.div
-          key={`amb-ct-${moduleColor}`}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5 }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px]"
-          style={{ background: `radial-gradient(ellipse at center, ${moduleColor}08 0%, transparent 60%)` }}
-        />
-      </div>
+      <AmbientGradients moduleColor={moduleColor} />
+
+      {/* Floating reactions when new responses arrive */}
+      {session.status === "responding" && (
+        <FloatingReactions triggerCount={responsesCount} />
+      )}
 
       {/* Header */}
-      <header className="px-8 py-4 flex justify-between items-center flex-shrink-0 relative z-10 backdrop-blur-sm"
-        style={{ background: "linear-gradient(90deg, rgba(18,20,24,0.85), rgba(18,20,24,0.6) 50%, rgba(18,20,24,0.85))", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-        <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-bold tracking-[0.2em] uppercase font-cinema">
-            <BrandLogo />
-          </h1>
-          {/* Session title + genre */}
-          {session.title && (
-            <div className="flex items-center gap-2 ml-2">
-              <span className="text-xs text-bw-muted">{session.title}</span>
-              {templateInfo && (
-                <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)" }}>
-                  {templateInfo}
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-        <div className="flex items-center gap-5">
-          {/* Active module name */}
-          {!noModuleSelected && session.status !== "done" && seanceIntro && (
-            <span className="text-sm font-medium" style={{ color: moduleColor }}>
-              {seanceIntro.icon} {seanceIntro.title}
-            </span>
-          )}
-          {/* Step dots */}
-          {!noModuleSelected && session.status !== "done" && maxSituations > 1 && (
-            <div className="flex items-center gap-1.5">
-              {Array.from({ length: maxSituations }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={i === (session.currentSituationIndex ?? 0)
-                    ? { scale: [1, 1.3, 1], opacity: 1 }
-                    : { scale: 1, opacity: i < (session.currentSituationIndex ?? 0) ? 1 : 0.3 }
-                  }
-                  transition={i === (session.currentSituationIndex ?? 0) ? { repeat: Infinity, duration: 1.5 } : {}}
-                  className="w-2 h-2 rounded-full"
-                  style={{
-                    backgroundColor: i <= (session.currentSituationIndex ?? 0) ? moduleColor : "rgba(255,255,255,0.15)",
-                  }}
-                />
-              ))}
-            </div>
-          )}
-          {/* Progress bar */}
-          {!noModuleSelected && session.status !== "done" && progressPct > 0 && (
-            <div className="w-24 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${progressPct}%` }}
-                transition={{ duration: 0.5 }}
-                className="h-full rounded-full"
-                style={{ background: `linear-gradient(90deg, ${moduleColor}, ${moduleColor}99)` }}
-              />
-            </div>
-          )}
-          <div className="flex items-center gap-2">
-            <motion.div
-              animate={{ opacity: [1, 0.3, 1] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-              className="w-2.5 h-2.5 rounded-full bg-bw-teal"
-            />
-            <span className="text-lg">{connectedCount} en ligne</span>
-          </div>
-        </div>
-      </header>
+      <ScreenHeader
+        session={session}
+        seanceIntro={seanceIntro}
+        moduleColor={moduleColor}
+        maxSituations={maxSituations}
+        progressPct={progressPct}
+        connectedCount={connectedCount}
+        noModuleSelected={noModuleSelected}
+      />
 
       {/* ═══ BRIEFING SÉANCE — fullscreen overlay ═══ */}
-      <AnimatePresence>
-        {showBriefing && seanceIntro && (
-          <motion.div
-            key="briefing"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 flex items-center justify-center"
-            style={{ background: "rgba(10,12,16,0.95)" }}
-          >
-            <div className="max-w-3xl w-full text-center space-y-8 px-8">
-              {/* Phase 1: Icon with halo */}
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                className="w-28 h-28 rounded-3xl mx-auto flex items-center justify-center text-5xl relative"
-                style={{ background: `${seanceIntro.color}20`, border: `2px solid ${seanceIntro.color}40`, boxShadow: `0 0 80px ${seanceIntro.color}30, 0 0 160px ${seanceIntro.color}10` }}
-              >
-                {seanceIntro.icon}
-              </motion.div>
-              {/* Phase 2: Title + details */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.5 }}
-                className="space-y-4"
-              >
-                <span className="text-sm font-bold uppercase tracking-[0.3em] px-4 py-1.5 rounded-full inline-block"
-                  style={{ backgroundColor: `${seanceIntro.color}20`, color: seanceIntro.color }}>
-                  {seanceIntro.activityType}
-                </span>
-                <h2 className="text-5xl font-bold text-white">{seanceIntro.title}</h2>
-                <p className="text-xs uppercase tracking-wider font-medium" style={{ color: seanceIntro.color }}>
-                  {seanceIntro.subtitle} · {seanceIntro.duration}
-                </p>
-                <p className="text-xl text-bw-muted max-w-xl mx-auto">{seanceIntro.description}</p>
-              </motion.div>
-              {/* Phase 3: Steps appear one by one */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 3.5 }}
-                className="flex items-center justify-center gap-3 flex-wrap"
-              >
-                {seanceIntro.steps.map((step, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -15 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 4 + i * 0.4 }}
-                    className="flex items-center gap-2"
-                  >
-                    <span className="w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: `${seanceIntro.color}25`, color: seanceIntro.color, border: `1px solid ${seanceIntro.color}40` }}>
-                      {i + 1}
-                    </span>
-                    <span className="text-sm text-bw-text">{step}</span>
-                    {i < seanceIntro.steps.length - 1 && (
-                      <motion.span
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.3 }}
-                        transition={{ delay: 4.2 + i * 0.4 }}
-                        className="mx-1 text-bw-muted"
-                      >→</motion.span>
-                    )}
-                  </motion.div>
-                ))}
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <BriefingOverlay showBriefing={showBriefing} seanceIntro={seanceIntro} />
 
       {/* ═══ QUESTION TRANSITION — micro-celebration ═══ */}
-      <AnimatePresence>
-        {showTransition && (
-          <motion.div
-            key="q-transition"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-30 flex items-center justify-center pointer-events-none"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="flex items-center gap-4"
-            >
-              <motion.div
-                initial={{ scale: 0, rotate: -90 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                className="w-16 h-16 rounded-full flex items-center justify-center"
-                style={{ background: `${moduleColor}25`, border: `2px solid ${moduleColor}` }}
-              >
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={moduleColor} strokeWidth="3" strokeLinecap="round">
-                  <path d="M20 6L9 17l-5-5" />
-                </svg>
-              </motion.div>
-              <span className="text-3xl font-bold text-white">
-                Question {completedQuestion} <span style={{ color: moduleColor }}>✓</span>
-              </span>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <QuestionTransitionCelebration showTransition={showTransition} completedQuestion={completedQuestion} moduleColor={moduleColor} />
 
       {/* Main */}
-      <main className="flex-1 flex items-center justify-center px-12 relative z-10">
+      <main className="flex-1 flex items-center justify-center px-4 sm:px-8 lg:px-12 relative z-10">
         <AnimatePresence mode="wait">
 
           {/* ═══ INITIAL JOIN — no module selected yet ═══ */}
@@ -631,7 +421,7 @@ export default function ScreenPage() {
                   <h2 className="text-3xl font-bold">
                     {data.module1.type === "positioning" ? "Positionnement" : "Carnet d'idées"}
                   </h2>
-                  {renderObjectiveBanner()}
+                  <ObjectiveBanner seanceIntro={seanceIntro} connectedCount={connectedCount} objectifText={cinemaFact} moduleColor={moduleColor} />
                 </motion.div>
               )}
             </>
@@ -657,7 +447,7 @@ export default function ScreenPage() {
               ) : (
                 <p className="text-3xl leading-snug font-medium px-4 text-bw-muted">Préparez-vous...</p>
               )}
-              {renderObjectiveBanner()}
+              <ObjectiveBanner seanceIntro={seanceIntro} connectedCount={connectedCount} objectifText={cinemaFact} moduleColor={moduleColor} />
             </motion.div>
           )}
 
@@ -673,7 +463,7 @@ export default function ScreenPage() {
                 </svg>
               </div>
               <h2 className="text-3xl font-bold">Contrainte & Responsabilité</h2>
-              {renderObjectiveBanner()}
+              <ObjectiveBanner seanceIntro={seanceIntro} connectedCount={connectedCount} objectifText={cinemaFact} moduleColor={moduleColor} />
             </motion.div>
           )}
 
@@ -882,6 +672,12 @@ export default function ScreenPage() {
                   {responsesCount}/{connectedCount} réponse{responsesCount > 1 ? "s" : ""}
                 </span>
               </div>
+              {/* Word cloud — appears when responses come in */}
+              {wordCloudTexts && wordCloudTexts.length > 0 && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+                  <WordCloud texts={wordCloudTexts} accentColor={moduleColor} />
+                </motion.div>
+              )}
             </motion.div>
           )}
 
@@ -960,7 +756,7 @@ export default function ScreenPage() {
               </motion.div>
               <h2 className="text-3xl font-bold">Tes contenus préférés</h2>
               <p className="text-xl text-bw-muted">Préparez-vous à sélectionner vos films, séries et anime favoris...</p>
-              {renderObjectiveBanner()}
+              <ObjectiveBanner seanceIntro={seanceIntro} connectedCount={connectedCount} objectifText={cinemaFact} moduleColor={moduleColor} />
             </motion.div>
           )}
 
@@ -1026,7 +822,7 @@ export default function ScreenPage() {
               </motion.div>
               <h2 className="text-3xl font-bold">Construction de scène</h2>
               <p className="text-xl text-bw-muted">Préparez-vous à construire une scène avec des jetons et des contraintes...</p>
-              {renderObjectiveBanner()}
+              <ObjectiveBanner seanceIntro={seanceIntro} connectedCount={connectedCount} objectifText={cinemaFact} moduleColor={moduleColor} />
             </motion.div>
           )}
 
@@ -1696,6 +1492,35 @@ export default function ScreenPage() {
                   <p className="text-lg text-bw-muted">{voteData.totalVotes} vote{voteData.totalVotes > 1 ? "s" : ""}</p>
                 )}
               </div>
+              {/* Podium — top 3 */}
+              {voteData && voteData.results.length >= 2 && (
+                <div className="flex items-end justify-center gap-3 pt-4">
+                  {[1, 0, 2].map((rank) => {
+                    const vr = voteData.results[rank];
+                    if (!vr) return null;
+                    const heights = [160, 120, 90];
+                    const colors = ["#FF6B35", "#4ECDC4", "#8B5CF6"];
+                    const medals = ["1er", "2e", "3e"];
+                    const pct = voteData.totalVotes > 0 ? Math.round((vr.count / voteData.totalVotes) * 100) : 0;
+                    return (
+                      <motion.div key={rank} className="flex flex-col items-center gap-2 w-36"
+                        initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 + rank * 0.15, type: "spring", stiffness: 200, damping: 20 }}>
+                        <span className="text-3xl">{vr.response.students?.avatar}</span>
+                        <span className="text-xs text-bw-muted truncate max-w-full">{vr.response.students?.display_name}</span>
+                        <motion.div
+                          initial={{ height: 0 }} animate={{ height: heights[rank] }}
+                          transition={{ delay: 0.5 + rank * 0.15, type: "spring", stiffness: 150, damping: 20 }}
+                          className="w-full rounded-t-xl flex flex-col items-center justify-end pb-3"
+                          style={{ background: `linear-gradient(180deg, ${colors[rank]}40, ${colors[rank]}15)`, border: `1px solid ${colors[rank]}30`, borderBottom: "none" }}>
+                          <span className="text-2xl font-bold" style={{ color: colors[rank] }}>{pct}%</span>
+                          <span className="text-[10px] font-semibold text-bw-muted">{medals[rank]}</span>
+                        </motion.div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
               {voteData && voteData.results.length > 0 && (
                 <div className="space-y-4">
                   {voteData.results.slice(0, 5).map((vr, i) => {
@@ -1714,7 +1539,16 @@ export default function ScreenPage() {
                             {pct}%
                           </span>
                         </div>
-                        <p className="text-lg text-bw-text mb-3">{vr.response.text}</p>
+                        <p className="text-lg text-bw-text mb-2">{vr.response.text}</p>
+                        {screenReactions && screenReactions[vr.response.id] && (
+                          <div className="mb-2">
+                            <ReactionBar
+                              responseId={vr.response.id}
+                              sessionId={sessionId}
+                              counts={screenReactions[vr.response.id]}
+                            />
+                          </div>
+                        )}
                         <div className="w-full rounded-full h-3 overflow-hidden" style={{ background: "rgba(18,20,24,0.8)" }}>
                           <motion.div
                             initial={{ width: 0 }}
@@ -1734,20 +1568,37 @@ export default function ScreenPage() {
 
           {/* REVIEWING — collective choice celebration */}
           {session.status === "reviewing" && collectiveChoice && (
-            <motion.div key={`result-${collectiveChoice.id}`} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              className="max-w-3xl w-full text-center space-y-8">
+            <motion.div key={`result-${collectiveChoice.id}`}
+              className="max-w-3xl w-full text-center space-y-8 relative">
+              {/* Phase 1: Black fade overlay (0→0.5s) */}
               <motion.div
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                initial={{ opacity: 1 }}
+                animate={{ opacity: 0 }}
+                transition={{ delay: 1.2, duration: 0.6 }}
+                className="fixed inset-0 z-40 bg-black pointer-events-none"
+              />
+              {/* Phase 2: "La classe a choisi..." text (0.4→1.2s) */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 1, 1, 0] }}
+                transition={{ times: [0, 0.2, 0.7, 1], duration: 1.8, delay: 0.3 }}
+                className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+              >
+                <span className="text-3xl font-cinema tracking-[0.2em] uppercase text-bw-gold">
+                  La classe a choisi...
+                </span>
+              </motion.div>
+              {/* Phase 3: Star icon reveal (1.5s) */}
+              <motion.div
+                initial={{ scale: 0, rotate: -180, opacity: 0 }}
+                animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                transition={{ delay: 1.8, type: "spring", stiffness: 200, damping: 15 }}
                 className="w-20 h-20 rounded-full mx-auto flex items-center justify-center relative"
                 style={{ background: "linear-gradient(135deg, rgba(245,158,11,0.2), rgba(255,107,53,0.15))", border: "2px solid rgba(245,158,11,0.5)" }}
               >
-                {/* Golden halo */}
                 <motion.div
                   animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-                  transition={{ repeat: Infinity, duration: 2 }}
+                  transition={{ repeat: Infinity, duration: 2, delay: 2 }}
                   className="absolute inset-0 rounded-full"
                   style={{ boxShadow: "0 0 40px rgba(245,158,11,0.4), 0 0 80px rgba(245,158,11,0.2)" }}
                 />
@@ -1755,29 +1606,41 @@ export default function ScreenPage() {
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                 </svg>
               </motion.div>
+              {/* Phase 4: Category badge slide-in (2s) */}
               <div className="space-y-4">
                 <motion.span
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
+                  initial={{ opacity: 0, x: -40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 2.2, type: "spring", stiffness: 200, damping: 20 }}
                   className="text-lg font-semibold uppercase tracking-wider px-5 py-2 rounded-full inline-block"
                   style={{ backgroundColor: `${categoryColor}20`, color: categoryColor }}
                 >
                   {collectiveChoice.restitution_label || collectiveChoice.category}
                 </motion.span>
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
+                {/* Phase 5: Chosen text with animated bar (2.4s) */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, type: "spring", stiffness: 150 }}
-                  className="text-4xl leading-snug font-medium"
+                  transition={{ delay: 2.6, type: "spring", stiffness: 120, damping: 15 }}
+                  className="relative"
                 >
-                  {collectiveChoice.chosen_text}
-                </motion.p>
+                  <p className="text-4xl leading-snug font-medium">
+                    {collectiveChoice.chosen_text}
+                  </p>
+                  {/* Animated underline bar */}
+                  <motion.div
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ delay: 3.0, duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+                    className="h-1 rounded-full mx-auto mt-4 origin-left"
+                    style={{ background: `linear-gradient(90deg, ${categoryColor}, ${categoryColor}60)`, maxWidth: "200px" }}
+                  />
+                </motion.div>
               </div>
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
+                transition={{ delay: 3.4 }}
                 className="text-lg text-bw-muted"
               >
                 Choix collectif de la classe
@@ -1942,37 +1805,9 @@ export default function ScreenPage() {
       </main>
 
       {/* ═══ STORY FILMSTRIP — collective choices ═══ */}
-      <AnimatePresence>
-        {allChoices && allChoices.length > 0 && session.status !== "done" && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="relative z-10 px-6 py-2 flex-shrink-0"
-          >
-            <div className="flex gap-3 overflow-x-auto scrollbar-none pb-1" style={{ scrollBehavior: "smooth" }}>
-              {allChoices.map((choice, i) => {
-                const color = CATEGORY_COLORS[choice.category] || moduleColor;
-                return (
-                  <motion.div
-                    key={choice.id}
-                    initial={{ opacity: 0, scale: 0.8, x: 30 }}
-                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                    transition={{ type: "spring", stiffness: 200, damping: 15, delay: i * 0.05 }}
-                    className="flex-shrink-0 rounded-lg px-4 py-2.5 backdrop-blur-md max-w-[280px]"
-                    style={{ background: "rgba(34,37,43,0.7)", borderLeft: `3px solid ${color}`, border: `1px solid rgba(255,255,255,0.05)` }}
-                  >
-                    <span className="text-[9px] uppercase tracking-wider font-medium block" style={{ color }}>
-                      {choice.restitution_label || choice.category}
-                    </span>
-                    <p className="text-sm text-bw-text mt-0.5 line-clamp-1">{choice.chosen_text}</p>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {allChoices && allChoices.length > 0 && session.status !== "done" && (
+        <StoryFilmstrip allChoices={allChoices} moduleColor={moduleColor} />
+      )}
 
       {/* Small floating QR when session is active but no students yet */}
       {!noModuleSelected && session.status !== "done" && connectedCount === 0 && joinUrl && (
@@ -1984,43 +1819,28 @@ export default function ScreenPage() {
       )}
 
       {/* Highlighted responses — teacher-projected, anchored bottom */}
+      <HighlightedResponsesPanel highlightedResponses={highlightedResponses || []} />
+
+      {/* Live response counter bar */}
       <AnimatePresence>
-        {highlightedResponses && highlightedResponses.length > 0 && (
+        {session.status === "responding" && connectedCount > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 30 }}
-            className="fixed bottom-16 left-0 right-0 z-30 px-8 pointer-events-none"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 20, opacity: 0 }}
+            className="relative z-20 px-8 py-3 flex items-center gap-4"
+            style={{ background: "rgba(255,255,255,0.03)", borderTop: "1px solid rgba(255,255,255,0.06)" }}
           >
-            <div className={`max-w-5xl mx-auto pointer-events-auto ${
-              highlightedResponses.length <= 2 ? "flex flex-col gap-3" : "grid grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-2"
-            }`}>
-              {highlightedResponses.map((hr) => (
-                <motion.div
-                  key={hr.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="rounded-2xl p-4 backdrop-blur-xl"
-                  style={{ background: "rgba(34,37,43,0.85)", border: "1px solid rgba(255,107,53,0.25)", boxShadow: "0 0 24px rgba(255,107,53,0.1), 0 4px 20px rgba(0,0,0,0.4)" }}
-                >
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="text-lg">{hr.students?.avatar}</span>
-                    <span className="text-sm font-medium">{hr.students?.display_name}</span>
-                    <span className="ml-auto text-[9px] text-bw-primary bg-bw-primary/10 px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider">
-                      Projeté
-                    </span>
-                  </div>
-                  <p className="text-base leading-relaxed text-bw-heading">{hr.text}</p>
-                  {hr.teacher_comment && (
-                    <div className="mt-2 flex items-start gap-2 bg-bw-teal/5 rounded-lg px-2.5 py-1.5 border border-bw-teal/10">
-                      <span className="text-[10px] text-bw-teal flex-shrink-0 mt-0.5 font-medium">Prof :</span>
-                      <span className="text-xs text-bw-teal/80 leading-snug">{hr.teacher_comment}</span>
-                    </div>
-                  )}
-                </motion.div>
-              ))}
+            <span className="text-sm text-white font-medium tabular-nums">
+              {responsesCount}/{connectedCount} ont repondu
+            </span>
+            <div className="flex-1 h-2 rounded-full bg-white/[0.06] overflow-hidden">
+              <motion.div
+                className="h-full rounded-full"
+                style={{ background: "linear-gradient(90deg, #FF6B35, #4ECDC4)" }}
+                animate={{ width: `${connectedCount > 0 ? (responsesCount / connectedCount) * 100 : 0}%` }}
+                transition={{ type: "spring", stiffness: 120, damping: 20 }}
+              />
             </div>
           </motion.div>
         )}
@@ -2035,68 +1855,14 @@ export default function ScreenPage() {
           {seanceIntro ? `${seanceIntro.subtitle} · ${seanceIntro.title}` : "Banlieuwood"}
         </span>
       </footer>
+
+      <HelpButton pageKey="screen" tips={[
+        { title: "Ecran de projection", description: "Cet ecran est fait pour etre projete en classe. Il affiche la question, les reponses et les resultats en temps reel." },
+        { title: "Reactions en direct", description: "Des emojis flottants apparaissent quand les eleves envoient leurs reponses. L'ecran s'anime tout seul !" },
+        { title: "Le film se construit", description: "La bande en bas montre tous les choix collectifs deja faits. Le film se construit sous vos yeux." },
+      ]} />
     </div>
+    </ErrorBoundary>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   PosterGallery — character card gallery with download button
-   ═══════════════════════════════════════════════════════════════ */
-
-function PosterGallery({ submissions }: { submissions: { studentId: string; text: string; avatar?: Record<string, unknown> }[] }) {
-  const galleryRef = useRef<HTMLDivElement>(null);
-  const [downloading, setDownloading] = useState(false);
-
-  async function handleDownloadPoster() {
-    if (!galleryRef.current) return;
-    setDownloading(true);
-    try {
-      const { exportElementAsImage } = await import("@/lib/export-image");
-      await exportElementAsImage(galleryRef.current, "classe-banlieuwood.png");
-    } catch { /* silent */ }
-    finally { setDownloading(false); }
-  }
-
-  return (
-    <div className="space-y-4">
-      <div ref={galleryRef} className="flex flex-wrap justify-center gap-4 p-4 rounded-2xl" style={{ backgroundColor: "#0F172A" }}>
-        {submissions.map((sub, i) => {
-          const parts = sub.text.split(",");
-          const prenom = parts[0] || "";
-          const age = parts[1] || "";
-          const trait = parts[2] || "";
-          return (
-            <motion.div key={sub.studentId}
-              initial={{ opacity: 0, scale: 0, rotate: -10 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ type: "spring", stiffness: 200, damping: 15, delay: i * 0.1 }}>
-              <CharacterCard
-                personnage={{ prenom, age, trait, avatar: (sub.avatar || {}) as AvatarOptions }}
-                revealLevel={0}
-                size="sm"
-              />
-            </motion.div>
-          );
-        })}
-      </div>
-      <button
-        onClick={handleDownloadPoster}
-        disabled={downloading}
-        className="mx-auto flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium text-white/70 bg-white/[0.06] border border-white/[0.08] hover:bg-white/[0.1] hover:text-white transition-all cursor-pointer disabled:opacity-40"
-      >
-        {downloading ? (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin">
-            <path d="M21 12a9 9 0 11-6.219-8.56" />
-          </svg>
-        ) : (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-        )}
-        Télécharger le poster
-      </button>
-    </div>
-  );
-}

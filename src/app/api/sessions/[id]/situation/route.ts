@@ -5,6 +5,26 @@ import { getElement } from "@/lib/module5-data";
 import { ETSI_IMAGES, getEtsiImage } from "@/lib/module10-data";
 // Module 1 redesign: no more static questions, everything from DB
 
+// Helper: fetch student team info
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function getStudentTeam(admin: any, studentId: string | null, sessionId: string) {
+  if (!studentId) return null;
+  const { data: student } = await admin
+    .from("students")
+    .select("team_id")
+    .eq("id", studentId)
+    .eq("session_id", sessionId)
+    .single();
+  if (!student?.team_id) return null;
+  const { data: team } = await admin
+    .from("teams")
+    .select("id, team_name, team_color, team_number")
+    .eq("id", student.team_id)
+    .single();
+  if (!team) return null;
+  return { id: team.id, teamName: team.team_name, teamColor: team.team_color, teamNumber: team.team_number };
+}
+
 // GET — get current situation for a session (used by students via polling)
 export async function GET(
   req: NextRequest,
@@ -18,6 +38,7 @@ export async function GET(
     .from("sessions")
     .select("*")
     .eq("id", sessionId)
+    .is("deleted_at", null)
     .single();
 
   if (sessionError || !session) {
@@ -83,7 +104,8 @@ export async function GET(
     studentResponseId = response?.id || null;
   }
 
-  // Get student warnings/kicked status
+  // Get student warnings/kicked status + team info
+  let studentTeam: { id: string; teamName: string; teamColor: string; teamNumber: number } | null = null;
   if (studentId) {
     const { data: student } = await admin
       .from("students")
@@ -94,6 +116,7 @@ export async function GET(
 
     studentWarnings = student?.warnings || 0;
     studentKicked = student?.kicked || false;
+    studentTeam = await getStudentTeam(admin, studentId, sessionId);
   }
 
   // Get vote options if status is 'voting'
@@ -206,6 +229,7 @@ export async function GET(
       sharingEnabled: session.sharing_enabled || false,
       broadcastMessage: session.broadcast_message || null,
       broadcastAt: session.broadcast_at || null,
+      muteSounds: session.mute_sounds ?? false,
     },
     situation: situation
       ? {
@@ -228,6 +252,7 @@ export async function GET(
     teacherNudge,
     studentWarnings,
     studentKicked,
+    team: studentTeam,
   });
 }
 
@@ -247,6 +272,8 @@ async function handleModule1(req: NextRequest, session: any, sessionId: string, 
     .select("*", { count: "exact", head: true })
     .eq("session_id", sessionId)
     .eq("is_active", true);
+
+  const m1Team = await getStudentTeam(admin, studentId, sessionId);
 
   const sessionBase = {
     id: session.id,

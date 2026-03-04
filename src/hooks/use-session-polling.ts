@@ -110,6 +110,7 @@ export interface SessionState {
     sharingEnabled?: boolean;
     broadcastMessage?: string | null;
     broadcastAt?: string | null;
+    muteSounds?: boolean;
   };
   situation: {
     id: string;
@@ -141,6 +142,7 @@ export interface SessionState {
   teacherNudge: string | null;
   studentWarnings: number;
   studentKicked: boolean;
+  team?: { id: string; teamName: string; teamColor: string; teamNumber: number } | null;
 }
 
 export function useSessionPolling(sessionId: string, studentId: string | null, opts?: { skipStudentCheck?: boolean }) {
@@ -152,7 +154,7 @@ export function useSessionPolling(sessionId: string, studentId: string | null, o
       if (!res.ok) throw new Error("Session introuvable");
       return res.json();
     },
-    refetchInterval: 3000, // Poll every 3 seconds
+    refetchInterval: 30_000, // Fallback polling — Realtime handles instant updates
     // Wait for studentId to be loaded unless explicitly skipped (e.g. screen page)
     enabled: !!sessionId && (opts?.skipStudentCheck || studentId !== null),
   });
