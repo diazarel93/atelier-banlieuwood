@@ -9,6 +9,7 @@ import {
   MAX_SLOTS,
   MAX_TOKENS,
 } from "@/lib/module5-data";
+import { safeJson } from "@/lib/api-utils";
 
 // AI feedback prompt
 const SCENE_FEEDBACK_SYSTEM = `Tu es un mentor cinéma bienveillant pour adolescents. Un élève vient de construire une scène.
@@ -51,7 +52,9 @@ export async function POST(
   }
 
   const { id: sessionId } = await params;
-  const { studentId, emotion, intention, obstacle, changement, elements } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { studentId, emotion, intention, obstacle, changement, elements } = parsed.data;
 
   if (!studentId || !emotion || !intention || !obstacle || !changement) {
     return NextResponse.json(
@@ -108,6 +111,7 @@ export async function POST(
     .from("sessions")
     .select("status, current_module, current_seance, level")
     .eq("id", sessionId)
+    .is("deleted_at", null)
     .single();
 
   if (!session || session.current_module !== 2 || (session.current_seance || 1) !== 2) {

@@ -44,7 +44,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
             "flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all",
             currentLocale === code
               ? "bg-white/[0.08] text-white"
-              : "text-slate-500 hover:text-slate-300"
+              : "text-bw-muted hover:text-bw-text"
           )}
           aria-label={`Switch to ${label}`}
         >

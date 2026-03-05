@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
@@ -12,6 +12,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageShell } from "@/components/page-shell";
 import { DashboardHeader } from "@/components/dashboard-header";
+import FilmPosterExport from "@/components/film-poster-export";
+import { SessionComparison } from "@/components/session-comparison";
+import type { PosterChoice, PosterStudent } from "@/components/film-poster";
 
 interface ExportData {
   markdown: string;
@@ -117,7 +120,10 @@ const SOCLE_COLORS: Record<string, string> = {
 export default function ResultsPage() {
   const { id: sessionId } = useParams<{ id: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const autoScrolled = useRef(false);
+  const [activeSection, setActiveSection] = useState("section-histoire");
 
   // Bilan state
   const [bilan, setBilan] = useState<BilanData | null>(null);
@@ -165,6 +171,29 @@ export default function ResultsPage() {
     enabled: !checkingAuth,
   });
 
+  // Module 10 pitchs data
+  const { data: m10PitchData } = useQuery<{
+    pitchs: {
+      id: string;
+      student_id: string;
+      objectif: string;
+      obstacle: string;
+      pitch_text: string;
+      chrono_seconds: number | null;
+      students: { display_name: string; avatar: string } | null;
+      module10_personnages: { prenom: string; avatar_data: Record<string, unknown> | null } | null;
+    }[];
+    count: number;
+  }>({
+    queryKey: ["m10-pitchs", sessionId],
+    queryFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/pitch`);
+      if (!res.ok) return { pitchs: [], count: 0 };
+      return res.json();
+    },
+    enabled: !checkingAuth,
+  });
+
   const { data: feedback } = useQuery<FeedbackData>({
     queryKey: ["feedback", sessionId],
     queryFn: async () => {
@@ -174,6 +203,45 @@ export default function ResultsPage() {
     },
     enabled: !checkingAuth,
   });
+
+  // Fetch session detail (for template/genre)
+  const { data: sessionDetail } = useQuery<{ template?: string | null }>({
+    queryKey: ["session-detail", sessionId],
+    queryFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}`);
+      if (!res.ok) return {};
+      return res.json();
+    },
+    enabled: !checkingAuth,
+  });
+
+  // Derive poster data from existing queries
+  const posterData = useMemo(() => {
+    if (!exportData) return null;
+
+    // Parse collective choices from markdown lines (format: "- **Label** : Text")
+    const choiceLines = exportData.markdown.split("\n").filter((l) => l.startsWith("- **"));
+    const choices: PosterChoice[] = choiceLines
+      .map((line) => {
+        const match = line.match(/^- \*\*(.+?)\*\* : (.+)$/);
+        if (!match) return null;
+        const [, label, text] = match;
+        const category =
+          Object.keys(CATEGORY_LABELS).find((c) =>
+            label.toLowerCase().includes(c)
+          ) || "personnage";
+        return { category, text } as PosterChoice;
+      })
+      .filter((c): c is PosterChoice => c !== null);
+
+    // Students from feedback data
+    const students: PosterStudent[] = (feedback?.students || []).map((s) => ({
+      displayName: s.name,
+      avatar: s.avatar,
+    }));
+
+    return { choices, students };
+  }, [exportData, feedback]);
 
   // Try loading cached bilan on mount
   useEffect(() => {
@@ -202,6 +270,62 @@ export default function ResultsPage() {
       })
       .catch(() => {});
   }, [sessionId, checkingAuth]);
+
+  // Auto-scroll to section from ?tab= query param — observes DOM until target appears
+  useEffect(() => {
+    if (autoScrolled.current) return;
+    const tab = searchParams.get("tab");
+    if (!tab) return;
+    const sectionMap: Record<string, string> = {
+      histoire: "section-histoire",
+      bilan: "section-bilan-educatif",
+      "bilan-ia": "section-bilan-ia",
+      fiche: "section-fiche-cours",
+    };
+    const targetId = sectionMap[tab];
+    if (!targetId) return;
+
+    function tryScroll() {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        autoScrolled.current = true;
+        return true;
+      }
+      return false;
+    }
+
+    // Try immediately
+    if (tryScroll()) return;
+
+    // Observe DOM mutations until element appears (max 10s)
+    const observer = new MutationObserver(() => {
+      if (tryScroll()) observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    const timeout = setTimeout(() => observer.disconnect(), 10000);
+    return () => { observer.disconnect(); clearTimeout(timeout); };
+  }, [searchParams]);
+
+  // Track active section for sticky nav highlight
+  useEffect(() => {
+    const ids = ["section-histoire", "section-bilan-educatif", "section-bilan-ia", "section-fiche-cours"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: "-20% 0px -70% 0px" }
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [exportData, feedback, bilan, fiche]);
 
   const handleGenerateBilan = useCallback(async () => {
     setBilanLoading(true);
@@ -330,6 +454,27 @@ export default function ResultsPage() {
     );
   }
 
+  function handleExportCsv() {
+    if (!feedback) return;
+    const headers = ["Eleve", "Avatar", "Reponses", "Longueur moy.", "Choisi(e)s"];
+    const rows = feedback.students.map(s => [
+      s.name,
+      s.avatar,
+      String(s.responses),
+      String(s.avgLength),
+      String(s.chosenCount),
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${exportData?.session.title.replace(/\s+/g, "-") || "session"}-eleves.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("CSV exporte !");
+  }
+
   if (checkingAuth || isLoading) {
     return (
       <div className="min-h-dvh flex items-center justify-center">
@@ -362,16 +507,52 @@ export default function ResultsPage() {
         backHref={`/session/${sessionId}`}
         backLabel="Session"
         actions={
-          <>
+          <div className="no-print flex gap-2">
             <Button variant="secondary" size="sm" onClick={handleCopyMarkdown}>
               Copier
+            </Button>
+            <Button variant="secondary" size="sm" onClick={handleExportCsv} disabled={!feedback}>
+              CSV
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => window.print()}>
+              PDF
             </Button>
             <Button size="sm" onClick={handleDownload}>
               Télécharger .md
             </Button>
-          </>
+          </div>
         }
       />
+        {/* ── Sticky section nav ── */}
+        <div className="no-print sticky top-0 z-30 py-2.5 bg-bw-bg/85 backdrop-blur-xl border-b border-white/[0.06]">
+          <div className="flex items-center gap-1 overflow-x-auto">
+            {[
+              { id: "section-histoire", label: "Histoire", icon: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" },
+              { id: "section-bilan-educatif", label: "Bilan educatif", icon: "M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01 9 11.01" },
+              { id: "section-bilan-ia", label: "Bilan IA", icon: "M12 2a10 10 0 110 20 10 10 0 010-20zM12 6v6l4 2" },
+              { id: "section-fiche-cours", label: "Fiche de cours", icon: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6" },
+            ].map((nav) => {
+              const isActive = activeSection === nav.id;
+              return (
+                <button
+                  key={nav.id}
+                  onClick={() => document.getElementById(nav.id)?.scrollIntoView({ behavior: "smooth" })}
+                  className={`relative flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-medium transition-all duration-200 cursor-pointer ${
+                    isActive
+                      ? "text-white bg-white/[0.1] border border-white/[0.15] shadow-[0_0_12px_rgba(255,255,255,0.05)]"
+                      : "text-bw-muted hover:text-bw-text hover:bg-white/[0.05]"
+                  }`}
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d={nav.icon} />
+                  </svg>
+                  {nav.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Title — cinematic header */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -391,7 +572,7 @@ export default function ResultsPage() {
         {exportData.choicesCount > 0 ? (
           <div className="space-y-4">
             <div>
-              <h2 className="font-cinema text-xl tracking-wide uppercase text-bw-ink">L&apos;Histoire Collective</h2>
+              <h2 id="section-histoire" className="font-cinema text-xl tracking-wide uppercase text-bw-ink scroll-mt-16">L&apos;Histoire Collective</h2>
               <div className="w-12 h-0.5 mt-1 bg-gradient-to-r from-bw-primary to-bw-gold rounded-full" />
             </div>
             {lines.filter(l => l.startsWith("- **")).map((line, i) => {
@@ -426,6 +607,22 @@ export default function ResultsPage() {
           </div>
         )}
 
+        {/* ——— FILM POSTER ——— */}
+        {posterData && posterData.choices.length > 0 && (
+          <div className="space-y-4">
+            <div>
+              <h2 className="font-cinema text-xl tracking-wide uppercase text-bw-ink">Affiche du Film</h2>
+              <div className="w-12 h-0.5 mt-1 bg-gradient-to-r from-bw-gold to-bw-primary rounded-full" />
+            </div>
+            <FilmPosterExport
+              title={exportData.session.title}
+              template={sessionDetail?.template || null}
+              collectiveChoices={posterData.choices}
+              students={posterData.students}
+            />
+          </div>
+        )}
+
         {/* Budget summary */}
         {budgetData?.averages && Object.keys(budgetData.averages).length > 0 && (
           <div className="space-y-4">
@@ -457,11 +654,47 @@ export default function ResultsPage() {
           </div>
         )}
 
+        {/* Module 10 — Pitchs & Personnages */}
+        {m10PitchData && m10PitchData.pitchs.length > 0 && (
+          <div className="space-y-4">
+            <div>
+              <h2 className="font-cinema text-xl tracking-wide uppercase text-bw-ink">Pitchs des élèves</h2>
+              <div className="w-12 h-0.5 mt-1 bg-gradient-to-r from-amber-500 to-bw-primary rounded-full" />
+              <p className="text-sm text-bw-muted mt-2">{m10PitchData.count} pitch{m10PitchData.count > 1 ? "s" : ""} créé{m10PitchData.count > 1 ? "s" : ""}</p>
+            </div>
+            <div className="grid gap-3">
+              {m10PitchData.pitchs.filter(p => p.pitch_text && p.pitch_text.length > 0).map((p) => (
+                <Card key={p.id}>
+                  <CardContent className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base">{p.students?.avatar || "👤"}</span>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm font-medium">{p.module10_personnages?.prenom || p.students?.display_name || "Élève"}</span>
+                        {p.module10_personnages?.prenom && p.students?.display_name && (
+                          <span className="text-xs text-bw-muted ml-1.5">({p.students.display_name})</span>
+                        )}
+                      </div>
+                      {p.chrono_seconds != null && (
+                        <Badge variant="outline" className="text-xs tabular-nums">{p.chrono_seconds}s</Badge>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <Badge variant="secondary" className="text-xs">Objectif : {p.objectif}</Badge>
+                      <Badge variant="destructive" className="text-xs">Obstacle : {p.obstacle}</Badge>
+                    </div>
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{p.pitch_text}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Educational Feedback */}
         {feedback && (
           <div className="space-y-6">
             <div>
-              <h2 className="font-cinema text-xl tracking-wide uppercase text-bw-ink">Bilan éducatif</h2>
+              <h2 id="section-bilan-educatif" className="font-cinema text-xl tracking-wide uppercase text-bw-ink scroll-mt-16">Bilan éducatif</h2>
               <div className="w-12 h-0.5 mt-1 bg-gradient-to-r from-bw-primary to-bw-gold rounded-full" />
             </div>
 
@@ -568,7 +801,7 @@ export default function ResultsPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="font-cinema text-xl tracking-wide uppercase text-bw-ink">Bilan IA</h2>
+              <h2 id="section-bilan-ia" className="font-cinema text-xl tracking-wide uppercase text-bw-ink scroll-mt-16">Bilan IA</h2>
               <div className="w-12 h-0.5 mt-1 bg-gradient-to-r from-bw-primary to-bw-gold rounded-full" />
             </div>
             {bilan && (
@@ -705,7 +938,7 @@ export default function ResultsPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="font-cinema text-xl tracking-wide uppercase text-bw-ink">Fiche de Cours</h2>
+              <h2 id="section-fiche-cours" className="font-cinema text-xl tracking-wide uppercase text-bw-ink scroll-mt-16">Fiche de Cours</h2>
               <div className="w-12 h-0.5 mt-1 bg-gradient-to-r from-bw-primary to-bw-gold rounded-full" />
             </div>
             {fiche && (
@@ -890,6 +1123,9 @@ export default function ResultsPage() {
             </div>
           )}
         </div>
+
+        {/* Session comparison */}
+        <SessionComparison sessionId={sessionId} />
 
         {/* Raw markdown preview */}
         <details className="group">

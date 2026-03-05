@@ -174,7 +174,7 @@ export function useSessionPolling(sessionId: string, studentId: string | null, o
       if (!res.ok) throw new Error("Session introuvable");
       return res.json();
     },
-    refetchInterval: 30_000, // Fallback polling — Realtime handles instant updates
+    refetchInterval: 5_000, // Fallback polling — Realtime broadcast handles instant updates
     // Wait for studentId to be loaded unless explicitly skipped (e.g. screen page)
     enabled: !!sessionId && (opts?.skipStudentCheck || studentId !== null),
   });

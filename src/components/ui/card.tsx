@@ -8,15 +8,15 @@ const cardVariants = cva(
   {
     variants: {
       variant: {
-        // Default -- solid surface
+        // Default -- solid surface with specular highlight
         default:
-          "bg-bw-surface border border-white/[0.06] shadow-bw-md hover:border-white/[0.1]",
-        // Glass -- glassmorphism card
+          "bg-bw-surface border border-white/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_1px_1px_rgba(0,0,0,0.12),0_2px_2px_rgba(0,0,0,0.12),0_4px_4px_rgba(0,0,0,0.12),0_8px_8px_rgba(0,0,0,0.12)] hover:border-white/[0.12]",
+        // Glass -- glassmorphism card (specular in .glass-card CSS class)
         glass:
-          "glass-card hover:border-white/[0.1]",
-        // Elevated -- slightly brighter surface
+          "glass-card",
+        // Elevated -- brighter surface with specular highlight
         elevated:
-          "bg-bw-elevated border border-white/[0.06] shadow-bw-lg hover:border-white/[0.1]",
+          "bg-bw-elevated border border-white/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_1px_2px_rgba(0,0,0,0.07),0_2px_4px_rgba(0,0,0,0.07),0_4px_8px_rgba(0,0,0,0.07),0_8px_16px_rgba(0,0,0,0.07)] hover:border-white/[0.12]",
         // Ghost -- no bg, no border
         ghost:
           "bg-transparent border border-transparent hover:bg-bw-surface/50 hover:border-white/[0.06]",

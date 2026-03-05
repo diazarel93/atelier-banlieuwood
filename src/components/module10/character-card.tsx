@@ -158,12 +158,12 @@ export function CharacterCard({
           <RevealSection show delay={0.1}>
             <div className="flex flex-wrap gap-1.5">
               {objectif && (
-                <span className={`${s.badge} rounded-full bg-cyan-500/15 text-cyan-400 inline-flex items-center gap-1`}>
+                <span className={`${s.badge} rounded-full bg-bw-teal/15 text-bw-teal inline-flex items-center gap-1`}>
                   <span>🎯</span> {getObjectifLabel(objectif)}
                 </span>
               )}
               {obstacle && (
-                <span className={`${s.badge} rounded-full bg-red-500/15 text-red-400 inline-flex items-center gap-1`}>
+                <span className={`${s.badge} rounded-full bg-bw-danger/15 text-bw-danger inline-flex items-center gap-1`}>
                   <span>🧱</span> {getObstacleLabel(obstacle)}
                 </span>
               )}
@@ -203,11 +203,11 @@ export function CharacterCard({
           <RevealSection show delay={0.1}>
             <div className="flex items-center justify-between">
               {chronoSeconds != null && (
-                <span className={`${s.badge} rounded-full bg-amber-500/15 text-amber-400 inline-flex items-center gap-1`}>
+                <span className={`${s.badge} rounded-full bg-bw-amber/15 text-bw-amber inline-flex items-center gap-1`}>
                   <span>⏱</span> {chronoSeconds}s
                 </span>
               )}
-              <span className={`${s.badge} rounded-full bg-emerald-500/20 text-emerald-400 font-bold inline-flex items-center gap-1`}>
+              <span className={`${s.badge} rounded-full bg-bw-green/20 text-bw-green font-bold inline-flex items-center gap-1`}>
                 🎬 PRÊT
               </span>
             </div>

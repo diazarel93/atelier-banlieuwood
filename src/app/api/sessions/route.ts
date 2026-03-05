@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { safeJson } from "@/lib/api-utils";
+import { createSessionSchema, formatZodError } from "@/lib/schemas";
 import { customAlphabet } from "nanoid";
 
 const nanoid = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
@@ -109,34 +111,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
   }
 
-  const { title, level, template } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
 
-  if (!title || !level) {
+  const validated = createSessionSchema.safeParse(parsed.data);
+  if (!validated.success) {
     return NextResponse.json(
-      { error: "Titre et niveau requis" },
+      { error: formatZodError(validated.error) },
       { status: 400 }
     );
   }
 
-  // Validate & sanitize inputs
-  const cleanTitle = String(title).trim().slice(0, 60);
-  const VALID_LEVELS = ["primaire", "college", "lycee"];
-  if (!VALID_LEVELS.includes(level)) {
-    return NextResponse.json(
-      { error: "Niveau invalide" },
-      { status: 400 }
-    );
-  }
-
-  const VALID_TEMPLATES = ["horreur", "comedie", "action", "romance", "drame", "sci-fi", "policier", "fantastique"];
-  const cleanTemplate = template && VALID_TEMPLATES.includes(template) ? template : null;
-
-  if (cleanTitle.length < 1) {
-    return NextResponse.json(
-      { error: "Titre trop court" },
-      { status: 400 }
-    );
-  }
+  const { title, level, template, description, question_timer } = validated.data;
+  const cleanTitle = title.slice(0, 60);
+  const cleanTemplate = template || null;
 
   // Get facilitator's org
   const { data: facilitator } = await supabase
@@ -155,6 +143,9 @@ export async function POST(req: NextRequest) {
   // Generate unique 6-char join code
   const joinCode = nanoid();
 
+  const cleanDescription = description ? description.trim().slice(0, 200) : null;
+  const cleanTimer = question_timer ?? null;
+
   const { data, error } = await supabase
     .from("sessions")
     .insert({
@@ -164,6 +155,8 @@ export async function POST(req: NextRequest) {
       level,
       join_code: joinCode,
       template: cleanTemplate,
+      ...(cleanDescription && { description: cleanDescription }),
+      ...(cleanTimer && { question_timer: cleanTimer }),
     })
     .select()
     .single();

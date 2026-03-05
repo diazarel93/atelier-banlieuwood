@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
+import { safeJson } from "@/lib/api-utils";
 
 // POST — submit assembled pitch
 export async function POST(
@@ -11,16 +12,19 @@ export async function POST(
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
 
   const { id: sessionId } = await params;
-  const { studentId, objectif, obstacle, pitchText, chronoSeconds } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { studentId, objectif, obstacle, pitchText, chronoSeconds } = parsed.data;
 
-  if (!studentId || !objectif || !obstacle || !pitchText) {
+  if (!studentId || !objectif || !obstacle) {
     return NextResponse.json(
-      { error: "studentId, objectif, obstacle et pitchText requis" },
+      { error: "studentId, objectif et obstacle requis" },
       { status: 400 }
     );
   }
 
-  if (typeof pitchText !== "string" || pitchText.trim().length < 10) {
+  // pitchText is optional at the objectif step, required at the pitch assembly step
+  if (pitchText != null && typeof pitchText === "string" && pitchText.trim().length > 0 && pitchText.trim().length < 10) {
     return NextResponse.json(
       { error: "Le pitch doit faire au moins 10 caractères" },
       { status: 400 }
@@ -34,6 +38,7 @@ export async function POST(
     .from("sessions")
     .select("status, current_module, current_seance")
     .eq("id", sessionId)
+    .is("deleted_at", null)
     .single();
 
   if (!session || session.current_module !== 10 || (session.current_seance || 1) !== 2) {
@@ -65,20 +70,34 @@ export async function POST(
     );
   }
 
-  // Upsert pitch
+  // Upsert pitch — pitchText may be null at the objectif step
+  const cleanPitch = pitchText && typeof pitchText === "string" ? pitchText.trim() : null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const upsertData: Record<string, any> = {
+    session_id: sessionId,
+    student_id: studentId,
+    objectif: objectif.trim(),
+    obstacle: obstacle.trim(),
+    chrono_seconds: chronoSeconds != null ? Number(chronoSeconds) : null,
+  };
+  // Only overwrite pitch_text if explicitly provided (don't erase existing pitch at objectif step)
+  // DB has NOT NULL constraint, so use empty string as initial placeholder
+  if (cleanPitch) {
+    upsertData.pitch_text = cleanPitch;
+  } else {
+    // For objectif step: check if row already exists (don't overwrite existing pitch)
+    const { data: existing } = await admin
+      .from("module10_pitchs")
+      .select("pitch_text")
+      .eq("session_id", sessionId)
+      .eq("student_id", studentId)
+      .maybeSingle();
+    upsertData.pitch_text = existing?.pitch_text || "";
+  }
+
   const { data, error } = await admin
     .from("module10_pitchs")
-    .upsert(
-      {
-        session_id: sessionId,
-        student_id: studentId,
-        objectif: objectif.trim(),
-        obstacle: obstacle.trim(),
-        pitch_text: pitchText.trim(),
-        chrono_seconds: chronoSeconds != null ? Number(chronoSeconds) : null,
-      },
-      { onConflict: "session_id,student_id" }
-    )
+    .upsert(upsertData, { onConflict: "session_id,student_id" })
     .select()
     .single();
 
@@ -127,7 +146,9 @@ export async function PATCH(
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
 
   const { id: sessionId } = await params;
-  const { studentId, chronoSeconds } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { studentId, chronoSeconds } = parsed.data;
 
   if (!studentId || chronoSeconds == null) {
     return NextResponse.json(

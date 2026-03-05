@@ -97,7 +97,7 @@ export function TeamManager({ sessionId, teams, students }: TeamManagerProps) {
         <h4 className="text-xs font-bold uppercase tracking-wider text-bw-muted">Equipes</h4>
         <button
           onClick={() => { if (confirm("Supprimer toutes les equipes ?")) deleteTeams.mutate(); }}
-          className="text-[10px] text-red-400 hover:text-red-300 cursor-pointer"
+          className="text-[10px] text-bw-danger hover:text-bw-danger/80 cursor-pointer"
         >
           Supprimer
         </button>

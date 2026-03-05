@@ -923,6 +923,169 @@ const MODULE_GUIDES: ModuleGuide[] = [
       { name: "Confrontation", timing: "5 min", instruction: "Projeter 2 pitchs. Vote de la classe. Commenter les qualités de chacun." },
     ],
   },
+
+  // ── Module 11 — Ciné-Débat (4 séances) ──
+
+  {
+    moduleId: "cd1",
+    title: "L'Art de Raconter",
+    objectifPedagogique:
+      "Découvrir les techniques narratives du cinéma à travers des citations, affiches et extraits. Comprendre comment les réalisateurs construisent une histoire visuelle.",
+    socleCommun: ["D1", "D3", "D5"],
+    competences: [
+      "Analyser les intentions narratives d'un réalisateur",
+      "Argumenter son point de vue face au groupe",
+      "Identifier les choix stylistiques qui servent le récit",
+    ],
+    introADire:
+      "Aujourd'hui, on entre dans l'art de raconter. Le cinéma, ce n'est pas juste une caméra qui filme — c'est quelqu'un qui RACONTE quelque chose. On va découvrir comment les plus grands réalisateurs s'y prennent, et vous allez donner votre avis.",
+    aQuoiEtreAttentif: [
+      "Les élèves qui n'osent pas parler — les relancer avec des questions simples",
+      "Ceux qui critiquent sans argumenter — demander toujours « pourquoi ? »",
+      "L'énergie de la classe : alterner stimuli courts et moments de réflexion",
+    ],
+    commentRelancer: [
+      "Imagine que tu es le réalisateur. Pourquoi tu aurais fait ce choix ?",
+      "Si tu devais résumer cette idée en une phrase, ce serait quoi ?",
+      "Qui n'est pas d'accord ? Expliquez-nous pourquoi.",
+    ],
+    commentChallenger: [
+      "Et si cette citation était complètement fausse — qu'est-ce que ça changerait au cinéma ?",
+      "Hitchcock dit que le cinéma c'est 'la vie sans les parties ennuyeuses'. Tu es d'accord ?",
+    ],
+    conseils: [
+      "Chaque stimulus dure ~5 min : 1 min découverte, 2 min réflexion individuelle, 2 min débat",
+      "Projeter l'image/citation en grand sur l'écran — impact visuel important",
+      "Varier les formats : citation → affiche → citation → débat → poster → extrait",
+      "En fin de séance, faire voter la citation/idée préférée de la classe",
+    ],
+    duration: "~30 min",
+    phases: [
+      { name: "Ouverture", timing: "3 min", instruction: "Présenter le principe : on va explorer comment les grands du cinéma racontent leurs histoires. Chacun aura le droit de réagir." },
+      { name: "Exploration", timing: "20 min", instruction: "6 stimuli en rotation (~3 min chacun). Pour chaque : découverte → écriture/réflexion → débat oral rapide." },
+      { name: "Synthèse", timing: "5 min", instruction: "Vote collectif : quelle citation/idée a le plus marqué la classe ? Discussion libre." },
+    ],
+  },
+  {
+    moduleId: "cd2",
+    title: "Émotions à l'Écran",
+    objectifPedagogique:
+      "Explorer comment le cinéma transmet des émotions : jeu d'acteur, silence, mise en scène. Développer la capacité à identifier et nommer les émotions dans une œuvre.",
+    socleCommun: ["D1", "D3", "D5"],
+    competences: [
+      "Identifier les techniques cinématographiques qui créent l'émotion",
+      "Nommer et distinguer des émotions complexes",
+      "Exprimer un ressenti personnel de manière structurée",
+    ],
+    introADire:
+      "Le cinéma, c'est l'art de faire ressentir. Aujourd'hui on va chercher COMMENT un film nous touche. Pas juste « c'est triste » ou « c'est drôle » — mais comment le réalisateur s'y prend pour nous faire ressentir ça.",
+    aQuoiEtreAttentif: [
+      "Respecter les émotions exprimées — pas de moqueries",
+      "Certains élèves seront mal à l'aise avec les émotions — proposer des alternatives (écrire plutôt que parler)",
+      "Guider vers la précision : « triste » → « nostalgique », « en deuil », « abandonné »",
+    ],
+    commentRelancer: [
+      "Qu'est-ce que tu as ressenti en voyant cette scène ? Pas ce que tu penses — ce que tu RESSENS.",
+      "Si on coupait la musique, est-ce que l'émotion serait la même ?",
+      "Un acteur qui ne dit rien peut être plus émouvant qu'un long discours. Pourquoi ?",
+    ],
+    commentChallenger: [
+      "Est-ce que le cinéma CRÉE des émotions ou est-ce qu'il RÉVÈLE celles qu'on a déjà ?",
+      "Un film qui ne fait rien ressentir, c'est un mauvais film ? Toujours ?",
+    ],
+    conseils: [
+      "Créer un espace bienveillant — les émotions sont personnelles",
+      "Utiliser les extraits vidéo si disponibles — plus impactant que les descriptions",
+      "Alterner entre réflexion écrite (intimité) et débat oral (confrontation)",
+      "Terminer sur une note positive : chaque émotion ressentie est valide",
+    ],
+    duration: "~30 min",
+    phases: [
+      { name: "Mise en condition", timing: "3 min", instruction: "Poser le cadre : on parle d'émotions, on respecte ce que chacun ressent. Pas de bonne ou mauvaise réponse." },
+      { name: "Exploration", timing: "22 min", instruction: "6 stimuli émotionnels. Alterner écriture individuelle et partage en classe. Encourager la précision du vocabulaire." },
+      { name: "Bilan émotionnel", timing: "5 min", instruction: "Tour rapide : chaque élève dit UN mot-émotion qui résume la séance. Pas d'explication requise." },
+    ],
+  },
+  {
+    moduleId: "cd3",
+    title: "Héros & Anti-Héros",
+    objectifPedagogique:
+      "Questionner la notion de héros au cinéma : sacrifice, morale, évolution. Comprendre que le héros n'est pas toujours celui qu'on croit.",
+    socleCommun: ["D1", "D3", "D5"],
+    competences: [
+      "Distinguer héros classique, anti-héros et antagoniste",
+      "Analyser l'évolution d'un personnage au fil du récit",
+      "Confronter des points de vue divergents avec respect",
+    ],
+    introADire:
+      "C'est quoi un héros ? Quelqu'un de courageux ? Quelqu'un de gentil ? Aujourd'hui, on va secouer tout ça. Au cinéma, les héros les plus intéressants sont souvent ceux qui ne sont PAS parfaits.",
+    aQuoiEtreAttentif: [
+      "Les élèves qui confondent « héros = bon » — montrer les nuances",
+      "Ceux qui défendent l'anti-héros par provocation — recentrer sur l'argumentation",
+      "Le débat peut s'enflammer — garder le cap sur le respect mutuel",
+    ],
+    commentRelancer: [
+      "Si ce personnage existait en vrai, tu voudrais être ami avec lui ? Pourquoi ?",
+      "Est-ce qu'un méchant peut devenir un héros ? Donne un exemple.",
+      "Pourquoi on s'attache parfois plus à l'anti-héros qu'au héros ?",
+    ],
+    commentChallenger: [
+      "Les super-héros avec des super-pouvoirs, c'est de la triche narrative ?",
+      "Est-ce qu'un héros qui ne change jamais est vraiment un héros ?",
+    ],
+    conseils: [
+      "Apporter des exemples concrets que les élèves connaissent (MCU, anime, séries)",
+      "Le débat « héros vs anti-héros » peut être très riche — laisser s'exprimer",
+      "Utiliser les affiches pour analyser comment le visuel code le héros",
+      "Finir par la question : et toi, quel type de héros tu écrirais ?",
+    ],
+    duration: "~30 min",
+    phases: [
+      { name: "Accroche", timing: "3 min", instruction: "Question flash : c'est quoi un héros ? Laisser 3-4 réponses spontanées. Puis annoncer qu'on va challenger cette définition." },
+      { name: "Exploration", timing: "22 min", instruction: "6 stimuli sur le héros et l'anti-héros. Mélanger citations, portraits et débats. Pousser les élèves à argumenter." },
+      { name: "Verdict", timing: "5 min", instruction: "Vote : héros classique ou anti-héros — lequel fait le meilleur film ? Discussion ouverte." },
+    ],
+  },
+  {
+    moduleId: "cd4",
+    title: "Les Coulisses",
+    objectifPedagogique:
+      "Découvrir l'envers du décor : décors réels vs numériques, budgets, montage, impact de l'IA. Comprendre que le cinéma est un artisanat technique autant qu'un art.",
+    socleCommun: ["D3", "D4", "D5"],
+    competences: [
+      "Comprendre les contraintes techniques et budgétaires d'un film",
+      "Distinguer les apports du numérique et de l'artisanat traditionnel",
+      "Former un avis argumenté sur l'impact de la technologie dans la création",
+    ],
+    introADire:
+      "On a parlé d'histoires, d'émotions, de héros. Maintenant on passe de l'autre côté de la caméra. Comment c'est FABRIQUÉ, un film ? Qu'est-ce qui est vrai, qu'est-ce qui est truqué ? Et l'IA dans tout ça ?",
+    aQuoiEtreAttentif: [
+      "Les élèves fascinés par le budget — recadrer vers le processus créatif",
+      "Le débat sur l'IA peut devenir passionnel — garder un ton nuancé",
+      "Ceux qui pensent que « tout est fait par ordinateur » — montrer le travail humain",
+    ],
+    commentRelancer: [
+      "Si tu avais 1 million de budget, tu le dépenses comment pour ton film ?",
+      "Le montage, c'est couper des scènes. Mais c'est aussi CHOISIR ce qu'on garde. Pourquoi c'est si important ?",
+      "Un film tourné avec un téléphone, ça peut être aussi bien qu'un film à 200 millions ?",
+    ],
+    commentChallenger: [
+      "L'IA pourra-t-elle un jour remplacer un réalisateur ? Pourquoi ?",
+      "Les effets spéciaux rendent les films meilleurs ou moins authentiques ?",
+    ],
+    conseils: [
+      "Montrer des comparaisons avant/après effets spéciaux si possible",
+      "Le sujet IA est très actuel — laisser les élèves exprimer leurs craintes/espoirs",
+      "Relier au Module 9 (production) pour ceux qui l'ont fait — c'est le même monde",
+      "Terminer en rappelant : derrière chaque film, des centaines de personnes travaillent",
+    ],
+    duration: "~30 min",
+    phases: [
+      { name: "Immersion", timing: "3 min", instruction: "Montrer un plan spectaculaire et demander : c'est réel ou numérique ? Lancer le sujet des coulisses." },
+      { name: "Exploration", timing: "22 min", instruction: "6 stimuli techniques. Budget, décors, IA, montage. Alterner information et débat." },
+      { name: "Clôture", timing: "5 min", instruction: "La grande question : le cinéma de demain, il ressemblera à quoi ? Chacun donne sa vision en une phrase." },
+    ],
+  },
 ];
 
 // ——————————————————————————————————————————————————————
@@ -2012,46 +2175,46 @@ const MODULE10_S2_QUESTIONS: QuestionGuide[] = [
     position: 1,
     category: "pitch",
     label: "Création du personnage",
-    whatToExpect: "Les élèves construisent un avatar et définissent prénom, âge, trait dominant.",
-    commonPitfalls: "Personnages trop stéréotypés ou copies de personnages connus.",
-    relancePhrase: "Pensez à quelqu'un que vous connaissez. Qu'est-ce qui le rend unique ?",
-    challengePhrase: "Votre personnage a un défaut ? Les meilleurs personnages en ont toujours un.",
+    whatToExpect: "ÉTAPE IDENTITÉ — Les élèves construisent un avatar visuel, choisissent prénom + trait de caractère. Résultat attendu : un personnage reconnaissable en une phrase (« Lina, 15 ans, rebelle »). C'est la fondation, pas encore l'histoire.",
+    commonPitfalls: "Personnages copiés d'animes/films (Naruto, Spiderman). Trait trop générique (« gentil »). Pas de lien avec une vraie personnalité.",
+    relancePhrase: "Pense à quelqu'un de ton entourage ou de ton quartier. Qu'est-ce qui le rend unique ? Son look, sa façon de parler, un détail ?",
+    challengePhrase: "Si je croise ton personnage dans la rue, comment je le reconnais ? Un seul détail suffit.",
   },
   {
     position: 2,
     category: "pitch",
     label: "Objectif + Obstacle",
-    whatToExpect: "Choix d'un objectif et description de l'obstacle. C'est le moteur de l'histoire.",
-    commonPitfalls: "Obstacle trop facile à surmonter ou objectif trop vague.",
-    relancePhrase: "L'obstacle doit faire peur au personnage. Qu'est-ce qui le bloque vraiment ?",
-    challengePhrase: "Si l'obstacle est trop facile, l'histoire est ennuyeuse. Rendez-le plus dur.",
+    whatToExpect: "ÉTAPE CONFLIT — Les élèves choisissent ce que leur personnage VEUT (objectif) et ce qui l'en EMPÊCHE (obstacle). C'est le moteur dramatique. Ici on NE RÉDIGE PAS le pitch — on sélectionne les ingrédients. Le pitch viendra à l'étape suivante.",
+    commonPitfalls: "Obstacle trop facile (« il a un peu peur » → pas assez de tension). Objectif trop abstrait (« être heureux » → pas filmable). Confusion avec l'étape pitch — rappeler que l'écriture, c'est après.",
+    relancePhrase: "L'obstacle doit faire VRAIMENT peur au personnage. Si c'est facile à surmonter, personne n'a envie de regarder le film.",
+    challengePhrase: "Rendez l'obstacle plus fort. Et si l'obstacle touchait aussi quelqu'un que le personnage aime ?",
   },
   {
     position: 3,
     category: "pitch",
-    label: "Assemblage du pitch",
-    whatToExpect: "Les élèves combinent personnage + objectif + obstacle + « Et si... » en un pitch cohérent.",
-    commonPitfalls: "Pitch trop long ou incohérent — les éléments ne s'emboîtent pas.",
-    relancePhrase: "Relisez votre pitch à voix haute. Est-ce que ça donne envie d'en savoir plus ?",
-    challengePhrase: "En 2 phrases maximum. Si vous ne pouvez pas, c'est que l'histoire est trop compliquée.",
+    label: "Écriture du pitch",
+    whatToExpect: "ÉTAPE NARRATION — C'est ici que l'élève écrit vraiment. Le textarea est VIDE (pas de template). L'élève voit son personnage, objectif et obstacle en rappel, puis raconte l'histoire en 3-5 phrases. Minimum 80 caractères imposé. Le résultat doit être un RÉCIT, pas une liste (« Un jour, Lina décide de... mais... alors... »).",
+    commonPitfalls: "Pitch-liste (« il veut X mais Y ») au lieu d'un récit. Copier-coller de l'étape précédente. Trop court ou trop descriptif sans action. Rappeler : on raconte ce qui SE PASSE, pas ce que le personnage EST.",
+    relancePhrase: "Commence par « Un jour, [prénom] décide de... ». Qu'est-ce qui se passe quand l'obstacle arrive ? Qu'est-ce qui est en jeu ?",
+    challengePhrase: "Ferme les yeux. Imagine la bande-annonce de ton film. Qu'est-ce qu'on voit ? Maintenant écris ça.",
   },
   {
     position: 4,
     category: "pitch",
     label: "Test chrono — 60 secondes",
-    whatToExpect: "Les élèves lisent leur pitch en 60 secondes. Force la concision et l'expression orale.",
-    commonPitfalls: "Stress du chrono — certains vont bâcler ou abandonner.",
-    relancePhrase: "C'est un entraînement, pas un examen. Prenez une grande inspiration et lancez-vous.",
-    challengePhrase: "Trop long ? Coupez les détails inutiles. Un bon pitch va droit au but.",
+    whatToExpect: "ÉTAPE ORAL — L'élève lit son pitch à voix haute en 60 secondes chrono. Force la concision et l'expression. Ce n'est PAS une réécriture — c'est un exercice de présentation. Le chrono tourne vraiment.",
+    commonPitfalls: "Stress paralysant — certains vont bloquer ou bâcler. Pitch trop long qui ne rentre pas en 60s (signe qu'il faut couper). Lecture monotone sans conviction.",
+    relancePhrase: "C'est un entraînement, pas un examen. Si tu dépasses 60s, c'est normal — ça veut dire qu'il faut couper un bout.",
+    challengePhrase: "Imagine que tu croises un producteur dans un ascenseur. Tu as 60 secondes pour le convaincre. Go.",
   },
   {
     position: 5,
     category: "pitch",
     label: "Confrontation + Vote",
-    whatToExpect: "Deux pitchs sont projetés, la classe vote pour celui qui donne le plus envie.",
-    commonPitfalls: "Votes basés sur la popularité plutôt que la qualité du pitch.",
-    relancePhrase: "Écoutez bien les deux pitchs. Lequel vous donne le plus envie de voir le film ?",
-    challengePhrase: "Qu'est-ce qui manque au pitch perdant pour être aussi convaincant ?",
+    whatToExpect: "ÉTAPE COLLECTIVE — Deux pitchs sont projetés anonymement. La classe écoute les deux et vote pour celui qui donne le plus envie de voir le film. L'objectif est d'analyser ce qui rend un pitch efficace, pas de juger les personnes.",
+    commonPitfalls: "Votes par popularité (« c'est mon pote »). Pas d'argumentation du choix. Moqueries — cadrer le respect.",
+    relancePhrase: "Oubliez qui a écrit quoi. Lequel de ces deux films vous iriez voir au cinéma ? Pourquoi celui-là ?",
+    challengePhrase: "Le pitch perdant a quand même un point fort. Lequel ? Et que manque-t-il pour qu'il gagne ?",
   },
 ];
 

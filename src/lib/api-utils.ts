@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 
 /**
  * Validate a string is a valid UUIDv4 format.
@@ -35,4 +36,45 @@ export async function requireFacilitator(sessionId: string) {
   }
 
   return { supabase, user };
+}
+
+/**
+ * Broadcast a session update to all connected clients via Supabase Realtime.
+ * Uses REST API (no WebSocket server-side). Best-effort, never throws.
+ */
+export function broadcastSessionUpdate(sessionId: string) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  fetch(`${supabaseUrl}/realtime/v1/api/broadcast`, {
+    method: "POST",
+    headers: { apikey: serviceKey, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messages: [{
+        topic: `realtime:session-${sessionId}`,
+        event: "session-update",
+        payload: {},
+      }],
+    }),
+  }).catch(() => { /* best-effort */ });
+}
+
+/**
+ * Safely parse JSON body from a request.
+ * Returns parsed body on success, or a 400 NextResponse on failure.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function safeJson<T = Record<string, any>>(
+  req: NextRequest
+): Promise<{ data: T } | { error: NextResponse }> {
+  try {
+    const data = await req.json();
+    return { data: data as T };
+  } catch {
+    return {
+      error: NextResponse.json(
+        { error: "Corps de requête JSON invalide" },
+        { status: 400 }
+      ),
+    };
+  }
 }

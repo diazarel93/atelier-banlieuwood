@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, isValidUUID } from "@/lib/api-utils";
+import { requireFacilitator, isValidUUID, safeJson } from "@/lib/api-utils";
 
 // POST — reset all responses for a situation (teacher replays the question)
 export async function POST(
@@ -10,8 +10,9 @@ export async function POST(
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
 
-  const body = await req.json();
-  const { situationId } = body;
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { situationId } = parsed.data;
 
   if (!situationId || !isValidUUID(situationId)) {
     return NextResponse.json({ error: "situationId requis et valide" }, { status: 400 });

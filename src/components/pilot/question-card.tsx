@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import type { QuestionGuide } from "@/lib/guide-data";
@@ -13,7 +13,7 @@ interface QuestionCardProps {
   questionGuide: QuestionGuide | undefined;
 }
 
-export function QuestionCard({
+function QuestionCardInner({
   position,
   category,
   restitutionLabel,
@@ -105,3 +105,5 @@ export function QuestionCard({
     </div>
   );
 }
+
+export const QuestionCard = memo(QuestionCardInner);

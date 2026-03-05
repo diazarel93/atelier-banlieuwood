@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isValidUUID } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { getElement } from "@/lib/module5-data";
 import { ETSI_IMAGES, getEtsiImage } from "@/lib/module10-data";
 import { getCineStimulus, type CineStimulus } from "@/lib/module11-data";
@@ -32,6 +33,13 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
+
+  // Rate limit: 30 requests per 10 seconds per IP (generous for 5s polling)
+  const limited = checkRateLimit(getIP(req), `situation:${sessionId}`, { max: 30, windowSec: 10 });
+  if (limited) {
+    return NextResponse.json({ error: limited.error }, { status: 429, headers: { "Retry-After": String(limited.retryAfterSec) } });
+  }
+
   const admin = createAdminClient();
 
   // Get session state
@@ -322,35 +330,40 @@ async function handleModule1(req: NextRequest, session: any, sessionId: string, 
       options: sit.options as { key: string; label: string }[],
     }));
 
-    // Check which questions the student has answered + what they picked
+    // Check which questions the student has answered + what they picked (batch query)
     const answeredQuestions: Record<number, boolean> = {};
     const answeredOptions: Record<number, string> = {};
-    if (studentId && situations) {
-      for (let i = 0; i < situations.length; i++) {
-        const { data: resp } = await admin
-          .from("responses")
-          .select("id, text")
-          .eq("session_id", sessionId)
-          .eq("student_id", studentId)
-          .eq("situation_id", (situations[i] as { id: string }).id)
-          .is("reset_at", null)
-          .maybeSingle();
-        answeredQuestions[i + 1] = !!resp;
-        if (resp) answeredOptions[i + 1] = resp.text;
+    const sitIds = (situations || []).map((s: Record<string, unknown>) => s.id as string);
+    if (studentId && sitIds.length > 0) {
+      const { data: studentResponses } = await admin
+        .from("responses")
+        .select("situation_id, text")
+        .eq("session_id", sessionId)
+        .eq("student_id", studentId)
+        .in("situation_id", sitIds)
+        .is("reset_at", null);
+      const respMap = new Map<string, string>((studentResponses || []).map((r: { situation_id: string; text: string }) => [r.situation_id, r.text]));
+      for (let i = 0; i < sitIds.length; i++) {
+        answeredQuestions[i + 1] = respMap.has(sitIds[i]);
+        if (respMap.has(sitIds[i])) answeredOptions[i + 1] = respMap.get(sitIds[i])!;
       }
     }
 
-    // Count responses per question (for stats display, exclude reset)
+    // Count responses per question (batch query, exclude reset)
     const responseCounts: Record<number, number> = {};
-    if (situations) {
-      for (let i = 0; i < situations.length; i++) {
-        const { count } = await admin
-          .from("responses")
-          .select("*", { count: "exact", head: true })
-          .eq("session_id", sessionId)
-          .eq("situation_id", (situations[i] as { id: string }).id)
-          .is("reset_at", null);
-        responseCounts[i + 1] = count || 0;
+    if (sitIds.length > 0) {
+      const { data: allSessionResponses } = await admin
+        .from("responses")
+        .select("situation_id")
+        .eq("session_id", sessionId)
+        .in("situation_id", sitIds)
+        .is("reset_at", null);
+      const countMap = new Map<string, number>();
+      for (const r of (allSessionResponses || []) as { situation_id: string }[]) {
+        countMap.set(r.situation_id, (countMap.get(r.situation_id) || 0) + 1);
+      }
+      for (let i = 0; i < sitIds.length; i++) {
+        responseCounts[i + 1] = countMap.get(sitIds[i]) || 0;
       }
     }
 
@@ -1425,28 +1438,44 @@ async function handleModule10(req: NextRequest, session: any, sessionId: string,
         .eq("session_id", sessionId)
         .not("pitch_text", "is", null);
 
-      // For now, pick first 2 as confrontation (facilitator can change later)
+      // Teacher can pick specific pitches via query params
+      const pickA = req.nextUrl.searchParams.get("pitchA");
+      const pickB = req.nextUrl.searchParams.get("pitchB");
       let confrontation = null;
       if (allPitchs && allPitchs.length >= 2) {
-        const pA = allPitchs[0];
-        const pB = allPitchs[1];
+        // Use teacher's picks if provided, otherwise first 2
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const pA = (pickA && allPitchs.find((p: any) => p.student_id === pickA)) || allPitchs[0];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const pB = (pickB && allPitchs.find((p: any) => p.student_id === pickB)) || allPitchs[1];
         confrontation = {
           pitchA: {
             text: pA.pitch_text,
+            studentId: pA.student_id,
             prenom: (pA.module10_personnages as { prenom: string } | null)?.prenom || "?",
           },
           pitchB: {
             text: pB.pitch_text,
+            studentId: pB.student_id,
             prenom: (pB.module10_personnages as { prenom: string } | null)?.prenom || "?",
           },
         };
       }
+
+      // Also return all pitchs for teacher picker
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const pitchList = (allPitchs || []).map((p: any) => ({
+        studentId: p.student_id,
+        prenom: (p.module10_personnages as { prenom: string } | null)?.prenom || "?",
+        text: typeof p.pitch_text === "string" ? p.pitch_text.slice(0, 80) : "",
+      }));
 
       return NextResponse.json({
         session: sessionBase,
         module10: {
           type: "confrontation" as const,
           confrontation,
+          pitchList,
           submittedCount: allPitchs?.length || 0,
         },
         ...baseResponse,

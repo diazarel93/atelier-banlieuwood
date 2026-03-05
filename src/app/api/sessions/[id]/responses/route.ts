@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, isValidUUID } from "@/lib/api-utils";
+import { requireFacilitator, isValidUUID, safeJson } from "@/lib/api-utils";
 
 // GET — all responses for a session (facilitator only)
 export async function GET(
@@ -51,7 +51,9 @@ export async function PATCH(
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
 
-  const body = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const body = parsed.data;
 
   const { responseId } = body;
   if (!responseId || !isValidUUID(responseId)) {

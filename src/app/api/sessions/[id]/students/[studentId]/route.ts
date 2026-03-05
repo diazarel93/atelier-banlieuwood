@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { safeJson } from "@/lib/api-utils";
 
 // PATCH — warn a student (auto-kick at 3 warnings)
 export async function PATCH(
@@ -24,7 +25,9 @@ export async function PATCH(
     return NextResponse.json({ error: "Session introuvable" }, { status: 404 });
   }
 
-  const body = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const body = parsed.data;
 
   if (body.action === "warn") {
     // Get current warnings

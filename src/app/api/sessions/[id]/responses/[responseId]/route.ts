@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { safeJson } from "@/lib/api-utils";
 
 // PATCH — update response flags (is_hidden, is_vote_option) — facilitator only
 export async function PATCH(
@@ -27,7 +28,9 @@ export async function PATCH(
     return NextResponse.json({ error: "Session introuvable" }, { status: 404 });
   }
 
-  const body = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const body = parsed.data;
 
   // ── Reset action: save previous text, set reset_at ──
   if (body.action === "reset") {

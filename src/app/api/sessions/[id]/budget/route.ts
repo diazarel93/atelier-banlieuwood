@@ -7,6 +7,7 @@ import {
   BUDGET_RESERVE_MIN,
   generateBudgetSummary,
 } from "@/lib/constants";
+import { safeJson } from "@/lib/api-utils";
 
 const VALID_KEYS = BUDGET_CATEGORIES.map((c) => c.key);
 const VALID_COSTS = new Map(
@@ -24,7 +25,9 @@ export async function POST(
   }
 
   const { id: sessionId } = await params;
-  const { studentId, choices } = await req.json();
+  const parsed = await safeJson<{ studentId: string; choices: Record<string, number> }>(req);
+  if ("error" in parsed) return parsed.error;
+  const { studentId, choices } = parsed.data;
 
   if (!studentId || !choices || typeof choices !== "object") {
     return NextResponse.json(
@@ -65,6 +68,7 @@ export async function POST(
     .from("sessions")
     .select("status, current_module, current_seance")
     .eq("id", sessionId)
+    .is("deleted_at", null)
     .single();
 
   if (!session || session.current_module !== 9 || (session.current_seance || 1) !== 2) {

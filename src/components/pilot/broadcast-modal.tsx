@@ -17,9 +17,10 @@ interface BroadcastModalProps {
   onClose: () => void;
   onSend: (message: string) => void;
   isPending?: boolean;
+  history?: { text: string; sentAt: Date }[];
 }
 
-export function BroadcastModal({ open, onClose, onSend, isPending }: BroadcastModalProps) {
+export function BroadcastModal({ open, onClose, onSend, isPending, history }: BroadcastModalProps) {
   const [message, setMessage] = useState("");
 
   function handleSend(text: string) {
@@ -38,6 +39,9 @@ export function BroadcastModal({ open, onClose, onSend, isPending }: BroadcastMo
             onClick={onClose}
           />
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="broadcast-title"
             initial={{ opacity: 0, y: 20, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.97 }}
@@ -46,10 +50,10 @@ export function BroadcastModal({ open, onClose, onSend, isPending }: BroadcastMo
             {/* Header */}
             <div className="px-5 py-3 border-b border-white/[0.06] flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-lg">📢</span>
-                <h3 className="text-sm font-semibold">Message à toute la classe</h3>
+                <span className="text-lg" aria-hidden="true">📢</span>
+                <h3 id="broadcast-title" className="text-sm font-semibold">Message à toute la classe</h3>
               </div>
-              <button onClick={onClose} className="text-bw-muted hover:text-white text-sm cursor-pointer">✕</button>
+              <button onClick={onClose} aria-label="Fermer" className="text-bw-muted hover:text-white text-sm cursor-pointer">✕</button>
             </div>
 
             {/* Presets */}
@@ -80,6 +84,7 @@ export function BroadcastModal({ open, onClose, onSend, isPending }: BroadcastMo
                   onChange={(e) => setMessage(e.target.value.slice(0, 200))}
                   onKeyDown={(e) => { if (e.key === "Enter") handleSend(message); }}
                   placeholder="Votre message..."
+                  aria-label="Message personnalise"
                   maxLength={200}
                   className="flex-1 px-3 py-2 rounded-xl bg-bw-surface border border-white/[0.06] text-sm text-white placeholder:text-bw-muted outline-none focus:border-bw-primary/40"
                 />
@@ -94,6 +99,28 @@ export function BroadcastModal({ open, onClose, onSend, isPending }: BroadcastMo
               </div>
               <p className="text-[10px] text-bw-muted text-right">{message.length}/200</p>
             </div>
+
+            {/* History */}
+            {history && history.length > 0 && (
+              <div className="px-5 pb-4 space-y-2">
+                <p className="text-[10px] uppercase tracking-wider text-bw-muted font-semibold">Historique</p>
+                <div className="max-h-32 overflow-y-auto space-y-1">
+                  {history.slice(0, 10).map((item, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSend(item.text)}
+                      disabled={isPending}
+                      className="w-full text-left px-3 py-2 rounded-lg border border-white/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40 flex items-center gap-2"
+                    >
+                      <span className="text-xs text-bw-text truncate flex-1">{item.text}</span>
+                      <span className="text-[9px] text-bw-muted flex-shrink-0">
+                        {item.sentAt.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </motion.div>
         </>
       )}

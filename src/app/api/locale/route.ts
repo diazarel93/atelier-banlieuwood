@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { safeJson } from "@/lib/api-utils";
 
 const VALID_LOCALES = ["fr", "en"];
 
@@ -6,8 +7,10 @@ const VALID_LOCALES = ["fr", "en"];
  * POST /api/locale — Set locale preference via cookie
  * Body: { locale: "fr" | "en" }
  */
-export async function POST(req: Request) {
-  const { locale } = await req.json();
+export async function POST(req: NextRequest) {
+  const parsed = await safeJson<{ locale: string }>(req);
+  if ("error" in parsed) return parsed.error;
+  const { locale } = parsed.data;
 
   if (!VALID_LOCALES.includes(locale)) {
     return NextResponse.json({ error: "Invalid locale" }, { status: 400 });

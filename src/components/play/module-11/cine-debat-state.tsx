@@ -53,7 +53,7 @@ function CitationStimulus({ module11 }: { module11: Module11Data }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl bg-bw-surface border border-white/[0.06]"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl bg-bw-elevated border border-white/[0.06]"
         >
           {module11.authorImageUrl && (
             <img
@@ -199,7 +199,7 @@ function DebatInput({
             className={`px-3 py-3 rounded-xl text-sm font-medium transition-all border cursor-pointer ${
               selected === opt.key
                 ? "border-bw-primary bg-bw-primary/10 text-bw-primary"
-                : "border-white/[0.08] bg-bw-surface text-bw-text hover:border-white/20"
+                : "border-white/[0.08] bg-bw-elevated text-bw-text hover:border-white/20"
             }`}
           >
             <span className="text-lg block mb-1">
@@ -296,7 +296,7 @@ function OpenInput({
       </div>
       <div className="flex justify-between items-center">
         <span className={`text-xs transition-colors ${
-          text.length >= 480 ? "text-red-400" : text.length >= 400 ? "text-bw-amber" : "text-bw-muted"
+          text.length >= 480 ? "text-bw-danger" : text.length >= 400 ? "text-bw-amber" : "text-bw-muted"
         }`}>
           {text.length}/500
         </span>

@@ -21,6 +21,7 @@ const TABLE_INVALIDATION_MAP: Record<string, (sessionId: string) => string[][]> 
     ["pilot-responses", sid],
   ],
   votes: (sid) => [
+    ["session-state", sid],
     ["screen-votes", sid],
     ["pilot-votes", sid],
   ],
@@ -29,6 +30,7 @@ const TABLE_INVALIDATION_MAP: Record<string, (sessionId: string) => string[][]> 
     ["session", sid],
   ],
   collective_choices: (sid) => [
+    ["session-state", sid],
     ["screen-all-choices", sid],
     ["pilot-choices", sid],
   ],
@@ -44,14 +46,23 @@ const TABLE_INVALIDATION_MAP: Record<string, (sessionId: string) => string[][]> 
   ],
 };
 
-const SUBSCRIBED_TABLES = Object.keys(TABLE_INVALIDATION_MAP);
+/**
+ * Tables that use postgres_changes (child tables with session_id FK).
+ * The `sessions` table is handled via broadcast instead (RLS blocks
+ * postgres_changes for unauthenticated student clients).
+ */
+const CHILD_TABLES = Object.keys(TABLE_INVALIDATION_MAP).filter((t) => t !== "sessions");
 
 /**
  * Subscribe to Supabase Realtime changes for a session.
- * On any INSERT/UPDATE/DELETE in the subscribed tables (filtered by session_id),
- * the corresponding TanStack Query keys are invalidated for an instant refetch.
  *
- * This replaces aggressive polling (3-10s) with a 30s fallback safety net.
+ * Two mechanisms:
+ * 1. **postgres_changes** for child tables (responses, votes, students, etc.)
+ *    — filtered by session_id, works for authenticated clients.
+ * 2. **broadcast** for session-level changes (status, question, timer, etc.)
+ *    — sent by the PATCH API route, received by ALL clients (no RLS).
+ *
+ * Fallback: 30s polling via refetchInterval on each query.
  */
 export function useRealtimeInvalidation(sessionId: string) {
   const queryClient = useQueryClient();
@@ -63,8 +74,8 @@ export function useRealtimeInvalidation(sessionId: string) {
     const supabase = createClient();
     const channel = supabase.channel(`session-${sessionId}`);
 
-    // Subscribe to each table's changes filtered by session_id
-    for (const table of SUBSCRIBED_TABLES) {
+    // 1. postgres_changes for child tables (filtered by session_id)
+    for (const table of CHILD_TABLES) {
       channel.on(
         "postgres_changes" as "postgres_changes",
         {
@@ -81,6 +92,14 @@ export function useRealtimeInvalidation(sessionId: string) {
         }
       );
     }
+
+    // 2. Broadcast for session-level changes (bypasses RLS — works for students)
+    channel.on("broadcast", { event: "session-update" }, () => {
+      const keys = TABLE_INVALIDATION_MAP.sessions(sessionId);
+      for (const key of keys) {
+        queryClient.invalidateQueries({ queryKey: key });
+      }
+    });
 
     channel.subscribe();
     channelRef.current = channel;

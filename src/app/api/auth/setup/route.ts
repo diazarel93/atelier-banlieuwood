@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { safeJson } from "@/lib/api-utils";
 
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabase();
@@ -12,7 +13,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
   }
 
-  const { name } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { name } = parsed.data;
   const admin = createAdminClient();
 
   // Create or get org (for V1, one default org)

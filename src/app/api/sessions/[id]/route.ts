@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator } from "@/lib/api-utils";
+import { requireFacilitator, safeJson, broadcastSessionUpdate } from "@/lib/api-utils";
+import { patchSessionSchema, formatZodError } from "@/lib/schemas";
 
 // GET — session detail (facilitator only)
 export async function GET(
@@ -32,66 +33,45 @@ export async function PATCH(
   const auth = await requireFacilitator(id);
   if ("error" in auth) return auth.error;
 
-  const body = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
 
-  // Only allow updating specific fields
-  const allowed = [
-    "status",
-    "current_module",
-    "current_seance",
-    "current_situation_index",
-    "title",
-    "timer_ends_at",
-    "completed_modules",
-    "sharing_enabled",
-    "broadcast_message",
-    "broadcast_at",
-  ];
-  const updates: Record<string, unknown> = {};
-  for (const key of allowed) {
-    if (key in body) updates[key] = body[key];
+  const validated = patchSessionSchema.safeParse(parsed.data);
+  if (!validated.success) {
+    return NextResponse.json(
+      { error: formatZodError(validated.error) },
+      { status: 400 }
+    );
   }
 
-  if (Object.keys(updates).length === 0) {
-    return NextResponse.json({ error: "Rien a mettre a jour" }, { status: 400 });
-  }
+  const updates: Record<string, unknown> = { ...validated.data };
 
-  // Validate field values
-  const VALID_STATUSES = ["waiting", "responding", "reviewing", "voting", "results", "paused", "done"];
-  if (updates.status && !VALID_STATUSES.includes(updates.status as string)) {
-    return NextResponse.json({ error: "Statut invalide" }, { status: 400 });
-  }
+  // Trim title
   if (updates.title) {
-    updates.title = String(updates.title).trim().slice(0, 60);
+    updates.title = String(updates.title).trim();
   }
-  if (updates.current_module != null && (typeof updates.current_module !== "number" || updates.current_module < 1 || updates.current_module > 10)) {
-    return NextResponse.json({ error: "Module invalide" }, { status: 400 });
-  }
-  if (updates.current_seance != null && (typeof updates.current_seance !== "number" || updates.current_seance < 1 || updates.current_seance > 5)) {
-    return NextResponse.json({ error: "Séance invalide" }, { status: 400 });
-  }
-  if (updates.current_situation_index != null && (typeof updates.current_situation_index !== "number" || updates.current_situation_index < 0)) {
-    return NextResponse.json({ error: "Index de situation invalide" }, { status: 400 });
-  }
-  if (updates.timer_ends_at !== undefined && updates.timer_ends_at !== null && typeof updates.timer_ends_at !== "string") {
-    return NextResponse.json({ error: "Timer invalide" }, { status: 400 });
-  }
-  if (updates.sharing_enabled !== undefined && typeof updates.sharing_enabled !== "boolean") {
-    return NextResponse.json({ error: "sharing_enabled doit être un booléen" }, { status: 400 });
-  }
+  // Trim broadcast message
   if (updates.broadcast_message !== undefined && updates.broadcast_message !== null) {
-    updates.broadcast_message = String(updates.broadcast_message).trim().slice(0, 200);
+    updates.broadcast_message = String(updates.broadcast_message).trim();
   }
-  if (updates.broadcast_at !== undefined && updates.broadcast_at !== null && typeof updates.broadcast_at !== "string") {
-    return NextResponse.json({ error: "broadcast_at invalide" }, { status: 400 });
-  }
-  if (updates.completed_modules !== undefined) {
-    const VALID_MODULE_IDS = ["m1", "m1a", "m1b", "m1c", "m1d", "m1e", "m2a", "m2b", "m2c", "m2d", "m2-perso", "m2", "m3", "m4", "m5", "u2a", "u2b", "u2c", "u2d", "m10a", "m10b"];
-    if (!Array.isArray(updates.completed_modules) || !updates.completed_modules.every((id: unknown) => typeof id === "string" && VALID_MODULE_IDS.includes(id))) {
-      return NextResponse.json({ error: "Modules complétés invalides" }, { status: 400 });
-    }
-    // Deduplicate
+  // Deduplicate completed_modules
+  if (updates.completed_modules) {
     updates.completed_modules = [...new Set(updates.completed_modules as string[])];
+  }
+  // Validate situation index upper bound
+  if (updates.current_situation_index != null) {
+    const mod = updates.current_module as number | undefined;
+    const seance = updates.current_seance as number | undefined;
+    if (mod && seance) {
+      const { getSeanceMax } = await import("@/lib/constants");
+      const max = getSeanceMax(mod, seance);
+      if ((updates.current_situation_index as number) >= max) {
+        return NextResponse.json(
+          { error: `Index de situation invalide (max ${max - 1} pour ce module/séance)` },
+          { status: 400 }
+        );
+      }
+    }
   }
 
   const { data, error } = await auth.supabase
@@ -105,10 +85,14 @@ export async function PATCH(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // Broadcast session update to all connected clients (bypasses RLS)
+  broadcastSessionUpdate(id);
+
   return NextResponse.json(data);
 }
 
-// DELETE — delete session and all data (facilitator only)
+// DELETE — soft-delete session (facilitator only)
+// Sets deleted_at timestamp; RLS policies filter out soft-deleted rows.
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -117,7 +101,10 @@ export async function DELETE(
   const auth = await requireFacilitator(id);
   if ("error" in auth) return auth.error;
 
-  const { error } = await auth.supabase.from("sessions").delete().eq("id", id);
+  const { error } = await auth.supabase
+    .from("sessions")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

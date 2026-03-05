@@ -23,8 +23,12 @@ export default function NewSessionPage() {
   const [level, setLevel] = useState("college");
   const [template, setTemplate] = useState<string | null>(null);
   const [thematique, setThematique] = useState<string | null>(null);
+  const [description, setDescription] = useState("");
+  const [questionTimer, setQuestionTimer] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [quickStartMode, setQuickStartMode] = useState(false);
+  const [quickTitle, setQuickTitle] = useState("");
 
   useEffect(() => {
     async function checkAuth() {
@@ -39,8 +43,9 @@ export default function NewSessionPage() {
     checkAuth();
   }, [router]);
 
-  async function handleCreate() {
-    if (!title.trim()) {
+  async function handleCreate(overrideTitle?: string) {
+    const finalTitle = overrideTitle ?? title;
+    if (!finalTitle.trim()) {
       toast.error("Donne un titre à ta partie");
       return;
     }
@@ -51,10 +56,12 @@ export default function NewSessionPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: title.trim(),
+          title: finalTitle.trim(),
           level,
           template,
           thematique,
+          description: description.trim() || undefined,
+          question_timer: questionTimer || undefined,
         }),
       });
 
@@ -110,6 +117,90 @@ export default function NewSessionPage() {
           </p>
         </div>
 
+        {/* Quick-start mode */}
+        {!quickStartMode ? (
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={() => setQuickStartMode(true)}
+            className="w-full p-4 rounded-xl border-2 border-dashed border-bw-primary/30 hover:border-bw-primary/60 bg-bw-primary/5 hover:bg-bw-primary/10 transition-all cursor-pointer text-center space-y-1"
+          >
+            <span className="text-sm font-semibold text-bw-primary block">Demarrage rapide</span>
+            <span className="text-[11px] text-bw-muted">Titre + niveau → c&apos;est parti !</span>
+          </motion.button>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-4 rounded-xl border border-bw-primary/30 bg-bw-primary/5 space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-bw-primary">Demarrage rapide</span>
+              <button onClick={() => setQuickStartMode(false)} className="text-[10px] text-bw-muted hover:text-white cursor-pointer">Mode complet</button>
+            </div>
+            <Input
+              type="text"
+              placeholder='Ex: "Film 3B"'
+              value={quickTitle}
+              onChange={(e) => setQuickTitle(e.target.value)}
+              maxLength={60}
+              className="h-12 px-4 bg-bw-surface text-bw-ink"
+              autoFocus
+            />
+            <div className="flex gap-2">
+              {LEVELS.map((l) => (
+                <button
+                  key={l.value}
+                  onClick={() => setLevel(l.value)}
+                  className={`flex-1 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
+                    level === l.value
+                      ? "bg-bw-primary/15 border-bw-primary text-bw-primary"
+                      : "bg-bw-surface border-bw-border text-bw-muted hover:border-bw-gold/40"
+                  }`}
+                >
+                  {l.label}
+                </button>
+              ))}
+            </div>
+            <Button
+              size="lg"
+              onClick={() => handleCreate(quickTitle)}
+              disabled={!quickTitle.trim() || loading}
+              className="w-full"
+            >
+              {loading ? "Creation..." : "Creer"}
+            </Button>
+          </motion.div>
+        )}
+
+        {/* Quick templates */}
+        <div className="space-y-3">
+          <label className="text-sm text-bw-muted block">
+            Templates rapides
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { label: "Atelier 1h - College", title: "Atelier cinema", level: "college", timer: 120 },
+              { label: "Session rapide 20min", title: "Session rapide", level: "college", timer: 60 },
+              { label: "Seance longue - Lycee", title: "Seance cinema", level: "lycee", timer: 300 },
+              { label: "Decouverte - Primaire", title: "Mon premier film", level: "primaire", timer: null as number | null },
+            ].map((tpl) => (
+              <motion.button
+                key={tpl.label}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  setTitle(tpl.title);
+                  setLevel(tpl.level);
+                  setQuestionTimer(tpl.timer);
+                }}
+                className="text-left p-3 rounded-xl border border-bw-border bg-bw-surface hover:border-bw-gold/40 transition-all cursor-pointer"
+              >
+                <span className="text-xs font-medium block">{tpl.label}</span>
+                <span className="text-[10px] text-bw-muted">{tpl.timer ? `Timer: ${tpl.timer / 60}min` : "Sans timer"}</span>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
         {/* Genre picker */}
         <div className="space-y-3">
           <label className="text-sm text-bw-muted block">
@@ -126,6 +217,16 @@ export default function NewSessionPage() {
               }`}
             >
               <span className="text-xs font-medium">Tous</span>
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.95, rotate: [0, -10, 10, -5, 5, 0] }}
+              onClick={() => {
+                const random = TEMPLATES[Math.floor(Math.random() * TEMPLATES.length)];
+                setTemplate(random.key);
+              }}
+              className="flex flex-col items-center gap-1 p-3 rounded-xl border transition-all cursor-pointer bg-gradient-to-br from-bw-primary/5 to-bw-violet/5 border-bw-border hover:border-bw-gold/40"
+            >
+              <span className="text-xs font-medium">Surprise</span>
             </motion.button>
             {TEMPLATES.map((t) => (
               <motion.button
@@ -172,7 +273,7 @@ export default function NewSessionPage() {
         </div>
 
         {/* Title */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <label className="text-sm text-bw-muted block">
             Titre de la partie
           </label>
@@ -185,6 +286,91 @@ export default function NewSessionPage() {
             className="h-14 px-4 bg-bw-surface text-bw-ink text-lg"
             autoFocus
           />
+        </div>
+
+        {/* Description */}
+        <div className="space-y-3">
+          <label className="text-sm text-bw-muted block">
+            Description (optionnel)
+          </label>
+          <textarea
+            placeholder="Notes pour vous-meme (non visible aux eleves)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            maxLength={200}
+            rows={2}
+            className="w-full px-4 py-3 bg-bw-surface border border-bw-border rounded-xl text-sm text-bw-ink placeholder:text-bw-placeholder focus:border-bw-primary focus:outline-none transition-colors resize-none"
+          />
+        </div>
+
+        {/* Objectifs pedagogiques */}
+        <div className="space-y-3">
+          <label className="text-sm text-bw-muted block">
+            Objectifs pedagogiques (optionnel)
+          </label>
+          <div className="flex gap-2 flex-wrap">
+            {[
+              "Creativite",
+              "Travail d'equipe",
+              "Expression ecrite",
+              "Esprit critique",
+              "Ecoute active",
+              "Argumentation",
+            ].map((obj) => {
+              const isSelected = description.includes(`[${obj}]`);
+              return (
+                <button
+                  key={obj}
+                  type="button"
+                  onClick={() => {
+                    if (isSelected) {
+                      setDescription(d => d.replace(`[${obj}] `, "").replace(`[${obj}]`, "").trim());
+                    } else {
+                      setDescription(d => (d ? `${d} [${obj}]` : `[${obj}]`).slice(0, 200));
+                    }
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-[11px] font-medium border transition-all cursor-pointer ${
+                    isSelected
+                      ? "bg-bw-teal/15 border-bw-teal/40 text-bw-teal"
+                      : "bg-bw-surface border-bw-border text-bw-muted hover:border-bw-gold/40"
+                  }`}
+                >
+                  {obj}
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-[10px] text-bw-placeholder">
+            Les objectifs sont ajoutes a la description pour vos notes.
+          </p>
+        </div>
+
+        {/* Timer par question */}
+        <div className="space-y-3">
+          <label className="text-sm text-bw-muted block">
+            Timer par question
+          </label>
+          <div className="flex gap-2 flex-wrap">
+            {[
+              { value: null, label: "Pas de timer" },
+              { value: 60, label: "1 min" },
+              { value: 120, label: "2 min" },
+              { value: 300, label: "5 min" },
+            ].map((opt) => (
+              <motion.button
+                key={opt.value ?? "none"}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setQuestionTimer(opt.value)}
+                className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all cursor-pointer ${
+                  questionTimer === opt.value
+                    ? "bg-bw-primary/10 border-bw-primary text-bw-primary"
+                    : "bg-bw-surface border-bw-border text-bw-text hover:border-bw-gold/40"
+                }`}
+              >
+                {opt.label}
+              </motion.button>
+            ))}
+          </div>
         </div>
 
         {/* Level picker */}
@@ -245,7 +431,7 @@ export default function NewSessionPage() {
         {/* Submit */}
         <Button
           size="xl"
-          onClick={handleCreate}
+          onClick={() => handleCreate()}
           disabled={!title.trim() || loading}
           className="w-full"
         >

@@ -52,6 +52,37 @@ export interface SessionFullData {
     credits_remaining: number;
     summary: string | null;
   }[];
+  module10?: {
+    etsiResponses: {
+      id: string;
+      student_id: string;
+      response_text: string;
+      submitted_at: string;
+    }[];
+    personnages: {
+      id: string;
+      student_id: string;
+      prenom: string;
+      age: string | null;
+      trait_dominant: string | null;
+      avatar_data: Record<string, unknown> | null;
+    }[];
+    pitchs: {
+      id: string;
+      student_id: string;
+      objectif: string;
+      obstacle: string;
+      pitch_text: string;
+      chrono_seconds: number | null;
+      submitted_at: string;
+    }[];
+    ideaBank: {
+      id: string;
+      student_id: string;
+      text: string;
+      votes: number;
+    }[];
+  };
   stats: {
     totalStudents: number;
     activeStudents: number;
@@ -68,12 +99,14 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
   const supabase = createAdminClient();
 
   // Fetch all data in parallel
-  const [sessionRes, studentsRes, responsesRes, votesRes, choicesRes, budgetsRes] =
+  const [sessionRes, studentsRes, responsesRes, votesRes, choicesRes, budgetsRes,
+    m10EtsiRes, m10PersoRes, m10PitchsRes, m10IdeasRes] =
     await Promise.all([
       supabase
         .from("sessions")
         .select("id, title, level, template, status, created_at")
         .eq("id", sessionId)
+        .is("deleted_at", null)
         .single(),
       supabase
         .from("students")
@@ -95,6 +128,26 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
         .from("module2_budgets")
         .select("id, student_id, choices, credits_remaining, summary")
         .eq("session_id", sessionId),
+      // Module 10 data
+      supabase
+        .from("module10_etsi")
+        .select("id, student_id, response_text, submitted_at")
+        .eq("session_id", sessionId)
+        .order("submitted_at"),
+      supabase
+        .from("module10_personnages")
+        .select("id, student_id, prenom, age, trait_dominant, avatar_data")
+        .eq("session_id", sessionId),
+      supabase
+        .from("module10_pitchs")
+        .select("id, student_id, objectif, obstacle, pitch_text, chrono_seconds, submitted_at")
+        .eq("session_id", sessionId)
+        .order("submitted_at"),
+      supabase
+        .from("module10_idea_bank")
+        .select("id, student_id, text, votes")
+        .eq("session_id", sessionId)
+        .order("votes", { ascending: false }),
     ]);
 
   if (sessionRes.error || !sessionRes.data) {
@@ -107,6 +160,13 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
   const votes = votesRes.data || [];
   const collectiveChoices = choicesRes.data || [];
   const budgets = (budgetsRes.data || []) as SessionFullData["budgets"];
+
+  // Module 10 data (may be empty if session didn't use M10)
+  const m10Etsi = (m10EtsiRes.data || []) as SessionFullData["module10"] extends undefined ? never : NonNullable<SessionFullData["module10"]>["etsiResponses"];
+  const m10Perso = (m10PersoRes.data || []) as NonNullable<SessionFullData["module10"]>["personnages"];
+  const m10Pitchs = (m10PitchsRes.data || []) as NonNullable<SessionFullData["module10"]>["pitchs"];
+  const m10Ideas = (m10IdeasRes.data || []) as NonNullable<SessionFullData["module10"]>["ideaBank"];
+  const hasM10Data = m10Etsi.length > 0 || m10Perso.length > 0 || m10Pitchs.length > 0 || m10Ideas.length > 0;
 
   const visibleResponses = responses.filter((r) => !r.is_hidden);
   const respondingStudentIds = new Set(visibleResponses.map((r) => r.student_id));
@@ -136,6 +196,14 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
     votes,
     collectiveChoices,
     budgets,
+    ...(hasM10Data ? {
+      module10: {
+        etsiResponses: m10Etsi,
+        personnages: m10Perso,
+        pitchs: m10Pitchs,
+        ideaBank: m10Ideas,
+      },
+    } : {}),
     stats,
   };
 }

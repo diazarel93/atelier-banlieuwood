@@ -25,6 +25,7 @@ export async function GET(
     .from("sessions")
     .select("id, title, status, current_module, current_seance, sharing_enabled, level")
     .eq("id", sessionId)
+    .is("deleted_at", null)
     .single();
 
   if (!session) {

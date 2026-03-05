@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { isValidUUID } from "@/lib/api-utils";
+import { safeJson, broadcastSessionUpdate } from "@/lib/api-utils";
+import { respondSchema, formatZodError } from "@/lib/schemas";
 import { getSeanceMax, MODULE_SEANCE_SITUATIONS } from "@/lib/constants";
 // Module 1 uses real situation IDs from the situations table (module=1)
 
@@ -19,20 +20,18 @@ export async function POST(
   }
 
   const { id: sessionId } = await params;
-  const { studentId, situationId, text } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
 
-  if (!studentId || !situationId || !text?.trim()) {
+  const validated = respondSchema.safeParse(parsed.data);
+  if (!validated.success) {
     return NextResponse.json(
-      { error: "studentId, situationId et text requis" },
+      { error: formatZodError(validated.error) },
       { status: 400 }
     );
   }
-  if (!isValidUUID(studentId) || !isValidUUID(situationId)) {
-    return NextResponse.json(
-      { error: "studentId ou situationId invalide" },
-      { status: 400 }
-    );
-  }
+
+  const { studentId, situationId, text } = validated.data;
 
   const admin = createAdminClient();
 
@@ -68,16 +67,25 @@ export async function POST(
     }
   }
 
-  // Check session status
+  // Check session status + timer
   const { data: session } = await admin
     .from("sessions")
-    .select("status, mode, current_module, current_seance, current_situation_index")
+    .select("status, mode, current_module, current_seance, current_situation_index, timer_ends_at")
     .eq("id", sessionId)
+    .is("deleted_at", null)
     .single();
 
   if (!session || session.status !== "responding") {
     return NextResponse.json(
       { error: "Les réponses ne sont pas ouvertes" },
+      { status: 400 }
+    );
+  }
+
+  // Reject responses after timer has expired (server-side enforcement)
+  if (session.timer_ends_at && new Date(session.timer_ends_at).getTime() < Date.now()) {
+    return NextResponse.json(
+      { error: "Le temps est écoulé" },
       { status: 400 }
     );
   }
@@ -179,6 +187,8 @@ export async function POST(
             .eq("id", sessionId);
         }
       }
+      // Broadcast auto-advance to all clients
+      broadcastSessionUpdate(sessionId);
     }
   }
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { CONTENT_CATALOG, isValidContentKey, MIN_CHECKLIST } from "@/lib/module5-data";
+import { safeJson } from "@/lib/api-utils";
 
 // POST — student submits checklist (Module 2 séance 1)
 export async function POST(
@@ -14,7 +15,9 @@ export async function POST(
   }
 
   const { id: sessionId } = await params;
-  const { studentId, selectedItems, chosenItem } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { studentId, selectedItems, chosenItem } = parsed.data;
 
   if (!studentId || !Array.isArray(selectedItems)) {
     return NextResponse.json(
@@ -56,6 +59,7 @@ export async function POST(
     .from("sessions")
     .select("status, current_module, current_seance")
     .eq("id", sessionId)
+    .is("deleted_at", null)
     .single();
 
   if (!session || session.current_module !== 2 || (session.current_seance || 1) !== 1) {

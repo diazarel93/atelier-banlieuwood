@@ -3,18 +3,29 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
+import { useRealtimeInvalidation } from "@/hooks/use-realtime-invalidation";
 import { MODULES, PHASES, getModuleByDb, getPhaseForModule } from "@/lib/modules-data";
 import { getModuleGuide } from "@/lib/guide-data";
-import { QRCodeSVG } from "qrcode.react";
+import { DEMO_STUDENT_NAMES } from "@/lib/demo-data";
+import { toast } from "sonner";
+import dynamic from "next/dynamic";
 import { CinemaQuoteBanner } from "@/components/cinema-illustrations";
+
+const QRCodeSVG = dynamic(
+  () => import("qrcode.react").then(mod => ({ default: mod.QRCodeSVG })),
+  { ssr: false, loading: () => <div className="w-full h-full bg-white/5 rounded animate-pulse" /> }
+);
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/components/page-shell";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { OnboardingTour } from "@/components/onboarding-tour";
+import { HelpButton } from "@/components/help-button";
+import { PreSessionChecklist } from "@/components/pre-session-checklist";
 
 const LEVEL_LABELS: Record<string, string> = {
   primaire: "Primaire (6-9 ans)",
@@ -61,6 +72,9 @@ export default function SessionOverviewPage() {
   const router = useRouter();
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [projectionMode, setProjectionMode] = useState(false);
+  const queryClient = useQueryClient();
+  useRealtimeInvalidation(sessionId);
+  const [checklistDismissed, setChecklistDismissed] = useState(false);
 
   useEffect(() => {
     async function check() {
@@ -80,7 +94,44 @@ export default function SessionOverviewPage() {
       return res.json();
     },
     enabled: !checkingAuth,
-    refetchInterval: 5000,
+    refetchInterval: 30_000,
+  });
+
+  // Demo mode mutations
+  const activateDemo = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/demo`, { method: "POST" });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Erreur" }));
+        throw new Error(err.error || "Erreur");
+      }
+      return res.json();
+    },
+    onSuccess: (data) => {
+      toast.success(`${data.students.length} eleves virtuels ont rejoint !`);
+      queryClient.invalidateQueries({ queryKey: ["session", sessionId] });
+    },
+    onError: (err: Error) => {
+      toast.error(err.message);
+    },
+  });
+
+  const deactivateDemo = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/demo`, { method: "DELETE" });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Erreur" }));
+        throw new Error(err.error || "Erreur");
+      }
+      return res.json();
+    },
+    onSuccess: (data) => {
+      toast.success(`${data.deleted} eleves virtuels supprimes`);
+      queryClient.invalidateQueries({ queryKey: ["session", sessionId] });
+    },
+    onError: (err: Error) => {
+      toast.error(err.message);
+    },
   });
 
   if (checkingAuth || isLoading) {
@@ -110,6 +161,11 @@ export default function SessionOverviewPage() {
   const guide = currentModule ? getModuleGuide(currentModule.id) : null;
   const joinUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/join`;
   const activeStudents = session.students.filter(s => s.is_active);
+
+  // Demo mode detection
+  const demoStudents = activeStudents.filter(s => DEMO_STUDENT_NAMES.includes(s.display_name));
+  const realStudents = activeStudents.filter(s => !DEMO_STUDENT_NAMES.includes(s.display_name));
+  const hasDemoStudents = demoStudents.length > 0;
 
   // Projection mode — dark, big code, QR
   if (projectionMode) {
@@ -177,7 +233,7 @@ export default function SessionOverviewPage() {
           { label: session.title },
         ]}
         actions={
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-bw-surface rounded-xl border border-bw-border">
+          <div data-tour="step-2" className="flex items-center gap-2 px-3 py-1.5 bg-bw-surface rounded-xl border border-bw-border">
             <span className="text-xs text-bw-muted">Code :</span>
             <span className="font-mono font-bold text-sm tracking-wider">{session.join_code}</span>
           </div>
@@ -221,7 +277,7 @@ export default function SessionOverviewPage() {
             {currentModule && (
               <p className="text-white/70 text-lg max-w-xl">
                 Module en cours : <span className="text-white font-medium">{currentModule.title}</span>
-                {currentModule.subtitle && <span className="text-slate-400"> — {currentModule.subtitle}</span>}
+                {currentModule.subtitle && <span className="text-bw-muted"> — {currentModule.subtitle}</span>}
               </p>
             )}
 
@@ -231,13 +287,13 @@ export default function SessionOverviewPage() {
                 {activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}
               </span>
               {currentModule && (
-                <span className="text-slate-400 flex items-center gap-1.5">
+                <span className="text-bw-muted flex items-center gap-1.5">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                   {currentModule.duration}
                 </span>
               )}
               {currentModule && (
-                <span className="text-slate-400">{currentModule.questions} questions</span>
+                <span className="text-bw-muted">{currentModule.questions} questions</span>
               )}
             </div>
           </div>
@@ -246,6 +302,7 @@ export default function SessionOverviewPage() {
         {/* Quick actions — cinematic cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <motion.button
+            data-tour="step-3"
             whileTap={{ scale: 0.97 }}
             whileHover={{ y: -2 }}
             onClick={() => router.push(`/session/${sessionId}/pilot`)}
@@ -267,6 +324,7 @@ export default function SessionOverviewPage() {
           </motion.button>
 
           <motion.button
+            data-tour="step-4"
             whileTap={{ scale: 0.97 }}
             whileHover={{ y: -2 }}
             onClick={() => setProjectionMode(true)}
@@ -302,7 +360,7 @@ export default function SessionOverviewPage() {
           </motion.button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Left column — pedagogical content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Pedagogical objectives */}
@@ -530,6 +588,9 @@ export default function SessionOverviewPage() {
                   Élèves
                 </CardTitle>
                 <Badge>{activeStudents.length}</Badge>
+                {hasDemoStudents && (
+                  <Badge variant="violet" className="text-[10px]">Mode démo</Badge>
+                )}
               </CardHeader>
               <CardContent>
               {activeStudents.length === 0 ? (
@@ -542,22 +603,87 @@ export default function SessionOverviewPage() {
                   </div>
                   <p className="text-sm text-bw-placeholder">En attente des élèves...</p>
                   <p className="text-xs text-bw-placeholder mt-1">Partagez le code pour commencer</p>
+
+                  {/* Demo mode button — only when no students at all */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-4 text-bw-violet border-bw-violet/30 hover:bg-bw-violet/10 hover:border-bw-violet/50"
+                    disabled={activateDemo.isPending}
+                    onClick={() => activateDemo.mutate()}
+                  >
+                    {activateDemo.isPending ? (
+                      <motion.span
+                        animate={{ rotate: 360 }}
+                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                        className="inline-block w-4 h-4 border-2 border-bw-violet border-t-transparent rounded-full mr-2"
+                      />
+                    ) : (
+                      <span className="mr-1.5">&#127917;</span>
+                    )}
+                    Tester en mode démo
+                  </Button>
                 </div>
               ) : (
                 <div className="space-y-2 max-h-64 overflow-y-auto">
-                  {activeStudents.map((s, i) => (
-                    <motion.div
-                      key={s.id}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.03 }}
-                      className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] transition-colors"
-                    >
-                      <span className="text-lg">{s.avatar}</span>
-                      <span className="text-sm text-bw-ink font-medium">{s.display_name}</span>
-                      <span className="ml-auto w-2 h-2 rounded-full bg-bw-green animate-pulse" />
-                    </motion.div>
-                  ))}
+                  {activeStudents.map((s, i) => {
+                    const isDemo = DEMO_STUDENT_NAMES.includes(s.display_name);
+                    return (
+                      <motion.div
+                        key={s.id}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.03 }}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-colors ${
+                          isDemo
+                            ? "bg-bw-violet/5 border border-bw-violet/15 hover:bg-bw-violet/10"
+                            : "bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04]"
+                        }`}
+                      >
+                        <span className="text-lg">{s.avatar}</span>
+                        <span className="text-sm text-bw-ink font-medium">{s.display_name}</span>
+                        {isDemo && (
+                          <Badge variant="ghost" className="text-[9px] py-0 px-1.5">virtuel</Badge>
+                        )}
+                        <span className={`ml-auto w-2 h-2 rounded-full ${isDemo ? "bg-bw-violet" : "bg-bw-green"} animate-pulse`} />
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Demo mode actions — below the student list */}
+              {hasDemoStudents && (
+                <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
+                  <span className="text-[11px] text-bw-placeholder">
+                    {demoStudents.length} virtuel{demoStudents.length > 1 ? "s" : ""}
+                    {realStudents.length > 0 && ` + ${realStudents.length} reel${realStudents.length > 1 ? "s" : ""}`}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="text-bw-danger/70 hover:text-bw-danger hover:bg-bw-danger/10 text-[11px]"
+                    disabled={deactivateDemo.isPending}
+                    onClick={() => deactivateDemo.mutate()}
+                  >
+                    {deactivateDemo.isPending ? "Suppression..." : "Supprimer les demos"}
+                  </Button>
+                </div>
+              )}
+
+              {/* Activate demo when real students exist but no demo yet */}
+              {!hasDemoStudents && activeStudents.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-white/[0.06]">
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="text-bw-violet/60 hover:text-bw-violet hover:bg-bw-violet/10 text-[11px] w-full"
+                    disabled={activateDemo.isPending}
+                    onClick={() => activateDemo.mutate()}
+                  >
+                    <span className="mr-1">&#127917;</span>
+                    {activateDemo.isPending ? "Ajout..." : "Ajouter des eleves virtuels"}
+                  </Button>
                 </div>
               )}
               </CardContent>
@@ -573,13 +699,13 @@ export default function SessionOverviewPage() {
             >
               <div className="bg-white/[0.03] backdrop-blur-xl p-6 text-center">
                 <div className="relative z-10">
-                  <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300 mb-4">
+                  <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-bw-text mb-4">
                     Rejoindre la partie
                   </h3>
                   <div className="inline-block bg-white p-3 rounded-xl shadow-lg">
                     <QRCodeSVG value={joinUrl + "?code=" + session.join_code} size={120} />
                   </div>
-                  <p className="text-xs text-slate-500 mt-4">
+                  <p className="text-xs text-bw-muted mt-4">
                     banlieuwood.app/join
                   </p>
                   <div className="flex gap-1.5 justify-center mt-2">
@@ -643,6 +769,25 @@ export default function SessionOverviewPage() {
             </Card>
           </div>
         </div>
+
+      {/* Pre-session checklist — appears when waiting, no module started */}
+      {session.status === "waiting" && !checklistDismissed && (
+        <PreSessionChecklist
+          connectedCount={activeStudents.length}
+          moduleSelected={!!currentModule}
+          moduleName={currentModule?.title}
+          joinCode={session.join_code}
+          onDismiss={() => setChecklistDismissed(true)}
+        />
+      )}
+
+      {/* Onboarding tour for first-time facilitators */}
+      <OnboardingTour />
+      <HelpButton pageKey="session" tips={[
+        { title: "Vue d'ensemble", description: "Cette page resume votre session : eleves connectes, modules actifs, et avancement." },
+        { title: "Lancer le pilotage", description: "Cliquez sur 'Piloter' pour ouvrir la console de pilotage et guider la session en direct." },
+        { title: "Ecran de projection", description: "Ouvrez l'ecran dans un nouvel onglet et projetez-le au tableau pour que toute la classe voie." },
+      ]} />
     </PageShell>
   );
 }

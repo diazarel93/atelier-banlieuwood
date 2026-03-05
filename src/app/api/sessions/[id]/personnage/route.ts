@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
+import { safeJson } from "@/lib/api-utils";
 
 // POST — create/update avatar + character info
 export async function POST(
@@ -11,7 +12,9 @@ export async function POST(
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
 
   const { id: sessionId } = await params;
-  const { studentId, prenom, age, traitDominant, avatarData } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { studentId, prenom, age, traitDominant, avatarData } = parsed.data;
 
   if (!studentId || !prenom) {
     return NextResponse.json(
@@ -34,6 +37,7 @@ export async function POST(
     .from("sessions")
     .select("status, current_module, current_seance")
     .eq("id", sessionId)
+    .is("deleted_at", null)
     .single();
 
   if (!session || session.current_module !== 10 || (session.current_seance || 1) !== 2) {

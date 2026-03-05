@@ -214,6 +214,21 @@ export default function PlayPage() {
     setRelanceData(null);
   }, [currentModule]);
 
+  // Reconnect Module 10 character card from API data on page reload
+  const m10Data = data?.module10;
+  useEffect(() => {
+    if (characterCard || !m10Data?.personnage || !m10Data?.submitted) return;
+    if (currentModule !== 10 || data?.session?.currentSeance !== 2) return;
+    let rl: 0 | 1 | 2 | 3 = 0;
+    const persoData = { prenom: m10Data.personnage.prenom, age: m10Data.personnage.age, trait: m10Data.personnage.trait, avatar: m10Data.personnage.avatar as unknown as AvatarOptions };
+    const rebuilt: Parameters<typeof setCharacterCard>[0] = { personnage: persoData, revealLevel: rl };
+    if (m10Data.objectif) { rebuilt.objectif = m10Data.objectif; rebuilt.obstacle = m10Data.obstacle ?? undefined; rl = 1; }
+    if (m10Data.pitchText) { rebuilt.pitchText = m10Data.pitchText; rl = 2; }
+    if (m10Data.chronoSeconds != null) { rebuilt.chronoSeconds = m10Data.chronoSeconds; rl = 3; }
+    rebuilt.revealLevel = rl;
+    setCharacterCard(rebuilt);
+  }, [characterCard, m10Data, currentModule, data?.session?.currentSeance]);
+
   // Fetch story context for budget (Module 9, old M2)
   useEffect(() => {
     if (currentModule !== 9) return;
@@ -588,18 +603,7 @@ export default function PlayPage() {
 
       // Séance 2: Pitch — progressive character card
       if (session.currentSeance === 2) {
-        // Reconnection: rebuild characterCard from API data if not in local state
-        if (!characterCard && m10.personnage && m10.submitted) {
-          let rl: 0 | 1 | 2 | 3 = 0;
-          const persoData = { prenom: m10.personnage.prenom, age: m10.personnage.age, trait: m10.personnage.trait, avatar: m10.personnage.avatar as unknown as AvatarOptions };
-          const rebuilt: Parameters<typeof setCharacterCard>[0] = { personnage: persoData, revealLevel: rl };
-          if (rebuilt && m10.objectif) { rebuilt.objectif = m10.objectif; rebuilt.obstacle = m10.obstacle ?? undefined; rl = 1; }
-          if (rebuilt && m10.pitchText) { rebuilt.pitchText = m10.pitchText; rl = 2; }
-          if (rebuilt && m10.chronoSeconds != null) { rebuilt.chronoSeconds = m10.chronoSeconds; rl = 3; }
-          if (rebuilt) rebuilt.revealLevel = rl;
-          // Use setTimeout to avoid setting state during render
-          setTimeout(() => setCharacterCard(rebuilt), 0);
-        }
+        // Reconnection handled by useEffect above
 
         if (m10.type === "avatar") {
           if (characterCard) return <CharacterCard {...characterCard} responsesCount={responsesCount} connectedCount={connectedCount} />;
@@ -611,6 +615,8 @@ export default function PlayPage() {
           if (characterCard && characterCard.revealLevel >= 1) return <CharacterCard {...characterCard} responsesCount={responsesCount} connectedCount={connectedCount} />;
           if (m10.submitted && characterCard) return <CharacterCard {...characterCard} objectif={m10.objectif ?? undefined} obstacle={m10.obstacle ?? undefined} revealLevel={1} responsesCount={responsesCount} connectedCount={connectedCount} />;
           if (m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} />;
+          // Late join: no personnage yet — let them create one first
+          if (!m10.personnage) return <AvatarBuilderState key="m10-avatar-late" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(data) => { setCharacterCard({ personnage: data, revealLevel: 0 }); play("cardReveal"); }} />;
           return <ObjectifObstacleState key="m10-objectif" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(d) => { setCharacterCard((prev) => prev ? { ...prev, objectif: d.objectif, obstacle: d.obstacle, revealLevel: 1 } : prev); play("cardReveal"); }} />;
         }
         if (m10.type === "pitch") {
@@ -618,6 +624,8 @@ export default function PlayPage() {
             if (characterCard) return <CharacterCard {...characterCard} pitchText={characterCard.pitchText || m10.pitchText || undefined} revealLevel={Math.max(characterCard.revealLevel, 2) as 0 | 1 | 2 | 3} responsesCount={responsesCount} connectedCount={connectedCount} />;
             return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} />;
           }
+          // Late join: no personnage — create one first
+          if (!m10.personnage) return <AvatarBuilderState key="m10-avatar-late" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(data) => { setCharacterCard({ personnage: data, revealLevel: 0 }); play("cardReveal"); }} />;
           return <PitchAssemblyState key="m10-pitch" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(d) => { setCharacterCard((prev) => prev ? { ...prev, pitchText: d.pitchText, revealLevel: 2 } : prev); play("cardReveal"); }} />;
         }
         if (m10.type === "chrono") {
@@ -625,6 +633,8 @@ export default function PlayPage() {
             if (characterCard) return <CharacterCard {...characterCard} chronoSeconds={characterCard.chronoSeconds ?? m10.chronoSeconds ?? undefined} revealLevel={3} responsesCount={responsesCount} connectedCount={connectedCount} />;
             return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} />;
           }
+          // Late join: no personnage — create one first
+          if (!m10.personnage) return <AvatarBuilderState key="m10-avatar-late" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(data) => { setCharacterCard({ personnage: data, revealLevel: 0 }); play("cardReveal"); }} />;
           return <ChronoTestState key="m10-chrono" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(d) => { setCharacterCard((prev) => prev ? { ...prev, chronoSeconds: d.chronoSeconds, revealLevel: 3 } : prev); play("cardReveal"); fireConfetti(); }} />;
         }
         if (m10.type === "confrontation") {
@@ -759,7 +769,7 @@ export default function PlayPage() {
     return (
       <div className="min-h-dvh flex items-center justify-center px-4">
         <div className="text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-bw-danger/20 flex items-center justify-center">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round">
               <circle cx="12" cy="12" r="10" /><path d="M15 9l-6 6M9 9l6 6" />
             </svg>
@@ -780,13 +790,13 @@ export default function PlayPage() {
   if (data.studentKicked) {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center px-4 gap-6">
-        <div className="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center">
+        <div className="w-20 h-20 rounded-full bg-bw-danger/20 flex items-center justify-center">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round">
             <circle cx="12" cy="12" r="10" /><path d="M15 9l-6 6M9 9l6 6" />
           </svg>
         </div>
         <div className="text-center space-y-2">
-          <p className="text-xl font-bold text-red-400">Session terminée</p>
+          <p className="text-xl font-bold text-bw-danger">Session terminée</p>
           <p className="text-bw-muted text-sm">Tu as reçu 3 avertissements et tu as été retiré de la session.</p>
         </div>
       </div>
@@ -815,7 +825,7 @@ export default function PlayPage() {
           >
             <div className={`px-4 py-2.5 rounded-xl text-center text-sm font-medium ${
               data.studentWarnings >= 2
-                ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                ? "bg-bw-danger/20 text-bw-danger border border-bw-danger/30"
                 : "bg-bw-amber/20 text-bw-amber border border-bw-amber/30"
             }`}>
               ⚠️ Avertissement {data.studentWarnings}/3
@@ -870,7 +880,7 @@ export default function PlayPage() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="fixed top-0 left-0 right-0 z-50 bg-red-500/90 text-white text-center py-2 text-sm font-medium"
+            className="fixed top-0 left-0 right-0 z-50 bg-bw-danger/90 text-white text-center py-2 text-sm font-medium"
           >
             Pas de connexion internet
             {pendingCount > 0 && (

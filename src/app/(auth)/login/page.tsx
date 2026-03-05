@@ -208,7 +208,7 @@ export default function LoginPage() {
           {!forgotMode && (
             <div className="flex items-center gap-3">
               <div className="flex-1 h-px bg-white/[0.06]" />
-              <span className="text-[11px] uppercase tracking-wider text-bw-placeholder font-medium">ou</span>
+              <span className="text-[11px] uppercase tracking-wider text-bw-muted font-medium">ou</span>
               <div className="flex-1 h-px bg-white/[0.06]" />
             </div>
           )}
@@ -230,7 +230,7 @@ export default function LoginPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    className="h-12 rounded-xl bg-bw-elevated/50 border-white/[0.08] text-bw-ink placeholder:text-bw-placeholder focus:border-bw-primary/50 focus:ring-2 focus:ring-bw-primary/30 transition-all"
+                    className=""
                   />
                 </motion.div>
               )}
@@ -242,7 +242,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="h-12 rounded-xl bg-bw-elevated/50 border-white/[0.08] text-bw-ink placeholder:text-bw-placeholder focus:border-bw-primary/50 focus:ring-2 focus:ring-bw-primary/30 transition-all"
+              className=""
             />
 
             <AnimatePresence mode="wait">
@@ -261,7 +261,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
-                    className="h-12 rounded-xl bg-bw-elevated/50 border-white/[0.08] text-bw-ink placeholder:text-bw-placeholder focus:border-bw-primary/50 focus:ring-2 focus:ring-bw-primary/30 transition-all"
+                    className=""
                   />
                 </motion.div>
               )}

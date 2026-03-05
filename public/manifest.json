@@ -1,13 +1,14 @@
 {
   "name": "Banlieuwood",
   "short_name": "Banlieuwood",
-  "description": "Le jeu collaboratif de creation cinematographique",
+  "description": "Le jeu collaboratif de création cinématographique",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#08090E",
-  "theme_color": "#FF6B35",
-  "orientation": "portrait-primary",
-  "categories": ["education", "games", "entertainment"],
+  "background_color": "#09090b",
+  "theme_color": "#f97316",
+  "orientation": "portrait",
+  "lang": "fr",
+  "categories": ["education", "games"],
   "icons": [
     {
       "src": "/icons/icon-192.png",

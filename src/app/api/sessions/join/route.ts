@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
+import { safeJson } from "@/lib/api-utils";
+import { joinSessionSchema, formatZodError } from "@/lib/schemas";
 
 const MAX_DISPLAY_NAME_LENGTH = 30;
 const MAX_STUDENTS_PER_SESSION = 50;
@@ -18,25 +20,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: rl.error }, { status: 429 });
   }
 
-  const { joinCode, displayName, avatar } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
 
-  if (!joinCode || !displayName || !avatar) {
+  const validated = joinSessionSchema.safeParse(parsed.data);
+  if (!validated.success) {
     return NextResponse.json(
-      { error: "Code, prénom et emoji requis" },
+      { error: formatZodError(validated.error) },
       { status: 400 }
     );
   }
 
-  // Input validation
-  const cleanName = String(displayName).trim().slice(0, MAX_DISPLAY_NAME_LENGTH);
-  const cleanCode = String(joinCode).trim().toUpperCase().slice(0, 6);
-
-  if (cleanName.length < 1) {
-    return NextResponse.json(
-      { error: "Prénom trop court" },
-      { status: 400 }
-    );
-  }
+  const cleanName = validated.data.displayName.trim().slice(0, MAX_DISPLAY_NAME_LENGTH);
+  const cleanCode = validated.data.joinCode.trim().toUpperCase().slice(0, 6);
+  const avatar = validated.data.avatar;
 
   if (!isValidEmoji(String(avatar))) {
     return NextResponse.json(
@@ -47,11 +44,12 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminClient();
 
-  // Find session by join code
+  // Find session by join code (exclude soft-deleted)
   const { data: session, error: sessionError } = await admin
     .from("sessions")
     .select("id, status")
     .eq("join_code", cleanCode)
+    .is("deleted_at", null)
     .single();
 
   if (sessionError || !session) {

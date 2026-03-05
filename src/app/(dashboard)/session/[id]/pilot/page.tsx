@@ -54,7 +54,7 @@ import { PilotTopBar } from "@/components/pilot/pilot-top-bar";
 import { ModuleSidebar, MobileSidebarDrawer } from "@/components/pilot/module-sidebar";
 import { WelcomePanel } from "@/components/pilot/welcome-panel";
 import { ModuleBriefing } from "@/components/pilot/module-briefing";
-import { ContextPanel } from "@/components/pilot/context-panel";
+import { ContextPanel, ContextDocks } from "@/components/pilot/context-panel";
 import { getNextAction, type NextAction } from "@/components/pilot/get-next-action";
 import { TeamManager } from "@/components/pilot/team-manager";
 
@@ -144,7 +144,6 @@ function CockpitContent({
   showStudents,
   setShowStudents,
   sidebarWidth,
-  rightPanelWidth,
   onSelectStudent,
 }: {
   session: Session;
@@ -176,14 +175,15 @@ function CockpitContent({
   showStudents: boolean;
   setShowStudents: (v: boolean) => void;
   sidebarWidth: number;
-  rightPanelWidth: number;
   onSelectStudent: (student: Student) => void;
 }) {
   const [reformulating, setReformulating] = useState<Response | null>(null);
   const [reformulatedText, setReformulatedText] = useState("");
   const [respondingStartedAt] = useState<number>(Date.now());
   const [selectedSceneIds, setSelectedSceneIds] = useState<string[]>([]);
+  const [selectedPitchIds, setSelectedPitchIds] = useState<string[]>([]);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const [allSituations, setAllSituations] = useState<{ position: number; category: string; restitutionLabel: string; prompt: string; nudgeText: string | null }[]>([]);
   const [responseFilter, setResponseFilter] = useState<"all" | "visible" | "highlighted">("all");
   const [responseSortMode, setResponseSortMode] = useState<"time" | "highlighted">("time");
 
@@ -196,10 +196,26 @@ function CockpitContent({
   const [focusMode, setFocusMode] = useState(false);
   const [kickTarget, setKickTarget] = useState<{ id: string; name: string } | null>(null);
   const allRespondedNotified = useRef(false);
+  const [allResponded, setAllResponded] = useState(false);
+  const [autoAdvance, setAutoAdvance] = useState(false);
+  const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState(0);
   const [respondingOpenedAt, setRespondingOpenedAt] = useState<number | null>(null);
+  const [broadcastHistory, setBroadcastHistory] = useState<{ text: string; sentAt: Date }[]>([]);
+  const [timerMode, setTimerMode] = useState(false);
   const { play } = useSound();
 
   const queryClient = useQueryClient();
+
+  // Fetch all situations for the seance (for preview of upcoming questions)
+  useEffect(() => {
+    if (!session?.id) return;
+    fetch(`/api/sessions/${session.id}/situations-preview`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.situations) setAllSituations(d.situations); })
+      .catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.id, session?.current_module, session?.current_seance]);
 
   const situation = (situationData as { situation?: { id: string; position: number; category: string; restitutionLabel: string; prompt: string } })?.situation;
   const budgetStats = (situationData as { budgetStats?: { submittedCount: number; averages: Record<string, number> } })?.budgetStats;
@@ -329,7 +345,8 @@ function CockpitContent({
     obstacle?: string | null;
     pitchText?: string | null;
     chronoSeconds?: number | null;
-    confrontation?: { pitchA: { text: string; prenom: string }; pitchB: { text: string; prenom: string } } | null;
+    confrontation?: { pitchA: { text: string; prenom: string; studentId: string }; pitchB: { text: string; prenom: string; studentId: string } } | null;
+    pitchList?: { studentId: string; prenom: string; text: string }[];
     allSubmissions?: { studentName: string; text: string; studentId: string; avatar?: Record<string, unknown> }[];
   } })?.module10;
 
@@ -363,7 +380,7 @@ function CockpitContent({
   // Actually change the session (launches the question for students)
   function goToSituation(index: number) {
     setPreviewIndex(null);
-    updateSession.mutate({ current_situation_index: index, status: "waiting", timer_ends_at: null });
+    updateSession.mutate({ current_situation_index: index, status: "responding", timer_ends_at: null });
   }
 
   // Local-only preview — doesn't affect students
@@ -436,6 +453,22 @@ function CockpitContent({
     }
   }
 
+  // Quick vote: auto-select top 2 visible responses + launch vote
+  function handleQuickVote() {
+    const visible = responses.filter((r) => !r.is_hidden && !r.is_vote_option);
+    // Pick the 2 longest visible responses (simple heuristic for quality)
+    const sorted = [...visible].sort((a, b) => (b.text?.length || 0) - (a.text?.length || 0));
+    const top2 = sorted.slice(0, 2);
+    if (top2.length < 2) return;
+    // Select both, then launch vote after a short delay
+    for (const r of top2) {
+      toggleVoteOption.mutate({ responseId: r.id, is_vote_option: true });
+    }
+    setTimeout(() => {
+      updateSession.mutate({ status: "voting", timer_ends_at: null });
+    }, 150);
+  }
+
   // ═══════════════════════════════════════════════════
   // UNIFIED SINGLE-COLUMN COCKPIT — All modules
   // ═══════════════════════════════════════════════════
@@ -485,6 +518,7 @@ function CockpitContent({
     } else {
       setRespondingOpenedAt(null);
       allRespondedNotified.current = false;
+      setAllResponded(false);
     }
   }, [session.status]);
 
@@ -493,10 +527,50 @@ function CockpitContent({
     if (session.status !== "responding" || activeStudents.length === 0) return;
     if (responses.length >= activeStudents.length && !allRespondedNotified.current) {
       allRespondedNotified.current = true;
+      setAllResponded(true);
       play("success");
       toast.success("Tout le monde a répondu !", { icon: "🎉" });
     }
   }, [responses.length, activeStudents.length, session.status, play]);
+
+  // ── Auto-advance: when all responded + autoAdvance enabled, advance after 4s countdown ──
+  useEffect(() => {
+    // Clear any pending timer when conditions change
+    if (autoAdvanceTimerRef.current) {
+      clearTimeout(autoAdvanceTimerRef.current);
+      autoAdvanceTimerRef.current = null;
+    }
+    setAutoAdvanceCountdown(0);
+
+    if (!autoAdvance || !allResponded || session.status !== "responding") return;
+
+    // Start countdown
+    let remaining = 4;
+    setAutoAdvanceCountdown(remaining);
+    const countdownInterval = setInterval(() => {
+      remaining -= 1;
+      setAutoAdvanceCountdown(remaining);
+      if (remaining <= 0) clearInterval(countdownInterval);
+    }, 1000);
+
+    autoAdvanceTimerRef.current = setTimeout(() => {
+      const currentIdx = session.current_situation_index || 0;
+      if (currentIdx < maxSituations - 1) {
+        // Next question
+        goToSituation(currentIdx + 1);
+      }
+      // If last question, don't auto-advance (let teacher decide)
+    }, 4000);
+
+    return () => {
+      clearInterval(countdownInterval);
+      if (autoAdvanceTimerRef.current) {
+        clearTimeout(autoAdvanceTimerRef.current);
+        autoAdvanceTimerRef.current = null;
+      }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoAdvance, allResponded, session.status]);
 
   // ── Stuck students (>60s without responding during responding) ──
   const stuckStudents = useMemo(() => {
@@ -521,10 +595,30 @@ function CockpitContent({
     setShowCompare(false);
     setShowShortcuts(false);
     setShowRevealAnswer(false);
+    setTimerMode(false);
   }, []);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleNextActionCb = useCallback(() => handleNextAction(), [nextAction, canGoNext, updateSession]);
+
+  const TIMER_PRESETS = [30, 60, 120, 180, 300];
+
+  const handleTimerShortcut = useCallback(() => {
+    setTimerMode((prev) => {
+      if (!prev) toast("Timer: appuie 1-5", { icon: "⏱", duration: 3000 });
+      return !prev;
+    });
+  }, []);
+
+  const handleSetTimerPreset = useCallback((n: number) => {
+    const seconds = TIMER_PRESETS[n - 1];
+    if (!seconds) return;
+    const endsAt = new Date(Date.now() + seconds * 1000).toISOString();
+    updateSession.mutate({ timer_ends_at: endsAt });
+    setTimerMode(false);
+    toast.success(`Timer ${seconds >= 60 ? `${seconds / 60}min` : `${seconds}s`} lancé`);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateSession]);
 
   usePilotKeyboardShortcuts({
     sessionStatus: session.status,
@@ -537,11 +631,15 @@ function CockpitContent({
     onCloseAll: handleCloseAllModals,
     onNextAction: handleNextActionCb,
     onToggleFocus: useCallback(() => setFocusMode(f => !f), []),
+    onTimerShortcut: handleTimerShortcut,
+    onSetTimerPreset: handleSetTimerPreset,
+    timerModeActive: timerMode,
   });
 
   // ── Broadcast handler ──
   function handleBroadcast(message: string) {
     updateSession.mutate({ broadcast_message: message, broadcast_at: new Date().toISOString() });
+    setBroadcastHistory((prev) => [{ text: message, sentAt: new Date() }, ...prev].slice(0, 10));
     setShowBroadcast(false);
     play("send");
     toast.success("Message envoyé à toute la classe");
@@ -553,6 +651,24 @@ function CockpitContent({
     updateSession.mutate({ broadcast_message: "N'oubliez pas de répondre à la question !", broadcast_at: new Date().toISOString() });
     play("send");
     toast.success(`Relance envoyée à ${stuckStudents.length} élève${stuckStudents.length > 1 ? "s" : ""}`);
+  }
+
+  // ── Bulk: highlight all visible ──
+  function handleHighlightAllVisible() {
+    const toHighlight = responses.filter((r) => !r.is_hidden && !r.is_highlighted);
+    for (const r of toHighlight) {
+      highlightResponse.mutate({ responseId: r.id, highlighted: true });
+    }
+    toast.success(`${toHighlight.length} réponse${toHighlight.length > 1 ? "s" : ""} projetée${toHighlight.length > 1 ? "s" : ""}`);
+  }
+
+  // ── Bulk: hide all visible ──
+  function handleHideAllVisible() {
+    const toHide = responses.filter((r) => !r.is_hidden);
+    for (const r of toHide) {
+      toggleHide.mutate({ responseId: r.id, is_hidden: true });
+    }
+    toast.success(`${toHide.length} réponse${toHide.length > 1 ? "s" : ""} masquée${toHide.length > 1 ? "s" : ""}`);
   }
 
   // ── Clear all highlights ──
@@ -575,7 +691,7 @@ function CockpitContent({
   function handlePrevQuestion() {
     const prevIndex = (session.current_situation_index || 0) - 1;
     if (prevIndex >= 0) {
-      updateSession.mutate({ current_situation_index: prevIndex, status: "waiting", timer_ends_at: null });
+      updateSession.mutate({ current_situation_index: prevIndex, status: "responding", timer_ends_at: null });
     }
   }
 
@@ -645,34 +761,67 @@ function CockpitContent({
                 </motion.div>
               )}
 
-              {/* Show question card: real situation for current Q, guide preview for other Qs */}
-              {isPreviewing && previewGuide ? (
-                <div className="bg-bw-elevated rounded-xl border border-bw-amber/20 p-4 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                      style={{ backgroundColor: CATEGORY_COLORS[previewGuide.category] || "#888", color: "white" }}>
-                      {previewGuide.category}
-                    </span>
-                    <span className="text-xs text-bw-muted">Q{displayIndex + 1}</span>
-                  </div>
-                  <p className="text-sm text-bw-heading leading-snug">{previewGuide.label}</p>
-                  <div className="bg-bw-bg rounded-xl p-3 space-y-1.5 mt-2">
-                    <p className="text-[10px] text-bw-muted uppercase font-semibold tracking-wider">Ce qu'on attend</p>
-                    <p className="text-xs text-bw-muted">{previewGuide.whatToExpect}</p>
-                  </div>
-                  {previewGuide.relancePhrase && (
-                    <div className="bg-bw-bg rounded-xl p-3 space-y-1.5">
-                      <p className="text-[10px] text-bw-muted uppercase font-semibold tracking-wider">Phrase de relance</p>
-                      <p className="text-xs text-bw-muted italic">&ldquo;{previewGuide.relancePhrase}&rdquo;</p>
+              {/* Show question card: real situation for current Q, full preview for other Qs */}
+              {isPreviewing ? (() => {
+                const previewSit = allSituations.find((s) => s.position === displayIndex + 1);
+                const color = CATEGORY_COLORS[previewSit?.category || previewGuide?.category || ""] || "#F59E0B";
+                return (
+                  <div className="glass-card overflow-hidden" style={{ borderColor: `${color}20`, background: `linear-gradient(135deg, ${color}08, rgba(26,29,34,0.6) 60%)` }}>
+                    <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, #F59E0B, ${color}80)` }} />
+                    <div className="p-4 pb-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-bold uppercase px-2.5 py-1 rounded-full"
+                          style={{ background: `linear-gradient(135deg, ${color}25, ${color}10)`, color, border: `1px solid ${color}30` }}>
+                          {previewSit?.restitutionLabel || previewGuide?.label || previewSit?.category || "—"}
+                        </span>
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-bw-amber/15 text-bw-amber">Q{displayIndex + 1}</span>
+                        <span className="text-[10px] text-bw-amber uppercase tracking-wider font-semibold ml-auto">Apercu</span>
+                      </div>
+                      {/* THE ACTUAL QUESTION — what students will see */}
+                      {previewSit?.prompt ? (
+                        <p className="text-base leading-relaxed text-bw-text">{previewSit.prompt}</p>
+                      ) : (
+                        <p className="text-sm text-bw-muted italic">Question non disponible — cliquez Lancer pour l&apos;ouvrir</p>
+                      )}
                     </div>
-                  )}
-                </div>
-              ) : isPreviewing ? (
-                <div className="bg-bw-elevated rounded-xl border border-bw-amber/20 p-6 text-center">
-                  <p className="text-sm text-bw-muted">Q{displayIndex + 1} — Aperçu non disponible</p>
-                  <p className="text-xs text-bw-muted mt-1">Cliquez &ldquo;Lancer&rdquo; pour ouvrir cette question</p>
-                </div>
-              ) : situation ? (
+                    {/* Guide section — preparation tools */}
+                    {previewGuide && (
+                      <div className="border-t px-4 py-3 space-y-2.5" style={{ borderColor: `${color}15` }}>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          <div className="bg-bw-bg rounded-lg p-3 space-y-1">
+                            <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-green">Ce qu&apos;on attend</p>
+                            <p className="text-xs text-bw-text leading-relaxed">{previewGuide.whatToExpect}</p>
+                          </div>
+                          <div className="bg-bw-bg rounded-lg p-3 space-y-1">
+                            <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-amber">Pieges frequents</p>
+                            <p className="text-xs text-bw-amber leading-relaxed">{previewGuide.commonPitfalls}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          {previewGuide.relancePhrase && (
+                            <button
+                              onClick={() => { navigator.clipboard.writeText(previewGuide.relancePhrase); toast.success("Phrase copiee"); }}
+                              className="flex-1 bg-bw-teal/8 border border-bw-teal/20 rounded-lg px-3 py-2.5 text-left cursor-pointer hover:bg-bw-teal/15 transition-colors group"
+                            >
+                              <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-teal mb-0.5">Relancer</p>
+                              <p className="text-xs text-bw-text leading-relaxed italic">&ldquo;{previewGuide.relancePhrase}&rdquo;</p>
+                            </button>
+                          )}
+                          {previewGuide.challengePhrase && (
+                            <button
+                              onClick={() => { navigator.clipboard.writeText(previewGuide.challengePhrase); toast.success("Phrase copiee"); }}
+                              className="flex-1 bg-bw-violet/8 border border-bw-violet/20 rounded-lg px-3 py-2.5 text-left cursor-pointer hover:bg-bw-violet/15 transition-colors group"
+                            >
+                              <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-violet mb-0.5">Challenger</p>
+                              <p className="text-xs text-bw-text leading-relaxed italic">&ldquo;{previewGuide.challengePhrase}&rdquo;</p>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })() : situation ? (
                 <QuestionCard
                   position={situation.position}
                   category={situation.category}
@@ -697,6 +846,56 @@ function CockpitContent({
                 onPreviewPrev={previewPrev}
                 onPreviewNext={previewNext}
               />
+
+              {/* Auto-advance toggle */}
+              <div className="flex items-center justify-between gap-3">
+                <button
+                  onClick={() => {
+                    setAutoAdvance((v) => !v);
+                    if (autoAdvanceTimerRef.current) {
+                      clearTimeout(autoAdvanceTimerRef.current);
+                      autoAdvanceTimerRef.current = null;
+                      setAutoAdvanceCountdown(0);
+                    }
+                  }}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium cursor-pointer transition-all duration-200 ${
+                    autoAdvance
+                      ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30"
+                      : "bg-bw-elevated text-bw-muted border border-white/[0.06] hover:border-white/15"
+                  }`}
+                >
+                  <div className={`w-7 h-4 rounded-full transition-all duration-200 relative ${autoAdvance ? "bg-bw-teal" : "bg-white/10"}`}>
+                    <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all duration-200 ${autoAdvance ? "left-3.5" : "left-0.5"}`} />
+                  </div>
+                  Mode auto
+                </button>
+                <AnimatePresence>
+                  {autoAdvance && autoAdvanceCountdown > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 8 }}
+                      className="flex items-center gap-2"
+                    >
+                      <span className="text-xs text-bw-teal tabular-nums font-mono">
+                        Suite dans {autoAdvanceCountdown}s
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (autoAdvanceTimerRef.current) {
+                            clearTimeout(autoAdvanceTimerRef.current);
+                            autoAdvanceTimerRef.current = null;
+                          }
+                          setAutoAdvanceCountdown(0);
+                        }}
+                        className="text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors px-2 py-0.5 rounded-lg bg-white/5 hover:bg-white/10"
+                      >
+                        Pause
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
               {/* Quick phrases */}
               <QuickPhrases questionGuide={questionGuide} />
@@ -954,15 +1153,27 @@ function CockpitContent({
                   </span>
                 </div>
                 <p className="text-xs text-bw-muted leading-relaxed">
-                  {isM10Etsi
-                    ? "Les élèves observent une image et écrivent leur « Et si... ». Puis ils partagent leurs idées dans la banque collective."
-                    : "Les élèves créent un personnage, définissent objectif + obstacle, assemblent leur pitch et le présentent en 60 secondes."}
+                  {module10Data?.type === "etsi"
+                    ? "Les élèves observent une image et écrivent leur « Et si... »."
+                    : module10Data?.type === "idea-bank"
+                    ? "Les élèves partagent leur meilleure idée « Et si... » et votent pour la plus inspirante."
+                    : module10Data?.type === "avatar"
+                    ? "Les élèves construisent l'identité visuelle de leur personnage : look, prénom, trait de caractère."
+                    : module10Data?.type === "objectif"
+                    ? "Les élèves choisissent ce que leur personnage VEUT (objectif) et ce qui l'en EMPÊCHE (obstacle). C'est le moteur du conflit."
+                    : module10Data?.type === "pitch"
+                    ? "Les élèves écrivent un vrai récit (min 80 car.) à partir de leur personnage, objectif et obstacle. Pas de template — ils racontent l'histoire."
+                    : module10Data?.type === "chrono"
+                    ? "Les élèves lisent leur pitch à voix haute en 60 secondes. Exercice d'oral et de concision."
+                    : module10Data?.type === "confrontation"
+                    ? "Deux pitchs sont projetés. La classe écoute et vote pour celui qui donne le plus envie de voir le film."
+                    : ""}
                 </p>
               </div>
 
               {/* Et si... Image — shown to students, visible in dashboard */}
               {module10Data?.type === "etsi" && module10Data.image && (
-                <div className="rounded-xl overflow-hidden border border-cyan-500/20">
+                <div className="rounded-xl overflow-hidden border border-bw-teal/20">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={module10Data.image.url}
@@ -970,7 +1181,7 @@ function CockpitContent({
                     className="w-full h-auto max-h-48 object-cover"
                   />
                   <div className="bg-bw-elevated px-3 py-2 border-t border-white/[0.06]">
-                    <p className="text-xs font-medium text-cyan-400">{module10Data.image.title}</p>
+                    <p className="text-xs font-medium text-bw-teal">{module10Data.image.title}</p>
                     <p className="text-[10px] text-bw-muted mt-0.5 line-clamp-2">{module10Data.image.description}</p>
                   </div>
                 </div>
@@ -987,24 +1198,77 @@ function CockpitContent({
                   {module10Data.objectif && (
                     <div className="text-right">
                       <p className="text-[10px] text-bw-muted">Objectif</p>
-                      <p className="text-xs text-cyan-400 truncate max-w-[120px]">{module10Data.objectif}</p>
+                      <p className="text-xs text-bw-teal truncate max-w-[120px]">{module10Data.objectif}</p>
                     </div>
                   )}
                 </div>
               )}
 
-              {/* Confrontation — show both pitchs */}
-              {module10Data?.type === "confrontation" && module10Data.confrontation && (
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-blue-500/10 rounded-xl p-3 border border-blue-500/20">
-                    <p className="text-[10px] text-blue-400 font-bold uppercase mb-1">Pitch A — {module10Data.confrontation.pitchA.prenom}</p>
-                    <p className="text-xs text-bw-text line-clamp-3">{module10Data.confrontation.pitchA.text}</p>
-                  </div>
-                  <div className="bg-red-500/10 rounded-xl p-3 border border-red-500/20">
-                    <p className="text-[10px] text-red-400 font-bold uppercase mb-1">Pitch B — {module10Data.confrontation.pitchB.prenom}</p>
-                    <p className="text-xs text-bw-text line-clamp-3">{module10Data.confrontation.pitchB.text}</p>
-                  </div>
-                </div>
+              {/* Confrontation — pitch picker + show selected pitchs */}
+              {module10Data?.type === "confrontation" && (
+                <>
+                  {/* Selected pitchs display */}
+                  {module10Data.confrontation && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-bw-teal/10 rounded-xl p-3 border border-bw-teal/20">
+                        <p className="text-[10px] text-bw-teal font-bold uppercase mb-1">Pitch A — {module10Data.confrontation.pitchA.prenom}</p>
+                        <p className="text-xs text-bw-text line-clamp-3">{module10Data.confrontation.pitchA.text}</p>
+                      </div>
+                      <div className="bg-bw-danger/10 rounded-xl p-3 border border-bw-danger/20">
+                        <p className="text-[10px] text-bw-danger font-bold uppercase mb-1">Pitch B — {module10Data.confrontation.pitchB.prenom}</p>
+                        <p className="text-xs text-bw-text line-clamp-3">{module10Data.confrontation.pitchB.text}</p>
+                      </div>
+                    </div>
+                  )}
+                  {/* Pitch picker for teacher */}
+                  {module10Data.pitchList && module10Data.pitchList.length >= 2 && (
+                    <div className="bg-bw-surface rounded-xl p-3 border border-white/[0.06] space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] text-bw-muted uppercase font-semibold tracking-wider">Choisir les pitchs à confronter</span>
+                        <span className="text-[10px] text-bw-muted">{selectedPitchIds.length}/2</span>
+                      </div>
+                      {module10Data.pitchList.map((p) => {
+                        const isSelected = selectedPitchIds.includes(p.studentId);
+                        const idx = selectedPitchIds.indexOf(p.studentId);
+                        return (
+                          <button key={p.studentId}
+                            onClick={() => setSelectedPitchIds((prev) => {
+                              if (isSelected) return prev.filter((id) => id !== p.studentId);
+                              if (prev.length >= 2) return [prev[1], p.studentId];
+                              return [...prev, p.studentId];
+                            })}
+                            className={`w-full text-left p-2 rounded-lg border text-xs transition-colors cursor-pointer ${
+                              isSelected
+                                ? idx === 0 ? "bg-bw-teal/10 border-bw-teal/30 text-bw-teal" : "bg-bw-danger/10 border-bw-danger/30 text-bw-danger"
+                                : "bg-bw-bg border-white/[0.06] text-bw-muted hover:border-bw-teal/20"
+                            }`}>
+                            <span className="font-medium">{isSelected ? (idx === 0 ? "A" : "B") + " — " : ""}{p.prenom}</span>
+                            <span className="block text-[10px] text-bw-muted mt-0.5 line-clamp-1">{p.text}</span>
+                          </button>
+                        );
+                      })}
+                      {selectedPitchIds.length === 2 && (
+                        <button
+                          onClick={async () => {
+                            try {
+                              const res = await fetch(`/api/sessions/${sessionId}/situation?pitchA=${selectedPitchIds[0]}&pitchB=${selectedPitchIds[1]}`);
+                              if (res.ok) {
+                                const data = await res.json();
+                                queryClient.setQueryData(
+                                  ["pilot-situation", sessionId, session.current_module, session.current_seance, session.current_situation_index],
+                                  data
+                                );
+                                toast.success("Duel mis à jour");
+                              }
+                            } catch { toast.error("Erreur"); }
+                          }}
+                          className="w-full py-2 rounded-lg bg-bw-teal text-white text-xs font-medium cursor-pointer hover:brightness-110 transition-all">
+                          Lancer le duel
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </>
               )}
 
               {/* Idea bank items */}
@@ -1013,7 +1277,7 @@ function CockpitContent({
                   <p className="text-[10px] text-bw-muted uppercase font-semibold tracking-wider">💡 Banque d&apos;idées</p>
                   {module10Data.ideaBankItems.slice(0, 5).map((item) => (
                     <div key={item.id} className="flex items-center gap-2 text-xs">
-                      <span className="text-cyan-400 font-medium tabular-nums">{item.votes}♥</span>
+                      <span className="text-bw-teal font-medium tabular-nums">{item.votes}♥</span>
                       <span className="text-bw-text truncate">{item.text}</span>
                     </div>
                   ))}
@@ -1025,9 +1289,9 @@ function CockpitContent({
 
               {/* Submission counter */}
               {module10Data?.submittedCount != null && (
-                <div className="bg-cyan-500/10 rounded-xl p-4 border border-cyan-500/20">
+                <div className="bg-bw-teal/10 rounded-xl p-4 border border-bw-teal/20">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-cyan-400 font-medium">
+                    <span className="text-sm text-bw-teal font-medium">
                       {module10Data.type === "etsi" ? "« Et si... » reçus" :
                        module10Data.type === "avatar" ? "Personnages créés" :
                        module10Data.type === "pitch" ? "Pitchs assemblés" :
@@ -1035,12 +1299,12 @@ function CockpitContent({
                        module10Data.type === "idea-bank" ? "Idées partagées" :
                        "Soumissions"}
                     </span>
-                    <span className="text-xl font-bold text-cyan-400 tabular-nums">
+                    <span className="text-xl font-bold text-bw-teal tabular-nums">
                       {module10Data.submittedCount}/{activeStudents.length}
                     </span>
                   </div>
                   <div className="mt-2 h-2 bg-bw-bg rounded-full overflow-hidden">
-                    <div className="h-full bg-cyan-500 rounded-full transition-all"
+                    <div className="h-full bg-bw-teal rounded-full transition-all"
                       style={{ width: `${activeStudents.length > 0 ? Math.round(((module10Data.submittedCount || 0) / activeStudents.length) * 100) : 0}%` }} />
                   </div>
                 </div>
@@ -1086,10 +1350,13 @@ function CockpitContent({
                 const isPreview = i === displayIndex;
                 const isPast = i < currentQIndex;
                 const specialLabel = isM10Etsi
-                  ? (i === 0 ? "✨" : i === 1 ? `Q${i + 1}` : "💡")
-                  : (i === 0 ? "🎭" : i === 1 ? "🎯" : i === 2 ? "📝" : i === 3 ? "⏱️" : "⚔️");
+                  ? (i === 0 ? "✨ Et si" : i === 1 ? "Q2" : "💡 Banque")
+                  : (i === 0 ? "🎭 Perso" : i === 1 ? "🎯 Conflit" : i === 2 ? "📝 Pitch" : i === 3 ? "⏱️ Chrono" : "⚔️ Vote");
+                const specialTitle = isM10Etsi
+                  ? (i === 0 ? "Image + écriture « Et si... »" : i === 1 ? "QCM direction narrative" : "Banque d'idées collective")
+                  : (i === 0 ? "Création du personnage" : i === 1 ? "Objectif + Obstacle" : i === 2 ? "Écriture du pitch" : i === 3 ? "Test chrono 60s" : "Confrontation + Vote");
                 return (
-                  <button key={i} onClick={() => previewSituation(i)}
+                  <button key={i} onClick={() => previewSituation(i)} title={specialTitle}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 ${
                       isPreview ? "text-white scale-110 shadow-lg"
                         : isCurrent ? "ring-2 ring-offset-1 ring-offset-bw-bg text-white"
@@ -1125,12 +1392,16 @@ function CockpitContent({
               {Array.from({ length: maxSituations }, (_, i) => {
                 const isCurrent = i === currentQIndex;
                 const isPast = i < currentQIndex;
-                const specialLabel = (seance === 1 && i === 0) ? "📋"
-                  : (seance === 2 && i === 1) ? "🎬"
-                  : (seance === 3 && i === 0) ? "⚔️"
+                const specialLabel = (seance === 1 && i === 0) ? "📋 Checklist"
+                  : (seance === 2 && i === 1) ? "🎬 Scène"
+                  : (seance === 3 && i === 0) ? "⚔️ Duel"
                   : `Q${i + 1}`;
+                const specialTitle = (seance === 1 && i === 0) ? "Checklist de contenus (3 min)"
+                  : (seance === 2 && i === 1) ? "Construction de scène"
+                  : (seance === 3 && i === 0) ? "Confrontation de scènes"
+                  : `Question ${i + 1}`;
                 return (
-                  <button key={i} onClick={() => previewSituation(i)}
+                  <button key={i} onClick={() => previewSituation(i)} title={specialTitle}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 ${
                       isCurrent ? "bg-bw-pink text-white shadow-lg shadow-bw-pink/20"
                         : isPast ? "bg-bw-teal/15 text-bw-teal"
@@ -1563,6 +1834,8 @@ function CockpitContent({
                 setReformulating(r as unknown as Response);
                 setReformulatedText(r.text);
               }}
+              onHighlightAllVisible={handleHighlightAllVisible}
+              onHideAllVisible={handleHideAllVisible}
             />
           )}
 
@@ -1583,7 +1856,7 @@ function CockpitContent({
                   <motion.div key={r.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.03 }}
                     className={`bg-bw-surface rounded-xl p-3 border transition-colors duration-200 ${
-                      r.is_highlighted ? "border-bw-primary/30 shadow-[0_0_8px_rgba(255,107,53,0.1)]" : r.reset_at ? "border-amber-400/20" : "border-white/[0.06]"
+                      r.is_highlighted ? "border-bw-primary/30 shadow-[0_0_8px_rgba(255,107,53,0.1)]" : r.reset_at ? "border-bw-amber/20" : "border-white/[0.06]"
                     } ${r.is_hidden ? "opacity-30" : ""} ${r.reset_at ? "opacity-50" : ""}`}>
                     <div className="flex justify-between items-start gap-2">
                       <div className="flex-1 min-w-0">
@@ -1591,7 +1864,7 @@ function CockpitContent({
                           <span className="text-sm">{r.students?.avatar}</span>
                           <span className={`text-sm font-medium text-bw-text ${r.is_hidden ? "line-through" : ""}`}>{r.students?.display_name}</span>
                           {r.reset_at && (
-                            <span className="text-[9px] px-1.5 py-px rounded-full bg-amber-400/15 text-amber-400 border border-amber-400/20">relancé</span>
+                            <span className="text-[9px] px-1.5 py-px rounded-full bg-bw-amber/15 text-bw-amber border border-bw-amber/20">relancé</span>
                           )}
                         </div>
                         <p className={`text-sm leading-relaxed text-bw-heading ${r.is_hidden ? "line-through text-bw-muted" : ""} ${r.reset_at ? "line-through text-bw-muted" : ""}`}>{r.text}</p>
@@ -1607,7 +1880,7 @@ function CockpitContent({
                           {!r.is_hidden && !r.reset_at && (
                             <button onClick={() => resetResponse.mutate(r.id)}
                               disabled={resetResponse.isPending}
-                              className="px-1.5 py-1 text-xs rounded-lg hover:bg-amber-400/10 cursor-pointer transition-colors text-amber-400/70 hover:text-amber-400"
+                              className="px-1.5 py-1 text-xs rounded-lg hover:bg-bw-amber/10 cursor-pointer transition-colors text-bw-amber/70 hover:text-bw-amber"
                               title="Relancer la question pour cet élève">
                               🔄
                             </button>
@@ -1658,8 +1931,8 @@ function CockpitContent({
 
       {/* ── STICKY BOTTOM BAR — the ONE action ── */}
       {session.status !== "done" && session.status !== "paused" && (
-        <div className="fixed bottom-0 z-30 glass border-t border-white/[0.08]"
-          style={{ left: `${sidebarWidth}px`, right: `${rightPanelWidth}px` }}>
+        <div className="fixed bottom-0 left-0 z-30 glass border-t border-white/[0.08]"
+          style={{ right: 0 }}>
           <div className="max-w-2xl mx-auto px-4 py-2 space-y-1">
             {/* Main CTA */}
             {session.status === "waiting" ? (
@@ -1689,11 +1962,13 @@ function CockpitContent({
                 selectedCount={voteOptionCount}
                 totalVotes={voteData?.totalVotes}
                 onAction={handleSelectionBarAction}
+                onQuickVote={handleQuickVote}
                 actionDisabled={
                   (session.status === "responding" && voteOptionCount < 2) ||
                   (session.status === "voting" && (!voteData || voteData.totalVotes === 0))
                 }
                 isPending={updateSession.isPending}
+                pulse={allResponded}
               />
             ) : nextAction ? (
               <div className="flex gap-2 items-center">
@@ -1714,7 +1989,7 @@ function CockpitContent({
                   disabled={updateSession.isPending || !!(nextAction as { disabled?: boolean }).disabled}
                   className="btn-glow flex-1 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                   style={{ backgroundColor: nextAction.color, color: nextAction.color === "#F59E0B" || nextAction.color === "#888" ? "black" : "white" }}>
-                  {nextAction.label}
+                  {nextAction.label} {nextAction.shortcut && <span className="opacity-60 ml-1 text-[10px]">[{nextAction.shortcut}]</span>}
                 </motion.button>
                 {/* Skip button */}
                 {canGoNext && session.status === "responding" && (
@@ -1798,11 +2073,11 @@ function CockpitContent({
                     className="text-bw-muted hover:text-white text-sm cursor-pointer">Fermer</button>
                 </div>
                 <span className="text-xs text-bw-muted tabular-nums">{activeStudents.length}/{totalStudents} connectes</span>
-                <div className="flex items-center gap-3 flex-wrap text-[10px] text-slate-500">
-                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400" /> Repondu</span>
-                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400" /> En attente</span>
-                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-slate-500" /> Deconnecte</span>
-                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400" /> Bloque</span>
+                <div className="flex items-center gap-3 flex-wrap text-[10px] text-bw-muted">
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-bw-green" /> Repondu</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-bw-amber" /> En attente</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-bw-muted" /> Deconnecte</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-bw-danger" /> Bloque</span>
                 </div>
                 <div className="space-y-1">
                   {(() => {
@@ -1826,7 +2101,7 @@ function CockpitContent({
                           {s.warnings > 0 && <span className="text-[10px] text-bw-amber">⚠️ {s.warnings}</span>}
                           {s.is_active && (
                             <button onClick={(e) => { e.stopPropagation(); setKickTarget({ id: s.id, name: s.display_name }); }}
-                              className="opacity-0 group-hover:opacity-100 text-bw-muted hover:text-red-400 cursor-pointer transition-all duration-200">✕</button>
+                              className="opacity-0 group-hover:opacity-100 text-bw-muted hover:text-bw-danger cursor-pointer transition-all duration-200">✕</button>
                           )}
                         </div>
                       );
@@ -1846,6 +2121,7 @@ function CockpitContent({
         onClose={() => setShowBroadcast(false)}
         onSend={handleBroadcast}
         isPending={updateSession.isPending}
+        history={broadcastHistory}
       />
 
       <CompareResponsesModal
@@ -1904,9 +2180,7 @@ function CockpitContent({
 // MAIN PAGE — Unified layout with sidebar
 // ——————————————————————————————————————————————————————
 
-const SIDEBAR_WIDTH_EXPANDED = 240;
-const SIDEBAR_WIDTH_COLLAPSED = 56;
-const RIGHT_PANEL_WIDTH = 300;
+// Right panel is now floating docks — no fixed width needed
 
 export default function PilotPage() {
   const { id: sessionId } = useParams<{ id: string }>();
@@ -1918,31 +2192,17 @@ export default function PilotPage() {
   const [showQR, setShowQR] = useState(false);
   const [showStudents, setShowStudents] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [mobileContextOpen, setMobileContextOpen] = useState(false);
+  const [pendingModuleSwitch, setPendingModuleSwitch] = useState<{ moduleId: string; isQuickLaunch: boolean } | null>(null);
+  const { play: playSound } = useSound();
 
   // Briefing / cockpit flow
   const [moduleView, setModuleView] = useState<"briefing" | "cockpit">("cockpit");
   const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
-  const [rightPanelOpen, setRightPanelOpen] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return localStorage.getItem("pilot-right-panel") !== "false";
-  });
+  // Right panel removed — floating docks handle their own state
 
-  // Persist sidebar collapsed state — collapsed by default
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return localStorage.getItem("pilot-sidebar-collapsed") !== "false";
-  });
-
-  function toggleSidebar() {
-    setSidebarCollapsed((prev) => {
-      const next = !prev;
-      localStorage.setItem("pilot-sidebar-collapsed", String(next));
-      return next;
-    });
-  }
-
-  const sidebarWidth = sidebarCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED;
+  const sidebarWidth = 0; // Dock is floating, no layout offset needed
 
   useEffect(() => {
     async function check() {
@@ -2296,11 +2556,10 @@ export default function PilotPage() {
     setMobileSidebarOpen(false);
   }
 
-  // Launch module — actually switches the session
-  function handleLaunchModule() {
-    if (!selectedModuleId) return;
-    const mod = MODULES.find((m) => m.id === selectedModuleId);
-    if (!mod) return;
+  // Actually perform the module switch
+  function doLaunchModule(moduleId: string, isQuickLaunch: boolean) {
+    const mod = MODULES.find((m) => m.id === moduleId);
+    if (!mod || mod.disabled) return;
 
     const isAlreadyCurrent = session &&
       session.current_module === mod.dbModule &&
@@ -2312,15 +2571,38 @@ export default function PilotPage() {
         current_module: mod.dbModule,
         current_seance: mod.dbSeance,
         current_situation_index: 0,
-        status: "waiting",
+        status: "responding",
       });
     }
+    if (isQuickLaunch) {
+      setSelectedModuleId(moduleId);
+      setMobileSidebarOpen(false);
+    }
     setModuleView("cockpit");
+  }
+
+  // Launch module — actually switches the session
+  function handleLaunchModule() {
+    if (!selectedModuleId) return;
+    if (session?.status === "responding") {
+      setPendingModuleSwitch({ moduleId: selectedModuleId, isQuickLaunch: false });
+      return;
+    }
+    doLaunchModule(selectedModuleId, false);
   }
 
   // Resume module — back to cockpit without reset
   function handleResumeModule() {
     setModuleView("cockpit");
+  }
+
+  // Quick-browse module — opens briefing view (NOT launch)
+  function handleQuickLaunchModule(moduleId: string) {
+    const mod = MODULES.find((m) => m.id === moduleId);
+    if (!mod || mod.disabled) return;
+    setSelectedModuleId(moduleId);
+    setModuleView("briefing");
+    setMobileSidebarOpen(false);
   }
 
   // Marks the current module as completed when switching away
@@ -2437,27 +2719,11 @@ export default function PilotPage() {
         timerEndsAt={session.timer_ends_at}
         isPaused={session.status === "paused"}
         isDone={session.status === "done"}
-        rightPanelOpen={rightPanelOpen}
         moduleView={moduleView}
-        sidebarCollapsed={sidebarCollapsed}
-        onToggleSidebar={() => {
-          // On mobile: toggle drawer; on desktop: toggle collapse
-          if (typeof window !== "undefined" && window.innerWidth < 1024) {
-            setMobileSidebarOpen((prev) => !prev);
-          } else {
-            toggleSidebar();
-          }
-        }}
+        onToggleSidebar={() => setMobileSidebarOpen((prev) => !prev)}
         onCopyCode={copyCode}
         onToggleQR={() => setShowQR(!showQR)}
         onOpenScreen={() => window.open(`/session/${sessionId}/screen`, "_blank")}
-        onToggleRightPanel={() => {
-          setRightPanelOpen((prev) => {
-            const next = !prev;
-            localStorage.setItem("pilot-right-panel", String(next));
-            return next;
-          });
-        }}
         onTogglePause={() => updateSession.mutate({ status: session.status === "paused" ? "waiting" : "paused" })}
         onClearTimer={() => updateSession.mutate({ timer_ends_at: null })}
         onToggleStudents={() => setShowStudents(!showStudents)}
@@ -2472,6 +2738,11 @@ export default function PilotPage() {
         onShortcuts={() => window.dispatchEvent(new CustomEvent("pilot-shortcuts"))}
         muteSounds={session.mute_sounds ?? false}
         onToggleMute={() => updateSession.mutate({ mute_sounds: !session.mute_sounds })}
+        onTimerExpired={() => {
+          playSound("drumroll");
+          toast("Temps ecoulé !", { icon: "⏰" });
+        }}
+        onOpenMobileContext={() => setMobileContextOpen(true)}
       />
 
       {/* ── QR Panel ── */}
@@ -2499,37 +2770,36 @@ export default function PilotPage() {
 
       {/* ── BODY: Sidebar + Main ── */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Desktop sidebar */}
-        <div className="hidden lg:block">
-          <ModuleSidebar
-            collapsed={sidebarCollapsed}
-            modules={MODULES}
-            phases={PHASES}
-            activeModuleId={activeModule?.id || null}
-            selectedModuleId={moduleView === "briefing" ? selectedModuleId : null}
-            completedModules={session.completed_modules || []}
-            onSelectModule={handleSelectModule}
-            onToggleCollapse={toggleSidebar}
-            responsesCount={responses?.length || 0}
-            moduleStartedAt={moduleStartedAt}
-            sessionStatus={session.status}
-          />
-        </div>
+        {/* Floating module dock (fixed, not in flex layout) */}
+        <ModuleSidebar
+          modules={MODULES}
+          phases={PHASES}
+          activeModuleId={activeModule?.id || null}
+          selectedModuleId={moduleView === "briefing" ? selectedModuleId : null}
+          completedModules={session.completed_modules || []}
+          onSelectModule={handleSelectModule}
+          responsesCount={responses?.length || 0}
+          moduleStartedAt={moduleStartedAt}
+          sessionStatus={session.status}
+          currentQuestionIndex={hasActiveModule ? currentQuestionIndex : undefined}
+          totalModuleQuestions={hasActiveModule ? totalQuestions : undefined}
+        />
 
         {/* Mobile sidebar drawer */}
         <MobileSidebarDrawer open={mobileSidebarOpen} onClose={() => setMobileSidebarOpen(false)}>
           <ModuleSidebar
-            collapsed={false}
             modules={MODULES}
             phases={PHASES}
             activeModuleId={activeModule?.id || null}
             selectedModuleId={moduleView === "briefing" ? selectedModuleId : null}
             completedModules={session.completed_modules || []}
-            onSelectModule={handleSelectModule}
-            onToggleCollapse={() => setMobileSidebarOpen(false)}
+            onSelectModule={(id) => { handleSelectModule(id); setMobileSidebarOpen(false); }}
+            onQuickLaunch={(id) => { handleQuickLaunchModule(id); setMobileSidebarOpen(false); }}
             responsesCount={responses?.length || 0}
             moduleStartedAt={moduleStartedAt}
             sessionStatus={session.status}
+            currentQuestionIndex={hasActiveModule ? currentQuestionIndex : undefined}
+            totalModuleQuestions={hasActiveModule ? totalQuestions : undefined}
           />
         </MobileSidebarDrawer>
 
@@ -2544,6 +2814,7 @@ export default function PilotPage() {
               activeModule.id === selectedModuleId
             }
             isCompleted={session.completed_modules?.includes(selectedModuleId) || false}
+            sessionId={sessionId}
             onLaunch={handleLaunchModule}
             onResume={handleResumeModule}
           />
@@ -2579,7 +2850,7 @@ export default function PilotPage() {
             showStudents={showStudents}
             setShowStudents={setShowStudents}
             sidebarWidth={sidebarWidth}
-            rightPanelWidth={rightPanelOpen ? RIGHT_PANEL_WIDTH : 0}
+
             onSelectStudent={(s) => { setSelectedStudentId(s.id); setShowStudents(false); }}
           />
           </ErrorBoundary>
@@ -2604,53 +2875,124 @@ export default function PilotPage() {
           </div>
         )}
 
-        {/* Panneau droit — seulement en cockpit sur desktop */}
-        {moduleView === "cockpit" && hasActiveModule && rightPanelOpen && (
-          <div className="hidden lg:block">
-            <ContextPanel
-              moduleGuide={activeModule ? getModuleGuide(activeModule.id) : undefined}
-              questionGuide={
-                session && activeModule && (session.current_module === 3 || session.current_module === 4 || session.current_module === 9 || session.current_module === 2 || session.current_module === 10)
-                  ? getQuestionGuide(session.current_seance || 1, (session.current_situation_index || 0) + 1, session.current_module)
-                  : undefined
+        {/* Floating right docks — Guide/Stats (upper) + Students (lower) */}
+        {moduleView === "cockpit" && hasActiveModule && (
+          <ContextDocks
+            moduleGuide={activeModule ? getModuleGuide(activeModule.id) : undefined}
+            questionGuide={
+              session && activeModule && (session.current_module === 3 || session.current_module === 4 || session.current_module === 9 || session.current_module === 2 || session.current_module === 10)
+                ? getQuestionGuide(session.current_seance || 1, (session.current_situation_index || 0) + 1, session.current_module)
+                : undefined
+            }
+            responsesCount={responses?.length || 0}
+            totalStudents={activeStudents.length}
+            hiddenCount={responses?.filter((r) => r.is_hidden).length || 0}
+            voteOptionCount={responses?.filter((r) => r.is_vote_option && !r.is_hidden).length || 0}
+            sessionStatus={session.status}
+            selectedStudent={
+              selectedStudentId
+                ? (() => {
+                    const s = session.students?.find((s) => s.id === selectedStudentId);
+                    return s ? { ...s, warnings: s.warnings || 0 } : null;
+                  })()
+                : null
+            }
+            studentResponses={
+              selectedStudentId
+                ? (responses || []).filter((r) => r.student_id === selectedStudentId)
+                : []
+            }
+            onSelectStudent={(s) => setSelectedStudentId(s?.id || null)}
+            onClose={() => {}}
+            students={session.students?.map((s) => ({ ...s, warnings: s.warnings || 0 })) || []}
+            studentStates={pageStudentStates}
+            onNudge={(studentId, text) => {
+              const studentResponse = responses?.find((r) => r.student_id === studentId);
+              if (studentResponse) {
+                nudgeStudent.mutate({ responseId: studentResponse.id, nudgeText: text });
               }
-              responsesCount={responses?.length || 0}
-              totalStudents={activeStudents.length}
-              hiddenCount={responses?.filter((r) => r.is_hidden).length || 0}
-              voteOptionCount={responses?.filter((r) => r.is_vote_option && !r.is_hidden).length || 0}
-              sessionStatus={session.status}
-              selectedStudent={
-                selectedStudentId
-                  ? (() => {
-                      const s = session.students?.find((s) => s.id === selectedStudentId);
-                      return s ? { ...s, warnings: s.warnings || 0 } : null;
-                    })()
-                  : null
-              }
-              studentResponses={
-                selectedStudentId
-                  ? (responses || []).filter((r) => r.student_id === selectedStudentId)
-                  : []
-              }
-              onSelectStudent={(s) => setSelectedStudentId(s?.id || null)}
-              onClose={() => {
-                setRightPanelOpen(false);
-                localStorage.setItem("pilot-right-panel", "false");
-              }}
-              students={session.students?.map((s) => ({ ...s, warnings: s.warnings || 0 })) || []}
-              studentStates={pageStudentStates}
-              onNudge={(studentId, text) => {
-                // Find a response from this student to attach the nudge
-                const studentResponse = responses?.find((r) => r.student_id === studentId);
-                if (studentResponse) {
-                  nudgeStudent.mutate({ responseId: studentResponse.id, nudgeText: text });
-                }
-              }}
-              onWarn={(studentId) => warnStudent.mutate(studentId)}
-            />
-          </div>
+            }}
+            onWarn={(studentId) => warnStudent.mutate(studentId)}
+            timerEndsAt={session.timer_ends_at}
+            onClearTimer={() => updateSession.mutate({ timer_ends_at: null })}
+            onTimerExpired={() => {
+              playSound("drumroll");
+              toast("Temps ecoulé !", { icon: "⏰" });
+            }}
+            onBroadcast={() => window.dispatchEvent(new CustomEvent("pilot-broadcast"))}
+            teams={teams || []}
+          />
         )}
       </div>
+
+      {/* Module switch confirmation */}
+      <ConfirmModal
+        open={pendingModuleSwitch !== null}
+        onClose={() => setPendingModuleSwitch(null)}
+        onConfirm={() => {
+          if (pendingModuleSwitch) {
+            doLaunchModule(pendingModuleSwitch.moduleId, pendingModuleSwitch.isQuickLaunch);
+            setPendingModuleSwitch(null);
+          }
+        }}
+        title="Changer de module ?"
+        description="Les eleves sont en train de repondre. Changer de module interrompra la question en cours."
+        confirmLabel="Changer"
+        confirmVariant="danger"
+      />
+
+      {/* Mobile context drawer */}
+      <AnimatePresence>
+        {mobileContextOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+              onClick={() => setMobileContextOpen(false)}
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed right-0 top-0 bottom-0 z-50 w-[320px] max-w-[85vw] bg-bw-bg border-l border-white/[0.06] overflow-y-auto lg:hidden"
+            >
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
+                <span className="text-sm font-semibold">Contexte</span>
+                <button onClick={() => setMobileContextOpen(false)} className="text-bw-muted hover:text-white cursor-pointer text-sm">✕</button>
+              </div>
+              <ContextPanel
+                moduleGuide={activeModule ? getModuleGuide(activeModule.id) : undefined}
+                questionGuide={
+                  session && activeModule && (session.current_module === 3 || session.current_module === 4 || session.current_module === 9 || session.current_module === 2 || session.current_module === 10)
+                    ? getQuestionGuide(session.current_seance || 1, (session.current_situation_index || 0) + 1, session.current_module)
+                    : undefined
+                }
+                responsesCount={responses?.length || 0}
+                totalStudents={activeStudents.length}
+                hiddenCount={responses?.filter((r) => r.is_hidden).length || 0}
+                voteOptionCount={responses?.filter((r) => r.is_vote_option && !r.is_hidden).length || 0}
+                sessionStatus={session.status}
+                selectedStudent={null}
+                studentResponses={[]}
+                onSelectStudent={() => {}}
+                onClose={() => setMobileContextOpen(false)}
+                students={session.students?.map((s) => ({ ...s, warnings: s.warnings || 0 })) || []}
+                studentStates={pageStudentStates}
+                onNudge={(studentId, text) => {
+                  const studentResponse = responses?.find((r) => r.student_id === studentId);
+                  if (studentResponse) {
+                    nudgeStudent.mutate({ responseId: studentResponse.id, nudgeText: text });
+                  }
+                }}
+                onWarn={(studentId) => warnStudent.mutate(studentId)}
+              />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       <HelpButton pageKey="pilot" tips={[
         { title: "Pilotez la session", description: "Utilisez le bouton central pour avancer les questions. Les eleves recoivent la question en temps reel." },

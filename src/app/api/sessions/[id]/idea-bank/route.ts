@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
+import { safeJson } from "@/lib/api-utils";
 
 // POST — add idea to shared bank
 export async function POST(
@@ -11,7 +12,9 @@ export async function POST(
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
 
   const { id: sessionId } = await params;
-  const { studentId, text, category } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { studentId, text, category } = parsed.data;
 
   if (!studentId || !text) {
     return NextResponse.json(
@@ -34,6 +37,7 @@ export async function POST(
     .from("sessions")
     .select("status, current_module")
     .eq("id", sessionId)
+    .is("deleted_at", null)
     .single();
 
   if (!session || session.current_module !== 10) {
@@ -91,7 +95,7 @@ export async function GET(
   return NextResponse.json({ ideas: data || [], count: data?.length || 0 });
 }
 
-// PATCH — vote on an idea
+// PATCH — vote on an idea (atomic increment, studentId for dedup)
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -100,7 +104,9 @@ export async function PATCH(
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
 
   const { id: sessionId } = await params;
-  const { ideaId } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { ideaId, studentId } = parsed.data;
 
   if (!ideaId) {
     return NextResponse.json({ error: "ideaId requis" }, { status: 400 });
@@ -108,10 +114,10 @@ export async function PATCH(
 
   const admin = createAdminClient();
 
-  // Increment vote count
+  // Check idea exists
   const { data: idea } = await admin
     .from("module10_idea_bank")
-    .select("votes")
+    .select("id, votes, voted_by")
     .eq("id", ideaId)
     .eq("session_id", sessionId)
     .single();
@@ -120,13 +126,45 @@ export async function PATCH(
     return NextResponse.json({ error: "Idée introuvable" }, { status: 404 });
   }
 
+  // Server-side dedup: check if student already voted
+  const votedBy: string[] = (idea.voted_by as string[]) || [];
+  if (studentId && votedBy.includes(studentId)) {
+    return NextResponse.json({ error: "Déjà voté", alreadyVoted: true }, { status: 409 });
+  }
+
+  // Atomic update: increment votes + add studentId to voted_by array
+  const newVotedBy = studentId ? [...votedBy, studentId] : votedBy;
   const { data, error } = await admin
     .from("module10_idea_bank")
-    .update({ votes: (idea.votes || 0) + 1 })
+    .update({ votes: (idea.votes || 0) + 1, voted_by: newVotedBy })
     .eq("id", ideaId)
+    .eq("votes", idea.votes || 0) // Optimistic lock: only update if votes unchanged
     .select()
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (!data) {
+    // Race condition: votes changed between read and write, retry once
+    const { data: retry } = await admin
+      .from("module10_idea_bank")
+      .select("votes, voted_by")
+      .eq("id", ideaId)
+      .single();
+    if (retry) {
+      const retryVotedBy: string[] = (retry.voted_by as string[]) || [];
+      if (studentId && retryVotedBy.includes(studentId)) {
+        return NextResponse.json({ error: "Déjà voté", alreadyVoted: true }, { status: 409 });
+      }
+      const { data: d2, error: e2 } = await admin
+        .from("module10_idea_bank")
+        .update({ votes: (retry.votes || 0) + 1, voted_by: [...retryVotedBy, studentId || ""] })
+        .eq("id", ideaId)
+        .select()
+        .single();
+      if (e2) return NextResponse.json({ error: e2.message }, { status: 500 });
+      return NextResponse.json(d2);
+    }
+    return NextResponse.json({ error: "Conflit de votes, réessaye" }, { status: 409 });
+  }
   return NextResponse.json(data);
 }

@@ -69,13 +69,13 @@ export function FilmReelIllustration({ size = 120, className = "" }: Illustratio
       <circle cx="60" cy="60" r="44" fill="url(#reel-ring)" opacity="0.05" />
       {/* Outer ring */}
       <circle cx="60" cy="60" r="44" stroke="url(#reel-ring)" strokeWidth="2" fill="none" />
-      {/* Sprocket holes — minimal */}
-      {[0, 60, 120, 180, 240, 300].map((angle) => {
-        const rad = (angle * Math.PI) / 180;
-        const cx = 60 + 34 * Math.cos(rad);
-        const cy = 60 + 34 * Math.sin(rad);
-        return <circle key={angle} cx={cx} cy={cy} r="4" fill="none" stroke="url(#reel-ring)" strokeWidth="1.5" opacity="0.5" />;
-      })}
+      {/* Sprocket holes — pre-computed positions to avoid SSR hydration mismatch */}
+      <circle cx="94" cy="60" r="4" fill="none" stroke="url(#reel-ring)" strokeWidth="1.5" opacity="0.5" />
+      <circle cx="77" cy="89.45" r="4" fill="none" stroke="url(#reel-ring)" strokeWidth="1.5" opacity="0.5" />
+      <circle cx="43" cy="89.45" r="4" fill="none" stroke="url(#reel-ring)" strokeWidth="1.5" opacity="0.5" />
+      <circle cx="26" cy="60" r="4" fill="none" stroke="url(#reel-ring)" strokeWidth="1.5" opacity="0.5" />
+      <circle cx="43" cy="30.55" r="4" fill="none" stroke="url(#reel-ring)" strokeWidth="1.5" opacity="0.5" />
+      <circle cx="77" cy="30.55" r="4" fill="none" stroke="url(#reel-ring)" strokeWidth="1.5" opacity="0.5" />
       {/* Center hub */}
       <circle cx="60" cy="60" r="14" fill="#08090E" stroke="url(#reel-ring)" strokeWidth="2" />
       <circle cx="60" cy="60" r="5" fill="url(#reel-ring)" opacity="0.3" />

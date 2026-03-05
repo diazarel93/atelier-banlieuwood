@@ -6,20 +6,20 @@ export const metadata: Metadata = {
 
 export default function AccessibilityPage() {
   return (
-    <article className="prose prose-invert prose-slate max-w-none">
-      <h1 className="text-3xl font-bold text-white mb-2">
+    <article className="max-w-none">
+      <h1 className="text-3xl font-bold text-bw-heading mb-2">
         Declaration d&apos;Accessibilite
       </h1>
-      <p className="text-slate-400 text-sm mb-10">
+      <p className="text-bw-muted text-sm mb-10">
         Derniere mise a jour : Mars 2026
       </p>
 
       <section className="space-y-6">
         <div>
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-bw-heading">
             1. Engagement
           </h2>
-          <p className="text-slate-300 leading-relaxed">
+          <p className="text-bw-text leading-relaxed">
             Banlieuwood s&apos;engage a rendre sa plateforme accessible
             conformement au Referentiel General d&apos;Amelioration de
             l&apos;Accessibilite (RGAA) et aux Web Content Accessibility
@@ -30,21 +30,21 @@ export default function AccessibilityPage() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-bw-heading">
             2. Etat de conformite
           </h2>
-          <p className="text-slate-300 leading-relaxed">
-            La plateforme Banlieuwood est en <strong className="text-amber-400">conformite partielle</strong>{" "}
+          <p className="text-bw-text leading-relaxed">
+            La plateforme Banlieuwood est en <strong className="text-bw-amber">conformite partielle</strong>{" "}
             avec le RGAA 4.1. Un audit complet d&apos;accessibilite est en
             cours de planification.
           </p>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-bw-heading">
             3. Contenus accessibles
           </h2>
-          <ul className="text-slate-300 space-y-2">
+          <ul className="text-bw-text space-y-2">
             <li>Navigation par clavier sur les pages principales</li>
             <li>Attributs ARIA sur les elements interactifs</li>
             <li>Contraste des couleurs respecte sur le texte principal</li>
@@ -55,16 +55,16 @@ export default function AccessibilityPage() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-bw-heading">
             4. Contenus non accessibles
           </h2>
-          <p className="text-slate-300 leading-relaxed mb-3">
+          <p className="text-bw-text leading-relaxed mb-3">
             Les contenus suivants ne sont pas encore pleinement accessibles :
           </p>
-          <ul className="text-slate-300 space-y-2">
+          <ul className="text-bw-text space-y-2">
             <li>
               Certaines animations ne respectent pas encore la preference
-              <code className="text-amber-400 bg-white/5 px-1.5 py-0.5 rounded text-sm">
+              <code className="text-bw-amber bg-white/5 px-1.5 py-0.5 rounded text-sm">
                 prefers-reduced-motion
               </code>
             </li>
@@ -84,13 +84,13 @@ export default function AccessibilityPage() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-bw-heading">
             5. Ameliorations prevues
           </h2>
-          <ul className="text-slate-300 space-y-2">
+          <ul className="text-bw-text space-y-2">
             <li>Audit RGAA complet avec rapport de conformite</li>
             <li>Support complet de la navigation au clavier sur toutes les pages</li>
-            <li>Integration de <code className="text-amber-400 bg-white/5 px-1.5 py-0.5 rounded text-sm">prefers-reduced-motion</code> sur toutes les animations</li>
+            <li>Integration de <code className="text-bw-amber bg-white/5 px-1.5 py-0.5 rounded text-sm">prefers-reduced-motion</code> sur toutes les animations</li>
             <li>Regions ARIA live pour les mises a jour temps reel</li>
             <li>Mode contraste eleve optionnel</li>
             <li>Documentation d&apos;accessibilite pour les facilitateurs</li>
@@ -98,10 +98,10 @@ export default function AccessibilityPage() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-bw-heading">
             6. Technologies utilisees
           </h2>
-          <ul className="text-slate-300 space-y-2">
+          <ul className="text-bw-text space-y-2">
             <li>HTML5</li>
             <li>CSS3 / Tailwind CSS</li>
             <li>JavaScript / TypeScript</li>
@@ -111,10 +111,10 @@ export default function AccessibilityPage() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-bw-heading">
             7. Retour d&apos;information et contact
           </h2>
-          <p className="text-slate-300 leading-relaxed">
+          <p className="text-bw-text leading-relaxed">
             Si vous rencontrez un defaut d&apos;accessibilite vous empechant
             d&apos;acceder a un contenu ou une fonctionnalite, vous pouvez nous
             contacter a :{" "}
@@ -125,17 +125,17 @@ export default function AccessibilityPage() {
               accessibilite@banlieuwood.fr
             </a>
           </p>
-          <p className="text-slate-300 leading-relaxed mt-2">
+          <p className="text-bw-text leading-relaxed mt-2">
             Nous nous engageons a vous repondre sous 7 jours ouvrables et a
             proposer une alternative accessible.
           </p>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-bw-heading">
             8. Voies de recours
           </h2>
-          <p className="text-slate-300 leading-relaxed">
+          <p className="text-bw-text leading-relaxed">
             Si vous n&apos;obtenez pas de reponse satisfaisante, vous pouvez
             saisir le Defenseur des droits :{" "}
             <a

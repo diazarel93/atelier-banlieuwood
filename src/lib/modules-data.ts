@@ -25,6 +25,7 @@ export interface ModuleDef {
 export interface PhaseDef {
   id: string;
   label: string;
+  description: string;
   color: string;
   emoji: string;
   moduleIds: string[];
@@ -429,16 +430,16 @@ export const MODULES: ModuleDef[] = [
 ];
 
 export const PHASES: PhaseDef[] = [
-  { id: "idea", label: "L'Idée", color: "#8B5CF6", emoji: "💡", moduleIds: ["m1a", "m1b", "m1c", "m1d", "m1e"] },
-  { id: "emotion", label: "Émotion Cachée", color: "#EC4899", emoji: "💜", moduleIds: ["u2a", "u2b", "u2c", "u2d"] },
-  { id: "imagination", label: "Imagination", color: "#06B6D4", emoji: "✨", moduleIds: ["m10a", "m10b"] },
-  { id: "cinema", label: "Le Cinéma", color: "#F59E0B", emoji: "🎬", moduleIds: ["m2a", "m2b", "m2c", "m2d"] },
-  { id: "story", label: "L'Histoire", color: "#4ECDC4", emoji: "📖", moduleIds: ["m2-perso", "m3", "m4", "m5"] },
-  { id: "cinedebat", label: "Ciné-Débat", color: "#E11D48", emoji: "📽️", moduleIds: ["m11a", "m11b", "m11c", "m11d"] },
-  { id: "scenario", label: "Le Scénario", color: "#10B981", emoji: "✏️", moduleIds: ["m6"] },
-  { id: "production", label: "La Production", color: "#F59E0B", emoji: "🎥", moduleIds: ["m7"] },
-  { id: "plateau", label: "Le Plateau", color: "#EF4444", emoji: "🎭", moduleIds: ["m8"] },
-  { id: "postprod", label: "La Post-prod", color: "#06B6D4", emoji: "🎞️", moduleIds: ["m9"] },
+  { id: "idea", label: "L'Idée", description: "Observer, interpréter, imaginer. Les élèves découvrent leur profil créatif à travers des images et des questions ouvertes.", color: "#8B5CF6", emoji: "💡", moduleIds: ["m1a", "m1b", "m1c", "m1d", "m1e"] },
+  { id: "emotion", label: "Émotion Cachée", description: "Explorer les émotions cachées derrière les images et les situations. Développer l'empathie et la sensibilité narrative.", color: "#EC4899", emoji: "💜", moduleIds: ["u2a", "u2b", "u2c", "u2d"] },
+  { id: "imagination", label: "Imagination", description: "Libérer la créativité avec des scénarios « Et si... » et construire un pitch percutant en 60 secondes.", color: "#06B6D4", emoji: "✨", moduleIds: ["m10a", "m10b"] },
+  { id: "cinema", label: "Le Cinéma", description: "Comprendre le langage cinématographique : plans, angles, montage, son. Les outils pour raconter en images.", color: "#F59E0B", emoji: "🎬", moduleIds: ["m2a", "m2b", "m2c", "m2d"] },
+  { id: "story", label: "L'Histoire", description: "Construire une histoire complète : personnages, conflits, structure narrative et parcours émotionnel.", color: "#4ECDC4", emoji: "📖", moduleIds: ["m2-perso", "m3", "m4", "m5"] },
+  { id: "cinedebat", label: "Ciné-Débat", description: "Analyser des extraits de films, débattre des choix artistiques et développer l'esprit critique cinématographique.", color: "#E11D48", emoji: "📽️", moduleIds: ["m11a", "m11b", "m11c", "m11d"] },
+  { id: "scenario", label: "Le Scénario", description: "Passer de l'idée au scénario : écriture des dialogues, des didascalies et mise en forme professionnelle.", color: "#10B981", emoji: "✏️", moduleIds: ["m6"] },
+  { id: "production", label: "La Production", description: "Organiser le tournage : budget, planning, repérages, casting et répartition des rôles.", color: "#F59E0B", emoji: "🎥", moduleIds: ["m7"] },
+  { id: "plateau", label: "Le Plateau", description: "Diriger les acteurs, gérer les prises et coordonner l'équipe sur le lieu de tournage.", color: "#EF4444", emoji: "🎭", moduleIds: ["m8"] },
+  { id: "postprod", label: "La Post-prod", description: "Monter le film, ajouter la musique et les effets, finaliser le projet pour la projection.", color: "#06B6D4", emoji: "🎞️", moduleIds: ["m9"] },
 ];
 
 /** Find module by its ID */

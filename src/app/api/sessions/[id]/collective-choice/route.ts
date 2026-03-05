@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, isValidUUID } from "@/lib/api-utils";
+import { requireFacilitator, isValidUUID, safeJson } from "@/lib/api-utils";
 
 // GET — fetch all collective choices for a session (facilitator only)
 export async function GET(
@@ -29,8 +29,10 @@ export async function POST(
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
 
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
   const { situationId, category, restitutionLabel, chosenText, sourceResponseId } =
-    await req.json();
+    parsed.data;
 
   if (!situationId || !isValidUUID(situationId)) {
     return NextResponse.json({ error: "situationId requis et valide" }, { status: 400 });

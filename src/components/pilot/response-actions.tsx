@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -37,7 +37,7 @@ interface InlineActionsProps {
   teacherScore?: number;
 }
 
-export function InlineActions({
+function InlineActionsInner({
   responseId,
   studentId,
   isHighlighted,
@@ -62,8 +62,25 @@ export function InlineActions({
 }: InlineActionsProps) {
   const [showNudgePicker, setShowNudgePicker] = useState(false);
   const [customNudge, setCustomNudge] = useState("");
+  const [lastNudge, setLastNudge] = useState(NUDGE_PRESETS[0]);
   const [showScorePicker, setShowScorePicker] = useState(false);
   const [hoverStar, setHoverStar] = useState(0);
+
+  const handleToggleHighlight = useCallback(() => {
+    onHighlight(responseId, !isHighlighted);
+  }, [onHighlight, responseId, isHighlighted]);
+
+  const handleWarn = useCallback(() => {
+    onWarn(studentId);
+  }, [onWarn, studentId]);
+
+  const handleDeleteComment = useCallback(() => {
+    onComment(responseId, null);
+  }, [onComment, responseId]);
+
+  const handleSubmitComment = useCallback(() => {
+    if (commentText.trim()) onComment(responseId, commentText.trim());
+  }, [onComment, responseId, commentText]);
 
   return (
     <div className="space-y-2">
@@ -72,7 +89,8 @@ export function InlineActions({
         {/* Parler / Commenter */}
         <button
           onClick={onStartComment}
-          className={`btn-glow flex items-center gap-1 px-2 py-1 rounded-xl text-[10px] font-medium cursor-pointer transition-colors ${
+          aria-label={teacherComment ? "Modifier le commentaire" : "Commenter la réponse"}
+          className={`btn-glow flex items-center gap-1 px-2 py-1 rounded-xl text-[10px] font-medium cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
             teacherComment || isCommenting
               ? "bg-bw-teal/15 text-bw-teal"
               : "text-bw-muted hover:text-bw-text hover:bg-white/5"
@@ -84,27 +102,49 @@ export function InlineActions({
           {teacherComment ? "Commenté" : "Parler"}
         </button>
 
-        {/* Relancer / Nudge */}
-        <button
-          onClick={() => setShowNudgePicker(!showNudgePicker)}
-          disabled={isNudgePending}
-          className={`btn-glow flex items-center gap-1 px-2 py-1 rounded-xl text-[10px] font-medium cursor-pointer transition-colors ${
-            showNudgePicker
-              ? "bg-bw-amber/15 text-bw-amber"
-              : "text-bw-muted hover:text-bw-amber hover:bg-bw-amber/10"
-          } disabled:opacity-40`}
-        >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <polyline points="23 4 23 10 17 10" />
-            <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
-          </svg>
-          {isNudgePending ? "..." : "Relancer"}
-        </button>
+        {/* Relancer / Nudge — split button */}
+        <div className="flex items-center">
+          <button
+            onClick={() => {
+              onNudge(responseId, lastNudge.text);
+            }}
+            disabled={isNudgePending}
+            aria-label={`Relancer : ${lastNudge.label}`}
+            className={`btn-glow flex items-center gap-1 px-2 py-1 rounded-l-xl text-[10px] font-medium cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
+              showNudgePicker
+                ? "bg-bw-amber/15 text-bw-amber"
+                : "text-bw-muted hover:text-bw-amber hover:bg-bw-amber/10"
+            } disabled:opacity-40`}
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <polyline points="23 4 23 10 17 10" />
+              <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
+            </svg>
+            {isNudgePending ? "..." : lastNudge.label}
+          </button>
+          <button
+            onClick={() => setShowNudgePicker(!showNudgePicker)}
+            disabled={isNudgePending}
+            aria-label="Choisir un autre message de relance"
+            aria-expanded={showNudgePicker}
+            className={`flex items-center px-1 py-1 rounded-r-xl border-l border-white/10 text-[10px] cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
+              showNudgePicker
+                ? "bg-bw-amber/15 text-bw-amber"
+                : "text-bw-muted hover:text-bw-amber hover:bg-bw-amber/10"
+            } disabled:opacity-40`}
+          >
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+        </div>
 
         {/* Projeter */}
         <button
-          onClick={() => onHighlight(responseId, !isHighlighted)}
-          className={`btn-glow flex items-center gap-1 px-2 py-1 rounded-xl text-[10px] font-medium cursor-pointer transition-colors ${
+          onClick={handleToggleHighlight}
+          aria-label={isHighlighted ? "Retirer la mise en avant" : "Mettre en avant la réponse"}
+          aria-pressed={isHighlighted}
+          className={`btn-glow flex items-center gap-1 px-2 py-1 rounded-xl text-[10px] font-medium cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
             isHighlighted
               ? "bg-bw-primary/15 text-bw-primary"
               : "text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10"
@@ -120,7 +160,9 @@ export function InlineActions({
         <button
           onClick={() => setShowScorePicker(!showScorePicker)}
           disabled={isScorePending}
-          className={`btn-glow flex items-center gap-1 px-2 py-1 rounded-xl text-[10px] font-medium cursor-pointer transition-colors ${
+          aria-label={teacherScore > 0 ? `Note actuelle : ${teacherScore} sur 5` : "Noter la réponse"}
+          aria-expanded={showScorePicker}
+          className={`btn-glow flex items-center gap-1 px-2 py-1 rounded-xl text-[10px] font-medium cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
             teacherScore > 0 || showScorePicker
               ? "bg-bw-green/15 text-bw-green"
               : "text-bw-muted hover:text-bw-green hover:bg-bw-green/10"
@@ -134,9 +176,10 @@ export function InlineActions({
 
         {/* Signaler (warn) */}
         <button
-          onClick={() => onWarn(studentId)}
+          onClick={handleWarn}
           disabled={isWarnPending}
-          className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium cursor-pointer transition-colors text-bw-muted hover:text-red-400 hover:bg-red-400/10 disabled:opacity-40 ml-auto"
+          aria-label={`Signaler l'élève — ${warnings} sur 3 avertissements`}
+          className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium cursor-pointer transition-colors text-bw-muted hover:text-bw-danger hover:bg-bw-danger/10 disabled:opacity-40 ml-auto focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
           title={`Signaler — ${warnings}/3 avertissement${warnings > 1 ? "s" : ""}`}
         >
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -144,7 +187,7 @@ export function InlineActions({
             <line x1="4" y1="22" x2="4" y2="15" />
           </svg>
           {warnings > 0 && (
-            <span className={`text-[9px] font-bold ${warnings >= 2 ? "text-red-400" : "text-bw-amber"}`}>
+            <span className={`text-[9px] font-bold ${warnings >= 2 ? "text-bw-danger" : "text-bw-amber"}`}>
               {warnings}/3
             </span>
           )}
@@ -153,8 +196,9 @@ export function InlineActions({
         {/* Supprimer commentaire */}
         {teacherComment && !isCommenting && (
           <button
-            onClick={() => onComment(responseId, null)}
-            className="px-1.5 py-1 rounded-md text-[10px] cursor-pointer transition-colors text-bw-muted hover:text-red-400 hover:bg-red-400/10"
+            onClick={handleDeleteComment}
+            aria-label="Supprimer le commentaire"
+            className="px-1.5 py-1 rounded-md text-[10px] cursor-pointer transition-colors text-bw-muted hover:text-bw-danger hover:bg-bw-danger/10 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
             title="Supprimer commentaire"
           >
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -183,10 +227,12 @@ export function InlineActions({
                   <button
                     key={preset.label}
                     onClick={() => {
+                      setLastNudge(preset);
                       onNudge(responseId, preset.text);
                       setShowNudgePicker(false);
                     }}
-                    className="px-2.5 py-1.5 bg-bw-bg border border-white/[0.06] rounded-xl text-[10px] text-bw-text hover:border-bw-amber/30 hover:text-bw-amber cursor-pointer transition-colors duration-200"
+                    aria-label={`Envoyer : ${preset.text}`}
+                    className="px-2.5 py-1.5 bg-bw-bg border border-white/[0.06] rounded-xl text-[10px] text-bw-text hover:border-bw-amber/30 hover:text-bw-amber cursor-pointer transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
                   >
                     {preset.label}
                   </button>
@@ -217,14 +263,16 @@ export function InlineActions({
                     }
                   }}
                   disabled={!customNudge.trim()}
-                  className="px-3 py-1.5 rounded-xl bg-bw-amber text-black text-[10px] font-semibold cursor-pointer hover:brightness-110 disabled:opacity-40"
+                  aria-label="Envoyer le message personnalisé"
+                  className="px-3 py-1.5 rounded-xl bg-bw-amber text-black text-[10px] font-semibold cursor-pointer hover:brightness-110 disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
                 >
                   Envoyer
                 </button>
               </div>
               <button
                 onClick={() => setShowNudgePicker(false)}
-                className="w-full py-1 text-[10px] text-bw-muted hover:text-bw-text cursor-pointer"
+                aria-label="Annuler la relance"
+                className="w-full py-1 text-[10px] text-bw-muted hover:text-bw-text cursor-pointer focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
               >
                 Annuler
               </button>
@@ -246,18 +294,23 @@ export function InlineActions({
               <span className="text-[9px] text-bw-green font-medium uppercase tracking-wider">
                 Note qualite
               </span>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1" role="radiogroup" aria-label="Note de 1 à 5">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
+                    role="radio"
+                    aria-checked={teacherScore === star}
+                    aria-label={`${star} étoile${star > 1 ? "s" : ""} — ${["", "Faible", "Moyen", "Bien", "Très bien", "Excellent"][star]}`}
                     onMouseEnter={() => setHoverStar(star)}
                     onMouseLeave={() => setHoverStar(0)}
+                    onFocus={() => setHoverStar(star)}
+                    onBlur={() => setHoverStar(0)}
                     onClick={() => {
                       onScore(responseId, star === teacherScore ? 0 : star);
                       setShowScorePicker(false);
                       setHoverStar(0);
                     }}
-                    className="p-1 cursor-pointer transition-transform hover:scale-125"
+                    className="p-1 cursor-pointer transition-transform hover:scale-125 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none focus-visible:rounded-sm"
                   >
                     <svg
                       width="18"
@@ -279,7 +332,8 @@ export function InlineActions({
               </div>
               <button
                 onClick={() => { setShowScorePicker(false); setHoverStar(0); }}
-                className="w-full py-1 text-[10px] text-bw-muted hover:text-bw-text cursor-pointer"
+                aria-label="Fermer le sélecteur de note"
+                className="w-full py-1 text-[10px] text-bw-muted hover:text-bw-text cursor-pointer focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
               >
                 Fermer
               </button>
@@ -311,13 +365,15 @@ export function InlineActions({
               />
               <div className="flex gap-1.5">
                 <button onClick={onCancelComment}
-                  className="flex-1 py-1.5 rounded-xl bg-bw-bg text-bw-muted text-[10px] font-medium cursor-pointer border border-white/[0.06]">
+                  aria-label="Annuler le commentaire"
+                  className="flex-1 py-1.5 rounded-xl bg-bw-bg text-bw-muted text-[10px] font-medium cursor-pointer border border-white/[0.06] focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none">
                   Annuler
                 </button>
                 <button
-                  onClick={() => { if (commentText.trim()) onComment(responseId, commentText.trim()); }}
+                  onClick={handleSubmitComment}
                   disabled={!commentText.trim() || isCommentPending}
-                  className="flex-1 py-1.5 rounded-xl bg-bw-teal text-black text-[10px] font-semibold cursor-pointer hover:brightness-110 disabled:opacity-50">
+                  aria-label="Envoyer le commentaire"
+                  className="flex-1 py-1.5 rounded-xl bg-bw-teal text-black text-[10px] font-semibold cursor-pointer hover:brightness-110 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none">
                   {isCommentPending ? "..." : "Envoyer"}
                 </button>
               </div>
@@ -329,8 +385,10 @@ export function InlineActions({
   );
 }
 
+export const InlineActions = memo(InlineActionsInner);
+
 // Inline display of teacher comment (below the response text)
-export function TeacherCommentBadge({ comment }: { comment: string }) {
+function TeacherCommentBadgeInner({ comment }: { comment: string }) {
   return (
     <div className="mt-1.5 flex items-start gap-1.5 bg-bw-teal/5 rounded-xl px-2.5 py-1.5 border border-bw-teal/10">
       <span className="text-[10px] text-bw-teal flex-shrink-0 mt-0.5">Prof:</span>
@@ -338,3 +396,5 @@ export function TeacherCommentBadge({ comment }: { comment: string }) {
     </div>
   );
 }
+
+export const TeacherCommentBadge = memo(TeacherCommentBadgeInner);

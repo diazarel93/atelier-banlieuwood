@@ -181,7 +181,7 @@ export function SiteFooter({ className }: { className?: string }) {
               <BrandLogo size="lg" color="cinema" />
               <p className="text-sm text-bw-muted leading-relaxed max-w-xs">
                 Le jeu collaboratif de cr&eacute;ation cin&eacute;matographique.
-                De 5 &agrave; 30 joueurs sur t&eacute;l&eacute;phone.
+                De 5 &agrave; 30 joueurs sur tablette ou ordinateur.
               </p>
 
               {/* Social icons */}
@@ -260,7 +260,7 @@ export function SiteFooter({ className }: { className?: string }) {
                 className={cn(
                   "inline-flex items-center px-2 py-0.5 rounded-md",
                   "text-[10px] font-mono font-medium tracking-wider",
-                  "text-slate-400 bg-white/[0.04] border border-white/[0.06]",
+                  "text-bw-muted bg-white/[0.04] border border-white/[0.06]",
                 )}
               >
                 v1.0

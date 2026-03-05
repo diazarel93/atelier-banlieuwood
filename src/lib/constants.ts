@@ -175,8 +175,10 @@ export const MODULE_SEANCE_SITUATIONS: Record<number, Record<number, number>> = 
   1: { 1: 8, 2: 1, 3: 1, 4: 1, 5: 1 },  // Positionnement (8), Image 1 (1), Image 2 (1), Image 3 (1), Carnet (1)
   2: { 1: 3, 2: 2, 3: 2, 4: 2 },   // Émotion Cachée: Mise en bain (3), Émotion (2), Collectif (2), Clôture (2)
   3: { 1: 8, 2: 8, 3: 5 },          // Le Héros (8), Le Conflit (8), Le Sens (5)
+  4: { 1: 8 },                       // Vis ma vie (8 situations, 1 séance)
   9: { 1: 8, 2: 5, 3: 8, 4: 8 },  // Old cinema (was Module 2): Le Cinéma (8), Les Choix/budget (5), Les Imprévus (8), Le Plan (8)
   10: { 1: 3, 2: 5 },             // Et si... (3), Pitch (5)
+  11: { 1: 6, 2: 6, 3: 6, 4: 6 }, // Ciné-Débat: L'Art de Raconter (6), Émotions (6), Héros (6), Coulisses (6)
 };
 
 /** Helper: get max situations for a module + séance combo */

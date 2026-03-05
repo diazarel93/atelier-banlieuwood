@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { isValidUUID } from "@/lib/api-utils";
+import { safeJson } from "@/lib/api-utils";
+import { voteSchema, formatZodError } from "@/lib/schemas";
 
 // POST — student submits a vote
 export async function POST(
@@ -14,20 +15,18 @@ export async function POST(
   }
 
   const { id: sessionId } = await params;
-  const { studentId, situationId, chosenResponseId } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
 
-  if (!studentId || !situationId || !chosenResponseId) {
+  const validated = voteSchema.safeParse(parsed.data);
+  if (!validated.success) {
     return NextResponse.json(
-      { error: "studentId, situationId et chosenResponseId requis" },
+      { error: formatZodError(validated.error) },
       { status: 400 }
     );
   }
-  if (!isValidUUID(studentId) || !isValidUUID(situationId) || !isValidUUID(chosenResponseId)) {
-    return NextResponse.json(
-      { error: "Paramètres invalides" },
-      { status: 400 }
-    );
-  }
+
+  const { studentId, situationId, chosenResponseId } = validated.data;
 
   const admin = createAdminClient();
 
@@ -36,6 +35,7 @@ export async function POST(
     .from("sessions")
     .select("status")
     .eq("id", sessionId)
+    .is("deleted_at", null)
     .single();
 
   if (!session || session.status !== "voting") {

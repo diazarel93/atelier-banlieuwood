@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, isValidUUID } from "@/lib/api-utils";
+import { requireFacilitator, isValidUUID, safeJson } from "@/lib/api-utils";
 import { generateAIText } from "@/lib/ai";
 
 /**
@@ -47,8 +47,9 @@ export async function POST(
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
 
-  const body = await req.json();
-  const { responseIds } = body;
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { responseIds } = parsed.data;
 
   if (!Array.isArray(responseIds) || responseIds.length === 0) {
     return NextResponse.json({ error: "responseIds requis (tableau)" }, { status: 400 });

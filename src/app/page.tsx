@@ -1,168 +1,141 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
-import { BrandMark, BrandLogo } from "@/components/brand-logo";
-import { gradients } from "@/lib/theme";
+import { useEffect, useState } from "react";
+import { motion } from "motion/react";
+import { BrandMark, BrandLogo, BrandStyles } from "@/components/brand-logo";
+import {
+  ClapperboardIllustration,
+  FilmReelIllustration,
+  CameraIllustration,
+} from "@/components/cinema-illustrations";
 
 /* ═══════════════════════════════════════════════════════════════
-   DATA
+   TYPEWRITER
    ═══════════════════════════════════════════════════════════════ */
 
-const STEPS = [
-  {
-    num: "01",
-    title: "Cree ta partie",
-    desc: "Choisis un module, lance la session. Un code unique est genere instantanement.",
-    color: "#FF6B35",
-    gradient: "from-[#FF6B35] to-[#E85D26]",
-  },
-  {
-    num: "02",
-    title: "Les joueurs rejoignent",
-    desc: "Code ou QR code — pas de compte, pas de telechargement. Sur telephone, en 5 secondes.",
-    color: "#4ECDC4",
-    gradient: "from-[#4ECDC4] to-[#2B9A93]",
-  },
-  {
-    num: "03",
-    title: "Jouez ensemble",
-    desc: "Repondez, votez, debattez. L'histoire prend forme collectivement. Le facilitateur pilote.",
-    color: "#8B5CF6",
-    gradient: "from-[#8B5CF6] to-[#7C3AED]",
-  },
+const SCREENPLAY_LINES = [
+  "INT. SALLE DE CLASSE \u2014 JOUR",
+  "",
+  "30 eleves. Une tablette chacun.",
+  "En 45 minutes, ils ecrivent",
+  "un court-metrage.",
 ];
 
-const FEATURES = [
-  {
-    title: "Collaboratif",
-    desc: "5 a 30 joueurs construisent une histoire ensemble, chacun sur son telephone. Chaque voix compte.",
-    color: "#FF6B35",
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
-      </svg>
-    ),
-  },
-  {
-    title: "Guide par l'IA",
-    desc: "Un facilitateur pilote, l'IA accompagne. Questions, votes, choix collectifs — tout est fluide et adaptatif.",
-    color: "#8B5CF6",
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5z" />
-        <path d="M2 17l10 5 10-5" />
-        <path d="M2 12l10 5 10-5" />
-      </svg>
-    ),
-  },
-  {
-    title: "Cinematique",
-    desc: "Contraintes de production, personnages, conflits, denouement — un vrai court-metrage nait en une heure.",
-    color: "#4ECDC4",
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-        <rect x="2" y="2" width="20" height="20" rx="2.18" />
-        <path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 7h5M17 17h5" />
-      </svg>
-    ),
-  },
-];
-
-const MODULES = [
-  {
-    title: "Confiance + Diagnostic",
-    desc: "3 images, 4 questions. Observer, interpreter, imaginer — on diagnostique le groupe.",
-    badge: "Bientot",
-    badgeStyle: "glass text-bw-muted",
-    color: "#7D828A",
-    bgGradient: "from-white/[0.04] to-transparent",
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <circle cx="8.5" cy="8.5" r="1.5" />
-        <path d="M21 15l-5-5L5 21" />
-      </svg>
-    ),
-  },
-  {
-    title: "Contrainte + Responsabilite",
-    desc: "Tu es producteur. 100 credits pour faire ton film. Choisir c'est renoncer.",
-    badge: "~45 min",
-    badgeStyle: "bg-bw-amber/10 text-bw-amber border border-bw-amber/20 font-semibold",
-    color: "#F59E0B",
-    bgGradient: "from-[rgba(245,158,11,0.1)] to-[rgba(245,158,11,0.02)]",
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-    ),
-  },
-  {
-    title: "Construction de l'histoire",
-    desc: "Personnages, conflits, denouement — les joueurs vivent des situations, votent, et le film prend forme.",
-    badge: "3 seances",
-    badgeStyle: "bg-bw-primary/10 text-bw-primary border border-bw-primary/20 font-semibold",
-    color: "#FF6B35",
-    bgGradient: "from-[rgba(255,107,53,0.1)] to-[rgba(255,107,53,0.02)]",
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-        <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
-        <path d="M8 7h8M8 11h6" />
-      </svg>
-    ),
-  },
-];
-
-const AVATAR_COLORS = ["#FF6B35", "#4ECDC4", "#8B5CF6", "#D4A843", "#EC4899", "#10B981"];
-
-/* ═══════════════════════════════════════════════════════════════
-   ANIMATED COUNTER HOOK
-   ═══════════════════════════════════════════════════════════════ */
-
-function useCountUp(target: number, duration = 2000, startOnView = false) {
-  const [count, setCount] = useState(0);
-  const [started, setStarted] = useState(!startOnView);
-  const ref = useRef<HTMLDivElement>(null);
+function useTypewriter(lines: string[], charDelay = 30, lineDelay = 350) {
+  const [displayed, setDisplayed] = useState<string[]>([]);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
-    if (!startOnView) return;
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setStarted(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.3 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [startOnView]);
+    let lineIdx = 0;
+    let charIdx = 0;
+    let cancelled = false;
 
-  useEffect(() => {
-    if (!started) return;
-    let start = 0;
-    const startTime = performance.now();
-    function tick(now: number) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      // Ease out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * target));
-      if (progress < 1) requestAnimationFrame(tick);
-      else setCount(target);
+    function tick() {
+      if (cancelled) return;
+      if (lineIdx >= lines.length) {
+        setDone(true);
+        return;
+      }
+      const line = lines[lineIdx];
+      if (line === "") {
+        setDisplayed((p) => {
+          const n = [...p];
+          n[lineIdx] = "";
+          return n;
+        });
+        lineIdx++;
+        charIdx = 0;
+        setTimeout(tick, lineDelay / 2);
+        return;
+      }
+      if (charIdx <= line.length) {
+        setDisplayed((p) => {
+          const n = [...p];
+          n[lineIdx] = line.slice(0, charIdx);
+          return n;
+        });
+        charIdx++;
+        setTimeout(tick, charIdx === 1 ? lineDelay : charDelay);
+      } else {
+        lineIdx++;
+        charIdx = 0;
+        setTimeout(tick, lineDelay);
+      }
     }
-    requestAnimationFrame(tick);
-  }, [started, target, duration]);
+    const id = setTimeout(tick, 600);
+    return () => {
+      cancelled = true;
+      clearTimeout(id);
+    };
+  }, [lines, charDelay, lineDelay]);
 
-  return { count, ref };
+  return { displayed, done };
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL REVEAL
+   ═══════════════════════════════════════════════════════════════ */
+
+function Reveal({
+  children,
+  className = "",
+  delay = 0,
+  style,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  style?: React.CSSProperties;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, delay, ease: [0.25, 0.1, 0.25, 1] }}
+      className={className}
+      style={style}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BROWSER MOCKUP — reusable mini "app window" frame
+   ═══════════════════════════════════════════════════════════════ */
+
+function AppWindow({
+  url,
+  children,
+  className = "",
+}: {
+  url: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`rounded-lg border border-white/[0.08] overflow-hidden ${className}`}
+      style={{ background: "#0a0c12" }}
+    >
+      <div
+        className="h-6 flex items-center gap-1.5 px-2.5 border-b border-white/[0.04]"
+        style={{ background: "#080a10" }}
+      >
+        <div className="flex gap-1">
+          <div className="w-1.5 h-1.5 rounded-full bg-white/[0.1]" />
+          <div className="w-1.5 h-1.5 rounded-full bg-white/[0.1]" />
+          <div className="w-1.5 h-1.5 rounded-full bg-white/[0.1]" />
+        </div>
+        <div className="flex-1 flex justify-center">
+          <span className="text-[8px] text-[#5c5c60]">{url}</span>
+        </div>
+      </div>
+      {children}
+    </div>
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -170,761 +143,812 @@ function useCountUp(target: number, duration = 2000, startOnView = false) {
    ═══════════════════════════════════════════════════════════════ */
 
 export default function Home() {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
+  const { displayed, done } = useTypewriter(SCREENPLAY_LINES);
+  const [scrolled, setScrolled] = useState(false);
 
-  // Parallax transforms for floating orbs
-  const orbY1 = useTransform(scrollYProgress, [0, 1], [0, -120]);
-  const orbY2 = useTransform(scrollYProgress, [0, 1], [0, -80]);
-  const orbY3 = useTransform(scrollYProgress, [0, 1], [0, -160]);
-  const orbX1 = useTransform(scrollYProgress, [0, 1], [0, 30]);
-  const orbX2 = useTransform(scrollYProgress, [0, 1], [0, -20]);
-  const orbX3 = useTransform(scrollYProgress, [0, 1], [0, 40]);
-
-  const { count: gamesCount, ref: counterRef } = useCountUp(500, 2200, true);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <div className="min-h-dvh bg-studio flex flex-col overflow-hidden">
+    <div className="min-h-dvh bg-bw-bg text-bw-text antialiased">
+      <BrandStyles />
 
-      {/* ──────────────── NAV ──────────────── */}
-      <nav className="px-6 py-5 flex-shrink-0 relative z-20">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <BrandLogo size="sm" />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex items-center gap-3"
-          >
+      {/* ──────────── FIXED NAV ──────────── */}
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-6 transition-all duration-200"
+        style={{
+          background: scrolled ? "rgba(15,17,24,0.75)" : "transparent",
+          backdropFilter: scrolled ? "blur(12px)" : "none",
+          WebkitBackdropFilter: scrolled ? "blur(12px)" : "none",
+          borderBottom: scrolled
+            ? "1px solid rgba(255,255,255,0.06)"
+            : "1px solid transparent",
+        }}
+      >
+        <div className="max-w-[1080px] mx-auto w-full flex justify-between items-center">
+          <Link href="/" className="flex items-center gap-2">
+            <BrandMark size="sm" color="cinema" animated={false} />
+            <span className="text-sm font-semibold text-bw-heading tracking-wide hidden sm:block">
+              BANLIEUWOOD
+            </span>
+          </Link>
+          <div className="flex items-center gap-1">
             <Link
               href="/join"
-              className="text-sm text-bw-muted hover:text-bw-heading transition-colors duration-300 hidden sm:inline-flex items-center gap-1.5"
+              className="text-[13px] text-[#8b8b8e] hover:text-bw-heading px-3 py-1.5 rounded-md hover:bg-white/[0.04] transition-all duration-150"
             >
               Rejoindre
             </Link>
             <Link
+              href="/free"
+              className="text-[13px] text-[#8b8b8e] hover:text-bw-heading px-3 py-1.5 rounded-md hover:bg-white/[0.04] transition-all duration-150 hidden sm:block"
+            >
+              Jouer seul
+            </Link>
+            <Link
               href="/login"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_4px_24px_rgba(255,107,53,0.35)]"
-              style={{ background: gradients.cinema }}
+              className="ml-2 h-8 px-3.5 inline-flex items-center text-[13px] font-medium rounded-lg bg-[#ededef] text-[#0F1118] hover:bg-white transition-all duration-150"
             >
               Creer une partie
             </Link>
-          </motion.div>
+          </div>
         </div>
       </nav>
 
-      {/* ══════════════════════════════════════════════════════════════
-         1. HERO — "Opening Shot"
-         ══════════════════════════════════════════════════════════════ */}
-      <section
-        ref={heroRef}
-        className="relative min-h-[100dvh] flex flex-col items-center justify-center px-6 py-24 sm:py-32 text-center overflow-hidden"
-      >
-        {/* ── Parallax floating glass orbs ── */}
-        <motion.div
-          style={{ y: orbY1, x: orbX1, willChange: "transform" }}
-          className="absolute top-[15%] left-[10%] w-64 h-64 sm:w-80 sm:h-80 rounded-full pointer-events-none"
-        >
-          <div className="w-full h-full rounded-full bg-[radial-gradient(circle,rgba(255,107,53,0.08)_0%,transparent_70%)] blur-xl" />
-        </motion.div>
-        <motion.div
-          style={{ y: orbY2, x: orbX2, willChange: "transform" }}
-          className="absolute top-[55%] right-[8%] w-56 h-56 sm:w-72 sm:h-72 rounded-full pointer-events-none"
-        >
-          <div className="w-full h-full rounded-full bg-[radial-gradient(circle,rgba(78,205,196,0.07)_0%,transparent_70%)] blur-xl" />
-        </motion.div>
-        <motion.div
-          style={{ y: orbY3, x: orbX3, willChange: "transform" }}
-          className="absolute top-[30%] right-[25%] w-48 h-48 sm:w-64 sm:h-64 rounded-full pointer-events-none"
-        >
-          <div className="w-full h-full rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.06)_0%,transparent_70%)] blur-xl" />
-        </motion.div>
+      {/* ════════════════════════════════════════════════════════
+         1. HERO
+         ════════════════════════════════════════════════════════ */}
+      <section className="relative min-h-svh flex flex-col items-center justify-center px-6 pt-28 pb-8">
+        {/* Ambient glow */}
+        <div
+          className="absolute top-[-30%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(255,107,53,0.08) 0%, transparent 70%)",
+            filter: "blur(80px)",
+          }}
+        />
 
-        {/* ── Ambient glow layers ── */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(255,107,53,0.06),transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_80%,rgba(78,205,196,0.04),transparent_50%)]" />
-
-        {/* ── Film strip decorations ── */}
-        <motion.div
-          animate={{ y: [0, -16, 0] }}
-          transition={{ repeat: Infinity, duration: 12, ease: "easeInOut" }}
-          className="absolute left-2 lg:left-8 top-[20%] bottom-[20%] w-6 opacity-[0.04] hidden md:flex flex-col items-center justify-center gap-3"
-        >
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="w-3 h-5 rounded-sm bg-bw-heading" />
-          ))}
-        </motion.div>
-        <motion.div
-          animate={{ y: [0, 16, 0] }}
-          transition={{ repeat: Infinity, duration: 12, ease: "easeInOut" }}
-          className="absolute right-2 lg:right-8 top-[20%] bottom-[20%] w-6 opacity-[0.04] hidden md:flex flex-col items-center justify-center gap-3"
-        >
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="w-3 h-5 rounded-sm bg-bw-heading" />
-          ))}
-        </motion.div>
-
-        <div className="relative max-w-3xl mx-auto space-y-10 z-10">
-          {/* ── Animated logo mark ── */}
+        <div className="relative max-w-[800px] mx-auto text-center space-y-6">
+          {/* Logo */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.6, rotate: -15 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
-            className="flex items-center justify-center"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            <div className="relative">
-              <motion.div
-                animate={{ rotate: [0, 2, -2, 0] }}
-                transition={{ repeat: Infinity, duration: 8, repeatDelay: 4, ease: "easeInOut" }}
-              >
-                <BrandMark size="xl" color="cinema" />
-              </motion.div>
-              {/* Glow ring */}
-              <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-bw-primary/15 via-bw-gold/10 to-bw-primary/15 blur-2xl opacity-60" />
-            </div>
+            <BrandMark size="lg" color="cinema" />
           </motion.div>
 
-          {/* ── Main title ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
+          {/* Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-bw-heading"
+            style={{
+              fontFamily: "var(--font-cinema), 'Bebas Neue', sans-serif",
+              fontSize: "clamp(48px, 8vw, 88px)",
+              lineHeight: 1.0,
+              letterSpacing: "0.02em",
+            }}
           >
-            <h1 className="bw-display text-7xl sm:text-8xl lg:text-9xl tracking-wider">
-              <span className="text-bw-heading">BANLIEU</span>
-              <span className="text-gradient-cinema">WOOD</span>
-            </h1>
-          </motion.div>
+            Ecrivez un court-metrage.{" "}
+            <span className="text-gradient-cinema">Ensemble.</span>
+          </motion.h1>
 
-          {/* ── Tagline ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
+          {/* Sub */}
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-[#8b8b8e] max-w-[480px] mx-auto leading-relaxed"
+            style={{ fontSize: "clamp(16px, 2vw, 19px)" }}
           >
-            <p className="text-xl sm:text-2xl lg:text-3xl text-bw-text leading-relaxed max-w-xl mx-auto font-light">
-              Le jeu ou vous ecrivez un{" "}
-              <span className="text-gradient-cinema font-semibold">court-metrage</span>{" "}
-              ensemble.
-            </p>
-          </motion.div>
+            5 a 30 eleves sur tablette ou ordinateur. 45 minutes. Aucun compte
+            requis. Le jeu collaboratif de creation cinematographique.
+          </motion.p>
 
-          {/* ── Stats bar ── */}
+          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55, duration: 0.5 }}
-            className="flex items-center justify-center"
-          >
-            <div className="glass-card inline-flex items-center gap-4 sm:gap-6 px-6 sm:px-8 py-3 sm:py-3.5">
-              <div className="flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>
-                <span className="text-sm sm:text-base font-semibold text-bw-heading">5-30 joueurs</span>
-              </div>
-              <div className="w-px h-4 bg-bw-border" />
-              <div className="flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
-                <span className="text-sm sm:text-base font-semibold text-bw-heading">45 min</span>
-              </div>
-              <div className="w-px h-4 bg-bw-border" />
-              <div className="flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                <span className="text-sm sm:text-base font-semibold text-bw-heading">0 compte requis</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* ── CTA buttons ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.65, duration: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4 pt-2 max-w-lg mx-auto"
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex items-center justify-center gap-3 pt-2"
           >
             <Link
               href="/join"
-              className="btn-glow flex-1 inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl font-semibold text-white text-base transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_8px_40px_rgba(255,107,53,0.4)] active:scale-[0.98]"
-              style={{
-                background: gradients.cinema,
-                boxShadow: "0 4px 24px rgba(255,107,53,0.3)",
-              }}
+              className="h-11 px-5 inline-flex items-center gap-2 text-sm font-medium rounded-lg bg-[#ededef] text-[#0F1118] hover:bg-white transition-all duration-150 hover:-translate-y-px hover:shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <polygon points="5 3 19 12 5 21 5 3" />
-              </svg>
               Rejoindre une partie
-            </Link>
-            <Link
-              href="/free"
-              className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-bw-heading text-base glass-card transition-all duration-300 hover:bg-white/[0.08] hover:border-white/10 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Jouer seul
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
             </Link>
             <Link
               href="/login"
-              className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-medium text-bw-muted text-base border border-bw-border transition-all duration-300 hover:text-bw-heading hover:border-white/10 hover:bg-white/[0.03] active:scale-[0.98]"
+              className="h-11 px-5 inline-flex items-center text-sm font-medium rounded-lg text-bw-heading border border-white/[0.08] hover:border-white/[0.14] hover:bg-white/[0.04] transition-all duration-150"
             >
               Creer une partie
             </Link>
           </motion.div>
         </div>
 
-        {/* ── Scroll hint ── */}
+        {/* Screenplay block */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.4 }}
-          transition={{ delay: 1.8 }}
-          className="absolute bottom-8 z-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="relative mt-12 w-full max-w-[580px] mx-auto"
         >
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-            className="flex flex-col items-center gap-2"
+          <div
+            className="rounded-xl border border-white/[0.06] overflow-hidden"
+            style={{ background: "#111318" }}
           >
-            <span className="text-[10px] uppercase tracking-[0.2em] text-bw-muted font-medium">Decouvrir</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-bw-muted">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </motion.div>
+            <div
+              className="h-9 flex items-center gap-2 px-4 border-b border-white/[0.06]"
+              style={{ background: "#0d0f14" }}
+            >
+              <div className="flex gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-white/[0.08]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-white/[0.08]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-white/[0.08]" />
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="text-[10px] text-[#5c5c60] bg-white/[0.04] rounded px-3 py-0.5">
+                  banlieuwood.fr/play
+                </div>
+              </div>
+            </div>
+            <div className="p-6 sm:p-8">
+              <pre className="font-[var(--font-courier-prime)] text-[13px] sm:text-[14px] leading-[1.8] whitespace-pre-wrap min-h-[7rem]">
+                {displayed.map((line, i) => (
+                  <span key={i}>
+                    {i === 0 ? (
+                      <span className="text-bw-heading font-bold">{line}</span>
+                    ) : (
+                      <span className="text-[#8b8b8e]">{line}</span>
+                    )}
+                    {i === displayed.length - 1 && !done && line !== "" && (
+                      <span className="typewriter-cursor">&thinsp;</span>
+                    )}
+                    {"\n"}
+                  </span>
+                ))}
+              </pre>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-bw-bg to-transparent pointer-events-none" />
         </motion.div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════
-         2. HOW IT WORKS — "Le Tournage"
-         ══════════════════════════════════════════════════════════════ */}
-      <section className="px-6 py-28 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(78,205,196,0.04),transparent_60%)]" />
-
-        <div className="max-w-5xl mx-auto relative">
-          {/* Section badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
-            <span className="inline-block text-[11px] font-semibold tracking-[0.25em] uppercase text-bw-teal mb-4 px-5 py-2 rounded-full border border-bw-teal/20 bg-bw-teal/5">
-              Comment ca marche
-            </span>
-            <h2 className="bw-display text-4xl sm:text-5xl lg:text-6xl tracking-wider text-bw-heading mt-6">
-              LE{" "}
-              <span className="text-gradient-teal">TOURNAGE</span>
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 relative">
-            {/* ── Horizontal timeline (desktop) ── */}
-            <div className="hidden md:block absolute top-[3.5rem] left-[16%] right-[16%] h-px">
-              <motion.div
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="h-full origin-left"
-                style={{
-                  background: "linear-gradient(90deg, #FF6B35, #4ECDC4, #8B5CF6)",
-                  opacity: 0.3,
-                }}
-              />
+      {/* ════════════════════════════════════════════════════════
+         STATS BAR
+         ════════════════════════════════════════════════════════ */}
+      <div className="border-y border-white/[0.06] px-6">
+        <div className="max-w-[1080px] mx-auto py-5 flex flex-wrap items-center justify-center gap-x-8 sm:gap-x-12 gap-y-3">
+          {[
+            { value: "13", label: "modules", color: "#FF6B35" },
+            { value: "45 min", label: "par session", color: "#4ECDC4" },
+            { value: "5\u201330", label: "eleves", color: "#8B5CF6" },
+            { value: "0", label: "compte requis", color: "#D4A843" },
+          ].map((stat) => (
+            <div key={stat.label} className="flex items-center gap-2.5">
+              <span
+                className="text-lg font-bold tabular-nums"
+                style={{ color: stat.color }}
+              >
+                {stat.value}
+              </span>
+              <span className="text-xs text-[#5c5c60]">{stat.label}</span>
             </div>
-
-            {/* ── Vertical timeline (mobile) ── */}
-            <div className="md:hidden absolute left-[2.25rem] top-[5rem] bottom-[5rem] w-px">
-              <motion.div
-                initial={{ scaleY: 0 }}
-                whileInView={{ scaleY: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="h-full origin-top"
-                style={{
-                  background: "linear-gradient(180deg, #FF6B35, #4ECDC4, #8B5CF6)",
-                  opacity: 0.3,
-                }}
-              />
-            </div>
-
-            {STEPS.map((step, i) => (
-              <motion.div
-                key={step.num}
-                initial={{ opacity: 0, y: 32 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15, duration: 0.5 }}
-                className="relative"
-              >
-                <div className="glass-card p-7 sm:p-8 text-center md:text-center space-y-5 group transition-all duration-300 hover:border-white/10 hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
-                  {/* Number badge */}
-                  <div className="relative z-10 mx-auto md:mx-auto">
-                    <div
-                      className={`w-16 h-16 rounded-2xl font-cinema text-2xl tracking-wider flex items-center justify-center text-white mx-auto relative transition-all duration-300 group-hover:scale-110 bg-gradient-to-br ${step.gradient}`}
-                      style={{ boxShadow: `0 8px 28px ${step.color}30` }}
-                    >
-                      {step.num}
-                      {/* LED indicator */}
-                      <div
-                        className="absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-bw-bg"
-                        style={{ background: step.color, boxShadow: `0 0 10px ${step.color}80` }}
-                      />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-xl text-bw-heading">{step.title}</h3>
-                  <p className="text-sm text-bw-muted leading-relaxed max-w-xs mx-auto">{step.desc}</p>
-                </div>
-
-                {/* Connection dot between cards (desktop) */}
-                {i < STEPS.length - 1 && (
-                  <div
-                    className="hidden md:block absolute top-[3.35rem] -right-[1.75rem] w-3 h-3 rounded-full border-2 border-bw-bg z-10"
-                    style={{ background: step.color, boxShadow: `0 0 12px ${step.color}60` }}
-                  />
-                )}
-              </motion.div>
-            ))}
-          </div>
+          ))}
         </div>
-      </section>
+      </div>
 
-      {/* ══════════════════════════════════════════════════════════════
-         3. FEATURES — "L'Experience"
-         ══════════════════════════════════════════════════════════════ */}
-      <section className="px-6 py-28 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_50%,rgba(139,92,246,0.04),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,rgba(255,107,53,0.03),transparent_50%)]" />
-
-        <div className="max-w-5xl mx-auto relative">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
-            <span className="inline-block text-[11px] font-semibold tracking-[0.25em] uppercase text-bw-gold mb-4 px-5 py-2 rounded-full border border-bw-gold/20 bg-bw-gold/5">
-              L&apos;experience
-            </span>
-            <h2 className="bw-display text-4xl sm:text-5xl lg:text-6xl tracking-wider text-bw-heading mt-6">
-              POURQUOI{" "}
-              <span className="text-gradient-cinema">BANLIEUWOOD</span>
+      {/* ════════════════════════════════════════════════════════
+         2. HOW IT WORKS — with product mockups
+         ════════════════════════════════════════════════════════ */}
+      <section className="px-6 py-20">
+        <div className="max-w-[1080px] mx-auto">
+          <Reveal>
+            <p className="label-caps mb-4">Comment ca marche</p>
+            <h2 className="text-display-md text-bw-heading max-w-[500px]">
+              Trois etapes. Un court-metrage.
             </h2>
-          </motion.div>
+          </Reveal>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            {FEATURES.map((feat, i) => (
-              <motion.div
-                key={feat.title}
-                initial={{ opacity: 0, y: 32 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.12 }}
-                className="poster-card glass-card rounded-2xl overflow-hidden group"
-              >
-                {/* Gradient header bar */}
-                <div
-                  className="h-[3px] transition-all duration-500 group-hover:h-1.5"
-                  style={{ background: `linear-gradient(90deg, ${feat.color}, ${feat.color}60)` }}
-                />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
+            {/* Step 1 — Cree ta partie */}
+            <Reveal
+              className="rounded-xl border border-white/[0.06] p-6 flex flex-col"
+              style={{ background: "#111318" }}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-[13px] font-mono text-[#5c5c60]">
+                  01
+                </span>
+                <div className="h-px flex-1 bg-gradient-to-r from-bw-primary/30 to-transparent" />
+              </div>
+              <h3 className="text-lg font-semibold text-bw-heading mb-2">
+                Cree ta partie
+              </h3>
+              <p className="text-sm text-[#8b8b8e] leading-relaxed">
+                Choisis un module, lance la session. Un code unique est genere.
+                Projette-le au tableau.
+              </p>
 
-                <div className="p-7 sm:p-8 space-y-5">
-                  {/* Icon container */}
-                  <div
-                    className="w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
-                    style={{
-                      background: `linear-gradient(135deg, ${feat.color}18, ${feat.color}08)`,
-                      color: feat.color,
-                      boxShadow: `0 0 0 1px ${feat.color}15`,
-                    }}
-                  >
-                    {feat.icon}
-                  </div>
-                  <h3 className="font-bold text-xl text-bw-heading">{feat.title}</h3>
-                  <p className="text-sm text-bw-muted leading-relaxed">{feat.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════
-         4. MODULES — "3 Modules, 3 Experiences"
-         ══════════════════════════════════════════════════════════════ */}
-      <section className="px-6 py-28 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_60%_30%,rgba(255,107,53,0.04),transparent_55%)]" />
-
-        <div className="max-w-5xl mx-auto relative">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-6"
-          >
-            <span className="inline-block text-[11px] font-semibold tracking-[0.25em] uppercase text-bw-primary mb-4 px-5 py-2 rounded-full border border-bw-primary/20 bg-bw-primary/5">
-              3 Modules, 3 Experiences
-            </span>
-            <h2 className="bw-display text-4xl sm:text-5xl lg:text-6xl tracking-wider text-bw-heading mt-6">
-              LE{" "}
-              <span className="text-gradient-cinema">PROGRAMME</span>
-            </h2>
-          </motion.div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center text-bw-muted text-base mb-16 max-w-md mx-auto leading-relaxed"
-          >
-            Chaque module est une etape vers le court-metrage final.
-          </motion.p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {MODULES.map((mod, i) => (
-              <motion.div
-                key={mod.title}
-                initial={{ opacity: 0, y: 32 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.12 }}
-                className="poster-card glass-card rounded-2xl overflow-hidden group"
-                style={mod.color !== "#7D828A" ? { borderColor: `${mod.color}15` } : undefined}
-              >
-                <div
-                  className={`h-28 bg-gradient-to-br ${mod.bgGradient} flex items-center justify-center relative`}
-                >
-                  <div
-                    className="w-14 h-14 rounded-xl flex items-center justify-center text-white transition-transform duration-300 group-hover:scale-110"
-                    style={{
-                      background: mod.color === "#7D828A"
-                        ? `linear-gradient(135deg, ${mod.color}99, ${mod.color}50)`
-                        : `linear-gradient(135deg, ${mod.color}, ${mod.color}CC)`,
-                      boxShadow: `0 8px 24px ${mod.color}30`,
-                      color: mod.color === "#7D828A" ? "rgba(255,255,255,0.7)" : "white",
-                    }}
-                  >
-                    {mod.icon}
-                  </div>
-                  <span className={`absolute top-3 right-3 text-[10px] px-3 py-1 rounded-full ${mod.badgeStyle}`}>
-                    {mod.badge}
+              {/* Dashboard mockup */}
+              <AppWindow url="banlieuwood.fr/dashboard" className="mt-6">
+                <div className="px-3 py-2 border-b border-white/[0.04] flex items-center justify-between">
+                  <span className="text-[9px] font-medium text-[#5c5c60] uppercase tracking-wider">
+                    Session active
+                  </span>
+                  <span className="flex items-center gap-1 text-[9px] text-bw-teal">
+                    <span className="w-1.5 h-1.5 rounded-full bg-bw-teal" />
+                    En attente
                   </span>
                 </div>
-                <div className="p-6 space-y-3">
-                  <h3 className="font-bold text-lg text-bw-heading">{mod.title}</h3>
-                  <p className="text-sm text-bw-muted leading-relaxed">{mod.desc}</p>
+                <div className="p-4 text-center">
+                  <div className="font-mono text-2xl font-bold text-bw-heading tracking-[0.12em]">
+                    BW-4821
+                  </div>
+                  <div className="text-[10px] text-[#5c5c60] mt-1">
+                    Module 1 &mdash; L&apos;Oeil
+                  </div>
                 </div>
-              </motion.div>
+                <div className="px-3 py-2 border-t border-white/[0.04] flex items-center justify-between">
+                  <div className="flex -space-x-1.5">
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <div
+                        key={i}
+                        className="w-4 h-4 rounded-full border-2 border-[#0a0c12]"
+                        style={{
+                          background: [
+                            "#FF6B35",
+                            "#4ECDC4",
+                            "#8B5CF6",
+                            "#D4A843",
+                            "#EC4899",
+                          ][i],
+                          opacity: 0.7,
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-[9px] text-[#5c5c60]">
+                    12 eleves connectes
+                  </span>
+                </div>
+              </AppWindow>
+            </Reveal>
+
+            {/* Step 2 — Ils rejoignent */}
+            <Reveal
+              delay={0.08}
+              className="rounded-xl border border-white/[0.06] p-6 flex flex-col"
+              style={{ background: "#111318" }}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-[13px] font-mono text-[#5c5c60]">
+                  02
+                </span>
+                <div className="h-px flex-1 bg-gradient-to-r from-bw-teal/30 to-transparent" />
+              </div>
+              <h3 className="text-lg font-semibold text-bw-heading mb-2">
+                Ils rejoignent
+              </h3>
+              <p className="text-sm text-[#8b8b8e] leading-relaxed">
+                Code ou QR code. Pas de compte, pas d&apos;app. Sur tablette ou
+                ordinateur en 5 secondes.
+              </p>
+
+              {/* Join screen mockup */}
+              <AppWindow url="banlieuwood.fr/join" className="mt-6">
+                <div className="p-4 space-y-3">
+                  <div className="text-center">
+                    <div className="text-xs font-semibold text-bw-heading">
+                      Rejoindre la partie
+                    </div>
+                    <div className="text-[9px] text-[#5c5c60] mt-0.5">
+                      Aucun compte requis
+                    </div>
+                  </div>
+                  <div className="h-9 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center px-3 justify-center">
+                    <span className="font-mono text-sm text-bw-heading tracking-wider">
+                      BW-4821
+                    </span>
+                  </div>
+                  <div className="h-9 rounded-lg bg-bw-primary flex items-center justify-center gap-1.5">
+                    <span className="text-xs font-medium text-white">
+                      Rejoindre
+                    </span>
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="2.5"
+                    >
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-[9px] text-[#5c5c60]">
+                      ou scanner le QR code au tableau
+                    </span>
+                  </div>
+                </div>
+              </AppWindow>
+            </Reveal>
+
+            {/* Step 3 — Jouez ensemble */}
+            <Reveal
+              delay={0.16}
+              className="rounded-xl border border-white/[0.06] p-6 flex flex-col"
+              style={{ background: "#111318" }}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-[13px] font-mono text-[#5c5c60]">
+                  03
+                </span>
+                <div className="h-px flex-1 bg-gradient-to-r from-bw-violet/30 to-transparent" />
+              </div>
+              <h3 className="text-lg font-semibold text-bw-heading mb-2">
+                Jouez ensemble
+              </h3>
+              <p className="text-sm text-[#8b8b8e] leading-relaxed">
+                Repondez, votez, debattez. L&apos;histoire prend forme
+                collectivement.
+              </p>
+
+              {/* Gameplay mockup */}
+              <AppWindow url="banlieuwood.fr/play" className="mt-6">
+                <div className="p-3 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] text-[#5c5c60]">
+                      Question 3 / 8
+                    </span>
+                    <span className="text-[9px] font-mono text-bw-primary tabular-nums">
+                      2:34
+                    </span>
+                  </div>
+                  <div className="text-[11px] font-medium text-bw-heading leading-snug">
+                    Quel personnage incarne le conflit central ?
+                  </div>
+                  <div className="space-y-1.5">
+                    <div className="h-7 rounded-md bg-white/[0.04] border border-white/[0.06] flex items-center px-2.5 text-[10px] text-[#8b8b8e]">
+                      Le pere
+                    </div>
+                    <div className="h-7 rounded-md bg-bw-primary/10 border border-bw-primary/30 flex items-center justify-between px-2.5">
+                      <span className="text-[10px] font-medium text-bw-heading">
+                        La fille
+                      </span>
+                      <span className="text-[10px] font-bold text-bw-primary tabular-nums">
+                        72%
+                      </span>
+                    </div>
+                    <div className="h-7 rounded-md bg-white/[0.04] border border-white/[0.06] flex items-center px-2.5 text-[10px] text-[#8b8b8e]">
+                      Le voisin
+                    </div>
+                  </div>
+                  <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
+                    <div className="h-full w-[38%] rounded-full bg-gradient-to-r from-bw-primary to-bw-gold" />
+                  </div>
+                </div>
+              </AppWindow>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
+         3. FEATURES — large illustrations, colored glows
+         ════════════════════════════════════════════════════════ */}
+      <section
+        className="px-6 py-20 relative"
+        style={{ background: "#111318" }}
+      >
+        <div className="absolute inset-0 grid-pattern opacity-40 pointer-events-none" />
+        <div className="relative max-w-[1080px] mx-auto">
+          <Reveal>
+            <p className="label-caps mb-4">Pourquoi Banlieuwood</p>
+            <h2 className="text-display-md text-bw-heading max-w-[560px]">
+              Un outil de creation, pas juste un quiz.
+            </h2>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
+            {/* Collaboratif */}
+            <Reveal
+              className="group rounded-xl border border-white/[0.06] p-8 relative overflow-hidden hover:border-white/[0.12] transition-all duration-300"
+              style={{ background: "#0F1118" }}
+            >
+              <div
+                className="absolute top-0 right-0 w-[250px] h-[250px] pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(circle at 100% 0%, rgba(255,107,53,0.07) 0%, transparent 70%)",
+                }}
+              />
+              <div className="relative">
+                <div className="mb-6 opacity-70 group-hover:opacity-100 transition-opacity duration-300">
+                  <ClapperboardIllustration size={140} />
+                </div>
+                <h3 className="text-xl font-semibold text-bw-heading mb-3">
+                  Collaboratif
+                </h3>
+                <p className="text-sm text-[#8b8b8e] leading-relaxed">
+                  5 a 30 eleves construisent une histoire ensemble. Le prof
+                  projette le dashboard, la classe joue sur tablette ou
+                  ordinateur.
+                </p>
+              </div>
+            </Reveal>
+
+            {/* Guide par l'IA */}
+            <Reveal
+              delay={0.08}
+              className="group rounded-xl border border-white/[0.06] p-8 relative overflow-hidden hover:border-white/[0.12] transition-all duration-300"
+              style={{ background: "#0F1118" }}
+            >
+              <div
+                className="absolute top-0 right-0 w-[250px] h-[250px] pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(circle at 100% 0%, rgba(139,92,246,0.07) 0%, transparent 70%)",
+                }}
+              />
+              <div className="relative">
+                <div className="mb-6 opacity-70 group-hover:opacity-100 transition-opacity duration-300">
+                  <CameraIllustration size={140} />
+                </div>
+                <h3 className="text-xl font-semibold text-bw-heading mb-3">
+                  Guide par l&apos;IA
+                </h3>
+                <p className="text-sm text-[#8b8b8e] leading-relaxed">
+                  L&apos;IA adapte les questions au niveau du groupe. Le
+                  facilitateur pilote, la technologie s&apos;efface.
+                </p>
+              </div>
+            </Reveal>
+
+            {/* Programme complet */}
+            <Reveal
+              delay={0.16}
+              className="group rounded-xl border border-white/[0.06] p-8 relative overflow-hidden hover:border-white/[0.12] transition-all duration-300"
+              style={{ background: "#0F1118" }}
+            >
+              <div
+                className="absolute top-0 right-0 w-[250px] h-[250px] pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(circle at 100% 0%, rgba(78,205,196,0.07) 0%, transparent 70%)",
+                }}
+              />
+              <div className="relative">
+                <div className="mb-6 opacity-70 group-hover:opacity-100 transition-opacity duration-300">
+                  <FilmReelIllustration size={140} />
+                </div>
+                <h3 className="text-xl font-semibold text-bw-heading mb-3">
+                  Programme complet
+                </h3>
+                <p className="text-sm text-[#8b8b8e] leading-relaxed">
+                  De l&apos;observation au scenario. Personnages, conflits,
+                  denouement &mdash; un vrai parcours de creation.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
+         4. PROGRAMME — timeline phases
+         ════════════════════════════════════════════════════════ */}
+      <section className="px-6 py-20">
+        <div className="max-w-[1080px] mx-auto">
+          <Reveal>
+            <p className="label-caps mb-4">Le parcours</p>
+            <h2 className="text-display-md text-bw-heading max-w-[400px]">
+              Trois phases vers le film.
+            </h2>
+            <p className="text-sm text-[#8b8b8e] mt-4 max-w-md leading-relaxed">
+              Chaque phase est une etape pedagogique autonome. Un trimestre, un
+              film.
+            </p>
+          </Reveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10">
+            {[
+              {
+                num: "01",
+                title: "L\u2019Oeil",
+                sub: "Observation & analyse",
+                modules: 5,
+                color: "#8B5CF6",
+                desc: "Regarder, decoder, comprendre. Les eleves apprennent a lire l\u2019image avant de la creer.",
+              },
+              {
+                num: "02",
+                title: "Le Cinema",
+                sub: "Production & contraintes",
+                modules: 4,
+                color: "#F59E0B",
+                desc: "Cadrage, son, montage. Les contraintes techniques deviennent un terrain de jeu creatif.",
+              },
+              {
+                num: "03",
+                title: "L\u2019Histoire",
+                sub: "Creation & scenario",
+                modules: 4,
+                color: "#4ECDC4",
+                desc: "Personnages, conflits, denouement. Ecrire a plusieurs, c\u2019est ecrire mieux.",
+              },
+            ].map((phase, i) => (
+              <Reveal
+                key={phase.title}
+                delay={i * 0.08}
+                className="rounded-xl overflow-hidden group hover:translate-y-[-2px] transition-all duration-300"
+                style={{ borderLeft: `3px solid ${phase.color}` }}
+              >
+                <div className="bg-[#111318] p-6 h-full border border-white/[0.06] border-l-0 rounded-r-xl">
+                  <div
+                    className="text-[40px] font-bold leading-none mb-4"
+                    style={{ color: phase.color, opacity: 0.12 }}
+                  >
+                    {phase.num}
+                  </div>
+                  <h3 className="text-lg font-semibold text-bw-heading mb-1">
+                    {phase.title}
+                  </h3>
+                  <p className="text-sm text-[#8b8b8e] mb-3">{phase.sub}</p>
+                  <p className="text-xs text-[#5c5c60] leading-relaxed">
+                    {phase.desc}
+                  </p>
+                  <div className="mt-4 pt-3 border-t border-white/[0.04]">
+                    <span className="text-xs tabular-nums text-[#5c5c60]">
+                      {phase.modules} modules
+                    </span>
+                  </div>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════
-         5. SOCIAL PROOF — "Ils jouent deja"
-         ══════════════════════════════════════════════════════════════ */}
-      <section className="px-6 py-28 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(212,168,67,0.05),transparent_60%)]" />
-
-        <div className="max-w-3xl mx-auto text-center space-y-12 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <span className="inline-block text-[11px] font-semibold tracking-[0.25em] uppercase text-bw-gold mb-4 px-5 py-2 rounded-full border border-bw-gold/20 bg-bw-gold/5">
-              Ils jouent deja
-            </span>
-          </motion.div>
-
-          {/* Animated counter */}
-          <motion.div
-            ref={counterRef}
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="space-y-2"
-          >
-            <div className="bw-display text-6xl sm:text-7xl lg:text-8xl tracking-wider text-gradient-cinema">
-              +{gamesCount}
-            </div>
-            <p className="text-lg text-bw-muted font-medium">parties jouees</p>
-          </motion.div>
-
-          {/* Avatar stack */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="flex items-center justify-center gap-5"
-          >
-            <div className="flex -space-x-3">
-              {AVATAR_COLORS.map((color, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ scale: 0, opacity: 0 }}
-                  whileInView={{ scale: 1, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 + i * 0.06, type: "spring", stiffness: 280, damping: 20 }}
-                  className="w-10 h-10 rounded-full border-2 border-bw-bg flex items-center justify-center text-white text-xs font-bold"
-                  style={{
-                    background: `linear-gradient(135deg, ${color}, ${color}BB)`,
-                    boxShadow: `0 0 14px ${color}35`,
-                  }}
-                >
-                  {["A", "M", "S", "L", "K", "J"][i]}
-                </motion.div>
-              ))}
-              <motion.div
-                initial={{ scale: 0 }}
-                whileInView={{ scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.7, type: "spring", stiffness: 280, damping: 20 }}
-                className="w-10 h-10 rounded-full border-2 border-bw-bg flex items-center justify-center text-xs font-semibold text-bw-muted bg-bw-elevated"
-              >
-                +494
-              </motion.div>
-            </div>
-          </motion.div>
-
-          {/* Testimonial */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.15 }}
-          >
-            <div className="relative glass-card p-8 sm:p-10 mx-auto max-w-lg">
-              {/* Gold accent line top */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[2px] rounded-full bg-gradient-to-r from-transparent via-bw-gold to-transparent" />
-
-              {/* Label */}
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-bw-bg px-4 py-0.5 text-[10px] uppercase tracking-[0.2em] text-bw-gold font-semibold border border-bw-gold/20 rounded-full">
-                Temoignage
-              </div>
-
-              <p className="text-xl sm:text-2xl font-medium leading-relaxed text-bw-heading pt-2">
-                &ldquo;Un vrai outil de{" "}
-                <span className="text-gradient-cinema font-bold">formation artistique</span>{" "}
-                deguise en jeu.&rdquo;
-              </p>
-              <div className="flex items-center justify-center gap-3 mt-6">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-bw-gold to-bw-gold-500 flex items-center justify-center text-white text-xs font-bold">
-                  P
-                </div>
-                <div className="text-left">
-                  <p className="text-sm font-semibold text-bw-heading">Prof. de francais</p>
-                  <p className="text-xs text-bw-muted">College, Paris</p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════
-         6. CINEMA QUOTE
-         ══════════════════════════════════════════════════════════════ */}
-      <section className="px-6 py-20 relative">
-        <div className="max-w-2xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="relative"
-          >
-            <div className="relative glass-card p-8 sm:p-12 overflow-hidden">
-              {/* Gold accent bar left */}
-              <div className="absolute left-0 top-4 bottom-4 w-1 rounded-full bg-gradient-to-b from-bw-gold via-bw-primary to-bw-gold/40" />
-
-              {/* Corner marks */}
-              <div className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-bw-gold/25 rounded-tl-sm" />
-              <div className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-bw-gold/25 rounded-tr-sm" />
-              <div className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-bw-gold/25 rounded-bl-sm" />
-              <div className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-bw-gold/25 rounded-br-sm" />
-
-              {/* Ambient glow */}
-              <div className="absolute inset-0 bg-gradient-to-r from-bw-primary/[0.04] via-bw-gold/[0.03] to-bw-violet/[0.04]" />
-
-              <div className="relative flex items-start gap-4 pl-4">
-                <span className="text-6xl text-bw-gold font-serif leading-none select-none mt-[-0.15em]">&ldquo;</span>
-                <div className="pt-1">
-                  <p className="text-lg sm:text-xl italic text-bw-text leading-relaxed font-light">
-                    Le cinema, c&apos;est l&apos;ecriture moderne dont l&apos;encre est la lumiere.
+      {/* ════════════════════════════════════════════════════════
+         5. SOCIAL PROOF — quote + numbers + trust
+         ════════════════════════════════════════════════════════ */}
+      <section className="px-6 py-16" style={{ background: "#111318" }}>
+        <div className="max-w-[900px] mx-auto">
+          <Reveal>
+            <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-start">
+              {/* Quote */}
+              <div className="flex-1 space-y-6">
+                <div className="cinema-accent">
+                  <p
+                    className="text-bw-heading font-medium leading-snug"
+                    style={{
+                      fontSize: "clamp(20px, 2.5vw, 26px)",
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    &ldquo;Un vrai outil de formation artistique deguise en jeu.
+                    Mes eleves n&apos;ont pas leve la tete pendant 45
+                    minutes.&rdquo;
                   </p>
-                  <div className="flex items-center gap-4 mt-6">
-                    <div className="h-px flex-1 bg-gradient-to-r from-bw-gold/30 to-transparent" />
-                    <p className="text-xs text-bw-gold font-semibold tracking-[0.15em] uppercase">Jean Cocteau</p>
-                    <div className="h-px flex-1 bg-gradient-to-l from-bw-gold/30 to-transparent" />
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-bw-gold to-bw-gold-500 flex items-center justify-center text-sm font-bold text-white">
+                    P
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-bw-heading">
+                      Professeur de francais
+                    </p>
+                    <p className="text-xs text-[#5c5c60]">
+                      College &mdash; Ile-de-France
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
 
-      {/* ══════════════════════════════════════════════════════════════
-         7. BOTTOM CTA — "Pret a Jouer ?"
-         ══════════════════════════════════════════════════════════════ */}
-      <section className="px-6 py-32 relative overflow-hidden">
-        {/* Multi-layer gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-t from-bw-surface via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_70%,rgba(255,107,53,0.1),transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(78,205,196,0.05),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,rgba(139,92,246,0.05),transparent_50%)]" />
-
-        <div className="max-w-lg mx-auto text-center space-y-10 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="space-y-5"
-          >
-            <h2 className="bw-display text-5xl sm:text-6xl lg:text-7xl tracking-wider text-bw-heading">
-              PRET A{" "}
-              <span className="text-gradient-cinema">JOUER</span>
-              {" "}?
-            </h2>
-            <p className="text-base sm:text-lg text-bw-muted max-w-sm mx-auto leading-relaxed">
-              Gratuit. Pas de compte pour les joueurs. Lancez une partie en 30 secondes.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.15 }}
-            className="flex flex-col sm:flex-row gap-4"
-          >
-            <Link
-              href="/join"
-              className="btn-glow flex-1 inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl font-semibold text-white text-base transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_8px_40px_rgba(255,107,53,0.4)] active:scale-[0.98]"
-              style={{
-                background: gradients.cinema,
-                boxShadow: "0 4px 24px rgba(255,107,53,0.3)",
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <polygon points="5 3 19 12 5 21 5 3" />
-              </svg>
-              Rejoindre une partie
-            </Link>
-            <Link
-              href="/free"
-              className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-bw-heading text-base glass-card transition-all duration-300 hover:bg-white/[0.08] hover:border-white/10 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Jouer seul
-            </Link>
-            <Link
-              href="/login"
-              className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-medium text-bw-muted text-base border border-bw-border transition-all duration-300 hover:text-bw-heading hover:border-white/10 hover:bg-white/[0.03] active:scale-[0.98]"
-            >
-              Creer une partie
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════
-         8. FOOTER (rich)
-         ══════════════════════════════════════════════════════════════ */}
-      <footer className="relative border-t border-bw-border bg-bw-surface/50">
-        {/* Ambient glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,107,53,0.03),transparent_50%)]" />
-
-        <div className="max-w-6xl mx-auto px-6 py-16 relative">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
-            {/* Brand column */}
-            <div className="sm:col-span-2 lg:col-span-1 space-y-4">
-              <BrandLogo size="sm" />
-              <p className="text-sm text-bw-muted leading-relaxed max-w-xs">
-                Le jeu collaboratif de creation cinematographique. En classe, en famille, entre amis.
-              </p>
-              {/* Social icons */}
-              <div className="flex items-center gap-3 pt-2">
+              {/* Numbers */}
+              <div className="grid grid-cols-3 md:grid-cols-1 gap-6 md:gap-8 md:pl-8 md:border-l md:border-white/[0.06]">
                 {[
-                  { label: "Twitter", path: "M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" },
-                  { label: "Instagram", path: "M16 4H8a4 4 0 00-4 4v8a4 4 0 004 4h8a4 4 0 004-4V8a4 4 0 00-4-4zM12 15a3 3 0 110-6 3 3 0 010 6zM17.5 7.5a.5.5 0 110-1 .5.5 0 010 1z" },
-                  { label: "YouTube", path: "M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.94 2C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 001.94-2A29 29 0 0023 12a29 29 0 00-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z" },
-                ].map(({ label, path }) => (
-                  <a
-                    key={label}
-                    href="#"
-                    aria-label={label}
-                    className="w-9 h-9 rounded-lg flex items-center justify-center text-bw-muted hover:text-bw-heading hover:bg-white/[0.04] transition-all duration-200"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d={path} />
-                    </svg>
-                  </a>
+                  { value: "13", unit: "modules", desc: "pedagogiques" },
+                  { value: "3", unit: "phases", desc: "progressives" },
+                  { value: "0\u20AC", unit: "", desc: "pour les eleves" },
+                ].map((n) => (
+                  <div key={n.desc}>
+                    <div className="text-2xl font-bold text-bw-heading tabular-nums">
+                      {n.value}{" "}
+                      <span className="text-sm font-normal text-[#5c5c60]">
+                        {n.unit}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-[#5c5c60]">{n.desc}</div>
+                  </div>
                 ))}
               </div>
             </div>
+          </Reveal>
 
-            {/* Produit */}
-            <div className="space-y-4">
-              <h4 className="text-xs font-semibold tracking-[0.15em] uppercase text-bw-heading">Produit</h4>
-              <ul className="space-y-3">
-                {["Rejoindre une partie", "Jouer seul", "Creer une partie", "Comment ca marche"].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="text-sm text-bw-muted hover:text-bw-heading transition-colors duration-200">
-                      {item}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+          {/* Trust badges */}
+          <Reveal delay={0.1}>
+            <div className="mt-12 pt-8 border-t border-white/[0.06] flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+              {[
+                "Concu avec des enseignants",
+                "Teste en college",
+                "Conforme RGPD",
+              ].map((badge) => (
+                <div
+                  key={badge}
+                  className="flex items-center gap-2 text-xs text-[#5c5c60]"
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#4ECDC4"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  {badge}
+                </div>
+              ))}
             </div>
+          </Reveal>
+        </div>
+      </section>
 
-            {/* Ressources */}
-            <div className="space-y-4">
-              <h4 className="text-xs font-semibold tracking-[0.15em] uppercase text-bw-heading">Ressources</h4>
-              <ul className="space-y-3">
-                {["Guide du facilitateur", "Fiches pedagogiques", "FAQ", "Contact"].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="text-sm text-bw-muted hover:text-bw-heading transition-colors duration-200">
-                      {item}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+      {/* ════════════════════════════════════════════════════════
+         6. CTA — warm gradient, distinct from hero
+         ════════════════════════════════════════════════════════ */}
+      <section className="relative px-6 py-24 overflow-hidden">
+        {/* Warm gradient bg */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(160deg, rgba(255,107,53,0.07) 0%, transparent 40%, rgba(212,168,67,0.05) 70%, rgba(139,92,246,0.04) 100%)",
+          }}
+        />
+        <div className="absolute inset-0 grid-pattern opacity-30 pointer-events-none" />
+
+        <div className="relative max-w-[680px] mx-auto text-center">
+          <Reveal>
+            <div className="flex justify-center mb-6 opacity-60">
+              <ClapperboardIllustration size={72} />
             </div>
-
-            {/* Legal */}
-            <div className="space-y-4">
-              <h4 className="text-xs font-semibold tracking-[0.15em] uppercase text-bw-heading">Legal</h4>
-              <ul className="space-y-3">
-                {["Mentions legales", "Politique de confidentialite", "CGU", "Accessibilite"].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="text-sm text-bw-muted hover:text-bw-heading transition-colors duration-200">
-                      {item}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom bar */}
-          <div className="mt-14 pt-6 border-t border-bw-border flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-bw-placeholder">
-              &copy; {new Date().getFullYear()} Banlieuwood. Tous droits reserves.
+            <h2
+              className="text-bw-heading font-semibold"
+              style={{
+                fontSize: "clamp(32px, 5vw, 52px)",
+                lineHeight: 1.08,
+                letterSpacing: "-0.03em",
+              }}
+            >
+              Le prochain film se tourne dans ta classe.
+            </h2>
+            <p className="text-sm text-[#8b8b8e] mt-5 max-w-sm mx-auto leading-relaxed">
+              Gratuit. Pas de compte pour les eleves. Lancez une partie en 30
+              secondes.
             </p>
-            <div className="flex items-center gap-2 text-xs text-bw-placeholder">
-              <span>Fait avec</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="#FF6B35" stroke="none">
-                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-              </svg>
-              <span>pour le cinema</span>
-              <div className="w-1 h-1 rounded-full bg-bw-gold/40 mx-1" />
-              <span className="text-bw-gold/60">v1.0</span>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
+              <Link
+                href="/join"
+                className="h-12 px-6 inline-flex items-center gap-2 text-sm font-semibold rounded-xl bg-bw-primary text-white hover:bg-bw-primary-500 transition-all duration-200 hover:-translate-y-px shadow-bw-glow-primary"
+              >
+                Rejoindre une partie
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+              <Link
+                href="/login"
+                className="h-12 px-6 inline-flex items-center text-sm font-medium rounded-xl text-bw-heading border border-white/[0.08] hover:border-white/[0.14] hover:bg-white/[0.04] transition-all duration-150"
+              >
+                Creer une partie
+              </Link>
             </div>
+            <p className="text-xs text-[#5c5c60] mt-4">
+              <Link
+                href="/free"
+                className="hover:text-bw-heading transition-colors"
+              >
+                Ou jouer seul pour decouvrir &rarr;
+              </Link>
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
+         FOOTER
+         ════════════════════════════════════════════════════════ */}
+      <footer className="border-t border-white/[0.06] px-6 py-16">
+        <div className="max-w-[1080px] mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-10">
+            <div className="col-span-2 sm:col-span-1 space-y-3">
+              <BrandLogo size="sm" />
+              <p className="text-xs text-[#5c5c60] leading-relaxed max-w-[200px]">
+                Le jeu collaboratif de creation cinematographique.
+              </p>
+            </div>
+            {[
+              {
+                title: "Produit",
+                links: [
+                  { l: "Rejoindre", h: "/join" },
+                  { l: "Jouer seul", h: "/free" },
+                  { l: "Creer une partie", h: "/login" },
+                  { l: "Dashboard", h: "/dashboard" },
+                ],
+              },
+              {
+                title: "Ressources",
+                links: [
+                  { l: "Fiche cours", h: "/fiche-cours" },
+                  { l: "A propos", h: "/about" },
+                  { l: "Contact", h: "/contact" },
+                ],
+              },
+              {
+                title: "Legal",
+                links: [
+                  { l: "CGU", h: "/legal/cgu" },
+                  { l: "Confidentialite", h: "/legal/privacy" },
+                  { l: "Accessibilite", h: "/legal/accessibility" },
+                ],
+              },
+            ].map((col) => (
+              <div key={col.title}>
+                <p className="text-xs font-medium text-[#5c5c60] uppercase tracking-wider mb-4">
+                  {col.title}
+                </p>
+                <ul className="space-y-2">
+                  {col.links.map((link) => (
+                    <li key={link.l}>
+                      <Link
+                        href={link.h}
+                        className="text-sm text-[#8b8b8e] hover:text-bw-heading transition-colors duration-150"
+                      >
+                        {link.l}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div className="mt-16 pt-6 border-t border-white/[0.06] flex items-center justify-between">
+            <p className="text-xs text-[#5c5c60]">&copy; 2026 Banlieuwood</p>
+            <p className="text-xs text-[#5c5c60]">Fait a Paris</p>
           </div>
         </div>
       </footer>

@@ -11,6 +11,14 @@ import { TicketIllustration } from "@/components/cinema-illustrations";
 
 const AVATARS = ["🎬", "🎭", "🎥", "🎤", "🎨", "🎵", "🌟", "💫", "🔥", "⚡", "🎯", "🚀"];
 
+const RANDOM_NAMES = [
+  "RealisateurFou", "StarDuCinema", "ClapDeDebut", "ScenaristeNinja",
+  "CameraAction", "LumiereTamisee", "DoublureCascade", "FigurantStar",
+  "MonteurAgile", "ProducteurZen", "CastingDivin", "EffetSpecial",
+  "PlanSequence", "ChampContreChamp", "FondVert", "GrosPlanned",
+  "TravellingBoss", "ZoomArriere", "VoixOff", "GeneriQueFin",
+];
+
 function JoinForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -20,6 +28,7 @@ function JoinForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const nameRef = useRef<HTMLInputElement>(null);
 
   // Pre-fill code from ?code= query param (QR code flow)
   useEffect(() => {
@@ -45,9 +54,12 @@ function JoinForm() {
     setCode(newCode);
     setError(false);
 
-    // Auto-advance to next input
+    // Auto-advance to next input or focus name when complete
     if (char && index < 5) {
       inputRefs.current[index + 1]?.focus();
+    } else if (char && index === 5) {
+      // All 6 chars filled — auto-focus name input
+      setTimeout(() => nameRef.current?.focus(), 50);
     }
   }
 
@@ -66,8 +78,13 @@ function JoinForm() {
       newCode[i] = pasted[i];
     }
     setCode(newCode);
-    const nextFocus = Math.min(pasted.length, 5);
-    inputRefs.current[nextFocus]?.focus();
+    if (pasted.length >= 6) {
+      // Code complete — focus name
+      setTimeout(() => nameRef.current?.focus(), 50);
+    } else {
+      const nextFocus = Math.min(pasted.length, 5);
+      inputRefs.current[nextFocus]?.focus();
+    }
   }
 
   async function handleJoin() {
@@ -185,6 +202,8 @@ function JoinForm() {
                   ref={(el) => { inputRefs.current[i] = el; }}
                   type="text"
                   inputMode="text"
+                  autoCapitalize="characters"
+                  autoComplete="off"
                   maxLength={1}
                   value={char}
                   onChange={(e) => handleCodeChange(i, e.target.value)}
@@ -217,6 +236,7 @@ function JoinForm() {
               Ton prenom
             </label>
             <Input
+              ref={nameRef}
               type="text"
               placeholder="Entre ton prenom..."
               value={name}
@@ -224,6 +244,16 @@ function JoinForm() {
               maxLength={20}
               className="h-12 text-center rounded-xl bg-bw-elevated/50 border-white/[0.08] text-bw-ink placeholder:text-bw-placeholder focus:border-bw-teal/50 focus:ring-2 focus:ring-bw-teal/20 transition-all"
             />
+            <button
+              type="button"
+              onClick={() => setName(RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)])}
+              className="w-full text-xs text-bw-teal/70 hover:text-bw-teal transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+              </svg>
+              Pseudo aleatoire
+            </button>
           </div>
 
           {/* Avatar picker */}

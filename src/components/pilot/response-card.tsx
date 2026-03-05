@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useTransform, type PanInfo } from "motion/react";
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { InlineActions, TeacherCommentBadge } from "./response-actions";
 
 export interface ResponseCardResponse {
@@ -54,7 +54,9 @@ function relativeTime(iso: string): string {
   return `il y a ${mins}min`;
 }
 
-export function ResponseCard({
+// NOTE: Parent components should wrap callback props (onSelect, onHide, onComment, onHighlight,
+// onNudge, onWarn, onScore, onReset, onValidate) with useCallback to maximize memo effectiveness.
+function ResponseCardInner({
   response,
   state,
   sessionStatus,
@@ -108,7 +110,8 @@ export function ResponseCard({
   const hasInteractions = !!(onComment && onHighlight && onNudge && onWarn && onScore);
 
   return (
-    <motion.div
+    <motion.article
+      aria-label={`Réponse de ${response.students?.display_name || "élève"}`}
       layout
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -129,7 +132,7 @@ export function ResponseCard({
       className={`glass-surface rounded-xl p-3 transition-colors ${
         state === "winner" ? "shadow-[0_0_16px_rgba(78,205,196,0.2)]" : ""
       } ${response.is_highlighted ? "shadow-[0_0_12px_rgba(255,107,53,0.15)]" : ""}
-      ${swiped === "left" ? "border-red-500/40" : swiped === "right" ? "border-bw-primary/40" : ""}
+      ${swiped === "left" ? "border-bw-danger/40" : swiped === "right" ? "border-bw-primary/40" : ""}
       ${response.reset_at ? "opacity-50" : ""}`}
     >
       {/* Header: avatar + name + time + status buttons */}
@@ -142,7 +145,7 @@ export function ResponseCard({
             </span>
             <span className="text-[10px] text-bw-muted">{relativeTime(response.submitted_at)}</span>
             {response.reset_at && (
-              <span className="text-[9px] px-1.5 py-px rounded-full bg-amber-400/15 text-amber-400 border border-amber-400/20">relancé</span>
+              <span className="text-[9px] px-1.5 py-px rounded-full bg-bw-amber/15 text-bw-amber border border-bw-amber/20">relancé</span>
             )}
           </div>
           <p className={`text-sm leading-relaxed ${state === "hidden" ? "line-through text-bw-muted" : response.reset_at ? "line-through text-bw-muted" : "text-bw-text"}`}>
@@ -176,7 +179,9 @@ export function ResponseCard({
             <button
               onClick={onSelect}
               disabled={isPending}
-              className={`px-2.5 py-1.5 text-xs rounded-xl cursor-pointer transition-all duration-200 font-medium ${
+              aria-label={state === "selected" ? "Retirer du vote" : "Sélectionner pour le vote"}
+              aria-pressed={state === "selected"}
+              className={`px-2.5 py-1.5 text-xs rounded-xl cursor-pointer transition-all duration-200 font-medium focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
                 state === "selected"
                   ? "bg-bw-primary/20 text-bw-primary border border-bw-primary/30 shadow-[0_0_8px_rgba(255,107,53,0.15)]"
                   : "hover:bg-bw-primary/10 hover:text-bw-primary text-bw-muted border border-transparent"
@@ -189,7 +194,8 @@ export function ResponseCard({
             <button
               onClick={onHide}
               disabled={isPending}
-              className="px-2 py-1.5 text-xs rounded-xl hover:bg-white/5 cursor-pointer transition-colors duration-200 text-bw-muted"
+              aria-label={state === "hidden" ? "Montrer la réponse" : "Masquer la réponse"}
+              className="px-2 py-1.5 text-xs rounded-xl hover:bg-white/5 cursor-pointer transition-colors duration-200 text-bw-muted focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
             >
               {state === "hidden" ? "Montrer" : "Masquer"}
             </button>
@@ -198,7 +204,8 @@ export function ResponseCard({
             <button
               onClick={() => onReset(response.id)}
               disabled={isResetPending}
-              className="px-2 py-1.5 text-xs rounded-xl hover:bg-amber-400/10 cursor-pointer transition-colors duration-200 text-amber-400/70 hover:text-amber-400"
+              aria-label="Relancer la question pour cet élève"
+              className="px-2 py-1.5 text-xs rounded-xl hover:bg-bw-amber/10 cursor-pointer transition-colors duration-200 text-bw-amber/70 hover:text-bw-amber focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
               title="Relancer la question pour cet élève"
             >
               🔄
@@ -207,7 +214,8 @@ export function ResponseCard({
           {sessionStatus === "reviewing" && !response.is_hidden && onValidate && (
             <button
               onClick={onValidate}
-              className="btn-glow px-3 py-1.5 text-xs bg-bw-primary/10 text-bw-primary rounded-xl hover:bg-bw-primary/20 cursor-pointer transition-colors duration-200"
+              aria-label="Valider cette réponse"
+              className="btn-glow px-3 py-1.5 text-xs bg-bw-primary/10 text-bw-primary rounded-xl hover:bg-bw-primary/20 cursor-pointer transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
             >
               Valider
             </button>
@@ -245,6 +253,8 @@ export function ResponseCard({
           teacherScore={response.teacher_score || 0}
         />
       )}
-    </motion.div>
+    </motion.article>
   );
 }
+
+export const ResponseCard = memo(ResponseCardInner);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
+import { safeJson } from "@/lib/api-utils";
 import { customAlphabet } from "nanoid";
 
 const nanoid = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
@@ -12,7 +13,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: rl.error }, { status: 429 });
   }
 
-  const { displayName, avatar, level } = await req.json();
+  const parsed = await safeJson<{ displayName: string; avatar: string; level: string }>(req);
+  if ("error" in parsed) return parsed.error;
+  const { displayName, avatar, level } = parsed.data;
 
   if (!displayName?.trim() || !avatar || !level) {
     return NextResponse.json(

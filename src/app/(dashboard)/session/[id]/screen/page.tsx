@@ -45,7 +45,7 @@ import type { HighlightedResponse } from "@/components/screen/highlighted-panel"
 export default function ScreenPage() {
   const { id: sessionId } = useParams<{ id: string }>();
   useRealtimeInvalidation(sessionId);
-  const { data } = useSessionPolling(sessionId, null, { skipStudentCheck: true });
+  const { data, error } = useSessionPolling(sessionId, null, { skipStudentCheck: true });
 
   // Vote results for projection
   const { data: voteData } = useQuery<{ totalVotes: number; results: VoteResult[] }>({
@@ -56,7 +56,7 @@ export default function ScreenPage() {
       if (!res.ok) return { totalVotes: 0, results: [] };
       return res.json();
     },
-    refetchInterval: 30_000,
+    refetchInterval: 5_000,
     enabled: !!data?.situation?.id && (data?.session?.status === "voting" || data?.session?.status === "reviewing"),
   });
 
@@ -71,7 +71,7 @@ export default function ScreenPage() {
       const all: HighlightedResponse[] = await res.json();
       return all.filter((r) => r.is_highlighted);
     },
-    refetchInterval: 30_000,
+    refetchInterval: 5_000,
     enabled: !!data?.session && data.session.status !== "done" && !!currentSituationId,
   });
 
@@ -111,7 +111,7 @@ export default function ScreenPage() {
     if (data.session.broadcastAt === lastBroadcastAt.current) return;
     lastBroadcastAt.current = data.session.broadcastAt;
     setBroadcastMsg(data.session.broadcastMessage);
-    const t = setTimeout(() => setBroadcastMsg(null), 15000);
+    const t = setTimeout(() => setBroadcastMsg(null), 12000);
     return () => clearTimeout(t);
   }, [data?.session?.broadcastMessage, data?.session?.broadcastAt]);
 
@@ -138,7 +138,7 @@ export default function ScreenPage() {
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: 30_000,
+    refetchInterval: 10_000,
     enabled: !!data?.session && data.session.status !== "done",
   });
 
@@ -188,6 +188,17 @@ export default function ScreenPage() {
     }
     prevChoiceId.current = data.collectiveChoice.id;
   }, [data?.collectiveChoice?.id]);
+
+  if (error) {
+    return (
+      <div className="min-h-dvh flex flex-col items-center justify-center bg-bw-bg gap-4">
+        <p className="text-bw-muted text-lg">Session introuvable ou expirée</p>
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-bw-primary text-white rounded-lg hover:opacity-90 transition">
+          Réessayer
+        </button>
+      </div>
+    );
+  }
 
   if (!data) {
     return (
@@ -284,13 +295,13 @@ export default function ScreenPage() {
       <QuestionTransitionCelebration showTransition={showTransition} completedQuestion={completedQuestion} moduleColor={moduleColor} />
 
       {/* Main */}
-      <main className="flex-1 flex items-center justify-center px-4 sm:px-8 lg:px-12 relative z-10">
+      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 relative z-10">
         <AnimatePresence mode="wait">
 
           {/* ═══ INITIAL JOIN — no module selected yet ═══ */}
           {session.status === "waiting" && noModuleSelected && (
             <motion.div key="waiting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="text-center space-y-8 max-w-2xl">
+              className="text-center space-y-5 max-w-2xl">
               {/* Animated clapperboard */}
               <motion.div
                 animate={{ scale: [1, 1.05, 1], rotate: [0, 2, -2, 0] }}
@@ -412,7 +423,7 @@ export default function ScreenPage() {
               {(data.module1.type === "positioning" || data.module1.type === "notebook") && (
                 <motion.div key="m1-other-waiting" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -30 }}
-                  className="max-w-3xl w-full text-center space-y-8">
+                  className="max-w-3xl w-full text-center space-y-5">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-bw-violet to-bw-violet/60 mx-auto flex items-center justify-center">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
                       {data.module1.type === "positioning"
@@ -434,7 +445,7 @@ export default function ScreenPage() {
           {session.status === "waiting" && isScreenQA && (
             <motion.div key="m34-waiting" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-4xl w-full text-center space-y-8">
+              className="max-w-4xl w-full text-center space-y-5">
               <span
                 className="text-lg font-semibold uppercase tracking-wider px-5 py-2 rounded-full inline-block"
                 style={{ backgroundColor: `${categoryColor}20`, color: categoryColor }}
@@ -458,7 +469,7 @@ export default function ScreenPage() {
           {session.status === "waiting" && session.currentModule === 9 && currentSeance === 2 && (
             <motion.div key="m2-waiting" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full text-center space-y-8">
+              className="max-w-3xl w-full text-center space-y-5">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-bw-amber to-bw-amber/60 mx-auto flex items-center justify-center">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
                   <circle cx="12" cy="12" r="10" />
@@ -474,7 +485,7 @@ export default function ScreenPage() {
           {session.status === "responding" && session.currentModule === 1 && data.module1?.type === "positioning" && data.module1.questions && (
             <motion.div key="m1-pos-responding" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full space-y-8">
+              className="max-w-3xl w-full space-y-5">
               <div className="text-center space-y-3">
                 <span className="text-lg font-semibold uppercase tracking-wider px-5 py-2 rounded-full inline-block bg-bw-violet/20 text-bw-violet">
                   Question {(session.currentSituationIndex || 0) + 1}/8
@@ -577,7 +588,7 @@ export default function ScreenPage() {
           {session.status === "responding" && session.currentModule === 1 && data.module1?.type === "notebook" && (
             <motion.div key="m1-notebook-responding" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full text-center space-y-8">
+              className="max-w-3xl w-full text-center space-y-5">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-bw-violet to-bw-violet/60 mx-auto flex items-center justify-center">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
                   <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
@@ -597,7 +608,7 @@ export default function ScreenPage() {
           {/* REVIEWING (Module 1 — Confrontation) — split A/B view */}
           {session.status === "reviewing" && session.currentModule === 1 && data.module1?.type === "image" && data.module1.confrontation && (
             <motion.div key="m1-confrontation" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="max-w-5xl w-full space-y-8">
+              className="max-w-5xl w-full space-y-5">
               <div className="text-center">
                 <span className="text-lg font-semibold uppercase tracking-[0.3em] px-6 py-2 rounded-full inline-block bg-bw-violet/20 text-bw-violet">
                   Confrontation
@@ -639,7 +650,7 @@ export default function ScreenPage() {
           {session.status === "responding" && (session.currentModule === 3 || session.currentModule === 4 || (session.currentModule === 9 && currentSeance !== 2) || (session.currentModule === 2 && !isM2ECSpecial && !isM2ECComparison) || isM10QA) && situation && (
             <motion.div key="responding" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-4xl w-full text-center space-y-8">
+              className="max-w-4xl w-full text-center space-y-5">
               <span
                 className="text-lg font-semibold uppercase tracking-wider px-5 py-2 rounded-full inline-block"
                 style={{ backgroundColor: `${categoryColor}20`, color: categoryColor }}
@@ -688,7 +699,7 @@ export default function ScreenPage() {
           {session.status === "responding" && session.currentModule === 9 && currentSeance === 2 && (
             <motion.div key="budget" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full space-y-8">
+              className="max-w-3xl w-full space-y-5">
               <div className="text-center space-y-2">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-bw-amber to-bw-amber/60 mx-auto flex items-center justify-center">
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
@@ -747,7 +758,7 @@ export default function ScreenPage() {
           {session.status === "waiting" && session.currentModule === 2 && currentSeance === 1 && session.currentSituationIndex === 0 && (
             <motion.div key="m2ec-checklist-wait" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full text-center space-y-8">
+              className="max-w-3xl w-full text-center space-y-5">
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ repeat: Infinity, duration: 3 }}
@@ -767,7 +778,7 @@ export default function ScreenPage() {
           {session.status === "responding" && session.currentModule === 2 && currentSeance === 1 && session.currentSituationIndex === 0 && (
             <motion.div key="m2ec-checklist" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full text-center space-y-8">
+              className="max-w-3xl w-full text-center space-y-5">
               {/* Animated progress ring */}
               <div className="relative w-28 h-28 mx-auto">
                 <svg className="w-28 h-28 -rotate-90" viewBox="0 0 112 112">
@@ -812,7 +823,7 @@ export default function ScreenPage() {
           {session.status === "waiting" && session.currentModule === 2 && currentSeance === 2 && session.currentSituationIndex === 1 && (
             <motion.div key="m2ec-scene-wait" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full text-center space-y-8">
+              className="max-w-3xl w-full text-center space-y-5">
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ repeat: Infinity, duration: 3 }}
@@ -833,7 +844,7 @@ export default function ScreenPage() {
           {session.status === "responding" && session.currentModule === 2 && currentSeance === 2 && session.currentSituationIndex === 1 && (
             <motion.div key="m2ec-scene" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full text-center space-y-8">
+              className="max-w-3xl w-full text-center space-y-5">
               {/* Animated progress ring */}
               <div className="relative w-28 h-28 mx-auto">
                 <svg className="w-28 h-28 -rotate-90" viewBox="0 0 112 112">
@@ -892,7 +903,7 @@ export default function ScreenPage() {
           {session.currentModule === 2 && currentSeance === 3 && (session.status === "waiting" || session.status === "responding" || session.status === "reviewing") && !data.module5?.comparison && (
             <motion.div key="m2ec-compare-wait" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full text-center space-y-8">
+              className="max-w-3xl w-full text-center space-y-5">
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ repeat: Infinity, duration: 3 }}
@@ -1119,7 +1130,7 @@ export default function ScreenPage() {
           {isM10 && module10?.type === "idea-bank" && (
             <motion.div key="m10-ideabank" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-4xl w-full space-y-8">
+              className="max-w-4xl w-full space-y-5">
               <div className="text-center space-y-3">
                 <motion.div
                   animate={{ scale: [1, 1.05, 1] }}
@@ -1167,24 +1178,24 @@ export default function ScreenPage() {
           {(session.status === "waiting" || session.status === "responding") && isM10 && module10?.type === "avatar" && (
             <motion.div key="m10-avatar" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-4xl w-full text-center space-y-8">
-              <h2 className="text-3xl font-bold">Créez votre personnage</h2>
-              <p className="text-xl text-bw-muted">Prénom, âge, trait dominant, avatar — c&apos;est votre héros !</p>
+              className="max-w-5xl w-full text-center space-y-4">
+              <h2 className="text-2xl font-bold">Créez votre personnage</h2>
+              <p className="text-base text-bw-muted">Prénom, âge, trait dominant, avatar — c&apos;est votre héros !</p>
 
-              {/* Avatar gallery — show created characters as mini cards */}
+              {/* Avatar gallery — compact tiles */}
               {module10.allSubmissions && module10.allSubmissions.length > 0 ? (
                 <PosterGallery submissions={module10.allSubmissions} />
               ) : (
                 <motion.div
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ repeat: Infinity, duration: 3 }}
-                  className="w-24 h-24 rounded-full mx-auto flex items-center justify-center"
+                  className="w-20 h-20 rounded-full mx-auto flex items-center justify-center"
                   style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.2), rgba(139,92,246,0.1))", border: "1px solid rgba(6,182,212,0.3)" }}>
-                  <span className="text-4xl">🎭</span>
+                  <span className="text-3xl">🎭</span>
                 </motion.div>
               )}
 
-              <span className="text-lg text-bw-muted">
+              <span className="text-sm text-bw-muted">
                 {module10.submittedCount || 0}/{connectedCount} personnage{(module10.submittedCount || 0) > 1 ? "s" : ""} créé{(module10.submittedCount || 0) > 1 ? "s" : ""}
               </span>
             </motion.div>
@@ -1194,7 +1205,7 @@ export default function ScreenPage() {
           {(session.status === "waiting" || session.status === "responding") && isM10 && module10?.type === "objectif" && (
             <motion.div key="m10-objectif" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full text-center space-y-8">
+              className="max-w-3xl w-full text-center space-y-5">
               <div className="flex items-center justify-center gap-6">
                 <motion.div
                   initial={{ x: -40, opacity: 0 }} animate={{ x: 0, opacity: 1 }}
@@ -1231,7 +1242,7 @@ export default function ScreenPage() {
           {(session.status === "waiting" || session.status === "responding") && isM10 && module10?.type === "pitch" && (
             <motion.div key="m10-pitch" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full text-center space-y-8">
+              className="max-w-3xl w-full text-center space-y-5">
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ repeat: Infinity, duration: 3 }}
@@ -1268,7 +1279,7 @@ export default function ScreenPage() {
           {(session.status === "waiting" || session.status === "responding") && isM10 && module10?.type === "chrono" && (
             <motion.div key="m10-chrono" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="max-w-3xl w-full text-center space-y-8">
+              className="max-w-3xl w-full text-center space-y-5">
               <motion.div
                 animate={{ scale: [1, 1.08, 1] }}
                 transition={{ repeat: Infinity, duration: 1.5 }}
@@ -1354,7 +1365,7 @@ export default function ScreenPage() {
           {isM10 && module10?.type === "confrontation" && !module10.confrontation && (
             <motion.div key="m10-confront-wait" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full text-center space-y-8">
+              className="max-w-3xl w-full text-center space-y-5">
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ repeat: Infinity, duration: 3 }}
@@ -1527,7 +1538,7 @@ export default function ScreenPage() {
           {session.status === "reviewing" && session.currentModule === 1 && data.module1?.type === "positioning" && data.module1.questions && (
             <motion.div key="m1-pos-reviewing" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full space-y-8">
+              className="max-w-3xl w-full space-y-5">
               <div className="text-center space-y-3">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-bw-violet to-bw-violet/60 mx-auto flex items-center justify-center">
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
@@ -1596,7 +1607,7 @@ export default function ScreenPage() {
           {session.status === "reviewing" && session.currentModule === 1 && data.module1?.type === "notebook" && (
             <motion.div key="m1-notebook-reviewing" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="max-w-3xl w-full text-center space-y-8">
+              className="max-w-3xl w-full text-center space-y-5">
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -1644,8 +1655,8 @@ export default function ScreenPage() {
                   <p className="text-lg text-bw-muted">{voteData.totalVotes} vote{voteData.totalVotes > 1 ? "s" : ""}</p>
                 )}
               </div>
-              {/* Podium — top 3 */}
-              {voteData && voteData.results.length >= 2 && (
+              {/* Podium — top 3 (only show with 3+ results, otherwise list is enough) */}
+              {voteData && voteData.results.length >= 3 && (
                 <div className="flex items-end justify-center gap-3 pt-4">
                   {[1, 0, 2].map((rank) => {
                     const vr = voteData.results[rank];
@@ -1721,7 +1732,7 @@ export default function ScreenPage() {
           {/* REVIEWING — collective choice celebration */}
           {session.status === "reviewing" && collectiveChoice && (
             <motion.div key={`result-${collectiveChoice.id}`}
-              className="max-w-3xl w-full text-center space-y-8 relative">
+              className="max-w-3xl w-full text-center space-y-5 relative">
               {/* Phase 1: Black fade overlay (0→0.5s) */}
               <motion.div
                 initial={{ opacity: 1 }}
@@ -1855,7 +1866,7 @@ export default function ScreenPage() {
           {/* DONE — Cinema celebration */}
           {session.status === "done" && (
             <motion.div key="done" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="text-center space-y-8 max-w-3xl w-full">
+              className="text-center space-y-5 max-w-3xl w-full">
 
               {/* Phase 1: Clap */}
               {donePhase === "clap" && (
@@ -1919,7 +1930,7 @@ export default function ScreenPage() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="space-y-8"
+                  className="space-y-5"
                 >
                   <p className="text-sm uppercase tracking-[0.5em] text-bw-muted font-medium">Les choix de la classe</p>
                   <div className="max-h-[50vh] overflow-y-auto space-y-3 px-4 scrollbar-thin">
@@ -1980,7 +1991,7 @@ export default function ScreenPage() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 20, opacity: 0 }}
-            className="relative z-20 px-8 py-3 flex items-center gap-4"
+            className="relative z-20 px-6 py-2 flex items-center gap-3"
             style={{ background: "rgba(255,255,255,0.03)", borderTop: "1px solid rgba(255,255,255,0.06)" }}
           >
             <span className="text-sm text-white font-medium tabular-nums">
@@ -1999,7 +2010,7 @@ export default function ScreenPage() {
       </AnimatePresence>
 
       {/* Footer */}
-      <footer className="px-8 py-3 flex justify-between items-center text-bw-muted flex-shrink-0 relative z-10 backdrop-blur-sm" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <footer className="px-6 py-2 flex justify-between items-center text-bw-muted flex-shrink-0 relative z-10 backdrop-blur-sm" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <span className="text-xs text-bw-muted/60">
           {session.joinCode && `Code : ${session.joinCode}`}
         </span>

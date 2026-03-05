@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
+import { safeJson } from "@/lib/api-utils";
 import { isValidHelpType, isValidHelpStep, MAX_HELP_PER_STEP } from "@/lib/module10-data";
 
 const HELP_SYSTEM_PROMPT = `Tu es un mentor cinéma bienveillant pour adolescents (10-18 ans).
@@ -47,7 +48,9 @@ export async function POST(
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
 
   const { id: sessionId } = await params;
-  const { studentId, step, helpType, context } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { studentId, step, helpType, context } = parsed.data;
 
   if (!studentId || !step || !helpType) {
     return NextResponse.json(

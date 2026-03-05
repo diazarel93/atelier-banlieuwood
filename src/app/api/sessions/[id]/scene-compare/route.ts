@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, safeJson } from "@/lib/api-utils";
 import { getElement } from "@/lib/module5-data";
 
 // POST — facilitator selects 2 scenes for comparison (Module 2 séance 3)
@@ -9,7 +9,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
-  const { sceneAId, sceneBId } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { sceneAId, sceneBId } = parsed.data;
 
   if (!sceneAId || !sceneBId) {
     return NextResponse.json(

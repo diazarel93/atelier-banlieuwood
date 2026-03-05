@@ -80,7 +80,7 @@ const StudentPulseItem = memo(function StudentPulseItem({
       {onRemove && (
         <button
           onClick={handleRemove}
-          className="opacity-0 group-hover:opacity-100 text-bw-muted hover:text-red-400 text-xs cursor-pointer transition-opacity"
+          className="opacity-0 group-hover:opacity-100 text-bw-muted hover:text-bw-danger text-xs cursor-pointer transition-opacity"
         >
           ✕
         </button>

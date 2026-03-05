@@ -23,14 +23,11 @@ interface PilotTopBarProps {
   timerEndsAt: string | null;
   isPaused: boolean;
   isDone: boolean;
-  rightPanelOpen: boolean;
   moduleView: "briefing" | "cockpit";
-  sidebarCollapsed: boolean;
   onToggleSidebar: () => void;
   onCopyCode: () => void;
   onToggleQR: () => void;
   onOpenScreen: () => void;
-  onToggleRightPanel: () => void;
   onTogglePause: () => void;
   onClearTimer: () => void;
   onToggleStudents: () => void;
@@ -41,6 +38,8 @@ interface PilotTopBarProps {
   onShortcuts?: () => void;
   muteSounds?: boolean;
   onToggleMute?: () => void;
+  onTimerExpired?: () => void;
+  onOpenMobileContext?: () => void;
 }
 
 export function PilotTopBar({
@@ -54,14 +53,11 @@ export function PilotTopBar({
   timerEndsAt,
   isPaused,
   isDone,
-  rightPanelOpen,
   moduleView,
-  sidebarCollapsed,
   onToggleSidebar,
   onCopyCode,
   onToggleQR,
   onOpenScreen,
-  onToggleRightPanel,
   onTogglePause,
   onClearTimer,
   onToggleStudents,
@@ -72,6 +68,8 @@ export function PilotTopBar({
   onShortcuts,
   muteSounds,
   onToggleMute,
+  onTimerExpired,
+  onOpenMobileContext,
 }: PilotTopBarProps) {
   const hasTimer = timerEndsAt && new Date(timerEndsAt).getTime() > Date.now();
 
@@ -83,7 +81,7 @@ export function PilotTopBar({
           {/* Mobile sidebar toggle */}
           <button
             onClick={onToggleSidebar}
-            className="lg:hidden text-bw-muted hover:text-white cursor-pointer transition-colors p-1"
+            className="sm:hidden text-bw-muted hover:text-white cursor-pointer transition-colors p-1"
             title="Menu modules"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -91,11 +89,11 @@ export function PilotTopBar({
             </svg>
           </button>
 
-          <Link href="/" className="text-xs font-bold tracking-[0.12em] uppercase hidden sm:inline-flex flex-shrink-0 hover:opacity-80 transition-opacity">
+          <Link href="/" className="text-xs font-bold tracking-[0.12em] uppercase hidden lg:inline-flex flex-shrink-0 hover:opacity-80 transition-opacity">
             <BrandLogo />
           </Link>
-          <div className="w-px h-4 bg-white/10 hidden sm:block flex-shrink-0" />
-          <span className="text-xs text-bw-muted truncate max-w-[160px]">{sessionTitle}</span>
+          <div className="w-px h-4 bg-white/10 hidden lg:block flex-shrink-0" />
+          <span className="text-xs text-bw-muted truncate max-w-[160px] hidden md:inline">{sessionTitle}</span>
         </div>
 
         {/* Center: active module info */}
@@ -103,13 +101,13 @@ export function PilotTopBar({
           <div className="flex items-center gap-2 ml-2">
             <div className="w-px h-4 bg-white/10 flex-shrink-0" />
             <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: moduleColor }} />
-            <span className="text-sm font-semibold whitespace-nowrap text-gradient-cinema">{activeModuleLabel}</span>
+            <span className="text-sm font-semibold truncate max-w-[120px] md:max-w-[180px] text-gradient-cinema">{activeModuleLabel}</span>
             {questionCounter && (
               <span className="text-sm text-bw-muted">{questionCounter}</span>
             )}
             {/* Mini dots progress */}
             {totalQuestions != null && totalQuestions > 0 && currentQuestionIndex != null && (
-              <div className="hidden sm:flex items-center gap-[3px] ml-1">
+              <div className="hidden lg:flex items-center gap-[3px] ml-1">
                 {Array.from({ length: totalQuestions }, (_, i) => {
                   const isPast = i < currentQuestionIndex;
                   const isCurrent = i === currentQuestionIndex;
@@ -145,7 +143,7 @@ export function PilotTopBar({
           {/* Timer badge */}
           {hasTimer && (
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-xl bg-bw-primary/10 border border-bw-primary/20">
-              <CountdownTimer endsAt={timerEndsAt!} size="sm" />
+              <CountdownTimer endsAt={timerEndsAt!} size="sm" onExpired={onTimerExpired} />
               <button onClick={onClearTimer}
                 className="text-[10px] text-bw-primary hover:text-white cursor-pointer ml-0.5">✕</button>
             </div>
@@ -163,21 +161,21 @@ export function PilotTopBar({
 
           {/* Join code */}
           <button onClick={onCopyCode}
-            className="hidden sm:flex items-center gap-1.5 bg-bw-elevated px-2 py-1.5 rounded-xl border border-white/[0.06] hover:border-white/15 cursor-pointer transition-colors duration-200">
+            className="hidden md:flex items-center gap-1.5 bg-bw-elevated px-2 py-1.5 rounded-xl border border-white/[0.06] hover:border-white/15 cursor-pointer transition-colors duration-200">
             <span className="font-mono font-bold text-[11px] tracking-wider">{joinCode}</span>
             <span className="text-[10px] text-bw-muted">{codeCopied ? "✓" : "Copier"}</span>
           </button>
 
           {/* QR */}
           <button onClick={onToggleQR}
-            className="hidden sm:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">
+            className="hidden md:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">
             QR
           </button>
 
           {/* Mute toggle */}
           {onToggleMute && (
             <button onClick={onToggleMute}
-              className={`px-2 py-1.5 rounded-xl border text-[11px] cursor-pointer transition-colors duration-200 ${
+              className={`hidden md:inline-flex px-2 py-1.5 rounded-xl border text-[11px] cursor-pointer transition-colors duration-200 ${
                 muteSounds ? "bg-bw-amber/10 border-bw-amber/30 text-bw-amber" : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:text-white"
               }`}
               title={muteSounds ? "Réactiver les sons élèves" : "Couper les sons élèves"}>
@@ -188,32 +186,32 @@ export function PilotTopBar({
           {/* Broadcast */}
           {onBroadcast && activeModuleLabel && (
             <button onClick={onBroadcast}
-              className="px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/10 text-[11px] cursor-pointer text-bw-muted hover:text-bw-primary transition-colors duration-200"
+              className="hidden md:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/10 text-[11px] cursor-pointer text-bw-muted hover:text-bw-primary transition-colors duration-200"
               title="Message à toute la classe (B)">
               📢
             </button>
           )}
 
+          {/* Mobile context panel */}
+          {onOpenMobileContext && moduleView === "cockpit" && activeModuleLabel && (
+            <button onClick={onOpenMobileContext}
+              className="lg:hidden px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-[11px] cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
+              title="Panneau contexte">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+                <rect x="9" y="3" width="6" height="4" rx="1" />
+              </svg>
+            </button>
+          )}
+
           {/* Projection */}
           <button onClick={onOpenScreen}
-            className="px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-[11px] cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
+            className="hidden md:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-[11px] cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
             title="Ouvrir l'écran de projection">
             Écran ↗
           </button>
 
-          {/* Right panel toggle — desktop only, cockpit view only */}
-          {moduleView === "cockpit" && activeModuleLabel && (
-            <button onClick={onToggleRightPanel}
-              className={`hidden lg:inline-flex px-2 py-1.5 rounded-xl border text-[11px] cursor-pointer transition-colors duration-200 ${
-                rightPanelOpen ? "bg-bw-primary/10 border-bw-primary/30 text-bw-primary" : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:text-white"
-              }`}
-              title={rightPanelOpen ? "Masquer le panneau" : "Afficher le panneau"}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <path d="M15 3v18" />
-              </svg>
-            </button>
-          )}
+          {/* Right panel toggle removed — context docks are always floating */}
 
           {/* Pause/Resume */}
           {activeModuleLabel && !isDone && (
@@ -228,7 +226,7 @@ export function PilotTopBar({
           {/* Shortcuts */}
           {onShortcuts && (
             <button onClick={onShortcuts}
-              className="hidden sm:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-[10px] cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
+              className="hidden lg:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-[10px] cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
               title="Raccourcis clavier (?)">
               ⌨️
             </button>

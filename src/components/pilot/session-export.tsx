@@ -87,6 +87,89 @@ function downloadMarkdown(content: string, filename: string) {
   URL.revokeObjectURL(url);
 }
 
+function downloadPDF(props: Omit<SessionExportProps, "open" | "onClose">) {
+  const { sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount } = props;
+  const now = new Date().toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+
+  const highlighted = responses.filter(r => r.is_highlighted);
+  const scored = responses.filter(r => r.teacher_score);
+  const avgScore = scored.length > 0
+    ? (scored.reduce((a, r) => a + (r.teacher_score || 0), 0) / scored.length).toFixed(1)
+    : null;
+
+  const responsesHTML = responses.map(r => `
+    <div style="padding:10px 14px;margin:6px 0;border-radius:8px;border-left:3px solid ${r.is_highlighted ? "#FF6B35" : "#333"};background:${r.is_highlighted ? "#FFF7ED" : "#FAFAFA"}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <strong style="font-size:13px;color:#222">${r.studentName}</strong>
+        <span style="font-size:11px;color:#888">${new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
+      </div>
+      <p style="font-size:14px;color:#333;margin:0;line-height:1.5">${r.text}</p>
+      ${r.teacher_score ? `<span style="font-size:11px;color:#FF6B35;font-weight:600">Note : ${r.teacher_score}/5</span>` : ""}
+      ${r.teacher_comment ? `<p style="font-size:12px;color:#666;margin:4px 0 0;font-style:italic">Prof : ${r.teacher_comment}</p>` : ""}
+    </div>
+  `).join("");
+
+  const html = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>${sessionTitle} — Banlieuwood</title>
+  <style>
+    @page { margin: 20mm; size: A4; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #222; max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+    .header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #FF6B35; }
+    .header h1 { font-size: 24px; margin: 0 0 8px; color: #111; }
+    .header .subtitle { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 2px; }
+    .meta { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; }
+    .meta-item { font-size: 13px; color: #555; }
+    .meta-item strong { color: #222; }
+    .question { background: linear-gradient(135deg, #FFF7ED, #FFF); border: 1px solid #FFD4B2; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; }
+    .question p { font-size: 16px; line-height: 1.6; color: #333; margin: 0; }
+    .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #999; font-weight: 600; margin: 24px 0 12px; }
+    .stats { display: flex; gap: 16px; margin-bottom: 24px; }
+    .stat { text-align: center; flex: 1; padding: 12px; border-radius: 8px; background: #F5F5F5; }
+    .stat .number { font-size: 24px; font-weight: 700; color: #FF6B35; }
+    .stat .label { font-size: 11px; color: #888; margin-top: 2px; }
+    .footer { text-align: center; margin-top: 40px; padding-top: 16px; border-top: 1px solid #EEE; font-size: 11px; color: #AAA; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="subtitle">Banlieuwood</div>
+    <h1>${sessionTitle}</h1>
+    <div style="font-size:13px;color:#666">${now}</div>
+  </div>
+
+  <div class="meta">
+    <div class="meta-item"><strong>Niveau :</strong> ${level || "—"}</div>
+    <div class="meta-item"><strong>Module :</strong> ${moduleLabel}</div>
+    <div class="meta-item"><strong>Eleves :</strong> ${studentCount}</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="number">${responses.length}</div><div class="label">Reponses</div></div>
+    <div class="stat"><div class="number">${highlighted.length}</div><div class="label">Mises en avant</div></div>
+    <div class="stat"><div class="number">${avgScore || "—"}</div><div class="label">Note moy.</div></div>
+  </div>
+
+  <div class="section-title">Question</div>
+  <div class="question"><p>${questionPrompt}</p></div>
+
+  <div class="section-title">Reponses (${responses.length})</div>
+  ${responsesHTML}
+
+  <div class="footer">Exporte depuis Banlieuwood — banlieuwood.fr</div>
+</body>
+</html>`;
+
+  const printWindow = window.open("", "_blank");
+  if (printWindow) {
+    printWindow.document.write(html);
+    printWindow.document.close();
+    setTimeout(() => printWindow.print(), 300);
+  }
+}
+
 export function SessionExport({
   open,
   onClose,
@@ -144,10 +227,16 @@ export function SessionExport({
                 </button>
                 <button
                   onClick={() => downloadMarkdown(markdown, filename)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110"
-                  style={{ backgroundColor: "#4ECDC4", color: "black" }}
+                  className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-white/[0.06] hover:border-white/15 text-bw-muted hover:text-white transition-colors"
                 >
-                  Télécharger .md
+                  .md
+                </button>
+                <button
+                  onClick={() => downloadPDF({ sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount })}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110"
+                  style={{ backgroundColor: "#FF6B35", color: "white" }}
+                >
+                  PDF
                 </button>
               </div>
             </div>

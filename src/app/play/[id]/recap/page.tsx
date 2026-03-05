@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
+import { useParams, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
+import { toast } from "sonner";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { BrandLogo } from "@/components/brand-logo";
 
@@ -20,24 +21,49 @@ interface MyResponse {
   text: string;
 }
 
+interface MyPitch {
+  objectif: string;
+  obstacle: string;
+  pitchText: string;
+  chronoSeconds: number | null;
+  prenom: string;
+  trait: string | null;
+}
+
 interface RecapData {
   session: { id: string; title: string; status: string };
   story: StoryChoice[];
   myResponses: MyResponse[];
   myChosenCount: number;
   totalChoices: number;
+  myPitch?: MyPitch | null;
 }
 
-type TabId = "film" | "contributions";
+type TabId = "film" | "contributions" | "pitch";
 
 export default function RecapPage() {
   const { id: sessionId } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
+  const shareToken = searchParams.get("share");
   const [data, setData] = useState<RecapData | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<TabId>("film");
   const [revealedCount, setRevealedCount] = useState(0);
+  const [sharing, setSharing] = useState(false);
+  const [isSharedView, setIsSharedView] = useState(false);
 
   useEffect(() => {
+    // If share token present, use public share endpoint
+    if (shareToken) {
+      setIsSharedView(true);
+      fetch(`/api/sessions/${sessionId}/recap/share?token=${shareToken}`)
+        .then((r) => r.ok ? r.json() : null)
+        .then((d) => { if (d) setData(d); })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+      return;
+    }
+
     let studentId: string | null = null;
     try {
       const stored = localStorage.getItem(`bw-student-${sessionId}`);
@@ -52,6 +78,38 @@ export default function RecapPage() {
       .then((d) => { if (d) setData(d); })
       .catch(() => {})
       .finally(() => setLoading(false));
+  }, [sessionId, shareToken]);
+
+  const handleShare = useCallback(async () => {
+    let studentId: string | null = null;
+    try {
+      const stored = localStorage.getItem(`bw-student-${sessionId}`);
+      if (stored) studentId = JSON.parse(stored).studentId;
+    } catch { /* */ }
+    if (!studentId) {
+      toast.error("Impossible de partager sans identification");
+      return;
+    }
+    setSharing(true);
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/recap/share`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId }),
+      });
+      const json = await res.json();
+      if (json.shareToken) {
+        const url = `${window.location.origin}/play/${sessionId}/recap?share=${json.shareToken}`;
+        await navigator.clipboard.writeText(url);
+        toast.success("Lien copie dans le presse-papiers !");
+      } else {
+        toast.error("Erreur lors du partage");
+      }
+    } catch {
+      toast.error("Erreur reseau");
+    } finally {
+      setSharing(false);
+    }
   }, [sessionId]);
 
   // Progressive reveal of story choices
@@ -93,7 +151,8 @@ export default function RecapPage() {
 
   const tabs: { id: TabId; label: string }[] = [
     { id: "film", label: "Le Film" },
-    { id: "contributions", label: "Mes idees" },
+    { id: "contributions", label: "Mes idées" },
+    ...(data.myPitch ? [{ id: "pitch" as TabId, label: "Mon Pitch" }] : []),
   ];
 
   return (
@@ -101,13 +160,28 @@ export default function RecapPage() {
       {/* Header */}
       <header className="sticky top-0 z-10 bg-bw-bg/90 backdrop-blur-md border-b border-white/[0.04]">
         <div className="px-4 py-3 flex items-center justify-between">
-          <a href={`/play/${sessionId}`} className="text-bw-muted text-xs hover:text-white transition-colors">
-            &larr; Retour
+          <a href={isSharedView ? "/" : `/play/${sessionId}`} className="text-bw-muted text-xs hover:text-white transition-colors">
+            &larr; {isSharedView ? "Accueil" : "Retour"}
           </a>
           <span className="font-cinema text-base tracking-[0.15em] uppercase">
             <BrandLogo />
           </span>
-          <div className="w-12" />
+          {!isSharedView ? (
+            <button
+              onClick={handleShare}
+              disabled={sharing}
+              className="flex items-center gap-1.5 text-xs text-bw-muted hover:text-white transition-colors cursor-pointer disabled:opacity-50"
+              aria-label="Partager mon recap"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+              {sharing ? "..." : "Partager"}
+            </button>
+          ) : (
+            <div className="w-12" />
+          )}
         </div>
         {/* Tabs */}
         <div className="flex px-4 gap-1">
@@ -128,10 +202,12 @@ export default function RecapPage() {
       </header>
 
       {/* Content */}
-      <div className="px-4 py-6 max-w-lg mx-auto">
+      <div className="px-4 py-4 sm:py-6 max-w-sm sm:max-w-lg mx-auto">
         <AnimatePresence mode="wait">
           {tab === "film" ? (
             <FilmVivant key="film" story={data.story} revealedCount={revealedCount} title={data.session.title} />
+          ) : tab === "pitch" && data.myPitch ? (
+            <PitchRecap key="pitch" pitch={data.myPitch} />
           ) : (
             <Contributions
               key="contributions"
@@ -257,6 +333,53 @@ function FilmVivant({
           <p className="text-sm font-medium text-bw-violet">Fin</p>
           <p className="text-xs text-bw-muted">{story.length} choix collectifs</p>
         </motion.div>
+      )}
+    </motion.div>
+  );
+}
+
+// ——— Pitch Recap — student's M10 pitch ———
+function PitchRecap({ pitch }: { pitch: MyPitch }) {
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
+      <div className="text-center">
+        <span className="text-3xl">🎬</span>
+        <h3 className="text-lg font-cinema tracking-wider mt-2">Mon Pitch</h3>
+      </div>
+
+      {/* Character card */}
+      <div className="bg-bw-elevated rounded-xl p-4 border border-bw-amber/20 space-y-2">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">🎭</span>
+          <div>
+            <p className="text-base font-medium text-bw-heading">{pitch.prenom}</p>
+            {pitch.trait && <p className="text-xs text-bw-muted">{pitch.trait}</p>}
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <span className="px-2 py-1 text-[10px] rounded-lg bg-bw-amber/10 border border-bw-amber/20 text-bw-amber">
+            Objectif : {pitch.objectif}
+          </span>
+          <span className="px-2 py-1 text-[10px] rounded-lg bg-bw-danger/10 border border-bw-danger/20 text-bw-danger">
+            Obstacle : {pitch.obstacle}
+          </span>
+        </div>
+      </div>
+
+      {/* Pitch text */}
+      <div className="bg-bw-elevated rounded-xl p-4 border border-white/[0.06]">
+        <p className="text-sm leading-relaxed whitespace-pre-wrap text-bw-heading">{pitch.pitchText}</p>
+      </div>
+
+      {/* Chrono result */}
+      {pitch.chronoSeconds != null && (
+        <div className="bg-bw-elevated rounded-xl p-4 border border-white/[0.06] text-center">
+          <p className="text-xs text-bw-muted uppercase tracking-wider mb-1">Chrono oral</p>
+          <p className="text-2xl font-bold tabular-nums text-bw-heading">{pitch.chronoSeconds}s</p>
+          <p className="text-xs text-bw-muted mt-1">
+            {pitch.chronoSeconds <= 60 ? "Dans le temps !" : "Un peu long, mais l'essentiel est dit."}
+          </p>
+        </div>
       )}
     </motion.div>
   );

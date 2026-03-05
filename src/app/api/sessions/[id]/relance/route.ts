@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, safeJson } from "@/lib/api-utils";
 import { generateRelance } from "@/lib/ai";
 
 // POST — Generate an AI relance for a student's response
@@ -15,7 +15,9 @@ export async function POST(
   }
 
   const { id: sessionId } = await params;
-  const { studentId, responseId } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { studentId, responseId } = parsed.data;
 
   if (!studentId || !responseId) {
     return NextResponse.json(
@@ -67,6 +69,7 @@ export async function POST(
     .from("sessions")
     .select("level")
     .eq("id", sessionId)
+    .is("deleted_at", null)
     .single();
 
   // Fetch previous answers for narrative context (max 5)
@@ -113,7 +116,9 @@ export async function PATCH(
   }
 
   const { id: sessionId } = await params;
-  const { responseId, relanceResponse } = await req.json();
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { responseId, relanceResponse } = parsed.data;
 
   if (!responseId || !relanceResponse?.trim()) {
     return NextResponse.json(

@@ -21,6 +21,7 @@ export async function GET(
     .from("sessions")
     .select("id, title, status, current_module")
     .eq("id", sessionId)
+    .is("deleted_at", null)
     .single();
 
   if (!session) {
@@ -39,6 +40,17 @@ export async function GET(
   let myChosenCount = 0;
 
   if (studentId && isValidUUID(studentId)) {
+    // Verify student belongs to this session
+    const { data: studentCheck } = await admin
+      .from("students")
+      .select("id")
+      .eq("id", studentId)
+      .eq("session_id", sessionId)
+      .single();
+    if (!studentCheck) {
+      return NextResponse.json({ error: "Élève introuvable dans cette session" }, { status: 403 });
+    }
+
     const { data: responses } = await admin
       .from("responses")
       .select("id, situation_id, text")
@@ -66,11 +78,35 @@ export async function GET(
     isMine: !!(c.source_response_id && myResponseIds.has(c.source_response_id)),
   }));
 
+  // Module 10 data — pitch + personnage for this student
+  let myPitch: { objectif: string; obstacle: string; pitchText: string; chronoSeconds: number | null; prenom: string; trait: string | null } | null = null;
+  if (studentId && isValidUUID(studentId)) {
+    const { data: pitch } = await admin
+      .from("module10_pitchs")
+      .select("objectif, obstacle, pitch_text, chrono_seconds, module10_personnages(prenom, trait_dominant)")
+      .eq("session_id", sessionId)
+      .eq("student_id", studentId)
+      .maybeSingle();
+
+    if (pitch && pitch.pitch_text && pitch.pitch_text.length > 0) {
+      const perso = pitch.module10_personnages as unknown as { prenom: string; trait_dominant: string | null } | null;
+      myPitch = {
+        objectif: pitch.objectif,
+        obstacle: pitch.obstacle,
+        pitchText: pitch.pitch_text,
+        chronoSeconds: pitch.chrono_seconds,
+        prenom: perso?.prenom || "?",
+        trait: perso?.trait_dominant || null,
+      };
+    }
+  }
+
   return NextResponse.json({
     session: { id: session.id, title: session.title, status: session.status },
     story,
     myResponses,
     myChosenCount,
     totalChoices: story.length,
+    myPitch,
   });
 }
