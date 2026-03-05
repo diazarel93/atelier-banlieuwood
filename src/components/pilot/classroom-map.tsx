@@ -27,6 +27,8 @@ interface ClassroomMapProps {
   students: SeatStudent[];
   teams: Team[];
   responses: Response[];
+  /** Extra response texts from module-specific endpoints (M10 etsi, M9 budget, etc.) */
+  moduleResponseTexts?: Map<string, string>;
   sessionStatus: string;
   onNudge: (studentId: string, text: string) => void;
   onWarn: (studentId: string) => void;
@@ -40,7 +42,6 @@ const STATE_ORDER: Record<StudentState, number> = {
   disconnected: 3,
 };
 
-/** Chunk an array into pairs */
 function toPairs<T>(arr: T[]): [T, T | undefined][] {
   const pairs: [T, T | undefined][] = [];
   for (let i = 0; i < arr.length; i += 2) {
@@ -53,6 +54,7 @@ export function ClassroomMap({
   students,
   teams,
   responses,
+  moduleResponseTexts,
   sessionStatus,
   onNudge,
   onWarn,
@@ -60,18 +62,27 @@ export function ClassroomMap({
 }: ClassroomMapProps) {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
 
-  // Build maps in a single pass
+  // Build merged response map: standard responses + module-specific texts
   const { responseMap, responseIdMap } = useMemo(() => {
     const rMap = new Map<string, string>();
     const idMap = new Map<string, string>();
+    // Standard responses first
     for (const r of responses) {
       if (!r.is_hidden && !r.reset_at && !rMap.has(r.student_id)) {
         rMap.set(r.student_id, r.text);
         idMap.set(r.student_id, r.id);
       }
     }
+    // Module-specific responses (M10, M9, etc.)
+    if (moduleResponseTexts) {
+      for (const [studentId, text] of moduleResponseTexts) {
+        if (!rMap.has(studentId)) {
+          rMap.set(studentId, text);
+        }
+      }
+    }
     return { responseMap: rMap, responseIdMap: idMap };
-  }, [responses]);
+  }, [responses, moduleResponseTexts]);
 
   // Stats — single pass
   const { respondedCount, stuckCount, activeCount, disconnectedCount, handRaisedCount } = useMemo(() => {
@@ -174,7 +185,7 @@ export function ClassroomMap({
       {/* ── CLASSROOM FLOOR PLAN ── */}
       <div className="relative rounded-2xl border border-white/[0.06] overflow-hidden" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)" }}>
 
-        {/* Perspective grid background */}
+        {/* Grid background */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
           backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
@@ -182,7 +193,7 @@ export function ClassroomMap({
 
         <div className="relative p-4 sm:p-5 space-y-4">
 
-          {/* Teacher's desk — "tableau" */}
+          {/* Teacher's desk */}
           <div className="flex justify-center">
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -200,7 +211,7 @@ export function ClassroomMap({
             </motion.div>
           </div>
 
-          {/* Allée centrale marker */}
+          {/* Separator */}
           <div className="flex items-center gap-3 px-4">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
           </div>
@@ -232,7 +243,7 @@ export function ClassroomMap({
                   </div>
                 )}
 
-                {/* Rows of desks — 3 per row */}
+                {/* Rows of desks */}
                 {(() => {
                   const desksPerRow = 3;
                   const rows: [SeatStudent, SeatStudent | undefined][][] = [];
@@ -282,7 +293,37 @@ export function ClassroomMap({
         </div>
       </div>
 
-      {/* ── LEGEND ── */}
+      {/* ── LIVE RESPONSE FEED (latest responses) ── */}
+      {responseMap.size > 0 && (
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-bw-teal">Dernières réponses</span>
+            <span className="text-[9px] text-bw-muted tabular-nums">{responseMap.size}</span>
+          </div>
+          <div className="space-y-1 max-h-[200px] overflow-y-auto">
+            {sortedStudents
+              .filter((s) => s.state === "responded" && responseMap.has(s.id))
+              .slice(0, 10)
+              .map((s) => (
+                <motion.div
+                  key={s.id}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="flex items-start gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] cursor-pointer hover:bg-white/[0.05] transition-colors"
+                  onClick={() => handleStudentClick(s.id)}
+                >
+                  <span className="text-sm flex-shrink-0 mt-0.5">{s.avatar}</span>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-[10px] font-semibold text-bw-teal">{s.display_name}</span>
+                    <p className="text-[12px] text-bw-text leading-snug line-clamp-2 mt-0.5">{responseMap.get(s.id)}</p>
+                  </div>
+                </motion.div>
+              ))}
+          </div>
+        </div>
+      )}
+
+      {/* Legend */}
       <div className="flex items-center justify-center gap-4 text-[10px] text-bw-muted">
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: "#4ECDC4" }} /> Répondu</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: "#FF6B35" }} /> En cours</span>
@@ -307,7 +348,6 @@ export function ClassroomMap({
   );
 }
 
-/** Small stat chip */
 function StatChip({ color, label, count, pulse }: { color: string; label: string; count: number; pulse?: boolean }) {
   return (
     <motion.span

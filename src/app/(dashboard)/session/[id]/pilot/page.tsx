@@ -461,12 +461,43 @@ function CockpitContent({
     ? getQuestionGuide(session.current_seance || 1, (session.current_situation_index || 0) + 1, session.current_module)
     : undefined;
 
-  // Compute student states for pulse ring / grid (M3 only)
+  // Build set of students who submitted via module-specific endpoints (M10, M9, M2EC)
+  const moduleSubmittedIds = useMemo(() => {
+    const ids = new Set<string>();
+    if (module10Data?.allSubmissions) {
+      for (const s of module10Data.allSubmissions) ids.add(s.studentId);
+    }
+    if (budgetData?.budgets) {
+      for (const b of budgetData.budgets) ids.add(b.student_id);
+    }
+    if (scenesData?.scenes) {
+      for (const sc of scenesData.scenes) ids.add(sc.student_id);
+    }
+    return ids;
+  }, [module10Data?.allSubmissions, budgetData?.budgets, scenesData?.scenes]);
+
+  // Build module-specific response texts (for classroom map hover/popover)
+  const moduleResponseTexts = useMemo(() => {
+    const map = new Map<string, string>();
+    if (module10Data?.allSubmissions) {
+      for (const s of module10Data.allSubmissions) {
+        if (!map.has(s.studentId)) map.set(s.studentId, s.text);
+      }
+    }
+    if (budgetData?.budgets) {
+      for (const b of budgetData.budgets) {
+        if (!map.has(b.student_id)) map.set(b.student_id, b.summary || `Budget: ${b.credits_remaining} crédits restants`);
+      }
+    }
+    return map;
+  }, [module10Data?.allSubmissions, budgetData?.budgets]);
+
+  // Compute student states for pulse ring / grid
   const studentStates = useMemo((): { id: string; state: StudentState; display_name: string; avatar: string }[] => {
     if (!session.students) return [];
     const now = Date.now();
     return session.students.map((s) => {
-      const hasResponded = responses.some((r) => r.student_id === s.id);
+      const hasResponded = responses.some((r) => r.student_id === s.id) || moduleSubmittedIds.has(s.id);
       if (!s.is_active) return { id: s.id, state: "disconnected" as StudentState, display_name: s.display_name, avatar: s.avatar };
       if (hasResponded) return { id: s.id, state: "responded" as StudentState, display_name: s.display_name, avatar: s.avatar };
       // Stuck: active, no response, > 60s since responding started
@@ -475,7 +506,7 @@ function CockpitContent({
       }
       return { id: s.id, state: "active" as StudentState, display_name: s.display_name, avatar: s.avatar };
     });
-  }, [session.students, session.status, responses, respondingStartedAt]);
+  }, [session.students, session.status, responses, respondingStartedAt, moduleSubmittedIds]);
 
   // Actually change the session (launches the question for students)
   function goToSituation(index: number) {
@@ -876,6 +907,7 @@ function CockpitContent({
               }))}
               teams={teams}
               responses={responses}
+              moduleResponseTexts={moduleResponseTexts}
               sessionStatus={session.status}
               onNudge={(responseId, text) => nudgeStudent.mutate({ responseId, nudgeText: text })}
               onWarn={(studentId) => warnStudent.mutate(studentId)}
