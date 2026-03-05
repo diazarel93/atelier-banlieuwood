@@ -337,7 +337,7 @@ function CockpitContent({
       return res.json();
     },
     enabled: session.current_module === 9 && (session.current_seance || 1) === 2,
-    refetchInterval: session.current_module === 9 && (session.current_seance || 1) === 2 ? 30_000 : false,
+    refetchInterval: session.current_module === 9 && (session.current_seance || 1) === 2 ? 10_000 : false,
   });
 
   // Fetch all scenes for Module 2 EC (séances 2-3)
@@ -362,7 +362,7 @@ function CockpitContent({
       return res.json();
     },
     enabled: isM2ECWithScenes,
-    refetchInterval: isM2ECWithScenes ? 30_000 : false,
+    refetchInterval: isM2ECWithScenes ? 10_000 : false,
   });
 
   const selectComparison = useMutation({
@@ -2595,7 +2595,7 @@ export default function PilotPage() {
       if (!res.ok) throw new Error("Session introuvable");
       return res.json();
     },
-    refetchInterval: 30_000,
+    refetchInterval: 10_000,
     enabled: !checkingAuth,
   });
 
@@ -2607,7 +2607,7 @@ export default function PilotPage() {
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: 30_000,
+    refetchInterval: 15_000,
     enabled: !checkingAuth && !!session,
   });
 
@@ -2615,7 +2615,7 @@ export default function PilotPage() {
   const activeModule = session ? getModuleByDb(session.current_module, session.current_seance || 1) : undefined;
   const hasActiveModule = !!activeModule && !activeModule.disabled;
 
-  // Current situation — fetch whenever a module is active
+  // Current situation — fetch whenever a module is active (10s for live classroom updates)
   const { data: situationData } = useQuery({
     queryKey: ["pilot-situation", sessionId, session?.current_module, session?.current_seance, session?.current_situation_index],
     queryFn: async () => {
@@ -2623,7 +2623,7 @@ export default function PilotPage() {
       if (!res.ok) return null;
       return res.json();
     },
-    refetchInterval: 30_000,
+    refetchInterval: 10_000,
     enabled: !checkingAuth && !!session && hasActiveModule,
   });
 
@@ -2662,7 +2662,7 @@ export default function PilotPage() {
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: 30_000,
+    refetchInterval: 10_000,
     enabled: !checkingAuth && (!!situation || (isModule1 && m1SituationIds.length > 0)) && hasActiveModule,
   });
 
@@ -2675,7 +2675,7 @@ export default function PilotPage() {
       if (!res.ok) return { totalVotes: 0, results: [] };
       return res.json();
     },
-    refetchInterval: 30_000,
+    refetchInterval: 10_000,
     enabled: !checkingAuth && !!situation && hasActiveModule && (session?.status === "voting" || session?.status === "reviewing"),
   });
 
@@ -2687,7 +2687,7 @@ export default function PilotPage() {
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: 30_000,
+    refetchInterval: 10_000,
     enabled: !checkingAuth && !!session && hasActiveModule && (session?.current_module === 3 || session?.current_module === 4),
   });
 
