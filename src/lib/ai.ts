@@ -7,12 +7,16 @@ import type { SessionFullData } from "@/lib/session-data";
 import {
   type BilanResult,
   type FicheCoursResult,
+  type BibleResult,
   BILAN_SYSTEM_PROMPT,
   FICHE_COURS_SYSTEM_PROMPT,
+  BIBLE_SYSTEM_PROMPT,
   buildBilanUserPrompt,
   buildFicheCoursUserPrompt,
+  buildBibleUserPrompt,
   buildFallbackBilan,
   buildFallbackFicheCours,
+  buildFallbackBible,
 } from "@/lib/prompts";
 
 // ——— RELANCE CONSTANTS (unchanged) ———
@@ -245,5 +249,33 @@ export async function generateFicheCours(opts: {
     return { fiche: parsed, provider };
   } catch {
     return { fiche: buildFallbackFicheCours(opts.level, opts.sessionRecap), provider: "fallback" };
+  }
+}
+
+// ——— BIBLE DU FILM ———
+
+export async function generateBibleFilm(
+  data: SessionFullData
+): Promise<{ bible: BibleResult; provider: AIProvider }> {
+  const userPrompt = buildBibleUserPrompt(data);
+
+  const { text, provider } = await generateAIText({
+    systemPrompt: BIBLE_SYSTEM_PROMPT,
+    userPrompt,
+    maxTokens: 3000,
+    timeout: 40_000,
+    temperature: 0.7,
+  });
+
+  if (provider === "fallback" || !text) {
+    return { bible: buildFallbackBible(data), provider: "fallback" };
+  }
+
+  try {
+    const cleaned = text.replace(/^```json?\s*\n?/i, "").replace(/\n?```\s*$/i, "");
+    const parsed = JSON.parse(cleaned) as BibleResult;
+    return { bible: parsed, provider };
+  } catch {
+    return { bible: buildFallbackBible(data), provider: "fallback" };
   }
 }

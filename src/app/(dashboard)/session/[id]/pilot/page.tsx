@@ -11,7 +11,7 @@ import { useCockpitModuleFlags } from "@/hooks/use-cockpit-module-flags";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CATEGORY_COLORS, PRODUCTION_CATEGORIES, getSeanceMax } from "@/lib/constants";
 import dynamic from "next/dynamic";
-import { getModuleGuide, getQuestionGuide } from "@/lib/guide-data";
+import { getModuleGuide, getQuestionGuide, type QuestionGuide } from "@/lib/guide-data";
 
 const QRCodeSVG = dynamic(
   () => import("qrcode.react").then(mod => ({ default: mod.QRCodeSVG })),
@@ -20,7 +20,7 @@ const QRCodeSVG = dynamic(
 import { MODULES, PHASES, getModuleByDb, getPhaseForModule } from "@/lib/modules-data";
 
 // Cockpit components
-import { InlineActions, TeacherCommentBadge } from "@/components/pilot/response-actions";
+import { InlineActions, GenericInlineActions, TeacherCommentBadge } from "@/components/pilot/response-actions";
 import { QuestionCard } from "@/components/pilot/question-card";
 import { type ResponseCardResponse } from "@/components/pilot/response-card";
 import { InlineReformulation } from "@/components/pilot/inline-reformulation";
@@ -111,6 +111,69 @@ interface VoteResult {
 
 
 // ——————————————————————————————————————————————————————
+// Preview guide card — shows question preview + guide info when teacher previews a step
+// ——————————————————————————————————————————————————————
+
+function PreviewGuideCard({ label, description, guide, position, children }: {
+  label: string;
+  description?: string;
+  guide?: QuestionGuide;
+  position: number;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="glass-card overflow-hidden" style={{ borderColor: "rgba(245,158,11,0.2)", background: "linear-gradient(135deg, rgba(245,158,11,0.08), rgba(26,29,34,0.6) 60%)" }}>
+      <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, #F59E0B, rgba(139,92,246,0.5))" }} />
+      <div className="p-4 pb-3">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: "linear-gradient(135deg, rgba(245,158,11,0.25), rgba(245,158,11,0.10))", color: "#F59E0B", border: "1px solid rgba(245,158,11,0.30)" }}>
+            {guide?.label || label}
+          </span>
+          <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-bw-amber/15 text-bw-amber">Pos. {position + 1}</span>
+          <span className="text-[10px] text-bw-amber uppercase tracking-wider font-semibold ml-auto">Apercu</span>
+        </div>
+        {description && <p className="text-base leading-relaxed text-bw-text">{description}</p>}
+        {children}
+      </div>
+      {guide && (
+        <div className="border-t px-4 py-3 space-y-2.5" style={{ borderColor: "rgba(245,158,11,0.15)" }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="bg-bw-bg rounded-lg p-3 space-y-1">
+              <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-green">Ce qu&apos;on attend</p>
+              <p className="text-xs text-bw-text leading-relaxed">{guide.whatToExpect}</p>
+            </div>
+            <div className="bg-bw-bg rounded-lg p-3 space-y-1">
+              <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-amber">Pieges frequents</p>
+              <p className="text-xs text-bw-amber leading-relaxed">{guide.commonPitfalls}</p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            {guide.relancePhrase && (
+              <button
+                onClick={() => { navigator.clipboard.writeText(guide.relancePhrase); }}
+                className="flex-1 bg-bw-teal/8 border border-bw-teal/20 rounded-lg px-3 py-2.5 text-left cursor-pointer hover:bg-bw-teal/15 transition-colors"
+              >
+                <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-teal mb-0.5">Relancer</p>
+                <p className="text-xs text-bw-text leading-relaxed italic">&ldquo;{guide.relancePhrase}&rdquo;</p>
+              </button>
+            )}
+            {guide.challengePhrase && (
+              <button
+                onClick={() => { navigator.clipboard.writeText(guide.challengePhrase); }}
+                className="flex-1 bg-bw-violet/8 border border-bw-violet/20 rounded-lg px-3 py-2.5 text-left cursor-pointer hover:bg-bw-violet/15 transition-colors"
+              >
+                <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-violet mb-0.5">Challenger</p>
+                <p className="text-xs text-bw-text leading-relaxed italic">&ldquo;{guide.challengePhrase}&rdquo;</p>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ——————————————————————————————————————————————————————
 // COCKPIT — The in-game facilitator view
 // ——————————————————————————————————————————————————————
 
@@ -144,6 +207,7 @@ function CockpitContent({
   showStudents,
   setShowStudents,
   sidebarWidth,
+  totalQuestions,
   onSelectStudent,
 }: {
   session: Session;
@@ -175,6 +239,7 @@ function CockpitContent({
   showStudents: boolean;
   setShowStudents: (v: boolean) => void;
   sidebarWidth: number;
+  totalQuestions?: number;
   onSelectStudent: (student: Student) => void;
 }) {
   const [reformulating, setReformulating] = useState<Response | null>(null);
@@ -201,6 +266,7 @@ function CockpitContent({
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState(0);
   const [respondingOpenedAt, setRespondingOpenedAt] = useState<number | null>(null);
+  const [cardSearch, setCardSearch] = useState("");
   const [broadcastHistory, setBroadcastHistory] = useState<{ text: string; sentAt: Date }[]>([]);
   const [timerMode, setTimerMode] = useState(false);
   const { play } = useSound();
@@ -258,6 +324,7 @@ function CockpitContent({
   // Fetch all scenes for Module 2 EC (séances 2-3)
   interface M2ECScene {
     id: string;
+    student_id: string;
     emotion: string;
     intention: string;
     obstacle: string;
@@ -380,6 +447,7 @@ function CockpitContent({
   // Actually change the session (launches the question for students)
   function goToSituation(index: number) {
     setPreviewIndex(null);
+    setCardSearch("");
     updateSession.mutate({ current_situation_index: index, status: "responding", timer_ends_at: null });
   }
 
@@ -905,28 +973,144 @@ function CockpitContent({
           {/* M1 Positioning: question nav + option distribution */}
           {isM1Positioning && module1Data?.type === "positioning" && module1Data.questions && (
             <>
-              {/* Question nav pills */}
-              <div className="flex items-center justify-center gap-1.5 flex-wrap">
-                {Array.from({ length: maxSituations }, (_, i) => {
-                  const isCurrent = i === currentQIndex;
-                  const isPast = i < currentQIndex;
-                  return (
-                    <button key={i} onClick={() => previewSituation(i)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 ${
-                        isCurrent ? "bg-bw-violet text-white shadow-lg shadow-bw-violet/20"
-                          : isPast ? "bg-bw-teal/15 text-bw-teal"
-                          : "bg-bw-elevated text-bw-muted hover:text-bw-text hover:bg-bw-surface"
-                      }`}>
-                      {isPast && (
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="inline mr-1"><path d="M5 12l5 5L20 7"/></svg>
-                      )}
-                      Q{i + 1}
-                    </button>
-                  );
-                })}
+              {/* Preview banner */}
+              {isPreviewing && (
+                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+                  className="bg-bw-amber/10 border border-bw-amber/30 rounded-xl px-4 py-3 flex items-center gap-3">
+                  <span className="text-xs text-bw-amber">Prévisualisation Q{displayIndex + 1} — les élèves ne voient pas ce changement</span>
+                  <div className="flex-1" />
+                  <button onClick={() => setPreviewIndex(null)}
+                    className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">Retour Q{currentQIndex + 1}</button>
+                  <button onClick={() => { goToSituation(displayIndex); }}
+                    className="btn-glow text-xs px-3 py-1 bg-bw-amber text-black rounded-xl font-medium cursor-pointer transition-all duration-200 hover:brightness-110">
+                    Lancer Q{displayIndex + 1}
+                  </button>
+                </motion.div>
+              )}
+
+              {/* Question nav pills + arrows */}
+              <div className="flex items-center gap-1.5">
+                <div className="flex items-center justify-center gap-1.5 flex-wrap flex-1">
+                  {Array.from({ length: maxSituations }, (_, i) => {
+                    const isCurrent = i === currentQIndex;
+                    const isPreview = i === displayIndex;
+                    const isPast = i < currentQIndex;
+                    return (
+                      <button key={i} onClick={() => previewSituation(i)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 ${
+                          isPreview && isPreviewing ? "bg-bw-amber text-black shadow-lg shadow-bw-amber/20 scale-110"
+                            : isCurrent ? "bg-bw-violet text-white shadow-lg shadow-bw-violet/20"
+                            : isPast ? "bg-bw-teal/15 text-bw-teal"
+                            : "bg-bw-elevated text-bw-muted hover:text-bw-text hover:bg-bw-surface"
+                        }`}>
+                        {isPast && !isPreview && (
+                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="inline mr-1"><path d="M5 12l5 5L20 7"/></svg>
+                        )}
+                        Q{i + 1}
+                      </button>
+                    );
+                  })}
+                </div>
+                <button onClick={previewPrev} disabled={displayIndex <= 0}
+                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
+                  ←
+                </button>
+                <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
+                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
+                  →
+                </button>
               </div>
-              {/* Current question */}
-              {module1Data.questions[currentQIndex] && (
+              {/* Toolbar — same style as ResponseStreamSection */}
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Positionnement</span>
+                  <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
+                    responses.length >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
+                  }`}>{responses.length}/{activeStudents.length}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button onClick={() => setShowBroadcast(true)} title="Message classe"
+                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                    📢
+                  </button>
+                  <button onClick={() => setShowExport(true)} title="Export"
+                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                    📋
+                  </button>
+                </div>
+              </div>
+
+              {/* Auto-advance toggle */}
+              <div className="flex items-center justify-between gap-3">
+                <button
+                  onClick={() => {
+                    setAutoAdvance((v) => !v);
+                    if (autoAdvanceTimerRef.current) {
+                      clearTimeout(autoAdvanceTimerRef.current);
+                      autoAdvanceTimerRef.current = null;
+                      setAutoAdvanceCountdown(0);
+                    }
+                  }}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium cursor-pointer transition-all duration-200 ${
+                    autoAdvance
+                      ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30"
+                      : "bg-bw-elevated text-bw-muted border border-white/[0.06] hover:border-white/15"
+                  }`}
+                >
+                  <div className={`w-7 h-4 rounded-full transition-all duration-200 relative ${autoAdvance ? "bg-bw-teal" : "bg-white/10"}`}>
+                    <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all duration-200 ${autoAdvance ? "left-3.5" : "left-0.5"}`} />
+                  </div>
+                  Mode auto
+                </button>
+                <AnimatePresence>
+                  {autoAdvance && autoAdvanceCountdown > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 8 }}
+                      className="flex items-center gap-2"
+                    >
+                      <span className="text-xs text-bw-teal tabular-nums font-mono">
+                        Suite dans {autoAdvanceCountdown}s
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (autoAdvanceTimerRef.current) {
+                            clearTimeout(autoAdvanceTimerRef.current);
+                            autoAdvanceTimerRef.current = null;
+                          }
+                          setAutoAdvanceCountdown(0);
+                        }}
+                        className="text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors px-2 py-0.5 rounded-lg bg-white/5 hover:bg-white/10"
+                      >
+                        Pause
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Question card — current or preview */}
+              {isPreviewing ? (() => {
+                const previewQ = module1Data.questions?.[displayIndex];
+                return (
+                  <PreviewGuideCard label={`Q${displayIndex + 1}`} description={previewQ?.text} guide={previewGuide} position={displayIndex}>
+                    {previewQ?.options && (
+                      <div className="mt-3 space-y-1.5">
+                        {previewQ.options.map((opt) => (
+                          <div key={opt.key} className="flex items-center gap-2 text-xs">
+                            <span className="text-bw-violet font-bold w-5">{opt.key.toUpperCase()}</span>
+                            <span className="text-bw-text">{opt.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {!previewQ && (
+                      <p className="text-sm text-bw-muted italic mt-2">Question non disponible — cliquez Lancer pour l&apos;ouvrir</p>
+                    )}
+                  </PreviewGuideCard>
+                );
+              })() : module1Data.questions[currentQIndex] && (
                 <div className="bg-bw-elevated rounded-xl border border-white/[0.08] p-4 space-y-3">
                   <p className="text-sm text-bw-heading leading-snug">
                     <span className="text-bw-violet font-medium mr-1.5">Q{currentQIndex + 1}</span>
@@ -962,6 +1146,25 @@ function CockpitContent({
           {/* M1 Image: image display + single question + responses with highlight/confrontation */}
           {isM1Image && module1Data?.type === "image" && (
             <>
+              {/* Toolbar — same style as other sections */}
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Image</span>
+                  <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
+                    (module1Data.responsesCount || 0) >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
+                  }`}>{module1Data.responsesCount || 0}/{activeStudents.length}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button onClick={() => setShowBroadcast(true)} title="Message classe"
+                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                    📢
+                  </button>
+                  <button onClick={() => setShowExport(true)} title="Export"
+                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                    📋
+                  </button>
+                </div>
+              </div>
               {module1Data.image ? (
                 <div className="space-y-3">
                   <div className="rounded-xl overflow-hidden border border-white/[0.08] bg-bw-surface">
@@ -980,101 +1183,43 @@ function CockpitContent({
               {module1Data.question && (
                 <div className="bg-bw-elevated rounded-xl border border-white/[0.08] p-4">
                   <p className="text-sm text-bw-heading leading-snug">{module1Data.question.text}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <div className="w-16 h-1.5 bg-bw-bg rounded-full overflow-hidden">
-                      <motion.div className="h-full bg-bw-teal rounded-full"
-                        animate={{ width: `${activeStudents.length > 0 ? Math.round(((module1Data.responsesCount || 0) / activeStudents.length) * 100) : 0}%` }} />
-                    </div>
-                    <span className="text-xs text-bw-muted tabular-nums">{module1Data.responsesCount || 0}/{activeStudents.length}</span>
-                  </div>
                 </div>
               )}
-              {/* Responses stream — teacher can highlight 2 for confrontation */}
-              {responses.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-xs text-bw-muted uppercase tracking-wider font-semibold">
-                    Réponses {session.status === "reviewing" ? "— Sélectionne 2 pour la confrontation" : ""}
-                  </p>
-                  {responses.map((r) => (
-                    <div key={r.id} className={`bg-bw-elevated rounded-xl border p-3.5 ${r.is_highlighted ? "border-bw-primary/40 bg-bw-primary/5" : "border-white/[0.08]"}`}>
-                      <div className="flex items-start gap-2">
-                        <span className="text-sm flex-shrink-0">{r.students?.avatar}</span>
-                        <div className="flex-1 min-w-0">
-                          <span className="text-xs font-medium text-bw-muted">{r.students?.display_name}</span>
-                          <p className="text-sm text-bw-heading leading-snug">{r.text}</p>
-                        </div>
-                        <button
-                          onClick={() => highlightResponse.mutate({ responseId: r.id, highlighted: !r.is_highlighted })}
-                          className={`flex-shrink-0 px-2 py-1 rounded text-xs cursor-pointer transition-all duration-200 ${
-                            r.is_highlighted ? "bg-bw-primary text-white" : "bg-white/5 text-bw-muted hover:text-white"
-                          }`}>
-                          {r.is_highlighted ? "Sélectionné" : "Projeter"}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              {/* Responses are rendered by the unified ResponseStreamSection below */}
               {/* Quick phrases for image */}
               <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
-          {/* M1 Notebook: show submitted notebooks count + list */}
+          {/* M1 Notebook: toolbar + consigne + responses */}
           {isM1Notebook && module1Data?.type === "notebook" && (
             <>
-              {/* Activity description */}
-              <div className="glass-card p-4 space-y-2">
+              {/* Toolbar — same style as other sections */}
+              <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg">📓</span>
-                  <span className="text-sm font-semibold text-bw-heading">Carnet d&apos;idées</span>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Carnet</span>
+                  <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
+                    (module1Data.responsesCount || 0) >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
+                  }`}>{module1Data.responsesCount || 0}/{activeStudents.length}</span>
                 </div>
-                <p className="text-xs text-bw-muted leading-relaxed">
-                  Les élèves écrivent librement leurs premières idées de film : personnages, lieux, situations, émotions.
-                  C&apos;est un moment d&apos;écriture individuelle sans contrainte.
-                </p>
-                {module1Data.question && (
-                  <div className="bg-bw-violet/10 rounded-xl p-3 mt-1">
-                    <p className="text-xs text-bw-violet font-medium">Consigne affichée</p>
-                    <p className="text-sm text-bw-text mt-1">{module1Data.question.text}</p>
-                  </div>
-                )}
-              </div>
-              {/* Progress counter */}
-              <div className="bg-bw-violet/10 rounded-xl p-4 border border-bw-violet/20">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-bw-violet font-medium">Carnets soumis</span>
-                  <span className="text-xl font-bold text-bw-violet tabular-nums">{module1Data.responsesCount || 0}/{activeStudents.length}</span>
-                </div>
-                <div className="mt-2 h-2 bg-bw-bg rounded-full overflow-hidden">
-                  <div className="h-full bg-bw-violet rounded-full transition-all"
-                    style={{ width: `${activeStudents.length > 0 ? Math.round(((module1Data.responsesCount || 0) / activeStudents.length) * 100) : 0}%` }} />
+                <div className="flex items-center gap-1">
+                  <button onClick={() => setShowBroadcast(true)} title="Message classe"
+                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                    📢
+                  </button>
+                  <button onClick={() => setShowExport(true)} title="Export"
+                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                    📋
+                  </button>
                 </div>
               </div>
-              {/* Notebooks list */}
-              {responses.length > 0 ? (
-                <div className="space-y-2">
-                  <p className="text-xs text-bw-muted uppercase tracking-wider font-semibold">Textes des élèves</p>
-                  {responses.map((r) => (
-                    <div key={r.id} className="bg-bw-elevated rounded-xl border border-white/[0.08] p-3.5">
-                      <div className="flex items-start gap-2">
-                        <span className="text-sm flex-shrink-0">{r.students?.avatar}</span>
-                        <div className="flex-1 min-w-0">
-                          <span className="text-xs font-medium text-bw-muted">{r.students?.display_name}</span>
-                          <p className="text-sm text-bw-heading leading-snug whitespace-pre-wrap">{r.text}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+              {/* Consigne */}
+              {module1Data.question && (
+                <div className="bg-bw-elevated rounded-xl border border-white/[0.08] p-4">
+                  <p className="text-sm text-bw-heading leading-snug">{module1Data.question.text}</p>
                 </div>
-              ) : session.status === "responding" ? (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-6 text-center space-y-2">
-                  <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
-                    className="text-2xl">✍️</motion.div>
-                  <p className="text-sm text-bw-muted">Les élèves écrivent...</p>
-                  <p className="text-xs text-bw-muted">Les carnets apparaîtront ici au fur et à mesure</p>
-                </div>
-              ) : null}
+              )}
+              {/* Notebooks are rendered by the unified ResponseStreamSection below */}
               {/* Quick phrases for notebook */}
               <QuickPhrases questionGuide={questionGuide} />
             </>
@@ -1092,8 +1237,31 @@ function CockpitContent({
               {/* Individual budgets */}
               {budgetData && budgetData.budgets.length > 0 && (
                 <div className="space-y-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Budgets individuels</span>
-                  {budgetData.budgets.map((b) => (
+                  {/* Toolbar — same style as ResponseStreamSection */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Budgets</span>
+                      <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
+                        budgetData.budgets.length >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
+                      }`}>{budgetData.budgets.length}/{activeStudents.length}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="text" placeholder="Rechercher..." value={cardSearch}
+                        onChange={(e) => setCardSearch(e.target.value)}
+                        className="w-28 px-2 py-1 rounded-lg text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
+                      />
+                      <button onClick={() => setShowBroadcast(true)} title="Message classe"
+                        className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                        📢
+                      </button>
+                      <button onClick={() => setShowExport(true)} title="Export"
+                        className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                        📋
+                      </button>
+                    </div>
+                  </div>
+                  {budgetData.budgets.filter((b) => !cardSearch || (b.students?.display_name || "").toLowerCase().includes(cardSearch.toLowerCase())).map((b) => (
                     <div key={b.id} className="bg-bw-surface rounded-xl p-3 border border-white/[0.06] space-y-2">
                       <div className="flex items-center gap-2">
                         <span className="text-base">{b.students?.avatar}</span>
@@ -1116,6 +1284,16 @@ function CockpitContent({
                           );
                         })}
                       </div>
+                      {/* Inline actions — uniform with all modules */}
+                      <GenericInlineActions
+                        entityId={b.id}
+                        studentId={b.student_id}
+                        studentName={b.students?.display_name || "Élève"}
+                        onBroadcast={(msg) => { updateSession.mutate({ broadcast_message: msg, broadcast_at: new Date().toISOString() }); toast.success("Envoyé"); }}
+                        onWarn={(sid) => warnStudent.mutate(sid)}
+                        isWarnPending={warnStudent.isPending}
+                        warnings={studentWarnings[b.student_id] || 0}
+                      />
                     </div>
                   ))}
                 </div>
@@ -1128,48 +1306,63 @@ function CockpitContent({
                   <p className="text-sm text-bw-muted">En attente des choix budgetaires...</p>
                 </div>
               )}
+              <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
           {/* ── MODULE 10: Et si... + Pitch overview ── */}
           {showM10Special && (
             <>
-              <div className="glass-card p-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">{isM10Etsi ? "✨" : "🎤"}</span>
-                  <span className="text-sm font-semibold text-bw-heading">
-                    {isM10Etsi ? "Et si..." : "Pitch"}
-                  </span>
-                  <span className="text-[10px] text-bw-muted ml-auto uppercase tracking-wider">
-                    {module10Data?.type === "etsi" ? "Image + écriture"
-                      : module10Data?.type === "qcm" ? "QCM narratif"
-                      : module10Data?.type === "idea-bank" ? "Banque d'idées"
-                      : module10Data?.type === "avatar" ? "Création personnage"
-                      : module10Data?.type === "objectif" ? "Objectif + Obstacle"
-                      : module10Data?.type === "pitch" ? "Assemblage pitch"
-                      : module10Data?.type === "chrono" ? "Test chrono 60s"
-                      : module10Data?.type === "confrontation" ? "Confrontation"
+              {/* Preview guide card */}
+              {isPreviewing && (() => {
+                const m10Label = isM10Etsi
+                  ? (displayIndex === 0 ? "Et si..." : displayIndex === 1 ? "QCM narratif" : "Banque d'idées")
+                  : (displayIndex === 0 ? "Création personnage" : displayIndex === 1 ? "Objectif + Obstacle" : displayIndex === 2 ? "Écriture pitch" : displayIndex === 3 ? "Test chrono" : "Confrontation");
+                const m10Desc = isM10Etsi
+                  ? (displayIndex === 0 ? "Les élèves imaginent un « Et si... » à partir d'une image et rédigent leur scénario alternatif." : displayIndex === 1 ? "QCM de direction narrative — les élèves choisissent parmi plusieurs orientations." : "Les élèves partagent leurs idées dans la banque collective et votent.")
+                  : (displayIndex === 0 ? "Chaque élève crée son personnage avec avatar, traits et objectif." : displayIndex === 1 ? "Définir l'objectif principal et l'obstacle majeur du personnage." : displayIndex === 2 ? "Assembler les éléments en un pitch structuré." : displayIndex === 3 ? "60 secondes pour pitcher oralement." : "Les pitchs s'affrontent, la classe vote.");
+                return <PreviewGuideCard label={m10Label} description={m10Desc} guide={previewGuide} position={displayIndex} />;
+              })()}
+
+              {/* Activity context — hidden when preview guide card is showing same info */}
+              {!isPreviewing && (
+                <div className="glass-card p-4 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{isM10Etsi ? "✨" : "🎤"}</span>
+                    <span className="text-sm font-semibold text-bw-heading">
+                      {isM10Etsi ? "Et si..." : "Pitch"}
+                    </span>
+                    <span className="text-[10px] text-bw-muted ml-auto uppercase tracking-wider">
+                      {module10Data?.type === "etsi" ? "Image + écriture"
+                        : module10Data?.type === "qcm" ? "QCM narratif"
+                        : module10Data?.type === "idea-bank" ? "Banque d'idées"
+                        : module10Data?.type === "avatar" ? "Création personnage"
+                        : module10Data?.type === "objectif" ? "Objectif + Obstacle"
+                        : module10Data?.type === "pitch" ? "Assemblage pitch"
+                        : module10Data?.type === "chrono" ? "Test chrono 60s"
+                        : module10Data?.type === "confrontation" ? "Confrontation"
+                        : ""}
+                    </span>
+                  </div>
+                  <p className="text-xs text-bw-muted leading-relaxed">
+                    {module10Data?.type === "etsi"
+                      ? "Les élèves observent une image et écrivent leur « Et si... »."
+                      : module10Data?.type === "idea-bank"
+                      ? "Les élèves partagent leur meilleure idée « Et si... » et votent pour la plus inspirante."
+                      : module10Data?.type === "avatar"
+                      ? "Les élèves construisent l'identité visuelle de leur personnage : look, prénom, trait de caractère."
+                      : module10Data?.type === "objectif"
+                      ? "Les élèves choisissent ce que leur personnage VEUT (objectif) et ce qui l'en EMPÊCHE (obstacle). C'est le moteur du conflit."
+                      : module10Data?.type === "pitch"
+                      ? "Les élèves écrivent un vrai récit (min 80 car.) à partir de leur personnage, objectif et obstacle. Pas de template — ils racontent l'histoire."
+                      : module10Data?.type === "chrono"
+                      ? "Les élèves lisent leur pitch à voix haute en 60 secondes. Exercice d'oral et de concision."
+                      : module10Data?.type === "confrontation"
+                      ? "Deux pitchs sont projetés. La classe écoute et vote pour celui qui donne le plus envie de voir le film."
                       : ""}
-                  </span>
+                  </p>
                 </div>
-                <p className="text-xs text-bw-muted leading-relaxed">
-                  {module10Data?.type === "etsi"
-                    ? "Les élèves observent une image et écrivent leur « Et si... »."
-                    : module10Data?.type === "idea-bank"
-                    ? "Les élèves partagent leur meilleure idée « Et si... » et votent pour la plus inspirante."
-                    : module10Data?.type === "avatar"
-                    ? "Les élèves construisent l'identité visuelle de leur personnage : look, prénom, trait de caractère."
-                    : module10Data?.type === "objectif"
-                    ? "Les élèves choisissent ce que leur personnage VEUT (objectif) et ce qui l'en EMPÊCHE (obstacle). C'est le moteur du conflit."
-                    : module10Data?.type === "pitch"
-                    ? "Les élèves écrivent un vrai récit (min 80 car.) à partir de leur personnage, objectif et obstacle. Pas de template — ils racontent l'histoire."
-                    : module10Data?.type === "chrono"
-                    ? "Les élèves lisent leur pitch à voix haute en 60 secondes. Exercice d'oral et de concision."
-                    : module10Data?.type === "confrontation"
-                    ? "Deux pitchs sont projetés. La classe écoute et vote pour celui qui donne le plus envie de voir le film."
-                    : ""}
-                </p>
-              </div>
+              )}
 
               {/* Et si... Image — shown to students, visible in dashboard */}
               {module10Data?.type === "etsi" && module10Data.image && (
@@ -1287,36 +1480,37 @@ function CockpitContent({
                 </div>
               )}
 
-              {/* Submission counter */}
-              {module10Data?.submittedCount != null && (
-                <div className="bg-bw-teal/10 rounded-xl p-4 border border-bw-teal/20">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-bw-teal font-medium">
-                      {module10Data.type === "etsi" ? "« Et si... » reçus" :
-                       module10Data.type === "avatar" ? "Personnages créés" :
-                       module10Data.type === "pitch" ? "Pitchs assemblés" :
-                       module10Data.type === "chrono" ? "Chronos terminés" :
-                       module10Data.type === "idea-bank" ? "Idées partagées" :
-                       "Soumissions"}
-                    </span>
-                    <span className="text-xl font-bold text-bw-teal tabular-nums">
-                      {module10Data.submittedCount}/{activeStudents.length}
-                    </span>
-                  </div>
-                  <div className="mt-2 h-2 bg-bw-bg rounded-full overflow-hidden">
-                    <div className="h-full bg-bw-teal rounded-full transition-all"
-                      style={{ width: `${activeStudents.length > 0 ? Math.round(((module10Data.submittedCount || 0) / activeStudents.length) * 100) : 0}%` }} />
-                  </div>
-                </div>
-              )}
               {/* All submissions list (facilitator view for M10 special positions) */}
               {module10Data?.allSubmissions && module10Data.allSubmissions.length > 0 && (
                 <div className="space-y-1.5">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Réponses</span>
-                  {module10Data.allSubmissions.map((sub, i) => (
+                  {/* Toolbar — same style as ResponseStreamSection */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Réponses</span>
+                      <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
+                        module10Data.allSubmissions.length >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
+                      }`}>{module10Data.allSubmissions.length}/{activeStudents.length}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="text" placeholder="Rechercher..." value={cardSearch}
+                        onChange={(e) => setCardSearch(e.target.value)}
+                        className="w-28 px-2 py-1 rounded-lg text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
+                      />
+                      <button onClick={() => setShowBroadcast(true)} title="Message classe"
+                        className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                        📢
+                      </button>
+                      <button onClick={() => setShowExport(true)} title="Export"
+                        className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                        📋
+                      </button>
+                    </div>
+                  </div>
+                  {module10Data.allSubmissions.filter((sub) => !cardSearch || (sub.studentName || "").toLowerCase().includes(cardSearch.toLowerCase()) || (sub.text || "").toLowerCase().includes(cardSearch.toLowerCase())).map((sub, i) => (
                     <motion.div key={sub.studentId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.03 }}
-                      className="bg-bw-surface rounded-xl p-3 border border-white/[0.06]">
+                      className="bg-bw-surface rounded-xl p-3 border border-white/[0.06] space-y-2">
                       <div className="flex items-start gap-2">
                         {sub.avatar && (
                           <DiceBearAvatarMini options={sub.avatar} size={28} />
@@ -1326,148 +1520,175 @@ function CockpitContent({
                           <p className="text-sm text-bw-heading leading-snug mt-0.5 whitespace-pre-wrap">{sub.text}</p>
                         </div>
                       </div>
+                      {/* Inline actions — uniform with all modules */}
+                      <GenericInlineActions
+                        entityId={sub.studentId}
+                        studentId={sub.studentId}
+                        studentName={sub.studentName}
+                        onBroadcast={(msg) => { updateSession.mutate({ broadcast_message: msg, broadcast_at: new Date().toISOString() }); toast.success("Envoyé"); }}
+                        onWarn={(sid) => warnStudent.mutate(sid)}
+                        isWarnPending={warnStudent.isPending}
+                        warnings={studentWarnings[sub.studentId] || 0}
+                      />
                     </motion.div>
                   ))}
                 </div>
               )}
 
-              {/* Idea bank count */}
-              {module10Data?.ideaBankCount != null && module10Data.ideaBankCount > 0 && (
-                <div className="bg-bw-surface rounded-xl p-3 border border-white/[0.06]">
-                  <span className="text-xs text-bw-muted">💡 {module10Data.ideaBankCount} idée(s) dans la banque</span>
-                </div>
-              )}
               {/* Quick phrases for Module 10 special positions */}
               <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
-          {/* ── MODULE 10: Nav pills for all positions ── */}
+          {/* ── MODULE 10: Preview banner + Nav pills for all positions ── */}
           {showM10Special && (
-            <div className="flex items-center gap-1.5 flex-wrap">
-              {Array.from({ length: maxSituations }, (_, i) => {
-                const isCurrent = i === currentQIndex;
-                const isPreview = i === displayIndex;
-                const isPast = i < currentQIndex;
-                const specialLabel = isM10Etsi
-                  ? (i === 0 ? "✨ Et si" : i === 1 ? "Q2" : "💡 Banque")
-                  : (i === 0 ? "🎭 Perso" : i === 1 ? "🎯 Conflit" : i === 2 ? "📝 Pitch" : i === 3 ? "⏱️ Chrono" : "⚔️ Vote");
-                const specialTitle = isM10Etsi
-                  ? (i === 0 ? "Image + écriture « Et si... »" : i === 1 ? "QCM direction narrative" : "Banque d'idées collective")
-                  : (i === 0 ? "Création du personnage" : i === 1 ? "Objectif + Obstacle" : i === 2 ? "Écriture du pitch" : i === 3 ? "Test chrono 60s" : "Confrontation + Vote");
-                return (
-                  <button key={i} onClick={() => previewSituation(i)} title={specialTitle}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 ${
-                      isPreview ? "text-white scale-110 shadow-lg"
-                        : isCurrent ? "ring-2 ring-offset-1 ring-offset-bw-bg text-white"
-                        : isPast ? "bg-bw-teal/15 text-bw-teal"
-                        : "bg-bw-elevated text-bw-muted hover:text-bw-text hover:bg-bw-surface"
-                    }`}
-                    style={isPreview
-                      ? { backgroundColor: "#06B6D4", boxShadow: "0 0 12px rgba(6,182,212,0.4)" }
-                      : isCurrent && !isPreview ? { backgroundColor: "#06B6D4" } : undefined
-                    }>
-                    {isPast && !isPreview ? (
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="inline mr-1"><path d="M5 12l5 5L20 7"/></svg>
-                    ) : null}
-                    {specialLabel}
+            <>
+              {isPreviewing && (
+                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+                  className="bg-bw-amber/10 border border-bw-amber/30 rounded-xl px-4 py-3 flex items-center gap-3">
+                  <span className="text-xs text-bw-amber">Prévisualisation — les élèves ne voient pas ce changement</span>
+                  <div className="flex-1" />
+                  <button onClick={() => setPreviewIndex(null)}
+                    className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">Retour</button>
+                  <button onClick={() => { goToSituation(displayIndex); }}
+                    className="btn-glow text-xs px-3 py-1 bg-bw-amber text-black rounded-xl font-medium cursor-pointer transition-all duration-200 hover:brightness-110">
+                    Lancer
                   </button>
-                );
-              })}
-              <div className="flex-1" />
-              <button onClick={previewPrev} disabled={displayIndex <= 0}
-                className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
-                ←
-              </button>
-              <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
-                className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
-                →
-              </button>
-            </div>
+                </motion.div>
+              )}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {Array.from({ length: maxSituations }, (_, i) => {
+                  const isCurrent = i === currentQIndex;
+                  const isPreview = i === displayIndex;
+                  const isPast = i < currentQIndex;
+                  const specialLabel = isM10Etsi
+                    ? (i === 0 ? "✨ Et si" : i === 1 ? "Q2" : "💡 Banque")
+                    : (i === 0 ? "🎭 Perso" : i === 1 ? "🎯 Conflit" : i === 2 ? "📝 Pitch" : i === 3 ? "⏱️ Chrono" : "⚔️ Vote");
+                  const specialTitle = isM10Etsi
+                    ? (i === 0 ? "Image + écriture « Et si... »" : i === 1 ? "QCM direction narrative" : "Banque d'idées collective")
+                    : (i === 0 ? "Création du personnage" : i === 1 ? "Objectif + Obstacle" : i === 2 ? "Écriture du pitch" : i === 3 ? "Test chrono 60s" : "Confrontation + Vote");
+                  return (
+                    <button key={i} onClick={() => previewSituation(i)} title={specialTitle}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 ${
+                        isPreview && isPreviewing ? "bg-bw-amber text-black shadow-lg shadow-bw-amber/20 scale-110"
+                          : isCurrent ? "bg-bw-pink text-white shadow-lg shadow-bw-pink/20"
+                          : isPast ? "bg-bw-teal/15 text-bw-teal"
+                          : "bg-bw-elevated text-bw-muted hover:text-bw-text hover:bg-bw-surface"
+                      }`}>
+                      {isPast && !isPreview ? (
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="inline mr-1"><path d="M5 12l5 5L20 7"/></svg>
+                      ) : null}
+                      {specialLabel}
+                    </button>
+                  );
+                })}
+                <div className="flex-1" />
+                <button onClick={previewPrev} disabled={displayIndex <= 0}
+                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
+                  ←
+                </button>
+                <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
+                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
+                  →
+                </button>
+              </div>
+            </>
           )}
 
-          {/* ── MODULE 2 EC: Nav pills for special positions ── */}
+          {/* ── MODULE 2 EC: Preview banner + Nav pills for special positions ── */}
           {(showM2ECSpecial || showM2ECComparison) && (
-            <div className="flex items-center gap-1.5">
-              {Array.from({ length: maxSituations }, (_, i) => {
-                const isCurrent = i === currentQIndex;
-                const isPast = i < currentQIndex;
-                const specialLabel = (seance === 1 && i === 0) ? "📋 Checklist"
-                  : (seance === 2 && i === 1) ? "🎬 Scène"
-                  : (seance === 3 && i === 0) ? "⚔️ Duel"
-                  : `Q${i + 1}`;
-                const specialTitle = (seance === 1 && i === 0) ? "Checklist de contenus (3 min)"
-                  : (seance === 2 && i === 1) ? "Construction de scène"
-                  : (seance === 3 && i === 0) ? "Confrontation de scènes"
-                  : `Question ${i + 1}`;
-                return (
-                  <button key={i} onClick={() => previewSituation(i)} title={specialTitle}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 ${
-                      isCurrent ? "bg-bw-pink text-white shadow-lg shadow-bw-pink/20"
-                        : isPast ? "bg-bw-teal/15 text-bw-teal"
-                        : "bg-bw-elevated text-bw-muted hover:text-bw-text hover:bg-bw-surface"
-                    }`}>
-                    {isPast ? (
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="inline mr-1"><path d="M5 12l5 5L20 7"/></svg>
-                    ) : null}
-                    {specialLabel}
+            <>
+              {isPreviewing && (
+                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+                  className="bg-bw-amber/10 border border-bw-amber/30 rounded-xl px-4 py-3 flex items-center gap-3">
+                  <span className="text-xs text-bw-amber">Prévisualisation — les élèves ne voient pas ce changement</span>
+                  <div className="flex-1" />
+                  <button onClick={() => setPreviewIndex(null)}
+                    className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">Retour</button>
+                  <button onClick={() => { goToSituation(displayIndex); }}
+                    className="btn-glow text-xs px-3 py-1 bg-bw-amber text-black rounded-xl font-medium cursor-pointer transition-all duration-200 hover:brightness-110">
+                    Lancer
                   </button>
-                );
-              })}
-              <div className="flex-1" />
-              <button onClick={previewPrev} disabled={displayIndex <= 0}
-                className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
-                ←
-              </button>
-              <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
-                className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
-                →
-              </button>
-            </div>
+                </motion.div>
+              )}
+              <div className="flex items-center gap-1.5">
+                {Array.from({ length: maxSituations }, (_, i) => {
+                  const isCurrent = i === currentQIndex;
+                  const isPreview = i === displayIndex;
+                  const isPast = i < currentQIndex;
+                  const specialLabel = (seance === 1 && i === 0) ? "📋 Checklist"
+                    : (seance === 2 && i === 1) ? "🎬 Scène"
+                    : (seance === 3 && i === 0) ? "⚔️ Duel"
+                    : `Q${i + 1}`;
+                  const specialTitle = (seance === 1 && i === 0) ? "Checklist de contenus (3 min)"
+                    : (seance === 2 && i === 1) ? "Construction de scène"
+                    : (seance === 3 && i === 0) ? "Confrontation de scènes"
+                    : `Question ${i + 1}`;
+                  return (
+                    <button key={i} onClick={() => previewSituation(i)} title={specialTitle}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 ${
+                        isPreview && isPreviewing ? "bg-bw-amber text-black shadow-lg shadow-bw-amber/20 scale-110"
+                          : isCurrent ? "bg-bw-pink text-white shadow-lg shadow-bw-pink/20"
+                          : isPast ? "bg-bw-teal/15 text-bw-teal"
+                          : "bg-bw-elevated text-bw-muted hover:text-bw-text hover:bg-bw-surface"
+                      }`}>
+                      {isPast && !isPreview ? (
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="inline mr-1"><path d="M5 12l5 5L20 7"/></svg>
+                      ) : null}
+                      {specialLabel}
+                    </button>
+                  );
+                })}
+                <div className="flex-1" />
+                <button onClick={previewPrev} disabled={displayIndex <= 0}
+                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
+                  ←
+                </button>
+                <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
+                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
+                  →
+                </button>
+              </div>
+            </>
           )}
 
           {/* ── MODULE 2 EC: Checklist cockpit ── */}
           {showM2ECChecklist && (
             <>
-              {/* What students are doing */}
-              <div className="glass-card !border-bw-pink/20 p-4 space-y-3">
+              {/* Preview guide card */}
+              {isPreviewing && <PreviewGuideCard label="Checklist" description="Les élèves choisissent 3 contenus minimum parmi 20 oeuvres, puis sélectionnent celui qui les touche le plus." guide={previewGuide} position={displayIndex} />}
+
+              {/* Toolbar — same style as ResponseStreamSection */}
+              <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <div className="led led-writing" style={{ background: "#EC4899", boxShadow: "0 0 8px rgba(236,72,153,0.5)" }} />
-                  <span className="text-sm font-semibold text-bw-pink">Étape 1 — Checklist</span>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Checklists</span>
+                  <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
+                    (module5Data?.submittedCount || 0) >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
+                  }`}>{module5Data?.submittedCount || 0}/{activeStudents.length}</span>
                 </div>
-                <p className="text-xs text-bw-muted leading-relaxed">
-                  Les élèves choisissent <span className="text-bw-heading font-medium">3 contenus minimum</span> parmi ces 20 oeuvres,
-                  puis sélectionnent <span className="text-bw-heading font-medium">celui qui les touche le plus</span>.
-                </p>
-              </div>
-
-              {/* Full catalog grid */}
-              <div className="bg-bw-surface rounded-xl p-4 border border-white/[0.06] space-y-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Catalogue proposé aux élèves</span>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {CONTENT_CATALOG.map((c) => (
-                    <div key={c.key} className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl bg-bw-bg border border-white/[0.06]">
-                      <span className="text-sm">{c.emoji}</span>
-                      <span className="text-xs text-bw-text truncate">{c.label}</span>
-                      <span className="ml-auto text-[9px] text-bw-muted">{c.type}</span>
-                    </div>
-                  ))}
+                <div className="flex items-center gap-1">
+                  <button onClick={() => setShowBroadcast(true)} title="Message classe"
+                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                    📢
+                  </button>
+                  <button onClick={() => setShowExport(true)} title="Export"
+                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                    📋
+                  </button>
                 </div>
               </div>
 
-              {/* Live stats — submissions */}
-              {module5Data?.type === "checklist" && (
-                <div className="bg-bw-pink/10 rounded-xl p-4 border border-bw-pink/20">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-bw-pink font-medium">Checklists soumises</span>
-                    <span className="text-xl font-bold text-bw-pink tabular-nums">
-                      {module5Data.submittedCount || 0}/{activeStudents.length}
-                    </span>
+              {/* What students are doing — hidden when preview guide shows same info */}
+              {!isPreviewing && (
+                <div className="glass-card !border-bw-pink/20 p-4 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className="led led-writing" style={{ background: "#EC4899", boxShadow: "0 0 8px rgba(236,72,153,0.5)" }} />
+                    <span className="text-sm font-semibold text-bw-pink">Étape 1 — Checklist</span>
                   </div>
-                  <div className="mt-2 h-2 bg-bw-bg rounded-full overflow-hidden">
-                    <div className="h-full bg-bw-pink rounded-full transition-all"
-                      style={{ width: `${activeStudents.length > 0 ? Math.round(((module5Data.submittedCount || 0) / activeStudents.length) * 100) : 0}%` }} />
-                  </div>
+                  <p className="text-xs text-bw-muted leading-relaxed">
+                    Les élèves choisissent <span className="text-bw-heading font-medium">3 contenus minimum</span> parmi ces 20 oeuvres,
+                    puis sélectionnent <span className="text-bw-heading font-medium">celui qui les touche le plus</span>.
+                  </p>
                 </div>
               )}
 
@@ -1507,85 +1728,40 @@ function CockpitContent({
                   <p className="text-xs text-bw-muted">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
                 </div>
               )}
+              <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
           {/* ── MODULE 2 EC: Scene Builder cockpit ── */}
           {showM2ECSceneBuilder && (
             <>
-              {/* What students are doing */}
-              <div className="glass-card !border-bw-pink/20 p-4 space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className="led led-writing" style={{ background: "#EC4899", boxShadow: "0 0 8px rgba(236,72,153,0.5)" }} />
-                  <span className="text-sm font-semibold text-bw-pink">Étape 2 — Construction de scène</span>
-                </div>
-                <p className="text-xs text-bw-muted leading-relaxed">
-                  Chaque élève construit une scène autour de <span className="text-bw-heading font-medium">l'émotion qu'il a choisie</span>.
-                  Il rédige <span className="text-bw-heading font-medium">intention + obstacle + changement</span>,
-                  puis choisit des éléments de mise en scène.
-                </p>
-                <div className="flex gap-3 text-xs">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-white/[0.06]">
-                    <span>📦</span><span className="text-bw-text">{MAX_SLOTS} emplacements</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-white/[0.06]">
-                    <span>🪙</span><span className="text-bw-text">{MAX_TOKENS} jetons max</span>
-                  </div>
-                </div>
-              </div>
+              {/* Preview guide card */}
+              {isPreviewing && <PreviewGuideCard label="Construction de scène" description="Chaque élève construit une scène autour de l'émotion choisie : intention, obstacle, changement + éléments de mise en scène." guide={previewGuide} position={displayIndex} />}
 
-              {/* Emotions available */}
-              <div className="bg-bw-surface rounded-xl p-4 border border-white/[0.06] space-y-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">5 émotions proposées</span>
-                <div className="flex flex-wrap gap-1.5">
-                  {EMOTIONS.map((emo) => (
-                    <span key={emo.key} className="text-xs px-2.5 py-1 rounded-full font-medium"
-                      style={{ backgroundColor: `${emo.color}20`, color: emo.color }}>
-                      {emo.label}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Elements catalog by tier */}
-              <div className="bg-bw-surface rounded-xl p-4 border border-white/[0.06] space-y-3">
-                <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Éléments de mise en scène</span>
-                {[0, 1, 2, 3].map((tier) => {
-                  const tierElements = SCENE_ELEMENTS.filter(e => e.tier === tier);
-                  return (
-                    <div key={tier} className="space-y-1">
-                      <span className="text-[10px] font-medium" style={{ color: TIER_COLORS[tier] }}>
-                        {TIER_LABELS[tier]}
-                      </span>
-                      <div className="flex flex-wrap gap-1">
-                        {tierElements.map((el) => (
-                          <span key={el.key} className="text-[10px] px-1.5 py-0.5 rounded border"
-                            style={{ borderColor: `${TIER_COLORS[tier]}30`, color: TIER_COLORS[tier], backgroundColor: `${TIER_COLORS[tier]}08` }}>
-                            {el.label}
-                          </span>
-                        ))}
-                      </div>
+              {/* What students are doing — hidden when preview guide shows same info */}
+              {!isPreviewing && (
+                <div className="glass-card !border-bw-pink/20 p-4 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className="led led-writing" style={{ background: "#EC4899", boxShadow: "0 0 8px rgba(236,72,153,0.5)" }} />
+                    <span className="text-sm font-semibold text-bw-pink">Étape 2 — Construction de scène</span>
+                  </div>
+                  <p className="text-xs text-bw-muted leading-relaxed">
+                    Chaque élève construit une scène autour de <span className="text-bw-heading font-medium">l'émotion qu'il a choisie</span>.
+                    Il rédige <span className="text-bw-heading font-medium">intention + obstacle + changement</span>,
+                    puis choisit des éléments de mise en scène.
+                  </p>
+                  <div className="flex gap-3 text-xs">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-white/[0.06]">
+                      <span>📦</span><span className="text-bw-text">{MAX_SLOTS} emplacements</span>
                     </div>
-                  );
-                })}
-              </div>
-
-              {/* Live stats — submissions */}
-              {module5Data?.type === "scene-builder" && (
-                <div className="bg-bw-pink/10 rounded-xl p-4 border border-bw-pink/20">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-bw-pink font-medium">Scènes construites</span>
-                    <span className="text-xl font-bold text-bw-pink tabular-nums">
-                      {module5Data.submittedCount || 0}/{activeStudents.length}
-                    </span>
-                  </div>
-                  <div className="mt-2 h-2 bg-bw-bg rounded-full overflow-hidden">
-                    <div className="h-full bg-bw-pink rounded-full transition-all"
-                      style={{ width: `${activeStudents.length > 0 ? Math.round(((module5Data.submittedCount || 0) / activeStudents.length) * 100) : 0}%` }} />
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-white/[0.06]">
+                      <span>🪙</span><span className="text-bw-text">{MAX_TOKENS} jetons max</span>
+                    </div>
                   </div>
                 </div>
               )}
 
+              {/* Emotions available */}
               {/* Emotion distribution when available */}
               {module5Data?.emotionDistribution && Object.keys(module5Data.emotionDistribution).length > 0 && (
                 <Module5EmotionDistribution emotionDistribution={module5Data.emotionDistribution} />
@@ -1594,8 +1770,31 @@ function CockpitContent({
               {/* Scene cards from scenesData */}
               {scenesData && scenesData.scenes.length > 0 && (
                 <div className="space-y-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Scènes des élèves ({scenesData.count})</span>
-                  {scenesData.scenes.map((sc, i) => {
+                  {/* Toolbar — same style as ResponseStreamSection */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Scènes</span>
+                      <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
+                        scenesData.count >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
+                      }`}>{scenesData.count}/{activeStudents.length}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="text" placeholder="Rechercher..." value={cardSearch}
+                        onChange={(e) => setCardSearch(e.target.value)}
+                        className="w-28 px-2 py-1 rounded-lg text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
+                      />
+                      <button onClick={() => setShowBroadcast(true)} title="Message classe"
+                        className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                        📢
+                      </button>
+                      <button onClick={() => setShowExport(true)} title="Export"
+                        className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                        📋
+                      </button>
+                    </div>
+                  </div>
+                  {scenesData.scenes.filter((sc) => !cardSearch || (sc.students?.display_name || "").toLowerCase().includes(cardSearch.toLowerCase()) || sc.intention?.toLowerCase().includes(cardSearch.toLowerCase()) || sc.obstacle?.toLowerCase().includes(cardSearch.toLowerCase())).map((sc, i) => {
                     const emo = EMOTIONS.find(e => e.key === sc.emotion);
                     return (
                       <motion.div key={sc.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
@@ -1624,6 +1823,16 @@ function CockpitContent({
                           })}
                           <span className="ml-auto text-[10px] text-bw-muted tabular-nums">{sc.tokens_used}🪙 {sc.slots_used}/5📦</span>
                         </div>
+                        {/* Inline actions — uniform with all modules */}
+                        <GenericInlineActions
+                          entityId={sc.id}
+                          studentId={sc.student_id}
+                          studentName={sc.students?.display_name || "Élève"}
+                          onBroadcast={(msg) => { updateSession.mutate({ broadcast_message: msg, broadcast_at: new Date().toISOString() }); toast.success("Envoyé"); }}
+                          onWarn={(sid) => warnStudent.mutate(sid)}
+                          isWarnPending={warnStudent.isPending}
+                          warnings={studentWarnings[sc.student_id] || 0}
+                        />
                       </motion.div>
                     );
                   })}
@@ -1639,23 +1848,54 @@ function CockpitContent({
                   <p className="text-xs text-bw-muted">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
                 </div>
               )}
+              <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
           {/* ── MODULE 2 EC: Comparison cockpit (séance 3) ── */}
           {showM2ECComparison && (
             <>
-              {/* What students are doing */}
-              <div className="glass-card !border-bw-pink/20 p-4 space-y-3">
+              {/* Preview guide card */}
+              {isPreviewing && <PreviewGuideCard label="Confrontation" description="Sélectionnez 2 scènes à projeter côte-à-côte. La classe compare les choix narratifs et les éléments de mise en scène." guide={previewGuide} position={displayIndex} />}
+
+              {/* Toolbar — same style as ResponseStreamSection */}
+              <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <div className="led led-writing" style={{ background: "#EC4899", boxShadow: "0 0 8px rgba(236,72,153,0.5)" }} />
-                  <span className="text-sm font-semibold text-bw-pink">Étape 3 — Confrontation</span>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Confrontation</span>
+                  <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
+                    (scenesData?.count || 0) >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
+                  }`}>{scenesData?.count || 0}/{activeStudents.length}</span>
                 </div>
-                <p className="text-xs text-bw-muted leading-relaxed">
-                  Sélectionnez <span className="text-bw-heading font-medium">2 scènes</span> à projeter côte-à-côte.
-                  La classe compare les choix narratifs et les éléments de mise en scène.
-                </p>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="text" placeholder="Rechercher..." value={cardSearch}
+                    onChange={(e) => setCardSearch(e.target.value)}
+                    className="w-28 px-2 py-1 rounded-lg text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
+                  />
+                  <button onClick={() => setShowBroadcast(true)} title="Message classe"
+                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                    📢
+                  </button>
+                  <button onClick={() => setShowExport(true)} title="Export"
+                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                    📋
+                  </button>
+                </div>
               </div>
+
+              {/* What students are doing — hidden when preview guide shows same info */}
+              {!isPreviewing && (
+                <div className="glass-card !border-bw-pink/20 p-4 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className="led led-writing" style={{ background: "#EC4899", boxShadow: "0 0 8px rgba(236,72,153,0.5)" }} />
+                    <span className="text-sm font-semibold text-bw-pink">Étape 3 — Confrontation</span>
+                  </div>
+                  <p className="text-xs text-bw-muted leading-relaxed">
+                    Sélectionnez <span className="text-bw-heading font-medium">2 scènes</span> à projeter côte-à-côte.
+                    La classe compare les choix narratifs et les éléments de mise en scène.
+                  </p>
+                </div>
+              )}
 
               {/* Scene picker — teacher selects 2 scenes */}
               {scenesData && scenesData.scenes.length > 0 && (
@@ -1679,7 +1919,7 @@ function CockpitContent({
                   </div>
 
                   <div className="space-y-2">
-                    {scenesData.scenes.map((sc, i) => {
+                    {scenesData.scenes.filter((sc) => !cardSearch || (sc.students?.display_name || "").toLowerCase().includes(cardSearch.toLowerCase()) || sc.intention?.toLowerCase().includes(cardSearch.toLowerCase())).map((sc, i) => {
                       const emo = EMOTIONS.find(e => e.key === sc.emotion);
                       const isSelected = selectedSceneIds.includes(sc.id);
                       return (
@@ -1724,6 +1964,18 @@ function CockpitContent({
                             })}
                             <span className="ml-auto text-[10px] text-bw-muted tabular-nums">{sc.tokens_used}🪙 {sc.slots_used}/5📦</span>
                           </div>
+                          {/* Inline actions — uniform with all modules */}
+                          <div className="pl-7">
+                            <GenericInlineActions
+                              entityId={sc.id}
+                              studentId={sc.student_id}
+                              studentName={sc.students?.display_name || "Élève"}
+                              onBroadcast={(msg) => { updateSession.mutate({ broadcast_message: msg, broadcast_at: new Date().toISOString() }); toast.success("Envoyé"); }}
+                              onWarn={(sid) => warnStudent.mutate(sid)}
+                              isWarnPending={warnStudent.isPending}
+                              warnings={studentWarnings[sc.student_id] || 0}
+                            />
+                          </div>
                         </motion.div>
                       );
                     })}
@@ -1739,6 +1991,7 @@ function CockpitContent({
                   <p className="text-sm text-bw-muted">En attente des scènes des élèves...</p>
                 </div>
               )}
+              <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
@@ -1794,8 +2047,8 @@ function CockpitContent({
             </motion.div>
           )}
 
-          {/* ── RESPONSE STREAM (Standard Q&A — responding) ── */}
-          {!focusMode && isStandardQA && session.status !== "done" && session.status !== "paused" && !(session.status === "voting" || session.status === "reviewing") && (
+          {/* ── RESPONSE STREAM (Standard Q&A + M1 Image/Notebook — responding) ── */}
+          {!focusMode && (isStandardQA || isM1Image || isM1Notebook) && session.status !== "done" && session.status !== "paused" && !(session.status === "voting" || session.status === "reviewing") && (
             <ResponseStreamSection
               filteredResponses={filteredResponses as ResponseCardResponse[]}
               responses={responses}
@@ -1839,8 +2092,8 @@ function CockpitContent({
             />
           )}
 
-          {/* ── RESPONSES LIST (M1/Budget — simpler display) ── */}
-          {!isStandardQA && session.status !== "done" && responses.length > 0 && (
+          {/* ── RESPONSES LIST (Budget/other — simpler display with inline actions) ── */}
+          {!isStandardQA && !isM1Image && !isM1Notebook && session.status !== "done" && responses.length > 0 && (
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Reponses</span>
@@ -1914,7 +2167,7 @@ function CockpitContent({
           )}
 
           {/* M1/Budget empty state */}
-          {!isStandardQA && session.status === "responding" && responses.length === 0 && !isBudgetQuiz && !isM2ECChecklist && !isM2ECSceneBuilder && !isM2ECComparison && (
+          {!isStandardQA && !isM1Image && !isM1Notebook && session.status === "responding" && responses.length === 0 && !isBudgetQuiz && !isM2ECChecklist && !isM2ECSceneBuilder && !isM2ECComparison && (
             <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-5 text-center space-y-2">
               <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                 className="text-2xl">✍️</motion.div>
@@ -2019,6 +2272,7 @@ function CockpitContent({
                 sessionStatus={session.status}
                 timerEndsAt={session.timer_ends_at}
                 currentSituationIndex={session.current_situation_index || 0}
+                totalSituations={totalQuestions}
                 isStandardQA={isStandardQA}
                 onSetTimer={(timerEndsAt) => updateSession.mutate({ timer_ends_at: timerEndsAt })}
                 onPrevQuestion={handlePrevQuestion}
@@ -2850,7 +3104,7 @@ export default function PilotPage() {
             showStudents={showStudents}
             setShowStudents={setShowStudents}
             sidebarWidth={sidebarWidth}
-
+            totalQuestions={totalQuestions}
             onSelectStudent={(s) => { setSelectedStudentId(s.id); setShowStudents(false); }}
           />
           </ErrorBoundary>

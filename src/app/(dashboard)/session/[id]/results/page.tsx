@@ -14,6 +14,7 @@ import { PageShell } from "@/components/page-shell";
 import { DashboardHeader } from "@/components/dashboard-header";
 import FilmPosterExport from "@/components/film-poster-export";
 import { SessionComparison } from "@/components/session-comparison";
+import { FestivalPalmares } from "@/components/festival-palmares";
 import type { PosterChoice, PosterStudent } from "@/components/film-poster";
 
 interface ExportData {
@@ -134,6 +135,11 @@ export default function ResultsPage() {
   const [fiche, setFiche] = useState<FicheData | null>(null);
   const [ficheLoading, setFicheLoading] = useState(false);
   const [ficheProvider, setFicheProvider] = useState<string | null>(null);
+
+  // Bible du Film state
+  const [bible, setBible] = useState<{ logline: string; synopsis: string; characters: { name: string; role: string; description: string; arc: string }[]; world: { setting: string; atmosphere: string; rules: string }; conflict: { central: string; stakes: string; antagonist: string }; structure: { act1: string; act2: string; act3: string }; style: { genre: string; tone: string; influences: string[]; visualIdentity: string }; themes: string[] } | null>(null);
+  const [bibleLoading, setBibleLoading] = useState(false);
+  const [bibleProvider, setBibleProvider] = useState<string | null>(null);
 
   // Fiche level tab
   const [ficheTab, setFicheTab] = useState<"primaire" | "college" | "lycee">("college");
@@ -271,6 +277,20 @@ export default function ResultsPage() {
       .catch(() => {});
   }, [sessionId, checkingAuth]);
 
+  // Try loading cached bible on mount
+  useEffect(() => {
+    if (checkingAuth) return;
+    fetch(`/api/sessions/${sessionId}/bible`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.bible) {
+          setBible(data.bible);
+          setBibleProvider(data.provider);
+        }
+      })
+      .catch(() => {});
+  }, [sessionId, checkingAuth]);
+
   // Auto-scroll to section from ?tab= query param — observes DOM until target appears
   useEffect(() => {
     if (autoScrolled.current) return;
@@ -281,6 +301,8 @@ export default function ResultsPage() {
       bilan: "section-bilan-educatif",
       "bilan-ia": "section-bilan-ia",
       fiche: "section-fiche-cours",
+      bible: "section-bible-film",
+      festival: "section-festival",
     };
     const targetId = sectionMap[tab];
     if (!targetId) return;
@@ -309,7 +331,7 @@ export default function ResultsPage() {
 
   // Track active section for sticky nav highlight
   useEffect(() => {
-    const ids = ["section-histoire", "section-bilan-educatif", "section-bilan-ia", "section-fiche-cours"];
+    const ids = ["section-histoire", "section-bilan-educatif", "section-bilan-ia", "section-fiche-cours", "section-bible-film", "section-festival"];
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -531,6 +553,8 @@ export default function ResultsPage() {
               { id: "section-bilan-educatif", label: "Bilan educatif", icon: "M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01 9 11.01" },
               { id: "section-bilan-ia", label: "Bilan IA", icon: "M12 2a10 10 0 110 20 10 10 0 010-20zM12 6v6l4 2" },
               { id: "section-fiche-cours", label: "Fiche de cours", icon: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6" },
+              { id: "section-bible-film", label: "Bible du Film", icon: "M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 006.5 22H20V2H6.5A2.5 2.5 0 004 4.5v15z" },
+              { id: "section-festival", label: "Festival", icon: "M6 9H4.5a2.5 2.5 0 010-5C5.3 4 6 4.7 6 5.5V9zm12 0h1.5a2.5 2.5 0 000-5c-.8 0-1.5.7-1.5 1.5V9zM4 22h16v-7H4v7zM4 15h16V9H4v6zm4-6V4m8 5V4" },
             ].map((nav) => {
               const isActive = activeSection === nav.id;
               return (
@@ -1123,6 +1147,154 @@ export default function ResultsPage() {
             </div>
           )}
         </div>
+
+        {/* ——— BIBLE DU FILM ——— */}
+        <div className="space-y-4 scroll-mt-16">
+          <div className="flex items-center justify-between gap-4">
+            <h2 id="section-bible-film" className="font-cinema text-xl tracking-wide uppercase text-bw-ink scroll-mt-16">Bible du Film</h2>
+            {!bible && !bibleLoading && (
+              <Button size="sm" variant="default" className="bg-bw-violet hover:bg-bw-violet/90 shadow-none"
+                onClick={async () => {
+                  setBibleLoading(true);
+                  try {
+                    const res = await fetch(`/api/sessions/${sessionId}/bible`, { method: "POST" });
+                    const data = await res.json();
+                    if (data?.bible) { setBible(data.bible); setBibleProvider(data.provider); }
+                  } catch { /* */ } finally { setBibleLoading(false); }
+                }}>
+                Générer la Bible
+              </Button>
+            )}
+            {bible && (
+              <Button size="sm" variant="ghost" className="text-bw-muted text-xs"
+                onClick={async () => {
+                  setBibleLoading(true);
+                  try {
+                    const res = await fetch(`/api/sessions/${sessionId}/bible?force=true`, { method: "POST" });
+                    const data = await res.json();
+                    if (data?.bible) { setBible(data.bible); setBibleProvider(data.provider); }
+                  } catch { /* */ } finally { setBibleLoading(false); }
+                }}>
+                Régénérer
+              </Button>
+            )}
+          </div>
+
+          {bibleLoading && (
+            <Card><CardContent className="py-8 text-center">
+              <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                className="w-6 h-6 border-2 border-bw-violet border-t-transparent rounded-full mx-auto mb-3" />
+              <p className="text-sm text-bw-muted">Génération de la Bible du Film...</p>
+            </CardContent></Card>
+          )}
+
+          {bible && (
+            <div className="grid gap-4">
+              {/* Logline */}
+              <Card className="border-l-4 border-l-bw-primary">
+                <CardContent>
+                  <Badge variant="default" className="uppercase text-[10px] mb-2">Logline</Badge>
+                  <p className="text-lg font-medium text-bw-ink italic">&ldquo;{bible.logline}&rdquo;</p>
+                </CardContent>
+              </Card>
+
+              {/* Synopsis */}
+              <Card>
+                <CardHeader><CardTitle className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Synopsis</CardTitle></CardHeader>
+                <CardContent><p className="text-sm text-bw-text leading-relaxed">{bible.synopsis}</p></CardContent>
+              </Card>
+
+              {/* Characters */}
+              {bible.characters && bible.characters.length > 0 && (
+                <Card>
+                  <CardHeader><CardTitle className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Personnages</CardTitle></CardHeader>
+                  <CardContent>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {bible.characters.map((c, i) => (
+                        <div key={i} className="bg-bw-surface rounded-xl p-3 border border-bw-border">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-sm font-semibold text-bw-ink">{c.name}</span>
+                            <Badge variant="secondary" className="text-[9px]">{c.role}</Badge>
+                          </div>
+                          <p className="text-xs text-bw-text mb-1">{c.description}</p>
+                          <p className="text-[10px] text-bw-muted italic">Arc : {c.arc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* World */}
+              <Card>
+                <CardHeader><CardTitle className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Univers</CardTitle></CardHeader>
+                <CardContent className="space-y-2">
+                  <div><span className="text-[10px] font-bold text-bw-violet uppercase">Lieu & Époque</span><p className="text-sm text-bw-text">{bible.world.setting}</p></div>
+                  <div><span className="text-[10px] font-bold text-bw-violet uppercase">Ambiance</span><p className="text-sm text-bw-text">{bible.world.atmosphere}</p></div>
+                  {bible.world.rules && <div><span className="text-[10px] font-bold text-bw-violet uppercase">Règles</span><p className="text-sm text-bw-text">{bible.world.rules}</p></div>}
+                </CardContent>
+              </Card>
+
+              {/* Conflict */}
+              <Card className="border-l-4 border-l-bw-danger">
+                <CardHeader><CardTitle className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Conflit Central</CardTitle></CardHeader>
+                <CardContent className="space-y-2">
+                  <p className="text-sm text-bw-text">{bible.conflict.central}</p>
+                  <div className="flex gap-4 text-xs">
+                    <div><span className="font-bold text-bw-amber">Enjeux : </span><span className="text-bw-text">{bible.conflict.stakes}</span></div>
+                  </div>
+                  <p className="text-xs text-bw-muted">{bible.conflict.antagonist}</p>
+                </CardContent>
+              </Card>
+
+              {/* Structure */}
+              <Card>
+                <CardHeader><CardTitle className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Structure en 3 Actes</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {(["act1", "act2", "act3"] as const).map((act, i) => (
+                      <div key={act} className="flex gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-bw-violet/10 border border-bw-violet/20 flex items-center justify-center text-xs font-bold text-bw-violet">{i + 1}</div>
+                        <div><p className="text-[10px] font-bold text-bw-muted uppercase mb-0.5">{i === 0 ? "Exposition" : i === 1 ? "Confrontation" : "Résolution"}</p><p className="text-sm text-bw-text">{bible.structure[act]}</p></div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Style & Themes */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Card>
+                  <CardHeader><CardTitle className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Style</CardTitle></CardHeader>
+                  <CardContent className="space-y-2">
+                    <div><span className="text-[10px] font-bold text-bw-violet uppercase">Genre</span><p className="text-sm text-bw-text">{bible.style.genre}</p></div>
+                    <div><span className="text-[10px] font-bold text-bw-violet uppercase">Ton</span><p className="text-sm text-bw-text">{bible.style.tone}</p></div>
+                    <div><span className="text-[10px] font-bold text-bw-violet uppercase">Identité visuelle</span><p className="text-sm text-bw-text">{bible.style.visualIdentity}</p></div>
+                    {bible.style.influences && bible.style.influences.length > 0 && (
+                      <div>
+                        <span className="text-[10px] font-bold text-bw-violet uppercase">Influences</span>
+                        <div className="flex flex-wrap gap-1 mt-1">{bible.style.influences.map((inf, i) => <Badge key={i} variant="secondary" className="text-[10px]">{inf}</Badge>)}</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader><CardTitle className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Thèmes</CardTitle></CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">{bible.themes?.map((t, i) => <Badge key={i} variant="teal" className="text-xs">{t}</Badge>)}</div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {bibleProvider && (
+                <p className="text-[10px] text-bw-muted text-right">Généré par {bibleProvider === "fallback" ? "algorithme" : bibleProvider}</p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Festival & Palmarès */}
+        <FestivalPalmares sessionId={sessionId} />
 
         {/* Session comparison */}
         <SessionComparison sessionId={sessionId} />

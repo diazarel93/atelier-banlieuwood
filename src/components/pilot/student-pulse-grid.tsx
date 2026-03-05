@@ -9,6 +9,7 @@ interface StudentPulse {
   display_name: string;
   avatar: string;
   state: StudentState;
+  hand_raised_at?: string | null;
 }
 
 interface Team {
@@ -74,8 +75,18 @@ const StudentPulseItem = memo(function StudentPulseItem({
       {student.state === "responded" && (
         <span className="text-[9px] text-bw-teal font-bold">OK</span>
       )}
-      {student.state === "stuck" && (
+      {student.state === "stuck" && !student.hand_raised_at && (
         <span className="text-[9px] text-bw-amber font-bold">?</span>
+      )}
+      {student.hand_raised_at && (
+        <motion.span
+          animate={{ y: [0, -2, 0] }}
+          transition={{ repeat: Infinity, duration: 0.8 }}
+          className="text-sm"
+          title="Main levée — a besoin d'aide"
+        >
+          ✋
+        </motion.span>
       )}
       {onRemove && (
         <button

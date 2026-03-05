@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion } from "motion/react";
 import { useTypewriter } from "@/hooks/use-typewriter";
+import { CATEGORY_COLORS, CATEGORY_LABELS } from "@/lib/constants";
 import type { SessionState } from "@/hooks/use-session-polling";
 
 export interface SituationStateProps {
@@ -19,6 +20,17 @@ export function SituationState({
   const [text, setText] = useState("");
   const { displayed, done, skip } = useTypewriter(situation.prompt);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Word count
+  const wordCount = useMemo(() => {
+    const trimmed = text.trim();
+    if (!trimmed) return 0;
+    return trimmed.split(/\s+/).length;
+  }, [text]);
+
+  // Category color
+  const catColor = CATEGORY_COLORS[situation.category] || "#FF6B35";
+  const catLabel = CATEGORY_LABELS[situation.category] || situation.category;
 
   // Auto-focus when typewriter finishes
   useEffect(() => {
@@ -46,13 +58,30 @@ export function SituationState({
       exit={{ opacity: 0 }}
       className="flex flex-col gap-5 w-full"
     >
+      {/* Category badge + restitution label */}
+      {(situation.category || situation.restitutionLabel) && (
+        <div className="flex items-center gap-2 flex-wrap">
+          {situation.category && (
+            <span
+              className="text-[10px] font-bold uppercase px-2.5 py-1 rounded-full tracking-wider"
+              style={{ background: `${catColor}20`, color: catColor, border: `1px solid ${catColor}30` }}
+            >
+              {catLabel}
+            </span>
+          )}
+          {situation.restitutionLabel && (
+            <span className="text-xs text-bw-muted italic">{situation.restitutionLabel}</span>
+          )}
+        </div>
+      )}
+
       {/* Prompt with typewriter */}
       <div
         role="button"
         tabIndex={0}
         aria-label="Cliquer pour accelerer le texte"
         className="rounded-xl p-3 sm:p-5 min-h-[80px] sm:min-h-[120px] text-base sm:text-lg leading-relaxed cursor-pointer border border-white/[0.06]"
-        style={{ background: "linear-gradient(135deg, rgba(255,107,53,0.06), rgba(26,26,26,0.8))" }}
+        style={{ background: `linear-gradient(135deg, ${catColor}08, rgba(26,26,26,0.8))` }}
         onClick={() => !done && skip()}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); !done && skip(); } }}
       >
@@ -85,18 +114,23 @@ export function SituationState({
             className="h-full rounded-full"
             animate={{
               width: `${(text.length / 500) * 100}%`,
-              backgroundColor: text.length >= 480 ? "#EF4444" : text.length >= 400 ? "#F59E0B" : "#FF6B35",
+              backgroundColor: text.length >= 480 ? "#EF4444" : text.length >= 400 ? "#F59E0B" : catColor,
             }}
             transition={{ duration: 0.2 }}
           />
         </div>
 
         <div className="flex justify-between items-center">
-          <span className={`text-xs transition-colors ${
-            text.length >= 480 ? "text-bw-danger" : text.length >= 400 ? "text-bw-amber" : "text-bw-muted"
-          }`}>
-            {text.length}/500
-          </span>
+          <div className="flex items-center gap-3">
+            <span className={`text-xs transition-colors ${
+              text.length >= 480 ? "text-bw-danger" : text.length >= 400 ? "text-bw-amber" : "text-bw-muted"
+            }`}>
+              {text.length}/500
+            </span>
+            <span className="text-xs text-bw-muted tabular-nums">
+              {wordCount} mot{wordCount > 1 ? "s" : ""}
+            </span>
+          </div>
           <motion.button
             whileTap={{ scale: 0.95 }}
             whileHover={text.trim() && !submitting ? { scale: 1.03 } : undefined}

@@ -6,16 +6,28 @@ export interface TimerSectionProps {
   sessionStatus: string;
   timerEndsAt: string | null;
   currentSituationIndex: number;
+  totalSituations?: number;
   isStandardQA: boolean;
   onSetTimer: (timerEndsAt: string) => void;
   onPrevQuestion: () => void;
   onCloseResponses: () => void;
 }
 
+/** Estimate remaining time based on ~90s per question */
+function formatEstimate(remaining: number): string {
+  const mins = Math.ceil((remaining * 1.5)); // ~90s per Q = 1.5 min
+  if (mins <= 1) return "~1 min";
+  if (mins < 60) return `~${mins} min`;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return m > 0 ? `~${h}h${m.toString().padStart(2, "0")}` : `~${h}h`;
+}
+
 export function TimerSection({
   sessionStatus,
   timerEndsAt,
   currentSituationIndex,
+  totalSituations,
   isStandardQA,
   onSetTimer,
   onPrevQuestion,
@@ -24,8 +36,30 @@ export function TimerSection({
   const [customTimerOpen, setCustomTimerOpen] = useState(false);
   const [customTimerValue, setCustomTimerValue] = useState("");
 
+  const remainingQuestions = totalSituations != null ? totalSituations - currentSituationIndex - 1 : null;
+
   return (
     <div className="flex items-center gap-1.5">
+      {/* Progress + time estimate badge */}
+      {totalSituations != null && totalSituations > 0 && (
+        <div className="flex items-center gap-1.5 mr-1">
+          <span className="text-[10px] text-bw-muted tabular-nums">
+            Q{currentSituationIndex + 1}/{totalSituations}
+          </span>
+          {remainingQuestions != null && remainingQuestions > 0 && (
+            <span className="text-[9px] text-bw-muted/60" title={`${remainingQuestions} questions restantes, estimation basée sur ~90s/question`}>
+              ({formatEstimate(remainingQuestions)})
+            </span>
+          )}
+          <div className="w-16 h-1 rounded-full bg-white/[0.06] overflow-hidden">
+            <div
+              className="h-full rounded-full bg-bw-teal/50 transition-all duration-500"
+              style={{ width: `${((currentSituationIndex + 1) / totalSituations) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
+
       {(sessionStatus === "responding" || sessionStatus === "voting") && !timerEndsAt ? (
         <>
           <span className="text-[11px] text-bw-muted">Timer</span>

@@ -1,6 +1,8 @@
 "use client";
 
-import { motion } from "motion/react";
+import { useState, useEffect, useMemo } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { CINEMA_TIPS, type CinemaTip } from "@/lib/cinema-tips";
 import type { SessionState } from "@/hooks/use-session-polling";
 
 export interface WaitingStateProps {
@@ -8,7 +10,34 @@ export interface WaitingStateProps {
   connectedCount: number;
 }
 
+function pickTips(module: number, seance?: number): CinemaTip[] {
+  // Filter tips by module, then by seance if available, fallback to generic module tips
+  const moduleTips = CINEMA_TIPS.filter((t) => t.module === module);
+  const seanceTips = seance ? moduleTips.filter((t) => !t.seance || t.seance === seance) : moduleTips;
+  return seanceTips.length > 0 ? seanceTips : moduleTips.length > 0 ? moduleTips : CINEMA_TIPS.slice(0, 20);
+}
+
+const TYPE_ICONS: Record<string, string> = {
+  technique: "🎬", quote: "💬", fact: "📖", rule: "📏",
+  reflection: "💭", anecdote: "🎪", "métier": "🎥", "réalisateur": "🎬",
+  acteur: "🌟", rappel: "📌", motivation: "💪",
+};
+
 export function WaitingState({ session, connectedCount }: WaitingStateProps) {
+  const tips = useMemo(() => pickTips(session.currentModule || 1, session.currentSeance), [session.currentModule, session.currentSeance]);
+  const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * tips.length));
+
+  // Rotate tips every 6s
+  useEffect(() => {
+    if (tips.length <= 1) return;
+    const timer = setInterval(() => {
+      setTipIndex((prev) => (prev + 1) % tips.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [tips.length]);
+
+  const currentTip = tips[tipIndex % tips.length];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -71,6 +100,29 @@ export function WaitingState({ session, connectedCount }: WaitingStateProps) {
           {connectedCount} connect&eacute;{connectedCount > 1 ? "s" : ""}
         </span>
       </div>
+
+      {/* Cinema tip — contextual to the current module */}
+      {currentTip && (
+        <div className="max-w-[300px] sm:max-w-xs px-4">
+          <div className="rounded-xl px-4 py-3" style={{ background: "linear-gradient(135deg, rgba(212,168,67,0.08), rgba(139,92,246,0.05))", border: "1px solid rgba(212,168,67,0.12)" }}>
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-[9px] uppercase tracking-widest text-bw-gold font-bold">
+                {TYPE_ICONS[currentTip.type] || "🎬"} Le saviez-vous ?
+              </p>
+              <span className="text-[8px] text-bw-muted">{tipIndex + 1}/{tips.length}</span>
+            </div>
+            <AnimatePresence mode="wait">
+              <motion.p key={tipIndex} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }}
+                className="text-xs text-bw-text leading-relaxed">
+                {currentTip.text}
+              </motion.p>
+            </AnimatePresence>
+            {currentTip.source && (
+              <p className="text-[9px] text-bw-muted mt-1 italic">— {currentTip.source}</p>
+            )}
+          </div>
+        </div>
+      )}
 
       {session.title && (
         <p className="text-xs text-bw-gold tracking-[0.2em] uppercase font-medium">{session.title}</p>

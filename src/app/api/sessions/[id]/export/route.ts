@@ -123,6 +123,52 @@ export async function GET(
     lines.push("");
   }
 
+  // Get all responses with scores/flags for teacher report
+  const { data: responses } = await supabase
+    .from("responses")
+    .select("id, student_id, text, teacher_score, teacher_comment, teacher_flag, is_highlighted, ai_score, ai_feedback")
+    .eq("session_id", sessionId)
+    .order("submitted_at");
+
+  const studentMap = new Map((students || []).map((s) => [s.display_name, s]));
+
+  // Starred responses section
+  const starred = (responses || []).filter((r) => r.teacher_flag === "star");
+  if (starred.length > 0) {
+    lines.push("---");
+    lines.push("");
+    lines.push("## ⭐ Réponses Excellentes");
+    lines.push("");
+    for (const r of starred) {
+      const sName = (students || []).find((s) => s.display_name)?.display_name || "";
+      lines.push(`- ${r.text}${r.teacher_score ? ` (${r.teacher_score}/5)` : ""}${r.teacher_comment ? ` — _${r.teacher_comment}_` : ""}`);
+    }
+    lines.push("");
+  }
+
+  // Flagged responses section
+  const flagged = (responses || []).filter((r) => r.teacher_flag === "flag");
+  if (flagged.length > 0) {
+    lines.push("## 🚩 À Revoir");
+    lines.push("");
+    for (const r of flagged) {
+      lines.push(`- ${r.text}${r.teacher_comment ? ` — _${r.teacher_comment}_` : ""}`);
+    }
+    lines.push("");
+  }
+
+  // Participation stats
+  lines.push("---");
+  lines.push("");
+  lines.push("## Statistiques");
+  lines.push("");
+  lines.push(`- **Élèves** : ${students?.length || 0}`);
+  lines.push(`- **Réponses totales** : ${responses?.length || 0}`);
+  lines.push(`- **Choix collectifs** : ${choices?.length || 0}`);
+  const highlighted = (responses || []).filter((r) => r.is_highlighted).length;
+  if (highlighted > 0) lines.push(`- **Réponses mises en avant** : ${highlighted}`);
+  lines.push("");
+
   lines.push("---");
   lines.push(`*Exporté depuis Banlieuwood Atelier — ${new Date().toLocaleDateString("fr-FR")}*`);
 
@@ -137,5 +183,11 @@ export async function GET(
     },
     choicesCount: choices?.length || 0,
     studentsCount: students?.length || 0,
+    stats: {
+      totalResponses: responses?.length || 0,
+      starredCount: starred.length,
+      flaggedCount: flagged.length,
+      highlightedCount: highlighted,
+    },
   });
 }

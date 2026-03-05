@@ -29,6 +29,18 @@ export async function PATCH(
   if ("error" in parsed) return parsed.error;
   const body = parsed.data;
 
+  // Hand raise — toggle (facilitator can also clear it)
+  if (body.action === "clear_hand") {
+    const { error } = await supabase
+      .from("students")
+      .update({ hand_raised_at: null })
+      .eq("id", studentId)
+      .eq("session_id", sessionId);
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ hand_raised_at: null });
+  }
+
   if (body.action === "warn") {
     // Get current warnings
     const { data: student } = await supabase

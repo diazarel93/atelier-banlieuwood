@@ -427,3 +427,138 @@ export function buildFallbackFicheCours(level: string, sessionRecap?: string | n
   const template = GENERIC_FICHE_TEMPLATES[level] || GENERIC_FICHE_TEMPLATES.college;
   return { ...template, sessionRecap: sessionRecap || null };
 }
+
+// ——— BIBLE DU FILM ———
+
+export interface BibleResult {
+  logline: string;
+  synopsis: string;
+  characters: {
+    name: string;
+    role: string;
+    description: string;
+    arc: string;
+  }[];
+  world: {
+    setting: string;
+    atmosphere: string;
+    rules: string;
+  };
+  conflict: {
+    central: string;
+    stakes: string;
+    antagonist: string;
+  };
+  structure: {
+    act1: string;
+    act2: string;
+    act3: string;
+  };
+  style: {
+    genre: string;
+    tone: string;
+    influences: string[];
+    visualIdentity: string;
+  };
+  themes: string[];
+}
+
+export const BIBLE_SYSTEM_PROMPT = `Tu es un scénariste expert et un story developer de cinéma.
+À partir des choix collectifs d'un groupe d'élèves, crée une "Bible du Film" professionnelle.
+Réponds UNIQUEMENT en JSON valide avec cette structure :
+{
+  "logline": "Une phrase qui résume le film (pitch d'une ligne)",
+  "synopsis": "Résumé de l'histoire en 5-8 phrases, avec début, milieu et fin",
+  "characters": [
+    { "name": "Nom", "role": "héros|antagoniste|allié|mentor", "description": "2-3 phrases", "arc": "Comment il/elle évolue" }
+  ],
+  "world": {
+    "setting": "Lieu et époque (2 phrases)",
+    "atmosphere": "Ambiance générale du film (1-2 phrases)",
+    "rules": "Règles particulières du monde (1-2 phrases)"
+  },
+  "conflict": {
+    "central": "Le conflit principal (2 phrases)",
+    "stakes": "Ce qui est en jeu (1-2 phrases)",
+    "antagonist": "La force antagoniste (1-2 phrases)"
+  },
+  "structure": {
+    "act1": "Exposition et déclencheur (2-3 phrases)",
+    "act2": "Complications et climax (3-4 phrases)",
+    "act3": "Résolution (2-3 phrases)"
+  },
+  "style": {
+    "genre": "Genre principal + sous-genre",
+    "tone": "Ton narratif (dramatique, comique, etc.)",
+    "influences": ["2-3 films qui pourraient inspirer"],
+    "visualIdentity": "Identité visuelle et atmosphérique (2 phrases)"
+  },
+  "themes": ["3-5 thèmes majeurs du film"]
+}
+Sois créatif mais fidèle aux choix des élèves. Rends la Bible vivante et inspirante.
+Ne mets AUCUN texte avant ou après le JSON.`;
+
+export function buildBibleUserPrompt(data: SessionFullData): string {
+  const { session, students, collectiveChoices } = data;
+
+  const story = collectiveChoices
+    .map((c) => `- [${CATEGORY_LABELS[c.category] || c.category}] ${c.restitution_label}: ${c.chosen_text}`)
+    .join("\n");
+
+  const studentList = students.map((s) => `${s.avatar} ${s.display_name}`).join(", ");
+
+  return `Session: "${session.title}"
+Niveau: ${session.level}
+Genre: ${session.template || "libre"}
+Élèves: ${studentList}
+
+CHOIX COLLECTIFS DE L'HISTOIRE:
+${story || "Aucun choix collectif"}
+
+Génère la Bible du Film en JSON à partir de ces éléments narratifs.`;
+}
+
+export function buildFallbackBible(data: SessionFullData): BibleResult {
+  const choices = data.collectiveChoices;
+  const personnage = choices.filter((c) => c.category === "personnage");
+  const environnement = choices.filter((c) => c.category === "environnement");
+  const conflit = choices.filter((c) => c.category === "conflit");
+  const trajectoire = choices.filter((c) => c.category === "trajectoire");
+
+  return {
+    logline: personnage.length > 0 && conflit.length > 0
+      ? `${personnage[0]?.chosen_text || "Un protagoniste"} doit faire face à ${conflit[0]?.chosen_text || "un défi"}.`
+      : "Un groupe d'élèves a imaginé ensemble une histoire unique.",
+    synopsis: choices.map((c) => c.chosen_text).join(". ") || "L'histoire reste à écrire...",
+    characters: personnage.map((c) => ({
+      name: c.restitution_label || "Personnage",
+      role: "héros",
+      description: c.chosen_text,
+      arc: "Évolution à définir",
+    })),
+    world: {
+      setting: environnement.map((c) => c.chosen_text).join(". ") || "Un monde à imaginer",
+      atmosphere: "Atmosphère à définir",
+      rules: "Pas de règles particulières",
+    },
+    conflict: {
+      central: conflit.map((c) => c.chosen_text).join(". ") || "Conflit à développer",
+      stakes: "Les enjeux restent à définir",
+      antagonist: "L'antagoniste reste à définir",
+    },
+    structure: {
+      act1: trajectoire[0]?.chosen_text || "Le début de l'aventure",
+      act2: trajectoire[1]?.chosen_text || "Les complications s'accumulent",
+      act3: trajectoire[2]?.chosen_text || "Le dénouement",
+    },
+    style: {
+      genre: data.session.template || "Drame",
+      tone: "À définir",
+      influences: [],
+      visualIdentity: "À définir",
+    },
+    themes: choices.length > 0
+      ? [...new Set(choices.map((c) => CATEGORY_LABELS[c.category] || c.category))].slice(0, 5)
+      : ["Créativité", "Collaboration"],
+  };
+}

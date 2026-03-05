@@ -28,6 +28,7 @@ import { ScreenHeader } from "@/components/screen/screen-header";
 import { ObjectiveBanner } from "@/components/screen/objective-banner";
 import { FloatingReactions } from "@/components/screen/floating-reactions";
 import { WordCloud } from "@/components/screen/word-cloud";
+import { ApplauseMeter } from "@/components/screen/applause-meter";
 import { ReactionBar } from "@/components/reaction-bar";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { HelpButton } from "@/components/help-button";
@@ -1808,6 +1809,33 @@ export default function ScreenPage() {
               >
                 Choix collectif de la classe
               </motion.p>
+            </motion.div>
+          )}
+
+          {/* REVIEWING — applause meter from reactions during voting phase */}
+          {session.status === "reviewing" && collectiveChoice && voteData && voteData.results.length >= 2 && screenReactions && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 4.5 }}
+              className="w-full mt-8"
+            >
+              <ApplauseMeter
+                entries={voteData.results.slice(0, 5).map((vr) => {
+                  const reactionCount = screenReactions[vr.response.id]
+                    ? Object.values(screenReactions[vr.response.id]).reduce((sum, r) => sum + (r?.count || 0), 0)
+                    : vr.count;
+                  return {
+                    responseId: vr.response.id,
+                    text: vr.response.text,
+                    studentName: vr.response.students?.display_name || "?",
+                    avatar: vr.response.students?.avatar || "🎭",
+                    clapCount: reactionCount,
+                  };
+                })}
+                accentColor={categoryColor}
+                topN={5}
+              />
             </motion.div>
           )}
 
