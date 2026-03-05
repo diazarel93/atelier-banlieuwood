@@ -235,9 +235,11 @@ export default function ScreenPage() {
   // Module 11 flags
   const isM11 = session.currentModule === 11;
   const module11 = data.module11 as Module11Data | undefined;
+  // Module 12 flags
+  const isM12 = session.currentModule === 12;
   const isScreenQA = session.currentModule === 3 || session.currentModule === 4 || (session.currentModule === 9 && currentSeance !== 2) || (session.currentModule === 2 && !isM2ECSpecial && !isM2ECComparison) || isM10QA;
   const maxSituations = session.currentModule === 2 ? MODULE_SEANCE_SITUATIONS?.[2]?.[currentSeance] || getSeanceMax(session.currentModule, currentSeance) : getSeanceMax(session.currentModule, currentSeance);
-  const progressPct = (isScreenQA || isM10 || isM11)
+  const progressPct = (isScreenQA || isM10 || isM11 || isM12)
     ? Math.min(100, Math.round(((session.currentSituationIndex + 1) / maxSituations) * 100))
     : 0;
 

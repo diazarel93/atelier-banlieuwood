@@ -439,7 +439,7 @@ function CockpitContent({
   const moduleLabel = currentMod?.title || "Module";
   const moduleColor = currentMod?.color || "#FF6B35";
   const moduleGuide = currentMod ? getModuleGuide(currentMod.id) : undefined;
-  const questionGuide = (session.current_module === 1 || session.current_module === 3 || session.current_module === 4 || session.current_module === 9 || (session.current_module === 2 && !isM2ECSpecial && !isM2ECComparison) || isM10Any)
+  const questionGuide = (session.current_module === 1 || session.current_module === 3 || session.current_module === 4 || session.current_module === 9 || (session.current_module === 2 && !isM2ECSpecial && !isM2ECComparison) || isM10Any || isM12Any)
     ? getQuestionGuide(session.current_seance || 1, (session.current_situation_index || 0) + 1, session.current_module)
     : undefined;
 
@@ -2118,7 +2118,7 @@ function CockpitContent({
           )}
 
           {/* ── RESPONSES LIST (Budget/other — simpler display with inline actions) ── */}
-          {!isStandardQA && !isM1Image && !isM1Notebook && session.status !== "done" && responses.length > 0 && (
+          {!isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && session.status !== "done" && responses.length > 0 && (
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Reponses</span>
@@ -2192,7 +2192,7 @@ function CockpitContent({
           )}
 
           {/* M1/Budget empty state */}
-          {!isStandardQA && !isM1Image && !isM1Notebook && session.status === "responding" && responses.length === 0 && !isBudgetQuiz && !isM2ECChecklist && !isM2ECSceneBuilder && !isM2ECComparison && (
+          {!isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && session.status === "responding" && responses.length === 0 && !isBudgetQuiz && !isM2ECChecklist && !isM2ECSceneBuilder && !isM2ECComparison && (
             <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-5 text-center space-y-2">
               <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                 className="text-2xl">✍️</motion.div>
