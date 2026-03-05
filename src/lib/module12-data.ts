@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────
 // MODULE 12 — Construction Collective
-// 8 manches de votes anonymes pour construire le film de la classe
+// 6 manches de votes anonymes pour construire le film de la classe
 // ──────────────────────────────────────────────────────────
 
 // ── Types ─────────────────────────────────────────────────
@@ -34,20 +34,20 @@ export const MANCHES: MancheConfig[] = [
   { key: "objectif",    label: "L'Objectif",        maxCards: 4, description: "Quel objectif pour le héros ?" },
   { key: "obstacle",    label: "L'Obstacle",        maxCards: 4, description: "Quel obstacle principal ?" },
   { key: "scene",       label: "La Première Scène", maxCards: 4, description: "Comment commence le film ?" },
-  { key: "relation",    label: "La Relation",       maxCards: 4, description: "Quelle relation clé ?" },
-  { key: "moment",      label: "Le Moment Fort",    maxCards: 4, description: "Quel climax ?" },
 ];
 
 export function getMancheConfig(manche: number): MancheConfig | undefined {
   return MANCHES[manche - 1];
 }
 
-// ── Banlieuwood Templates (2 par manche = 16 total) ──────
+// ── Banlieuwood Templates (2+ par manche) ──────
 
 export const BANLIEUWOOD_TEMPLATES: BanlieuTemplate[] = [
-  // 1 — Le Ton
-  { manche: 1, text: "Comédie dramatique — on rit, puis on pleure" },
-  { manche: 1, text: "Thriller psychologique — la tension monte doucement" },
+  // 1 — Le Ton (Adrian templates)
+  { manche: 1, text: "Drôle — on rit, on se moque, mais on dit la vérité" },
+  { manche: 1, text: "Mystérieux — tout est caché, rien n'est ce qu'il semble" },
+  { manche: 1, text: "Dramatique — les émotions sont fortes, tout est intense" },
+  { manche: 1, text: "Réaliste — comme la vraie vie, sans filtre" },
   // 2 — La Situation
   { manche: 2, text: "Un élève trouve un message caché dans son casier" },
   { manche: 2, text: "Le premier jour dans un nouveau quartier, tout est à découvrir" },
@@ -63,12 +63,6 @@ export const BANLIEUWOOD_TEMPLATES: BanlieuTemplate[] = [
   // 6 — La Première Scène
   { manche: 6, text: "Plan fixe sur une porte qui s'ouvre lentement. On entend une voix." },
   { manche: 6, text: "Travelling sur un couloir de collège vide. Une alarme sonne au loin." },
-  // 7 — La Relation
-  { manche: 7, text: "Deux ami·es d'enfance que la vie a séparé·es" },
-  { manche: 7, text: "Un·e élève et un·e prof qui se comprennent sans se parler" },
-  // 8 — Le Moment Fort
-  { manche: 8, text: "La confrontation finale : tout le monde regarde, personne ne parle" },
-  { manche: 8, text: "L'aveu inattendu qui change tout en une phrase" },
 ];
 
 // ── M10 Data Extraction ───────────────────────────────────
@@ -134,37 +128,6 @@ export function extractCandidates(manche: number, m10: M10Data): Candidate[] {
           const firstSentence = p.pitch_text.split(/[.!?]/)[0]?.trim() || p.pitch_text.slice(0, 100);
           return { text: firstSentence.slice(0, 120), studentId: p.student_id };
         });
-
-    case 7: // La Relation — keywords about relationships from pitch_text
-      return m10.pitchs
-        .filter((p) => p.pitch_text)
-        .map((p) => {
-          const words = p.pitch_text.toLowerCase();
-          const relationKeywords = ["ami", "frère", "sœur", "père", "mère", "famille", "copain", "rival", "ennemi", "prof", "voisin", "couple"];
-          const found = relationKeywords.filter((k) => words.includes(k));
-          if (found.length === 0) return null;
-          // Extract a short phrase around the first relation keyword
-          const idx = words.indexOf(found[0]);
-          const start = Math.max(0, idx - 20);
-          const end = Math.min(p.pitch_text.length, idx + found[0].length + 40);
-          return { text: p.pitch_text.slice(start, end).trim().slice(0, 100), studentId: p.student_id };
-        })
-        .filter((c): c is Candidate => c !== null);
-
-    case 8: // Le Moment Fort — conflict keywords from pitch_text
-      return m10.pitchs
-        .filter((p) => p.pitch_text)
-        .map((p) => {
-          const words = p.pitch_text.toLowerCase();
-          const conflictKeywords = ["mais", "sauf que", "problème", "découvre", "trahison", "confrontation", "avoue", "révèle", "affronte"];
-          const found = conflictKeywords.filter((k) => words.includes(k));
-          if (found.length === 0) return null;
-          const idx = words.indexOf(found[0]);
-          const start = Math.max(0, idx - 15);
-          const end = Math.min(p.pitch_text.length, idx + found[0].length + 50);
-          return { text: p.pitch_text.slice(start, end).trim().slice(0, 120), studentId: p.student_id };
-        })
-        .filter((c): c is Candidate => c !== null);
 
     default:
       return [];

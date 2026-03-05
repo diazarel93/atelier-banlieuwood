@@ -25,7 +25,7 @@ export async function POST(
   }
 
   if (!isValidEtsiImageId(imageId)) {
-    return NextResponse.json({ error: "Image invalide" }, { status: 400 });
+    return NextResponse.json({ error: "Image invalide — choisis parmi les 10 images proposées" }, { status: 400 });
   }
 
   if (typeof etsiText !== "string" || etsiText.trim().length < 5) {
@@ -74,7 +74,7 @@ export async function POST(
     );
   }
 
-  // Upsert etsi response
+  // Upsert etsi response (one per student per session)
   const { data, error } = await admin
     .from("module10_etsi")
     .upsert(

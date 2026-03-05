@@ -452,18 +452,36 @@ async function handleModule1(req: NextRequest, session: any, sessionId: string, 
     };
     const promptField = levelMap[session.level] || "prompt_10_13";
 
+    // Two-phase observation for Image 2 (séance 3)
+    const isTwoPhase = currentSeance === 3;
+
     // Check if student already responded (exclude reset)
     let hasResponded = false;
+    let phase1Text: string | null = null;
+    let currentPhase = 1;
     if (studentId && situation) {
-      const { data: resp } = await admin
+      // Get all responses for this situation (for two-phase tracking)
+      const { data: allStudentResp } = await admin
         .from("responses")
-        .select("id")
+        .select("id, text")
         .eq("session_id", sessionId)
         .eq("student_id", studentId)
         .eq("situation_id", situation.id)
         .is("reset_at", null)
-        .maybeSingle();
-      hasResponded = !!resp;
+        .order("submitted_at", { ascending: true });
+
+      const respCount = allStudentResp?.length || 0;
+      if (isTwoPhase) {
+        if (respCount >= 1) {
+          phase1Text = allStudentResp![0].text;
+          currentPhase = 2;
+        }
+        if (respCount >= 2) {
+          hasResponded = true; // Both phases completed
+        }
+      } else {
+        hasResponded = respCount > 0;
+      }
     }
 
     // Responses count (exclude reset)
@@ -496,6 +514,14 @@ async function handleModule1(req: NextRequest, session: any, sessionId: string, 
       }
     }
 
+    // Phase-specific prompt text for two-phase observation
+    let questionText = situation ? (situation[promptField as keyof typeof situation] as string) : "";
+    if (isTwoPhase && currentPhase === 2) {
+      questionText = "Que peuvent signifier ces détails ? Qu'est-ce que cette image raconte ?";
+    } else if (isTwoPhase && currentPhase === 1) {
+      questionText = "Décris ce que tu vois dans cette image. Les objets, les couleurs, la lumière.";
+    }
+
     return NextResponse.json({
       session: sessionBase,
       module1: {
@@ -508,7 +534,7 @@ async function handleModule1(req: NextRequest, session: any, sessionId: string, 
         } : null,
         question: situation ? {
           situationId: situation.id,
-          text: situation[promptField as keyof typeof situation] as string,
+          text: questionText,
           relance: relance?.relance_text || situation.nudge_text || "",
           measure: situation.restitution_label,
         } : null,
@@ -517,6 +543,11 @@ async function handleModule1(req: NextRequest, session: any, sessionId: string, 
         confrontation,
         totalSeances: 5,
         currentSeance,
+        ...(isTwoPhase ? {
+          twoPhase: true,
+          currentPhase,
+          phase1Text,
+        } : {}),
       },
       situation: null,
       hasResponded,
@@ -1020,39 +1051,38 @@ async function handleModule10(req: NextRequest, session: any, sessionId: string,
 
   // ── SÉANCE 1: Et si... ──
   if (currentSeance === 1) {
-    // pos 0 = Image + "Et si..." writing (special component)
+    // pos 0 = Image selection + "Et si..." writing (special component)
     if (currentIndex === 0) {
-      // Pick image based on session hash for determinism
-      const hash = sessionId.split("").reduce((acc: number, c: string) => acc + c.charCodeAt(0), 0);
-      const imageIndex = hash % ETSI_IMAGES.length;
-      const image = ETSI_IMAGES[imageIndex];
-
+      // Student picks their own image from all 10 — return all images
       let etsiText: string | undefined;
+      let chosenImage: typeof ETSI_IMAGES[0] | undefined;
       let helpUsed = false;
       let submitted = false;
 
       if (studentId) {
+        // Check if student already submitted any etsi
         const { data: etsi } = await admin
           .from("module10_etsi")
           .select("*")
           .eq("session_id", sessionId)
           .eq("student_id", studentId)
-          .eq("image_id", image.id)
+          .order("submitted_at", { ascending: false })
+          .limit(1)
           .maybeSingle();
 
         if (etsi) {
           etsiText = etsi.etsi_text;
           helpUsed = etsi.help_used;
           submitted = true;
+          chosenImage = getEtsiImage(etsi.image_id);
         }
       }
 
-      // Count submissions
+      // Count all submissions
       const { count: etsiCount } = await admin
         .from("module10_etsi")
         .select("*", { count: "exact", head: true })
-        .eq("session_id", sessionId)
-        .eq("image_id", image.id);
+        .eq("session_id", sessionId);
 
       // Facilitator view: return all submissions
       let allSubmissions: { studentName: string; text: string; studentId: string }[] | undefined;
@@ -1061,7 +1091,6 @@ async function handleModule10(req: NextRequest, session: any, sessionId: string,
           .from("module10_etsi")
           .select("etsi_text, student_id, students(display_name)")
           .eq("session_id", sessionId)
-          .eq("image_id", image.id)
           .order("submitted_at", { ascending: true });
 
         if (allEtsi) {
@@ -1077,7 +1106,8 @@ async function handleModule10(req: NextRequest, session: any, sessionId: string,
         session: sessionBase,
         module10: {
           type: "etsi" as const,
-          image,
+          image: chosenImage || null,
+          images: ETSI_IMAGES, // All 10 images for selection
           etsiText,
           helpUsed,
           submitted,
@@ -1090,15 +1120,15 @@ async function handleModule10(req: NextRequest, session: any, sessionId: string,
       });
     }
 
-    // pos 1 = QCM narrative direction (standard situation flow with module10 data)
-    if (currentIndex === 1) {
+    // pos 1-5 = QCM questions (ton, personnage, déclencheur, durée, fin)
+    if (currentIndex >= 1 && currentIndex <= 5) {
       return handleStandardWithModule10(req, session, sessionId, admin, sessionBase, connectedCount || 0, {
         type: "qcm" as const,
       });
     }
 
-    // pos 2 = Idea bank (special component)
-    if (currentIndex === 2) {
+    // pos 6 = Idea bank (special component)
+    if (currentIndex === 6) {
       const { data: ideas } = await admin
         .from("module10_idea_bank")
         .select("id, text, votes, student_id")

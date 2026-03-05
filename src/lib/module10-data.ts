@@ -48,6 +48,30 @@ export const ETSI_IMAGES: EtsiImage[] = [
     title: "Le miroir",
     description: "Un miroir brisé dans une salle de bain, un reflet fragmenté.",
   },
+  {
+    id: "etsi-cafe",
+    url: "/images/etsi/cafe.svg",
+    title: "Le café",
+    description: "Un café presque vide, une tasse encore chaude sur une table abandonnée.",
+  },
+  {
+    id: "etsi-graffiti",
+    url: "/images/etsi/graffiti.svg",
+    title: "Le graffiti",
+    description: "Un mur tagué avec un message à moitié effacé, des couleurs vives dans la grisaille.",
+  },
+  {
+    id: "etsi-parking",
+    url: "/images/etsi/parking.svg",
+    title: "Le parking",
+    description: "Un parking souterrain désert, une seule voiture garée sous un néon qui clignote.",
+  },
+  {
+    id: "etsi-toit",
+    url: "/images/etsi/toit.svg",
+    title: "Le toit",
+    description: "Le toit d'un immeuble au coucher du soleil, la ville s'étend à perte de vue.",
+  },
 ];
 
 const ETSI_IMAGE_IDS = new Set(ETSI_IMAGES.map((i) => i.id));
@@ -326,7 +350,8 @@ export const OBJECTIFS: ObjectifOption[] = [
 
 const OBJECTIF_KEYS = new Set(OBJECTIFS.map((o) => o.key));
 export function isValidObjectif(key: string): boolean {
-  return OBJECTIF_KEYS.has(key);
+  // Accept standard keys or custom free text prefixed with "custom:"
+  return OBJECTIF_KEYS.has(key) || key.startsWith("custom:");
 }
 
 // ── Obstacles (pitch séance 2) ──
@@ -355,7 +380,7 @@ export function isValidObstacle(key: string): boolean {
 
 // ── Chrono config ──
 
-export const CHRONO_DURATION = 60; // seconds
+export const CHRONO_DURATION = 30; // seconds
 
 // ── Help types ──
 

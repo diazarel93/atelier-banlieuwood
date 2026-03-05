@@ -27,6 +27,10 @@ export function AvatarBuilderState({
   const [prenom, setPrenom] = useState(module10.personnage?.prenom || "");
   const [age, setAge] = useState(module10.personnage?.age || "");
   const [trait, setTrait] = useState(module10.personnage?.trait || "");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [force, setForce] = useState((module10.personnage as any)?.force as string || "");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [faiblesse, setFaiblesse] = useState((module10.personnage as any)?.faiblesse as string || "");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [tab, setTab] = useState<"peau" | "coiffure" | "visage" | "style">("peau");
@@ -134,7 +138,7 @@ export function AvatarBuilderState({
       await fetch(`/api/sessions/${sessionId}/personnage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, prenom: prenom.trim(), age, traitDominant: trait, avatarData: finalAvatar }),
+        body: JSON.stringify({ studentId, prenom: prenom.trim(), age, traitDominant: trait, force: force.trim() || null, faiblesse: faiblesse.trim() || null, avatarData: finalAvatar }),
       });
       setSuccess(true);
       setTimeout(() => onDone({ prenom: prenom.trim(), age, trait, avatar: finalAvatar }), 600);
@@ -343,6 +347,24 @@ export function AvatarBuilderState({
               {t.label}
             </motion.button>
           ))}
+        </div>
+      </div>
+
+      {/* Force + Faiblesse */}
+      <div className="w-full space-y-2">
+        <div>
+          <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1">Sa force</p>
+          <input value={force} onChange={(e) => setForce(e.target.value)}
+            placeholder="Ce qu'il/elle fait le mieux..."
+            maxLength={100}
+            className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-teal focus:outline-none transition-colors" />
+        </div>
+        <div>
+          <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1">Sa faiblesse</p>
+          <input value={faiblesse} onChange={(e) => setFaiblesse(e.target.value)}
+            placeholder="Ce qui le/la freine..."
+            maxLength={100}
+            className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-teal focus:outline-none transition-colors" />
         </div>
       </div>
 

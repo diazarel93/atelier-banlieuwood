@@ -45,7 +45,7 @@ export function MancheVoteState({ module12, sessionId, studentId, onVote }: Manc
     <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4">
       {/* Progress dots */}
       <div className="flex gap-2">
-        {Array.from({ length: 8 }, (_, i) => {
+        {Array.from({ length: 6 }, (_, i) => {
           const m = i + 1;
           const won = module12.allWinners.some((w) => w.manche === m);
           const isCurrent = m === module12.manche;
@@ -67,7 +67,7 @@ export function MancheVoteState({ module12, sessionId, studentId, onVote }: Manc
       {/* Manche label */}
       <div className="text-center">
         <p className="text-sm text-white/50 uppercase tracking-wider">
-          Manche {module12.manche}/8
+          Manche {module12.manche}/6
         </p>
         <h2 className="text-2xl font-bold text-white mt-1">
           {module12.mancheLabel}

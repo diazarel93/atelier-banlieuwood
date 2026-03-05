@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { SuccessCheck } from "@/components/play/success-check";
 import type { Module10Data } from "@/hooks/use-session-polling";
@@ -18,6 +18,8 @@ export function ObjectifObstacleState({
 }: ObjectifObstacleStateProps) {
   const [objectif, setObjectif] = useState(module10.objectif || "");
   const [obstacle, setObstacle] = useState(module10.obstacle || "");
+  const [customObjectif, setCustomObjectif] = useState("");
+  const [showCustom, setShowCustom] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -34,17 +36,32 @@ export function ObjectifObstacleState({
     { key: "solitude", label: "La solitude" }, { key: "secret", label: "Un secret du passé" },
   ];
 
+  function selectObjectif(key: string) {
+    setObjectif(key);
+    setShowCustom(false);
+    setCustomObjectif("");
+  }
+
+  function enableCustom() {
+    setShowCustom(true);
+    setObjectif("");
+  }
+
+  const effectiveObjectif = showCustom && customObjectif.trim()
+    ? `custom:${customObjectif.trim()}`
+    : objectif;
+
   async function handleSubmit() {
-    if (!objectif || !obstacle) return;
+    if (!effectiveObjectif || !obstacle) return;
     setSubmitting(true);
     try {
       await fetch(`/api/sessions/${sessionId}/pitch`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, objectif, obstacle }),
+        body: JSON.stringify({ studentId, objectif: effectiveObjectif, obstacle }),
       });
       setSuccess(true);
-      setTimeout(() => onDone({ objectif, obstacle }), 600);
+      setTimeout(() => onDone({ objectif: effectiveObjectif, obstacle }), 600);
     } catch { toast.error("Erreur"); setSubmitting(false); }
   }
 
@@ -61,12 +78,30 @@ export function ObjectifObstacleState({
         <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Objectif</p>
         <div className="flex flex-wrap gap-1.5">
           {OBJECTIFS.map((o) => (
-            <motion.button key={o.key} whileTap={{ scale: 0.95 }} onClick={() => setObjectif(o.key)}
+            <motion.button key={o.key} whileTap={{ scale: 0.95 }} onClick={() => selectObjectif(o.key)}
               className={`px-2.5 py-1.5 rounded-lg text-xs border transition-colors cursor-pointer ${
-                objectif === o.key ? "bg-bw-amber/20 border-bw-amber/40 text-bw-amber" : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:border-bw-amber/20"
+                objectif === o.key && !showCustom ? "bg-bw-amber/20 border-bw-amber/40 text-bw-amber" : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:border-bw-amber/20"
               }`}>{o.label}</motion.button>
           ))}
+          <motion.button whileTap={{ scale: 0.95 }} onClick={enableCustom}
+            className={`px-2.5 py-1.5 rounded-lg text-xs border transition-colors cursor-pointer ${
+              showCustom ? "bg-bw-amber/20 border-bw-amber/40 text-bw-amber" : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:border-bw-amber/20"
+            }`}>Autre...</motion.button>
         </div>
+        <AnimatePresence>
+          {showCustom && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
+              <input
+                value={customObjectif}
+                onChange={(e) => setCustomObjectif(e.target.value)}
+                placeholder="Mon personnage veut... parce que..."
+                maxLength={200}
+                className="w-full mt-2 rounded-xl bg-bw-elevated border border-bw-amber/30 px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors"
+                autoFocus
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
       <div className="w-full">
         <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Obstacle</p>
@@ -79,7 +114,7 @@ export function ObjectifObstacleState({
           ))}
         </div>
       </div>
-      <button onClick={handleSubmit} disabled={submitting || !objectif || !obstacle}
+      <button onClick={handleSubmit} disabled={submitting || !effectiveObjectif || !obstacle}
         className="w-full py-3 rounded-xl bg-bw-amber text-white font-medium text-sm disabled:opacity-40 transition-opacity cursor-pointer hover:brightness-110">
         {submitting ? "Envoi..." : "Valider"}
       </button>

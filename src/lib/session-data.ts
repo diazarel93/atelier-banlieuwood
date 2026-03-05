@@ -65,6 +65,8 @@ export interface SessionFullData {
       prenom: string;
       age: string | null;
       trait_dominant: string | null;
+      force: string | null;
+      faiblesse: string | null;
       avatar_data: Record<string, unknown> | null;
     }[];
     pitchs: {
@@ -150,7 +152,7 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
         .order("submitted_at"),
       supabase
         .from("module10_personnages")
-        .select("id, student_id, prenom, age, trait_dominant, avatar_data")
+        .select("id, student_id, prenom, age, trait_dominant, force, faiblesse, avatar_data")
         .eq("session_id", sessionId),
       supabase
         .from("module10_pitchs")

@@ -23,6 +23,13 @@ export function ImageQuestionState({
   const [imageFullscreen, setImageFullscreen] = useState(false);
   const [showRelance, setShowRelance] = useState(false);
 
+  // Two-phase observation state (Image 2 — séance 3)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const m1Any = module1 as any;
+  const isTwoPhase = !!m1Any.twoPhase;
+  const currentPhase = (m1Any.currentPhase as number) || 1;
+  const phase1Text = (m1Any.phase1Text as string) || null;
+
   async function handleSubmit() {
     if (!text.trim() || submitting || !module1.question?.situationId) return;
     setSubmitting(true);
@@ -73,7 +80,7 @@ export function ImageQuestionState({
     );
   }
 
-  // If already responded, show waiting
+  // If already responded (both phases for two-phase), show waiting
   if (module1.hasResponded) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
@@ -92,6 +99,25 @@ export function ImageQuestionState({
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="flex flex-col gap-5 w-full">
+      {/* Phase indicator for two-phase observation */}
+      {isTwoPhase && (
+        <div className="flex items-center justify-center gap-3">
+          <div className={`flex items-center gap-1.5 text-xs ${currentPhase === 1 ? "text-bw-violet font-semibold" : "text-bw-teal"}`}>
+            {currentPhase > 1 ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 13l4 4L19 7"/></svg>
+            ) : (
+              <span className="w-5 h-5 rounded-full bg-bw-violet/20 text-bw-violet flex items-center justify-center text-[10px] font-bold">1</span>
+            )}
+            Observer
+          </div>
+          <div className="w-6 h-px bg-white/10" />
+          <div className={`flex items-center gap-1.5 text-xs ${currentPhase === 2 ? "text-bw-violet font-semibold" : "text-bw-muted"}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${currentPhase === 2 ? "bg-bw-violet/20 text-bw-violet" : "bg-white/5 text-bw-muted"}`}>2</span>
+            Interpréter
+          </div>
+        </div>
+      )}
+
       {/* Image */}
       {module1.image && (
         <div className="space-y-3">
@@ -139,6 +165,14 @@ export function ImageQuestionState({
         )}
       </AnimatePresence>
 
+      {/* Phase 1 text displayed in phase 2 (read-only) */}
+      {isTwoPhase && currentPhase === 2 && phase1Text && (
+        <div className="w-full p-3 rounded-xl bg-bw-violet/10 border border-bw-violet/20">
+          <p className="text-[10px] text-bw-violet uppercase tracking-wider mb-1">Ta description (phase 1)</p>
+          <p className="text-sm text-bw-text/80 italic leading-relaxed">{phase1Text}</p>
+        </div>
+      )}
+
       {/* Question + answer */}
       {module1.question && (
         <div className="space-y-3">
@@ -168,7 +202,9 @@ export function ImageQuestionState({
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Écris ta réponse ici..."
+            placeholder={isTwoPhase && currentPhase === 2
+              ? "Que signifient ces détails ? Qu'est-ce que l'image raconte ?"
+              : "Écris ta réponse ici..."}
             rows={3}
             maxLength={500}
             className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-bw-heading placeholder:text-bw-muted focus:border-bw-primary focus:outline-none transition-colors resize-none"
@@ -185,7 +221,7 @@ export function ImageQuestionState({
                   ? "bg-bw-primary text-white cursor-pointer"
                   : "bg-bw-elevated text-bw-muted cursor-not-allowed"
               }`}>
-              {submitting ? "..." : "Envoyer"}
+              {submitting ? "..." : isTwoPhase && currentPhase === 1 ? "Phase suivante" : "Envoyer"}
             </motion.button>
           </div>
         </div>

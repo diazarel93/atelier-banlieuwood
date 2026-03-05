@@ -1,16 +1,23 @@
 "use client";
 
-import { motion } from "motion/react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { toast } from "sonner";
 import type { Module10Data } from "@/hooks/use-session-polling";
 
 export interface PitchConfrontationStateProps {
   module10: Module10Data;
+  sessionId: string;
+  studentId: string;
 }
 
 export function PitchConfrontationState({
-  module10,
+  module10, sessionId, studentId,
 }: PitchConfrontationStateProps) {
   const confrontation = module10.confrontation;
+  const [answers, setAnswers] = useState({ who: "", wants: "", obstacle: "" });
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   if (!confrontation) {
     return (
@@ -30,6 +37,29 @@ export function PitchConfrontationState({
   const colors = ["from-bw-teal/20 to-bw-teal/5", "from-bw-amber/20 to-bw-amber/5"];
   const borderColors = ["border-bw-teal/20", "border-bw-amber/20"];
   const nameColors = ["text-bw-teal", "text-bw-amber"];
+
+  async function handleSubmitQuestions() {
+    if (!answers.who.trim() || !answers.wants.trim() || !answers.obstacle.trim()) return;
+    setSubmitting(true);
+    try {
+      // Save the 3 answers as a single response
+      const text = `Personnage: ${answers.who.trim()} | Veut: ${answers.wants.trim()} | Obstacle: ${answers.obstacle.trim()}`;
+      await fetch(`/api/sessions/${sessionId}/respond`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studentId,
+          situationId: (confrontation as Record<string, unknown>)?.situationId || "confrontation",
+          text,
+        }),
+      });
+      setSubmitted(true);
+    } catch {
+      toast.error("Erreur d'envoi");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
@@ -61,11 +91,45 @@ export function PitchConfrontationState({
         className="-mt-3 w-8 h-8 rounded-full bg-bw-elevated border border-white/10 flex items-center justify-center text-[10px] font-bold text-bw-muted">
         VS
       </motion.div>
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.1 }}
-        className="text-xs text-bw-muted text-center -mt-2">Écoute les deux pitchs et prépare-toi à voter !</motion.p>
+
+      {/* 3 comprehension questions */}
+      <AnimatePresence mode="wait">
+        {!submitted ? (
+          <motion.div key="questions" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            className="w-full space-y-3 mt-2">
+            <p className="text-xs text-bw-muted text-center">Réponds à ces 3 questions après avoir écouté les pitchs :</p>
+            <div>
+              <label className="text-[10px] text-bw-muted uppercase tracking-wider">1. Qui est le personnage ?</label>
+              <input value={answers.who} onChange={(e) => setAnswers((a) => ({ ...a, who: e.target.value }))}
+                maxLength={100} placeholder="Décris le personnage principal..."
+                className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors" />
+            </div>
+            <div>
+              <label className="text-[10px] text-bw-muted uppercase tracking-wider">2. Que veut-il/elle ?</label>
+              <input value={answers.wants} onChange={(e) => setAnswers((a) => ({ ...a, wants: e.target.value }))}
+                maxLength={100} placeholder="Son objectif..."
+                className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors" />
+            </div>
+            <div>
+              <label className="text-[10px] text-bw-muted uppercase tracking-wider">3. Qu&apos;est-ce qui l&apos;en empêche ?</label>
+              <input value={answers.obstacle} onChange={(e) => setAnswers((a) => ({ ...a, obstacle: e.target.value }))}
+                maxLength={100} placeholder="L'obstacle principal..."
+                className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors" />
+            </div>
+            <button onClick={handleSubmitQuestions}
+              disabled={submitting || !answers.who.trim() || !answers.wants.trim() || !answers.obstacle.trim()}
+              className="w-full py-3 rounded-xl bg-bw-amber text-white font-medium text-sm disabled:opacity-40 transition-opacity cursor-pointer hover:brightness-110">
+              {submitting ? "Envoi..." : "Envoyer mes réponses"}
+            </button>
+          </motion.div>
+        ) : (
+          <motion.div key="done" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+            className="text-center space-y-2">
+            <p className="text-sm text-bw-teal font-medium">Réponses envoyées !</p>
+            <p className="text-xs text-bw-muted">Écoute les deux pitchs et prépare-toi à voter !</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

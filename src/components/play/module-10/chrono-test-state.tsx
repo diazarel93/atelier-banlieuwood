@@ -19,7 +19,7 @@ export function ChronoTestState({
   const [elapsed, setElapsed] = useState(0);
   const [done, setDone] = useState(module10.chronoSeconds != null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const DURATION = 60;
+  const DURATION = 30;
 
   useEffect(() => {
     if (running && elapsed < DURATION) {

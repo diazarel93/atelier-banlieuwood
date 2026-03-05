@@ -640,7 +640,7 @@ export default function PlayPage() {
           return <ChronoTestState key="m10-chrono" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(d) => { setCharacterCard((prev) => prev ? { ...prev, chronoSeconds: d.chronoSeconds, revealLevel: 3 } : prev); play("cardReveal"); fireConfetti(); }} />;
         }
         if (m10.type === "confrontation") {
-          return <PitchConfrontationState key="m10-confrontation" module10={m10} />;
+          return <PitchConfrontationState key="m10-confrontation" module10={m10} sessionId={sessionId} studentId={studentId!} />;
         }
       }
     }
