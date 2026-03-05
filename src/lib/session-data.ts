@@ -56,7 +56,7 @@ export interface SessionFullData {
     etsiResponses: {
       id: string;
       student_id: string;
-      response_text: string;
+      etsi_text: string;
       submitted_at: string;
     }[];
     personnages: {
@@ -104,7 +104,7 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
     await Promise.all([
       supabase
         .from("sessions")
-        .select("id, title, level, template, status, created_at")
+        .select("id, title, level, template, status, thematique, created_at")
         .eq("id", sessionId)
         .is("deleted_at", null)
         .single(),
@@ -131,7 +131,7 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
       // Module 10 data
       supabase
         .from("module10_etsi")
-        .select("id, student_id, response_text, submitted_at")
+        .select("id, student_id, etsi_text, submitted_at")
         .eq("session_id", sessionId)
         .order("submitted_at"),
       supabase
