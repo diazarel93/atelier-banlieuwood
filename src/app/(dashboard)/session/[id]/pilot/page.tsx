@@ -58,6 +58,7 @@ import { ModuleBriefing } from "@/components/pilot/module-briefing";
 import { ContextPanel, ContextDocks } from "@/components/pilot/context-panel";
 import { getNextAction, type NextAction } from "@/components/pilot/get-next-action";
 import { TeamManager } from "@/components/pilot/team-manager";
+import { ClassroomMap } from "@/components/pilot/classroom-map";
 
 interface Session {
   id: string;
@@ -83,6 +84,7 @@ interface Student {
   last_seen_at: string;
   warnings: number;
   kicked: boolean;
+  hand_raised_at?: string | null;
 }
 
 interface Response {
@@ -210,6 +212,7 @@ function CockpitContent({
   sidebarWidth,
   totalQuestions,
   onSelectStudent,
+  teams,
 }: {
   session: Session;
   situationData: Record<string, unknown> | null;
@@ -242,7 +245,9 @@ function CockpitContent({
   sidebarWidth: number;
   totalQuestions?: number;
   onSelectStudent: (student: Student) => void;
+  teams: { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[];
 }) {
+  const [viewMode, setViewMode] = useState<"responses" | "classroom">("responses");
   const [reformulating, setReformulating] = useState<Response | null>(null);
   const [reformulatedText, setReformulatedText] = useState("");
   const [respondingStartedAt] = useState<number>(Date.now());
@@ -273,6 +278,19 @@ function CockpitContent({
   const { play } = useSound();
 
   const queryClient = useQueryClient();
+
+  // Keyboard shortcut: M = toggle classroom map
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === "m") {
+        e.preventDefault();
+        setViewMode((v) => (v === "responses" ? "classroom" : "responses"));
+      }
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
 
   // Fetch all situations for the seance (for preview of upcoming questions)
   useEffect(() => {
@@ -824,7 +842,49 @@ function CockpitContent({
       <main className="flex-1 overflow-y-auto pb-24">
         <div className="max-w-2xl mx-auto px-4 py-5 space-y-4">
 
+          {/* ── VIEW MODE TOGGLE ── */}
+          <div className="flex items-center gap-1 p-0.5 rounded-xl bg-white/[0.04] border border-white/[0.06] w-fit">
+            <button
+              onClick={() => setViewMode("responses")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                viewMode === "responses"
+                  ? "bg-bw-primary/15 text-bw-primary border border-bw-primary/20"
+                  : "text-bw-muted hover:text-bw-text hover:bg-white/5 border border-transparent"
+              }`}
+            >
+              <span>📋</span> Réponses
+            </button>
+            <button
+              onClick={() => setViewMode("classroom")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                viewMode === "classroom"
+                  ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/20"
+                  : "text-bw-muted hover:text-bw-text hover:bg-white/5 border border-transparent"
+              }`}
+            >
+              <span>🏫</span> Plan de classe
+              <span className="text-[9px] text-bw-muted font-normal ml-0.5">(M)</span>
+            </button>
+          </div>
+
+          {/* ── CLASSROOM MAP VIEW ── */}
+          {viewMode === "classroom" && (
+            <ClassroomMap
+              students={studentStates.map((s) => ({
+                ...s,
+                hand_raised_at: session.students?.find((st) => st.id === s.id)?.hand_raised_at,
+              }))}
+              teams={teams}
+              responses={responses}
+              sessionStatus={session.status}
+              onNudge={(responseId, text) => nudgeStudent.mutate({ responseId, nudgeText: text })}
+              onWarn={(studentId) => warnStudent.mutate(studentId)}
+              onBroadcast={() => setShowBroadcast(true)}
+            />
+          )}
+
           {/* ── CONTEXT ZONE — what the teacher needs to see ── */}
+          {viewMode === "responses" && <>
 
           {/* Standard Q&A: Question card (M9 non-budget, M3, M4, M2EC QA) */}
           {showStandardQA && (
@@ -2204,6 +2264,8 @@ function CockpitContent({
           {!focusMode && isStandardQA && collectiveChoices.length > 0 && (
             <ChoicesHistory choices={collectiveChoices} />
           )}
+
+          </>}
         </div>
       </main>
 
@@ -3131,6 +3193,7 @@ export default function PilotPage() {
             sidebarWidth={sidebarWidth}
             totalQuestions={totalQuestions}
             onSelectStudent={(s) => { setSelectedStudentId(s.id); setShowStudents(false); }}
+            teams={teams || []}
           />
           </ErrorBoundary>
         ) : (
