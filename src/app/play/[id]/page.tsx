@@ -48,6 +48,7 @@ import { PitchAssemblyState } from "@/components/play/module-10/pitch-assembly-s
 import { ChronoTestState } from "@/components/play/module-10/chrono-test-state";
 import { PitchConfrontationState } from "@/components/play/module-10/pitch-confrontation-state";
 import { CineDebatState } from "@/components/play/module-11/cine-debat-state";
+import { MancheVoteState } from "@/components/play/module-12/manche-vote-state";
 
 
 // ——— Main Page ———
@@ -655,6 +656,18 @@ export default function PlayPage() {
           nudgeText={situation?.nudgeText || null}
           onSubmit={handleRespond}
           submitting={submitting}
+        />
+      );
+    }
+
+    // ── MODULE 12: Construction Collective — manche vote ──
+    if (session.currentModule === 12 && data.module12 && session.status === "responding") {
+      return (
+        <MancheVoteState
+          key={`m12-${data.module12.manche}`}
+          module12={data.module12}
+          sessionId={sessionId}
+          studentId={studentId!}
         />
       );
     }

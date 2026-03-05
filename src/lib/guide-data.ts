@@ -1086,6 +1086,46 @@ const MODULE_GUIDES: ModuleGuide[] = [
       { name: "Clôture", timing: "5 min", instruction: "La grande question : le cinéma de demain, il ressemblera à quoi ? Chacun donne sa vision en une phrase." },
     ],
   },
+  // ── MODULE 12 : Construction Collective ──
+  {
+    moduleId: "m12a",
+    title: "Construction Collective",
+    objectifPedagogique:
+      "Construire collectivement le film de la classe en 8 manches de vote anonyme. Les cartes sont generees a partir des idees individuelles du Module 10.",
+    socleCommun: ["D1", "D3", "D5"],
+    competences: [
+      "Argumenter et faire des choix collectifs",
+      "Respecter les idees des autres dans un processus democratique",
+      "Construire un projet narratif a partir de contributions individuelles",
+    ],
+    introADire:
+      "On va construire VOTRE film ensemble. Vos idees du module precedent ont ete melangees et anonymisees. A chaque manche, vous votez pour la carte qui vous inspire le plus. Le prof valide le gagnant. 8 manches = 8 briques du film.",
+    aQuoiEtreAttentif: [
+      "Les eleves qui cherchent a identifier les auteurs des cartes",
+      "Les votes strategiques (voter contre plutot que pour)",
+      "L'equilibre entre cartes eleves et cartes Banlieuwood",
+    ],
+    commentRelancer: [
+      "Pourquoi cette carte et pas l'autre ? Qu'est-ce qui vous a parle ?",
+      "Imaginez le film avec cette carte. Ca donne quoi ?",
+    ],
+    commentChallenger: [
+      "Et si on prenait la carte la moins populaire, ca changerait quoi au film ?",
+    ],
+    conseils: [
+      "Lire les cartes a voix haute avant le vote",
+      "Commenter brievement le resultat de chaque manche",
+      "Construire la coherence au fil des manches",
+      "A la fin, relire tous les gagnants pour voir le film prendre forme",
+    ],
+    duration: "~30 min",
+    phases: [
+      { name: "Intro", timing: "3 min", instruction: "Expliquer le principe : 8 manches, vote anonyme, le prof valide." },
+      { name: "Manches 1-4", timing: "12 min", instruction: "Ton, Situation, Personnages, Objectif. Rythme soutenu, ~3 min/manche." },
+      { name: "Manches 5-8", timing: "12 min", instruction: "Obstacle, Scene, Relation, Moment fort. Montrer comment le film se construit." },
+      { name: "Synthese", timing: "3 min", instruction: "Relire les 8 gagnants. Le film de la classe est ne !" },
+    ],
+  },
 ];
 
 // ——————————————————————————————————————————————————————
@@ -2242,6 +2282,16 @@ const QUESTION_GUIDES: Record<string, QuestionGuide[]> = {
   "9-4": MODULE9_S4_QUESTIONS,
   "10-1": MODULE10_S1_QUESTIONS,
   "10-2": MODULE10_S2_QUESTIONS,
+  "12-1": [
+    { position: 1, category: "collectif", label: "Le Ton", whatToExpect: "Les eleves choisissent l'ambiance du film.", commonPitfalls: "Vote trop rapide sans lire les cartes.", relancePhrase: "Lisez bien chaque carte avant de voter.", challengePhrase: "Et si le ton etait completement different ?" },
+    { position: 2, category: "collectif", label: "La Situation", whatToExpect: "Choix de la situation de depart.", commonPitfalls: "Les eleves choisissent le plus drole plutot que le plus riche.", relancePhrase: "Imaginez le debut du film avec chaque carte.", challengePhrase: "Cette situation, elle permet d'aller ou ?" },
+    { position: 3, category: "collectif", label: "Les Personnages", whatToExpect: "Selection des personnages du film.", commonPitfalls: "Tendance a choisir des personnages stereotypes.", relancePhrase: "Quel personnage vous intrigue le plus ?", challengePhrase: "Est-ce que ce personnage va surprendre le spectateur ?" },
+    { position: 4, category: "collectif", label: "L'Objectif", whatToExpect: "L'enjeu moteur de l'histoire.", commonPitfalls: "Objectif trop vague ou trop simple.", relancePhrase: "Quel objectif donne le plus envie de voir la suite ?", challengePhrase: "Est-ce que cet objectif va tenir 90 minutes ?" },
+    { position: 5, category: "collectif", label: "L'Obstacle", whatToExpect: "Le conflit central prend forme.", commonPitfalls: "Obstacle deconnecte de l'objectif.", relancePhrase: "Quel obstacle rend l'histoire la plus intense ?", challengePhrase: "Cet obstacle, il fait peur au heros ou au spectateur ?" },
+    { position: 6, category: "collectif", label: "La Premiere Scene", whatToExpect: "L'ouverture du film.", commonPitfalls: "Scene trop explicative, pas assez cinematographique.", relancePhrase: "Quelle scene vous donnerait envie de rester ?", challengePhrase: "En une image, qu'est-ce qu'on voit ?" },
+    { position: 7, category: "collectif", label: "La Relation", whatToExpect: "Le lien emotionnel cle.", commonPitfalls: "Relation trop classique.", relancePhrase: "Quelle relation rend l'histoire plus humaine ?", challengePhrase: "Cette relation, elle va evoluer comment ?" },
+    { position: 8, category: "collectif", label: "Le Moment Fort", whatToExpect: "Le climax du film.", commonPitfalls: "Moment trop previsible.", relancePhrase: "Quel moment vous donnerait des frissons ?", challengePhrase: "Si le spectateur devait retenir une seule scene, ce serait celle-la ?" },
+  ] satisfies QuestionGuide[],
 };
 
 export function getModuleGuide(moduleId: string): ModuleGuide | undefined {
@@ -2253,14 +2303,14 @@ export function getQuestionGuide(
   position: number,
   module?: number
 ): QuestionGuide | undefined {
-  const key = module === 1 ? `1-${seance}` : module === 4 ? `4-1` : module === 9 ? `9-${seance}` : module === 10 ? `10-${seance}` : module === 2 ? `2-${seance}` : `3-${seance}`;
+  const key = module === 1 ? `1-${seance}` : module === 4 ? `4-1` : module === 9 ? `9-${seance}` : module === 10 ? `10-${seance}` : module === 12 ? `12-${seance}` : module === 2 ? `2-${seance}` : `3-${seance}`;
   const questions = QUESTION_GUIDES[key];
   if (!questions) return undefined;
   return questions.find((q) => q.position === position);
 }
 
 export function getQuestionGuides(seance: number, module?: number): QuestionGuide[] {
-  const key = module === 1 ? `1-${seance}` : module === 4 ? `4-1` : module === 9 ? `9-${seance}` : module === 10 ? `10-${seance}` : module === 2 ? `2-${seance}` : `3-${seance}`;
+  const key = module === 1 ? `1-${seance}` : module === 4 ? `4-1` : module === 9 ? `9-${seance}` : module === 10 ? `10-${seance}` : module === 12 ? `12-${seance}` : module === 2 ? `2-${seance}` : `3-${seance}`;
   return QUESTION_GUIDES[key] || [];
 }
 

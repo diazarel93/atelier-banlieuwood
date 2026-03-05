@@ -189,6 +189,21 @@ export const MODULES: ModuleDef[] = [
     duration: "30 min",
     questions: 5,
   },
+  // ── MODULE 12 : CONSTRUCTION COLLECTIVE — 1 séance, 8 manches ──
+  {
+    id: "m12a",
+    dbModule: 12,
+    dbSeance: 1,
+    title: "Construction Collective",
+    subtitle: "Collectif · 1",
+    description: "8 votes pour construire le film de la classe : ton, situation, personnages, objectif, obstacle, scène, relation, moment fort.",
+    teacherNote: "Préparer les cartes en inter-séance (bouton « Préparer les cartes »). Pendant la séance, les élèves votent manche par manche.",
+    color: "#14B8A6",
+    gradient: "from-[#14B8A6] to-[#0D9488]",
+    iconKey: "users",
+    duration: "30 min",
+    questions: 8,
+  },
   // ── OLD MODULE 2 : CINÉMA (moved to M9) ──
   {
     id: "m2a",
@@ -430,14 +445,18 @@ export const MODULES: ModuleDef[] = [
 ];
 
 export const PHASES: PhaseDef[] = [
-  { id: "idea", label: "L'Idée", description: "Observer, interpréter, imaginer. Les élèves découvrent leur profil créatif à travers des images et des questions ouvertes.", color: "#8B5CF6", emoji: "💡", moduleIds: ["m1a", "m1b", "m1c", "m1d", "m1e"] },
+  // ── Parcours principal ──
+  { id: "idea", label: "Positionnement", description: "Observer, interpréter, imaginer. Les élèves découvrent leur profil créatif à travers des images et des questions ouvertes.", color: "#8B5CF6", emoji: "💡", moduleIds: ["m1a", "m1b", "m1c", "m1d", "m1e"] },
   { id: "emotion", label: "Émotion Cachée", description: "Explorer les émotions cachées derrière les images et les situations. Développer l'empathie et la sensibilité narrative.", color: "#EC4899", emoji: "💜", moduleIds: ["u2a", "u2b", "u2c", "u2d"] },
   { id: "imagination", label: "Imagination", description: "Libérer la créativité avec des scénarios « Et si... » et construire un pitch percutant en 60 secondes.", color: "#06B6D4", emoji: "✨", moduleIds: ["m10a", "m10b"] },
-  { id: "cinema", label: "Le Cinéma", description: "Comprendre le langage cinématographique : plans, angles, montage, son. Les outils pour raconter en images.", color: "#F59E0B", emoji: "🎬", moduleIds: ["m2a", "m2b", "m2c", "m2d"] },
-  { id: "story", label: "L'Histoire", description: "Construire une histoire complète : personnages, conflits, structure narrative et parcours émotionnel.", color: "#4ECDC4", emoji: "📖", moduleIds: ["m2-perso", "m3", "m4", "m5"] },
-  { id: "cinedebat", label: "Ciné-Débat", description: "Analyser des extraits de films, débattre des choix artistiques et développer l'esprit critique cinématographique.", color: "#E11D48", emoji: "📽️", moduleIds: ["m11a", "m11b", "m11c", "m11d"] },
+  { id: "collectif", label: "Construction Collective", description: "Voter en 8 manches pour construire le film de la classe à partir des idées de chacun.", color: "#14B8A6", emoji: "🗳️", moduleIds: ["m12a"] },
   { id: "scenario", label: "Le Scénario", description: "Passer de l'idée au scénario : écriture des dialogues, des didascalies et mise en forme professionnelle.", color: "#10B981", emoji: "✏️", moduleIds: ["m6"] },
   { id: "production", label: "La Production", description: "Organiser le tournage : budget, planning, repérages, casting et répartition des rôles.", color: "#F59E0B", emoji: "🎥", moduleIds: ["m7"] },
+  // ── Bonus ──
+  { id: "cinema", label: "Le Cinéma", description: "Comprendre le langage cinématographique : plans, angles, montage, son. Les outils pour raconter en images.", color: "#F59E0B", emoji: "🎬", moduleIds: ["m2a", "m2b", "m2c", "m2d"] },
+  { id: "story", label: "L'Histoire", description: "Construire une histoire complète : personnages, conflits, structure narrative et parcours émotionnel.", color: "#4ECDC4", emoji: "📖", moduleIds: ["m2-perso", "m3", "m4", "m5"] },
+  { id: "empathy", label: "Vis ma vie", description: "Plonger dans la peau d'un personnage. Développer l'empathie par l'immersion narrative.", color: "#EC4899", emoji: "🎭", moduleIds: ["m2-perso"] },
+  { id: "cinedebat", label: "Ciné-Débat", description: "Analyser des extraits de films, débattre des choix artistiques et développer l'esprit critique cinématographique.", color: "#E11D48", emoji: "📽️", moduleIds: ["m11a", "m11b", "m11c", "m11d"] },
   { id: "plateau", label: "Le Plateau", description: "Diriger les acteurs, gérer les prises et coordonner l'équipe sur le lieu de tournage.", color: "#EF4444", emoji: "🎭", moduleIds: ["m8"] },
   { id: "postprod", label: "La Post-prod", description: "Monter le film, ajouter la musique et les effets, finaliser le projet pour la projection.", color: "#06B6D4", emoji: "🎞️", moduleIds: ["m9"] },
 ];

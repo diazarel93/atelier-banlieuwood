@@ -83,6 +83,19 @@ export interface SessionFullData {
       votes: number;
     }[];
   };
+  module12?: {
+    pools: {
+      manche: number;
+      cards: unknown[];
+      generated_at: string;
+    }[];
+    winners: {
+      manche: number;
+      card_id: string;
+      winning_text: string;
+      validated_at: string;
+    }[];
+  };
   stats: {
     totalStudents: number;
     activeStudents: number;
@@ -100,7 +113,8 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
 
   // Fetch all data in parallel
   const [sessionRes, studentsRes, responsesRes, votesRes, choicesRes, budgetsRes,
-    m10EtsiRes, m10PersoRes, m10PitchsRes, m10IdeasRes] =
+    m10EtsiRes, m10PersoRes, m10PitchsRes, m10IdeasRes,
+    m12PoolsRes, m12WinnersRes] =
     await Promise.all([
       supabase
         .from("sessions")
@@ -148,6 +162,17 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
         .select("id, student_id, text, votes")
         .eq("session_id", sessionId)
         .order("votes", { ascending: false }),
+      // Module 12 data
+      supabase
+        .from("module12_pools")
+        .select("manche, cards, generated_at")
+        .eq("session_id", sessionId)
+        .order("manche"),
+      supabase
+        .from("module12_winners")
+        .select("manche, card_id, winning_text, validated_at")
+        .eq("session_id", sessionId)
+        .order("manche"),
     ]);
 
   if (sessionRes.error || !sessionRes.data) {
@@ -167,6 +192,11 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
   const m10Pitchs = (m10PitchsRes.data || []) as NonNullable<SessionFullData["module10"]>["pitchs"];
   const m10Ideas = (m10IdeasRes.data || []) as NonNullable<SessionFullData["module10"]>["ideaBank"];
   const hasM10Data = m10Etsi.length > 0 || m10Perso.length > 0 || m10Pitchs.length > 0 || m10Ideas.length > 0;
+
+  // Module 12 data
+  const m12Pools = (m12PoolsRes.data || []) as NonNullable<SessionFullData["module12"]>["pools"];
+  const m12Winners = (m12WinnersRes.data || []) as NonNullable<SessionFullData["module12"]>["winners"];
+  const hasM12Data = m12Pools.length > 0 || m12Winners.length > 0;
 
   const visibleResponses = responses.filter((r) => !r.is_hidden);
   const respondingStudentIds = new Set(visibleResponses.map((r) => r.student_id));
@@ -202,6 +232,12 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
         personnages: m10Perso,
         pitchs: m10Pitchs,
         ideaBank: m10Ideas,
+      },
+    } : {}),
+    ...(hasM12Data ? {
+      module12: {
+        pools: m12Pools,
+        winners: m12Winners,
       },
     } : {}),
     stats,

@@ -113,6 +113,18 @@ export interface Module11Data {
   debatOptions: { key: string; label: string }[] | null;
 }
 
+export interface Module12Data {
+  type: "manche-vote";
+  manche: number;
+  mancheLabel: string;
+  cards: { cardId: string; text: string; isBanlieuwood: boolean }[];
+  studentVote: string | null;
+  voteCounts: Record<string, number> | null;
+  winner: { cardId: string; text: string } | null;
+  allWinners: { manche: number; text: string }[];
+  poolReady: boolean;
+}
+
 export interface SessionState {
   session: {
     id: string;
@@ -143,6 +155,7 @@ export interface SessionState {
   module5?: Module5Data;
   module10?: Module10Data;
   module11?: Module11Data;
+  module12?: Module12Data;
   hasResponded: boolean;
   hasVoted: boolean;
   voteOptions: { id: string; text: string }[];

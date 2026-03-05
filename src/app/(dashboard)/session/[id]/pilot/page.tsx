@@ -34,6 +34,7 @@ import { useSound } from "@/hooks/use-sound";
 
 // Extracted cockpit sections
 import { Module9BudgetOverview } from "@/components/pilot/module9-budget-overview";
+import { Module12Cockpit } from "@/components/pilot/module12-cockpit";
 import { Module5EmotionDistribution } from "@/components/pilot/module5-emotion-distribution";
 import { KeyboardShortcutsModal } from "@/components/pilot/keyboard-shortcuts-modal";
 import { VotingResults } from "@/components/pilot/voting-results";
@@ -368,7 +369,8 @@ function CockpitContent({
     isBudgetQuiz, isM1Positioning, isM1Image, isM1Notebook,
     isM2ECChecklist, isM2ECSceneBuilder, isM2ECComparison,
     isM10Etsi, isM10Pitch, isM10Any, isM10SpecialPosition,
-    isM2ECSpecial, isM2ECAny, isQAModule,
+    isM2ECSpecial, isM2ECAny, isM12Any, isM12Manche,
+    isQAModule,
     maxSituations, canGoNext, canGoPrev, seance,
   } = useCockpitModuleFlags(session);
 
@@ -416,6 +418,19 @@ function CockpitContent({
     pitchList?: { studentId: string; prenom: string; text: string }[];
     allSubmissions?: { studentName: string; text: string; studentId: string; avatar?: Record<string, unknown> }[];
   } })?.module10;
+
+  // Module 12 data from situationData
+  const module12Data = (situationData as { module12?: {
+    type: string;
+    manche: number;
+    mancheLabel: string;
+    cards: { cardId: string; text: string; isBanlieuwood: boolean }[];
+    studentVote: string | null;
+    voteCounts: Record<string, number> | null;
+    winner: { cardId: string; text: string } | null;
+    allWinners: { manche: number; text: string }[];
+    poolReady: boolean;
+  } })?.module12;
 
   // Module label & guide data
   const currentMod = MODULES.find(
@@ -777,7 +792,7 @@ function CockpitContent({
   // Séance 1: pos 0 (etsi), pos 2 (idea-bank) are special; pos 1 (qcm) is standard
   // Séance 2: all positions are special
   const showM10Special = isM10Any && !(isM10Etsi && displayIndex === 1);
-  const showStandardQA = isStandardQA || (isM2ECAny && !showM2ECSpecial && !showM2ECComparison) || (isM10Any && !showM10Special);
+  const showStandardQA = (isStandardQA || (isM2ECAny && !showM2ECSpecial && !showM2ECComparison) || (isM10Any && !showM10Special)) && !isM12Any;
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
@@ -1593,6 +1608,16 @@ function CockpitContent({
                 </button>
               </div>
             </>
+          )}
+
+          {/* ── MODULE 12: Construction Collective cockpit ── */}
+          {isM12Any && module12Data && (
+            <Module12Cockpit
+              sessionId={session.id}
+              currentSituationIndex={currentQIndex}
+              module12={module12Data}
+              connectedCount={activeStudents.length}
+            />
           )}
 
           {/* ── MODULE 2 EC: Preview banner + Nav pills for special positions ── */}

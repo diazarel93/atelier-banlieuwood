@@ -32,6 +32,8 @@ export function useCockpitModuleFlags(session: Session) {
     const isM10SpecialPosition = isM10Any && !(isM10Etsi && sitIdx === 1);
     const isM2ECSpecial = isM2ECChecklist || isM2ECSceneBuilder;
     const isM2ECAny = mod === 2;
+    const isM12Any = mod === 12;
+    const isM12Manche = isM12Any && seance === 1;
     const isQAModule = mod === 3 || mod === 4 || isM1Positioning || mod === 9 || (mod === 2 && !isM2ECSpecial && !isM2ECComparison) || (isM10Any && !isM10SpecialPosition);
 
     const maxSituations = isM1Positioning ? 8
@@ -39,8 +41,8 @@ export function useCockpitModuleFlags(session: Session) {
       : mod === 4 ? 8
       : getSeanceMax(mod, seance);
 
-    const canGoNext = (isQAModule || isM2ECAny || isM10Any) && sitIdx < maxSituations - 1;
-    const canGoPrev = (isQAModule || isM2ECAny || isM10Any) && sitIdx > 0;
+    const canGoNext = (isQAModule || isM2ECAny || isM10Any || isM12Any) && sitIdx < maxSituations - 1;
+    const canGoPrev = (isQAModule || isM2ECAny || isM10Any || isM12Any) && sitIdx > 0;
 
     return {
       isBudgetQuiz,
@@ -56,6 +58,8 @@ export function useCockpitModuleFlags(session: Session) {
       isM10SpecialPosition,
       isM2ECSpecial,
       isM2ECAny,
+      isM12Any,
+      isM12Manche,
       isQAModule,
       maxSituations,
       canGoNext,

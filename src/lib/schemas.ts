@@ -88,12 +88,13 @@ const VALID_MODULE_IDS = [
   "u2a", "u2b", "u2c", "u2d",
   "m10a", "m10b",
   "cd1", "cd2", "cd3", "cd4",
+  "m12a",
 ] as const;
 
 export const patchSessionSchema = z
   .object({
     status: z.enum(VALID_STATUSES).optional(),
-    current_module: z.number().int().min(1).max(11).optional(),
+    current_module: z.number().int().min(1).max(12).optional(),
     current_seance: z.number().int().min(1).max(5).optional(),
     current_situation_index: z.number().int().min(0).optional(),
     title: z.string().min(1).max(60).optional(),

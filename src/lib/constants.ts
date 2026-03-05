@@ -23,6 +23,8 @@ export const CATEGORIES = [
   // Module 10 — Et si / Pitch
   { key: "imagination", label: "Imagination", color: "#06B6D4" },
   { key: "pitch", label: "Pitch", color: "#F59E0B" },
+  // Module 12 — Construction Collective
+  { key: "collectif", label: "Collectif", color: "#14B8A6" },
 ] as const;
 
 export const CATEGORY_COLORS: Record<string, string> = Object.fromEntries(
@@ -179,6 +181,7 @@ export const MODULE_SEANCE_SITUATIONS: Record<number, Record<number, number>> = 
   9: { 1: 8, 2: 5, 3: 8, 4: 8 },  // Old cinema (was Module 2): Le Cinéma (8), Les Choix/budget (5), Les Imprévus (8), Le Plan (8)
   10: { 1: 3, 2: 5 },             // Et si... (3), Pitch (5)
   11: { 1: 6, 2: 6, 3: 6, 4: 6 }, // Ciné-Débat: L'Art de Raconter (6), Émotions (6), Héros (6), Coulisses (6)
+  12: { 1: 8 }, // Construction Collective: 8 manches de vote
 };
 
 /** Helper: get max situations for a module + séance combo */
