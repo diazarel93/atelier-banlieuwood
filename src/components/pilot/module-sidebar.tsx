@@ -251,78 +251,112 @@ function ModuleSidebarInner({
                   <span className="text-[8px] uppercase tracking-wider text-bw-muted font-semibold">Séances</span>
                 </div>
 
-                {/* Module list */}
-                <div className="px-2 pb-2 space-y-0.5">
-                  {phaseMods.map((mod) => {
+                {/* Module list — with step numbers + connecting line */}
+                <div className="px-2 pb-2">
+                  {phaseMods.map((mod, modIdx) => {
                     const status = getModuleStatus(mod);
                     const isActive = mod.id === activeModuleId;
                     const isDone = status === "completed";
                     const intro = getSeanceIntro(mod.dbModule, mod.dbSeance);
                     const qCount = isActive && totalModuleQuestions ? totalModuleQuestions : mod.questions;
+                    const isLast = modIdx === phaseMods.length - 1;
 
                     return (
-                      <button
-                        key={mod.id}
-                        onClick={() => {
-                          onSelectModule(mod.id);
-                          // Auto-close panel after selection
-                          setExpandedPhaseId(null);
-                        }}
-                        className={`w-full px-2 py-1.5 rounded-lg flex items-center gap-2 text-left transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
-                          isActive ? "" : "hover:bg-white/[0.04]"
-                        }`}
-                        style={isActive ? { background: `linear-gradient(90deg, ${mod.color}15, ${mod.color}05)` } : undefined}
-                      >
-                        {/* LED */}
-                        <div className="w-3 h-3 flex items-center justify-center flex-shrink-0">
-                          {isDone ? <div className="led led-done" /> : isActive ? <div className="led led-active" /> : <div className="led led-idle" />}
-                        </div>
-
-                        {/* Icon */}
-                        <div className="w-3.5 h-3.5 flex-shrink-0" style={{ color: isDone ? "#4ECDC4" : mod.color }}>
-                          <ModuleIcon iconKey={mod.iconKey} size={14} />
-                        </div>
-
-                        {/* Info */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1">
-                            <span className={`text-[10px] truncate ${isActive ? "text-bw-heading font-medium" : isDone ? "text-bw-muted" : "text-bw-text"}`}>
-                              {mod.title}
-                            </span>
+                      <div key={mod.id} className="flex gap-0">
+                        {/* Step number + vertical connector line */}
+                        <div className="flex flex-col items-center w-5 flex-shrink-0">
+                          <div
+                            className="w-[18px] h-[18px] rounded-full flex items-center justify-center text-[8px] font-bold flex-shrink-0 z-10 border"
+                            style={{
+                              background: isDone
+                                ? "#4ECDC420"
+                                : isActive
+                                  ? `${phase.color}30`
+                                  : "rgba(255,255,255,0.04)",
+                              borderColor: isDone
+                                ? "#4ECDC440"
+                                : isActive
+                                  ? `${phase.color}60`
+                                  : "rgba(255,255,255,0.08)",
+                              color: isDone
+                                ? "#4ECDC4"
+                                : isActive
+                                  ? phase.color
+                                  : "#555960",
+                            }}
+                          >
+                            {isDone ? "✓" : modIdx + 1}
                           </div>
-                          <div className="flex items-center gap-1">
-                            <span className="text-[8px] text-bw-muted">{mod.duration}</span>
-                            {intro && (
-                              <span className="text-[7px] px-1 py-px rounded-full" style={{ backgroundColor: `${mod.color}12`, color: mod.color }}>
-                                {intro.activityType.split(" · ")[0]}
+                          {/* Connector line to next module */}
+                          {!isLast && (
+                            <div
+                              className="w-px flex-1 min-h-[8px]"
+                              style={{
+                                background: isDone
+                                  ? `linear-gradient(180deg, #4ECDC440, #4ECDC420)`
+                                  : `linear-gradient(180deg, ${phase.color}20, ${phase.color}08)`,
+                              }}
+                            />
+                          )}
+                        </div>
+
+                        {/* Module button */}
+                        <button
+                          onClick={() => {
+                            onSelectModule(mod.id);
+                            setExpandedPhaseId(null);
+                          }}
+                          className={`flex-1 min-w-0 px-1.5 py-1.5 rounded-lg flex items-center gap-1.5 text-left transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
+                            isActive ? "" : "hover:bg-white/[0.04]"
+                          } ${!isLast ? "mb-0.5" : ""}`}
+                          style={isActive ? { background: `linear-gradient(90deg, ${mod.color}15, ${mod.color}05)` } : undefined}
+                        >
+                          {/* Icon */}
+                          <div className="w-3.5 h-3.5 flex-shrink-0" style={{ color: isDone ? "#4ECDC4" : mod.color }}>
+                            <ModuleIcon iconKey={mod.iconKey} size={14} />
+                          </div>
+
+                          {/* Info */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1">
+                              <span className={`text-[10px] truncate ${isActive ? "text-bw-heading font-medium" : isDone ? "text-bw-muted" : "text-bw-text"}`}>
+                                {mod.title}
                               </span>
-                            )}
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span className="text-[8px] text-bw-muted">{mod.duration}</span>
+                              {intro && (
+                                <span className="text-[7px] px-1 py-px rounded-full" style={{ backgroundColor: `${mod.color}12`, color: mod.color }}>
+                                  {intro.activityType.split(" · ")[0]}
+                                </span>
+                              )}
+                            </div>
                           </div>
-                        </div>
 
-                        {/* Right side: status */}
-                        {isDone && <span className="text-[9px] text-bw-teal flex-shrink-0">✓</span>}
-                        {isActive && (
-                          <div className="flex items-center gap-1 flex-shrink-0">
-                            {qCount > 0 && (
-                              <span className="text-[8px] text-bw-muted tabular-nums">
-                                {(currentQuestionIndex ?? 0) + 1}/{qCount}
-                              </span>
-                            )}
-                            {responsesCount !== undefined && responsesCount > 0 && (
-                              <motion.span
-                                key={responsesCount}
-                                initial={{ scale: 1.3, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                className="text-[8px] font-bold text-bw-teal bg-bw-teal/10 px-1 py-px rounded-full tabular-nums"
-                              >
-                                {responsesCount}
-                              </motion.span>
-                            )}
-                            {elapsed && <span className="text-[8px] text-bw-primary tabular-nums">{elapsed}</span>}
-                          </div>
-                        )}
-                      </button>
+                          {/* Right side: status */}
+                          {isDone && <span className="text-[9px] text-bw-teal flex-shrink-0">✓</span>}
+                          {isActive && (
+                            <div className="flex items-center gap-1 flex-shrink-0">
+                              {qCount > 0 && (
+                                <span className="text-[8px] text-bw-muted tabular-nums">
+                                  {(currentQuestionIndex ?? 0) + 1}/{qCount}
+                                </span>
+                              )}
+                              {responsesCount !== undefined && responsesCount > 0 && (
+                                <motion.span
+                                  key={responsesCount}
+                                  initial={{ scale: 1.3, opacity: 0 }}
+                                  animate={{ scale: 1, opacity: 1 }}
+                                  className="text-[8px] font-bold text-bw-teal bg-bw-teal/10 px-1 py-px rounded-full tabular-nums"
+                                >
+                                  {responsesCount}
+                                </motion.span>
+                              )}
+                              {elapsed && <span className="text-[8px] text-bw-primary tabular-nums">{elapsed}</span>}
+                            </div>
+                          )}
+                        </button>
+                      </div>
                     );
                   })}
                 </div>
