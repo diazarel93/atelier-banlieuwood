@@ -4,18 +4,18 @@ import { memo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { SeatStudent } from "./seat-card";
 
-const STATE_RING_COLOR: Record<string, string> = {
+/**
+ * Palette pensée "prof" :
+ *  - Teal   = répondu, c'est bon ✓
+ *  - Neutre = en train de bosser (normal, pas besoin d'attirer l'attention)
+ *  - Corail  = besoin d'aide / bloqué
+ *  - Gris   = pas connecté
+ */
+const STATE_COLOR: Record<string, string> = {
   responded: "#4ECDC4",
-  active: "#FF6B35",
-  stuck: "#F59E0B",
-  disconnected: "#444",
-};
-
-const STATE_GLOW: Record<string, string> = {
-  responded: "0 0 8px rgba(78,205,196,0.3)",
-  active: "",
-  stuck: "0 0 8px rgba(245,158,11,0.3)",
-  disconnected: "",
+  active: "#8894A0",      // gris-bleu neutre — c'est le state NORMAL
+  stuck: "#EF6461",       // corail doux au lieu de jaune criard
+  disconnected: "#555",
 };
 
 /** A single desk with 1-2 students sitting side by side */
@@ -32,67 +32,45 @@ function DeskPairInner({
   onStudentClick: (studentId: string) => void;
   teamColor?: string;
 }) {
-  // Desk-level state: both responded?
   const allResponded = left.state === "responded" && (!right || right.state === "responded");
-  const anyStuck = left.state === "stuck" || right?.state === "stuck";
+  const anyNeedsHelp = left.state === "stuck" || right?.state === "stuck";
   const anyHand = !!left.hand_raised_at || !!right?.hand_raised_at;
 
   return (
     <motion.div
       layout
       className="flex flex-col items-center"
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
     >
-      {/* The desk surface */}
       <div
         className="relative flex items-stretch rounded-xl border overflow-hidden transition-all duration-300"
         style={{
           borderColor: anyHand
-            ? "rgba(245,158,11,0.5)"
+            ? "rgba(239,100,97,0.45)"
             : allResponded
-              ? "rgba(78,205,196,0.3)"
+              ? "rgba(78,205,196,0.25)"
               : teamColor
-                ? `${teamColor}30`
-                : "rgba(255,255,255,0.08)",
+                ? `${teamColor}20`
+                : "rgba(255,255,255,0.07)",
           background: allResponded
-            ? "rgba(78,205,196,0.04)"
-            : anyStuck
-              ? "rgba(245,158,11,0.04)"
-              : teamColor
-                ? `${teamColor}06`
-                : "rgba(255,255,255,0.02)",
-          boxShadow: anyHand
-            ? "0 0 12px rgba(245,158,11,0.2)"
-            : allResponded
-              ? "0 0 8px rgba(78,205,196,0.15)"
-              : "none",
+            ? "rgba(78,205,196,0.03)"
+            : anyNeedsHelp
+              ? "rgba(239,100,97,0.03)"
+              : "rgba(255,255,255,0.015)",
         }}
       >
-        {/* All-responded glow overlay */}
-        {allResponded && (
-          <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ background: "linear-gradient(135deg, rgba(78,205,196,0.05), transparent)" }} />
-        )}
-
         <DeskSeat student={left} response={responseMap.get(left.id) || null} onClick={() => onStudentClick(left.id)} />
-        {/* Divider */}
-        <div className="w-px my-1.5" style={{ background: teamColor ? `${teamColor}15` : "rgba(255,255,255,0.06)" }} />
+        <div className="w-px my-2" style={{ background: "rgba(255,255,255,0.06)" }} />
         {right ? (
           <DeskSeat student={right} response={responseMap.get(right.id) || null} onClick={() => onStudentClick(right.id)} />
         ) : (
-          /* Empty seat placeholder */
-          <div className="w-[76px] flex items-center justify-center opacity-30">
-            <div className="w-7 h-7 rounded-full border border-dashed border-white/15" />
+          <div className="w-[88px] flex items-center justify-center opacity-20">
+            <div className="w-6 h-6 rounded-full border border-dashed border-white/20" />
           </div>
         )}
       </div>
-
-      {/* Desk shadow — the "table" surface */}
-      <div
-        className="h-1 w-[80%] rounded-b-full opacity-40"
-        style={{ background: teamColor ? `linear-gradient(to bottom, ${teamColor}20, transparent)` : "linear-gradient(to bottom, rgba(255,255,255,0.04), transparent)" }}
-      />
     </motion.div>
   );
 }
@@ -108,83 +86,93 @@ function DeskSeat({
   onClick: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
-  const ringColor = STATE_RING_COLOR[student.state] || "#444";
-  const glow = STATE_GLOW[student.state] || "";
+  const color = STATE_COLOR[student.state] || "#555";
+  const hasResponse = student.state === "responded" && response;
 
   return (
     <motion.button
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`relative flex flex-col items-center gap-0.5 px-3 py-2 cursor-pointer transition-colors w-[76px] ${
-        student.state === "disconnected" ? "opacity-35" : ""
+      className={`relative flex flex-col items-center gap-0.5 px-2.5 py-2 cursor-pointer transition-colors w-[88px] ${
+        student.state === "disconnected" ? "opacity-30" : ""
       }`}
-      whileTap={{ scale: 0.93 }}
-      whileHover={{ backgroundColor: "rgba(255,255,255,0.06)" }}
+      whileTap={{ scale: 0.95 }}
+      whileHover={{ backgroundColor: "rgba(255,255,255,0.04)" }}
     >
-      {/* Avatar */}
+      {/* Avatar + badges */}
       <div className="relative">
-        <motion.div
-          className="w-9 h-9 rounded-full flex items-center justify-center text-lg"
-          style={{ boxShadow: `0 0 0 2.5px ${ringColor}${hovered ? "" : "cc"}${glow ? `, ${glow}` : ""}` }}
-          animate={student.state === "active" ? { boxShadow: [`0 0 0 2.5px ${ringColor}cc`, `0 0 0 2.5px ${ringColor}60, 0 0 12px ${ringColor}30`, `0 0 0 2.5px ${ringColor}cc`] } : undefined}
-          transition={student.state === "active" ? { repeat: Infinity, duration: 2, ease: "easeInOut" } : undefined}
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center text-base"
+          style={{ boxShadow: `0 0 0 2px ${color}` }}
         >
           {student.avatar}
-        </motion.div>
+        </div>
 
-        {/* Hand raised — urgent bounce */}
+        {/* Hand raised */}
         {student.hand_raised_at && (
           <motion.span
-            animate={{ y: [0, -4, 0], rotate: [0, 12, -12, 0] }}
-            transition={{ repeat: Infinity, duration: 0.7 }}
-            className="absolute -top-2 -right-2 text-sm drop-shadow-md"
+            animate={{ y: [0, -3, 0] }}
+            transition={{ repeat: Infinity, duration: 0.8 }}
+            className="absolute -top-1.5 -right-1.5 text-xs"
           >
             ✋
           </motion.span>
         )}
 
-        {/* State badge */}
+        {/* Responded check */}
         {student.state === "responded" && (
           <motion.span
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 500, damping: 20 }}
-            className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-bw-teal flex items-center justify-center shadow-sm"
+            className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#4ECDC4] flex items-center justify-center shadow-sm"
           >
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12l5 5L20 7" />
             </svg>
           </motion.span>
         )}
+
+        {/* Stuck indicator — simple dot, no pulsing */}
         {student.state === "stuck" && (
-          <motion.span
-            animate={{ scale: [1, 1.15, 1] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-bw-amber flex items-center justify-center text-[9px] font-black text-black shadow-sm"
-          >
+          <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#EF6461] flex items-center justify-center text-[8px] font-black text-white shadow-sm">
             !
-          </motion.span>
+          </span>
+        )}
+
+        {/* Warning badge */}
+        {(student.warnings ?? 0) > 0 && (
+          <span className="absolute -top-1 -left-1 w-3.5 h-3.5 rounded-full bg-amber-500 flex items-center justify-center text-[7px] font-bold text-black shadow-sm">
+            {student.warnings}
+          </span>
         )}
       </div>
 
       {/* Name */}
-      <span className="text-[10px] leading-tight truncate max-w-[64px] text-bw-text font-medium">
+      <span className="text-[9px] leading-tight truncate max-w-[76px] text-bw-text font-medium">
         {student.display_name}
       </span>
 
-      {/* Hover tooltip — response preview */}
+      {/* Response snippet — visible directly, no hover needed */}
+      {hasResponse && (
+        <span className="text-[8px] leading-snug text-bw-teal/70 truncate max-w-[76px]">
+          {response}
+        </span>
+      )}
+
+      {/* Hover tooltip — full response */}
       <AnimatePresence>
         {hovered && response && (
           <motion.div
-            initial={{ opacity: 0, y: 4, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.95 }}
-            transition={{ duration: 0.15 }}
-            className="absolute z-30 bottom-full mb-2 left-1/2 -translate-x-1/2 w-[180px] bg-bw-surface border border-white/10 rounded-lg p-2 shadow-xl pointer-events-none"
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.12 }}
+            className="absolute z-30 bottom-full mb-1.5 left-1/2 -translate-x-1/2 w-[200px] bg-bw-surface border border-white/10 rounded-lg p-2.5 shadow-xl pointer-events-none"
           >
-            <p className="text-[10px] text-bw-teal font-semibold mb-0.5 truncate">{student.display_name}</p>
-            <p className="text-[11px] text-bw-text leading-snug line-clamp-3">{response}</p>
+            <p className="text-[10px] text-bw-teal font-semibold mb-0.5">{student.display_name}</p>
+            <p className="text-[11px] text-bw-text leading-snug line-clamp-4">{response}</p>
             <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-bw-surface border-r border-b border-white/10 rotate-45 -mt-1" />
           </motion.div>
         )}

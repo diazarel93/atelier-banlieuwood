@@ -901,10 +901,10 @@ function CockpitContent({
           {/* ── CLASSROOM MAP VIEW ── */}
           {viewMode === "classroom" && (
             <ClassroomMap
-              students={studentStates.map((s) => ({
-                ...s,
-                hand_raised_at: session.students?.find((st) => st.id === s.id)?.hand_raised_at,
-              }))}
+              students={studentStates.map((s) => {
+                const raw = session.students?.find((st) => st.id === s.id);
+                return { ...s, hand_raised_at: raw?.hand_raised_at, warnings: raw?.warnings || 0 };
+              })}
               teams={teams}
               responses={responses}
               moduleResponseTexts={moduleResponseTexts}

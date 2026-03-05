@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from "motion/react";
 import type { SeatStudent } from "./seat-card";
 
 const STATE_LABEL: Record<string, { label: string; color: string; bg: string }> = {
-  responded: { label: "A répondu", color: "#4ECDC4", bg: "rgba(78,205,196,0.08)" },
-  active: { label: "En cours", color: "#FF6B35", bg: "rgba(255,107,53,0.08)" },
-  stuck: { label: "Bloqué", color: "#F59E0B", bg: "rgba(245,158,11,0.08)" },
-  disconnected: { label: "Déconnecté", color: "#666", bg: "rgba(100,100,100,0.08)" },
+  responded: { label: "A répondu", color: "#4ECDC4", bg: "rgba(78,205,196,0.06)" },
+  active: { label: "En cours", color: "#8894A0", bg: "rgba(136,148,160,0.06)" },
+  stuck: { label: "Bloqué", color: "#EF6461", bg: "rgba(239,100,97,0.06)" },
+  disconnected: { label: "Déconnecté", color: "#555", bg: "rgba(80,80,80,0.06)" },
 };
 
 const QUICK_NUDGES = [
@@ -62,6 +62,7 @@ export function StudentActionPopover({
   }, [showNudgeInput]);
 
   const stateInfo = STATE_LABEL[student.state] || STATE_LABEL.active;
+  const warnings = student.warnings ?? 0;
 
   function handleSendNudge(text?: string) {
     const msg = (text || nudgeText).trim();
@@ -78,33 +79,39 @@ export function StudentActionPopover({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
       >
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, scale: 0.92, y: 10 }}
+          initial={{ opacity: 0, scale: 0.95, y: 8 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.92, y: 10 }}
+          exit={{ opacity: 0, scale: 0.95, y: 8 }}
           transition={{ type: "spring", stiffness: 400, damping: 28 }}
           className="glass-card w-[340px] max-w-[92vw] p-0 overflow-hidden"
         >
-          {/* Header with state color bar */}
-          <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${stateInfo.color}, ${stateInfo.color}60)` }} />
+          {/* Color bar */}
+          <div className="h-0.5 w-full" style={{ background: stateInfo.color }} />
 
+          {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3">
             <div
-              className="w-11 h-11 rounded-full flex items-center justify-center text-xl flex-shrink-0"
-              style={{ boxShadow: `0 0 0 2.5px ${stateInfo.color}`, background: stateInfo.bg }}
+              className="w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0"
+              style={{ boxShadow: `0 0 0 2px ${stateInfo.color}`, background: stateInfo.bg }}
             >
               {student.avatar}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-bw-heading truncate">{student.display_name}</p>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stateInfo.color }} />
-                <span className="text-[11px]" style={{ color: stateInfo.color }}>{stateInfo.label}</span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stateInfo.color }} />
+                  <span className="text-[10px]" style={{ color: stateInfo.color }}>{stateInfo.label}</span>
+                </span>
                 {student.hand_raised_at && (
-                  <span className="text-[11px] text-bw-amber ml-1 font-medium">✋ Main levée</span>
+                  <span className="text-[10px] text-amber-400 font-medium">✋ Main levée</span>
+                )}
+                {warnings > 0 && (
+                  <span className="text-[10px] text-amber-400 font-medium">{warnings}/3 avert.</span>
                 )}
               </div>
             </div>
@@ -115,15 +122,22 @@ export function StudentActionPopover({
             </button>
           </div>
 
-          {/* Last response */}
+          {/* Last response — the main thing the teacher wants to see */}
           {lastResponse && (
-            <div className="mx-3 mb-2 rounded-lg p-2.5" style={{ background: "rgba(78,205,196,0.05)", border: "1px solid rgba(78,205,196,0.12)" }}>
-              <p className="text-[9px] uppercase tracking-wider font-bold text-bw-teal mb-1">Dernière réponse</p>
-              <p className="text-[13px] text-bw-text leading-relaxed line-clamp-4">{lastResponse}</p>
+            <div className="mx-3 mb-2 rounded-lg p-2.5" style={{ background: "rgba(78,205,196,0.04)", border: "1px solid rgba(78,205,196,0.10)" }}>
+              <p className="text-[9px] uppercase tracking-wider font-bold text-bw-teal mb-1">Réponse</p>
+              <p className="text-[13px] text-bw-text leading-relaxed">{lastResponse}</p>
             </div>
           )}
 
-          {/* Quick nudge chips */}
+          {/* No response yet */}
+          {!lastResponse && student.state !== "disconnected" && (
+            <div className="mx-3 mb-2 rounded-lg p-2.5 bg-white/[0.02] border border-white/[0.06]">
+              <p className="text-[11px] text-bw-muted">Pas encore de réponse</p>
+            </div>
+          )}
+
+          {/* Quick nudge chips — shown for active & stuck */}
           {!showNudgeInput && (student.state === "active" || student.state === "stuck") && (
             <div className="px-3 pb-2">
               <p className="text-[9px] uppercase tracking-wider font-bold text-bw-muted mb-1.5">Relance rapide</p>
@@ -132,7 +146,7 @@ export function StudentActionPopover({
                   <button
                     key={text}
                     onClick={() => handleSendNudge(text)}
-                    className="text-[11px] px-2.5 py-1 rounded-lg bg-bw-primary/8 border border-bw-primary/15 text-bw-text hover:bg-bw-primary/15 hover:border-bw-primary/30 cursor-pointer transition-all leading-snug text-left"
+                    className="text-[11px] px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-bw-text hover:bg-white/[0.08] cursor-pointer transition-all leading-snug text-left"
                   >
                     {text}
                   </button>
@@ -165,7 +179,7 @@ export function StudentActionPopover({
                       disabled={!nudgeText.trim()}
                       className="px-3 py-2 rounded-lg text-sm font-medium bg-bw-primary text-white disabled:opacity-30 cursor-pointer hover:brightness-110 transition-all"
                     >
-                      ↗
+                      Envoyer
                     </button>
                   </div>
                   <p className="text-[9px] text-bw-muted mt-1 text-right tabular-nums">{nudgeText.length}/300</p>
@@ -175,24 +189,23 @@ export function StudentActionPopover({
           </AnimatePresence>
 
           {/* Actions */}
-          <div className="border-t border-white/[0.06] p-1.5 grid grid-cols-2 gap-1">
-            {lastResponse && onViewResponse && (
-              <ActionButton icon="👁" label="Voir réponse" onClick={() => { onViewResponse(); onClose(); }} />
-            )}
+          <div className="border-t border-white/[0.06] p-1.5 flex gap-1">
             <ActionButton
               icon="💬"
-              label={showNudgeInput ? "Annuler" : "Message perso"}
+              label={showNudgeInput ? "Annuler" : "Message"}
               onClick={() => setShowNudgeInput(!showNudgeInput)}
               active={showNudgeInput}
+              grow
             />
             {onBroadcast && (
-              <ActionButton icon="📢" label="Broadcast" onClick={() => { onBroadcast(student.id); onClose(); }} />
+              <ActionButton icon="📢" label="Tous" onClick={() => { onBroadcast(student.id); onClose(); }} grow />
             )}
             <ActionButton
               icon="⚠️"
-              label="Avertir"
+              label={warnings > 0 ? `Avertir (${warnings}/3)` : "Avertir"}
               onClick={() => { onWarn(student.id); onClose(); }}
               variant="warning"
+              grow
             />
           </div>
         </motion.div>
@@ -201,19 +214,20 @@ export function StudentActionPopover({
   );
 }
 
-function ActionButton({ icon, label, onClick, variant, active }: {
+function ActionButton({ icon, label, onClick, variant, active, grow }: {
   icon: string;
   label: string;
   onClick: () => void;
   variant?: "warning";
   active?: boolean;
+  grow?: boolean;
 }) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all ${
+      className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium cursor-pointer transition-all ${grow ? "flex-1" : ""} ${
         variant === "warning"
-          ? "text-bw-amber hover:bg-bw-amber/10"
+          ? "text-amber-400 hover:bg-amber-500/10"
           : active
             ? "text-bw-primary bg-bw-primary/10"
             : "text-bw-text hover:bg-white/5"

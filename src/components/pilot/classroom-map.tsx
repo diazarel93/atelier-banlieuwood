@@ -27,12 +27,13 @@ interface ClassroomMapProps {
   students: SeatStudent[];
   teams: Team[];
   responses: Response[];
-  /** Extra response texts from module-specific endpoints (M10 etsi, M9 budget, etc.) */
   moduleResponseTexts?: Map<string, string>;
   sessionStatus: string;
   onNudge: (studentId: string, text: string) => void;
   onWarn: (studentId: string) => void;
   onBroadcast?: () => void;
+  /** Nudge all students that are stuck */
+  onNudgeAllStuck?: (text: string) => void;
 }
 
 const STATE_ORDER: Record<StudentState, number> = {
@@ -59,47 +60,46 @@ export function ClassroomMap({
   onNudge,
   onWarn,
   onBroadcast,
+  onNudgeAllStuck,
 }: ClassroomMapProps) {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
 
-  // Build merged response map: standard responses + module-specific texts
+  // Build merged response map
   const { responseMap, responseIdMap } = useMemo(() => {
     const rMap = new Map<string, string>();
     const idMap = new Map<string, string>();
-    // Standard responses first
     for (const r of responses) {
       if (!r.is_hidden && !r.reset_at && !rMap.has(r.student_id)) {
         rMap.set(r.student_id, r.text);
         idMap.set(r.student_id, r.id);
       }
     }
-    // Module-specific responses (M10, M9, etc.)
     if (moduleResponseTexts) {
       for (const [studentId, text] of moduleResponseTexts) {
-        if (!rMap.has(studentId)) {
-          rMap.set(studentId, text);
-        }
+        if (!rMap.has(studentId)) rMap.set(studentId, text);
       }
     }
     return { responseMap: rMap, responseIdMap: idMap };
   }, [responses, moduleResponseTexts]);
 
-  // Stats — single pass
-  const { respondedCount, stuckCount, activeCount, disconnectedCount, handRaisedCount } = useMemo(() => {
-    let responded = 0, stuck = 0, active = 0, disconnected = 0, handRaised = 0;
+  // Stats
+  const { respondedCount, stuckCount, activeCount, disconnectedCount, handRaisedCount, warningCount } = useMemo(() => {
+    let responded = 0, stuck = 0, active = 0, disconnected = 0, handRaised = 0, warned = 0;
     for (const s of students) {
       if (s.state === "responded") responded++;
       else if (s.state === "stuck") stuck++;
       else if (s.state === "active") active++;
       else disconnected++;
       if (s.hand_raised_at) handRaised++;
+      if ((s.warnings ?? 0) > 0) warned++;
     }
-    return { respondedCount: responded, stuckCount: stuck, activeCount: active, disconnectedCount: disconnected, handRaisedCount: handRaised };
+    return { respondedCount: responded, stuckCount: stuck, activeCount: active, disconnectedCount: disconnected, handRaisedCount: handRaised, warningCount: warned };
   }, [students]);
 
   const total = students.length;
+  const onlineTotal = total - disconnectedCount;
   const hasTeams = teams.length > 0;
-  const progressPct = total > 0 ? Math.round((respondedCount / total) * 100) : 0;
+  const progressPct = onlineTotal > 0 ? Math.round((respondedCount / onlineTotal) * 100) : 0;
 
   const sortedStudents = useMemo(
     () => [...students].sort((a, b) => STATE_ORDER[a.state] - STATE_ORDER[b.state]),
@@ -146,10 +146,10 @@ export function ClassroomMap({
   return (
     <div className="space-y-3">
 
-      {/* ── STATS BAR ── */}
-      <div className="flex items-center gap-2">
-        {/* Big progress circle */}
-        <div className="relative w-12 h-12 flex-shrink-0">
+      {/* ── STATS — clean, teacher-friendly ── */}
+      <div className="flex items-center gap-3">
+        {/* Progress ring */}
+        <div className="relative w-11 h-11 flex-shrink-0">
           <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
             <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="3" />
             <motion.circle
@@ -158,84 +158,90 @@ export function ClassroomMap({
               strokeLinecap="round"
               initial={{ strokeDasharray: "0 100" }}
               animate={{ strokeDasharray: `${progressPct * 0.94} 100` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
             />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-bw-teal tabular-nums">
+          <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-bw-teal tabular-nums">
             {progressPct}%
           </span>
         </div>
 
-        {/* Stat chips */}
-        <div className="flex flex-wrap gap-1.5 flex-1">
-          <StatChip color="#4ECDC4" label="Répondu" count={respondedCount} />
-          <StatChip color="#FF6B35" label="En cours" count={activeCount} />
-          {stuckCount > 0 && <StatChip color="#F59E0B" label="Bloqué" count={stuckCount} pulse />}
-          {handRaisedCount > 0 && <StatChip color="#F59E0B" label="✋ Main" count={handRaisedCount} pulse />}
-          {disconnectedCount > 0 && <StatChip color="#666" label="Hors ligne" count={disconnectedCount} />}
+        {/* Main counter */}
+        <div className="flex-1">
+          <div className="flex items-baseline gap-1">
+            <span className="text-lg font-bold text-bw-teal tabular-nums">{respondedCount}</span>
+            <span className="text-sm text-bw-muted">/ {onlineTotal} répondu</span>
+            {disconnectedCount > 0 && (
+              <span className="text-[10px] text-bw-muted ml-1">({disconnectedCount} hors ligne)</span>
+            )}
+          </div>
+          {/* Urgences — only show if something needs attention */}
+          <div className="flex items-center gap-3 mt-0.5">
+            {stuckCount > 0 && (
+              <span className="text-[11px] text-[#EF6461] font-medium">{stuckCount} bloqué{stuckCount > 1 ? "s" : ""}</span>
+            )}
+            {handRaisedCount > 0 && (
+              <span className="text-[11px] text-[#EF6461] font-medium">✋ {handRaisedCount} main{handRaisedCount > 1 ? "s" : ""}</span>
+            )}
+            {activeCount > 0 && stuckCount === 0 && handRaisedCount === 0 && (
+              <span className="text-[11px] text-bw-muted">{activeCount} en cours</span>
+            )}
+          </div>
         </div>
 
-        {/* Counter */}
-        <div className="text-right flex-shrink-0">
-          <span className="text-lg font-bold text-bw-teal tabular-nums">{respondedCount}</span>
-          <span className="text-sm text-bw-muted">/{total}</span>
+        {/* Quick actions */}
+        <div className="flex gap-1.5 flex-shrink-0">
+          {stuckCount > 0 && (
+            <button
+              onClick={() => onNudgeAllStuck?.("Besoin d'aide ? N'hésite pas à lever la main.")}
+              className="text-[10px] font-medium px-2.5 py-1.5 rounded-lg bg-[#EF6461]/10 border border-[#EF6461]/20 text-[#EF6461] hover:bg-[#EF6461]/20 cursor-pointer transition-colors"
+            >
+              Relancer {stuckCount} bloqué{stuckCount > 1 ? "s" : ""}
+            </button>
+          )}
+          {handRaisedCount > 0 && (
+            <span className="flex items-center gap-1 text-[10px] font-medium px-2 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400">
+              ✋ {handRaisedCount}
+            </span>
+          )}
         </div>
       </div>
 
       {/* ── CLASSROOM FLOOR PLAN ── */}
-      <div className="relative rounded-2xl border border-white/[0.06] overflow-hidden" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)" }}>
+      <div className="relative rounded-2xl border border-white/[0.06] overflow-hidden bg-white/[0.015]">
 
-        {/* Grid background */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
-          backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }} />
+        <div className="relative p-4 sm:p-5 space-y-3">
 
-        <div className="relative p-4 sm:p-5 space-y-4">
-
-          {/* Teacher's desk */}
+          {/* Teacher's desk — minimal */}
           <div className="flex justify-center">
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-2.5 px-6 py-2.5 rounded-xl border"
-              style={{
-                background: "linear-gradient(135deg, rgba(255,107,53,0.08), rgba(139,92,246,0.05))",
-                borderColor: "rgba(255,107,53,0.20)",
-              }}
-            >
-              <span className="text-base">🎓</span>
-              <span className="text-[11px] font-bold text-bw-primary uppercase tracking-widest">Tableau</span>
-              <div className="w-px h-4 bg-white/10 mx-1" />
-              <span className="text-[10px] text-bw-muted tabular-nums">{respondedCount}/{total}</span>
-            </motion.div>
+            <div className="flex items-center gap-2 px-5 py-1.5 rounded-lg border border-white/[0.08] bg-white/[0.02]">
+              <span className="text-[10px] font-bold text-bw-muted uppercase tracking-widest">Tableau</span>
+            </div>
           </div>
 
           {/* Separator */}
-          <div className="flex items-center gap-3 px-4">
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-          </div>
+          <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
           {/* Desk rows */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {deskRows.map((group, gi) => (
               <motion.div
                 key={group.teamId}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: gi * 0.05 }}
-                className="space-y-2"
+                transition={{ delay: gi * 0.04 }}
+                className="space-y-1.5"
               >
                 {/* Team label */}
                 {group.teamName && (
                   <div className="flex items-center gap-2 px-1">
                     {group.teamColor && group.teamColor !== "#666" && (
-                      <div className="w-2 h-2 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: group.teamColor, boxShadow: `0 0 6px ${group.teamColor}40` }} />
+                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: group.teamColor }} />
                     )}
-                    <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: group.teamColor || undefined }}>
+                    <span className="text-[9px] font-semibold uppercase tracking-wider text-bw-muted">
                       {group.teamName}
                     </span>
-                    <div className="flex-1 h-px" style={{ background: group.teamColor ? `linear-gradient(90deg, ${group.teamColor}25, transparent)` : "rgba(255,255,255,0.04)" }} />
+                    <div className="flex-1 h-px bg-white/[0.04]" />
                     <span className="text-[9px] text-bw-muted tabular-nums">
                       {group.pairs.reduce((n, [l, r]) => n + (l.state === "responded" ? 1 : 0) + (r?.state === "responded" ? 1 : 0), 0)}/
                       {group.pairs.reduce((n, [, r]) => n + 1 + (r ? 1 : 0), 0)}
@@ -272,63 +278,32 @@ export function ClassroomMap({
           {/* Empty state */}
           {total === 0 && (
             <div className="text-center py-10 text-bw-muted space-y-2">
-              <span className="text-3xl">🪑</span>
+              <span className="text-2xl">🪑</span>
               <p className="text-sm">Aucun élève connecté</p>
             </div>
           )}
 
-          {/* All responded celebration */}
-          {total > 0 && respondedCount === total && (
+          {/* All responded */}
+          {total > 0 && respondedCount === onlineTotal && onlineTotal > 0 && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="flex justify-center"
+              className="flex justify-center pt-1"
             >
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-bw-teal/10 border border-bw-teal/20">
-                <span className="text-sm">🎉</span>
-                <span className="text-xs font-semibold text-bw-teal">Tout le monde a répondu !</span>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-bw-teal/8 border border-bw-teal/15">
+                <span className="text-xs font-medium text-bw-teal">Tout le monde a répondu</span>
               </div>
             </motion.div>
           )}
         </div>
       </div>
 
-      {/* ── LIVE RESPONSE FEED (latest responses) ── */}
-      {responseMap.size > 0 && (
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-bw-teal">Dernières réponses</span>
-            <span className="text-[9px] text-bw-muted tabular-nums">{responseMap.size}</span>
-          </div>
-          <div className="space-y-1 max-h-[200px] overflow-y-auto">
-            {sortedStudents
-              .filter((s) => s.state === "responded" && responseMap.has(s.id))
-              .slice(0, 10)
-              .map((s) => (
-                <motion.div
-                  key={s.id}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="flex items-start gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] cursor-pointer hover:bg-white/[0.05] transition-colors"
-                  onClick={() => handleStudentClick(s.id)}
-                >
-                  <span className="text-sm flex-shrink-0 mt-0.5">{s.avatar}</span>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[10px] font-semibold text-bw-teal">{s.display_name}</span>
-                    <p className="text-[12px] text-bw-text leading-snug line-clamp-2 mt-0.5">{responseMap.get(s.id)}</p>
-                  </div>
-                </motion.div>
-              ))}
-          </div>
-        </div>
-      )}
-
-      {/* Legend */}
-      <div className="flex items-center justify-center gap-4 text-[10px] text-bw-muted">
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: "#4ECDC4" }} /> Répondu</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: "#FF6B35" }} /> En cours</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: "#F59E0B" }} /> Bloqué</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: "#444" }} /> Hors ligne</span>
+      {/* Legend — minimal */}
+      <div className="flex items-center justify-center gap-4 text-[9px] text-bw-muted/60">
+        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#4ECDC4]" /> Répondu</span>
+        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#8894A0]" /> En cours</span>
+        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#EF6461]" /> Bloqué</span>
+        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#555]" /> Hors ligne</span>
       </div>
 
       {/* Student action popover */}
@@ -345,19 +320,5 @@ export function ClassroomMap({
         )}
       </AnimatePresence>
     </div>
-  );
-}
-
-function StatChip({ color, label, count, pulse }: { color: string; label: string; count: number; pulse?: boolean }) {
-  return (
-    <motion.span
-      className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border"
-      style={{ borderColor: `${color}25`, background: `${color}08`, color }}
-      animate={pulse ? { opacity: [1, 0.7, 1] } : undefined}
-      transition={pulse ? { repeat: Infinity, duration: 1.5 } : undefined}
-    >
-      <span className="w-1.5 h-1.5 rounded-full" style={{ background: color }} />
-      {label} <span className="font-bold tabular-nums">{count}</span>
-    </motion.span>
   );
 }
