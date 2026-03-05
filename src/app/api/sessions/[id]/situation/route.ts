@@ -35,8 +35,8 @@ export async function GET(
 ) {
   const { id: sessionId } = await params;
 
-  // Rate limit: 30 requests per 10 seconds per IP (generous for 5s polling)
-  const limited = checkRateLimit(getIP(req), `situation:${sessionId}`, { max: 30, windowSec: 10 });
+  // Rate limit: 200 requests per 10 seconds per IP (school WiFi shares one IP for 30+ students)
+  const limited = checkRateLimit(getIP(req), `situation:${sessionId}`, { max: 200, windowSec: 10 });
   if (limited) {
     return NextResponse.json({ error: limited.error }, { status: 429, headers: { "Retry-After": String(limited.retryAfterSec) } });
   }

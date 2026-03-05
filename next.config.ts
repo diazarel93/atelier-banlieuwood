@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' browser.sentry-cdn.com",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: image.tmdb.org images.unsplash.com",
+              "img-src 'self' data: blob: https://image.tmdb.org https://images.unsplash.com",
               "media-src 'self' assets.mixkit.co",
               "font-src 'self'",
               "connect-src 'self' *.supabase.co generativelanguage.googleapis.com eu.i.posthog.com *.i.posthog.com localhost:11434 *.sentry.io *.ingest.sentry.io",
