@@ -1113,8 +1113,8 @@ function CockpitContent({
 
         {/* ── SPLIT-PANEL LAYOUT ── */}
         <div className="flex-1 flex overflow-hidden min-h-0">
-          {/* LEFT: Classe en direct — 300px panel with pulse + tabs (list/map) */}
-          <div data-onboarding="classmap" className="hidden lg:flex w-[300px] flex-shrink-0 flex-col"
+          {/* LEFT: Classe en direct — 260-300px panel with pulse + tabs (list/map) */}
+          <div data-onboarding="classmap" className="hidden md:flex md:w-[260px] lg:w-[300px] flex-shrink-0 flex-col"
             style={{ background: "#FAF6EE", borderRight: "1px solid #EEE4D8" }}>
             {/* Compact pulse header */}
             <div className="px-4 pt-4 pb-2 flex-shrink-0">
@@ -1400,7 +1400,7 @@ function CockpitContent({
               })()}
             </div>
           ) : (
-          <div className="px-6 py-4 space-y-4">
+          <div className="px-3 sm:px-6 py-4 space-y-4">
 
           {/* ── TOOLBAR — response section header ── */}
           {session.status !== "done" && !focusMode && (
@@ -1439,7 +1439,7 @@ function CockpitContent({
             const allCounts = module1Data.questions[currentQIndex].options?.map(o => module1Data.optionDistribution?.[o.key] || 0) || [];
             const maxCount = Math.max(...allCounts, 0);
             return (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {module1Data.questions[currentQIndex].options?.map((opt) => {
                 const count = module1Data.optionDistribution?.[opt.key] || 0;
                 const total = activeStudents.length;
@@ -2377,8 +2377,8 @@ function CockpitContent({
         </div>
         )}
         </div>
-          {/* RIGHT: Assistant pedagogique — 320px panel per pseudo-Figma */}
-          <div className="hidden xl:flex w-[320px] flex-shrink-0 flex-col"
+          {/* RIGHT: Assistant pedagogique — 280-320px panel */}
+          <div className="hidden lg:flex lg:w-[280px] xl:w-[320px] flex-shrink-0 flex-col"
             style={{ background: "#FAF6EE", borderLeft: "1px solid #EEE4D8" }}>
             {/* Title */}
             <div className="px-5 pt-5 pb-3 flex-shrink-0">
@@ -2532,45 +2532,46 @@ function CockpitContent({
       {session.status !== "done" && session.status !== "paused" && (
         <div className="flex-shrink-0" style={{ background: "#F5EFE6", borderTop: "1px solid #E8DFD2" }}>
           {/* Action buttons row + CTA */}
-          <div className="flex items-center gap-3 px-6" style={{ height: 76 }}>
-            {/* LEFT: Action buttons */}
+          <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-6" style={{ height: 68, minHeight: 68 }}>
+            {/* LEFT: Action buttons — responsive: hide labels on small screens */}
             {session.status !== "waiting" && session.status !== "done" && (
-              <div className="flex items-center gap-1.5 flex-shrink-0">
+              <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 overflow-x-auto">
                 {/* Groupe 1: Aider */}
                 <div className="flex items-center gap-1 px-1 py-0.5 rounded-[10px]" style={{ background: "#FAF6EE" }}>
                   <button onClick={() => setShowBroadcast(true)}
-                    className="h-10 px-3 rounded-[10px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
+                    className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
                     style={{ background: "#FFF0E6", borderColor: "#E6DBCF", color: "#8B4513" }}>
-                    💡 Indice
+                    💡 <span className="hidden sm:inline">Indice</span>
                   </button>
                   <button onClick={handleNudgeAllStuck} disabled={stuckStudents.length === 0}
-                    className="h-10 px-3 rounded-[10px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
                     style={{ background: "#EBF2FF", borderColor: "#E6DBCF", color: "#3B5998" }}>
-                    🚀 Relancer{stuckStudents.length > 0 ? ` (${stuckStudents.length})` : ""}
+                    🚀 <span className="hidden sm:inline">Relancer{stuckStudents.length > 0 ? ` (${stuckStudents.length})` : ""}</span>
+                    <span className="sm:hidden">{stuckStudents.length > 0 ? stuckStudents.length : ""}</span>
                   </button>
                 </div>
                 {/* Separateur */}
-                <div className="w-px h-6" style={{ background: "#E8DFD2" }} />
+                <div className="w-px h-6 hidden sm:block" style={{ background: "#E8DFD2" }} />
                 {/* Groupe 2: Discuter */}
                 <div className="flex items-center gap-1 px-1 py-0.5 rounded-[10px]" style={{ background: "#FAF6EE" }}>
                   <button onClick={() => setShowBroadcast(true)}
-                    className="h-10 px-3 rounded-[10px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
+                    className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
                     style={{ background: "#E8F5F2", borderColor: "#E6DBCF", color: "#1B5E50" }}>
-                    💬 Discussion
+                    💬 <span className="hidden sm:inline">Discussion</span>
                   </button>
                   <button onClick={() => setShowBroadcast(true)}
-                    className="h-10 px-3 rounded-[10px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
+                    className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
                     style={{ background: "#F0ECF8", borderColor: "#E6DBCF", color: "#5B3A8E" }}>
-                    🎭 Debat
+                    🎭 <span className="hidden sm:inline">Debat</span>
                   </button>
                 </div>
                 {/* Separateur */}
-                <div className="w-px h-6" style={{ background: "#E8DFD2" }} />
+                <div className="w-px h-6 hidden sm:block" style={{ background: "#E8DFD2" }} />
                 {/* Groupe 3: Voter */}
                 <button onClick={() => { if (responses.length >= 2) setShowCompare(true); }} disabled={responses.length < 2}
-                  className="h-10 px-3 rounded-[10px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
                   style={{ background: "#FFF8E6", borderColor: "#E6DBCF", color: "#8B6914" }}>
-                  🗳️ Vote rapide
+                  🗳️ <span className="hidden sm:inline">Vote rapide</span>
                 </button>
               </div>
             )}
