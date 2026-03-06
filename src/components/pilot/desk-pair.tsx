@@ -3,22 +3,15 @@
 import { memo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { SeatStudent } from "./seat-card";
+import { STATE_STYLE, DEFAULT_STYLE } from "./state-styles";
 
-/**
- * Warm EdTech state palette:
- *  - Green  = repondu, OK
- *  - Amber  = en cours (neutre-chaud)
- *  - Red    = bloque / besoin d'aide
- *  - Muted  = deconnecte
- */
-const STATE_STYLE: Record<string, { dot: string; bg: string; border: string; text: string }> = {
-  responded: { dot: "#4CAF50", bg: "#F0FAF4", border: "#C6E9D0", text: "#2C2C2C" },
-  active:    { dot: "#F2C94C", bg: "#FFFCF5", border: "#F0E4C0", text: "#2C2C2C" },
-  stuck:     { dot: "#EB5757", bg: "#FFF5F5", border: "#F5C4C4", text: "#2C2C2C" },
-  disconnected: { dot: "#C4BDB2", bg: "#F7F5F2", border: "#E8E2D8", text: "#B0A99E" },
-};
+export type DeskSize = "sm" | "md";
 
-const DEFAULT_STYLE = { dot: "#C4BDB2", bg: "#F7F5F2", border: "#E8E2D8", text: "#B0A99E" };
+/** Dimension presets */
+const SIZE = {
+  sm: { seat: "w-[90px]", empty: "w-[90px]", avatar: "w-7 h-7 text-sm", name: "text-[12px] max-w-[48px]", px: "px-2.5 py-2", gap: "gap-2" },
+  md: { seat: "w-[120px]", empty: "w-[120px]", avatar: "w-9 h-9 text-base", name: "text-[13px] max-w-[68px]", px: "px-3 py-2.5", gap: "gap-2.5" },
+} as const;
 
 /** A single desk with 1-2 students sitting side by side */
 function DeskPairInner({
@@ -27,12 +20,14 @@ function DeskPairInner({
   responseMap,
   onStudentClick,
   teamColor,
+  size = "md",
 }: {
   left: SeatStudent;
   right?: SeatStudent;
   responseMap: Map<string, string>;
   onStudentClick: (studentId: string) => void;
   teamColor?: string;
+  size?: DeskSize;
 }) {
   const allResponded = left.state === "responded" && (!right || right.state === "responded");
   const anyNeedsHelp = left.state === "stuck" || right?.state === "stuck";
@@ -67,12 +62,12 @@ function DeskPairInner({
               : "0 2px 8px rgba(61,43,16,0.05), 0 1px 2px rgba(61,43,16,0.03)",
         }}
       >
-        <DeskSeat student={left} response={responseMap.get(left.id) || null} onClick={() => onStudentClick(left.id)} />
+        <DeskSeat student={left} response={responseMap.get(left.id) || null} onClick={() => onStudentClick(left.id)} size={size} />
         <div className="w-px my-2.5" style={{ background: "#EFE4D8" }} />
         {right ? (
-          <DeskSeat student={right} response={responseMap.get(right.id) || null} onClick={() => onStudentClick(right.id)} />
+          <DeskSeat student={right} response={responseMap.get(right.id) || null} onClick={() => onStudentClick(right.id)} size={size} />
         ) : (
-          <div className="w-[90px] flex items-center justify-center" style={{ opacity: 0.3 }}>
+          <div className={`${SIZE[size].empty} flex items-center justify-center`} style={{ opacity: 0.3 }}>
             <div className="w-5 h-5 rounded-full" style={{ border: "1.5px dashed #D3CAB8" }} />
           </div>
         )}
@@ -86,13 +81,16 @@ function DeskSeat({
   student,
   response,
   onClick,
+  size = "md",
 }: {
   student: SeatStudent;
   response: string | null;
   onClick: () => void;
+  size?: DeskSize;
 }) {
   const [hovered, setHovered] = useState(false);
   const s = STATE_STYLE[student.state] || DEFAULT_STYLE;
+  const dim = SIZE[size];
 
   const stateLabel = student.state === "responded" ? "a repondu" : student.state === "stuck" ? "bloque" : student.state === "active" ? "en reflexion" : "absent";
 
@@ -102,16 +100,16 @@ function DeskSeat({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       aria-label={`${student.display_name} — ${stateLabel}${student.hand_raised_at ? ", main levee" : ""}`}
-      className="relative flex items-center gap-2 px-2.5 py-2 cursor-pointer transition-colors w-[90px] outline-none focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:rounded-[8px]"
+      className={`relative flex items-center ${dim.gap} ${dim.px} cursor-pointer transition-colors ${dim.seat} outline-none focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:rounded-[8px]`}
       style={{ opacity: student.state === "disconnected" ? 0.4 : 1 }}
       whileTap={{ scale: 0.96 }}
       whileHover={{ backgroundColor: "#FAF6EE" }}
     >
       {/* State dot + avatar */}
       <div className="relative flex-shrink-0">
-        {/* Small avatar with state ring */}
+        {/* Avatar with state ring */}
         <div
-          className="w-7 h-7 rounded-full flex items-center justify-center text-sm"
+          className={`${dim.avatar} rounded-full flex items-center justify-center`}
           style={{
             background: s.bg,
             border: `2px solid ${s.dot}`,
@@ -169,7 +167,7 @@ function DeskSeat({
 
       {/* Name — PRIMARY element */}
       <span
-        className="text-[12px] leading-tight truncate max-w-[48px] font-semibold"
+        className={`${dim.name} leading-tight truncate font-semibold`}
         style={{ color: s.text }}
       >
         {student.display_name}

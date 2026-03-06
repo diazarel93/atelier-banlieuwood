@@ -1259,16 +1259,17 @@ function CockpitContent({
               )}
             </div>
 
-            {/* Student list — always visible */}
+            {/* Student list — always visible, split online/offline */}
             <div className="flex-1 overflow-y-auto min-h-0" role="list" aria-label="Liste des eleves">
               <div className="px-3 pb-2">
-                {studentStates.map(s => {
+                {/* Online students */}
+                {studentStates.filter(s => s.state !== "disconnected").map(s => {
                   const raw = session.students?.find(st => st.id === s.id);
                   if (!raw || !raw.is_active) return null;
                   const hasHand = !!raw.hand_raised_at;
                   const warnings = raw.warnings || 0;
                   const stateColor = s.state === "responded" ? "#4CAF50" : s.state === "stuck" ? "#EB5757" : s.state === "active" ? "#F2C94C" : "#C4BDB2";
-                  const stateLabel = s.state === "responded" ? "a repondu" : s.state === "stuck" ? "bloque" : s.state === "active" ? "en reflexion" : "absent";
+                  const stateLabel = s.state === "responded" ? "a repondu" : s.state === "stuck" ? "bloque" : "en reflexion";
                   return (
                     <button key={s.id} onClick={() => setFicheStudentId(s.id)} role="listitem"
                       aria-label={`${raw.display_name} — ${stateLabel}${hasHand ? ", main levee" : ""}${warnings > 0 ? `, ${warnings} avertissement${warnings > 1 ? "s" : ""}` : ""}`}
@@ -1281,6 +1282,35 @@ function CockpitContent({
                     </button>
                   );
                 })}
+
+                {/* Disconnected students — collapsible */}
+                {(() => {
+                  const offline = studentStates.filter(s => s.state === "disconnected");
+                  if (offline.length === 0) return null;
+                  return (
+                    <details className="mt-2">
+                      <summary className="flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold text-[#B0A99E] cursor-pointer select-none hover:text-[#7A7A7A] transition-colors">
+                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#C4BDB2" }} />
+                        Hors ligne ({offline.length})
+                      </summary>
+                      <div className="mt-0.5">
+                        {offline.map(s => {
+                          const raw = session.students?.find(st => st.id === s.id);
+                          if (!raw || !raw.is_active) return null;
+                          return (
+                            <button key={s.id} onClick={() => setFicheStudentId(s.id)} role="listitem"
+                              aria-label={`${raw.display_name} — absent`}
+                              className="w-full flex items-center gap-2 px-2.5 py-1.5 text-left rounded-[10px] hover:bg-[#F3ECE3] focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:ring-offset-1 transition-colors cursor-pointer mb-0.5 outline-none opacity-50"
+                              style={{ minHeight: 36 }}>
+                              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#C4BDB2" }} />
+                              <span className="text-[13px] font-semibold text-[#B0A99E] truncate flex-1">{raw.display_name}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </details>
+                  );
+                })()}
               </div>
             </div>
 
@@ -1373,18 +1403,32 @@ function CockpitContent({
 
               <div className="flex-1" />
 
-              {/* Layout selector — visible only when classmap tab active */}
+              {/* Layout selector pills — visible only when classmap tab active */}
               {centerTab === "classmap" && (
-                <select
-                  value={classroomLayout}
-                  onChange={(e) => setClassroomLayout(e.target.value as typeof classroomLayout)}
-                  className="h-8 px-2.5 rounded-[10px] text-[12px] font-medium bg-white border border-[#E8DFD2] text-[#2C2C2C] cursor-pointer focus:outline-none focus:border-[#6B8CFF]/40 transition-colors"
-                >
-                  <option value="rows">Rangs</option>
-                  <option value="u-shape">En U</option>
-                  <option value="islands">Ilots</option>
-                  <option value="free">Libre</option>
-                </select>
+                <div className="flex rounded-[8px] p-0.5 flex-shrink-0" style={{ background: "#EFE4D8" }} role="radiogroup" aria-label="Disposition des tables">
+                  {([
+                    { value: "rows", label: "Rangs", icon: "≡" },
+                    { value: "u-shape", label: "En U", icon: "⊔" },
+                    { value: "islands", label: "Ilots", icon: "⊞" },
+                    { value: "free", label: "Libre", icon: "⊡" },
+                  ] as const).map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setClassroomLayout(opt.value)}
+                      role="radio"
+                      aria-checked={classroomLayout === opt.value}
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-[6px] text-[11px] font-semibold transition-all cursor-pointer"
+                      style={{
+                        background: classroomLayout === opt.value ? "#FFFFFF" : "transparent",
+                        color: classroomLayout === opt.value ? "#2C2C2C" : "#7A7A7A",
+                        boxShadow: classroomLayout === opt.value ? "0 1px 3px rgba(61,43,16,0.08)" : "none",
+                      }}
+                    >
+                      <span className="text-[12px]">{opt.icon}</span>
+                      <span className="hidden sm:inline">{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
               )}
 
               {/* Search — only for certain modules when in responses tab */}
@@ -1435,6 +1479,7 @@ function CockpitContent({
               onStudentClick={(sid) => setFicheStudentId(sid)}
               layout={classroomLayout}
               desksPerRow={classroomLayout === "rows" ? 4 : 3}
+              deskSize="md"
             />
             </motion.div>
           ) : (

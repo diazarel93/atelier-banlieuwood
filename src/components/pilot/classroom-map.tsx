@@ -4,7 +4,8 @@ import { useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { StudentState } from "./pulse-ring";
 import type { SeatStudent } from "./seat-card";
-import { DeskPair } from "./desk-pair";
+import { DeskPair, type DeskSize } from "./desk-pair";
+import { STATE_STYLE } from "./state-styles";
 
 export type ClassroomLayout = "rows" | "u-shape" | "islands" | "free";
 
@@ -37,14 +38,8 @@ interface ClassroomMapProps {
   onStudentClick?: (studentId: string) => void;
   layout?: ClassroomLayout;
   desksPerRow?: number;
+  deskSize?: DeskSize;
 }
-
-const STATE_STYLE: Record<string, { dot: string; bg: string; border: string; text: string }> = {
-  responded: { dot: "#4CAF50", bg: "#F0FAF4", border: "#C6E9D0", text: "#2C2C2C" },
-  active: { dot: "#F2C94C", bg: "#FFFCF5", border: "#F0E4C0", text: "#2C2C2C" },
-  stuck: { dot: "#EB5757", bg: "#FFF5F5", border: "#F5C4C4", text: "#2C2C2C" },
-  disconnected: { dot: "#C4BDB2", bg: "#F7F5F2", border: "#E8E2D8", text: "#B0A99E" },
-};
 
 function toPairs<T>(arr: T[]): [T, T | undefined][] {
   const pairs: [T, T | undefined][] = [];
@@ -149,6 +144,7 @@ export function ClassroomMap({
   onStudentClick,
   layout = "rows",
   desksPerRow = 3,
+  deskSize = "md",
 }: ClassroomMapProps) {
   // Build merged response map
   const { responseMap } = useMemo(() => {
@@ -224,26 +220,32 @@ export function ClassroomMap({
     const aisleAt = Math.ceil(desksPerRow / 2);
 
     return rows.map((row, rowIdx) => (
-      <div key={rowIdx} className="flex justify-center items-start gap-2 sm:gap-3">
-        {hasAisle ? (
-          <>
-            {row.slice(0, aisleAt).map(([left, right], deskIdx) => (
-              <DeskPair key={`${left.id}-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} />
-            ))}
-            {row.length > aisleAt && (
-              <div className="w-4 sm:w-6 flex-shrink-0 self-stretch flex items-center justify-center">
-                <div className="w-px h-full" style={{ background: "linear-gradient(to bottom, transparent, #E8DFD2 30%, #E8DFD2 70%, transparent)" }} />
-              </div>
-            )}
-            {row.slice(aisleAt).map(([left, right], deskIdx) => (
-              <DeskPair key={`${left.id}-r-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} />
-            ))}
-          </>
-        ) : (
-          row.map(([left, right], deskIdx) => (
-            <DeskPair key={`${left.id}-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} />
-          ))
-        )}
+      <div key={rowIdx} className="flex items-center gap-2 sm:gap-3">
+        {/* Row number */}
+        <span className="w-5 text-[10px] font-bold text-[#C4BDB2] text-right flex-shrink-0 tabular-nums select-none">
+          R{rowIdx + 1}
+        </span>
+        <div className="flex justify-center items-start gap-2 sm:gap-3 flex-1">
+          {hasAisle ? (
+            <>
+              {row.slice(0, aisleAt).map(([left, right], deskIdx) => (
+                <DeskPair key={`${left.id}-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} size={deskSize} />
+              ))}
+              {row.length > aisleAt && (
+                <div className="w-8 sm:w-10 flex-shrink-0 self-stretch flex items-center justify-center">
+                  <div className="w-px h-full" style={{ background: "linear-gradient(to bottom, transparent, #D9CFC0 20%, #D9CFC0 80%, transparent)" }} />
+                </div>
+              )}
+              {row.slice(aisleAt).map(([left, right], deskIdx) => (
+                <DeskPair key={`${left.id}-r-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} size={deskSize} />
+              ))}
+            </>
+          ) : (
+            row.map(([left, right], deskIdx) => (
+              <DeskPair key={`${left.id}-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} size={deskSize} />
+            ))
+          )}
+        </div>
       </div>
     ));
   }
@@ -263,7 +265,7 @@ export function ClassroomMap({
         <div className="flex justify-between gap-3">
           <div className="flex flex-col gap-2">
             {leftPairs.map(([left, right], i) => (
-              <DeskPair key={`l-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} />
+              <DeskPair key={`l-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} size={deskSize} />
             ))}
           </div>
           {/* Center: teacher area marker */}
@@ -274,7 +276,7 @@ export function ClassroomMap({
           </div>
           <div className="flex flex-col gap-2">
             {rightPairs.map(([left, right], i) => (
-              <DeskPair key={`r-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} />
+              <DeskPair key={`r-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} size={deskSize} />
             ))}
           </div>
         </div>
@@ -282,7 +284,7 @@ export function ClassroomMap({
         {bottomPairs.length > 0 && (
           <div className="flex justify-center gap-2 sm:gap-3 flex-wrap">
             {bottomPairs.map(([left, right], i) => (
-              <DeskPair key={`b-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} />
+              <DeskPair key={`b-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} size={deskSize} />
             ))}
           </div>
         )}
@@ -306,7 +308,7 @@ export function ClassroomMap({
             {island.map(([left, right], pairIdx) => (
               <div key={`is-${left.id}-${pairIdx}`} style={pairIdx === 1 ? { transform: "scaleY(-1)" } : undefined}>
                 <div style={pairIdx === 1 ? { transform: "scaleY(-1)" } : undefined}>
-                  <DeskPair left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} />
+                  <DeskPair left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} size={deskSize} />
                 </div>
               </div>
             ))}
