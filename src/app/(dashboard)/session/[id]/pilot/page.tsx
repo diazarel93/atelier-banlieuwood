@@ -150,6 +150,7 @@ function CockpitContent({
   totalQuestions,
   onSelectStudent,
   teams,
+  onOpenModules,
 }: {
   session: Session;
   situationData: Record<string, unknown> | null;
@@ -183,6 +184,7 @@ function CockpitContent({
   totalQuestions?: number;
   onSelectStudent: (student: Student) => void;
   teams: { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[];
+  onOpenModules?: () => void;
 }) {
   const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
   const [guideExpanded, setGuideExpanded] = useState(false);
@@ -917,6 +919,12 @@ function CockpitContent({
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* ── COMPACT HEADER BAR ── */}
         <div className="flex items-center gap-2.5 px-4 py-1.5 flex-shrink-0 border-b border-white/[0.06]" style={{ background: "linear-gradient(90deg, rgba(26,29,34,0.8), rgba(18,20,24,0.95))" }}>
+          {/* Modules button — opens sidebar drawer */}
+          {onOpenModules && (
+            <button onClick={onOpenModules} title="Parcours des modules" className="w-7 h-7 rounded-lg flex items-center justify-center text-bw-muted hover:text-white hover:bg-white/[0.06] cursor-pointer transition-colors flex-shrink-0">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+          )}
           {/* Module badge — prominent */}
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg flex-shrink-0" style={{ backgroundColor: `${moduleColor}15`, border: `1px solid ${moduleColor}25` }}>
             <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: moduleColor }} />
@@ -2854,20 +2862,22 @@ export default function PilotPage() {
 
       {/* ── BODY: Sidebar + Main ── */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Floating module dock (fixed, not in flex layout) */}
-        <ModuleSidebar
-          modules={MODULES}
-          phases={PHASES}
-          activeModuleId={activeModule?.id || null}
-          selectedModuleId={moduleView === "briefing" ? selectedModuleId : null}
-          completedModules={session.completed_modules || []}
-          onSelectModule={handleSelectModule}
-          responsesCount={responses?.length || 0}
-          moduleStartedAt={moduleStartedAt}
-          sessionStatus={session.status}
-          currentQuestionIndex={hasActiveModule ? currentQuestionIndex : undefined}
-          totalModuleQuestions={hasActiveModule ? totalQuestions : undefined}
-        />
+        {/* Floating module dock — hidden during cockpit to free space */}
+        {!(hasActiveModule && moduleView === "cockpit") && (
+          <ModuleSidebar
+            modules={MODULES}
+            phases={PHASES}
+            activeModuleId={activeModule?.id || null}
+            selectedModuleId={moduleView === "briefing" ? selectedModuleId : null}
+            completedModules={session.completed_modules || []}
+            onSelectModule={handleSelectModule}
+            responsesCount={responses?.length || 0}
+            moduleStartedAt={moduleStartedAt}
+            sessionStatus={session.status}
+            currentQuestionIndex={hasActiveModule ? currentQuestionIndex : undefined}
+            totalModuleQuestions={hasActiveModule ? totalQuestions : undefined}
+          />
+        )}
 
         {/* Mobile sidebar drawer */}
         <MobileSidebarDrawer open={mobileSidebarOpen} onClose={() => setMobileSidebarOpen(false)}>
@@ -2937,6 +2947,7 @@ export default function PilotPage() {
             totalQuestions={totalQuestions}
             onSelectStudent={(s) => { setSelectedStudentId(s.id); setShowStudents(false); }}
             teams={teams || []}
+            onOpenModules={() => setMobileSidebarOpen(true)}
           />
           </ErrorBoundary>
         ) : (
