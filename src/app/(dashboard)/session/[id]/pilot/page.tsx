@@ -867,6 +867,10 @@ function CockpitContent({
   })();
 
   const unifiedRespondedCount = (() => {
+    if (isM1Positioning) {
+      const dist = module1Data?.optionDistribution || {};
+      return Object.values(dist).reduce((sum, v) => sum + (v as number), 0);
+    }
     if (isBudgetQuiz) return budgetSubmitted;
     if (isM1Image || isM1Notebook) return module1Data?.responsesCount || 0;
     if (showM10Special && module10Data?.allSubmissions) return module10Data.allSubmissions.length;
@@ -1077,24 +1081,13 @@ function CockpitContent({
               </div>
             )}
             {/* Mini stats bar */}
-            {session.status === "responding" && (
-              <div className="flex-shrink-0 px-3 py-2 border-b border-white/[0.06] flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-bw-green" />
-                  <span className="text-[10px] text-bw-muted tabular-nums">{unifiedRespondedCount} repondu</span>
-                </div>
+            {session.status !== "done" && (
+              <div className="flex-shrink-0 px-3 py-2 border-b border-white/[0.06] flex items-center gap-3 text-[10px]">
+                <span className="text-bw-muted tabular-nums">{unifiedRespondedCount}/{activeStudents.length} répondu{unifiedRespondedCount !== 1 ? "s" : ""}</span>
                 {stuckStudents.length > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-bw-danger animate-pulse" />
-                    <span className="text-[10px] text-bw-danger tabular-nums">{stuckStudents.length} bloque{stuckStudents.length > 1 ? "s" : ""}</span>
-                  </div>
+                  <span className="text-bw-danger tabular-nums">{stuckStudents.length} bloqué{stuckStudents.length > 1 ? "s" : ""}</span>
                 )}
-                {session.students?.filter(s => s.hand_raised_at).length ? (
-                  <div className="flex items-center gap-1">
-                    <span className="text-[10px]">✋</span>
-                    <span className="text-[10px] text-bw-amber tabular-nums">{session.students.filter(s => s.hand_raised_at).length}</span>
-                  </div>
-                ) : null}
+                {(() => { const h = session.students?.filter(s => s.hand_raised_at).length || 0; return h > 0 ? <span className="text-bw-amber">✋ {h} main{h > 1 ? "s" : ""} levée{h > 1 ? "s" : ""}</span> : null; })()}
               </div>
             )}
             {/* Classroom map */}
@@ -1155,91 +1148,65 @@ function CockpitContent({
           ) : (
           <div className="px-3 py-2 space-y-2.5">
 
-          {/* ── UNIFIED TOOLBAR — sticky header for right panel ── */}
-          {session.status !== "done" && !focusMode && (() => {
-            const pct = activeStudents.length > 0 ? Math.round((unifiedRespondedCount / activeStudents.length) * 100) : 0;
-            const allDone = unifiedRespondedCount >= activeStudents.length && activeStudents.length > 0;
-            return (
-            <div className="flex items-center gap-3 pb-2 border-b border-white/[0.06]">
-              {/* Mini progress ring */}
-              <div className="relative w-10 h-10 flex-shrink-0">
-                <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
-                  <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="3" />
-                  <motion.circle cx="18" cy="18" r="15" fill="none"
-                    stroke={allDone ? "#4ECDC4" : "#60A5FA"}
-                    strokeWidth="3" strokeLinecap="round"
-                    strokeDasharray="94.2" animate={{ strokeDashoffset: 94.2 - (94.2 * pct / 100) }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
-                  />
-                </svg>
-                <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold tabular-nums text-white">{pct}%</span>
-              </div>
-              {/* Label + count */}
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold text-bw-heading uppercase tracking-wide">{unifiedLabel}</p>
-                <p className="text-[11px] text-bw-muted">
-                  <span className={`font-bold tabular-nums ${allDone ? "text-bw-teal" : "text-white"}`}>{unifiedRespondedCount}</span>
-                  <span>/{activeStudents.length} répondu{unifiedRespondedCount !== 1 ? "s" : ""}</span>
-                </p>
-              </div>
-              {/* Actions */}
-              <div className="flex items-center gap-1 flex-shrink-0">
-                {(isBudgetQuiz || showM10Special || showM2ECSceneBuilder || showM2ECComparison) && (
-                  <input
-                    type="text" placeholder="Rechercher..." value={cardSearch}
-                    onChange={(e) => setCardSearch(e.target.value)}
-                    className="w-24 px-2 py-1 rounded-lg text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
-                  />
-                )}
-                <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors">
-                  📢
-                </button>
-                <button onClick={() => setShowExport(true)} title="Export (E)"
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors">
-                  📋
-                </button>
-              </div>
+          {/* ── TOOLBAR — clean, minimal header for right panel ── */}
+          {session.status !== "done" && !focusMode && (
+            <div className="flex items-center gap-2.5 pb-2 border-b border-white/[0.06]">
+              <span className="text-[11px] font-bold text-bw-heading uppercase tracking-wider">{unifiedLabel}</span>
+              <span className="text-[11px] text-bw-muted tabular-nums font-medium">
+                {unifiedRespondedCount}/{activeStudents.length}
+              </span>
+              <div className="flex-1" />
+              {(isBudgetQuiz || showM10Special || showM2ECSceneBuilder || showM2ECComparison) && (
+                <input
+                  type="text" placeholder="Rechercher..." value={cardSearch}
+                  onChange={(e) => setCardSearch(e.target.value)}
+                  className="w-24 px-2 py-1 rounded-lg text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
+                />
+              )}
+              <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-xs text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors">
+                📢
+              </button>
+              <button onClick={() => setShowExport(true)} title="Export (E)"
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-xs text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors">
+                📋
+              </button>
             </div>
-            );
-          })()}
+          )}
 
           {/* ── MODULE-SPECIFIC CONTENT ── */}
           <>
 
           {/* M1 Positioning: option distribution bars only */}
           {isM1Positioning && module1Data?.type === "positioning" && !isPreviewing && module1Data.questions?.[currentQIndex]?.options && (() => {
-            const OPTION_COLORS: Record<string, { bar: string; text: string; bg: string }> = {
-              a: { bar: "#60A5FA", text: "#93C5FD", bg: "rgba(96,165,250,0.08)" },
-              b: { bar: "#4ECDC4", text: "#6EE7DB", bg: "rgba(78,205,196,0.08)" },
-              c: { bar: "#FF6B35", text: "#FF8F66", bg: "rgba(255,107,53,0.08)" },
-              d: { bar: "#F472B6", text: "#F9A8D4", bg: "rgba(244,114,182,0.08)" },
+            const OPTION_COLORS: Record<string, { bar: string; text: string }> = {
+              a: { bar: "#60A5FA", text: "#93C5FD" },
+              b: { bar: "#4ECDC4", text: "#6EE7DB" },
+              c: { bar: "#FF6B35", text: "#FF8F66" },
+              d: { bar: "#F472B6", text: "#F9A8D4" },
             };
             return (
-            <div className="space-y-2">
+            <div className="rounded-xl border border-white/[0.06] p-3 space-y-3">
               {module1Data.questions[currentQIndex].options?.map((opt) => {
                 const count = module1Data.optionDistribution?.[opt.key] || 0;
                 const total = activeStudents.length;
                 const pct = total > 0 ? Math.round((count / total) * 100) : 0;
                 const colors = OPTION_COLORS[opt.key] || OPTION_COLORS.a;
-                const isLeading = count > 0 && count === Math.max(...Object.values(module1Data.optionDistribution || {}));
                 return (
-                  <div key={opt.key} className="rounded-xl border border-white/[0.06] p-3 transition-all" style={{ background: count > 0 ? colors.bg : "transparent" }}>
-                    <div className="flex items-center justify-between text-xs mb-1.5">
-                      <span className="text-bw-text flex items-center gap-1.5">
-                        <span className="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-bold" style={{ backgroundColor: colors.bar, color: "#fff" }}>{opt.key.toUpperCase()}</span>
-                        <span className="font-medium">{opt.label}</span>
+                  <div key={opt.key} className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] text-bw-text flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold" style={{ backgroundColor: colors.bar, color: "#fff" }}>{opt.key.toUpperCase()}</span>
+                        <span className="font-medium leading-tight">{opt.label}</span>
                       </span>
-                      <span className="tabular-nums font-bold" style={{ color: count > 0 ? colors.text : "rgba(136,148,160,0.5)" }}>
-                        {count > 0 && <span className="text-lg mr-0.5">{count}</span>}
-                        <span className="text-[10px] text-bw-muted">/{total}</span>
-                        {pct > 0 && <span className="text-[10px] ml-1" style={{ color: colors.text }}>{pct}%</span>}
+                      <span className="text-[11px] tabular-nums font-medium ml-2 flex-shrink-0" style={{ color: count > 0 ? colors.text : "rgba(136,148,160,0.4)" }}>
+                        {count}/{total}
                       </span>
                     </div>
-                    <div className="h-2.5 bg-white/[0.04] rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
                       <motion.div
                         className="h-full rounded-full"
-                        style={{ backgroundColor: colors.bar, boxShadow: isLeading ? `0 0 8px ${colors.bar}40` : undefined }}
+                        style={{ backgroundColor: colors.bar }}
                         animate={{ width: `${pct}%` }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
                       />
@@ -2037,17 +2004,13 @@ function CockpitContent({
       {/* ── FOOTER — progress + CTA + toggles ── */}
       {session.status !== "done" && session.status !== "paused" && (
         <div className="flex-shrink-0 border-t border-white/[0.08] bg-bw-bg">
-          {/* Progress bar with label — visible for responding, voting, reviewing */}
-          {(session.status === "responding" || session.status === "voting" || session.status === "reviewing" || session.status === "waiting") && activeStudents.length > 0 && (() => {
+          {/* ROW 1: Progress bar — full width */}
+          {activeStudents.length > 0 && (() => {
             const pct = Math.round((unifiedRespondedCount / activeStudents.length) * 100);
             const allDone = unifiedRespondedCount >= activeStudents.length;
             return (
-              <div className="px-4 pt-2 pb-1">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] text-bw-muted font-medium">{unifiedRespondedCount}/{activeStudents.length} répondu{unifiedRespondedCount !== 1 ? "s" : ""}</span>
-                  <span className={`text-[10px] font-bold tabular-nums ${allDone ? "text-bw-teal" : "text-bw-muted"}`}>{pct}%</span>
-                </div>
-                <div className="relative h-1.5 w-full bg-white/[0.06] rounded-full overflow-hidden">
+              <div className="px-4 pt-2 pb-1.5">
+                <div className="relative h-2 w-full bg-white/[0.06] rounded-full overflow-hidden">
                   <motion.div
                     className={`h-full rounded-full ${allDone ? "bg-gradient-to-r from-bw-teal to-bw-green" : "bg-gradient-to-r from-blue-500/80 to-bw-teal"}`}
                     animate={{ width: `${pct}%` }}
@@ -2055,17 +2018,23 @@ function CockpitContent({
                     style={allDone ? { boxShadow: "0 0 12px rgba(78,205,196,0.5)" } : undefined}
                   />
                 </div>
+                <div className="flex items-center justify-end mt-1">
+                  <span className={`text-[10px] font-medium tabular-nums ${allDone ? "text-bw-teal" : "text-bw-muted"}`}>
+                    {unifiedRespondedCount}/{activeStudents.length} ({pct}%)
+                  </span>
+                </div>
               </div>
             );
           })()}
-          <div className="px-4 py-2 flex items-center gap-2">
+          {/* ROW 2: [←] [CTA] [→] [toggles] */}
+          <div className="px-4 pb-2 flex items-center gap-2">
             {/* Back button for non-QA modules */}
             {!isStandardQA && (session.current_situation_index || 0) > 0 && (
               <button
                 onClick={prevSituation}
                 disabled={updateSession.isPending}
                 title="Question précédente"
-                className="px-2.5 py-2 rounded-lg text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
               </button>
@@ -2131,47 +2100,47 @@ function CockpitContent({
                 onClick={skipSituation}
                 disabled={updateSession.isPending}
                 title="Passer cette question"
-                className="px-2.5 py-2 rounded-lg text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
             )}
 
-            {/* Compact toggles */}
-            <div className="flex items-center gap-1.5 flex-shrink-0">
+            {/* Compact toggles — icon buttons */}
+            <div className="flex items-center gap-0.5 flex-shrink-0 ml-1">
               <button
                 onClick={() => setFocusMode(f => !f)}
                 title={focusMode ? "Quitter le mode focus" : "Mode focus (F)"}
-                className={`p-1.5 rounded-lg text-[10px] transition-all cursor-pointer ${
+                className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
                   focusMode ? "bg-bw-violet/20 text-bw-violet" : "text-bw-muted hover:text-white hover:bg-white/5"
                 }`}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="10" /></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="10" /></svg>
               </button>
               <button
                 onClick={() => updateSession.mutate({ sharing_enabled: !session.sharing_enabled })}
                 title={session.sharing_enabled ? "Partage activé" : "Partage désactivé"}
-                className={`p-1.5 rounded-lg text-[10px] transition-all cursor-pointer ${
+                className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
                   session.sharing_enabled ? "bg-bw-teal/20 text-bw-teal" : "text-bw-muted hover:text-white hover:bg-white/5"
                 }`}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
               </button>
               <button
                 onClick={() => updateSession.mutate({ mute_sounds: !session.mute_sounds })}
                 title={session.mute_sounds ? "Sons désactivés" : "Sons activés"}
-                className={`p-1.5 rounded-lg text-[10px] transition-all cursor-pointer ${
+                className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
                   session.mute_sounds ? "text-bw-muted hover:text-white hover:bg-white/5" : "bg-bw-amber/15 text-bw-amber"
                 }`}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">{session.mute_sounds ? <><path d="M11 5L6 9H2v6h4l5 4z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></> : <><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></>}</svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">{session.mute_sounds ? <><path d="M11 5L6 9H2v6h4l5 4z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></> : <><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></>}</svg>
               </button>
               <button
                 onClick={() => setShowShortcuts(true)}
                 title="Raccourcis clavier (?)"
-                className="p-1.5 rounded-lg text-[10px] text-bw-muted hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-bw-muted hover:text-white hover:bg-white/5 transition-all cursor-pointer"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg>
               </button>
             </div>
           </div>
