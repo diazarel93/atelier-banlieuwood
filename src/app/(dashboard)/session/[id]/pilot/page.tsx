@@ -2437,48 +2437,74 @@ function CockpitContent({
                 </div>
               )}
 
-              {/* Compact response feed for M1 Positioning (moved from center to avoid scroll) */}
-              {isM1Positioning && session.status !== "done" && (
-                <div className="rounded-[14px] overflow-hidden" style={{ background: "#FFFDF9", border: "1px solid #EFE4D8" }}>
-                  <div className="px-4 py-2.5 flex items-center justify-between" style={{ borderBottom: "1px solid #EFE4D8" }}>
-                    <span className="text-[13px] font-semibold text-[#2C2C2C]">Reponses</span>
-                    <span className="text-[13px] font-bold tabular-nums" style={{ color: responses.length > 0 ? "#4CAF50" : "#B0A99E" }}>
-                      {responses.filter(r => !r.reset_at).length}/{activeStudents.length}
-                    </span>
-                  </div>
-                  <div className="max-h-[300px] overflow-y-auto">
-                    {responses.length === 0 ? (
-                      <div className="px-4 py-4 text-center">
-                        <div className="flex items-center justify-center gap-1 mb-2">
-                          {[0, 1, 2].map(i => (
-                            <motion.span key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "#F2C94C" }}
-                              animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
-                              transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.3 }} />
-                          ))}
+              {/* Vote columns for M1 Positioning (QCM sondage view) */}
+              {isM1Positioning && session.status !== "done" && (() => {
+                const opts = module1Data?.questions?.[currentQIndex]?.options || [];
+                const VOTE_COLORS: Record<string, string> = { a: "#7EA7F5", b: "#F3A765", c: "#6EC6B0", d: "#E78BB4" };
+                const VOTE_BG: Record<string, string> = { a: "#EEF3FF", b: "#FFF3E8", c: "#E9F8F4", d: "#FDECF4" };
+                // Group responses by option key
+                const votesByOption: Record<string, { avatar: string; name: string; id: string }[]> = {};
+                for (const opt of opts) votesByOption[opt.key] = [];
+                for (const r of responses.filter(r => !r.is_hidden)) {
+                  const key = r.text?.trim().toLowerCase();
+                  if (key && votesByOption[key]) {
+                    votesByOption[key].push({ avatar: r.students?.avatar || "", name: r.students?.display_name || "", id: r.student_id });
+                  }
+                }
+                const totalVotes = responses.filter(r => !r.is_hidden).length;
+                return (
+                  <div className="rounded-[14px] overflow-hidden" style={{ background: "#FFFDF9", border: "1px solid #EFE4D8" }}>
+                    <div className="px-4 py-2.5 flex items-center justify-between" style={{ borderBottom: "1px solid #EFE4D8" }}>
+                      <span className="text-[13px] font-semibold text-[#2C2C2C]">Qui a vote quoi</span>
+                      <span className="text-[13px] font-bold tabular-nums" style={{ color: totalVotes > 0 ? "#4CAF50" : "#B0A99E" }}>
+                        {totalVotes}/{activeStudents.length}
+                      </span>
+                    </div>
+                    <div className="max-h-[320px] overflow-y-auto px-3 py-2.5 space-y-2.5">
+                      {totalVotes === 0 ? (
+                        <div className="py-3 text-center">
+                          <div className="flex items-center justify-center gap-1 mb-2">
+                            {[0, 1, 2].map(i => (
+                              <motion.span key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "#F2C94C" }}
+                                animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
+                                transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.3 }} />
+                            ))}
+                          </div>
+                          <p className="text-[12px] text-[#B0A99E]">En attente des votes...</p>
                         </div>
-                        <p className="text-[12px] text-[#B0A99E]">En attente des reponses...</p>
-                      </div>
-                    ) : (
-                      <div className="px-3 py-2 space-y-1.5">
-                        {responses.filter(r => !r.is_hidden).map((r, i) => (
-                          <motion.div key={r.id} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.03 }}
-                            className="flex items-start gap-2 p-2 rounded-[10px] hover:bg-[#F7F3EA] transition-colors cursor-pointer"
-                            onClick={() => setFicheStudentId(r.student_id)}
-                          >
-                            <span className="text-sm flex-shrink-0">{r.students?.avatar}</span>
-                            <div className="flex-1 min-w-0">
-                              <span className="text-[12px] font-semibold text-[#2C2C2C]">{r.students?.display_name}</span>
-                              <p className="text-[12px] text-[#7A7A7A] leading-snug truncate">{r.text}</p>
+                      ) : (
+                        opts.map(opt => {
+                          const voters = votesByOption[opt.key] || [];
+                          if (voters.length === 0) return null;
+                          const color = VOTE_COLORS[opt.key] || "#7A7A7A";
+                          const bg = VOTE_BG[opt.key] || "#F7F3EA";
+                          return (
+                            <div key={opt.key}>
+                              <div className="flex items-center gap-2 mb-1.5">
+                                <span className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0"
+                                  style={{ background: color }}>{opt.key.toUpperCase()}</span>
+                                <span className="text-[12px] font-semibold text-[#4A4A4A] truncate">{opt.label}</span>
+                                <span className="text-[11px] font-bold tabular-nums ml-auto flex-shrink-0" style={{ color }}>{voters.length}</span>
+                              </div>
+                              <div className="flex flex-wrap gap-1 ml-7">
+                                {voters.map(v => (
+                                  <motion.button key={v.id} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                                    onClick={() => setFicheStudentId(v.id)}
+                                    className="flex items-center gap-1 h-6 px-2 rounded-full text-[11px] font-medium cursor-pointer transition-colors hover:brightness-95"
+                                    style={{ background: bg, border: `1px solid ${color}30`, color: "#4A4A4A" }}>
+                                    <span className="text-xs">{v.avatar}</span>
+                                    <span>{v.name.split(" ")[0]}</span>
+                                  </motion.button>
+                                ))}
+                              </div>
                             </div>
-                            {r.is_highlighted && <span className="text-[10px] flex-shrink-0">⭐</span>}
-                          </motion.div>
-                        ))}
-                      </div>
-                    )}
+                          );
+                        })
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Carte cognitive — QCM thinking style (M1 Positioning only) */}
               {isM1Positioning && module1Data?.optionDistribution && module1Data.questions?.[currentQIndex]?.options && (() => {
