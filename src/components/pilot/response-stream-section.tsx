@@ -129,7 +129,7 @@ export function ResponseStreamSection({
       {/* Prominent response counter + elapsed + action bar */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Réponses</span>
+          <span className="cinema-title text-sm text-bw-muted">Reponses</span>
           <ElapsedTimer startedAt={respondingOpenedAt} />
         </div>
         <div className="flex items-center gap-1">

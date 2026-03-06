@@ -86,7 +86,7 @@ export function SessionStateBanner({
         <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: config.accent }} />
 
         {/* Label */}
-        <span className="text-xs font-semibold" style={{ color: config.text }}>{config.label}</span>
+        <span className="cinema-title text-sm" style={{ color: config.text }}>{config.label}</span>
 
         {/* Counter */}
         {counterText && (

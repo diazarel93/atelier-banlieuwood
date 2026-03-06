@@ -925,7 +925,7 @@ function CockpitContent({
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg flex-shrink-0" style={{ backgroundColor: `${moduleColor}15`, border: `1px solid ${moduleColor}25` }}>
             <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: moduleColor }} />
             <span className="text-xs font-bold" style={{ color: moduleColor }}>M{session.current_module}</span>
-            <span className="text-xs font-medium text-bw-text">{moduleLabel}</span>
+            <span className="cinema-title text-xs text-bw-text">{moduleLabel}</span>
           </div>
           {/* Chapter / Question counter */}
           {(totalQuestions ?? 0) > 0 && (
@@ -973,13 +973,13 @@ function CockpitContent({
           <div className="flex-shrink-0 border-b border-white/[0.10]">
             <div className={`flex items-center gap-2 px-4 py-2 border-l-[3px] ${isPreviewing ? "border-l-bw-amber" : ""}`} style={isPreviewing ? undefined : { borderLeftColor: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
               {/* Category badge */}
-              <span className="text-xs font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0"
+              <span className="cinema-title text-xs px-2 py-0.5 rounded-full flex-shrink-0"
                 style={{ backgroundColor: `${CATEGORY_COLORS[universalCategoryLabel] || moduleColor}20`, color: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
                 {universalCategoryLabel}
               </span>
               {isPreviewing && <span className="text-xs px-1.5 py-0.5 rounded bg-bw-amber/15 text-bw-amber font-bold uppercase flex-shrink-0">Apercu</span>}
               {/* Question text */}
-              <p className={`text-sm leading-snug flex-1 min-w-0 truncate font-medium ${isPreviewing ? "text-bw-amber" : "text-bw-heading"}`}>
+              <p className={`text-base leading-snug flex-1 min-w-0 truncate font-semibold ${isPreviewing ? "text-bw-amber" : "text-bw-heading"}`}>
                 {universalQuestionText}
               </p>
               {/* Question navigation compact */}
@@ -1054,7 +1054,7 @@ function CockpitContent({
         {/* ── SPLIT-PANEL LAYOUT ── */}
         <div className="flex-1 flex overflow-hidden min-h-0">
           {/* LEFT: Plan de classe + séances (collapsible, desktop only) */}
-          <div data-onboarding="classmap" className={`hidden lg:flex flex-shrink-0 flex-col overflow-y-auto border-r border-white/[0.10] transition-all duration-300 ${
+          <div data-onboarding="classmap" className={`hidden lg:flex flex-shrink-0 flex-col overflow-y-auto surface-inset transition-all duration-300 ${
             mapCollapsed ? "w-12" : "lg:w-[40%]"
           }`}>
             {/* Header bar with collapse toggle */}
@@ -1167,7 +1167,7 @@ function CockpitContent({
             )}
           </div>
           {/* RIGHT: Flux ou Fiche (60%) */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="flex-1 overflow-y-auto min-h-0 surface-primary">
           {ficheStudentId ? (
             <div className="px-4 py-4">
               {(() => {
@@ -1208,7 +1208,7 @@ function CockpitContent({
           {/* ── TOOLBAR — clean, minimal header for right panel ── */}
           {session.status !== "done" && !focusMode && (
             <div data-onboarding="responses" className="flex items-center gap-2.5 pb-2 border-b border-white/[0.10]">
-              <span className="text-xs font-semibold text-bw-heading uppercase tracking-wider">{unifiedLabel}</span>
+              <span className="cinema-title text-sm text-bw-heading">{unifiedLabel}</span>
               <div className="flex-1" />
               {(isBudgetQuiz || showM10Special || showM2ECSceneBuilder || showM2ECComparison) && (
                 <input
@@ -1984,7 +1984,7 @@ function CockpitContent({
           {!isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && session.status !== "done" && responses.length > 0 && (
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Reponses</span>
+                <span className="cinema-title text-sm text-bw-muted">Reponses</span>
                 <div className="flex items-center gap-2">
                   {hiddenCount > 0 && (
                     <span className="text-xs text-bw-muted">{hiddenCount} masquee{hiddenCount > 1 ? "s" : ""}</span>
