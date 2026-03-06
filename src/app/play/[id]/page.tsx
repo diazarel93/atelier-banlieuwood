@@ -49,6 +49,9 @@ import { ChronoTestState } from "@/components/play/module-10/chrono-test-state";
 import { PitchConfrontationState } from "@/components/play/module-10/pitch-confrontation-state";
 import { CineDebatState } from "@/components/play/module-11/cine-debat-state";
 import { MancheVoteState } from "@/components/play/module-12/manche-vote-state";
+import { TeamChat } from "@/components/play/team-chat";
+import { PowerUpsBar } from "@/components/play/power-ups-bar";
+import { CelebrationOverlay } from "@/components/celebrations";
 
 
 // ——— Main Page ———
@@ -76,6 +79,7 @@ export default function PlayPage() {
     situationId: string;
   } | null>(null);
   const [handRaised, setHandRaised] = useState(false);
+  const [celebration, setCelebration] = useState<{ type: "achievement" | "level_up" | "streak" | "retained" | "combo"; title: string; subtitle?: string; icon?: string } | null>(null);
 
   // Engagement tracking
   const [streak, setStreak] = useState(1);
@@ -89,6 +93,8 @@ export default function PlayPage() {
 
   const [noStudent, setNoStudent] = useState(false);
   const [studentLoaded, setStudentLoaded] = useState(false);
+  const [studentDisplayName, setStudentDisplayName] = useState("Eleve");
+  const [studentAvatar, setStudentAvatar] = useState("🎬");
   const [waitingFullscreen, setWaitingFullscreen] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
   const [broadcastMsg, setBroadcastMsg] = useState<string | null>(null);
@@ -125,8 +131,10 @@ export default function PlayPage() {
     try {
       const stored = localStorage.getItem(`bw-student-${sessionId}`);
       if (stored) {
-        const { studentId: sid } = JSON.parse(stored);
-        setStudentId(sid);
+        const parsed = JSON.parse(stored);
+        setStudentId(parsed.studentId);
+        if (parsed.displayName) setStudentDisplayName(parsed.displayName);
+        if (parsed.avatar) setStudentAvatar(parsed.avatar);
       } else {
         setNoStudent(true);
       }
@@ -1084,6 +1092,29 @@ export default function PlayPage() {
         { title: "Mode hors-ligne", description: "Pas de reseau ? Ta reponse est gardee et envoyee automatiquement quand tu te reconnectes." },
         { title: "Lever la main", description: "Appuie sur ✋ en bas a gauche pour signaler au prof que tu as besoin d'aide." },
       ]} />
+
+      {/* Team Chat */}
+      {studentId && data.team && (
+        <TeamChat
+          sessionId={sessionId}
+          teamId={data.team.id}
+          studentId={studentId}
+          studentName={studentDisplayName}
+          studentAvatar={studentAvatar}
+        />
+      )}
+
+      {/* Celebration Overlay */}
+      {celebration && (
+        <CelebrationOverlay
+          type={celebration.type}
+          title={celebration.title}
+          subtitle={celebration.subtitle}
+          icon={celebration.icon}
+          visible={!!celebration}
+          onDismiss={() => setCelebration(null)}
+        />
+      )}
     </div>
   );
 }

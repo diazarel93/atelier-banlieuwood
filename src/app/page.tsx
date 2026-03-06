@@ -183,10 +183,16 @@ export default function Home() {
               Rejoindre
             </Link>
             <Link
-              href="/free"
+              href="/studio"
               className="text-[13px] text-[#8b8b8e] hover:text-bw-heading px-3 py-1.5 rounded-md hover:bg-white/[0.04] transition-all duration-150 hidden sm:block"
             >
-              Jouer seul
+              Le Studio
+            </Link>
+            <Link
+              href="/festival"
+              className="text-[13px] text-[#8b8b8e] hover:text-bw-heading px-3 py-1.5 rounded-md hover:bg-white/[0.04] transition-all duration-150 hidden sm:block"
+            >
+              Le Festival
             </Link>
             <Link
               href="/login"
@@ -655,6 +661,84 @@ export default function Home() {
       </section>
 
       {/* ════════════════════════════════════════════════════════
+         3b. TROIS UNIVERS — L'Atelier / Le Studio / Le Festival
+         ════════════════════════════════════════════════════════ */}
+      <section className="px-6 py-20">
+        <div className="max-w-[1080px] mx-auto">
+          <Reveal>
+            <p className="label-caps mb-4">Trois univers</p>
+            <h2 className="text-display-md text-bw-heading max-w-[600px]">
+              En classe. Chez soi. Ensemble.
+            </h2>
+            <p className="text-sm text-[#8b8b8e] mt-4 max-w-lg leading-relaxed">
+              Un ecosysteme complet : le prof pilote en classe, l&apos;eleve progresse seul, la communaute celebre.
+            </p>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
+            {[
+              {
+                icon: "🎬",
+                title: "L\u2019Atelier",
+                sub: "En classe, avec le prof",
+                desc: "Le jeu collaboratif pilote par l\u2019enseignant. 5 a 30 eleves sur tablette, 45 minutes, un court-metrage.",
+                color: "#FF6B35",
+                href: "/login",
+                cta: "Creer une partie",
+              },
+              {
+                icon: "🎨",
+                title: "Le Studio",
+                sub: "Chez soi, a son rythme",
+                desc: "L\u2019espace personnel de l\u2019eleve. Badges, missions solo, portfolio. Progresse meme en dehors de la classe.",
+                color: "#8B5CF6",
+                href: "/studio",
+                cta: "Decouvrir le Studio",
+              },
+              {
+                icon: "🏆",
+                title: "Le Festival",
+                sub: "La communaute celebre",
+                desc: "Galerie publique des meilleures creations. Vote, prix, inspiration. Montre ton talent au monde.",
+                color: "#4ECDC4",
+                href: "/festival",
+                cta: "Voir le Festival",
+              },
+            ].map((u, i) => (
+              <Reveal
+                key={u.title}
+                delay={i * 0.08}
+                className="rounded-xl border border-white/[0.06] p-6 flex flex-col group hover:border-white/[0.12] transition-all duration-300"
+                style={{ background: "#111318" }}
+              >
+                <span className="text-4xl mb-4">{u.icon}</span>
+                <h3 className="text-xl font-semibold text-bw-heading mb-1">
+                  {u.title}
+                </h3>
+                <p className="text-xs font-medium mb-3" style={{ color: u.color }}>
+                  {u.sub}
+                </p>
+                <p className="text-sm text-[#8b8b8e] leading-relaxed flex-1">
+                  {u.desc}
+                </p>
+                <Link
+                  href={u.href}
+                  className="mt-5 h-9 px-4 inline-flex items-center justify-center text-sm font-medium rounded-lg transition-all duration-150 hover:-translate-y-px"
+                  style={{
+                    background: `${u.color}15`,
+                    color: u.color,
+                    border: `1px solid ${u.color}30`,
+                  }}
+                >
+                  {u.cta} &rarr;
+                </Link>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
          4. PROGRAMME — timeline phases
          ════════════════════════════════════════════════════════ */}
       <section className="px-6 py-20">
@@ -876,12 +960,18 @@ export default function Home() {
                 Creer une partie
               </Link>
             </div>
-            <p className="text-xs text-[#5c5c60] mt-4">
+            <p className="text-xs text-[#5c5c60] mt-4 space-x-4">
               <Link
                 href="/free"
                 className="hover:text-bw-heading transition-colors"
               >
-                Ou jouer seul pour decouvrir &rarr;
+                Jouer seul &rarr;
+              </Link>
+              <Link
+                href="/studio"
+                className="hover:text-bw-heading transition-colors"
+              >
+                Le Studio &rarr;
               </Link>
             </p>
           </Reveal>
@@ -905,14 +995,15 @@ export default function Home() {
                 title: "Produit",
                 links: [
                   { l: "Rejoindre", h: "/join" },
-                  { l: "Jouer seul", h: "/free" },
                   { l: "Creer une partie", h: "/login" },
-                  { l: "Dashboard", h: "/dashboard" },
+                  { l: "Le Studio", h: "/studio" },
+                  { l: "Le Festival", h: "/festival" },
                 ],
               },
               {
                 title: "Ressources",
                 links: [
+                  { l: "Jouer seul", h: "/free" },
                   { l: "Fiche cours", h: "/fiche-cours" },
                   { l: "A propos", h: "/about" },
                   { l: "Contact", h: "/contact" },

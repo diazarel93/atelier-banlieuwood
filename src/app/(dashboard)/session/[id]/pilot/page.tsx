@@ -59,6 +59,8 @@ import { getNextAction, type NextAction } from "@/components/pilot/get-next-acti
 import { TeamManager } from "@/components/pilot/team-manager";
 import { ClassroomMap } from "@/components/pilot/classroom-map";
 import { StudentFiche } from "@/components/pilot/student-fiche";
+import { AIAssistantPanel } from "@/components/pilot/ai-assistant-panel";
+import { ComprehensionHeatmap } from "@/components/pilot/comprehension-heatmap";
 
 interface Session {
   id: string;
@@ -1088,6 +1090,45 @@ function CockpitContent({
               onNudgeAllStuck={() => handleNudgeAllStuck()}
               onStudentClick={setFicheStudentId}
             />
+
+            {/* AI Assistant — contextual suggestions */}
+            {session.status !== "done" && (
+              <AIAssistantPanel
+                context={{
+                  status: session.status,
+                  totalStudents: activeStudents.length,
+                  responsesCount: respondedCount,
+                  stuckCount: stuckStudents.length,
+                  handsRaised: session.students?.filter(s => s.hand_raised_at).length || 0,
+                  elapsedSeconds: respondingOpenedAt
+                    ? Math.round((Date.now() - respondingOpenedAt) / 1000)
+                    : 0,
+                  currentModule: session.current_module,
+                  currentSeance: session.current_seance || 1,
+                  currentSituation: session.current_situation_index || 0,
+                }}
+              />
+            )}
+
+            {/* Comprehension Heatmap — visible when session is done */}
+            {session.status === "done" && responses.length > 0 && (
+              <ComprehensionHeatmap
+                students={activeStudents.map(s => ({
+                  id: s.id,
+                  display_name: s.display_name,
+                  avatar: s.avatar,
+                }))}
+                responses={responses.map((r, i) => ({
+                  student_id: r.student_id,
+                  situation_index: i,
+                  score: r.teacher_score ?? r.ai_score ?? null,
+                  has_response: true,
+                  was_retained: r.is_vote_option || false,
+                }))}
+                totalSituations={totalQuestions || 1}
+                currentSituation={session.current_situation_index || 0}
+              />
+            )}
             </div>
           </div>
           {/* RIGHT: Flux ou Fiche (60%) */}
