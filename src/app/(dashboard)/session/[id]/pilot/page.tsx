@@ -2339,30 +2339,32 @@ function CockpitContent({
                         <p className={`text-sm leading-relaxed text-bw-heading ${r.is_hidden ? "line-through text-bw-muted" : ""} ${r.reset_at ? "line-through text-bw-muted" : ""}`}>{r.text}</p>
                         {r.teacher_comment && <TeacherCommentBadge comment={r.teacher_comment} />}
                       </div>
-                      {session.status === "responding" && (
-                        <div className="flex items-center gap-1 flex-shrink-0">
-                          <button onClick={() => toggleHide.mutate({ responseId: r.id, is_hidden: !r.is_hidden })}
-                            disabled={toggleHide.isPending}
-                            className="px-2 py-1 text-xs rounded-lg hover:bg-black/[0.05] cursor-pointer transition-colors text-bw-muted hover:text-bw-text">
-                            {r.is_hidden ? "Montrer" : "Masquer"}
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        {session.status === "responding" && (
+                          <>
+                            <button onClick={() => toggleHide.mutate({ responseId: r.id, is_hidden: !r.is_hidden })}
+                              disabled={toggleHide.isPending}
+                              className="px-2 py-1 text-xs rounded-lg hover:bg-black/[0.05] cursor-pointer transition-colors text-bw-muted hover:text-bw-text">
+                              {r.is_hidden ? "Montrer" : "Masquer"}
+                            </button>
+                            {!r.is_hidden && !r.reset_at && (
+                              <button onClick={() => resetResponse.mutate(r.id)}
+                                disabled={resetResponse.isPending}
+                                className="px-1.5 py-1 text-xs rounded-lg hover:bg-bw-amber/10 cursor-pointer transition-colors text-bw-amber/70 hover:text-bw-amber"
+                                title="Relancer la question pour cet élève">
+                                🔄
+                              </button>
+                            )}
+                          </>
+                        )}
+                        {!r.is_hidden && (
+                          <button onClick={() => setSpotlightResponse({ studentName: r.students?.display_name || "", studentAvatar: r.students?.avatar || "", text: r.text, score: r.teacher_score, highlighted: r.is_highlighted })}
+                            className="px-1.5 py-1 text-xs rounded-lg hover:bg-[#FFF0E0] cursor-pointer transition-colors text-bw-muted hover:text-[#F5A45B]"
+                            title="Projeter en grand">
+                            🔦
                           </button>
-                          {!r.is_hidden && !r.reset_at && (
-                            <button onClick={() => resetResponse.mutate(r.id)}
-                              disabled={resetResponse.isPending}
-                              className="px-1.5 py-1 text-xs rounded-lg hover:bg-bw-amber/10 cursor-pointer transition-colors text-bw-amber/70 hover:text-bw-amber"
-                              title="Relancer la question pour cet élève">
-                              🔄
-                            </button>
-                          )}
-                          {!r.is_hidden && (
-                            <button onClick={() => setSpotlightResponse({ studentName: r.students?.display_name || "", studentAvatar: r.students?.avatar || "", text: r.text, score: r.teacher_score, highlighted: r.is_highlighted })}
-                              className="px-1.5 py-1 text-xs rounded-lg hover:bg-[#FFF0E0] cursor-pointer transition-colors text-bw-muted hover:text-[#F5A45B]"
-                              title="Projeter en grand">
-                              🔦
-                            </button>
-                          )}
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                     {!r.is_hidden && (
                       <InlineActions
