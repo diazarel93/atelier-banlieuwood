@@ -21,7 +21,6 @@ import { MODULES, PHASES, getModuleByDb, getPhaseForModule } from "@/lib/modules
 
 // Cockpit components
 import { InlineActions, GenericInlineActions, TeacherCommentBadge } from "@/components/pilot/response-actions";
-// QuestionCard removed — question now in header bar
 import { type ResponseCardResponse } from "@/components/pilot/response-card";
 import { InlineReformulation } from "@/components/pilot/inline-reformulation";
 import { SelectionBar } from "@/components/pilot/selection-bar";
@@ -39,7 +38,6 @@ import { Module5EmotionDistribution } from "@/components/pilot/module5-emotion-d
 import { KeyboardShortcutsModal } from "@/components/pilot/keyboard-shortcuts-modal";
 import { VotingResults } from "@/components/pilot/voting-results";
 import { ResponseStreamSection } from "@/components/pilot/response-stream-section";
-import { QuestionNavigation } from "@/components/pilot/question-navigation";
 // TimerSection removed — timer info in header bar
 import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
 
@@ -114,69 +112,6 @@ interface VoteResult {
 }
 
 
-
-// ——————————————————————————————————————————————————————
-// Preview guide card — shows question preview + guide info when teacher previews a step
-// ——————————————————————————————————————————————————————
-
-function PreviewGuideCard({ label, description, guide, position, children }: {
-  label: string;
-  description?: string;
-  guide?: QuestionGuide;
-  position: number;
-  children?: React.ReactNode;
-}) {
-  return (
-    <div className="glass-card overflow-hidden" style={{ borderColor: "rgba(245,158,11,0.2)", background: "linear-gradient(135deg, rgba(245,158,11,0.08), rgba(26,29,34,0.6) 60%)" }}>
-      <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, #F59E0B, rgba(139,92,246,0.5))" }} />
-      <div className="p-4 pb-3">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: "linear-gradient(135deg, rgba(245,158,11,0.25), rgba(245,158,11,0.10))", color: "#F59E0B", border: "1px solid rgba(245,158,11,0.30)" }}>
-            {guide?.label || label}
-          </span>
-          <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-bw-amber/15 text-bw-amber">Pos. {position + 1}</span>
-          <span className="text-[10px] text-bw-amber uppercase tracking-wider font-semibold ml-auto">Apercu</span>
-        </div>
-        {description && <p className="text-base leading-relaxed text-bw-text">{description}</p>}
-        {children}
-      </div>
-      {guide && (
-        <div className="border-t px-4 py-3 space-y-2.5" style={{ borderColor: "rgba(245,158,11,0.15)" }}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <div className="bg-bw-bg rounded-lg p-3 space-y-1">
-              <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-green">Ce qu&apos;on attend</p>
-              <p className="text-xs text-bw-text leading-relaxed">{guide.whatToExpect}</p>
-            </div>
-            <div className="bg-bw-bg rounded-lg p-3 space-y-1">
-              <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-amber">Pieges frequents</p>
-              <p className="text-xs text-bw-amber leading-relaxed">{guide.commonPitfalls}</p>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {guide.relancePhrase && (
-              <button
-                onClick={() => { navigator.clipboard.writeText(guide.relancePhrase); }}
-                className="flex-1 bg-bw-teal/8 border border-bw-teal/20 rounded-lg px-3 py-2.5 text-left cursor-pointer hover:bg-bw-teal/15 transition-colors"
-              >
-                <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-teal mb-0.5">Relancer</p>
-                <p className="text-xs text-bw-text leading-relaxed italic">&ldquo;{guide.relancePhrase}&rdquo;</p>
-              </button>
-            )}
-            {guide.challengePhrase && (
-              <button
-                onClick={() => { navigator.clipboard.writeText(guide.challengePhrase); }}
-                className="flex-1 bg-bw-violet/8 border border-bw-violet/20 rounded-lg px-3 py-2.5 text-left cursor-pointer hover:bg-bw-violet/15 transition-colors"
-              >
-                <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-violet mb-0.5">Challenger</p>
-                <p className="text-xs text-bw-text leading-relaxed italic">&ldquo;{guide.challengePhrase}&rdquo;</p>
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 // ——————————————————————————————————————————————————————
 // COCKPIT — The in-game facilitator view
@@ -917,6 +852,37 @@ function CockpitContent({
     return moduleLabel;
   })();
 
+  // ── Unified toolbar values (used by all module types) ──
+  const unifiedLabel = (() => {
+    if (isM1Positioning) return "Positionnement";
+    if (isM1Image) return "Image";
+    if (isM1Notebook) return "Carnet";
+    if (isBudgetQuiz) return "Budgets";
+    if (showM10Special) return isM10Etsi ? "Et si..." : "Pitch";
+    if (isM12Any) return "Construction";
+    if (showM2ECChecklist) return "Checklists";
+    if (showM2ECSceneBuilder) return "Scenes";
+    if (showM2ECComparison) return "Confrontation";
+    return "Reponses";
+  })();
+
+  const unifiedRespondedCount = (() => {
+    if (isBudgetQuiz) return budgetSubmitted;
+    if (isM1Image || isM1Notebook) return module1Data?.responsesCount || 0;
+    if (showM10Special && module10Data?.allSubmissions) return module10Data.allSubmissions.length;
+    if (showM2ECChecklist) return module5Data?.submittedCount || 0;
+    if (showM2ECSceneBuilder || showM2ECComparison) return scenesData?.count || 0;
+    return responses.length;
+  })();
+
+  // Students who haven't responded yet (for all modules)
+  const notRespondedStudents = useMemo(() => {
+    if (session.status !== "responding") return [];
+    const respondedIds = new Set(responses.map(r => r.student_id));
+    moduleSubmittedIds.forEach(id => respondedIds.add(id));
+    return activeStudents.filter(s => !respondedIds.has(s.id));
+  }, [session.status, responses, activeStudents, moduleSubmittedIds]);
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* ── STATUS BAR ── */}
@@ -946,34 +912,34 @@ function CockpitContent({
       {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* ── COMPACT HEADER BAR ── */}
-        <div className="flex items-center gap-3 px-4 py-1.5 flex-shrink-0 border-b border-white/[0.06]">
-          {/* Module badge */}
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md flex-shrink-0" style={{ backgroundColor: `${moduleColor}20`, color: moduleColor, border: `1px solid ${moduleColor}30` }}>
-            M{session.current_module} {moduleLabel}
-          </span>
+        <div className="flex items-center gap-2.5 px-4 py-1.5 flex-shrink-0 border-b border-white/[0.06]" style={{ background: "linear-gradient(90deg, rgba(26,29,34,0.8), rgba(18,20,24,0.95))" }}>
+          {/* Module badge — prominent */}
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg flex-shrink-0" style={{ backgroundColor: `${moduleColor}15`, border: `1px solid ${moduleColor}25` }}>
+            <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: moduleColor }} />
+            <span className="text-[10px] font-bold" style={{ color: moduleColor }}>M{session.current_module}</span>
+            <span className="text-[10px] font-medium text-bw-text">{moduleLabel}</span>
+          </div>
           {/* Chapter / Question counter */}
           {(totalQuestions ?? 0) > 0 && (
-            <span className="text-[11px] text-bw-muted tabular-nums flex-shrink-0">
-              Ch.{session.current_seance || 1} Q.{currentQIndex + 1}/{totalQuestions}
+            <span className="text-[10px] text-bw-muted tabular-nums flex-shrink-0 font-mono">
+              S{session.current_seance || 1} · Q{currentQIndex + 1}/{totalQuestions}
             </span>
           )}
-          {/* Timer compact */}
-          {session.timer_ends_at && (
-            <span className="text-[11px] text-bw-amber tabular-nums flex-shrink-0">
-              <ElapsedTimer startedAt={respondingOpenedAt} />
-            </span>
-          )}
-          {!session.timer_ends_at && respondingOpenedAt && (
+          {/* Timer / elapsed */}
+          {respondingOpenedAt && (
             <span className="flex-shrink-0">
               <ElapsedTimer startedAt={respondingOpenedAt} />
             </span>
           )}
           <div className="flex-1" />
           {/* Student count */}
-          <span className="text-[11px] text-bw-muted tabular-nums flex-shrink-0">
-            {activeStudents.length}/{totalStudents} élève{activeStudents.length > 1 ? "s" : ""}
-          </span>
-          {/* Auto-advance compact toggle */}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-bw-green" />
+            <span className="text-[10px] text-bw-muted tabular-nums font-mono">
+              {activeStudents.length}/{totalStudents}
+            </span>
+          </div>
+          {/* Auto-advance toggle */}
           <button
             onClick={() => {
               setAutoAdvance((v) => !v);
@@ -984,23 +950,20 @@ function CockpitContent({
               }
             }}
             className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-medium cursor-pointer transition-all flex-shrink-0 ${
-              autoAdvance ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30" : "bg-bw-elevated text-bw-muted border border-white/[0.06]"
+              autoAdvance ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30" : "bg-white/[0.04] text-bw-muted border border-white/[0.06]"
             }`}
           >
             <div className={`w-5 h-3 rounded-full transition-all relative ${autoAdvance ? "bg-bw-teal" : "bg-white/10"}`}>
               <div className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all ${autoAdvance ? "left-2" : "left-px"}`} />
             </div>
-            Auto
+            Auto{autoAdvance && autoAdvanceCountdown > 0 ? ` ${autoAdvanceCountdown}s` : ""}
           </button>
-          {autoAdvance && autoAdvanceCountdown > 0 && (
-            <span className="text-[10px] text-bw-teal tabular-nums font-mono flex-shrink-0">{autoAdvanceCountdown}s</span>
-          )}
         </div>
 
         {/* ── QUESTION BAR — UNIVERSAL, always visible with collapsible guide ── */}
         {universalQuestionText && (
           <div className="flex-shrink-0 border-b border-white/[0.06]">
-            <div className="flex items-center gap-2 px-4 py-2">
+            <div className={`flex items-center gap-2 px-4 py-2 border-l-[3px] ${isPreviewing ? "border-l-bw-amber" : ""}`} style={isPreviewing ? undefined : { borderLeftColor: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
               {/* Category badge */}
               <span className="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0"
                 style={{ backgroundColor: `${CATEGORY_COLORS[universalCategoryLabel] || moduleColor}20`, color: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
@@ -1008,7 +971,7 @@ function CockpitContent({
               </span>
               {isPreviewing && <span className="text-[9px] px-1.5 py-0.5 rounded bg-bw-amber/15 text-bw-amber font-bold uppercase flex-shrink-0">Apercu</span>}
               {/* Question text */}
-              <p className={`text-sm leading-snug flex-1 min-w-0 truncate ${isPreviewing ? "text-bw-amber" : "text-bw-text"}`}>
+              <p className={`text-sm leading-snug flex-1 min-w-0 truncate font-medium ${isPreviewing ? "text-bw-amber" : "text-bw-heading"}`}>
                 {universalQuestionText}
               </p>
               {/* Question navigation compact */}
@@ -1113,6 +1076,27 @@ function CockpitContent({
                 </div>
               </div>
             )}
+            {/* Mini stats bar */}
+            {session.status === "responding" && (
+              <div className="flex-shrink-0 px-3 py-2 border-b border-white/[0.06] flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-bw-green" />
+                  <span className="text-[10px] text-bw-muted tabular-nums">{unifiedRespondedCount} repondu</span>
+                </div>
+                {stuckStudents.length > 0 && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-bw-danger animate-pulse" />
+                    <span className="text-[10px] text-bw-danger tabular-nums">{stuckStudents.length} bloque{stuckStudents.length > 1 ? "s" : ""}</span>
+                  </div>
+                )}
+                {session.students?.filter(s => s.hand_raised_at).length ? (
+                  <div className="flex items-center gap-1">
+                    <span className="text-[10px]">✋</span>
+                    <span className="text-[10px] text-bw-amber tabular-nums">{session.students.filter(s => s.hand_raised_at).length}</span>
+                  </div>
+                ) : null}
+              </div>
+            )}
             {/* Classroom map */}
             <div className="flex-1 p-3 overflow-y-auto">
             <ClassroomMap
@@ -1169,128 +1153,95 @@ function CockpitContent({
               })()}
             </div>
           ) : (
-          <div className="px-4 pb-4 space-y-4">
+          <div className="px-4 py-3 space-y-3">
 
-          {/* ── CONTEXT ZONE — what the teacher needs to see ── */}
-          <>
-
-          {/* Standard Q&A: preview + nav now in header question bar */}
-
-          {/* M1 Positioning: toolbar + option distribution (nav + guide now in header bar) */}
-          {isM1Positioning && module1Data?.type === "positioning" && module1Data.questions && (
-            <>
-              {/* Toolbar */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Positionnement</span>
-                  <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
-                    responses.length >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
-                  }`}>{responses.length}/{activeStudents.length}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <button onClick={() => setShowBroadcast(true)} title="Message classe"
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                    📢
-                  </button>
-                  <button onClick={() => setShowExport(true)} title="Export"
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                    📋
-                  </button>
-                </div>
+          {/* ── UNIFIED TOOLBAR — visible for all modules ── */}
+          {session.status !== "done" && !focusMode && (
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">{unifiedLabel}</span>
+                <motion.span
+                  key={unifiedRespondedCount}
+                  initial={{ scale: 1.2, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-lg ${
+                    unifiedRespondedCount >= activeStudents.length && activeStudents.length > 0
+                      ? "bg-green-500/15 text-green-400"
+                      : "bg-bw-teal/10 text-bw-teal"
+                  }`}
+                >
+                  {unifiedRespondedCount}/{activeStudents.length}
+                </motion.span>
               </div>
-
-              {/* Option distribution bars (current question only) */}
-              {!isPreviewing && module1Data.questions[currentQIndex]?.options && (
-                <div className="bg-bw-elevated rounded-xl border border-white/[0.08] p-4 space-y-3">
-                  {module1Data.questions[currentQIndex].options?.map((opt) => {
-                    const count = module1Data.optionDistribution?.[opt.key] || 0;
-                    const total = activeStudents.length;
-                    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
-                    return (
-                      <div key={opt.key} className="space-y-1">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-bw-text">
-                            <span className="text-bw-violet font-bold mr-1.5">{opt.key.toUpperCase()}</span>
-                            {opt.label}
-                          </span>
-                          <span className="text-bw-muted tabular-nums">{count}/{total}</span>
-                        </div>
-                        <div className="h-2 bg-bw-bg rounded-full overflow-hidden">
-                          <motion.div className="h-full bg-bw-violet rounded-full" animate={{ width: `${pct}%` }} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </>
+              <div className="flex items-center gap-1">
+                {(isBudgetQuiz || showM10Special || showM2ECSceneBuilder || showM2ECComparison) && (
+                  <input
+                    type="text" placeholder="Rechercher..." value={cardSearch}
+                    onChange={(e) => setCardSearch(e.target.value)}
+                    className="w-24 px-2 py-1 rounded-lg text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
+                  />
+                )}
+                <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
+                  className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                  📢
+                </button>
+                <button onClick={() => setShowExport(true)} title="Export (E)"
+                  className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                  📋
+                </button>
+              </div>
+            </div>
           )}
 
-          {/* M1 Image: image display + single question + responses with highlight/confrontation */}
+          {/* ── MODULE-SPECIFIC CONTENT ── */}
+          <>
+
+          {/* M1 Positioning: option distribution bars only */}
+          {isM1Positioning && module1Data?.type === "positioning" && !isPreviewing && module1Data.questions?.[currentQIndex]?.options && (
+            <div className="bg-bw-elevated rounded-xl border border-white/[0.08] p-4 space-y-3">
+              {module1Data.questions[currentQIndex].options?.map((opt) => {
+                const count = module1Data.optionDistribution?.[opt.key] || 0;
+                const total = activeStudents.length;
+                const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                return (
+                  <div key={opt.key} className="space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-bw-text">
+                        <span className="text-bw-violet font-bold mr-1.5">{opt.key.toUpperCase()}</span>
+                        {opt.label}
+                      </span>
+                      <span className="text-bw-muted tabular-nums">{count}/{total}</span>
+                    </div>
+                    <div className="h-2 bg-bw-bg rounded-full overflow-hidden">
+                      <motion.div className="h-full bg-bw-violet rounded-full" animate={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* M1 Image: image display only */}
           {isM1Image && module1Data?.type === "image" && (
             <>
-              {/* Toolbar — same style as other sections */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Image</span>
-                  <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
-                    (module1Data.responsesCount || 0) >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
-                  }`}>{module1Data.responsesCount || 0}/{activeStudents.length}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <button onClick={() => setShowBroadcast(true)} title="Message classe"
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                    📢
-                  </button>
-                  <button onClick={() => setShowExport(true)} title="Export"
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                    📋
-                  </button>
-                </div>
-              </div>
               {module1Data.image ? (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <div className="rounded-xl overflow-hidden border border-white/[0.08] bg-bw-surface">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={module1Data.image.url} alt={module1Data.image.title}
                       className="w-full aspect-[16/10] object-cover" />
                   </div>
-                  <p className="text-sm text-bw-muted text-center">{module1Data.image.title}</p>
+                  <p className="text-xs text-bw-muted text-center">{module1Data.image.title}</p>
                 </div>
               ) : (
                 <div className="rounded-xl bg-bw-surface border border-white/[0.08] aspect-[16/10] flex items-center justify-center">
                   <p className="text-sm text-bw-muted">Image non disponible</p>
                 </div>
               )}
-              {/* Responses are rendered by the unified ResponseStreamSection below */}
             </>
           )}
 
-          {/* M1 Notebook: toolbar + consigne + responses */}
-          {isM1Notebook && module1Data?.type === "notebook" && (
-            <>
-              {/* Toolbar — same style as other sections */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Carnet</span>
-                  <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
-                    (module1Data.responsesCount || 0) >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
-                  }`}>{module1Data.responsesCount || 0}/{activeStudents.length}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <button onClick={() => setShowBroadcast(true)} title="Message classe"
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                    📢
-                  </button>
-                  <button onClick={() => setShowExport(true)} title="Export"
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                    📋
-                  </button>
-                </div>
-              </div>
-              {/* Notebooks are rendered by the unified ResponseStreamSection below */}
-            </>
-          )}
+          {/* M1 Notebook: responses rendered by ResponseStreamSection below */}
 
           {/* M9 séance 2: Budget overview + individual budgets */}
           {isBudgetQuiz && (
@@ -1304,30 +1255,6 @@ function CockpitContent({
               {/* Individual budgets */}
               {budgetData && budgetData.budgets.length > 0 && (
                 <div className="space-y-2">
-                  {/* Toolbar — same style as ResponseStreamSection */}
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Budgets</span>
-                      <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
-                        budgetData.budgets.length >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
-                      }`}>{budgetData.budgets.length}/{activeStudents.length}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="text" placeholder="Rechercher..." value={cardSearch}
-                        onChange={(e) => setCardSearch(e.target.value)}
-                        className="w-28 px-2 py-1 rounded-lg text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
-                      />
-                      <button onClick={() => setShowBroadcast(true)} title="Message classe"
-                        className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                        📢
-                      </button>
-                      <button onClick={() => setShowExport(true)} title="Export"
-                        className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                        📋
-                      </button>
-                    </div>
-                  </div>
                   {budgetData.budgets.filter((b) => !cardSearch || (b.students?.display_name || "").toLowerCase().includes(cardSearch.toLowerCase())).map((b) => (
                     <div key={b.id} className="bg-bw-surface rounded-xl p-3 border border-white/[0.06] space-y-2">
                       <div className="flex items-center gap-2">
@@ -1538,30 +1465,6 @@ function CockpitContent({
               {/* All submissions list (facilitator view for M10 special positions) */}
               {module10Data?.allSubmissions && module10Data.allSubmissions.length > 0 && (
                 <div className="space-y-1.5">
-                  {/* Toolbar — same style as ResponseStreamSection */}
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Réponses</span>
-                      <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
-                        module10Data.allSubmissions.length >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
-                      }`}>{module10Data.allSubmissions.length}/{activeStudents.length}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="text" placeholder="Rechercher..." value={cardSearch}
-                        onChange={(e) => setCardSearch(e.target.value)}
-                        className="w-28 px-2 py-1 rounded-lg text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
-                      />
-                      <button onClick={() => setShowBroadcast(true)} title="Message classe"
-                        className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                        📢
-                      </button>
-                      <button onClick={() => setShowExport(true)} title="Export"
-                        className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                        📋
-                      </button>
-                    </div>
-                  </div>
                   {module10Data.allSubmissions.filter((sub) => !cardSearch || (sub.studentName || "").toLowerCase().includes(cardSearch.toLowerCase()) || (sub.text || "").toLowerCase().includes(cardSearch.toLowerCase())).map((sub, i) => (
                     <motion.div key={sub.studentId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.03 }}
@@ -1606,27 +1509,7 @@ function CockpitContent({
           {/* ── MODULE 2 EC: Checklist cockpit ── */}
           {showM2ECChecklist && (
             <>
-              {/* Toolbar — same style as ResponseStreamSection */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Checklists</span>
-                  <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
-                    (module5Data?.submittedCount || 0) >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
-                  }`}>{module5Data?.submittedCount || 0}/{activeStudents.length}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <button onClick={() => setShowBroadcast(true)} title="Message classe"
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                    📢
-                  </button>
-                  <button onClick={() => setShowExport(true)} title="Export"
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                    📋
-                  </button>
-                </div>
-              </div>
-
-              {/* What students are doing — hidden when preview guide shows same info */}
+              {/* What students are doing */}
               {!isPreviewing && (
                 <div className="glass-card !border-bw-pink/20 p-4 space-y-3">
                   <div className="flex items-center gap-2">
@@ -1714,30 +1597,6 @@ function CockpitContent({
               {/* Scene cards from scenesData */}
               {scenesData && scenesData.scenes.length > 0 && (
                 <div className="space-y-2">
-                  {/* Toolbar — same style as ResponseStreamSection */}
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Scènes</span>
-                      <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
-                        scenesData.count >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
-                      }`}>{scenesData.count}/{activeStudents.length}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="text" placeholder="Rechercher..." value={cardSearch}
-                        onChange={(e) => setCardSearch(e.target.value)}
-                        className="w-28 px-2 py-1 rounded-lg text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
-                      />
-                      <button onClick={() => setShowBroadcast(true)} title="Message classe"
-                        className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                        📢
-                      </button>
-                      <button onClick={() => setShowExport(true)} title="Export"
-                        className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                        📋
-                      </button>
-                    </div>
-                  </div>
                   {scenesData.scenes.filter((sc) => !cardSearch || (sc.students?.display_name || "").toLowerCase().includes(cardSearch.toLowerCase()) || sc.intention?.toLowerCase().includes(cardSearch.toLowerCase()) || sc.obstacle?.toLowerCase().includes(cardSearch.toLowerCase())).map((sc, i) => {
                     const emo = EMOTIONS.find(e => e.key === sc.emotion);
                     return (
@@ -1798,32 +1657,7 @@ function CockpitContent({
           {/* ── MODULE 2 EC: Comparison cockpit (séance 3) ── */}
           {showM2ECComparison && (
             <>
-              {/* Toolbar — same style as ResponseStreamSection */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Confrontation</span>
-                  <span className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
-                    (scenesData?.count || 0) >= activeStudents.length ? "bg-green-500/15 text-green-400" : "bg-bw-teal/10 text-bw-teal"
-                  }`}>{scenesData?.count || 0}/{activeStudents.length}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <input
-                    type="text" placeholder="Rechercher..." value={cardSearch}
-                    onChange={(e) => setCardSearch(e.target.value)}
-                    className="w-28 px-2 py-1 rounded-lg text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
-                  />
-                  <button onClick={() => setShowBroadcast(true)} title="Message classe"
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                    📢
-                  </button>
-                  <button onClick={() => setShowExport(true)} title="Export"
-                    className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
-                    📋
-                  </button>
-                </div>
-              </div>
-
-              {/* What students are doing — hidden when preview guide shows same info */}
+              {/* What students are doing */}
               {!isPreviewing && (
                 <div className="glass-card !border-bw-pink/20 p-4 space-y-3">
                   <div className="flex items-center gap-2">
@@ -2114,6 +1948,34 @@ function CockpitContent({
             </div>
           )}
 
+          {/* ── PAS ENCORE RÉPONDU — visible during responding for ALL modules ── */}
+          {!focusMode && session.status === "responding" && notRespondedStudents.length > 0 && (
+            <div className="rounded-xl border border-white/[0.06] p-3 space-y-2" style={{ background: "linear-gradient(135deg, rgba(136,148,160,0.04), transparent)" }}>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">
+                  Pas encore repondu ({notRespondedStudents.length})
+                </span>
+                {notRespondedStudents.length > 0 && stuckStudents.length > 0 && (
+                  <button onClick={handleNudgeAllStuck}
+                    className="text-[10px] text-bw-amber hover:text-bw-amber/80 cursor-pointer transition-colors">
+                    Relancer tous
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {notRespondedStudents.map((s) => (
+                  <button key={s.id}
+                    onClick={() => setFicheStudentId(s.id)}
+                    className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[11px] text-bw-muted hover:text-bw-text hover:bg-white/[0.06] cursor-pointer transition-all"
+                  >
+                    <span className="text-sm">{s.avatar}</span>
+                    <span>{s.display_name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Choices history (Standard Q&A) */}
           {!focusMode && isStandardQA && collectiveChoices.length > 0 && (
             <ChoicesHistory choices={collectiveChoices} />
@@ -2128,22 +1990,19 @@ function CockpitContent({
 
       {/* ── COMPACT FOOTER — progress bar + CTA + toggles ── */}
       {session.status !== "done" && session.status !== "paused" && (
-        <div className="flex-shrink-0 glass border-t border-white/[0.08]">
-          {/* Progress bar with label */}
+        <div className="flex-shrink-0 border-t border-white/[0.08]" style={{ background: "linear-gradient(180deg, rgba(26,29,34,0.9), rgba(18,20,24,0.98))" }}>
+          {/* Progress bar */}
           {session.status === "responding" && activeStudents.length > 0 && (() => {
-            const pct = Math.round((respondedCount / activeStudents.length) * 100);
-            const allDone = respondedCount >= activeStudents.length;
+            const pct = Math.round((unifiedRespondedCount / activeStudents.length) * 100);
+            const allDone = unifiedRespondedCount >= activeStudents.length;
             return (
-              <div className="relative h-1.5 w-full bg-white/[0.04]">
+              <div className="relative h-1 w-full bg-white/[0.04]">
                 <motion.div
-                  className={`h-full ${allDone ? "bg-gradient-to-r from-bw-teal to-bw-green" : "bg-bw-teal"}`}
+                  className={`h-full ${allDone ? "bg-gradient-to-r from-bw-teal to-bw-green" : "bg-gradient-to-r from-bw-teal/80 to-bw-teal"}`}
                   animate={{ width: `${pct}%` }}
                   transition={{ duration: 0.4, ease: "easeOut" }}
-                  style={allDone ? { boxShadow: "0 0 8px rgba(78,205,196,0.4)" } : undefined}
+                  style={allDone ? { boxShadow: "0 0 12px rgba(78,205,196,0.5)" } : undefined}
                 />
-                <span className="absolute right-2 -top-4 text-[9px] tabular-nums font-mono text-bw-muted">
-                  {respondedCount}/{activeStudents.length} ({pct}%)
-                </span>
               </div>
             );
           })()}
