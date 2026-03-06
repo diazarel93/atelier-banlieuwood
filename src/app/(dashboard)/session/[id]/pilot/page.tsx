@@ -21,7 +21,7 @@ import { MODULES, PHASES, getModuleByDb, getPhaseForModule } from "@/lib/modules
 
 // Cockpit components
 import { InlineActions, GenericInlineActions, TeacherCommentBadge } from "@/components/pilot/response-actions";
-import { QuestionCard } from "@/components/pilot/question-card";
+// QuestionCard removed — question now in header bar
 import { type ResponseCardResponse } from "@/components/pilot/response-card";
 import { InlineReformulation } from "@/components/pilot/inline-reformulation";
 import { SelectionBar } from "@/components/pilot/selection-bar";
@@ -40,7 +40,8 @@ import { KeyboardShortcutsModal } from "@/components/pilot/keyboard-shortcuts-mo
 import { VotingResults } from "@/components/pilot/voting-results";
 import { ResponseStreamSection } from "@/components/pilot/response-stream-section";
 import { QuestionNavigation } from "@/components/pilot/question-navigation";
-import { TimerSection } from "@/components/pilot/timer-section";
+// TimerSection removed — timer info in header bar
+import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
 
 // New cockpit features
 import { BroadcastModal } from "@/components/pilot/broadcast-modal";
@@ -55,10 +56,11 @@ import { PilotTopBar } from "@/components/pilot/pilot-top-bar";
 import { ModuleSidebar, MobileSidebarDrawer } from "@/components/pilot/module-sidebar";
 import { WelcomePanel } from "@/components/pilot/welcome-panel";
 import { ModuleBriefing } from "@/components/pilot/module-briefing";
-import { ContextPanel, ContextDocks } from "@/components/pilot/context-panel";
+import { ContextPanel } from "@/components/pilot/context-panel";
 import { getNextAction, type NextAction } from "@/components/pilot/get-next-action";
 import { TeamManager } from "@/components/pilot/team-manager";
 import { ClassroomMap } from "@/components/pilot/classroom-map";
+import { StudentFiche } from "@/components/pilot/student-fiche";
 
 interface Session {
   id: string;
@@ -247,7 +249,8 @@ function CockpitContent({
   onSelectStudent: (student: Student) => void;
   teams: { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[];
 }) {
-  const [viewMode, setViewMode] = useState<"responses" | "classroom">("responses");
+  const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
+  const [guideExpanded, setGuideExpanded] = useState(false);
   const [reformulating, setReformulating] = useState<Response | null>(null);
   const [reformulatedText, setReformulatedText] = useState("");
   const [respondingStartedAt] = useState<number>(Date.now());
@@ -279,18 +282,18 @@ function CockpitContent({
 
   const queryClient = useQueryClient();
 
-  // Keyboard shortcut: M = toggle classroom map
+  // Keyboard shortcut: Escape = close student fiche
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      if (e.key === "m") {
+      if (e.key === "Escape" && ficheStudentId) {
         e.preventDefault();
-        setViewMode((v) => (v === "responses" ? "classroom" : "responses"));
+        setFicheStudentId(null);
       }
     }
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, []);
+  }, [ficheStudentId]);
 
   // Fetch all situations for the seance (for preview of upcoming questions)
   useEffect(() => {
@@ -869,37 +872,159 @@ function CockpitContent({
         </div>
       )}
 
-      {/* ── SINGLE COLUMN — scrollable center ── */}
-      <main className="flex-1 overflow-y-auto pb-24">
-        <div className="max-w-2xl mx-auto px-4 py-5 space-y-4">
+      {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}
+      <main className="flex-1 flex flex-col overflow-hidden">
+        {/* ── COMPACT HEADER BAR ── */}
+        <div className="flex items-center gap-3 px-4 py-1.5 flex-shrink-0 border-b border-white/[0.06]">
+          {/* Module badge */}
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md flex-shrink-0" style={{ backgroundColor: `${moduleColor}20`, color: moduleColor, border: `1px solid ${moduleColor}30` }}>
+            M{session.current_module} {moduleLabel}
+          </span>
+          {/* Chapter / Question counter */}
+          {(totalQuestions ?? 0) > 0 && (
+            <span className="text-[11px] text-bw-muted tabular-nums flex-shrink-0">
+              Ch.{session.current_seance || 1} Q.{currentQIndex + 1}/{totalQuestions}
+            </span>
+          )}
+          {/* Timer compact */}
+          {session.timer_ends_at && (
+            <span className="text-[11px] text-bw-amber tabular-nums flex-shrink-0">
+              <ElapsedTimer startedAt={respondingOpenedAt} />
+            </span>
+          )}
+          {!session.timer_ends_at && respondingOpenedAt && (
+            <span className="flex-shrink-0">
+              <ElapsedTimer startedAt={respondingOpenedAt} />
+            </span>
+          )}
+          <div className="flex-1" />
+          {/* Student count */}
+          <span className="text-[11px] text-bw-muted tabular-nums flex-shrink-0">
+            {activeStudents.length}/{totalStudents} élève{activeStudents.length > 1 ? "s" : ""}
+          </span>
+          {/* Auto-advance compact toggle */}
+          <button
+            onClick={() => {
+              setAutoAdvance((v) => !v);
+              if (autoAdvanceTimerRef.current) {
+                clearTimeout(autoAdvanceTimerRef.current);
+                autoAdvanceTimerRef.current = null;
+                setAutoAdvanceCountdown(0);
+              }
+            }}
+            className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-medium cursor-pointer transition-all flex-shrink-0 ${
+              autoAdvance ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30" : "bg-bw-elevated text-bw-muted border border-white/[0.06]"
+            }`}
+          >
+            <div className={`w-5 h-3 rounded-full transition-all relative ${autoAdvance ? "bg-bw-teal" : "bg-white/10"}`}>
+              <div className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all ${autoAdvance ? "left-2" : "left-px"}`} />
+            </div>
+            Auto
+          </button>
+          {autoAdvance && autoAdvanceCountdown > 0 && (
+            <span className="text-[10px] text-bw-teal tabular-nums font-mono flex-shrink-0">{autoAdvanceCountdown}s</span>
+          )}
+        </div>
 
-          {/* ── VIEW MODE TOGGLE ── */}
-          <div className="flex items-center gap-1 p-0.5 rounded-xl bg-white/[0.04] border border-white/[0.06] w-fit">
-            <button
-              onClick={() => setViewMode("responses")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                viewMode === "responses"
-                  ? "bg-bw-primary/15 text-bw-primary border border-bw-primary/20"
-                  : "text-bw-muted hover:text-bw-text hover:bg-white/5 border border-transparent"
-              }`}
-            >
-              <span>📋</span> Réponses
-            </button>
-            <button
-              onClick={() => setViewMode("classroom")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                viewMode === "classroom"
-                  ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/20"
-                  : "text-bw-muted hover:text-bw-text hover:bg-white/5 border border-transparent"
-              }`}
-            >
-              <span>🏫</span> Plan de classe
-              <span className="text-[9px] text-bw-muted font-normal ml-0.5">(M)</span>
-            </button>
+        {/* ── QUESTION BAR — always visible with collapsible guide ── */}
+        {(showStandardQA || isM1Positioning) && situation && !isPreviewing && (
+          <div className="flex-shrink-0 border-b border-white/[0.06]">
+            <div className="flex items-center gap-2 px-4 py-2">
+              {/* Category badge */}
+              <span className="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0"
+                style={{ backgroundColor: `${CATEGORY_COLORS[situation.category] || moduleColor}20`, color: CATEGORY_COLORS[situation.category] || moduleColor }}>
+                {situation.restitutionLabel || situation.category}
+              </span>
+              {/* Question text */}
+              <p className="text-sm text-bw-text leading-snug flex-1 min-w-0 truncate">{situation.prompt}</p>
+              {/* Question navigation compact */}
+              {(totalQuestions ?? 0) > 1 && (
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <button onClick={previewPrev} disabled={displayIndex <= 0}
+                    className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                    ◀
+                  </button>
+                  <span className="text-[10px] text-bw-muted tabular-nums">Q{displayIndex + 1}/{totalQuestions}</span>
+                  <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
+                    className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                    ▶
+                  </button>
+                </div>
+              )}
+              {/* Guide toggle */}
+              {questionGuide && (
+                <button
+                  onClick={() => setGuideExpanded(!guideExpanded)}
+                  className={`px-2 py-1 rounded-lg text-[10px] font-medium cursor-pointer transition-all flex-shrink-0 ${
+                    guideExpanded ? "bg-bw-green/15 text-bw-green border border-bw-green/30" : "text-bw-muted hover:text-bw-green bg-bw-elevated border border-white/[0.06]"
+                  }`}
+                >
+                  {guideExpanded ? "▴ Guide" : "▾ Guide"}
+                </button>
+              )}
+            </div>
+            {/* Collapsible guide section */}
+            <AnimatePresence>
+              {guideExpanded && questionGuide && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-4 pb-3 space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className="bg-bw-bg rounded-lg p-2.5 space-y-0.5">
+                        <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-green">Ce qu&apos;on attend</p>
+                        <p className="text-[11px] text-bw-text leading-relaxed">{questionGuide.whatToExpect}</p>
+                      </div>
+                      <div className="bg-bw-bg rounded-lg p-2.5 space-y-0.5">
+                        <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-amber">Pièges fréquents</p>
+                        <p className="text-[11px] text-bw-amber leading-relaxed">{questionGuide.commonPitfalls}</p>
+                      </div>
+                    </div>
+                    <QuickPhrases questionGuide={questionGuide} />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            {/* Preview banner when looking ahead */}
+            {isPreviewing && (
+              <div className="px-4 pb-2">
+                <div className="bg-bw-amber/10 border border-bw-amber/30 rounded-lg px-3 py-2 flex items-center gap-3">
+                  <span className="text-[11px] text-bw-amber">Aperçu Q{displayIndex + 1}</span>
+                  <div className="flex-1" />
+                  <button onClick={() => setPreviewIndex(null)}
+                    className="text-[10px] text-bw-muted hover:text-white cursor-pointer">Retour Q{currentQIndex + 1}</button>
+                  <button onClick={() => goToSituation(displayIndex)}
+                    className="text-[10px] px-2.5 py-1 bg-bw-amber text-black rounded-lg font-medium cursor-pointer hover:brightness-110">
+                    Lancer Q{displayIndex + 1}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
+        )}
+        {/* Preview banner for non-standard views */}
+        {isPreviewing && !(showStandardQA || isM1Positioning) && (
+          <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-2">
+            <div className="bg-bw-amber/10 border border-bw-amber/30 rounded-lg px-3 py-2 flex items-center gap-3">
+              <span className="text-[11px] text-bw-amber">Aperçu Q{displayIndex + 1}</span>
+              <div className="flex-1" />
+              <button onClick={() => setPreviewIndex(null)}
+                className="text-[10px] text-bw-muted hover:text-white cursor-pointer">Retour Q{currentQIndex + 1}</button>
+              <button onClick={() => goToSituation(displayIndex)}
+                className="text-[10px] px-2.5 py-1 bg-bw-amber text-black rounded-lg font-medium cursor-pointer hover:brightness-110">
+                Lancer Q{displayIndex + 1}
+              </button>
+            </div>
+          </div>
+        )}
 
-          {/* ── CLASSROOM MAP VIEW ── */}
-          {viewMode === "classroom" && (
+        {/* ── SPLIT-PANEL LAYOUT ── */}
+        <div className="flex-1 flex overflow-hidden min-h-0">
+          {/* LEFT: Plan de classe (40%, desktop only) */}
+          <div className="hidden lg:flex lg:w-[40%] flex-shrink-0 flex-col overflow-y-auto border-r border-white/[0.06] p-3">
             <ClassroomMap
               students={studentStates.map((s) => {
                 const raw = session.students?.find((st) => st.id === s.id);
@@ -912,105 +1037,110 @@ function CockpitContent({
               onNudge={(responseId, text) => nudgeStudent.mutate({ responseId, nudgeText: text })}
               onWarn={(studentId) => warnStudent.mutate(studentId)}
               onBroadcast={() => setShowBroadcast(true)}
+              onNudgeAllStuck={() => handleNudgeAllStuck()}
+              onStudentClick={setFicheStudentId}
+            />
+          </div>
+          {/* RIGHT: Flux ou Fiche (60%) */}
+          <div className="flex-1 overflow-y-auto min-h-0">
+          {ficheStudentId ? (
+            <div className="px-4 py-4">
+              {(() => {
+                const raw = session.students?.find((s) => s.id === ficheStudentId);
+                const st = studentStates.find((s) => s.id === ficheStudentId);
+                if (!raw) return <div className="text-sm text-bw-muted">Élève introuvable</div>;
+                const studentResponses = responses.filter((r) => r.student_id === ficheStudentId) as ResponseCardResponse[];
+                return (
+                  <StudentFiche
+                    studentId={ficheStudentId}
+                    student={raw}
+                    state={st?.state || "active"}
+                    responses={studentResponses}
+                    sessionStatus={session.status}
+                    onBack={() => setFicheStudentId(null)}
+                    onNudge={(sid, text) => {
+                      const r = responses.find((r) => r.student_id === sid);
+                      if (r) nudgeStudent.mutate({ responseId: r.id, nudgeText: text });
+                    }}
+                    onWarn={(sid) => warnStudent.mutate(sid)}
+                    onBroadcast={() => setShowBroadcast(true)}
+                    toggleHide={toggleHide}
+                    toggleVoteOption={toggleVoteOption}
+                    commentResponse={commentResponse}
+                    highlightResponse={highlightResponse}
+                    scoreResponse={scoreResponse}
+                    resetResponse={resetResponse}
+                    nudgeStudent={nudgeStudent}
+                    warnStudent={warnStudent}
+                    studentWarnings={studentWarnings}
+                  />
+                );
+              })()}
+            </div>
+          ) : (
+          <div className="px-4 pb-4 space-y-4">
+
+          {/* ── CONTEXT ZONE — what the teacher needs to see ── */}
+          <>
+
+          {/* Standard Q&A: Preview card only (question now in header bar) */}
+          {showStandardQA && isPreviewing && (() => {
+            const previewSit = allSituations.find((s) => s.position === displayIndex + 1);
+            const color = CATEGORY_COLORS[previewSit?.category || previewGuide?.category || ""] || "#F59E0B";
+            return (
+              <div className="glass-card overflow-hidden" style={{ borderColor: `${color}20`, background: `linear-gradient(135deg, ${color}08, rgba(26,29,34,0.6) 60%)` }}>
+                <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, #F59E0B, ${color}80)` }} />
+                <div className="p-4 pb-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs font-bold uppercase px-2.5 py-1 rounded-full"
+                      style={{ background: `linear-gradient(135deg, ${color}25, ${color}10)`, color, border: `1px solid ${color}30` }}>
+                      {previewSit?.restitutionLabel || previewGuide?.label || previewSit?.category || "—"}
+                    </span>
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-bw-amber/15 text-bw-amber">Q{displayIndex + 1}</span>
+                    <span className="text-[10px] text-bw-amber uppercase tracking-wider font-semibold ml-auto">Apercu</span>
+                  </div>
+                  {previewSit?.prompt ? (
+                    <p className="text-base leading-relaxed text-bw-text">{previewSit.prompt}</p>
+                  ) : (
+                    <p className="text-sm text-bw-muted italic">Question non disponible — cliquez Lancer pour l&apos;ouvrir</p>
+                  )}
+                </div>
+                {previewGuide && (
+                  <div className="border-t px-4 py-3 space-y-2.5" style={{ borderColor: `${color}15` }}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <div className="bg-bw-bg rounded-lg p-3 space-y-1">
+                        <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-green">Ce qu&apos;on attend</p>
+                        <p className="text-xs text-bw-text leading-relaxed">{previewGuide.whatToExpect}</p>
+                      </div>
+                      <div className="bg-bw-bg rounded-lg p-3 space-y-1">
+                        <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-amber">Pièges fréquents</p>
+                        <p className="text-xs text-bw-amber leading-relaxed">{previewGuide.commonPitfalls}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* Standard Q&A: Question nav pills */}
+          {showStandardQA && (
+            <QuestionNavigation
+              maxSituations={maxSituations}
+              currentQIndex={currentQIndex}
+              displayIndex={displayIndex}
+              isPreviewing={isPreviewing}
+              moduleColor={moduleColor}
+              onPreviewSituation={previewSituation}
+              onPreviewPrev={previewPrev}
+              onPreviewNext={previewNext}
             />
           )}
 
-          {/* ── CONTEXT ZONE — what the teacher needs to see ── */}
-          {viewMode === "responses" && <>
-
-          {/* Standard Q&A: Question card (M9 non-budget, M3, M4, M2EC QA) */}
-          {showStandardQA && (
+          {/* M1 Positioning: question nav + option distribution */}
+          {isM1Positioning && module1Data?.type === "positioning" && module1Data.questions && (
             <>
-              {/* Preview banner when looking ahead */}
-              {isPreviewing && (
-                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-                  className="bg-bw-amber/10 border border-bw-amber/30 rounded-xl px-4 py-3 flex items-center gap-3">
-                  <span className="text-xs text-bw-amber">Prévisualisation Q{displayIndex + 1} — les élèves ne voient pas ce changement</span>
-                  <div className="flex-1" />
-                  <button onClick={() => setPreviewIndex(null)}
-                    className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">Retour Q{currentQIndex + 1}</button>
-                  <button onClick={() => { goToSituation(displayIndex); }}
-                    className="btn-glow text-xs px-3 py-1 bg-bw-amber text-black rounded-xl font-medium cursor-pointer transition-all duration-200 hover:brightness-110">
-                    Lancer Q{displayIndex + 1}
-                  </button>
-                </motion.div>
-              )}
-
-              {/* Show question card: real situation for current Q, full preview for other Qs */}
-              {isPreviewing ? (() => {
-                const previewSit = allSituations.find((s) => s.position === displayIndex + 1);
-                const color = CATEGORY_COLORS[previewSit?.category || previewGuide?.category || ""] || "#F59E0B";
-                return (
-                  <div className="glass-card overflow-hidden" style={{ borderColor: `${color}20`, background: `linear-gradient(135deg, ${color}08, rgba(26,29,34,0.6) 60%)` }}>
-                    <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, #F59E0B, ${color}80)` }} />
-                    <div className="p-4 pb-3">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-bold uppercase px-2.5 py-1 rounded-full"
-                          style={{ background: `linear-gradient(135deg, ${color}25, ${color}10)`, color, border: `1px solid ${color}30` }}>
-                          {previewSit?.restitutionLabel || previewGuide?.label || previewSit?.category || "—"}
-                        </span>
-                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-bw-amber/15 text-bw-amber">Q{displayIndex + 1}</span>
-                        <span className="text-[10px] text-bw-amber uppercase tracking-wider font-semibold ml-auto">Apercu</span>
-                      </div>
-                      {/* THE ACTUAL QUESTION — what students will see */}
-                      {previewSit?.prompt ? (
-                        <p className="text-base leading-relaxed text-bw-text">{previewSit.prompt}</p>
-                      ) : (
-                        <p className="text-sm text-bw-muted italic">Question non disponible — cliquez Lancer pour l&apos;ouvrir</p>
-                      )}
-                    </div>
-                    {/* Guide section — preparation tools */}
-                    {previewGuide && (
-                      <div className="border-t px-4 py-3 space-y-2.5" style={{ borderColor: `${color}15` }}>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                          <div className="bg-bw-bg rounded-lg p-3 space-y-1">
-                            <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-green">Ce qu&apos;on attend</p>
-                            <p className="text-xs text-bw-text leading-relaxed">{previewGuide.whatToExpect}</p>
-                          </div>
-                          <div className="bg-bw-bg rounded-lg p-3 space-y-1">
-                            <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-amber">Pieges frequents</p>
-                            <p className="text-xs text-bw-amber leading-relaxed">{previewGuide.commonPitfalls}</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          {previewGuide.relancePhrase && (
-                            <button
-                              onClick={() => { navigator.clipboard.writeText(previewGuide.relancePhrase); toast.success("Phrase copiee"); }}
-                              className="flex-1 bg-bw-teal/8 border border-bw-teal/20 rounded-lg px-3 py-2.5 text-left cursor-pointer hover:bg-bw-teal/15 transition-colors group"
-                            >
-                              <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-teal mb-0.5">Relancer</p>
-                              <p className="text-xs text-bw-text leading-relaxed italic">&ldquo;{previewGuide.relancePhrase}&rdquo;</p>
-                            </button>
-                          )}
-                          {previewGuide.challengePhrase && (
-                            <button
-                              onClick={() => { navigator.clipboard.writeText(previewGuide.challengePhrase); toast.success("Phrase copiee"); }}
-                              className="flex-1 bg-bw-violet/8 border border-bw-violet/20 rounded-lg px-3 py-2.5 text-left cursor-pointer hover:bg-bw-violet/15 transition-colors group"
-                            >
-                              <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-violet mb-0.5">Challenger</p>
-                              <p className="text-xs text-bw-text leading-relaxed italic">&ldquo;{previewGuide.challengePhrase}&rdquo;</p>
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })() : situation ? (
-                <QuestionCard
-                  position={situation.position}
-                  category={situation.category}
-                  restitutionLabel={situation.restitutionLabel}
-                  prompt={situation.prompt}
-                  questionGuide={questionGuide}
-                />
-              ) : (
-                <div className="bg-bw-elevated rounded-xl p-6 border border-white/[0.06] text-center">
-                  <p className="text-bw-muted text-sm">Chargement de la question...</p>
-                </div>
-              )}
-
-              {/* Question nav pills — LOCAL preview only */}
+              {/* Question nav pills + arrows */}
               <QuestionNavigation
                 maxSituations={maxSituations}
                 currentQIndex={currentQIndex}
@@ -1021,112 +1151,6 @@ function CockpitContent({
                 onPreviewPrev={previewPrev}
                 onPreviewNext={previewNext}
               />
-
-              {/* Auto-advance toggle */}
-              <div className="flex items-center justify-between gap-3">
-                <button
-                  onClick={() => {
-                    setAutoAdvance((v) => !v);
-                    if (autoAdvanceTimerRef.current) {
-                      clearTimeout(autoAdvanceTimerRef.current);
-                      autoAdvanceTimerRef.current = null;
-                      setAutoAdvanceCountdown(0);
-                    }
-                  }}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium cursor-pointer transition-all duration-200 ${
-                    autoAdvance
-                      ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30"
-                      : "bg-bw-elevated text-bw-muted border border-white/[0.06] hover:border-white/15"
-                  }`}
-                >
-                  <div className={`w-7 h-4 rounded-full transition-all duration-200 relative ${autoAdvance ? "bg-bw-teal" : "bg-white/10"}`}>
-                    <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all duration-200 ${autoAdvance ? "left-3.5" : "left-0.5"}`} />
-                  </div>
-                  Mode auto
-                </button>
-                <AnimatePresence>
-                  {autoAdvance && autoAdvanceCountdown > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, x: 8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 8 }}
-                      className="flex items-center gap-2"
-                    >
-                      <span className="text-xs text-bw-teal tabular-nums font-mono">
-                        Suite dans {autoAdvanceCountdown}s
-                      </span>
-                      <button
-                        onClick={() => {
-                          if (autoAdvanceTimerRef.current) {
-                            clearTimeout(autoAdvanceTimerRef.current);
-                            autoAdvanceTimerRef.current = null;
-                          }
-                          setAutoAdvanceCountdown(0);
-                        }}
-                        className="text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors px-2 py-0.5 rounded-lg bg-white/5 hover:bg-white/10"
-                      >
-                        Pause
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Quick phrases */}
-              <QuickPhrases questionGuide={questionGuide} />
-            </>
-          )}
-
-          {/* M1 Positioning: question nav + option distribution */}
-          {isM1Positioning && module1Data?.type === "positioning" && module1Data.questions && (
-            <>
-              {/* Preview banner */}
-              {isPreviewing && (
-                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-                  className="bg-bw-amber/10 border border-bw-amber/30 rounded-xl px-4 py-3 flex items-center gap-3">
-                  <span className="text-xs text-bw-amber">Prévisualisation Q{displayIndex + 1} — les élèves ne voient pas ce changement</span>
-                  <div className="flex-1" />
-                  <button onClick={() => setPreviewIndex(null)}
-                    className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">Retour Q{currentQIndex + 1}</button>
-                  <button onClick={() => { goToSituation(displayIndex); }}
-                    className="btn-glow text-xs px-3 py-1 bg-bw-amber text-black rounded-xl font-medium cursor-pointer transition-all duration-200 hover:brightness-110">
-                    Lancer Q{displayIndex + 1}
-                  </button>
-                </motion.div>
-              )}
-
-              {/* Question nav pills + arrows */}
-              <div className="flex items-center gap-1.5">
-                <div className="flex items-center justify-center gap-1.5 flex-wrap flex-1">
-                  {Array.from({ length: maxSituations }, (_, i) => {
-                    const isCurrent = i === currentQIndex;
-                    const isPreview = i === displayIndex;
-                    const isPast = i < currentQIndex;
-                    return (
-                      <button key={i} onClick={() => previewSituation(i)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 ${
-                          isPreview && isPreviewing ? "bg-bw-amber text-black shadow-lg shadow-bw-amber/20 scale-110"
-                            : isCurrent ? "bg-bw-violet text-white shadow-lg shadow-bw-violet/20"
-                            : isPast ? "bg-bw-teal/15 text-bw-teal"
-                            : "bg-bw-elevated text-bw-muted hover:text-bw-text hover:bg-bw-surface"
-                        }`}>
-                        {isPast && !isPreview && (
-                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="inline mr-1"><path d="M5 12l5 5L20 7"/></svg>
-                        )}
-                        Q{i + 1}
-                      </button>
-                    );
-                  })}
-                </div>
-                <button onClick={previewPrev} disabled={displayIndex <= 0}
-                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
-                  ←
-                </button>
-                <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
-                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
-                  →
-                </button>
-              </div>
               {/* Toolbar — same style as ResponseStreamSection */}
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
@@ -1145,56 +1169,6 @@ function CockpitContent({
                     📋
                   </button>
                 </div>
-              </div>
-
-              {/* Auto-advance toggle */}
-              <div className="flex items-center justify-between gap-3">
-                <button
-                  onClick={() => {
-                    setAutoAdvance((v) => !v);
-                    if (autoAdvanceTimerRef.current) {
-                      clearTimeout(autoAdvanceTimerRef.current);
-                      autoAdvanceTimerRef.current = null;
-                      setAutoAdvanceCountdown(0);
-                    }
-                  }}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium cursor-pointer transition-all duration-200 ${
-                    autoAdvance
-                      ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30"
-                      : "bg-bw-elevated text-bw-muted border border-white/[0.06] hover:border-white/15"
-                  }`}
-                >
-                  <div className={`w-7 h-4 rounded-full transition-all duration-200 relative ${autoAdvance ? "bg-bw-teal" : "bg-white/10"}`}>
-                    <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all duration-200 ${autoAdvance ? "left-3.5" : "left-0.5"}`} />
-                  </div>
-                  Mode auto
-                </button>
-                <AnimatePresence>
-                  {autoAdvance && autoAdvanceCountdown > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, x: 8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 8 }}
-                      className="flex items-center gap-2"
-                    >
-                      <span className="text-xs text-bw-teal tabular-nums font-mono">
-                        Suite dans {autoAdvanceCountdown}s
-                      </span>
-                      <button
-                        onClick={() => {
-                          if (autoAdvanceTimerRef.current) {
-                            clearTimeout(autoAdvanceTimerRef.current);
-                            autoAdvanceTimerRef.current = null;
-                          }
-                          setAutoAdvanceCountdown(0);
-                        }}
-                        className="text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors px-2 py-0.5 rounded-lg bg-white/5 hover:bg-white/10"
-                      >
-                        Pause
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </div>
 
               {/* Question card — current or preview */}
@@ -2297,133 +2271,132 @@ function CockpitContent({
             <ChoicesHistory choices={collectiveChoices} />
           )}
 
-          </>}
+          </>
+        </div>
+        )}
+        </div>
         </div>
       </main>
 
-      {/* ── STICKY BOTTOM BAR — the ONE action ── */}
+      {/* ── COMPACT FOOTER — progress bar + CTA + toggles ── */}
       {session.status !== "done" && session.status !== "paused" && (
-        <div className="fixed bottom-0 left-0 z-30 glass border-t border-white/[0.08]"
-          style={{ right: 0 }}>
-          <div className="max-w-2xl mx-auto px-4 py-2 space-y-1">
-            {/* Main CTA */}
-            {session.status === "waiting" ? (
-              <motion.button whileTap={{ scale: 0.97 }}
-                onClick={() => {
-                  if (isPreviewing) {
-                    setPreviewIndex(null);
-                    updateSession.mutate({ current_situation_index: displayIndex, status: "responding", timer_ends_at: null });
-                  } else {
-                    updateSession.mutate({ status: "responding", timer_ends_at: null });
-                  }
-                }}
-                disabled={updateSession.isPending}
-                className={`w-full max-w-lg mx-auto py-2.5 px-8 rounded-lg font-semibold text-sm cursor-pointer transition-all duration-300 disabled:opacity-50 text-white ${
-                  isPreviewing
-                    ? "bg-bw-amber btn-glow-amber"
-                    : "bg-bw-teal btn-glow-teal"
-                }`}
-                style={{ boxShadow: isPreviewing ? "0 0 24px rgba(245,158,11,0.3), 0 0 60px rgba(245,158,11,0.1)" : undefined }}>
-                {isPreviewing ? `Lancer Q${displayIndex + 1}` : "Ouvrir les réponses"}
-              </motion.button>
-            ) : isStandardQA && session.status !== "waiting" ? (
-              <SelectionBar
-                status={session.status}
-                responsesCount={responses.length}
-                totalStudents={activeStudents.length}
-                selectedCount={voteOptionCount}
-                totalVotes={voteData?.totalVotes}
-                onAction={handleSelectionBarAction}
-                onQuickVote={handleQuickVote}
-                actionDisabled={
-                  (session.status === "responding" && voteOptionCount < 2) ||
-                  (session.status === "voting" && (!voteData || voteData.totalVotes === 0))
-                }
-                isPending={updateSession.isPending}
-                pulse={allResponded}
+        <div className="flex-shrink-0 glass border-t border-white/[0.08]">
+          {/* Progress bar */}
+          {session.status === "responding" && activeStudents.length > 0 && (
+            <div className="h-1 w-full bg-white/[0.04]">
+              <motion.div
+                className="h-full bg-bw-teal"
+                animate={{ width: `${Math.round((respondedCount / activeStudents.length) * 100)}%` }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
               />
-            ) : nextAction ? (
-              <div className="flex gap-2 items-center">
-                {/* Back button */}
-                {(session.current_situation_index || 0) > 0 && (
-                  <button
-                    onClick={prevSituation}
-                    disabled={updateSession.isPending}
-                    title="Question précédente"
-                    className="px-3 py-2.5 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                  </button>
-                )}
-                {/* Main action */}
+            </div>
+          )}
+          <div className="px-4 py-2 flex items-center gap-2">
+            {/* Back button for non-QA modules */}
+            {!isStandardQA && (session.current_situation_index || 0) > 0 && (
+              <button
+                onClick={prevSituation}
+                disabled={updateSession.isPending}
+                title="Question précédente"
+                className="px-2.5 py-2 rounded-lg text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              </button>
+            )}
+
+            {/* Main CTA */}
+            <div className="flex-1 min-w-0">
+              {session.status === "waiting" ? (
+                <motion.button whileTap={{ scale: 0.97 }}
+                  onClick={() => {
+                    if (isPreviewing) {
+                      setPreviewIndex(null);
+                      updateSession.mutate({ current_situation_index: displayIndex, status: "responding", timer_ends_at: null });
+                    } else {
+                      updateSession.mutate({ status: "responding", timer_ends_at: null });
+                    }
+                  }}
+                  disabled={updateSession.isPending}
+                  className={`w-full py-2 px-6 rounded-lg font-semibold text-sm cursor-pointer transition-all duration-300 disabled:opacity-50 text-white ${
+                    isPreviewing ? "bg-bw-amber btn-glow-amber" : "bg-bw-teal btn-glow-teal"
+                  }`}
+                  style={{ boxShadow: isPreviewing ? "0 0 24px rgba(245,158,11,0.3), 0 0 60px rgba(245,158,11,0.1)" : undefined }}>
+                  {isPreviewing ? `Lancer Q${displayIndex + 1}` : "Ouvrir les réponses"}
+                </motion.button>
+              ) : isStandardQA && session.status !== "waiting" ? (
+                <SelectionBar
+                  status={session.status}
+                  responsesCount={responses.length}
+                  totalStudents={activeStudents.length}
+                  selectedCount={voteOptionCount}
+                  totalVotes={voteData?.totalVotes}
+                  onAction={handleSelectionBarAction}
+                  onQuickVote={handleQuickVote}
+                  actionDisabled={
+                    (session.status === "responding" && voteOptionCount < 2) ||
+                    (session.status === "voting" && (!voteData || voteData.totalVotes === 0))
+                  }
+                  isPending={updateSession.isPending}
+                  pulse={allResponded}
+                />
+              ) : nextAction ? (
                 <motion.button whileTap={{ scale: 0.97 }}
                   onClick={handleNextAction}
                   disabled={updateSession.isPending || !!(nextAction as { disabled?: boolean }).disabled}
-                  className="btn-glow flex-1 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  className="btn-glow w-full py-2 rounded-lg font-bold text-sm cursor-pointer transition-all duration-200 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                   style={{ backgroundColor: nextAction.color, color: nextAction.color === "#F59E0B" || nextAction.color === "#888" ? "black" : "white" }}>
                   {nextAction.label} {nextAction.shortcut && <span className="opacity-60 ml-1 text-[10px]">[{nextAction.shortcut}]</span>}
                 </motion.button>
-                {/* Skip button */}
-                {canGoNext && session.status === "responding" && (
-                  <button
-                    onClick={skipSituation}
-                    disabled={updateSession.isPending}
-                    title="Passer cette question"
-                    className="px-3 py-2.5 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                  </button>
-                )}
-              </div>
-            ) : (
-              <div className="w-full py-2.5 rounded-xl text-sm text-center bg-bw-elevated text-bw-muted border border-white/[0.06]">
-                {session.status === "responding"
-                  ? `En attente... (${respondedCount}/${activeStudents.length})`
-                  : session.status === "voting"
-                    ? `Vote en cours... (${voteData?.totalVotes || 0} votes)`
-                    : "En attente..."}
-              </div>
+              ) : (
+                <div className="w-full py-2 rounded-lg text-sm text-center bg-bw-elevated text-bw-muted border border-white/[0.06]">
+                  {session.status === "responding"
+                    ? `En attente... (${respondedCount}/${activeStudents.length})`
+                    : session.status === "voting"
+                      ? `Vote en cours... (${voteData?.totalVotes || 0} votes)`
+                      : "En attente..."}
+                </div>
+              )}
+            </div>
+
+            {/* Skip button for non-QA */}
+            {!isStandardQA && canGoNext && session.status === "responding" && (
+              <button
+                onClick={skipSituation}
+                disabled={updateSession.isPending}
+                title="Passer cette question"
+                className="px-2.5 py-2 rounded-lg text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
             )}
 
-            {/* Timer row + actions — same line */}
-            <div className="flex items-center justify-between">
-              <TimerSection
-                sessionStatus={session.status}
-                timerEndsAt={session.timer_ends_at}
-                currentSituationIndex={session.current_situation_index || 0}
-                totalSituations={totalQuestions}
-                isStandardQA={isStandardQA}
-                onSetTimer={(timerEndsAt) => updateSession.mutate({ timer_ends_at: timerEndsAt })}
-                onPrevQuestion={handlePrevQuestion}
-                onCloseResponses={() => updateSession.mutate({ status: "reviewing", timer_ends_at: null })}
-              />
-
-              {/* Focus + Sharing toggles */}
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setFocusMode(f => !f)}
-                  title={focusMode ? "Quitter le mode focus" : "Mode focus"}
-                  className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium transition-all cursor-pointer ${
-                    focusMode ? "bg-bw-violet/20 text-bw-violet border border-bw-violet/30" : "text-bw-muted hover:text-white"
-                  }`}
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="10" /></svg>
-                  Focus
-                </button>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] text-bw-muted">Partage</span>
-                <button
-                  onClick={() => updateSession.mutate({ sharing_enabled: !session.sharing_enabled })}
-                  className={`relative w-9 h-[18px] rounded-full transition-colors duration-200 cursor-pointer ${
-                    session.sharing_enabled ? "bg-bw-teal" : "bg-bw-elevated border border-white/[0.1]"
-                  }`}
-                >
-                  <div className={`absolute top-[1px] w-4 h-4 rounded-full bg-white transition-transform duration-200 ${
-                    session.sharing_enabled ? "translate-x-[18px]" : "translate-x-[1px]"
-                  }`} />
-                </button>
-              </div>
-              </div>
+            {/* Compact toggles */}
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <button
+                onClick={() => setFocusMode(f => !f)}
+                title={focusMode ? "Quitter le mode focus" : "Mode focus (F)"}
+                className={`p-1.5 rounded-lg text-[10px] transition-all cursor-pointer ${
+                  focusMode ? "bg-bw-violet/20 text-bw-violet" : "text-bw-muted hover:text-white hover:bg-white/5"
+                }`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="10" /></svg>
+              </button>
+              <button
+                onClick={() => updateSession.mutate({ sharing_enabled: !session.sharing_enabled })}
+                title={session.sharing_enabled ? "Partage activé" : "Partage désactivé"}
+                className={`p-1.5 rounded-lg text-[10px] transition-all cursor-pointer ${
+                  session.sharing_enabled ? "bg-bw-teal/20 text-bw-teal" : "text-bw-muted hover:text-white hover:bg-white/5"
+                }`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+              </button>
+              <button
+                onClick={() => setShowShortcuts(true)}
+                title="Raccourcis clavier (?)"
+                className="p-1.5 rounded-lg text-[10px] text-bw-muted hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg>
+              </button>
             </div>
           </div>
         </div>
@@ -3249,54 +3222,7 @@ export default function PilotPage() {
           </div>
         )}
 
-        {/* Floating right docks — Guide/Stats (upper) + Students (lower) */}
-        {moduleView === "cockpit" && hasActiveModule && (
-          <ContextDocks
-            moduleGuide={activeModule ? getModuleGuide(activeModule.id) : undefined}
-            questionGuide={
-              session && activeModule && (session.current_module === 3 || session.current_module === 4 || session.current_module === 9 || session.current_module === 2 || session.current_module === 10)
-                ? getQuestionGuide(session.current_seance || 1, (session.current_situation_index || 0) + 1, session.current_module)
-                : undefined
-            }
-            responsesCount={responses?.length || 0}
-            totalStudents={activeStudents.length}
-            hiddenCount={responses?.filter((r) => r.is_hidden).length || 0}
-            voteOptionCount={responses?.filter((r) => r.is_vote_option && !r.is_hidden).length || 0}
-            sessionStatus={session.status}
-            selectedStudent={
-              selectedStudentId
-                ? (() => {
-                    const s = session.students?.find((s) => s.id === selectedStudentId);
-                    return s ? { ...s, warnings: s.warnings || 0 } : null;
-                  })()
-                : null
-            }
-            studentResponses={
-              selectedStudentId
-                ? (responses || []).filter((r) => r.student_id === selectedStudentId)
-                : []
-            }
-            onSelectStudent={(s) => setSelectedStudentId(s?.id || null)}
-            onClose={() => {}}
-            students={session.students?.map((s) => ({ ...s, warnings: s.warnings || 0 })) || []}
-            studentStates={pageStudentStates}
-            onNudge={(studentId, text) => {
-              const studentResponse = responses?.find((r) => r.student_id === studentId);
-              if (studentResponse) {
-                nudgeStudent.mutate({ responseId: studentResponse.id, nudgeText: text });
-              }
-            }}
-            onWarn={(studentId) => warnStudent.mutate(studentId)}
-            timerEndsAt={session.timer_ends_at}
-            onClearTimer={() => updateSession.mutate({ timer_ends_at: null })}
-            onTimerExpired={() => {
-              playSound("drumroll");
-              toast("Temps ecoulé !", { icon: "⏰" });
-            }}
-            onBroadcast={() => window.dispatchEvent(new CustomEvent("pilot-broadcast"))}
-            teams={teams || []}
-          />
-        )}
+        {/* ContextDocks removed — info redistributed to split panel + header */}
       </div>
 
       {/* Module switch confirmation */}

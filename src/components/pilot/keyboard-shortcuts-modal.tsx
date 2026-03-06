@@ -14,10 +14,9 @@ const SHORTCUTS = [
   { key: "B", action: "Message broadcast" },
   { key: "E", action: "Export de séance" },
   { key: "C", action: "Comparer 2 réponses" },
-  { key: "M", action: "Plan de classe / Réponses" },
   { key: "T", action: "Timer (puis 1-5 pour presets)" },
   { key: "?", action: "Raccourcis clavier" },
-  { key: "Échap", action: "Fermer le modal" },
+  { key: "Échap", action: "Fermer la fiche élève / modal" },
 ];
 
 export function KeyboardShortcutsModal({

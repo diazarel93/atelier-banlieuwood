@@ -25,7 +25,7 @@ export interface ResponseStreamSectionProps {
   // Data
   filteredResponses: ResponseCardResponse[];
   responses: { id: string; is_hidden: boolean; is_vote_option: boolean; is_highlighted: boolean; ai_score?: number; student_id: string; text: string; submitted_at: string; teacher_comment: string | null; teacher_score?: number; ai_feedback?: string | null; reset_at?: string | null; previous_text?: string | null; students: { display_name: string; avatar: string } }[];
-  activeStudents: { id: string }[];
+  activeStudents: { id: string; display_name?: string; avatar?: string }[];
   respondedCount: number;
   highlightedCount: number;
   respondingOpenedAt: number | null;
@@ -325,6 +325,28 @@ export function ResponseStreamSection({
           <p className="text-sm text-bw-muted">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
         </div>
       ) : null}
+
+      {/* Pas encore répondu */}
+      {sessionStatus === "responding" && (() => {
+        const respondedIds = new Set(responses.map((r) => r.student_id));
+        const notResponded = activeStudents.filter((s) => !respondedIds.has(s.id));
+        if (notResponded.length === 0) return null;
+        return (
+          <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-3 mt-2">
+            <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-muted mb-2">
+              Pas encore répondu ({notResponded.length})
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {notResponded.map((s) => (
+                <div key={s.id} className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+                  <span className="text-sm">{s.avatar || "🎭"}</span>
+                  <span className="text-[11px] text-bw-muted">{s.display_name || "Élève"}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

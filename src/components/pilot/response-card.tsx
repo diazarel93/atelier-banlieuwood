@@ -164,12 +164,16 @@ function ResponseCardInner({
                 </div>
               )}
               {response.ai_score !== undefined && response.ai_score > 0 && (
-                <div className="flex items-center gap-1 bg-bw-violet/10 rounded px-2 py-0.5 border border-bw-violet/20" title={response.ai_feedback || undefined}>
+                <div className="flex items-center gap-1 bg-bw-violet/10 rounded px-2 py-0.5 border border-bw-violet/20">
                   <span className="text-[10px] text-bw-violet">IA</span>
                   <span className="text-[10px] font-bold text-bw-violet">{response.ai_score}/5</span>
                 </div>
               )}
             </div>
+          )}
+          {/* AI feedback inline */}
+          {response.ai_feedback && (
+            <p className="text-[10px] text-bw-violet/70 leading-snug mt-0.5">{response.ai_feedback}</p>
           )}
         </div>
 

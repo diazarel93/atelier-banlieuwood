@@ -34,6 +34,8 @@ interface ClassroomMapProps {
   onBroadcast?: () => void;
   /** Nudge all students that are stuck */
   onNudgeAllStuck?: (text: string) => void;
+  /** Navigate to student fiche in right panel */
+  onStudentClick?: (studentId: string) => void;
 }
 
 const STATE_ORDER: Record<StudentState, number> = {
@@ -61,6 +63,7 @@ export function ClassroomMap({
   onWarn,
   onBroadcast,
   onNudgeAllStuck,
+  onStudentClick,
 }: ClassroomMapProps) {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
 
@@ -112,8 +115,12 @@ export function ClassroomMap({
   );
 
   const handleStudentClick = useCallback((studentId: string) => {
-    setSelectedStudentId(studentId);
-  }, []);
+    if (onStudentClick) {
+      onStudentClick(studentId);
+    } else {
+      setSelectedStudentId(studentId);
+    }
+  }, [onStudentClick]);
 
   const handleNudge = useCallback(
     (studentId: string, text: string) => {
