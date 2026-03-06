@@ -237,17 +237,52 @@ export function ClassroomMap({
     for (let i = 0; i < pairs.length; i += desksPerRow) {
       rows.push(pairs.slice(i, i + desksPerRow));
     }
+    // Split each row into left/right halves with a center aisle when >= 4 desks per row
+    const hasAisle = desksPerRow >= 4;
+    const aisleAt = Math.ceil(desksPerRow / 2);
+
     return rows.map((row, rowIdx) => (
-      <div key={rowIdx} className="flex justify-center gap-2 sm:gap-3">
-        {row.map(([left, right], deskIdx) => (
-          <DeskPair
-            key={`${left.id}-${deskIdx}`}
-            left={left} right={right}
-            responseMap={responseMap}
-            onStudentClick={handleStudentClick}
-            teamColor={teamColor || undefined}
-          />
-        ))}
+      <div key={rowIdx} className="flex justify-center items-start gap-2 sm:gap-3">
+        {hasAisle ? (
+          <>
+            {/* Left side */}
+            {row.slice(0, aisleAt).map(([left, right], deskIdx) => (
+              <DeskPair
+                key={`${left.id}-${deskIdx}`}
+                left={left} right={right}
+                responseMap={responseMap}
+                onStudentClick={handleStudentClick}
+                teamColor={teamColor || undefined}
+              />
+            ))}
+            {/* Center aisle */}
+            {row.length > aisleAt && (
+              <div className="w-4 sm:w-6 flex-shrink-0 self-stretch flex items-center justify-center">
+                <div className="w-px h-full" style={{ background: "linear-gradient(to bottom, transparent, #E8DFD2 30%, #E8DFD2 70%, transparent)" }} />
+              </div>
+            )}
+            {/* Right side */}
+            {row.slice(aisleAt).map(([left, right], deskIdx) => (
+              <DeskPair
+                key={`${left.id}-r-${deskIdx}`}
+                left={left} right={right}
+                responseMap={responseMap}
+                onStudentClick={handleStudentClick}
+                teamColor={teamColor || undefined}
+              />
+            ))}
+          </>
+        ) : (
+          row.map(([left, right], deskIdx) => (
+            <DeskPair
+              key={`${left.id}-${deskIdx}`}
+              left={left} right={right}
+              responseMap={responseMap}
+              onStudentClick={handleStudentClick}
+              teamColor={teamColor || undefined}
+            />
+          ))
+        )}
       </div>
     ));
   }

@@ -1142,39 +1142,80 @@ function CockpitContent({
                 else if (respondedN > 0 && respondedN === online && online > 0) suggestion = { icon: "🚀", text: "Tous ont repondu !", color: "#2E7D32", bg: "#F0FAF4" };
                 else if (respondedN > online * 0.7) suggestion = { icon: "📢", text: "Plus de 70% — Lancez la discussion ?", color: "#1565C0", bg: "#EEF2FF" };
                 return (
-                  <div className="space-y-2">
-                    {/* Engagement + stacked bar */}
+                  <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-[#B0A99E]">Classe en direct</span>
-                      <span className="text-[13px] font-bold tabular-nums" style={{ color: engagementPct >= 70 ? "#4CAF50" : engagementPct >= 40 ? "#F2C94C" : "#EB5757" }}>{engagementPct}%</span>
                     </div>
-                    <div className="h-2.5 rounded-full overflow-hidden flex" style={{ background: "#EFE8DD" }}>
-                      {rPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${rPct}%`, background: "#4CAF50" }} />}
-                      {tPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${tPct}%`, background: "#F2C94C" }} />}
-                      {sPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${sPct}%`, background: "#EB5757" }} />}
-                      {oPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${oPct}%`, background: "#C4BDB2" }} />}
-                    </div>
-                    {/* Pulse counters — 2x2 grid with icons */}
-                    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[12px]">✅</span>
-                        <motion.span key={`r-${respondedN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-[16px] font-bold tabular-nums" style={{ color: "#4CAF50" }}>{respondedN}</motion.span>
-                        <span className="text-[12px] text-[#B0A99E]">repondu</span>
+
+                    {/* Donut radar + counters side by side */}
+                    <div className="flex items-center gap-3">
+                      {/* SVG Donut chart — 56px */}
+                      <div className="relative flex-shrink-0" style={{ width: 56, height: 56 }}>
+                        <svg width="56" height="56" viewBox="0 0 56 56" className="transform -rotate-90">
+                          {/* Background ring */}
+                          <circle cx="28" cy="28" r="22" fill="none" stroke="#EFE8DD" strokeWidth="6" />
+                          {/* Segments: responded → thinking → stuck → disconnected */}
+                          {(() => {
+                            const circumference = 2 * Math.PI * 22;
+                            const segments = [
+                              { pct: rPct, color: "#4CAF50" },
+                              { pct: tPct, color: "#F2C94C" },
+                              { pct: sPct, color: "#EB5757" },
+                              { pct: oPct, color: "#C4BDB2" },
+                            ];
+                            let offset = 0;
+                            return segments.map((seg, i) => {
+                              if (seg.pct <= 0) return null;
+                              const dash = (seg.pct / 100) * circumference;
+                              const gap = circumference - dash;
+                              const el = (
+                                <circle
+                                  key={i}
+                                  cx="28" cy="28" r="22"
+                                  fill="none"
+                                  stroke={seg.color}
+                                  strokeWidth="6"
+                                  strokeDasharray={`${dash} ${gap}`}
+                                  strokeDashoffset={-offset}
+                                  strokeLinecap="round"
+                                  className="transition-all duration-700"
+                                />
+                              );
+                              offset += dash;
+                              return el;
+                            });
+                          })()}
+                        </svg>
+                        {/* Center engagement % */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-[14px] font-extrabold tabular-nums" style={{ color: engagementPct >= 70 ? "#4CAF50" : engagementPct >= 40 ? "#F2C94C" : "#EB5757" }}>
+                            {engagementPct}%
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[12px]">🤔</span>
-                        <motion.span key={`t-${thinkingN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-[16px] font-bold tabular-nums" style={{ color: "#F2C94C" }}>{thinkingN}</motion.span>
-                        <span className="text-[12px] text-[#B0A99E]">reflexion</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[12px]">🔴</span>
-                        <motion.span key={`s-${stuckN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className={`text-[16px] font-bold tabular-nums ${stuckN > 0 ? "animate-pulse" : ""}`} style={{ color: "#EB5757" }}>{stuckN}</motion.span>
-                        <span className="text-[12px] text-[#B0A99E]">bloques</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[12px]">⚪</span>
-                        <motion.span key={`o-${offN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-[16px] font-bold tabular-nums" style={{ color: "#C4BDB2" }}>{offN}</motion.span>
-                        <span className="text-[12px] text-[#B0A99E]">absent</span>
+
+                      {/* Compact counters — 2x2 grid */}
+                      <div className="grid grid-cols-2 gap-x-2.5 gap-y-1 flex-1">
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#4CAF50" }} />
+                          <motion.span key={`r-${respondedN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-[15px] font-bold tabular-nums" style={{ color: "#4CAF50" }}>{respondedN}</motion.span>
+                          <span className="text-[10px] text-[#B0A99E] truncate">rep.</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#F2C94C" }} />
+                          <motion.span key={`t-${thinkingN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-[15px] font-bold tabular-nums" style={{ color: "#F2C94C" }}>{thinkingN}</motion.span>
+                          <span className="text-[10px] text-[#B0A99E] truncate">ref.</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#EB5757", boxShadow: stuckN > 0 ? "0 0 6px #EB575740" : undefined }} />
+                          <motion.span key={`s-${stuckN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className={`text-[15px] font-bold tabular-nums ${stuckN > 0 ? "animate-pulse" : ""}`} style={{ color: "#EB5757" }}>{stuckN}</motion.span>
+                          <span className="text-[10px] text-[#B0A99E] truncate">bloq.</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#C4BDB2" }} />
+                          <motion.span key={`o-${offN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-[15px] font-bold tabular-nums" style={{ color: "#C4BDB2" }}>{offN}</motion.span>
+                          <span className="text-[10px] text-[#B0A99E] truncate">abs.</span>
+                        </div>
                       </div>
                     </div>
                     {/* Suggestion */}
