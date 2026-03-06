@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans, Bebas_Neue, Courier_Prime } from "next/font/google";
+import { Plus_Jakarta_Sans, Bebas_Neue, Courier_Prime, Caveat } from "next/font/google";
 import { Providers } from "./providers";
 import { Analytics } from "@/components/analytics";
 import { ServiceWorkerRegister } from "@/components/sw-register";
@@ -21,6 +21,12 @@ const courierPrime = Courier_Prime({
   variable: "--font-courier-prime",
   weight: ["400", "700"],
   subsets: ["latin"],
+});
+
+const caveat = Caveat({
+  variable: "--font-handwritten",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const viewport: Viewport = {
@@ -93,7 +99,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${jakarta.variable} ${bebasNeue.variable} ${courierPrime.variable} font-sans antialiased bg-bw-bg text-bw-text`}>
+      <body className={`${jakarta.variable} ${bebasNeue.variable} ${courierPrime.variable} ${caveat.variable} font-sans antialiased bg-bw-bg text-bw-text`}>
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-bw-primary focus:text-white focus:text-sm focus:font-semibold">
           Aller au contenu principal
         </a>

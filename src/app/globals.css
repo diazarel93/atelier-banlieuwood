@@ -19,6 +19,7 @@
   --font-mono: var(--font-courier-prime);
   --font-cinema: var(--font-cinema);
   --font-script: var(--font-courier-prime);
+  --font-handwritten: var(--font-handwritten);
 
   /* ── Orange Cinétique — action, création, énergie ── */
   --color-bw-primary-50:  #FFF3ED;
@@ -66,6 +67,11 @@
   /* ── Green — terminé, succès ── */
   --color-bw-green:     #10B981;
   --color-bw-green-100: #D1FAE5;
+
+  /* ── Yellow — fun, énergie, Studio ── */
+  --color-bw-yellow:     #FFD166;
+  --color-bw-yellow-100: #FFF9E6;
+  --color-bw-yellow-500: #E6B84D;
 
   /* ── Danger — erreur ── */
   --color-bw-danger:     #EF4444;
@@ -953,6 +959,212 @@ body::after {
 .input-premium:hover:not(:focus):not(:disabled) {
   border-color: rgba(255, 255, 255, 0.18);
   background-color: rgba(30, 33, 48, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LIGHT MODE — "Le Studio" (Student-facing)
+   Warm off-white · Playful · Accessible
+   Applied via <html class="light"> on /play, /join, /studio, /festival
+   ═══════════════════════════════════════════════════════════════ */
+
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #FAFAF8;
+  color: #1A1A2E;
+}
+
+html.light body::after {
+  display: none; /* No film grain in light mode */
+}
+
+html.light {
+  --background: #FAFAF8;
+  --foreground: #1A1A2E;
+  --card: #FFFFFF;
+  --card-foreground: #1A1A2E;
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1A2E;
+  --primary: #FF6B35;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F0F0EC;
+  --secondary-foreground: #1A1A2E;
+  --muted: #F5F5F1;
+  --muted-foreground: #6B7280;
+  --accent: #FFF8F0;
+  --accent-foreground: #1A1A2E;
+  --destructive: #EF4444;
+  --border: rgba(0,0,0,0.08);
+  --input: rgba(0,0,0,0.06);
+  --ring: #FF6B35;
+
+  /* Overrides for bw- tokens */
+  --color-bw-bg: #FAFAF8;
+  --color-bw-surface-dim: #F5F5F1;
+  --color-bw-surface: #FFFFFF;
+  --color-bw-surface-bright: #FFFFFF;
+  --color-bw-elevated: #FFFFFF;
+  --color-bw-popover: #FFFFFF;
+  --color-bw-border-subtle: rgba(0,0,0,0.04);
+  --color-bw-border: rgba(0,0,0,0.08);
+  --color-bw-border-strong: rgba(0,0,0,0.15);
+  --color-bw-border-focus: rgba(0,0,0,0.25);
+  --color-bw-placeholder: #9CA3AF;
+  --color-bw-muted: #6B7280;
+  --color-bw-text: #374151;
+  --color-bw-heading: #1A1A2E;
+  --color-bw-ink: #111827;
+  --color-bw-white: #FFFFFF;
+
+  /* Light shadows */
+  --shadow-bw-xs: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-bw-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-bw-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-bw-lg: 0 10px 15px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.04);
+  --shadow-bw-xl: 0 20px 25px rgba(0,0,0,0.06), 0 10px 10px rgba(0,0,0,0.04);
+}
+
+/* Light mode glass overrides */
+html.light .glass {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+html.light .glass-card {
+  background: rgba(255, 255, 255, 0.90);
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+}
+html.light .card-solid {
+  background: #FFFFFF;
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+html.light .glass-surface {
+  background: rgba(255, 255, 255, 0.60);
+  border-color: rgba(0,0,0,0.06);
+}
+
+/* Light mode backgrounds */
+html.light .bg-studio,
+html.light .bg-paper,
+html.light .bg-dark-warm {
+  background-color: #FAFAF8;
+  background-image:
+    radial-gradient(ellipse at 12% 8%, rgba(255, 107, 53, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 90%, rgba(78, 205, 196, 0.04) 0%, transparent 45%);
+}
+
+/* Light mode scrollbar */
+html.light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.20);
+}
+
+/* Light mode selection */
+html.light ::selection {
+  background: rgba(255, 107, 53, 0.2);
+  color: #1A1A2E;
+}
+
+/* Light mode focus */
+html.light :focus-visible {
+  outline: 2px solid rgba(255, 107, 53, 0.6);
+  box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+}
+
+/* Light mode buttons — reduce glow intensity */
+html.light .btn-glow {
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.20), 0 1px 3px rgba(0,0,0,0.08);
+}
+html.light .btn-glow:hover {
+  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.25), 0 2px 4px rgba(0,0,0,0.08);
+}
+
+/* Student card — light mode */
+.card-student {
+  background: #FFFFFF;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.card-student:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+}
+
+/* Game card — vibrant borders for play mode */
+.card-game {
+  background: #FFFFFF;
+  border: 2px solid transparent;
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.card-game:hover {
+  border-color: var(--color-bw-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.12);
+}
+
+/* Handwritten annotation font */
+.font-handwritten {
+  font-family: var(--font-handwritten, "Caveat", "Permanent Marker", cursive);
+  font-weight: 500;
+}
+
+/* Badge card with tier glow */
+.badge-card {
+  border-radius: 1rem;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.badge-card:hover {
+  transform: scale(1.05);
+}
+.badge-card[data-tier="bronze"] {
+  background: linear-gradient(135deg, #FEF3C7, #FBBF24, #F59E0B);
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
+}
+.badge-card[data-tier="silver"] {
+  background: linear-gradient(135deg, #F1F5F9, #CBD5E1, #94A3B8);
+  box-shadow: 0 4px 16px rgba(148, 163, 184, 0.2);
+}
+.badge-card[data-tier="gold"] {
+  background: linear-gradient(135deg, #FEF9C3, #FACC15, #D4A843);
+  box-shadow: 0 4px 16px rgba(212, 168, 67, 0.3);
+}
+
+/* XP progress bar (light mode) */
+.xp-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+.xp-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--color-bw-primary), var(--color-bw-gold));
+  transition: width 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Streak flame animation */
+@keyframes flame-dance {
+  0%, 100% { transform: scaleY(1) translateY(0); }
+  25% { transform: scaleY(1.1) translateY(-2px); }
+  50% { transform: scaleY(0.95) translateY(0); }
+  75% { transform: scaleY(1.05) translateY(-1px); }
+}
+.streak-flame {
+  animation: flame-dance 1.5s ease-in-out infinite;
+  display: inline-block;
 }
 
 /* ═══════════════════════════════════════════════════════════════
