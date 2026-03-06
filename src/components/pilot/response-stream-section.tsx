@@ -68,6 +68,9 @@ export interface ResponseStreamSectionProps {
   // Reformulation callback
   onReformulate: (r: ResponseCardResponse) => void;
 
+  // Spotlight callback
+  onSpotlight?: (r: ResponseCardResponse) => void;
+
   // Bulk actions
   onHighlightAllVisible?: () => void;
   onHideAllVisible?: () => void;
@@ -108,6 +111,7 @@ export function ResponseStreamSection({
   aiEvaluate,
   resetAllResponses,
   onReformulate,
+  onSpotlight,
   onHighlightAllVisible,
   onHideAllVisible,
 }: ResponseStreamSectionProps) {
@@ -325,6 +329,7 @@ export function ResponseStreamSection({
           onWarn={(sid) => warnStudent.mutate(sid)}
           onScore={(id, score) => scoreResponse.mutate({ responseId: id, score })}
           onReset={(id) => resetResponse.mutate(id)}
+          onSpotlight={onSpotlight}
           isNudgePending={nudgeStudent.isPending}
           isCommentPending={commentResponse.isPending}
           isWarnPending={warnStudent.isPending}

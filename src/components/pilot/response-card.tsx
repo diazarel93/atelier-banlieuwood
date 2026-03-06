@@ -38,6 +38,7 @@ interface ResponseCardProps {
   onWarn?: (studentId: string) => void;
   onScore?: (responseId: string, score: number) => void;
   onReset?: (responseId: string) => void;
+  onSpotlight?: () => void;
   isNudgePending?: boolean;
   isCommentPending?: boolean;
   isWarnPending?: boolean;
@@ -70,6 +71,7 @@ function ResponseCardInner({
   onWarn,
   onScore,
   onReset,
+  onSpotlight,
   isNudgePending,
   isCommentPending,
   isWarnPending,
@@ -218,6 +220,16 @@ function ResponseCardInner({
               title="Relancer la question pour cet élève"
             >
               🔄
+            </button>
+          )}
+          {onSpotlight && !response.is_hidden && (
+            <button
+              onClick={onSpotlight}
+              aria-label="Projeter cette réponse"
+              className="h-7 px-2 text-[12px] rounded-[9px] hover:bg-[#FFF0E0] hover:text-[#F5A45B] cursor-pointer transition-all duration-200 text-[#B0A99E] border border-[#E8DFD2] font-medium focus-visible:ring-2 focus-visible:ring-[#F5A45B] focus-visible:outline-none active:scale-95"
+              title="Projeter en grand"
+            >
+              🔦
             </button>
           )}
           {sessionStatus === "reviewing" && !response.is_hidden && onValidate && (

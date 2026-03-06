@@ -56,6 +56,9 @@ import { ContextPanel } from "@/components/pilot/context-panel";
 import { getNextAction, type NextAction } from "@/components/pilot/get-next-action";
 import { TeamManager } from "@/components/pilot/team-manager";
 import { ClassroomMap } from "@/components/pilot/classroom-map";
+import { SpotlightModal } from "@/components/pilot/spotlight-modal";
+import { DebatePanel } from "@/components/pilot/debate-panel";
+import { WordCloud } from "@/components/pilot/word-cloud";
 import { TIMER_PRESETS, STUCK_THRESHOLD_MS, STUCK_DETECTION_DELAY_MS } from "@/components/pilot/pilot-settings";
 import { StudentFiche } from "@/components/pilot/student-fiche";
 import { AIAssistantPanel } from "@/components/pilot/ai-assistant-panel";
@@ -216,8 +219,25 @@ function CockpitContent({
 
   // ── New feature state ──
   const [showBroadcast, setShowBroadcast] = useState(false);
-  const openBroadcast = useCallback(() => setShowBroadcast(true), []);
+  const [broadcastPrefill, setBroadcastPrefill] = useState("");
+  const [broadcastTitle, setBroadcastTitle] = useState<string | undefined>();
+  const [broadcastIcon, setBroadcastIcon] = useState<string | undefined>();
+  const openBroadcast = useCallback(() => {
+    setBroadcastPrefill("");
+    setBroadcastTitle(undefined);
+    setBroadcastIcon(undefined);
+    setShowBroadcast(true);
+  }, []);
+  const openBroadcastWith = useCallback((prefill: string, title?: string, icon?: string) => {
+    setBroadcastPrefill(prefill);
+    setBroadcastTitle(title);
+    setBroadcastIcon(icon);
+    setShowBroadcast(true);
+  }, []);
   const [showExport, setShowExport] = useState(false);
+  const [spotlightResponse, setSpotlightResponse] = useState<{ studentName: string; studentAvatar: string; text: string; score?: number | null; highlighted?: boolean } | null>(null);
+  const [showDebate, setShowDebate] = useState(false);
+  const [showWordCloud, setShowWordCloud] = useState(false);
   const [showCompare, setShowCompare] = useState(false);
   const [showRevealAnswer, setShowRevealAnswer] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -2281,6 +2301,7 @@ function CockpitContent({
                 setReformulating(r as unknown as Response);
                 setReformulatedText(r.text);
               }}
+              onSpotlight={(r) => setSpotlightResponse({ studentName: r.students?.display_name || "", studentAvatar: r.students?.avatar || "", text: r.text, score: r.teacher_score, highlighted: r.is_highlighted })}
               onHighlightAllVisible={handleHighlightAllVisible}
               onHideAllVisible={handleHideAllVisible}
             />
@@ -2331,6 +2352,13 @@ function CockpitContent({
                               className="px-1.5 py-1 text-xs rounded-lg hover:bg-bw-amber/10 cursor-pointer transition-colors text-bw-amber/70 hover:text-bw-amber"
                               title="Relancer la question pour cet élève">
                               🔄
+                            </button>
+                          )}
+                          {!r.is_hidden && (
+                            <button onClick={() => setSpotlightResponse({ studentName: r.students?.display_name || "", studentAvatar: r.students?.avatar || "", text: r.text, score: r.teacher_score, highlighted: r.is_highlighted })}
+                              className="px-1.5 py-1 text-xs rounded-lg hover:bg-[#FFF0E0] cursor-pointer transition-colors text-bw-muted hover:text-[#F5A45B]"
+                              title="Projeter en grand">
+                              🔦
                             </button>
                           )}
                         </div>
@@ -2509,11 +2537,11 @@ function CockpitContent({
                       ? module1Data.optionDistribution as Record<string, number>
                       : undefined,
                   }}
-                  onSendHint={openBroadcast}
-                  onReformulate={openBroadcast}
+                  onSendHint={() => openBroadcastWith("Petit indice : ", "Envoyer un indice", "💡")}
+                  onReformulate={() => openBroadcastWith("Reformulation : ", "Reformuler la consigne", "🔄")}
                   onLaunchVote={() => updateSession.mutate({ status: "voting", timer_ends_at: null })}
                   onBroadcast={openBroadcast}
-                  onDebate={openBroadcast}
+                  onDebate={() => responses.length >= 2 ? setShowDebate(true) : openBroadcastWith("Pour ce debat : quels arguments pour et contre ?", "Lancer un debat", "🎭")}
                 />
               ) : responses.length > 0 ? (
                 <ComprehensionHeatmap
@@ -2640,7 +2668,7 @@ function CockpitContent({
               <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 overflow-x-auto">
                 {/* Groupe 1: Aider */}
                 <div className="flex items-center gap-1 px-1 py-0.5 rounded-[10px]" style={{ background: "#FAF6EE" }}>
-                  <button onClick={openBroadcast}
+                  <button onClick={() => openBroadcastWith("Indice : ", "Envoyer un indice", "💡")}
                     className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
                     style={{ background: "#FFF0E6", borderColor: "#E6DBCF", color: "#8B4513" }}>
                     💡 <span className="hidden sm:inline">Indice</span>
@@ -2656,12 +2684,12 @@ function CockpitContent({
                 <div className="w-px h-6 hidden sm:block" style={{ background: "#E8DFD2" }} />
                 {/* Groupe 2: Discuter */}
                 <div className="flex items-center gap-1 px-1 py-0.5 rounded-[10px]" style={{ background: "#FAF6EE" }}>
-                  <button onClick={openBroadcast}
+                  <button onClick={() => openBroadcastWith("Question pour la classe : ", "Lancer une discussion", "💬")}
                     className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
                     style={{ background: "#E8F5F2", borderColor: "#E6DBCF", color: "#1B5E50" }}>
                     💬 <span className="hidden sm:inline">Discussion</span>
                   </button>
-                  <button onClick={openBroadcast}
+                  <button onClick={() => responses.length >= 2 ? setShowDebate(true) : openBroadcastWith("Pour ce debat : quels arguments pour et contre ?", "Lancer un debat", "🎭")}
                     className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
                     style={{ background: "#F0ECF8", borderColor: "#E6DBCF", color: "#5B3A8E" }}>
                     🎭 <span className="hidden sm:inline">Debat</span>
@@ -2674,6 +2702,14 @@ function CockpitContent({
                   className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
                   style={{ background: "#FFF8E6", borderColor: "#E6DBCF", color: "#8B6914" }}>
                   🗳️ <span className="hidden sm:inline">Vote rapide</span>
+                </button>
+                {/* Separateur */}
+                <div className="w-px h-6 hidden sm:block" style={{ background: "#E8DFD2" }} />
+                {/* Groupe 4: Analytics */}
+                <button onClick={() => setShowWordCloud(true)} disabled={responses.length < 3}
+                  className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
+                  style={{ background: "#F0F8FF", borderColor: "#E6DBCF", color: "#2563EB" }}>
+                  ☁️ <span className="hidden sm:inline">Nuage</span>
                 </button>
               </div>
             )}
@@ -2891,12 +2927,46 @@ function CockpitContent({
       </AnimatePresence>
 
       {/* ── MODALS ── */}
+      <SpotlightModal
+        open={!!spotlightResponse}
+        onClose={() => setSpotlightResponse(null)}
+        studentName={spotlightResponse?.studentName || ""}
+        studentAvatar={spotlightResponse?.studentAvatar || ""}
+        responseText={spotlightResponse?.text || ""}
+        teacherScore={spotlightResponse?.score}
+        isHighlighted={spotlightResponse?.highlighted}
+      />
+
+      <WordCloud
+        open={showWordCloud}
+        onClose={() => setShowWordCloud(false)}
+        responses={responses.filter(r => !r.is_hidden && !r.reset_at)}
+      />
+
+      <DebatePanel
+        open={showDebate}
+        onClose={() => setShowDebate(false)}
+        responses={responses.filter(r => !r.is_hidden && !r.reset_at).map(r => ({
+          id: r.id,
+          text: r.text,
+          student_id: r.student_id,
+          studentName: r.students?.display_name || "",
+          studentAvatar: r.students?.avatar || "",
+          is_highlighted: r.is_highlighted || false,
+        }))}
+        onBroadcast={(msg) => { handleBroadcast(msg); setShowDebate(false); }}
+        onSpotlight={(r) => { setShowDebate(false); setSpotlightResponse({ studentName: r.studentName, studentAvatar: r.studentAvatar, text: r.text, highlighted: r.is_highlighted }); }}
+      />
+
       <BroadcastModal
         open={showBroadcast}
         onClose={() => setShowBroadcast(false)}
         onSend={handleBroadcast}
         isPending={updateSession.isPending}
         history={broadcastHistory}
+        prefill={broadcastPrefill}
+        title={broadcastTitle}
+        icon={broadcastIcon}
       />
 
       <CompareResponsesModal

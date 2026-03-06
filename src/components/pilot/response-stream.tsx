@@ -18,6 +18,7 @@ interface ResponseStreamProps {
   onWarn?: (studentId: string) => void;
   onScore?: (responseId: string, score: number) => void;
   onReset?: (responseId: string) => void;
+  onSpotlight?: (response: ResponseCardResponse) => void;
   isNudgePending?: boolean;
   isCommentPending?: boolean;
   isWarnPending?: boolean;
@@ -40,6 +41,7 @@ export function ResponseStream({
   onWarn,
   onScore,
   onReset,
+  onSpotlight,
   isNudgePending,
   isCommentPending,
   isWarnPending,
@@ -73,6 +75,7 @@ export function ResponseStream({
         onWarn={onWarn}
         onScore={onScore}
         onReset={onReset}
+        onSpotlight={onSpotlight ? () => onSpotlight(r) : undefined}
         isNudgePending={isNudgePending}
         isCommentPending={isCommentPending}
         isWarnPending={isWarnPending}

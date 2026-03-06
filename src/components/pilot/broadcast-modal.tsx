@@ -27,9 +27,15 @@ interface BroadcastModalProps {
   onSend: (message: string) => void;
   isPending?: boolean;
   history?: { text: string; sentAt: Date }[];
+  /** Pre-fill the message input with this text */
+  prefill?: string;
+  /** Custom title for the modal header */
+  title?: string;
+  /** Custom icon for the modal header */
+  icon?: string;
 }
 
-export function BroadcastModal({ open, onClose, onSend, isPending, history }: BroadcastModalProps) {
+export function BroadcastModal({ open, onClose, onSend, isPending, history, prefill, title, icon }: BroadcastModalProps) {
   const [message, setMessage] = useState("");
   const [presets, setPresets] = useState<Preset[]>(loadPresets);
   const [editMode, setEditMode] = useState(false);
@@ -38,8 +44,8 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
   const [editLabel, setEditLabel] = useState("");
   const [editEmoji, setEditEmoji] = useState("");
 
-  // Sync on open
-  useEffect(() => { if (open) { setPresets(loadPresets()); setEditMode(false); } }, [open]);
+  // Sync on open + apply prefill
+  useEffect(() => { if (open) { setPresets(loadPresets()); setEditMode(false); setMessage(prefill || ""); } }, [open, prefill]);
 
   const startEdit = useCallback((idx: number) => {
     const p = presets[idx];
@@ -92,8 +98,8 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
             {/* Header */}
             <div className="px-5 py-3 border-b border-black/[0.04] flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-lg" aria-hidden="true">📢</span>
-                <h3 id="broadcast-title" className="text-sm font-semibold">Message à toute la classe</h3>
+                <span className="text-lg" aria-hidden="true">{icon || "📢"}</span>
+                <h3 id="broadcast-title" className="text-sm font-semibold">{title || "Message à toute la classe"}</h3>
               </div>
               <button onClick={onClose} aria-label="Fermer" className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">✕</button>
             </div>
