@@ -1216,9 +1216,9 @@ function CockpitContent({
                   })}
                 </div>
               ) : (
-                /* Mini radar — compact colored chips grid */
+                /* Spatial radar — 2-column grid like real classroom seating */
                 <div className="px-3 pb-3">
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="grid grid-cols-2 gap-1.5">
                     {studentStates.map(s => {
                       const raw = session.students?.find(st => st.id === s.id);
                       if (!raw || !raw.is_active) return null;
@@ -1232,21 +1232,21 @@ function CockpitContent({
                         <motion.button
                           key={s.id}
                           onClick={() => setFicheStudentId(s.id)}
-                          animate={isStuck ? { scale: [1, 1.05, 1] } : {}}
+                          animate={isStuck ? { scale: [1, 1.04, 1] } : {}}
                           transition={isStuck ? { repeat: Infinity, duration: 1.5 } : undefined}
-                          className="flex items-center gap-1.5 px-2 py-1.5 rounded-[8px] cursor-pointer transition-all hover:brightness-95"
-                          style={{ background: bg, border: `1px solid ${border}` }}
+                          className="flex items-center gap-1.5 px-2.5 py-2 rounded-[10px] cursor-pointer transition-all hover:brightness-95"
+                          style={{ background: bg, border: `1.5px solid ${border}` }}
                           title={`${raw.display_name} — ${s.state}`}
                         >
-                          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: dot }} />
-                          <span className="text-[11px] font-semibold text-[#2C2C2C] leading-none">{firstName}</span>
+                          <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: dot, boxShadow: isStuck ? `0 0 6px ${dot}50` : undefined }} />
+                          <span className="text-[12px] font-semibold text-[#2C2C2C] truncate leading-none">{firstName}</span>
                           {hasHand && <span className="text-[10px] leading-none">✋</span>}
                         </motion.button>
                       );
                     })}
                   </div>
                   {/* Mini legend */}
-                  <div className="flex items-center gap-3 mt-3 text-[10px] text-[#B0A99E]">
+                  <div className="flex items-center justify-center gap-3 mt-2.5 pt-2.5 text-[10px] text-[#B0A99E]" style={{ borderTop: "1px solid #EFE4D8" }}>
                     <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full" style={{ background: "#4CAF50" }} /> Rep.</span>
                     <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full" style={{ background: "#F2C94C" }} /> Ref.</span>
                     <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full" style={{ background: "#EB5757" }} /> Bloq.</span>
@@ -2289,7 +2289,9 @@ function CockpitContent({
                     totalStudents: activeStudents.length,
                     responsesCount: respondedCount,
                     stuckCount: stuckStudents.length,
+                    stuckNames: stuckStudents.map(s => s.name?.split(" ")[0] || s.name),
                     handsRaised: session.students?.filter(s => s.hand_raised_at).length || 0,
+                    handsNames: session.students?.filter(s => s.hand_raised_at).map(s => s.display_name?.split(" ")[0] || s.display_name) || [],
                     elapsedSeconds: respondingOpenedAt
                       ? Math.round((Date.now() - respondingOpenedAt) / 1000)
                       : 0,

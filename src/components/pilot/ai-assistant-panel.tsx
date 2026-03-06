@@ -13,7 +13,9 @@ interface SessionContext {
   responsesCount: number;
   totalStudents: number;
   stuckCount: number;
+  stuckNames?: string[];
   handsRaised: number;
+  handsNames?: string[];
   elapsedSeconds: number;
   currentModule: number;
   currentSeance: number;
@@ -46,23 +48,35 @@ const PRIORITY_STYLES: Record<string, { bg: string; border: string }> = {
 function generateSuggestions(ctx: SessionContext): AISuggestion[] {
   const suggestions: AISuggestion[] = [];
 
-  // Stuck students alert
+  // Stuck students alert — with names
   if (ctx.stuckCount > 0 && ctx.status === "responding") {
+    const names = ctx.stuckNames?.slice(0, 3);
+    const nameStr = names?.length
+      ? names.join(", ") + (ctx.stuckCount > 3 ? ` +${ctx.stuckCount - 3}` : "")
+      : `${ctx.stuckCount} eleve${ctx.stuckCount > 1 ? "s" : ""}`;
     suggestions.push({
       id: "stuck-alert",
       type: "alert",
-      message: `${ctx.stuckCount} eleve${ctx.stuckCount > 1 ? "s" : ""} semble${ctx.stuckCount > 1 ? "nt" : ""} bloque${ctx.stuckCount > 1 ? "s" : ""}. Envisagez un indice ou une reformulation.`,
+      message: ctx.stuckCount === 1
+        ? `${nameStr} semble bloque. Donnez un exemple ou reformulez.`
+        : `${nameStr} semblent bloques. Envisagez un indice ou une reformulation.`,
       priority: ctx.stuckCount >= 3 ? "high" : "medium",
       actionLabel: "Envoyer un indice",
     });
   }
 
-  // Hands raised
+  // Hands raised — with names
   if (ctx.handsRaised > 0) {
+    const names = ctx.handsNames?.slice(0, 3);
+    const nameStr = names?.length
+      ? names.join(", ") + (ctx.handsRaised > 3 ? ` +${ctx.handsRaised - 3}` : "")
+      : `${ctx.handsRaised} eleve${ctx.handsRaised > 1 ? "s" : ""}`;
     suggestions.push({
       id: "hands-raised",
       type: "alert",
-      message: `${ctx.handsRaised} main${ctx.handsRaised > 1 ? "s" : ""} levee${ctx.handsRaised > 1 ? "s" : ""}. Quelqu'un a besoin d'aide !`,
+      message: ctx.handsRaised === 1
+        ? `${nameStr} a leve la main. Besoin d'aide !`
+        : `${nameStr} ont leve la main. Plusieurs ont besoin d'aide !`,
       priority: "high",
     });
   }
