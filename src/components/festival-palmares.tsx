@@ -225,7 +225,7 @@ function TrophyCard({ trophy, rank }: { trophy: Trophy; rank: number }) {
         <div className="flex items-center gap-2.5">
           <span className={`text-2xl ${isGrandPrix ? "animate-pulse" : ""}`}>{trophy.emoji}</span>
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-bw-muted font-semibold">
+            <p className="text-xs uppercase tracking-widest text-bw-muted font-semibold">
               {isGrandPrix ? "Grand Prix" : `Prix #${rank}`}
             </p>
             <p className="text-sm font-bold text-white">{trophy.title}</p>
@@ -239,7 +239,7 @@ function TrophyCard({ trophy, rank }: { trophy: Trophy; rank: number }) {
             <span className="text-lg">{trophy.winner.avatar}</span>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-white truncate">{trophy.winner.name}</p>
-              <p className="text-[10px] text-bw-muted">{trophy.winner.label}</p>
+              <p className="text-xs text-bw-muted">{trophy.winner.label}</p>
             </div>
           </div>
         )}
@@ -251,7 +251,7 @@ function TrophyCard({ trophy, rank }: { trophy: Trophy; rank: number }) {
             <span className="text-base">{trophy.runnerUp.avatar}</span>
             <div className="min-w-0 flex-1">
               <p className="text-xs text-bw-text truncate">{trophy.runnerUp.name}</p>
-              <p className="text-[9px] text-bw-muted">{trophy.runnerUp.label}</p>
+              <p className="text-xs text-bw-muted">{trophy.runnerUp.label}</p>
             </div>
           </div>
         )}
@@ -309,7 +309,7 @@ function ComparisonFestival({ sessionId }: { sessionId: string }) {
 
   return (
     <div className="py-2 space-y-3">
-      <p className="text-[10px] uppercase tracking-widest text-bw-muted font-semibold">
+      <p className="text-xs uppercase tracking-widest text-bw-muted font-semibold">
         Sessions similaires ({ranked.length})
       </p>
       {ranked.map((s, i) => (
@@ -328,7 +328,7 @@ function ComparisonFestival({ sessionId }: { sessionId: string }) {
 
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-white truncate">{s.session.title}</p>
-            <p className="text-[10px] text-bw-muted">
+            <p className="text-xs text-bw-muted">
               {s.session.studentCount} &eacute;l&egrave;ves &middot;{" "}
               {new Date(s.session.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
             </p>
@@ -339,7 +339,7 @@ function ComparisonFestival({ sessionId }: { sessionId: string }) {
             <p className={`text-sm font-bold ${s.matchPct > 60 ? "text-bw-teal" : s.matchPct > 30 ? "text-bw-gold" : "text-bw-muted"}`}>
               {s.matchPct}%
             </p>
-            <p className="text-[9px] text-bw-muted">similitude</p>
+            <p className="text-xs text-bw-muted">similitude</p>
           </div>
         </motion.div>
       ))}

@@ -30,7 +30,7 @@ export function StoryFilmstrip({ allChoices, moduleColor }: StoryFilmstripProps)
                   className="flex-shrink-0 rounded-lg px-3 py-2 backdrop-blur-md max-w-[260px]"
                   style={{ background: "rgba(34,37,43,0.7)", borderLeft: `3px solid ${color}`, border: `1px solid rgba(255,255,255,0.05)` }}
                 >
-                  <span className="text-[9px] uppercase tracking-wider font-medium block" style={{ color }}>
+                  <span className="text-xs uppercase tracking-wider font-medium block" style={{ color }}>
                     {choice.restitution_label || choice.category}
                   </span>
                   <p className="text-sm text-bw-text mt-0.5 line-clamp-1">{choice.chosen_text}</p>

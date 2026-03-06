@@ -133,7 +133,7 @@ export function BudgetState({
                       style={isSelected ? { color: cat.color, borderColor: cat.color, backgroundColor: `${cat.color}15` } : {}}
                     >
                       <span className={`text-xs font-medium block ${isSelected ? "" : "text-bw-text"}`}>{opt.label}</span>
-                      <span className={`text-[10px] block mt-0.5 ${isSelected ? "" : "text-bw-muted"}`}>
+                      <span className={`text-xs block mt-0.5 ${isSelected ? "" : "text-bw-muted"}`}>
                         {opt.cost === 0 ? "Gratuit" : `${opt.cost} cr.`}
                       </span>
                     </motion.button>

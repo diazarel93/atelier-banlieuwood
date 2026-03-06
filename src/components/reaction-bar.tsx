@@ -89,10 +89,10 @@ export function ReactionBar({
         {active.map((emoji) => (
           <span
             key={emoji}
-            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-white/[0.06] text-[11px]"
+            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-white/[0.06] text-xs"
           >
             {emoji}
-            <span className="font-mono text-[10px] text-bw-muted tabular-nums">
+            <span className="font-mono text-xs text-bw-muted tabular-nums">
               {localCounts[emoji]?.count}
             </span>
           </span>
@@ -131,7 +131,7 @@ export function ReactionBar({
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.5, opacity: 0 }}
-                  className="font-mono text-[10px] tabular-nums text-bw-muted"
+                  className="font-mono text-xs tabular-nums text-bw-muted"
                 >
                   {count}
                 </motion.span>

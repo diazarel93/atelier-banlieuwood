@@ -75,7 +75,7 @@ export function ApplauseMeter({ entries, accentColor = "#FF6B35", topN = 5 }: Ap
               </div>
 
               {/* Response text preview */}
-              <p className="text-[11px] text-bw-muted truncate mb-1.5 pl-1">{entry.text}</p>
+              <p className="text-xs text-bw-muted truncate mb-1.5 pl-1">{entry.text}</p>
 
               {/* Bar */}
               <div className="h-3 rounded-full bg-white/[0.06] overflow-hidden relative">

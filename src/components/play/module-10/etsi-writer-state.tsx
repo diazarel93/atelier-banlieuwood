@@ -95,7 +95,7 @@ export function EtsiWriterState({
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={img.url} alt={img.title} className="w-full aspect-[4/3] object-cover" />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                      <p className="text-[10px] text-white font-medium">{img.title}</p>
+                      <p className="text-xs text-white font-medium">{img.title}</p>
                     </div>
                     {isChosen && (
                       <div className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-bw-teal flex items-center justify-center">
@@ -135,7 +135,7 @@ export function EtsiWriterState({
                     <img src={img.url} alt={img.title} className="w-20 h-14 rounded-lg object-cover flex-shrink-0" />
                     <div>
                       <p className="text-sm text-bw-text font-medium">{img.title}</p>
-                      <p className="text-[10px] text-bw-muted">{img.description}</p>
+                      <p className="text-xs text-bw-muted">{img.description}</p>
                     </div>
                   </motion.button>
                 );
@@ -177,12 +177,12 @@ export function EtsiWriterState({
               <div className="flex gap-1">
                 {["example", "starter", "reformulate"].map((type) => (
                   <button key={type} onClick={() => handleHelp(type)} disabled={helpLoading || helpCount >= 3}
-                    className="px-2 py-1 text-[10px] rounded-lg bg-bw-elevated border border-white/[0.06] text-bw-muted hover:text-bw-teal hover:border-bw-teal/30 disabled:opacity-30 transition-colors cursor-pointer">
+                    className="px-2 py-1 text-xs rounded-lg bg-bw-elevated border border-white/[0.06] text-bw-muted hover:text-bw-teal hover:border-bw-teal/30 disabled:opacity-30 transition-colors cursor-pointer">
                     {type === "example" ? "💡 Exemple" : type === "starter" ? "✏️ Amorce" : "🔄 Reformuler"}
                   </button>
                 ))}
               </div>
-              {helpCount > 0 && <span className="text-[10px] text-bw-muted">{3 - helpCount} aide(s) restante(s)</span>}
+              {helpCount > 0 && <span className="text-xs text-bw-muted">{3 - helpCount} aide(s) restante(s)</span>}
             </div>
             <AnimatePresence>
               {helpHint && (

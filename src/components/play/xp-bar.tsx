@@ -12,7 +12,7 @@ export function XpBar({ xp }: XpBarProps) {
 
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-bw-gold/15 text-bw-gold whitespace-nowrap">
+      <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-bw-gold/15 text-bw-gold whitespace-nowrap">
         Nv.{level} {name}
       </span>
       <div className="w-16 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
@@ -23,7 +23,7 @@ export function XpBar({ xp }: XpBarProps) {
           transition={{ type: "spring", stiffness: 200, damping: 20 }}
         />
       </div>
-      <span className="text-[9px] text-bw-muted tabular-nums">{xp}</span>
+      <span className="text-xs text-bw-muted tabular-nums">{xp}</span>
     </div>
   );
 }

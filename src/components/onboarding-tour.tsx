@@ -295,7 +295,7 @@ export function OnboardingTour() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span
-                        className="inline-flex items-center justify-center w-6 h-6 rounded-lg text-[11px] font-bold"
+                        className="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold"
                         style={{
                           backgroundColor: "rgba(255,107,53,0.15)",
                           color: "#FF6B35",
@@ -303,7 +303,7 @@ export function OnboardingTour() {
                       >
                         {step + 1}
                       </span>
-                      <span className="text-[11px] text-bw-muted font-mono">
+                      <span className="text-xs text-bw-muted font-mono">
                         {step + 1}/{TOUR_STEPS.length}
                       </span>
                     </div>
@@ -451,7 +451,7 @@ export function OnboardingTour() {
                   }}
                 />
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-bw-muted font-mono">
+                  <span className="text-xs text-bw-muted font-mono">
                     {step + 1}/{TOUR_STEPS.length}
                   </span>
                   <button
@@ -478,7 +478,7 @@ export function OnboardingTour() {
                 <p className="text-[13px] text-bw-muted leading-relaxed">
                   {current.description}
                 </p>
-                <p className="text-[11px] text-bw-muted/60 italic">
+                <p className="text-xs text-bw-muted/60 italic">
                   Cet element apparaitra apres avoir cree une partie.
                 </p>
                 <div className="flex items-center justify-between pt-1">

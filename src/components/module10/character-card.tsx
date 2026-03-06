@@ -22,7 +22,7 @@ export interface CharacterCardProps {
 }
 
 const SIZES = {
-  sm: { avatar: 80, width: "w-full max-w-[180px]", text: "text-xs", heading: "text-sm", gap: "gap-2", pad: "p-3", badge: "px-1.5 py-0.5 text-[10px]" },
+  sm: { avatar: 80, width: "w-full max-w-[180px]", text: "text-xs", heading: "text-sm", gap: "gap-2", pad: "p-3", badge: "px-1.5 py-0.5 text-xs" },
   md: { avatar: 120, width: "w-full max-w-[260px]", text: "text-sm", heading: "text-lg", gap: "gap-3", pad: "p-4", badge: "px-2 py-0.5 text-xs" },
   lg: { avatar: 160, width: "w-full max-w-[320px]", text: "text-sm", heading: "text-xl", gap: "gap-4", pad: "p-5", badge: "px-2.5 py-1 text-xs" },
 } as const;

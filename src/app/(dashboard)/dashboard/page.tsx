@@ -162,13 +162,13 @@ export default function DashboardPage() {
           actions={
             <>
               {user?.email && (
-                <span className="text-[11px] text-bw-muted hidden sm:block font-mono tracking-tight">
+                <span className="text-xs text-bw-muted hidden sm:block font-mono tracking-tight">
                   {user.email}
                 </span>
               )}
               <button
                 onClick={handleLogout}
-                className="px-3 py-1.5 rounded-lg text-[11px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/8 transition-all duration-200 cursor-pointer"
+                className="px-3 py-1.5 rounded-lg text-xs text-bw-muted hover:text-bw-primary hover:bg-bw-primary/8 transition-all duration-200 cursor-pointer"
               >
                 Deconnexion
               </button>
@@ -193,7 +193,7 @@ export default function DashboardPage() {
                 {directorName}
               </h1>
               {!loading && sessions.length > 0 && (
-                <p className="text-[11px] text-bw-muted font-mono tabular-nums">
+                <p className="text-xs text-bw-muted font-mono tabular-nums">
                   {activeSessions.length > 0 && (
                     <span className="text-bw-teal">{activeSessions.length} en cours</span>
                   )}
@@ -265,7 +265,7 @@ export default function DashboardPage() {
                 <button
                   key={opt.value ?? "all"}
                   onClick={() => setLevelFilter(opt.value)}
-                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium transition-all cursor-pointer ${
+                  className={`px-2.5 py-0.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                     levelFilter === opt.value
                       ? "bg-bw-primary/20 text-bw-primary border border-bw-primary/40"
                       : "bg-white/[0.04] text-bw-muted border border-white/[0.08] hover:border-white/[0.15]"
@@ -278,7 +278,7 @@ export default function DashboardPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as "recent" | "students" | "title")}
-                  className="bg-white/[0.04] border border-white/[0.08] rounded-lg px-2 py-0.5 text-[10px] text-bw-muted cursor-pointer focus:outline-none focus:border-bw-primary/40"
+                  className="bg-white/[0.04] border border-white/[0.08] rounded-lg px-2 py-0.5 text-xs text-bw-muted cursor-pointer focus:outline-none focus:border-bw-primary/40"
                 >
                   <option value="recent">Recentes</option>
                   <option value="students">Eleves</option>
@@ -300,7 +300,7 @@ export default function DashboardPage() {
             </h2>
           </div>
           {!loading && sessions.length > 0 && (
-            <span className="text-[10px] text-bw-muted font-mono tabular-nums">
+            <span className="text-xs text-bw-muted font-mono tabular-nums">
               {filtered.length}{filtered.length !== sessions.length ? ` / ${sessions.length}` : ""}
             </span>
           )}
@@ -404,11 +404,11 @@ function SessionGroup({
         ) : (
           <span className="inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: color, opacity: 0.5 }} />
         )}
-        <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-bw-muted">
+        <span className="text-xs font-medium uppercase tracking-[0.1em] text-bw-muted">
           {label}
         </span>
         <span
-          className="text-[9px] font-bold px-1.5 py-px rounded-md tabular-nums"
+          className="text-xs font-bold px-1.5 py-px rounded-md tabular-nums"
           style={{ backgroundColor: `${color}10`, color }}
         >
           {count}
@@ -445,7 +445,7 @@ function ProgressRing({ percent, color, size: sizeProp }: { percent: number; col
           style={{ transition: "stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1)" }}
         />
       </svg>
-      <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold tabular-nums" style={{ color: percent > 0 ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.2)" }}>
+      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold tabular-nums" style={{ color: percent > 0 ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.2)" }}>
         {percent > 0 ? `${percent}%` : "—"}
       </span>
     </div>
@@ -463,7 +463,7 @@ function AvatarStack({ count }: { count: number }) {
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-bw-muted">
           <circle cx="12" cy="7" r="4" /><path d="M5.5 21a8.38 8.38 0 0113 0" />
         </svg>
-        <span className="text-[11px] text-bw-muted">0 joueur</span>
+        <span className="text-xs text-bw-muted">0 joueur</span>
       </div>
     );
   }
@@ -482,12 +482,12 @@ function AvatarStack({ count }: { count: number }) {
           />
         ))}
         {extra > 0 && (
-          <div className="w-5 h-5 rounded-full bg-white/[0.08] border-[1.5px] border-white/[0.04] text-[8px] font-bold text-bw-muted flex items-center justify-center">
+          <div className="w-5 h-5 rounded-full bg-white/[0.08] border-[1.5px] border-white/[0.04] text-xs font-bold text-bw-muted flex items-center justify-center">
             +{extra}
           </div>
         )}
       </div>
-      <span className="text-[11px] text-bw-muted tabular-nums">
+      <span className="text-xs text-bw-muted tabular-nums">
         {count}
       </span>
     </div>
@@ -515,7 +515,7 @@ function JoinCode({ code }: { code: string }) {
       className="group/code inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.12] transition-all duration-200 cursor-pointer"
       title="Copier le code"
     >
-      <span className="text-[11px] font-bold font-mono tracking-[0.15em] text-bw-teal">
+      <span className="text-xs font-bold font-mono tracking-[0.15em] text-bw-teal">
         {code}
       </span>
       {copied ? (
@@ -633,7 +633,7 @@ function SessionCard({
                   }}
                 />
                 <span
-                  className="text-[9px] font-semibold uppercase tracking-[0.06em]"
+                  className="text-xs font-semibold uppercase tracking-[0.06em]"
                   style={{ color: status.color }}
                 >
                   {status.label}
@@ -652,7 +652,7 @@ function SessionCard({
               <AvatarStack count={session.studentCount} />
               <Dot />
               <JoinCode code={session.join_code} />
-              <span className="text-[10px] text-bw-placeholder tabular-nums">
+              <span className="text-xs text-bw-placeholder tabular-nums">
                 {timeAgo(session.created_at)}
               </span>
             </div>
@@ -662,14 +662,14 @@ function SessionCard({
               <div className="flex items-center gap-2.5 pt-1" onClick={(e) => e.stopPropagation()}>
                 <a
                   href={`/session/${session.id}/results`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium text-bw-green bg-bw-green/8 border border-bw-green/20 hover:bg-bw-green/15 hover:border-bw-green/30 transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-bw-green bg-bw-green/8 border border-bw-green/20 hover:bg-bw-green/15 hover:border-bw-green/30 transition-all cursor-pointer"
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
                   Resultats
                 </a>
                 <a
                   href={`/session/${session.id}/results?tab=fiche`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium text-bw-violet bg-bw-violet/8 border border-bw-violet/20 hover:bg-bw-violet/15 hover:border-bw-violet/30 transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-bw-violet bg-bw-violet/8 border border-bw-violet/20 hover:bg-bw-violet/15 hover:border-bw-violet/30 transition-all cursor-pointer"
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
                   Fiche de cours
@@ -681,25 +681,25 @@ function SessionCard({
             {isLive && session.studentCount > 0 && (
               <div className="flex items-center gap-3 flex-wrap">
                 {(session.respondedCount ?? 0) > 0 && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-bw-green">
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-bw-green">
                     <span className="w-1.5 h-1.5 rounded-full bg-bw-green" />
                     {session.respondedCount} répondu
                   </span>
                 )}
                 {(session.activeCount ?? 0) > 0 && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-bw-amber">
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-bw-amber">
                     <span className="w-1.5 h-1.5 rounded-full bg-bw-amber" />
                     {session.activeCount} en attente
                   </span>
                 )}
                 {(session.disconnectedCount ?? 0) > 0 && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-bw-muted">
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-bw-muted">
                     <span className="w-1.5 h-1.5 rounded-full bg-bw-muted" />
                     {session.disconnectedCount} déco
                   </span>
                 )}
                 {(session.stuckCount ?? 0) > 0 && (
-                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-bw-amber/15 text-[10px] font-bold text-bw-amber">
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-bw-amber/15 text-xs font-bold text-bw-amber">
                     {session.stuckCount} bloqué{(session.stuckCount ?? 0) > 1 ? "s" : ""}
                   </span>
                 )}
@@ -723,7 +723,7 @@ function SessionCard({
             )}
             <button
               onClick={onOpen}
-              className="group/btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-[0.06em] cursor-pointer transition-all duration-200"
+              className="group/btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-[0.06em] cursor-pointer transition-all duration-200"
               style={{
                 backgroundColor: `${status.color}12`,
                 color: status.color,
@@ -866,12 +866,12 @@ function EmptyState({ onAction }: { onAction: () => void }) {
               >
                 {step.icon}
               </div>
-              <span className="text-[10px] font-bold text-bw-muted tabular-nums">
+              <span className="text-xs font-bold text-bw-muted tabular-nums">
                 {i + 1}
               </span>
             </div>
             <p className="text-[13px] font-semibold text-white">{step.label}</p>
-            <p className="text-[11px] text-bw-muted leading-relaxed">{step.desc}</p>
+            <p className="text-xs text-bw-muted leading-relaxed">{step.desc}</p>
           </motion.div>
         ))}
       </div>
@@ -894,7 +894,7 @@ function EmptyState({ onAction }: { onAction: () => void }) {
         </button>
         <a
           href="/fiche-cours"
-          className="text-[11px] text-bw-muted hover:text-bw-violet transition-colors"
+          className="text-xs text-bw-muted hover:text-bw-violet transition-colors"
         >
           Voir la fiche de cours &rarr;
         </a>
@@ -953,7 +953,7 @@ function CurriculumProgress({ sessions }: { sessions: SessionItem[] }) {
         >
           Parcours
         </h2>
-        <span className="text-[10px] font-bold px-1.5 py-px rounded-md tabular-nums bg-bw-teal/12 text-bw-teal">
+        <span className="text-xs font-bold px-1.5 py-px rounded-md tabular-nums bg-bw-teal/12 text-bw-teal">
           {overallPercent}%
         </span>
       </div>
@@ -1023,7 +1023,7 @@ function CurriculumProgress({ sessions }: { sessions: SessionItem[] }) {
                 </div>
                 {/* Label */}
                 <span
-                  className="text-[9px] font-semibold text-center leading-tight max-w-[64px]"
+                  className="text-xs font-semibold text-center leading-tight max-w-[64px]"
                   style={{
                     color: isComplete
                       ? phase.color
@@ -1036,7 +1036,7 @@ function CurriculumProgress({ sessions }: { sessions: SessionItem[] }) {
                 </span>
                 {/* Module count */}
                 {done > 0 && (
-                  <span className="text-[8px] font-mono tabular-nums text-bw-muted">
+                  <span className="text-xs font-mono tabular-nums text-bw-muted">
                     {done}/{phaseModules.length}
                   </span>
                 )}

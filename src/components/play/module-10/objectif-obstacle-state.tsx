@@ -75,7 +75,7 @@ export function ObjectifObstacleState({
       </span>
       <p className="text-xs text-bw-muted text-center">Choisis un objectif et un obstacle pour <strong className="text-bw-text">{module10.personnage?.prenom || "ton personnage"}</strong>. Tu écriras le pitch à l&apos;étape suivante.</p>
       <div className="w-full">
-        <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Objectif</p>
+        <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Objectif</p>
         <div className="flex flex-wrap gap-1.5">
           {OBJECTIFS.map((o) => (
             <motion.button key={o.key} whileTap={{ scale: 0.95 }} onClick={() => selectObjectif(o.key)}
@@ -104,7 +104,7 @@ export function ObjectifObstacleState({
         </AnimatePresence>
       </div>
       <div className="w-full">
-        <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Obstacle</p>
+        <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Obstacle</p>
         <div className="flex flex-wrap gap-1.5">
           {OBSTACLES.map((o) => (
             <motion.button key={o.key} whileTap={{ scale: 0.95 }} onClick={() => setObstacle(o.key)}

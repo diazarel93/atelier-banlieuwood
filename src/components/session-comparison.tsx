@@ -100,21 +100,21 @@ export function SessionComparison({ sessionId }: { sessionId: string }) {
               <div className="pt-4 space-y-4">
                 {/* Session selector */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-bw-muted">
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-bw-muted">
                     Comparer avec :
                   </span>
                   {data!.similar.map((s) => (
                     <button
                       key={s.session.id}
                       onClick={() => setSelectedId(s.session.id)}
-                      className={`px-3 py-1.5 rounded-lg text-[11px] transition-all cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
                         (selectedId || data!.similar[0].session.id) === s.session.id
                           ? "bg-bw-primary/20 border border-bw-primary/40 text-white"
                           : "bg-white/[0.04] border border-white/[0.06] text-bw-muted hover:text-bw-text"
                       }`}
                     >
                       {s.session.title}
-                      <span className="ml-1.5 text-[9px] text-bw-muted">
+                      <span className="ml-1.5 text-xs text-bw-muted">
                         ({s.session.studentCount} &eacute;l&egrave;ves)
                       </span>
                     </button>
@@ -127,11 +127,11 @@ export function SessionComparison({ sessionId }: { sessionId: string }) {
                     {/* Header */}
                     <div className="grid grid-cols-2 gap-3">
                       <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] px-3 py-2">
-                        <p className="text-[10px] uppercase tracking-[0.14em] text-bw-primary font-semibold">Cette session</p>
+                        <p className="text-xs uppercase tracking-[0.14em] text-bw-primary font-semibold">Cette session</p>
                         <p className="text-[12px] text-white truncate">{data!.current.title}</p>
                       </div>
                       <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] px-3 py-2">
-                        <p className="text-[10px] uppercase tracking-[0.14em] text-bw-violet font-semibold">{selected.session.title}</p>
+                        <p className="text-xs uppercase tracking-[0.14em] text-bw-violet font-semibold">{selected.session.title}</p>
                         <p className="text-[12px] text-bw-muted">
                           {new Date(selected.session.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                           {" · "}{selected.session.studentCount} &eacute;l&egrave;ves
@@ -156,22 +156,22 @@ export function SessionComparison({ sessionId }: { sessionId: string }) {
                         >
                           <div className="flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
-                            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-bw-muted">
+                            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-bw-muted">
                               {label}
                             </span>
                             {same && (
-                              <span className="text-[9px] px-1.5 py-0.5 rounded bg-bw-teal/20 text-bw-teal">
+                              <span className="text-xs px-1.5 py-0.5 rounded bg-bw-teal/20 text-bw-teal">
                                 Identique
                               </span>
                             )}
                           </div>
                           <div className="grid grid-cols-2 gap-3">
-                            <div className="text-[11px] text-white">
+                            <div className="text-xs text-white">
                               {currentChoice?.restitution_label || currentChoice?.chosen_text || (
                                 <span className="text-bw-muted italic">Pas de choix</span>
                               )}
                             </div>
-                            <div className="text-[11px] text-bw-text">
+                            <div className="text-xs text-bw-text">
                               {otherChoice?.restitution_label || otherChoice?.chosen_text || (
                                 <span className="text-bw-muted italic">Pas de choix</span>
                               )}

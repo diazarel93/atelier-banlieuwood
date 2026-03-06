@@ -106,10 +106,10 @@ export function WaitingState({ session, connectedCount }: WaitingStateProps) {
         <div className="max-w-[300px] sm:max-w-xs px-4">
           <div className="rounded-xl px-4 py-3" style={{ background: "linear-gradient(135deg, rgba(212,168,67,0.08), rgba(139,92,246,0.05))", border: "1px solid rgba(212,168,67,0.12)" }}>
             <div className="flex items-center justify-between mb-1">
-              <p className="text-[9px] uppercase tracking-widest text-bw-gold font-bold">
+              <p className="text-xs uppercase tracking-widest text-bw-gold font-bold">
                 {TYPE_ICONS[currentTip.type] || "🎬"} Le saviez-vous ?
               </p>
-              <span className="text-[8px] text-bw-muted">{tipIndex + 1}/{tips.length}</span>
+              <span className="text-xs text-bw-muted">{tipIndex + 1}/{tips.length}</span>
             </div>
             <AnimatePresence mode="wait">
               <motion.p key={tipIndex} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }}
@@ -118,7 +118,7 @@ export function WaitingState({ session, connectedCount }: WaitingStateProps) {
               </motion.p>
             </AnimatePresence>
             {currentTip.source && (
-              <p className="text-[9px] text-bw-muted mt-1 italic">— {currentTip.source}</p>
+              <p className="text-xs text-bw-muted mt-1 italic">— {currentTip.source}</p>
             )}
           </div>
         </div>

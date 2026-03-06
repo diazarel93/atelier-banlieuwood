@@ -561,7 +561,7 @@ export default function ResultsPage() {
                 <button
                   key={nav.id}
                   onClick={() => document.getElementById(nav.id)?.scrollIntoView({ behavior: "smooth" })}
-                  className={`relative flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-medium transition-all duration-200 cursor-pointer ${
+                  className={`relative flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer ${
                     isActive
                       ? "text-white bg-white/[0.1] border border-white/[0.15] shadow-[0_0_12px_rgba(255,255,255,0.05)]"
                       : "text-bw-muted hover:text-bw-text hover:bg-white/[0.05]"
@@ -756,13 +756,13 @@ export default function ResultsPage() {
                 <div className="grid grid-cols-2 gap-3 mt-4">
                   {feedback.strengths && (
                     <div className="bg-bw-teal/10 border border-bw-teal/20 rounded-xl p-3">
-                      <Badge variant="teal" className="uppercase text-[10px]">Point fort</Badge>
+                      <Badge variant="teal" className="uppercase text-xs">Point fort</Badge>
                       <p className="text-sm mt-1">{feedback.strengths.detail}</p>
                     </div>
                   )}
                   {feedback.weakness && (
                     <div className="bg-bw-amber/10 border border-bw-amber/20 rounded-xl p-3">
-                      <Badge variant="gold" className="uppercase text-[10px]">Progression</Badge>
+                      <Badge variant="gold" className="uppercase text-xs">Progression</Badge>
                       <p className="text-sm mt-1">{feedback.weakness.detail}</p>
                     </div>
                   )}
@@ -859,7 +859,7 @@ export default function ResultsPage() {
           {bilan && (
             <div className="space-y-4">
               {bilanProvider && (
-                <Badge variant="secondary" className="text-[10px]">
+                <Badge variant="secondary" className="text-xs">
                   {bilanProvider === "fallback" ? "Algorithmique" : bilanProvider}
                 </Badge>
               )}
@@ -867,7 +867,7 @@ export default function ResultsPage() {
               {/* Narrative summary */}
               <Card className="border-l-4 border-l-bw-primary">
                 <CardContent>
-                  <Badge className="uppercase text-[10px]">Résumé narratif</Badge>
+                  <Badge className="uppercase text-xs">Résumé narratif</Badge>
                   <p className="text-lg leading-relaxed mt-2 italic text-bw-text">&ldquo;{bilan.narrativeSummary}&rdquo;</p>
                 </CardContent>
               </Card>
@@ -876,7 +876,7 @@ export default function ResultsPage() {
               <Card>
                 <CardHeader className="flex-row items-center gap-3">
                   <CardTitle className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Dynamique de groupe</CardTitle>
-                  <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full"
+                  <span className="text-xs font-semibold uppercase px-2 py-0.5 rounded-full"
                     style={{
                       backgroundColor: `${COLLAB_COLORS[bilan.groupDynamics.collaborationLevel] || "#666"}20`,
                       color: COLLAB_COLORS[bilan.groupDynamics.collaborationLevel] || "#666",
@@ -909,7 +909,7 @@ export default function ResultsPage() {
                         <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.05 }}
                           className="pl-4 border-l-2 py-1" style={{ borderLeftColor: color }}>
-                          <span className="text-[10px] font-semibold uppercase" style={{ color }}>{m.category}</span>
+                          <span className="text-xs font-semibold uppercase" style={{ color }}>{m.category}</span>
                           <p className="text-sm text-bw-text">{m.description}</p>
                         </motion.div>
                       );
@@ -996,7 +996,7 @@ export default function ResultsPage() {
           {fiche && (
             <div className="space-y-4">
               {ficheProvider && (
-                <Badge variant="secondary" className="text-[10px]">
+                <Badge variant="secondary" className="text-xs">
                   {ficheProvider === "fallback" ? "Template" : ficheProvider}
                 </Badge>
               )}
@@ -1017,7 +1017,7 @@ export default function ResultsPage() {
                 <CardContent className="space-y-2">
                   {fiche.objectives.map((obj, i) => (
                     <div key={i} className="flex items-start gap-3">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5"
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5"
                         style={{
                           backgroundColor: `${SOCLE_COLORS[obj.socleCommun] || "#666"}20`,
                           color: SOCLE_COLORS[obj.socleCommun] || "#666",
@@ -1072,7 +1072,7 @@ export default function ResultsPage() {
                 <CardContent className="space-y-3">
                   {fiche.animationTips.map((tip, i) => (
                     <div key={i} className="flex items-start gap-3">
-                      <Badge variant="violet" className="text-[10px] font-mono flex-shrink-0 mt-0.5">
+                      <Badge variant="violet" className="text-xs font-mono flex-shrink-0 mt-0.5">
                         {tip.timing}
                       </Badge>
                       <div>
@@ -1139,7 +1139,7 @@ export default function ResultsPage() {
               {fiche.sessionRecap && (
                 <Card className="border-l-4 border-l-bw-teal">
                   <CardContent>
-                    <Badge variant="teal" className="uppercase text-[10px]">Résumé de session</Badge>
+                    <Badge variant="teal" className="uppercase text-xs">Résumé de session</Badge>
                     <p className="text-sm text-bw-text mt-2">{fiche.sessionRecap}</p>
                   </CardContent>
                 </Card>
@@ -1193,7 +1193,7 @@ export default function ResultsPage() {
               {/* Logline */}
               <Card className="border-l-4 border-l-bw-primary">
                 <CardContent>
-                  <Badge variant="default" className="uppercase text-[10px] mb-2">Logline</Badge>
+                  <Badge variant="default" className="uppercase text-xs mb-2">Logline</Badge>
                   <p className="text-lg font-medium text-bw-ink italic">&ldquo;{bible.logline}&rdquo;</p>
                 </CardContent>
               </Card>
@@ -1214,10 +1214,10 @@ export default function ResultsPage() {
                         <div key={i} className="bg-bw-surface rounded-xl p-3 border border-bw-border">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-sm font-semibold text-bw-ink">{c.name}</span>
-                            <Badge variant="secondary" className="text-[9px]">{c.role}</Badge>
+                            <Badge variant="secondary" className="text-xs">{c.role}</Badge>
                           </div>
                           <p className="text-xs text-bw-text mb-1">{c.description}</p>
-                          <p className="text-[10px] text-bw-muted italic">Arc : {c.arc}</p>
+                          <p className="text-xs text-bw-muted italic">Arc : {c.arc}</p>
                         </div>
                       ))}
                     </div>
@@ -1229,9 +1229,9 @@ export default function ResultsPage() {
               <Card>
                 <CardHeader><CardTitle className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Univers</CardTitle></CardHeader>
                 <CardContent className="space-y-2">
-                  <div><span className="text-[10px] font-bold text-bw-violet uppercase">Lieu & Époque</span><p className="text-sm text-bw-text">{bible.world.setting}</p></div>
-                  <div><span className="text-[10px] font-bold text-bw-violet uppercase">Ambiance</span><p className="text-sm text-bw-text">{bible.world.atmosphere}</p></div>
-                  {bible.world.rules && <div><span className="text-[10px] font-bold text-bw-violet uppercase">Règles</span><p className="text-sm text-bw-text">{bible.world.rules}</p></div>}
+                  <div><span className="text-xs font-bold text-bw-violet uppercase">Lieu & Époque</span><p className="text-sm text-bw-text">{bible.world.setting}</p></div>
+                  <div><span className="text-xs font-bold text-bw-violet uppercase">Ambiance</span><p className="text-sm text-bw-text">{bible.world.atmosphere}</p></div>
+                  {bible.world.rules && <div><span className="text-xs font-bold text-bw-violet uppercase">Règles</span><p className="text-sm text-bw-text">{bible.world.rules}</p></div>}
                 </CardContent>
               </Card>
 
@@ -1255,7 +1255,7 @@ export default function ResultsPage() {
                     {(["act1", "act2", "act3"] as const).map((act, i) => (
                       <div key={act} className="flex gap-3">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-bw-violet/10 border border-bw-violet/20 flex items-center justify-center text-xs font-bold text-bw-violet">{i + 1}</div>
-                        <div><p className="text-[10px] font-bold text-bw-muted uppercase mb-0.5">{i === 0 ? "Exposition" : i === 1 ? "Confrontation" : "Résolution"}</p><p className="text-sm text-bw-text">{bible.structure[act]}</p></div>
+                        <div><p className="text-xs font-bold text-bw-muted uppercase mb-0.5">{i === 0 ? "Exposition" : i === 1 ? "Confrontation" : "Résolution"}</p><p className="text-sm text-bw-text">{bible.structure[act]}</p></div>
                       </div>
                     ))}
                   </div>
@@ -1267,13 +1267,13 @@ export default function ResultsPage() {
                 <Card>
                   <CardHeader><CardTitle className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Style</CardTitle></CardHeader>
                   <CardContent className="space-y-2">
-                    <div><span className="text-[10px] font-bold text-bw-violet uppercase">Genre</span><p className="text-sm text-bw-text">{bible.style.genre}</p></div>
-                    <div><span className="text-[10px] font-bold text-bw-violet uppercase">Ton</span><p className="text-sm text-bw-text">{bible.style.tone}</p></div>
-                    <div><span className="text-[10px] font-bold text-bw-violet uppercase">Identité visuelle</span><p className="text-sm text-bw-text">{bible.style.visualIdentity}</p></div>
+                    <div><span className="text-xs font-bold text-bw-violet uppercase">Genre</span><p className="text-sm text-bw-text">{bible.style.genre}</p></div>
+                    <div><span className="text-xs font-bold text-bw-violet uppercase">Ton</span><p className="text-sm text-bw-text">{bible.style.tone}</p></div>
+                    <div><span className="text-xs font-bold text-bw-violet uppercase">Identité visuelle</span><p className="text-sm text-bw-text">{bible.style.visualIdentity}</p></div>
                     {bible.style.influences && bible.style.influences.length > 0 && (
                       <div>
-                        <span className="text-[10px] font-bold text-bw-violet uppercase">Influences</span>
-                        <div className="flex flex-wrap gap-1 mt-1">{bible.style.influences.map((inf, i) => <Badge key={i} variant="secondary" className="text-[10px]">{inf}</Badge>)}</div>
+                        <span className="text-xs font-bold text-bw-violet uppercase">Influences</span>
+                        <div className="flex flex-wrap gap-1 mt-1">{bible.style.influences.map((inf, i) => <Badge key={i} variant="secondary" className="text-xs">{inf}</Badge>)}</div>
                       </div>
                     )}
                   </CardContent>
@@ -1287,7 +1287,7 @@ export default function ResultsPage() {
               </div>
 
               {bibleProvider && (
-                <p className="text-[10px] text-bw-muted text-right">Généré par {bibleProvider === "fallback" ? "algorithme" : bibleProvider}</p>
+                <p className="text-xs text-bw-muted text-right">Généré par {bibleProvider === "fallback" ? "algorithme" : bibleProvider}</p>
               )}
             </div>
           )}

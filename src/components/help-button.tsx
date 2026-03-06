@@ -80,7 +80,7 @@ export function HelpButton({ pageKey, tips }: HelpButtonProps) {
             <div className="absolute top-0 inset-x-0 h-[2px]" style={{ background: "linear-gradient(90deg, transparent, #FF6B35, transparent)" }} />
             <div className="p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] text-bw-muted font-mono">{step + 1}/{tips.length}</span>
+                <span className="text-xs text-bw-muted font-mono">{step + 1}/{tips.length}</span>
                 <button onClick={() => { setOpen(false); setStep(0); }} aria-label="Fermer l'aide" className="p-1 rounded-lg text-bw-muted hover:text-white cursor-pointer">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>

@@ -125,7 +125,7 @@ export default function NewSessionPage() {
             className="w-full p-4 rounded-xl border-2 border-dashed border-bw-primary/30 hover:border-bw-primary/60 bg-bw-primary/5 hover:bg-bw-primary/10 transition-all cursor-pointer text-center space-y-1"
           >
             <span className="text-sm font-semibold text-bw-primary block">Demarrage rapide</span>
-            <span className="text-[11px] text-bw-muted">Titre + niveau → c&apos;est parti !</span>
+            <span className="text-xs text-bw-muted">Titre + niveau → c&apos;est parti !</span>
           </motion.button>
         ) : (
           <motion.div
@@ -135,7 +135,7 @@ export default function NewSessionPage() {
           >
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-bw-primary">Demarrage rapide</span>
-              <button onClick={() => setQuickStartMode(false)} className="text-[10px] text-bw-muted hover:text-white cursor-pointer">Mode complet</button>
+              <button onClick={() => setQuickStartMode(false)} className="text-xs text-bw-muted hover:text-white cursor-pointer">Mode complet</button>
             </div>
             <Input
               type="text"
@@ -195,7 +195,7 @@ export default function NewSessionPage() {
                 className="text-left p-3 rounded-xl border border-bw-border bg-bw-surface hover:border-bw-gold/40 transition-all cursor-pointer"
               >
                 <span className="text-xs font-medium block">{tpl.label}</span>
-                <span className="text-[10px] text-bw-muted">{tpl.timer ? `Timer: ${tpl.timer / 60}min` : "Sans timer"}</span>
+                <span className="text-xs text-bw-muted">{tpl.timer ? `Timer: ${tpl.timer / 60}min` : "Sans timer"}</span>
               </motion.button>
             ))}
           </div>
@@ -267,7 +267,7 @@ export default function NewSessionPage() {
               </motion.button>
             ))}
           </div>
-          <p className="text-[10px] text-bw-placeholder">
+          <p className="text-xs text-bw-placeholder">
             La thématique guide le sujet de fond de l&apos;histoire — les élèves restent libres de l&apos;interpréter.
           </p>
         </div>
@@ -329,7 +329,7 @@ export default function NewSessionPage() {
                       setDescription(d => (d ? `${d} [${obj}]` : `[${obj}]`).slice(0, 200));
                     }
                   }}
-                  className={`px-3 py-1.5 rounded-lg text-[11px] font-medium border transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
                     isSelected
                       ? "bg-bw-teal/15 border-bw-teal/40 text-bw-teal"
                       : "bg-bw-surface border-bw-border text-bw-muted hover:border-bw-gold/40"
@@ -340,7 +340,7 @@ export default function NewSessionPage() {
               );
             })}
           </div>
-          <p className="text-[10px] text-bw-placeholder">
+          <p className="text-xs text-bw-placeholder">
             Les objectifs sont ajoutes a la description pour vos notes.
           </p>
         </div>

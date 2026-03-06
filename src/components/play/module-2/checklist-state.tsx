@@ -107,7 +107,7 @@ export function ChecklistState({
                 }`}
               >
                 <span className="text-2xl">{item.emoji}</span>
-                <span className={`text-[10px] leading-tight text-center ${isSelected ? "text-bw-pink" : "text-bw-muted"}`}>
+                <span className={`text-xs leading-tight text-center ${isSelected ? "text-bw-pink" : "text-bw-muted"}`}>
                   {item.label}
                 </span>
               </motion.button>

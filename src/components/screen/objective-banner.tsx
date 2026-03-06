@@ -40,7 +40,7 @@ export function ObjectiveBanner({ seanceIntro, connectedCount, objectifText, mod
           transition={{ delay: 0.3 }}
           className="flex items-center justify-center gap-2"
         >
-          <span className="w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center"
+          <span className="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
             style={{ backgroundColor: `${moduleColor}25`, color: moduleColor }}>1</span>
           <span className="text-base text-bw-text">{seanceIntro.steps[0]}</span>
         </motion.div>

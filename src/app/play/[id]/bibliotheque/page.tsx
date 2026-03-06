@@ -231,14 +231,14 @@ function ContributionsTab({ data }: { data: BiblioData }) {
               <div className="flex items-start justify-between gap-2">
                 <p className="text-sm leading-relaxed flex-1">{resp.text}</p>
                 {wasChosen && (
-                  <span className="text-[9px] font-bold text-bw-amber bg-bw-amber/20 px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5">
+                  <span className="text-xs font-bold text-bw-amber bg-bw-amber/20 px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5">
                     Retenue
                   </span>
                 )}
               </div>
               {resp.teacherComment && (
                 <div className="flex items-start gap-2 mt-2 pt-2 border-t border-white/[0.04]">
-                  <span className="text-[10px] text-bw-teal font-semibold flex-shrink-0">Prof :</span>
+                  <span className="text-xs text-bw-teal font-semibold flex-shrink-0">Prof :</span>
                   <p className="text-xs text-bw-muted">{resp.teacherComment}</p>
                 </div>
               )}
@@ -290,7 +290,7 @@ function FilmTab({ data }: { data: BiblioData }) {
             {showCategoryHeader && (
               <div className="flex items-center gap-2 mt-5 mb-2">
                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
-                <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color }}>
+                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color }}>
                   {choice.restitutionLabel || choice.category}
                 </span>
                 <div className="flex-1 h-px" style={{ backgroundColor: `${color}20` }} />
@@ -304,7 +304,7 @@ function FilmTab({ data }: { data: BiblioData }) {
               }`}
             >
               {choice.isMine && (
-                <span className="text-[9px] font-bold text-bw-amber bg-bw-amber/20 px-2 py-0.5 rounded-full mb-2 inline-block">
+                <span className="text-xs font-bold text-bw-amber bg-bw-amber/20 px-2 py-0.5 rounded-full mb-2 inline-block">
                   Ton idée
                 </span>
               )}
@@ -340,7 +340,7 @@ function GalerieTab({ data }: { data: BiblioData }) {
         <div key={group.situationId} className="space-y-2">
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-bw-violet" />
-            <span className="text-[10px] font-medium text-bw-muted uppercase tracking-wider">
+            <span className="text-xs font-medium text-bw-muted uppercase tracking-wider">
               Question {gi + 1}
             </span>
           </div>
@@ -377,7 +377,7 @@ function ImaginationTab({ data }: { data: BiblioData }) {
                     <img src={img.url} alt={img.title} className="w-16 h-12 rounded-lg object-cover bg-bw-bg" />
                     <div>
                       <p className="text-xs font-medium">{img.title}</p>
-                      <p className="text-[10px] text-bw-muted">{img.description}</p>
+                      <p className="text-xs text-bw-muted">{img.description}</p>
                     </div>
                   </div>
                 )}
@@ -407,7 +407,7 @@ function ImaginationTab({ data }: { data: BiblioData }) {
             {/* Avatar attributes */}
             <div className="flex flex-wrap gap-2">
               {Object.entries(data.personnage.avatar || {}).map(([key, val]) => (
-                <span key={key} className="text-[10px] bg-white/[0.05] px-2 py-1 rounded-full text-bw-muted">
+                <span key={key} className="text-xs bg-white/[0.05] px-2 py-1 rounded-full text-bw-muted">
                   {key}: {val}
                 </span>
               ))}
@@ -422,13 +422,13 @@ function ImaginationTab({ data }: { data: BiblioData }) {
           <div className="rounded-xl p-4 bg-bw-elevated border border-white/[0.06] space-y-3">
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-lg p-2 bg-white/[0.03]">
-                <p className="text-[10px] text-bw-teal font-semibold uppercase">Objectif</p>
+                <p className="text-xs text-bw-teal font-semibold uppercase">Objectif</p>
                 <p className="text-xs mt-0.5">
                   {OBJECTIFS.find((o) => o.key === data.pitch!.objectif)?.label || data.pitch!.objectif}
                 </p>
               </div>
               <div className="rounded-lg p-2 bg-white/[0.03]">
-                <p className="text-[10px] text-bw-primary font-semibold uppercase">Obstacle</p>
+                <p className="text-xs text-bw-primary font-semibold uppercase">Obstacle</p>
                 <p className="text-xs mt-0.5">
                   {OBSTACLES.find((o) => o.key === data.pitch!.obstacle)?.label || data.pitch!.obstacle}
                 </p>
@@ -438,7 +438,7 @@ function ImaginationTab({ data }: { data: BiblioData }) {
               <p className="text-sm leading-relaxed">{data.pitch.text}</p>
             </div>
             {data.pitch.chronoSeconds != null && (
-              <p className="text-[10px] text-bw-muted">Chrono : {data.pitch.chronoSeconds}s</p>
+              <p className="text-xs text-bw-muted">Chrono : {data.pitch.chronoSeconds}s</p>
             )}
           </div>
         </Section>
@@ -462,7 +462,7 @@ function ImaginationTab({ data }: { data: BiblioData }) {
                   <span className="text-xs text-bw-primary">{idea.votes}</span>
                   <span className="text-xs">❤️</span>
                   {idea.isMine && (
-                    <span className="text-[8px] text-cyan-400 bg-cyan-500/20 px-1.5 py-0.5 rounded-full ml-1">
+                    <span className="text-xs text-cyan-400 bg-cyan-500/20 px-1.5 py-0.5 rounded-full ml-1">
                       Moi
                     </span>
                   )}
@@ -491,7 +491,7 @@ function CreationTab({ data }: { data: BiblioData }) {
                   <span className="text-lg">🎭</span>
                   <div>
                     <p className="text-sm font-medium">Scène {i + 1}</p>
-                    <p className="text-[10px] text-bw-muted">
+                    <p className="text-xs text-bw-muted">
                       {emotionObj?.label || scene.emotion} — {scene.tokensUsed} jetons
                     </p>
                   </div>
@@ -518,7 +518,7 @@ function CreationTab({ data }: { data: BiblioData }) {
                 </div>
                 {scene.aiFeedback && (
                   <div className="pt-2 border-t border-white/[0.04]">
-                    <p className="text-[10px] text-bw-muted italic">{scene.aiFeedback}</p>
+                    <p className="text-xs text-bw-muted italic">{scene.aiFeedback}</p>
                   </div>
                 )}
               </div>
@@ -563,7 +563,7 @@ function StatCard({ value, label, color }: { value: number; label: string; color
   return (
     <div className="bg-bw-elevated rounded-xl p-3 text-center border border-white/[0.06]">
       <p className={`text-2xl font-bold ${color}`}>{value}</p>
-      <p className="text-[10px] text-bw-muted mt-0.5">{label}</p>
+      <p className="text-xs text-bw-muted mt-0.5">{label}</p>
     </div>
   );
 }

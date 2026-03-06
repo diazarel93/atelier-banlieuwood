@@ -962,15 +962,15 @@ export default function ScreenPage() {
                   </div>
                   <div className="space-y-4 flex-1">
                     <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
-                      <span className="text-[10px] uppercase tracking-wider text-bw-muted font-medium">Intention</span>
+                      <span className="text-xs uppercase tracking-wider text-bw-muted font-medium">Intention</span>
                       <p className="text-lg text-bw-heading leading-snug mt-0.5">{scA.intention}</p>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
-                      <span className="text-[10px] uppercase tracking-wider text-bw-muted font-medium">Obstacle</span>
+                      <span className="text-xs uppercase tracking-wider text-bw-muted font-medium">Obstacle</span>
                       <p className="text-lg text-bw-heading leading-snug mt-0.5">{scA.obstacle}</p>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }}>
-                      <span className="text-[10px] uppercase tracking-wider text-bw-muted font-medium">Changement</span>
+                      <span className="text-xs uppercase tracking-wider text-bw-muted font-medium">Changement</span>
                       <p className="text-lg text-bw-heading leading-snug mt-0.5">{scA.changement}</p>
                     </motion.div>
                   </div>
@@ -1015,15 +1015,15 @@ export default function ScreenPage() {
                   </div>
                   <div className="space-y-4 flex-1">
                     <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
-                      <span className="text-[10px] uppercase tracking-wider text-bw-muted font-medium">Intention</span>
+                      <span className="text-xs uppercase tracking-wider text-bw-muted font-medium">Intention</span>
                       <p className="text-lg text-bw-heading leading-snug mt-0.5">{scB.intention}</p>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }}>
-                      <span className="text-[10px] uppercase tracking-wider text-bw-muted font-medium">Obstacle</span>
+                      <span className="text-xs uppercase tracking-wider text-bw-muted font-medium">Obstacle</span>
                       <p className="text-lg text-bw-heading leading-snug mt-0.5">{scB.obstacle}</p>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.7 }}>
-                      <span className="text-[10px] uppercase tracking-wider text-bw-muted font-medium">Changement</span>
+                      <span className="text-xs uppercase tracking-wider text-bw-muted font-medium">Changement</span>
                       <p className="text-lg text-bw-heading leading-snug mt-0.5">{scB.changement}</p>
                     </motion.div>
                   </div>
@@ -1680,7 +1680,7 @@ export default function ScreenPage() {
                           className="w-full rounded-t-xl flex flex-col items-center justify-end pb-3"
                           style={{ background: `linear-gradient(180deg, ${colors[rank]}40, ${colors[rank]}15)`, border: `1px solid ${colors[rank]}30`, borderBottom: "none" }}>
                           <span className="text-2xl font-bold" style={{ color: colors[rank] }}>{pct}%</span>
-                          <span className="text-[10px] font-semibold text-bw-muted">{medals[rank]}</span>
+                          <span className="text-xs font-semibold text-bw-muted">{medals[rank]}</span>
                         </motion.div>
                       </motion.div>
                     );
@@ -1973,7 +1973,7 @@ export default function ScreenPage() {
                         className="rounded-xl p-4 backdrop-blur-md text-left"
                         style={{ background: "rgba(34,37,43,0.6)", borderLeft: `3px solid ${CATEGORY_COLORS[choice.category] || moduleColor}` }}
                       >
-                        <span className="text-[10px] uppercase tracking-wider font-medium" style={{ color: CATEGORY_COLORS[choice.category] || moduleColor }}>
+                        <span className="text-xs uppercase tracking-wider font-medium" style={{ color: CATEGORY_COLORS[choice.category] || moduleColor }}>
                           {choice.restitution_label || choice.category}
                         </span>
                         <p className="text-lg text-white mt-1">{choice.chosen_text}</p>

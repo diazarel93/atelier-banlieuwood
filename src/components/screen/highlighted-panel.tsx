@@ -41,14 +41,14 @@ export function HighlightedResponsesPanel({ highlightedResponses }: HighlightedR
                 <div className="flex items-center gap-2 mb-1.5">
                   <span className="text-lg">{hr.students?.avatar}</span>
                   <span className="text-sm font-medium">{hr.students?.display_name}</span>
-                  <span className="ml-auto text-[9px] text-bw-primary bg-bw-primary/10 px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+                  <span className="ml-auto text-xs text-bw-primary bg-bw-primary/10 px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider">
                     Projeté
                   </span>
                 </div>
                 <p className="text-base leading-relaxed text-bw-heading">{hr.text}</p>
                 {hr.teacher_comment && (
                   <div className="mt-2 flex items-start gap-2 bg-bw-teal/5 rounded-lg px-2.5 py-1.5 border border-bw-teal/10">
-                    <span className="text-[10px] text-bw-teal flex-shrink-0 mt-0.5 font-medium">Prof :</span>
+                    <span className="text-xs text-bw-teal flex-shrink-0 mt-0.5 font-medium">Prof :</span>
                     <span className="text-xs text-bw-teal/80 leading-snug">{hr.teacher_comment}</span>
                   </div>
                 )}

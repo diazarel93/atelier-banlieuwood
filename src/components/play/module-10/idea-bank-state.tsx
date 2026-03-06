@@ -66,7 +66,7 @@ export function IdeaBankState({
             <div key={idea.id} className="flex items-start gap-2 p-2 rounded-lg bg-bw-elevated border border-white/[0.06]">
               <p className="flex-1 text-xs text-bw-text">{idea.text}</p>
               <button onClick={() => handleVote(idea.id)} disabled={voted.has(idea.id)}
-                className="shrink-0 px-2 py-1 text-[10px] rounded-lg bg-bw-teal/10 text-bw-teal hover:bg-bw-teal/20 disabled:opacity-40 transition-colors cursor-pointer">
+                className="shrink-0 px-2 py-1 text-xs rounded-lg bg-bw-teal/10 text-bw-teal hover:bg-bw-teal/20 disabled:opacity-40 transition-colors cursor-pointer">
                 ❤️ {idea.votes + (voted.has(idea.id) ? 1 : 0)}
               </button>
             </div>

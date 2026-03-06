@@ -84,7 +84,7 @@ export function DashboardAnalytics() {
           <polyline points="6 9 12 15 18 9" />
         </motion.svg>
         {!open && data && data.totalSessions > 0 && (
-          <span className="text-[10px] text-bw-muted font-mono tabular-nums ml-auto">
+          <span className="text-xs text-bw-muted font-mono tabular-nums ml-auto">
             {data.totalResponses} rep. · {data.totalVotes} votes · {data.avgParticipation}% part.
           </span>
         )}
@@ -129,7 +129,7 @@ export function DashboardAnalytics() {
             {/* Module usage */}
             {data.moduleUsage.length > 0 && (
               <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4 space-y-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-bw-muted">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-bw-muted">
                   Modules utilises
                 </p>
                 <div className="space-y-2.5">
@@ -139,10 +139,10 @@ export function DashboardAnalytics() {
                     return (
                       <div key={m.module} className="space-y-1">
                         <div className="flex items-center justify-between">
-                          <span className="text-[11px] text-bw-text">
+                          <span className="text-xs text-bw-text">
                             {MODULE_NAMES[m.module] || `Module ${m.module}`}
                           </span>
-                          <span className="text-[10px] font-mono text-bw-muted tabular-nums">
+                          <span className="text-xs font-mono text-bw-muted tabular-nums">
                             {m.count}
                           </span>
                         </div>
@@ -164,14 +164,14 @@ export function DashboardAnalytics() {
             {/* Level distribution */}
             {data.levelDistribution.length > 0 && (
               <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4 space-y-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-bw-muted">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-bw-muted">
                   Niveaux
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {data.levelDistribution.map((l) => (
                     <span
                       key={l.level}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.05] border border-white/[0.08] text-[11px] text-bw-text"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.05] border border-white/[0.08] text-xs text-bw-text"
                     >
                       {LEVEL_LABELS[l.level] || l.level}
                       <span className="font-bold text-bw-primary tabular-nums">{l.count}</span>
@@ -182,7 +182,7 @@ export function DashboardAnalytics() {
                 {/* Recent activity */}
                 {data.recentActivity.length > 0 && (
                   <div className="mt-4 space-y-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-bw-muted">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-bw-muted">
                       Activite recente
                     </p>
                     {data.recentActivity.slice(0, 5).map((a, i) => (
@@ -194,13 +194,13 @@ export function DashboardAnalytics() {
                           className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                           style={{ backgroundColor: STATUS_COLORS[a.status] || "#555" }}
                         />
-                        <span className="text-[11px] text-bw-text truncate flex-1">
+                        <span className="text-xs text-bw-text truncate flex-1">
                           {a.title}
                         </span>
-                        <span className="text-[10px] text-bw-muted tabular-nums flex-shrink-0">
+                        <span className="text-xs text-bw-muted tabular-nums flex-shrink-0">
                           {a.students} eleves
                         </span>
-                        <span className="text-[10px] text-bw-placeholder tabular-nums flex-shrink-0">
+                        <span className="text-xs text-bw-placeholder tabular-nums flex-shrink-0">
                           {new Date(a.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                         </span>
                       </div>
@@ -213,7 +213,7 @@ export function DashboardAnalytics() {
             {/* Weekly trend — mini bar chart */}
             {data.weeklyTrend && data.weeklyTrend.some((w) => w.sessions > 0) && (
               <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4 space-y-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-bw-muted">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-bw-muted">
                   Tendance hebdomadaire
                 </p>
                 <div className="flex items-end gap-1 h-16">
@@ -236,7 +236,7 @@ export function DashboardAnalytics() {
                     );
                   })}
                 </div>
-                <div className="flex justify-between text-[8px] text-bw-placeholder">
+                <div className="flex justify-between text-xs text-bw-placeholder">
                   <span>il y a 8 sem.</span>
                   <span>cette sem.</span>
                 </div>
@@ -246,7 +246,7 @@ export function DashboardAnalytics() {
             {/* Daily activity heatmap — 30 days */}
             {data.dailyActivity && data.dailyActivity.some((d) => d.count > 0) && (
               <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4 space-y-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-bw-muted">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-bw-muted">
                   Activite (30 jours)
                 </p>
                 <div className="flex flex-wrap gap-1">
@@ -306,7 +306,7 @@ function MiniKpi({
       className="relative overflow-hidden rounded-xl bg-white/[0.03] border-t border-white/[0.08] px-3 py-3"
       style={{ borderLeft: `2px solid ${dim ? "transparent" : color}` }}
     >
-      <p className="text-[9px] uppercase tracking-[0.12em] text-bw-muted font-semibold">{label}</p>
+      <p className="text-xs uppercase tracking-[0.12em] text-bw-muted font-semibold">{label}</p>
       <p
         className="text-lg font-bold font-mono tabular-nums mt-0.5"
         style={{ color: dim ? "rgba(255,255,255,0.25)" : color, letterSpacing: "-0.03em" }}

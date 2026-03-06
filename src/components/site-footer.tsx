@@ -259,7 +259,7 @@ export function SiteFooter({ className }: { className?: string }) {
               <span
                 className={cn(
                   "inline-flex items-center px-2 py-0.5 rounded-md",
-                  "text-[10px] font-mono font-medium tracking-wider",
+                  "text-xs font-mono font-medium tracking-wider",
                   "text-bw-muted bg-white/[0.04] border border-white/[0.06]",
                 )}
               >

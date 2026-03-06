@@ -429,7 +429,7 @@ export default function SessionOverviewPage() {
                     }`}>
                       {/* Phase icon — typographic, not emoji */}
                       <span
-                        className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 tracking-tight"
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0 tracking-tight"
                         style={{
                           background: `linear-gradient(135deg, ${phase.color}20, ${phase.color}08)`,
                           color: phase.color,
@@ -444,7 +444,7 @@ export default function SessionOverviewPage() {
                             {phase.label}
                           </span>
                           {phaseModules[0]?.comingSoon && (
-                            <span className="text-[10px] text-bw-placeholder font-medium tracking-wider uppercase">Bientôt</span>
+                            <span className="text-xs text-bw-placeholder font-medium tracking-wider uppercase">Bientôt</span>
                           )}
                         </div>
                         {!phaseModules[0]?.comingSoon && (
@@ -496,12 +496,12 @@ export default function SessionOverviewPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="p-4 glass-card">
-                      <Badge variant="default" className="uppercase text-[10px]">Intro à dire</Badge>
+                      <Badge variant="default" className="uppercase text-xs">Intro à dire</Badge>
                       <p className="text-sm text-bw-ink mt-2 italic leading-relaxed">&ldquo;{guide.introADire}&rdquo;</p>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="p-4 glass-surface rounded-xl">
-                        <Badge variant="teal" className="uppercase text-[10px]">Relancer</Badge>
+                        <Badge variant="teal" className="uppercase text-xs">Relancer</Badge>
                         <ul className="mt-2 space-y-1.5">
                           {guide.commentRelancer.map((r, i) => (
                             <li key={i} className="text-xs text-bw-text leading-relaxed">&bull; {r}</li>
@@ -509,7 +509,7 @@ export default function SessionOverviewPage() {
                         </ul>
                       </div>
                       <div className="p-4 glass-surface rounded-xl">
-                        <Badge variant="violet" className="uppercase text-[10px]">Challenger</Badge>
+                        <Badge variant="violet" className="uppercase text-xs">Challenger</Badge>
                         <ul className="mt-2 space-y-1.5">
                           {guide.commentChallenger.map((c, i) => (
                             <li key={i} className="text-xs text-bw-text leading-relaxed">&bull; {c}</li>
@@ -555,15 +555,15 @@ export default function SessionOverviewPage() {
                       {/* Gradient overlay at bottom for readability */}
                       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent" />
                       {/* Year badge — top corner */}
-                      <span className="absolute top-2 right-2 text-[9px] font-mono tracking-wider px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-sm text-white/70 border border-white/10">
+                      <span className="absolute top-2 right-2 text-xs font-mono tracking-wider px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-sm text-white/70 border border-white/10">
                         {film.year}
                       </span>
                     </div>
                     {/* Info bottom */}
                     <div className="p-3 bg-white/[0.02]">
                       <p className="font-semibold text-sm text-bw-ink leading-tight tracking-tight">{film.title}</p>
-                      <p className="text-[10px] text-bw-placeholder mt-0.5">{film.director}</p>
-                      <p className="text-[10px] font-medium mt-2 px-2 py-0.5 rounded-full inline-block border"
+                      <p className="text-xs text-bw-placeholder mt-0.5">{film.director}</p>
+                      <p className="text-xs font-medium mt-2 px-2 py-0.5 rounded-full inline-block border"
                         style={{ borderColor: `${film.color}25`, color: `${film.color}CC`, backgroundColor: `${film.color}08` }}>
                         {film.theme}
                       </p>
@@ -589,7 +589,7 @@ export default function SessionOverviewPage() {
                 </CardTitle>
                 <Badge>{activeStudents.length}</Badge>
                 {hasDemoStudents && (
-                  <Badge variant="violet" className="text-[10px]">Mode démo</Badge>
+                  <Badge variant="violet" className="text-xs">Mode démo</Badge>
                 )}
               </CardHeader>
               <CardContent>
@@ -643,7 +643,7 @@ export default function SessionOverviewPage() {
                         <span className="text-lg">{s.avatar}</span>
                         <span className="text-sm text-bw-ink font-medium">{s.display_name}</span>
                         {isDemo && (
-                          <Badge variant="ghost" className="text-[9px] py-0 px-1.5">virtuel</Badge>
+                          <Badge variant="ghost" className="text-xs py-0 px-1.5">virtuel</Badge>
                         )}
                         <span className={`ml-auto w-2 h-2 rounded-full ${isDemo ? "bg-bw-violet" : "bg-bw-green"} animate-pulse`} />
                       </motion.div>
@@ -655,14 +655,14 @@ export default function SessionOverviewPage() {
               {/* Demo mode actions — below the student list */}
               {hasDemoStudents && (
                 <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
-                  <span className="text-[11px] text-bw-placeholder">
+                  <span className="text-xs text-bw-placeholder">
                     {demoStudents.length} virtuel{demoStudents.length > 1 ? "s" : ""}
                     {realStudents.length > 0 && ` + ${realStudents.length} reel${realStudents.length > 1 ? "s" : ""}`}
                   </span>
                   <Button
                     variant="ghost"
                     size="xs"
-                    className="text-bw-danger/70 hover:text-bw-danger hover:bg-bw-danger/10 text-[11px]"
+                    className="text-bw-danger/70 hover:text-bw-danger hover:bg-bw-danger/10 text-xs"
                     disabled={deactivateDemo.isPending}
                     onClick={() => deactivateDemo.mutate()}
                   >
@@ -677,7 +677,7 @@ export default function SessionOverviewPage() {
                   <Button
                     variant="ghost"
                     size="xs"
-                    className="text-bw-violet/60 hover:text-bw-violet hover:bg-bw-violet/10 text-[11px] w-full"
+                    className="text-bw-violet/60 hover:text-bw-violet hover:bg-bw-violet/10 text-xs w-full"
                     disabled={activateDemo.isPending}
                     onClick={() => activateDemo.mutate()}
                   >

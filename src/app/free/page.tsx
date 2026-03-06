@@ -264,7 +264,7 @@ export default function FreePage() {
                   <span className={`text-sm font-medium block ${level === l.key ? "text-bw-violet" : "text-bw-text"}`}>
                     {l.label}
                   </span>
-                  <span className={`text-[10px] block mt-0.5 ${level === l.key ? "text-bw-violet/70" : "text-bw-muted"}`}>
+                  <span className={`text-xs block mt-0.5 ${level === l.key ? "text-bw-violet/70" : "text-bw-muted"}`}>
                     {l.desc}
                   </span>
                 </motion.button>

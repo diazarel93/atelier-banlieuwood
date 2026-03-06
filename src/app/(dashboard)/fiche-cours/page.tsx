@@ -189,7 +189,7 @@ export default function FicheCoursPage() {
         {fiche && (
           <div className="space-y-4">
             {provider && (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-bw-bg/50 text-bw-muted border border-white/[0.06]">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-bw-bg/50 text-bw-muted border border-white/[0.06]">
                 {provider === "fallback" ? "Template" : provider}
               </span>
             )}
@@ -206,7 +206,7 @@ export default function FicheCoursPage() {
               <div className="space-y-2">
                 {fiche.objectives.map((obj, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5"
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5"
                       style={{
                         backgroundColor: `${SOCLE_COLORS[obj.socleCommun] || "#666"}20`,
                         color: SOCLE_COLORS[obj.socleCommun] || "#666",
@@ -256,7 +256,7 @@ export default function FicheCoursPage() {
               <div className="space-y-3">
                 {fiche.animationTips.map((tip, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <span className="text-[10px] font-mono text-bw-violet bg-bw-violet/10 px-2 py-0.5 rounded flex-shrink-0 mt-0.5">
+                    <span className="text-xs font-mono text-bw-violet bg-bw-violet/10 px-2 py-0.5 rounded flex-shrink-0 mt-0.5">
                       {tip.timing}
                     </span>
                     <div>

@@ -277,7 +277,7 @@ function FilmVivant({
                 className="flex items-center gap-2 mt-6 mb-2"
               >
                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
-                <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color }}>
+                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color }}>
                   {choice.restitutionLabel || choice.category}
                 </span>
                 <div className="flex-1 h-px" style={{ backgroundColor: `${color}20` }} />
@@ -294,7 +294,7 @@ function FilmVivant({
               }`}
             >
               {choice.isMine && (
-                <span className="absolute -top-2 right-3 text-[9px] font-bold text-bw-amber bg-bw-amber/20 px-2 py-0.5 rounded-full">
+                <span className="absolute -top-2 right-3 text-xs font-bold text-bw-amber bg-bw-amber/20 px-2 py-0.5 rounded-full">
                   Ton idee
                 </span>
               )}
@@ -357,10 +357,10 @@ function PitchRecap({ pitch }: { pitch: MyPitch }) {
           </div>
         </div>
         <div className="flex gap-2">
-          <span className="px-2 py-1 text-[10px] rounded-lg bg-bw-amber/10 border border-bw-amber/20 text-bw-amber">
+          <span className="px-2 py-1 text-xs rounded-lg bg-bw-amber/10 border border-bw-amber/20 text-bw-amber">
             Objectif : {pitch.objectif}
           </span>
-          <span className="px-2 py-1 text-[10px] rounded-lg bg-bw-danger/10 border border-bw-danger/20 text-bw-danger">
+          <span className="px-2 py-1 text-xs rounded-lg bg-bw-danger/10 border border-bw-danger/20 text-bw-danger">
             Obstacle : {pitch.obstacle}
           </span>
         </div>
@@ -420,17 +420,17 @@ function Contributions({
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-bw-elevated rounded-xl p-3 text-center border border-white/[0.06]">
           <p className="text-2xl font-bold text-bw-primary">{myResponses.length}</p>
-          <p className="text-[10px] text-bw-muted mt-0.5">Reponses</p>
+          <p className="text-xs text-bw-muted mt-0.5">Reponses</p>
         </div>
         <div className="bg-bw-elevated rounded-xl p-3 text-center border border-white/[0.06]">
           <p className="text-2xl font-bold text-bw-amber">{myChosenCount}</p>
-          <p className="text-[10px] text-bw-muted mt-0.5">Retenues</p>
+          <p className="text-xs text-bw-muted mt-0.5">Retenues</p>
         </div>
         <div className="bg-bw-elevated rounded-xl p-3 text-center border border-white/[0.06]">
           <p className="text-2xl font-bold text-bw-teal">
             {totalChoices > 0 ? Math.round((myChosenCount / totalChoices) * 100) : 0}%
           </p>
-          <p className="text-[10px] text-bw-muted mt-0.5">Impact</p>
+          <p className="text-xs text-bw-muted mt-0.5">Impact</p>
         </div>
       </div>
 
@@ -453,7 +453,7 @@ function Contributions({
               <div className="flex items-start justify-between gap-2">
                 <p className="text-sm leading-relaxed flex-1">{resp.text}</p>
                 {wasChosen && (
-                  <span className="text-[9px] font-bold text-bw-amber bg-bw-amber/20 px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5">
+                  <span className="text-xs font-bold text-bw-amber bg-bw-amber/20 px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5">
                     Retenue
                   </span>
                 )}

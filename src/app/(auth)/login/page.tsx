@@ -208,7 +208,7 @@ export default function LoginPage() {
           {!forgotMode && (
             <div className="flex items-center gap-3">
               <div className="flex-1 h-px bg-white/[0.06]" />
-              <span className="text-[11px] uppercase tracking-wider text-bw-muted font-medium">ou</span>
+              <span className="text-xs uppercase tracking-wider text-bw-muted font-medium">ou</span>
               <div className="flex-1 h-px bg-white/[0.06]" />
             </div>
           )}

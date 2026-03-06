@@ -92,19 +92,19 @@ export function DoneState({ sessionId, stats, xp, characterCard }: DoneStateProp
             <p className="text-xl sm:text-2xl font-bold text-bw-primary">
               <CountUp target={stats.responses} />
             </p>
-            <p className="text-[10px] text-bw-muted mt-0.5">R&eacute;ponses</p>
+            <p className="text-xs text-bw-muted mt-0.5">R&eacute;ponses</p>
           </div>
           <div className="glass-card p-3">
             <p className="text-xl sm:text-2xl font-bold text-bw-gold">
               <CountUp target={stats.retained} />
             </p>
-            <p className="text-[10px] text-bw-muted mt-0.5">Retenues</p>
+            <p className="text-xs text-bw-muted mt-0.5">Retenues</p>
           </div>
           <div className="glass-card p-3">
             <p className="text-xl sm:text-2xl font-bold text-bw-teal">
               <CountUp target={stats.bestStreak} />
             </p>
-            <p className="text-[10px] text-bw-muted mt-0.5">Meilleur streak</p>
+            <p className="text-xs text-bw-muted mt-0.5">Meilleur streak</p>
           </div>
         </motion.div>
       )}
@@ -196,7 +196,7 @@ export function DoneState({ sessionId, stats, xp, characterCard }: DoneStateProp
                 {leaderboard.badges.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 justify-center">
                     {leaderboard.badges.map((b) => (
-                      <span key={b.id} className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-bw-gold/15 text-bw-gold border border-bw-gold/20" title={b.description}>
+                      <span key={b.id} className="text-xs font-semibold px-2.5 py-1 rounded-full bg-bw-gold/15 text-bw-gold border border-bw-gold/20" title={b.description}>
                         {b.label}
                       </span>
                     ))}
@@ -207,15 +207,15 @@ export function DoneState({ sessionId, stats, xp, characterCard }: DoneStateProp
                 <div className="grid grid-cols-3 gap-2 text-center">
                   <div className="glass-card p-2">
                     <p className="text-lg font-bold text-bw-primary">{leaderboard.totals.responses}</p>
-                    <p className="text-[9px] text-bw-muted">R&eacute;ponses</p>
+                    <p className="text-xs text-bw-muted">R&eacute;ponses</p>
                   </div>
                   <div className="glass-card p-2">
                     <p className="text-lg font-bold text-bw-violet">{leaderboard.totals.votes}</p>
-                    <p className="text-[9px] text-bw-muted">Votes</p>
+                    <p className="text-xs text-bw-muted">Votes</p>
                   </div>
                   <div className="glass-card p-2">
                     <p className="text-lg font-bold text-bw-gold">{leaderboard.totals.retained}</p>
-                    <p className="text-[9px] text-bw-muted">Choix collectifs</p>
+                    <p className="text-xs text-bw-muted">Choix collectifs</p>
                   </div>
                 </div>
 

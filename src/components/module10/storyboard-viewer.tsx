@@ -42,7 +42,7 @@ export function StoryboardViewer({ prenom, trait, objectif, obstacle, pitchText 
         <button
           onClick={handleDownload}
           disabled={downloading}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-medium text-white/60 bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.1] hover:text-white transition-all cursor-pointer disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white/60 bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.1] hover:text-white transition-all cursor-pointer disabled:opacity-40"
         >
           {downloading ? (
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin">
@@ -98,7 +98,7 @@ export function StoryboardViewer({ prenom, trait, objectif, obstacle, pitchText 
 
             {/* Panel label */}
             <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1">
-              <span className="text-[9px] font-bold uppercase tracking-wider text-white/70">
+              <span className="text-xs font-bold uppercase tracking-wider text-white/70">
                 {PANEL_LABELS[i]}
               </span>
             </div>

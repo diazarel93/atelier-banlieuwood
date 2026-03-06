@@ -22,9 +22,9 @@ function getAvatarSize(count: number): number {
 }
 
 function getFontSize(count: number): { name: string; creator: string } {
-  if (count <= 8) return { name: "text-sm", creator: "text-[11px]" };
-  if (count <= 16) return { name: "text-xs", creator: "text-[10px]" };
-  return { name: "text-[11px]", creator: "text-[9px]" };
+  if (count <= 8) return { name: "text-sm", creator: "text-xs" };
+  if (count <= 16) return { name: "text-xs", creator: "text-xs" };
+  return { name: "text-xs", creator: "text-xs" };
 }
 
 export interface PosterGalleryProps {
@@ -175,7 +175,7 @@ export function PosterGallery({ submissions }: PosterGalleryProps) {
       <button
         onClick={handleDownloadPoster}
         disabled={downloading}
-        className="mx-auto flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-medium text-white/50 bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] hover:text-white/70 transition-all cursor-pointer disabled:opacity-40"
+        className="mx-auto flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-white/50 bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] hover:text-white/70 transition-all cursor-pointer disabled:opacity-40"
       >
         {downloading ? (
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin">

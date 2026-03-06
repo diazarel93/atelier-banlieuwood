@@ -19,7 +19,7 @@ const SIZE_MAP: Record<MascotSize, number> = {
 };
 
 const BUBBLE_TEXT_SIZE: Record<MascotSize, string> = {
-  sm: "text-[10px]",
+  sm: "text-xs",
   md: "text-xs",
   lg: "text-sm",
 };

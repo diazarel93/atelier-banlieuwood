@@ -88,7 +88,7 @@ export function NotebookState({
       {/* Observation suggestions */}
       <div className="flex flex-wrap gap-2">
         {["Dans la rue", "À la maison", "En cours", "Dans les transports"].map((s) => (
-          <span key={s} className="text-[10px] px-2 py-0.5 rounded-full bg-bw-violet/10 text-bw-violet/70 border border-bw-violet/20">
+          <span key={s} className="text-xs px-2 py-0.5 rounded-full bg-bw-violet/10 text-bw-violet/70 border border-bw-violet/20">
             {s}
           </span>
         ))}

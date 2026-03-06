@@ -867,7 +867,7 @@ export default function PlayPage() {
             className="w-full max-w-md mb-3"
           >
             <div className="px-4 py-3 rounded-xl bg-bw-amber/10 border border-bw-amber/30 text-center space-y-1">
-              <p className="text-[10px] text-bw-amber font-semibold uppercase tracking-wider">Message du prof</p>
+              <p className="text-xs text-bw-amber font-semibold uppercase tracking-wider">Message du prof</p>
               <p className="text-sm text-bw-amber">{data.teacherNudge}</p>
             </div>
           </motion.div>
@@ -884,7 +884,7 @@ export default function PlayPage() {
             className="w-full max-w-md mb-3"
           >
             <div className="px-4 py-3 rounded-xl bg-bw-primary/15 border border-bw-primary/30 text-center space-y-1 relative">
-              <p className="text-[10px] text-bw-primary font-semibold uppercase tracking-wider">Message du prof</p>
+              <p className="text-xs text-bw-primary font-semibold uppercase tracking-wider">Message du prof</p>
               <p className="text-sm text-white font-medium">{broadcastMsg}</p>
               <button
                 onClick={() => setBroadcastMsg(null)}
@@ -932,7 +932,7 @@ export default function PlayPage() {
               const seanceMax = getSeanceMax(mod, seance);
               return (
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-medium text-bw-primary bg-bw-primary/10 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-medium text-bw-primary bg-bw-primary/10 px-2 py-0.5 rounded-full">
                     {seanceLabels[seance] || `Séance ${seance}`}
                   </span>
                   <span className="text-xs text-bw-muted tabular-nums">
@@ -964,7 +964,7 @@ export default function PlayPage() {
 
           {/* Team badge */}
           {data.team && (
-            <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full border"
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full border"
               style={{ color: data.team.teamColor, borderColor: `${data.team.teamColor}40`, backgroundColor: `${data.team.teamColor}15` }}>
               {data.team.teamName}
             </span>
@@ -979,7 +979,7 @@ export default function PlayPage() {
             {!isFreeMode && (
               <div className="flex items-center gap-1">
                 <div className="w-1.5 h-1.5 rounded-full bg-bw-teal" />
-                <span className="text-[10px] text-bw-muted tabular-nums">{data.connectedCount}</span>
+                <span className="text-xs text-bw-muted tabular-nums">{data.connectedCount}</span>
               </div>
             )}
           </div>
@@ -1017,7 +1017,7 @@ export default function PlayPage() {
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                  className="flex-shrink-0 text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border"
+                  className="flex-shrink-0 text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border"
                   style={{ color: cat.color, borderColor: `${cat.color}40`, backgroundColor: `${cat.color}10` }}
                 >
                   {cat.label}

@@ -263,7 +263,7 @@ export function AvatarBuilderState({
         <AnimatePresence mode="wait">
           {tab === "peau" && (
             <motion.div key="peau" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="space-y-2">
-              <p className="text-[10px] text-bw-muted uppercase tracking-wider">Teinte de peau</p>
+              <p className="text-xs text-bw-muted uppercase tracking-wider">Teinte de peau</p>
               <SwatchGrid options={AVATAR_SKIN_COLOR} field="skinColor" />
             </motion.div>
           )}
@@ -271,15 +271,15 @@ export function AvatarBuilderState({
           {tab === "coiffure" && (
             <motion.div key="coiffure" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="space-y-3">
               <div>
-                <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Coiffure</p>
+                <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Coiffure</p>
                 <LabelGrid options={AVATAR_TOP} field="top" />
               </div>
               <div>
-                <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Couleur cheveux</p>
+                <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Couleur cheveux</p>
                 <SwatchGrid options={AVATAR_HAIR_COLOR} field="hairColor" />
               </div>
               <div>
-                <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Couvre-chef</p>
+                <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Couvre-chef</p>
                 <LabelGrid options={AVATAR_HEADWEAR} onSelect={setHeadwear} selectedKey={currentHeadwear} />
               </div>
             </motion.div>
@@ -288,15 +288,15 @@ export function AvatarBuilderState({
           {tab === "visage" && (
             <motion.div key="visage" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="space-y-3">
               <div>
-                <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Yeux</p>
+                <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Yeux</p>
                 <LabelGrid options={AVATAR_EYES} field="eyes" />
               </div>
               <div>
-                <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Sourcils</p>
+                <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Sourcils</p>
                 <LabelGrid options={AVATAR_EYEBROWS} field="eyebrows" />
               </div>
               <div>
-                <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Bouche</p>
+                <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Bouche</p>
                 <LabelGrid options={AVATAR_MOUTH} field="mouth" />
               </div>
             </motion.div>
@@ -305,25 +305,25 @@ export function AvatarBuilderState({
           {tab === "style" && (
             <motion.div key="style" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="space-y-3">
               <div>
-                <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Vêtement</p>
+                <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Vêtement</p>
                 <LabelGrid options={AVATAR_CLOTHING} field="clothing" />
               </div>
               <div>
-                <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Couleur vêtement</p>
+                <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Couleur vêtement</p>
                 <SwatchGrid options={AVATAR_CLOTHES_COLOR} field="clothesColor" />
               </div>
               {currentKey("clothing") === "graphicShirt" && (
                 <div>
-                  <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Motif t-shirt</p>
+                  <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Motif t-shirt</p>
                   <LabelGrid options={AVATAR_GRAPHIC} field="clothingGraphic" />
                 </div>
               )}
               <div>
-                <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Accessoires</p>
+                <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Accessoires</p>
                 <LabelGrid options={AVATAR_ACCESSORIES} onSelect={setAccessory} selectedKey={currentAccessory} />
               </div>
               <div>
-                <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Barbe / Moustache</p>
+                <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Barbe / Moustache</p>
                 <LabelGrid options={AVATAR_FACIAL_HAIR} onSelect={setFacialHairOpt} selectedKey={currentFacialHair} />
               </div>
             </motion.div>
@@ -334,7 +334,7 @@ export function AvatarBuilderState({
 
       {/* Trait dominant */}
       <div className="w-full">
-        <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1.5">Trait dominant</p>
+        <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Trait dominant</p>
         <div className="flex flex-wrap gap-1.5">
           {TRAITS_LOCAL.map((t) => (
             <motion.button key={t.key} whileTap={{ scale: 0.95 }}
@@ -353,14 +353,14 @@ export function AvatarBuilderState({
       {/* Force + Faiblesse */}
       <div className="w-full space-y-2">
         <div>
-          <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1">Sa force</p>
+          <p className="text-xs text-bw-muted uppercase tracking-wider mb-1">Sa force</p>
           <input value={force} onChange={(e) => setForce(e.target.value)}
             placeholder="Ce qu'il/elle fait le mieux..."
             maxLength={100}
             className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-teal focus:outline-none transition-colors" />
         </div>
         <div>
-          <p className="text-[10px] text-bw-muted uppercase tracking-wider mb-1">Sa faiblesse</p>
+          <p className="text-xs text-bw-muted uppercase tracking-wider mb-1">Sa faiblesse</p>
           <input value={faiblesse} onChange={(e) => setFaiblesse(e.target.value)}
             placeholder="Ce qui le/la freine..."
             maxLength={100}

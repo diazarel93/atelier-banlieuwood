@@ -88,7 +88,7 @@ export function PitchConfrontationState({
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.8 }}
-        className="-mt-3 w-8 h-8 rounded-full bg-bw-elevated border border-white/10 flex items-center justify-center text-[10px] font-bold text-bw-muted">
+        className="-mt-3 w-8 h-8 rounded-full bg-bw-elevated border border-white/10 flex items-center justify-center text-xs font-bold text-bw-muted">
         VS
       </motion.div>
 
@@ -99,19 +99,19 @@ export function PitchConfrontationState({
             className="w-full space-y-3 mt-2">
             <p className="text-xs text-bw-muted text-center">Réponds à ces 3 questions après avoir écouté les pitchs :</p>
             <div>
-              <label className="text-[10px] text-bw-muted uppercase tracking-wider">1. Qui est le personnage ?</label>
+              <label className="text-xs text-bw-muted uppercase tracking-wider">1. Qui est le personnage ?</label>
               <input value={answers.who} onChange={(e) => setAnswers((a) => ({ ...a, who: e.target.value }))}
                 maxLength={100} placeholder="Décris le personnage principal..."
                 className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors" />
             </div>
             <div>
-              <label className="text-[10px] text-bw-muted uppercase tracking-wider">2. Que veut-il/elle ?</label>
+              <label className="text-xs text-bw-muted uppercase tracking-wider">2. Que veut-il/elle ?</label>
               <input value={answers.wants} onChange={(e) => setAnswers((a) => ({ ...a, wants: e.target.value }))}
                 maxLength={100} placeholder="Son objectif..."
                 className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors" />
             </div>
             <div>
-              <label className="text-[10px] text-bw-muted uppercase tracking-wider">3. Qu&apos;est-ce qui l&apos;en empêche ?</label>
+              <label className="text-xs text-bw-muted uppercase tracking-wider">3. Qu&apos;est-ce qui l&apos;en empêche ?</label>
               <input value={answers.obstacle} onChange={(e) => setAnswers((a) => ({ ...a, obstacle: e.target.value }))}
                 maxLength={100} placeholder="L'obstacle principal..."
                 className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors" />

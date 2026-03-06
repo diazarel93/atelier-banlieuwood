@@ -252,7 +252,7 @@ export function SceneBuilderState({
           const color = tierColors[tier] || "#888";
           return (
             <div key={tier}>
-              <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color }}>
+              <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color }}>
                 {tierLabels[tier] || `Tier ${tier}`}
               </p>
               <div className="flex flex-wrap gap-1.5">

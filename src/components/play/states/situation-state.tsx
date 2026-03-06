@@ -63,7 +63,7 @@ export function SituationState({
         <div className="flex items-center gap-2 flex-wrap">
           {situation.category && (
             <span
-              className="text-[10px] font-bold uppercase px-2.5 py-1 rounded-full tracking-wider"
+              className="text-xs font-bold uppercase px-2.5 py-1 rounded-full tracking-wider"
               style={{ background: `${catColor}20`, color: catColor, border: `1px solid ${catColor}30` }}
             >
               {catLabel}

@@ -317,14 +317,14 @@ export function PreSessionChecklist({
                     {item.label}
                   </p>
                   <p
-                    className={`text-[11px] mt-0.5 leading-snug ${
+                    className={`text-xs mt-0.5 leading-snug ${
                       item.autoChecked ? "text-bw-green/80" : "text-bw-amber/70"
                     }`}
                   >
                     {item.statusText}
                   </p>
                   {item.tip && !item.autoChecked && (
-                    <p className="text-[10px] text-bw-muted/60 mt-0.5 italic">
+                    <p className="text-xs text-bw-muted/60 mt-0.5 italic">
                       {item.tip}
                     </p>
                   )}

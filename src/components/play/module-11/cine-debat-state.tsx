@@ -90,8 +90,8 @@ function CitationStimulus({ module11 }: { module11: Module11Data }) {
                 alt={film.title}
                 className="w-16 h-24 rounded-lg object-cover border border-white/[0.06]"
               />
-              <p className="text-[9px] text-bw-muted mt-1 line-clamp-1">{film.title}</p>
-              <p className="text-[8px] text-bw-muted/60">{film.year}</p>
+              <p className="text-xs text-bw-muted mt-1 line-clamp-1">{film.title}</p>
+              <p className="text-xs text-bw-muted/60">{film.year}</p>
             </div>
           ))}
         </motion.div>
@@ -344,12 +344,12 @@ export function CineDebatState({
       {/* Theme badge */}
       <div className="flex items-center gap-2">
         <span
-          className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
+          className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
           style={{ backgroundColor: `${themeColor}15`, color: themeColor }}
         >
           {module11.type === "citation" ? "💬 Citation" : module11.type === "scene" ? "🎬 Scène" : module11.type === "poster" ? "🖼️ Affiche" : "⚖️ Débat"}
         </span>
-        <span className="text-[10px] text-bw-muted">{THEME_LABELS[module11.theme] || ""}</span>
+        <span className="text-xs text-bw-muted">{THEME_LABELS[module11.theme] || ""}</span>
       </div>
 
       {/* Stimulus */}

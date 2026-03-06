@@ -69,9 +69,9 @@ function BonusTrivia() {
     >
       <div className="rounded-xl overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(139,92,246,0.08), rgba(78,205,196,0.05))", border: "1px solid rgba(139,92,246,0.15)" }}>
         <div className="px-4 py-2 flex items-center justify-between" style={{ background: "rgba(139,92,246,0.08)" }}>
-          <span className="text-[9px] uppercase tracking-widest text-bw-violet font-bold">Quiz Bonus</span>
+          <span className="text-xs uppercase tracking-widest text-bw-violet font-bold">Quiz Bonus</span>
           {total > 0 && (
-            <span className="text-[10px] text-bw-violet font-semibold">{score}/{total}</span>
+            <span className="text-xs text-bw-violet font-semibold">{score}/{total}</span>
           )}
         </div>
         <div className="px-4 py-3 space-y-2.5">
@@ -88,7 +88,7 @@ function BonusTrivia() {
                       key={i}
                       onClick={() => handleSelect(i)}
                       disabled={revealed}
-                      className={`text-left px-3 py-2 rounded-lg text-[11px] transition-all cursor-pointer ${
+                      className={`text-left px-3 py-2 rounded-lg text-xs transition-all cursor-pointer ${
                         revealed
                           ? isCorrect
                             ? "bg-bw-teal/15 border border-bw-teal/30 text-bw-teal font-medium"
@@ -105,8 +105,8 @@ function BonusTrivia() {
               </div>
               {selected !== null && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2 space-y-2">
-                  <p className="text-[10px] text-bw-muted leading-relaxed">{q.explanation}</p>
-                  <button onClick={handleNext} className="w-full py-1.5 rounded-lg text-[10px] font-semibold bg-bw-violet/15 text-bw-violet hover:bg-bw-violet/25 cursor-pointer transition-colors">
+                  <p className="text-xs text-bw-muted leading-relaxed">{q.explanation}</p>
+                  <button onClick={handleNext} className="w-full py-1.5 rounded-lg text-xs font-semibold bg-bw-violet/15 text-bw-violet hover:bg-bw-violet/25 cursor-pointer transition-colors">
                     Question suivante →
                   </button>
                 </motion.div>
@@ -218,10 +218,10 @@ export function SentState({ responsesCount, connectedCount, streak, lastXpGain, 
             {currentTip && (
               <div className="rounded-xl px-4 py-3" style={{ background: "linear-gradient(135deg, rgba(212,168,67,0.08), rgba(139,92,246,0.05))", border: "1px solid rgba(212,168,67,0.12)" }}>
                 <div className="flex items-center justify-between mb-1">
-                  <p className="text-[9px] uppercase tracking-widest text-bw-gold font-bold">
+                  <p className="text-xs uppercase tracking-widest text-bw-gold font-bold">
                     {TYPE_ICONS[currentTip.type] || "🎬"} Le saviez-vous ?
                   </p>
-                  <span className="text-[8px] text-bw-muted">{tipIndex + 1}/{tips.length}</span>
+                  <span className="text-xs text-bw-muted">{tipIndex + 1}/{tips.length}</span>
                 </div>
                 <AnimatePresence mode="wait">
                   <motion.p key={tipIndex} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }} className="text-xs text-bw-text leading-relaxed">
@@ -229,7 +229,7 @@ export function SentState({ responsesCount, connectedCount, streak, lastXpGain, 
                   </motion.p>
                 </AnimatePresence>
                 {currentTip.source && (
-                  <p className="text-[9px] text-bw-muted mt-1 italic">— {currentTip.source}</p>
+                  <p className="text-xs text-bw-muted mt-1 italic">— {currentTip.source}</p>
                 )}
               </div>
             )}

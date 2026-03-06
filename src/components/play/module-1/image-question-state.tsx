@@ -106,13 +106,13 @@ export function ImageQuestionState({
             {currentPhase > 1 ? (
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 13l4 4L19 7"/></svg>
             ) : (
-              <span className="w-5 h-5 rounded-full bg-bw-violet/20 text-bw-violet flex items-center justify-center text-[10px] font-bold">1</span>
+              <span className="w-5 h-5 rounded-full bg-bw-violet/20 text-bw-violet flex items-center justify-center text-xs font-bold">1</span>
             )}
             Observer
           </div>
           <div className="w-6 h-px bg-white/10" />
           <div className={`flex items-center gap-1.5 text-xs ${currentPhase === 2 ? "text-bw-violet font-semibold" : "text-bw-muted"}`}>
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${currentPhase === 2 ? "bg-bw-violet/20 text-bw-violet" : "bg-white/5 text-bw-muted"}`}>2</span>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${currentPhase === 2 ? "bg-bw-violet/20 text-bw-violet" : "bg-white/5 text-bw-muted"}`}>2</span>
             Interpréter
           </div>
         </div>
@@ -168,7 +168,7 @@ export function ImageQuestionState({
       {/* Phase 1 text displayed in phase 2 (read-only) */}
       {isTwoPhase && currentPhase === 2 && phase1Text && (
         <div className="w-full p-3 rounded-xl bg-bw-violet/10 border border-bw-violet/20">
-          <p className="text-[10px] text-bw-violet uppercase tracking-wider mb-1">Ta description (phase 1)</p>
+          <p className="text-xs text-bw-violet uppercase tracking-wider mb-1">Ta description (phase 1)</p>
           <p className="text-sm text-bw-text/80 italic leading-relaxed">{phase1Text}</p>
         </div>
       )}
@@ -212,7 +212,7 @@ export function ImageQuestionState({
           />
 
           <div className="flex justify-between items-center">
-            <span className="text-[10px] text-bw-muted">{text.length}/500</span>
+            <span className="text-xs text-bw-muted">{text.length}/500</span>
             <motion.button whileTap={{ scale: 0.95 }}
               onClick={handleSubmit}
               disabled={!text.trim() || submitting}

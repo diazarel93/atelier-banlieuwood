@@ -119,14 +119,14 @@ export function PitchAssemblyState({
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, type: "spring", stiffness: 200, damping: 15 }}
-            className="px-2 py-1 text-[10px] rounded-lg bg-bw-amber/10 border border-bw-amber/20 text-bw-amber">
+            className="px-2 py-1 text-xs rounded-lg bg-bw-amber/10 border border-bw-amber/20 text-bw-amber">
             Objectif : {objectifLabel}
           </motion.span>
           <motion.span
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6, type: "spring", stiffness: 200, damping: 15 }}
-            className="px-2 py-1 text-[10px] rounded-lg bg-bw-danger/10 border border-bw-danger/20 text-bw-danger">
+            className="px-2 py-1 text-xs rounded-lg bg-bw-danger/10 border border-bw-danger/20 text-bw-danger">
             Obstacle : {obstacleLabel}
           </motion.span>
         </div>
@@ -141,7 +141,7 @@ export function PitchAssemblyState({
       <div className="flex items-center gap-2 w-full">
         {["example", "starter", "reformulate"].map((type) => (
           <button key={type} onClick={() => handleHelp(type)} disabled={helpLoading || helpCount >= 3}
-            className="px-2 py-1 text-[10px] rounded-lg bg-bw-elevated border border-white/[0.06] text-bw-muted hover:text-bw-amber hover:border-bw-amber/30 disabled:opacity-30 transition-colors cursor-pointer">
+            className="px-2 py-1 text-xs rounded-lg bg-bw-elevated border border-white/[0.06] text-bw-muted hover:text-bw-amber hover:border-bw-amber/30 disabled:opacity-30 transition-colors cursor-pointer">
             {type === "example" ? "💡" : type === "starter" ? "✏️" : "🔄"}
           </button>
         ))}
@@ -151,10 +151,10 @@ export function PitchAssemblyState({
               initial={{ opacity: 0, x: -5 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0 }}
-              className="text-[10px] text-bw-green ml-auto">Brouillon sauvé ✓</motion.span>
+              className="text-xs text-bw-green ml-auto">Brouillon sauvé ✓</motion.span>
           )}
         </AnimatePresence>
-        <span className={`text-[10px] ${saved ? "" : "ml-auto"} ${pitchText.trim().length < MIN_PITCH_LENGTH ? "text-bw-amber" : "text-bw-muted"}`}>
+        <span className={`text-xs ${saved ? "" : "ml-auto"} ${pitchText.trim().length < MIN_PITCH_LENGTH ? "text-bw-amber" : "text-bw-muted"}`}>
           {pitchText.trim().length}/{MIN_PITCH_LENGTH} min
         </span>
       </div>

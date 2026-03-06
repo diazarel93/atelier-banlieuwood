@@ -98,7 +98,7 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[11px] font-semibold cursor-pointer transition-all"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-all"
           style={{
             background: "linear-gradient(135deg, rgba(139,92,246,0.12), rgba(78,205,196,0.08))",
             border: "1px solid rgba(139,92,246,0.2)",
@@ -106,7 +106,7 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
         >
           <span>{"\u2728"}</span>
           <span className="text-bw-violet">Assistant Cr&eacute;atif IA</span>
-          <span className="text-[9px] text-bw-muted ml-1">({usesLeft} restants)</span>
+          <span className="text-xs text-bw-muted ml-1">({usesLeft} restants)</span>
         </motion.button>
       ) : (
         <motion.div
@@ -122,12 +122,12 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
           <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: "rgba(139,92,246,0.08)" }}>
             <div className="flex items-center gap-2">
               <span>{"\u2728"}</span>
-              <span className="text-[10px] uppercase tracking-widest text-bw-violet font-bold">
+              <span className="text-xs uppercase tracking-widest text-bw-violet font-bold">
                 Assistant Cr&eacute;atif
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[9px] text-bw-muted">{usesLeft} restants</span>
+              <span className="text-xs text-bw-muted">{usesLeft} restants</span>
               <button
                 onClick={() => { setOpen(false); handleReset(); }}
                 className="w-5 h-5 rounded-full flex items-center justify-center text-bw-muted hover:text-white cursor-pointer transition-colors"
@@ -145,7 +145,7 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
               {/* Step 1: Choose mode */}
               {!mode && (
                 <motion.div key="modes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-2">
-                  <p className="text-[11px] text-bw-text font-medium">Que veux-tu cr&eacute;er ?</p>
+                  <p className="text-xs text-bw-text font-medium">Que veux-tu cr&eacute;er ?</p>
                   {MODES.map((m) => (
                     <button
                       key={m.id}
@@ -156,7 +156,7 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
                       <span className="text-lg">{m.emoji}</span>
                       <div>
                         <p className="text-xs font-semibold text-white">{m.label}</p>
-                        <p className="text-[10px] text-bw-muted">{m.description}</p>
+                        <p className="text-xs text-bw-muted">{m.description}</p>
                       </div>
                     </button>
                   ))}
@@ -170,19 +170,19 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
                   <div className="flex items-center gap-2">
                     <button
                       onClick={handleReset}
-                      className="text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors"
+                      className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors"
                     >
                       &larr;
                     </button>
                     <span className="text-sm">{MODES.find((m) => m.id === mode)?.emoji}</span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-bw-violet">
+                    <span className="text-xs font-bold uppercase tracking-wider text-bw-violet">
                       {MODES.find((m) => m.id === mode)?.label}
                     </span>
                   </div>
 
                   {/* Input prompt */}
                   <div>
-                    <p className="text-[10px] text-bw-muted mb-1.5">
+                    <p className="text-xs text-bw-muted mb-1.5">
                       {mode === "dialogue"
                         ? "Décris tes personnages et la situation :"
                         : mode === "scene"
@@ -206,11 +206,11 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
                       disabled={loading}
                     />
                     <div className="flex justify-between mt-1">
-                      <span className="text-[9px] text-bw-muted">{input.length}/500</span>
+                      <span className="text-xs text-bw-muted">{input.length}/500</span>
                       <button
                         onClick={handleSubmit}
                         disabled={!input.trim() || loading || usesLeft <= 0}
-                        className="px-3 py-1 rounded-lg text-[10px] font-semibold cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                         style={{
                           background: input.trim() && !loading ? "rgba(139,92,246,0.2)" : "rgba(255,255,255,0.04)",
                           color: input.trim() && !loading ? "#A78BFA" : undefined,
@@ -230,7 +230,7 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
                       className="flex items-center gap-2 py-2"
                     >
                       <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} className="w-4 h-4 border-2 border-bw-violet border-t-transparent rounded-full" />
-                      <span className="text-[10px] text-bw-violet">Le mentor r&eacute;fl&eacute;chit...</span>
+                      <span className="text-xs text-bw-violet">Le mentor r&eacute;fl&eacute;chit...</span>
                     </motion.div>
                   )}
 
@@ -244,12 +244,12 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
                     >
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs">{"\uD83C\uDFAC"}</span>
-                        <span className="text-[9px] uppercase tracking-widest text-bw-teal font-bold">Mentor</span>
+                        <span className="text-xs uppercase tracking-widest text-bw-teal font-bold">Mentor</span>
                       </div>
                       <p className="text-xs text-bw-text leading-relaxed whitespace-pre-wrap">{result.text}</p>
                       <button
                         onClick={() => { setInput(""); setResult(null); }}
-                        className="text-[10px] text-bw-violet hover:text-bw-violet/80 cursor-pointer transition-colors"
+                        className="text-xs text-bw-violet hover:text-bw-violet/80 cursor-pointer transition-colors"
                       >
                         Nouvelle demande &rarr;
                       </button>
