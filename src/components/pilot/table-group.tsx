@@ -35,7 +35,7 @@ function TableGroupInner({
       <div className="flex items-center gap-2">
         <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: team.team_color }} />
         <span className="text-xs font-semibold text-bw-heading truncate">{team.team_name}</span>
-        <span className="text-[10px] text-bw-muted ml-auto tabular-nums">{students.length}</span>
+        <span className="text-xs text-bw-muted ml-auto tabular-nums">{students.length}</span>
       </div>
 
       {/* Seats grid */}

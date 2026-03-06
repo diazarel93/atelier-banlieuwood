@@ -49,7 +49,7 @@ function QuestionCardInner({
             className="w-full px-4 py-2.5 flex items-center justify-between cursor-pointer hover:bg-white/[0.03] transition-colors"
           >
             <div className="flex items-center gap-3 text-xs text-bw-muted min-w-0">
-              <span className="text-[10px] uppercase tracking-wider font-bold flex-shrink-0 px-1.5 py-0.5 rounded" style={{ color: "#FF6B35", background: "rgba(255,107,53,0.1)" }}>
+              <span className="text-xs uppercase tracking-wider font-bold flex-shrink-0 px-1.5 py-0.5 rounded" style={{ color: "#FF6B35", background: "rgba(255,107,53,0.1)" }}>
                 Guide
               </span>
               <span className="truncate">
@@ -81,7 +81,7 @@ function QuestionCardInner({
               >
                 <div className="px-5 pb-4 space-y-3">
                   <div>
-                    <p className="text-[10px] uppercase tracking-wider text-bw-muted mb-0.5">
+                    <p className="text-xs uppercase tracking-wider text-bw-muted mb-0.5">
                       Ce qu&apos;on attend
                     </p>
                     <p className="text-xs text-bw-text leading-relaxed">
@@ -89,7 +89,7 @@ function QuestionCardInner({
                     </p>
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-wider text-bw-muted mb-0.5">
+                    <p className="text-xs uppercase tracking-wider text-bw-muted mb-0.5">
                       Pièges fréquents
                     </p>
                     <p className="text-xs text-bw-amber leading-relaxed">

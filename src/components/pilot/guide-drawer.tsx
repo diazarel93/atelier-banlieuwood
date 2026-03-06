@@ -54,7 +54,7 @@ export function GuideDrawer({ moduleGuide, onClose }: GuideDrawerProps) {
               {moduleGuide.socleCommun.map((d) => (
                 <span
                   key={d}
-                  className="text-[10px] px-2 py-0.5 rounded-full bg-bw-violet/20 text-bw-violet"
+                  className="text-xs px-2 py-0.5 rounded-full bg-bw-violet/20 text-bw-violet"
                   title={SOCLE_LABELS[d]}
                 >
                   {d}
@@ -102,9 +102,9 @@ export function GuideDrawer({ moduleGuide, onClose }: GuideDrawerProps) {
               {moduleGuide.phases.map((phase, i) => (
                 <div key={i} className="bg-bw-bg rounded-xl p-3 border border-white/[0.06]">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[10px] font-bold text-bw-primary">{i + 1}</span>
+                    <span className="text-xs font-bold text-bw-primary">{i + 1}</span>
                     <span className="text-xs font-semibold">{phase.name}</span>
-                    <span className="text-[10px] text-bw-muted ml-auto">{phase.timing}</span>
+                    <span className="text-xs text-bw-muted ml-auto">{phase.timing}</span>
                   </div>
                   <p className="text-xs text-bw-muted leading-relaxed">{phase.instruction}</p>
                 </div>

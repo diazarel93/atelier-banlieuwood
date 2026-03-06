@@ -143,9 +143,9 @@ function ResponseCardInner({
             <span className={`text-sm font-medium ${state === "hidden" ? "line-through text-bw-muted" : ""}`}>
               {response.students?.display_name}
             </span>
-            <span className="text-[10px] text-bw-muted">{relativeTime(response.submitted_at)}</span>
+            <span className="text-xs text-bw-muted">{relativeTime(response.submitted_at)}</span>
             {response.reset_at && (
-              <span className="text-[9px] px-1.5 py-px rounded-full bg-bw-amber/15 text-bw-amber border border-bw-amber/20">relancé</span>
+              <span className="text-xs px-1.5 py-px rounded-full bg-bw-amber/15 text-bw-amber border border-bw-amber/20">relancé</span>
             )}
           </div>
           <p className={`text-sm leading-relaxed ${state === "hidden" ? "line-through text-bw-muted" : response.reset_at ? "line-through text-bw-muted" : "text-bw-text"}`}>
@@ -159,21 +159,21 @@ function ResponseCardInner({
             <div className="mt-1.5 flex items-center gap-2">
               {response.teacher_score !== undefined && response.teacher_score > 0 && (
                 <div className="flex items-center gap-1 bg-bw-green/10 rounded px-2 py-0.5 border border-bw-green/20">
-                  <span className="text-[10px] text-bw-green">Prof</span>
-                  <span className="text-[10px] font-bold text-bw-green">{response.teacher_score}/5</span>
+                  <span className="text-xs text-bw-green">Prof</span>
+                  <span className="text-xs font-bold text-bw-green">{response.teacher_score}/5</span>
                 </div>
               )}
               {response.ai_score !== undefined && response.ai_score > 0 && (
                 <div className="flex items-center gap-1 bg-bw-violet/10 rounded px-2 py-0.5 border border-bw-violet/20">
-                  <span className="text-[10px] text-bw-violet">IA</span>
-                  <span className="text-[10px] font-bold text-bw-violet">{response.ai_score}/5</span>
+                  <span className="text-xs text-bw-violet">IA</span>
+                  <span className="text-xs font-bold text-bw-violet">{response.ai_score}/5</span>
                 </div>
               )}
             </div>
           )}
           {/* AI feedback inline */}
           {response.ai_feedback && (
-            <p className="text-[10px] text-bw-violet/70 leading-snug mt-0.5">{response.ai_feedback}</p>
+            <p className="text-xs text-bw-violet/70 leading-snug mt-0.5">{response.ai_feedback}</p>
           )}
         </div>
 

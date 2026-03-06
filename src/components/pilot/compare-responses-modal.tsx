@@ -59,7 +59,7 @@ export function CompareResponsesModal({
               <div className="flex items-center gap-2">
                 <span className="text-lg">⚖️</span>
                 <h3 className="text-sm font-semibold">Comparer 2 réponses</h3>
-                <span className="text-[10px] text-bw-muted">{selectedIds.length}/2 sélectionnées</span>
+                <span className="text-xs text-bw-muted">{selectedIds.length}/2 sélectionnées</span>
               </div>
               <button onClick={onClose} className="text-bw-muted hover:text-white text-sm cursor-pointer">✕</button>
             </div>
@@ -98,7 +98,7 @@ export function CompareResponsesModal({
 
             {/* Response list */}
             <div className="flex-1 overflow-y-auto px-5 py-3 space-y-1.5">
-              <p className="text-[10px] uppercase tracking-wider text-bw-muted font-semibold mb-2">
+              <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold mb-2">
                 Cliquez pour sélectionner ({responses.length} réponses)
               </p>
               {responses.map((r) => {
@@ -116,8 +116,8 @@ export function CompareResponsesModal({
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-sm">{r.studentAvatar}</span>
                       <span className="text-xs font-medium">{r.studentName}</span>
-                      {isSelected && <span className="text-[10px] px-1.5 py-0.5 rounded bg-bw-primary/15 text-bw-primary font-bold">✓</span>}
-                      {r.is_highlighted && <span className="text-[10px] px-1.5 py-0.5 rounded bg-bw-teal/15 text-bw-teal">Projeté</span>}
+                      {isSelected && <span className="text-xs px-1.5 py-0.5 rounded bg-bw-primary/15 text-bw-primary font-bold">✓</span>}
+                      {r.is_highlighted && <span className="text-xs px-1.5 py-0.5 rounded bg-bw-teal/15 text-bw-teal">Projeté</span>}
                     </div>
                     <p className="text-xs text-bw-text leading-relaxed line-clamp-2">{r.text}</p>
                   </button>

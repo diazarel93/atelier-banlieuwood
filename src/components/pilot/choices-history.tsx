@@ -20,7 +20,7 @@ export function ChoicesHistory({ choices }: ChoicesHistoryProps) {
 
   return (
     <div className="space-y-2">
-      <h4 className="text-[10px] uppercase tracking-wider text-bw-muted font-semibold">
+      <h4 className="text-xs uppercase tracking-wider text-bw-muted font-semibold">
         Choix collectifs ({choices.length})
       </h4>
       <div className="space-y-1.5 max-h-[300px] overflow-y-auto">
@@ -34,7 +34,7 @@ export function ChoicesHistory({ choices }: ChoicesHistoryProps) {
               title={c.chosen_text}
             >
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold" style={{ color }}>
+                <span className="text-xs font-bold" style={{ color }}>
                   Q{i + 1}
                 </span>
                 <span className="text-xs text-bw-text truncate flex-1">
@@ -43,7 +43,7 @@ export function ChoicesHistory({ choices }: ChoicesHistoryProps) {
               </div>
               {/* Tooltip on hover */}
               <div className="hidden group-hover:block absolute z-20 left-0 top-full mt-1 bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-xs text-bw-text leading-relaxed max-w-[240px] shadow-xl">
-                <span className="text-[10px] uppercase tracking-wider block mb-1" style={{ color }}>
+                <span className="text-xs uppercase tracking-wider block mb-1" style={{ color }}>
                   {c.restitution_label || c.category}
                 </span>
                 {c.chosen_text}

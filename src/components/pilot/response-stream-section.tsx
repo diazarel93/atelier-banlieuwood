@@ -112,6 +112,7 @@ export function ResponseStreamSection({
   onHideAllVisible,
 }: ResponseStreamSectionProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [overflowOpen, setOverflowOpen] = useState(false);
   const visibleResponses = responses.filter((r) => !r.is_hidden);
 
   // Apply search filter to the already-filtered responses
@@ -129,47 +130,35 @@ export function ResponseStreamSection({
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Réponses</span>
-          <motion.span
-            key={respondedCount}
-            initial={{ scale: 1.3, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className={`text-sm font-bold tabular-nums px-2 py-0.5 rounded-lg ${
-              respondedCount >= activeStudents.length
-                ? "bg-green-500/15 text-green-400"
-                : "bg-bw-teal/10 text-bw-teal"
-            }`}
-          >
-            {respondedCount}/{activeStudents.length}
-          </motion.span>
           <ElapsedTimer startedAt={respondingOpenedAt} />
         </div>
         <div className="flex items-center gap-1">
           <button onClick={onShowBroadcast} title="Message classe (B)"
-            className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+            className="px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
             📢
           </button>
           {responses.length >= 2 && (
             <button onClick={onShowCompare} title="Comparer (C)"
-              className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-violet hover:bg-bw-violet/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+              className="px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-violet hover:bg-bw-violet/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
               ⚖️
             </button>
           )}
           {highlightedCount > 0 && (
             <button onClick={onClearAllHighlights} title="Tout dé-projeter"
-              className="px-2 py-1 rounded-lg text-[10px] text-bw-amber hover:bg-bw-amber/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+              className="px-2 py-1 rounded-lg text-xs text-bw-amber hover:bg-bw-amber/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
               ✖️ {highlightedCount}
             </button>
           )}
           {questionGuide && (
             <button onClick={onToggleRevealAnswer} title="Réponse attendue"
-              className={`px-2 py-1 rounded-lg text-[10px] cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06] ${
+              className={`px-2 py-1 rounded-lg text-sm cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06] ${
                 showRevealAnswer ? "text-green-400 bg-green-500/10 border-green-500/30" : "text-bw-muted hover:text-green-400 hover:bg-green-500/10"
               }`}>
               💡
             </button>
           )}
           <button onClick={onShowExport} title="Export (E)"
-            className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+            className="px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
             📋
           </button>
         </div>
@@ -189,17 +178,17 @@ export function ResponseStreamSection({
           >
             <div className="p-3 rounded-xl border border-green-500/20" style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.06), transparent)" }}>
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] uppercase tracking-wider text-green-400 font-semibold">Réponse attendue</span>
+                <span className="text-xs uppercase tracking-wider text-green-400 font-semibold">Réponse attendue</span>
                 <button onClick={() => { navigator.clipboard.writeText(questionGuide.whatToExpect); toast.success("Copié !"); }}
-                  className="text-[10px] text-bw-muted hover:text-green-400 cursor-pointer">Copier</button>
+                  className="text-xs text-bw-muted hover:text-green-400 cursor-pointer">Copier</button>
               </div>
-              <p className="text-xs text-bw-text leading-relaxed">{questionGuide.whatToExpect}</p>
+              <p className="text-sm text-bw-text leading-relaxed">{questionGuide.whatToExpect}</p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Search + Filter chips + sort toggle */}
+      {/* Search + Filter chips + sort toggle + overflow */}
       {responses.length > 0 && (
         <div className="flex items-center gap-1.5 flex-wrap">
           {/* Search input */}
@@ -213,7 +202,7 @@ export function ResponseStreamSection({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Chercher..."
-              className="w-28 focus:w-40 transition-all duration-200 pl-7 pr-2 py-1 rounded-full text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted outline-none focus:border-bw-teal/40"
+              className="w-28 focus:w-40 transition-all duration-200 pl-7 pr-2 py-1 rounded-full text-xs bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted outline-none focus:border-bw-teal/40"
             />
           </div>
           {([
@@ -224,7 +213,7 @@ export function ResponseStreamSection({
             <button
               key={f.key}
               onClick={() => setResponseFilter(f.key)}
-              className={`px-2 py-1 rounded-full text-[10px] font-medium cursor-pointer transition-colors duration-200 ${
+              className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors duration-200 ${
                 responseFilter === f.key
                   ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30"
                   : "bg-bw-elevated text-bw-muted border border-white/[0.06] hover:text-bw-text"
@@ -235,57 +224,84 @@ export function ResponseStreamSection({
           ))}
           <div className="flex-1" />
           <button
-            onClick={() => {
-              const ids = visibleResponses.filter((r) => !r.ai_score).map((r) => r.id);
-              if (ids.length === 0) { toast("Toutes les réponses sont déjà évaluées"); return; }
-              aiEvaluate.mutate(ids.slice(0, 20));
-            }}
-            disabled={aiEvaluate.isPending}
-            className="px-2 py-1 rounded-lg text-[10px] text-bw-violet hover:bg-bw-violet/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06] disabled:opacity-40"
-            title="Évaluer les réponses par IA"
-          >
-            {aiEvaluate.isPending ? "IA..." : "🤖 Évaluer IA"}
-          </button>
-          {sessionStatus === "responding" && situation && (
-            <button
-              onClick={() => {
-                if (confirm("Relancer la question pour toute la classe ? Les réponses précédentes seront conservées.")) {
-                  resetAllResponses.mutate(situation!.id);
-                }
-              }}
-              disabled={resetAllResponses.isPending}
-              className="px-2 py-1 rounded-lg text-[10px] text-bw-amber hover:bg-bw-amber/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06] disabled:opacity-40"
-              title="Relancer la question pour toute la classe"
-            >
-              {resetAllResponses.isPending ? "Relance..." : "🔄 Relancer tous"}
-            </button>
-          )}
-          <button
             onClick={() => setResponseSortMode(responseSortMode === "time" ? "highlighted" : "time")}
-            className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-text cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]"
+            className="px-2 py-1 rounded-lg text-xs text-bw-muted hover:text-bw-text cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]"
             title={responseSortMode === "time" ? "Tri chronologique" : "Tri par mise en avant"}
           >
             {responseSortMode === "time" ? "⏱ Chrono" : "⭐ Priorité"}
           </button>
-          {/* Bulk actions */}
-          {visibleResponses.length > 2 && onHighlightAllVisible && (
+
+          {/* Overflow menu for bulk actions */}
+          <div className="relative">
             <button
-              onClick={onHighlightAllVisible}
-              className="px-2 py-1 rounded-lg text-[10px] text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]"
-              title="Projeter toutes les réponses visibles"
+              onClick={() => setOverflowOpen(!overflowOpen)}
+              className="px-2 py-1 rounded-lg text-xs text-bw-muted hover:text-bw-text cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]"
+              title="Plus d'actions"
             >
-              ⭐ Tout projeter
+              ⋯
             </button>
-          )}
-          {visibleResponses.length > 2 && onHideAllVisible && (
-            <button
-              onClick={onHideAllVisible}
-              className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-danger hover:bg-bw-danger/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]"
-              title="Masquer toutes les réponses visibles"
-            >
-              👁 Tout masquer
-            </button>
-          )}
+            <AnimatePresence>
+              {overflowOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setOverflowOpen(false)} />
+                  <motion.div
+                    initial={{ opacity: 0, y: -4, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 top-full mt-1.5 z-50 w-52 bg-bw-surface border border-white/[0.08] rounded-xl shadow-2xl overflow-hidden"
+                  >
+                    <button
+                      onClick={() => {
+                        const ids = visibleResponses.filter((r) => !r.ai_score).map((r) => r.id);
+                        if (ids.length === 0) { toast("Toutes les réponses sont déjà évaluées"); setOverflowOpen(false); return; }
+                        aiEvaluate.mutate(ids.slice(0, 20));
+                        setOverflowOpen(false);
+                      }}
+                      disabled={aiEvaluate.isPending}
+                      className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.06] cursor-pointer transition-colors flex items-center gap-2 disabled:opacity-40"
+                    >
+                      <span className="w-5 text-center text-sm">🤖</span>
+                      {aiEvaluate.isPending ? "Évaluation..." : "Évaluer par IA"}
+                    </button>
+                    {sessionStatus === "responding" && situation && (
+                      <button
+                        onClick={() => {
+                          if (confirm("Relancer la question pour toute la classe ? Les réponses précédentes seront conservées.")) {
+                            resetAllResponses.mutate(situation!.id);
+                          }
+                          setOverflowOpen(false);
+                        }}
+                        disabled={resetAllResponses.isPending}
+                        className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.06] cursor-pointer transition-colors flex items-center gap-2 disabled:opacity-40"
+                      >
+                        <span className="w-5 text-center text-sm">🔄</span>
+                        {resetAllResponses.isPending ? "Relance..." : "Relancer tous"}
+                      </button>
+                    )}
+                    {visibleResponses.length > 2 && onHighlightAllVisible && (
+                      <button
+                        onClick={() => { onHighlightAllVisible(); setOverflowOpen(false); }}
+                        className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.06] cursor-pointer transition-colors flex items-center gap-2"
+                      >
+                        <span className="w-5 text-center text-sm">⭐</span>
+                        Tout projeter
+                      </button>
+                    )}
+                    {visibleResponses.length > 2 && onHideAllVisible && (
+                      <button
+                        onClick={() => { onHideAllVisible(); setOverflowOpen(false); }}
+                        className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.06] cursor-pointer transition-colors flex items-center gap-2"
+                      >
+                        <span className="w-5 text-center text-sm">👁</span>
+                        Tout masquer
+                      </button>
+                    )}
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       )}
 
@@ -333,14 +349,14 @@ export function ResponseStreamSection({
         if (notResponded.length === 0) return null;
         return (
           <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-3 mt-2">
-            <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-muted mb-2">
+            <p className="text-xs uppercase tracking-wider font-semibold text-bw-muted mb-2">
               Pas encore répondu ({notResponded.length})
             </p>
             <div className="flex flex-wrap gap-2">
               {notResponded.map((s) => (
                 <div key={s.id} className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06]">
                   <span className="text-sm">{s.avatar || "🎭"}</span>
-                  <span className="text-[11px] text-bw-muted">{s.display_name || "Élève"}</span>
+                  <span className="text-xs text-bw-muted">{s.display_name || "Élève"}</span>
                 </div>
               ))}
             </div>

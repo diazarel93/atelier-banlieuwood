@@ -66,7 +66,7 @@ function DeskPairInner({
         {right ? (
           <DeskSeat student={right} response={responseMap.get(right.id) || null} onClick={() => onStudentClick(right.id)} />
         ) : (
-          <div className="w-[88px] flex items-center justify-center opacity-20">
+          <div className="w-[80px] flex items-center justify-center opacity-20">
             <div className="w-6 h-6 rounded-full border border-dashed border-white/20" />
           </div>
         )}
@@ -87,14 +87,13 @@ function DeskSeat({
 }) {
   const [hovered, setHovered] = useState(false);
   const color = STATE_COLOR[student.state] || "#555";
-  const hasResponse = student.state === "responded" && response;
 
   return (
     <motion.button
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`relative flex flex-col items-center gap-0.5 px-2.5 py-2 cursor-pointer transition-colors w-[88px] ${
+      className={`relative flex flex-col items-center gap-0.5 px-2.5 py-2 cursor-pointer transition-colors w-[80px] ${
         student.state === "disconnected" ? "opacity-30" : ""
       }`}
       whileTap={{ scale: 0.95 }}
@@ -126,40 +125,33 @@ function DeskSeat({
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 500, damping: 20 }}
-            className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#4ECDC4] flex items-center justify-center shadow-sm"
+            className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#4ECDC4] flex items-center justify-center shadow-sm"
           >
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12l5 5L20 7" />
             </svg>
           </motion.span>
         )}
 
-        {/* Stuck indicator — simple dot, no pulsing */}
+        {/* Stuck indicator */}
         {student.state === "stuck" && (
-          <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#EF6461] flex items-center justify-center text-[8px] font-black text-white shadow-sm">
+          <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#EF6461] flex items-center justify-center text-xs font-black text-white shadow-sm">
             !
           </span>
         )}
 
         {/* Warning badge */}
         {(student.warnings ?? 0) > 0 && (
-          <span className="absolute -top-1 -left-1 w-3.5 h-3.5 rounded-full bg-amber-500 flex items-center justify-center text-[7px] font-bold text-black shadow-sm">
+          <span className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-amber-500 flex items-center justify-center text-xs font-bold text-black shadow-sm">
             {student.warnings}
           </span>
         )}
       </div>
 
       {/* Name */}
-      <span className="text-[9px] leading-tight truncate max-w-[76px] text-bw-text font-medium">
+      <span className="text-xs leading-tight truncate max-w-[68px] text-bw-text font-medium">
         {student.display_name}
       </span>
-
-      {/* Response snippet — visible directly, no hover needed */}
-      {hasResponse && (
-        <span className="text-[8px] leading-snug text-bw-teal/70 truncate max-w-[76px]">
-          {response}
-        </span>
-      )}
 
       {/* Hover tooltip — full response */}
       <AnimatePresence>
@@ -171,8 +163,8 @@ function DeskSeat({
             transition={{ duration: 0.12 }}
             className="absolute z-30 bottom-full mb-1.5 left-1/2 -translate-x-1/2 w-[200px] bg-bw-surface border border-white/10 rounded-lg p-2.5 shadow-xl pointer-events-none"
           >
-            <p className="text-[10px] text-bw-teal font-semibold mb-0.5">{student.display_name}</p>
-            <p className="text-[11px] text-bw-text leading-snug line-clamp-4">{response}</p>
+            <p className="text-xs text-bw-teal font-semibold mb-0.5">{student.display_name}</p>
+            <p className="text-sm text-bw-text leading-snug line-clamp-4">{response}</p>
             <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-bw-surface border-r border-b border-white/10 rotate-45 -mt-1" />
           </motion.div>
         )}

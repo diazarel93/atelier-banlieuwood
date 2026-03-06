@@ -94,7 +94,7 @@ export function WelcomePanel({
 
             {/* Join code display */}
             <div className="text-center pt-2">
-              <p className="text-[10px] uppercase tracking-widest text-bw-muted mb-2">Code de la partie</p>
+              <p className="text-xs uppercase tracking-widest text-bw-muted mb-2">Code de la partie</p>
               <button onClick={onCopyCode} className="cursor-pointer group">
                 <div className="flex gap-1.5 justify-center">
                   {joinCode.split("").map((char, i) => (
@@ -110,7 +110,7 @@ export function WelcomePanel({
                     </motion.span>
                   ))}
                 </div>
-                <span className="text-[10px] text-bw-muted mt-2 inline-block group-hover:text-bw-primary transition-colors">
+                <span className="text-xs text-bw-muted mt-2 inline-block group-hover:text-bw-primary transition-colors">
                   Cliquer pour copier
                 </span>
               </button>
@@ -155,7 +155,7 @@ export function WelcomePanel({
                 </motion.span>
               ))}
               {activeStudents.length > 24 && (
-                <span className="text-[10px] text-bw-muted self-center">+{activeStudents.length - 24}</span>
+                <span className="text-xs text-bw-muted self-center">+{activeStudents.length - 24}</span>
               )}
             </div>
           </div>

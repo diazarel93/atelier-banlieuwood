@@ -32,13 +32,13 @@ export function InlineReformulation({
         <div className="flex items-center gap-2 mb-1">
           <span className="text-base">{response.students?.avatar}</span>
           <span className="text-sm font-medium">{response.students?.display_name}</span>
-          <span className="text-[10px] uppercase tracking-wider text-bw-primary ml-auto">
+          <span className="text-xs uppercase tracking-wider text-bw-primary ml-auto">
             Reformuler
           </span>
         </div>
 
         <div className="bg-bw-surface rounded-xl p-3 text-xs text-bw-muted">
-          <span className="text-[10px] uppercase tracking-wider text-bw-muted block mb-1">
+          <span className="text-xs uppercase tracking-wider text-bw-muted block mb-1">
             Texte original
           </span>
           {response.text}

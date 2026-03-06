@@ -350,7 +350,7 @@ function DockButton({
 
       {/* Keyboard hint */}
       {shortcut && (
-        <span className="absolute -bottom-0.5 -right-0.5 text-[7px] text-white/20 font-mono leading-none pointer-events-none">
+        <span className="absolute -bottom-0.5 -right-0.5 text-xs text-white/20 font-mono leading-none pointer-events-none">
           {shortcut}
         </span>
       )}
@@ -382,7 +382,7 @@ function DockButton({
           className="absolute -top-1.5 -left-1.5 min-w-[16px] h-[14px] px-1 rounded-full flex items-center justify-center"
           style={{ backgroundColor: badgeColor || color }}
         >
-          <span className="text-[7px] font-bold text-black tabular-nums leading-none">{badge}</span>
+          <span className="text-xs font-bold text-black tabular-nums leading-none">{badge}</span>
         </div>
       )}
 
@@ -411,25 +411,25 @@ function GuideContent({
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <span className="text-base leading-none">📖</span>
-        <span className="text-[11px] font-semibold text-bw-heading">Guide pédagogique</span>
+        <span className="text-xs font-semibold text-bw-heading">Guide pédagogique</span>
       </div>
 
       {questionGuide && (
         <div className="space-y-2">
           <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-bw-primary/15 text-bw-primary">
+            <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-bw-primary/15 text-bw-primary">
               Q{questionGuide.position}
             </span>
             <span className="text-xs font-semibold truncate">{questionGuide.label}</span>
           </div>
 
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-bw-muted mb-0.5">Ce qu&apos;on attend</p>
+            <p className="text-xs uppercase tracking-wider text-bw-muted mb-0.5">Ce qu&apos;on attend</p>
             <p className="text-xs text-bw-text leading-relaxed">{questionGuide.whatToExpect}</p>
           </div>
 
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-bw-muted mb-0.5">Pièges fréquents</p>
+            <p className="text-xs uppercase tracking-wider text-bw-muted mb-0.5">Pièges fréquents</p>
             <p className="text-xs text-bw-amber leading-relaxed">{questionGuide.commonPitfalls}</p>
           </div>
 
@@ -440,11 +440,11 @@ function GuideContent({
             }}
             className="w-full text-left bg-bw-teal/5 border border-bw-teal/20 rounded-xl px-2.5 py-2 cursor-pointer hover:border-bw-teal/40 transition-colors duration-200 group"
           >
-            <span className="text-[10px] text-bw-teal font-semibold">Relancer</span>
+            <span className="text-xs text-bw-teal font-semibold">Relancer</span>
             <p className="text-xs text-bw-text italic leading-relaxed mt-0.5">
               &ldquo;{questionGuide.relancePhrase}&rdquo;
             </p>
-            <span className="text-[9px] text-bw-muted group-hover:text-bw-teal transition-colors">clic = copier</span>
+            <span className="text-xs text-bw-muted group-hover:text-bw-teal transition-colors">clic = copier</span>
           </button>
 
           <button
@@ -454,11 +454,11 @@ function GuideContent({
             }}
             className="w-full text-left bg-bw-violet/5 border border-bw-violet/20 rounded-xl px-2.5 py-2 cursor-pointer hover:border-bw-violet/40 transition-colors duration-200 group"
           >
-            <span className="text-[10px] text-bw-violet font-semibold">Challenger</span>
+            <span className="text-xs text-bw-violet font-semibold">Challenger</span>
             <p className="text-xs text-bw-text italic leading-relaxed mt-0.5">
               &ldquo;{questionGuide.challengePhrase}&rdquo;
             </p>
-            <span className="text-[9px] text-bw-muted group-hover:text-bw-violet transition-colors">clic = copier</span>
+            <span className="text-xs text-bw-muted group-hover:text-bw-violet transition-colors">clic = copier</span>
           </button>
         </div>
       )}
@@ -469,8 +469,8 @@ function GuideContent({
             onClick={() => setAlertsExpanded(!alertsExpanded)}
             className="flex items-center gap-1.5 w-full text-left cursor-pointer group"
           >
-            <span className="text-[10px] uppercase tracking-wider text-bw-amber font-semibold">Signaux</span>
-            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-bw-amber/10 text-bw-amber">
+            <span className="text-xs uppercase tracking-wider text-bw-amber font-semibold">Signaux</span>
+            <span className="text-xs px-1.5 py-0.5 rounded-full bg-bw-amber/10 text-bw-amber">
               {moduleGuide.aQuoiEtreAttentif.length}
             </span>
             <svg
@@ -484,7 +484,7 @@ function GuideContent({
           {alertsExpanded && (
             <ul className="space-y-1">
               {moduleGuide.aQuoiEtreAttentif.map((signal, i) => (
-                <li key={i} className="flex items-start gap-1.5 text-[11px] text-bw-text leading-relaxed">
+                <li key={i} className="flex items-start gap-1.5 text-xs text-bw-text leading-relaxed">
                   <span className="text-bw-amber flex-shrink-0 mt-0.5">!</span>
                   {signal}
                 </li>
@@ -518,7 +518,7 @@ function StatsContent({
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <span className="text-base leading-none">📊</span>
-        <span className="text-[11px] font-semibold text-bw-heading">Stats live</span>
+        <span className="text-xs font-semibold text-bw-heading">Stats live</span>
       </div>
 
       {/* Progress ring */}
@@ -534,13 +534,13 @@ function StatsContent({
               style={{ stroke: pct === 100 ? "#10B981" : "#4ECDC4" }}
             />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold tabular-nums" style={{ color: pct === 100 ? "#10B981" : "#4ECDC4" }}>
+          <span className="absolute inset-0 flex items-center justify-center text-xs font-bold tabular-nums" style={{ color: pct === 100 ? "#10B981" : "#4ECDC4" }}>
             {pct}%
           </span>
         </div>
         <div className="space-y-0.5">
           <p className="text-xs text-bw-text">{responsesCount}/{totalStudents} réponses</p>
-          <p className="text-[10px] text-bw-muted">
+          <p className="text-xs text-bw-muted">
             {totalStudents - responsesCount} en attente
           </p>
         </div>
@@ -559,17 +559,17 @@ function StatsContent({
       {/* Badges */}
       <div className="flex flex-wrap gap-1.5">
         {hiddenCount > 0 && (
-          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-bw-amber/10 text-bw-amber">
+          <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-bw-amber/10 text-bw-amber">
             {hiddenCount} masquée{hiddenCount !== 1 ? "s" : ""}
           </span>
         )}
         {sessionStatus === "responding" && voteOptionCount > 0 && (
-          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-bw-primary/10 text-bw-primary">
+          <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-bw-primary/10 text-bw-primary">
             {voteOptionCount} sélectionnée{voteOptionCount !== 1 ? "s" : ""}
           </span>
         )}
         {highlightedCount > 0 && (
-          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-bw-teal/10 text-bw-teal">
+          <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-bw-teal/10 text-bw-teal">
             {highlightedCount} mise{highlightedCount !== 1 ? "s" : ""} en avant
           </span>
         )}
@@ -577,7 +577,7 @@ function StatsContent({
 
       {/* Response rhythm */}
       <div className="space-y-1.5">
-        <p className="text-[10px] uppercase tracking-wider text-bw-muted font-semibold">Rythme d&apos;arrivée</p>
+        <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Rythme d&apos;arrivée</p>
         <ResponseRhythm responses={studentResponses} />
       </div>
     </div>
@@ -601,7 +601,7 @@ function TimerContent({
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <span className="text-base leading-none">⏱</span>
-        <span className="text-[11px] font-semibold text-bw-heading">Chronomètre</span>
+        <span className="text-xs font-semibold text-bw-heading">Chronomètre</span>
       </div>
 
       {hasTimer ? (
@@ -612,7 +612,7 @@ function TimerContent({
           {onClearTimer && (
             <button
               onClick={onClearTimer}
-              className="w-full py-1.5 rounded-xl text-[10px] font-medium text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] hover:border-white/15 cursor-pointer transition-colors duration-200"
+              className="w-full py-1.5 rounded-xl text-xs font-medium text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] hover:border-white/15 cursor-pointer transition-colors duration-200"
             >
               Annuler le chrono
             </button>
@@ -622,7 +622,7 @@ function TimerContent({
         <div className="text-center py-6 space-y-2">
           <span className="text-2xl opacity-30">⏱</span>
           <p className="text-xs text-bw-muted">Aucun chrono actif</p>
-          <p className="text-[10px] text-bw-muted/60">Lancez un timer depuis la barre d&apos;actions</p>
+          <p className="text-xs text-bw-muted/60">Lancez un timer depuis la barre d&apos;actions</p>
         </div>
       )}
     </div>
@@ -636,7 +636,7 @@ function BroadcastContent({ onBroadcast }: { onBroadcast?: () => void }) {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <span className="text-base leading-none">📢</span>
-        <span className="text-[11px] font-semibold text-bw-heading">Message à la classe</span>
+        <span className="text-xs font-semibold text-bw-heading">Message à la classe</span>
       </div>
 
       <p className="text-xs text-bw-muted leading-relaxed">
@@ -653,9 +653,9 @@ function BroadcastContent({ onBroadcast }: { onBroadcast?: () => void }) {
         Écrire un message
       </button>
 
-      <div className="flex items-center gap-2 text-[10px] text-bw-muted">
+      <div className="flex items-center gap-2 text-xs text-bw-muted">
         <span className="text-bw-muted/40">Raccourci :</span>
-        <kbd className="px-1.5 py-0.5 rounded bg-bw-elevated border border-white/[0.08] text-[9px] font-mono">B</kbd>
+        <kbd className="px-1.5 py-0.5 rounded bg-bw-elevated border border-white/[0.08] text-xs font-mono">B</kbd>
       </div>
     </div>
   );
@@ -677,8 +677,8 @@ function TeamsContent({ teams }: { teams: { id: string; team_name: string; team_
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <span className="text-base leading-none">👥</span>
-        <span className="text-[11px] font-semibold text-bw-heading">Équipes</span>
-        <span className="text-[9px] text-bw-muted tabular-nums ml-auto">{teams.length} équipes</span>
+        <span className="text-xs font-semibold text-bw-heading">Équipes</span>
+        <span className="text-xs text-bw-muted tabular-nums ml-auto">{teams.length} équipes</span>
       </div>
 
       <div className="space-y-2">
@@ -690,8 +690,8 @@ function TeamsContent({ teams }: { teams: { id: string; team_name: string; team_
           >
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: team.team_color }} />
-              <span className="text-[11px] font-semibold text-bw-heading flex-1 truncate">{team.team_name}</span>
-              <span className="text-[9px] text-bw-muted tabular-nums">{team.students.length}</span>
+              <span className="text-xs font-semibold text-bw-heading flex-1 truncate">{team.team_name}</span>
+              <span className="text-xs text-bw-muted tabular-nums">{team.students.length}</span>
             </div>
             <div className="flex flex-wrap gap-1">
               {team.students.map((s) => (
@@ -738,7 +738,7 @@ function StudentsContent({
       <div className="space-y-4">
         <button
           onClick={() => onSelectStudent(null)}
-          className="text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors"
+          className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors"
         >
           ← Retour
         </button>
@@ -747,7 +747,7 @@ function StudentsContent({
           <span className="text-xl">{selectedStudent.avatar}</span>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold truncate">{selectedStudent.display_name}</p>
-            <div className="flex items-center gap-2 text-[10px]">
+            <div className="flex items-center gap-2 text-xs">
               <span className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: STATE_COLORS[studentState] }} />
                 {STATE_LABELS[studentState]}
@@ -775,7 +775,7 @@ function StudentsContent({
                   setNudgeText("");
                 }
               }}
-              className="flex-1 py-1.5 px-2 rounded-xl text-[10px] font-medium bg-bw-teal/10 text-bw-teal border border-bw-teal/20 cursor-pointer hover:border-bw-teal/40 transition-colors duration-200"
+              className="flex-1 py-1.5 px-2 rounded-xl text-xs font-medium bg-bw-teal/10 text-bw-teal border border-bw-teal/20 cursor-pointer hover:border-bw-teal/40 transition-colors duration-200"
             >
               Envoyer un message
             </button>
@@ -783,7 +783,7 @@ function StudentsContent({
           {onWarn && (
             <button
               onClick={() => onWarn(selectedStudent.id)}
-              className="py-1.5 px-2 rounded-xl text-[10px] font-medium bg-bw-amber/10 text-bw-amber border border-bw-amber/20 cursor-pointer hover:border-bw-amber/40 transition-colors duration-200"
+              className="py-1.5 px-2 rounded-xl text-xs font-medium bg-bw-amber/10 text-bw-amber border border-bw-amber/20 cursor-pointer hover:border-bw-amber/40 transition-colors duration-200"
             >
               Avertir
             </button>
@@ -819,13 +819,13 @@ function StudentsContent({
                   }
                 }}
                 disabled={!nudgeText.trim()}
-                className="text-[10px] px-2 py-1 rounded bg-bw-teal text-black font-medium cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                className="text-xs px-2 py-1 rounded bg-bw-teal text-black font-medium cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Envoyer
               </button>
               <button
                 onClick={() => { setNudgeStudentId(null); setNudgeText(""); }}
-                className="text-[10px] px-2 py-1 rounded text-bw-muted hover:text-white cursor-pointer"
+                className="text-xs px-2 py-1 rounded text-bw-muted hover:text-white cursor-pointer"
               >
                 Annuler
               </button>
@@ -834,7 +834,7 @@ function StudentsContent({
         )}
 
         <div className="space-y-2">
-          <p className="text-[10px] uppercase tracking-wider text-bw-muted font-semibold">
+          <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">
             Réponses ({studentResponses.length})
           </p>
           {studentResponses.length === 0 ? (
@@ -854,11 +854,11 @@ function StudentsContent({
                 >
                   <p className="text-bw-text">{r.text}</p>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className="text-[10px] text-bw-muted">
+                    <span className="text-xs text-bw-muted">
                       {new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                     </span>
-                    {r.is_hidden && <span className="text-[10px] text-bw-amber">Masquée</span>}
-                    {r.is_highlighted && <span className="text-[10px] text-bw-teal">Mise en avant</span>}
+                    {r.is_hidden && <span className="text-xs text-bw-amber">Masquée</span>}
+                    {r.is_highlighted && <span className="text-xs text-bw-teal">Mise en avant</span>}
                   </div>
                 </div>
               ))}
@@ -875,11 +875,11 @@ function StudentsContent({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-base leading-none">👥</span>
-          <span className="text-[11px] font-semibold text-bw-heading">Élèves</span>
+          <span className="text-xs font-semibold text-bw-heading">Élèves</span>
         </div>
         <div className="flex items-center gap-2">
           {stuckCount > 0 && (
-            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-bw-amber/10 text-bw-amber">
+            <span className="text-xs px-1.5 py-0.5 rounded-full bg-bw-amber/10 text-bw-amber">
               {stuckCount} bloqué{stuckCount > 1 ? "s" : ""}
             </span>
           )}
@@ -904,15 +904,15 @@ function StudentsContent({
                   style={{ backgroundColor: STATE_COLORS[state] }}
                 />
                 <span className="text-sm flex-shrink-0">{s.avatar}</span>
-                <span className="text-[11px] text-bw-text truncate flex-1">{s.display_name}</span>
+                <span className="text-xs text-bw-text truncate flex-1">{s.display_name}</span>
                 {state === "responded" && (
-                  <span className="text-[9px] text-bw-teal font-medium flex-shrink-0">OK</span>
+                  <span className="text-xs text-bw-teal font-medium flex-shrink-0">OK</span>
                 )}
                 {state === "stuck" && (
-                  <span className="text-[9px] text-bw-amber flex-shrink-0">bloqué</span>
+                  <span className="text-xs text-bw-amber flex-shrink-0">bloqué</span>
                 )}
                 {s.warnings > 0 && (
-                  <span className="text-[9px] text-bw-amber flex-shrink-0">{s.warnings}</span>
+                  <span className="text-xs text-bw-amber flex-shrink-0">{s.warnings}</span>
                 )}
               </button>
             );
@@ -948,7 +948,7 @@ function ResponseRhythm({ responses }: { responses: Response[] }) {
             className="w-full rounded-sm bg-bw-teal/40 transition-all duration-300"
             style={{ height: `${Math.max(2, (count / max) * 24)}px` }}
           />
-          <span className="text-[7px] text-bw-muted">{labels[i]}</span>
+          <span className="text-xs text-bw-muted">{labels[i]}</span>
         </div>
       ))}
     </div>
@@ -981,15 +981,15 @@ export function ContextPanel(props: ContextPanelProps) {
     return (
       <aside className="w-full flex flex-col h-full flex-shrink-0">
         <div className="flex items-center justify-between px-3 py-2.5 border-b border-white/[0.06] flex-shrink-0">
-          <button onClick={() => props.onSelectStudent(null)} className="text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors">← Retour</button>
-          <button onClick={props.onClose} className="text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors">✕</button>
+          <button onClick={() => props.onSelectStudent(null)} className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors">← Retour</button>
+          <button onClick={props.onClose} className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors">✕</button>
         </div>
         <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
           <div className="flex items-center gap-2">
             <span className="text-xl">{props.selectedStudent.avatar}</span>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold truncate">{props.selectedStudent.display_name}</p>
-              <div className="flex items-center gap-2 text-[10px]">
+              <div className="flex items-center gap-2 text-xs">
                 <span className="flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: STATE_COLORS[studentState] }} />
                   {STATE_LABELS[studentState]}
@@ -1005,12 +1005,12 @@ export function ContextPanel(props: ContextPanelProps) {
                     if (nudgeText.trim()) { props.onNudge!(props.selectedStudent!.id, nudgeText.trim()); setNudgeStudentId(null); setNudgeText(""); toast.success("Message envoyé"); }
                   } else { setNudgeStudentId(props.selectedStudent!.id); setNudgeText(""); }
                 }}
-                className="flex-1 py-1.5 px-2 rounded-xl text-[10px] font-medium bg-bw-teal/10 text-bw-teal border border-bw-teal/20 cursor-pointer"
+                className="flex-1 py-1.5 px-2 rounded-xl text-xs font-medium bg-bw-teal/10 text-bw-teal border border-bw-teal/20 cursor-pointer"
               >Envoyer un message</button>
             )}
             {props.onWarn && (
               <button onClick={() => props.onWarn!(props.selectedStudent!.id)}
-                className="py-1.5 px-2 rounded-xl text-[10px] font-medium bg-bw-amber/10 text-bw-amber border border-bw-amber/20 cursor-pointer"
+                className="py-1.5 px-2 rounded-xl text-xs font-medium bg-bw-amber/10 text-bw-amber border border-bw-amber/20 cursor-pointer"
               >Avertir</button>
             )}
           </div>
@@ -1022,13 +1022,13 @@ export function ContextPanel(props: ContextPanelProps) {
                 className="w-full px-2.5 py-1.5 rounded-xl bg-bw-surface border border-white/[0.06] text-xs text-white placeholder:text-bw-muted outline-none focus:border-bw-teal/40" />
               <div className="flex gap-1.5">
                 <button onClick={() => { if (nudgeText.trim()) { props.onNudge!(props.selectedStudent!.id, nudgeText.trim()); setNudgeStudentId(null); setNudgeText(""); toast.success("Message envoyé"); } }}
-                  disabled={!nudgeText.trim()} className="text-[10px] px-2 py-1 rounded bg-bw-teal text-black font-medium cursor-pointer disabled:opacity-40">Envoyer</button>
-                <button onClick={() => { setNudgeStudentId(null); setNudgeText(""); }} className="text-[10px] px-2 py-1 rounded text-bw-muted hover:text-white cursor-pointer">Annuler</button>
+                  disabled={!nudgeText.trim()} className="text-xs px-2 py-1 rounded bg-bw-teal text-black font-medium cursor-pointer disabled:opacity-40">Envoyer</button>
+                <button onClick={() => { setNudgeStudentId(null); setNudgeText(""); }} className="text-xs px-2 py-1 rounded text-bw-muted hover:text-white cursor-pointer">Annuler</button>
               </div>
             </div>
           )}
           <div className="space-y-2">
-            <p className="text-[10px] uppercase tracking-wider text-bw-muted font-semibold">Réponses ({props.studentResponses.length})</p>
+            <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Réponses ({props.studentResponses.length})</p>
             {props.studentResponses.length === 0 ? (
               <p className="text-xs text-bw-muted">Aucune réponse pour ce module</p>
             ) : (
@@ -1037,9 +1037,9 @@ export function ContextPanel(props: ContextPanelProps) {
                   <div key={r.id} className={`bg-bw-surface rounded-xl p-2.5 border text-xs leading-relaxed ${r.is_hidden ? "border-bw-amber/20 opacity-60" : r.is_highlighted ? "border-bw-teal/30" : "border-white/[0.06]"}`}>
                     <p className="text-bw-text">{r.text}</p>
                     <div className="flex items-center gap-2 mt-1.5">
-                      <span className="text-[10px] text-bw-muted">{new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
-                      {r.is_hidden && <span className="text-[10px] text-bw-amber">Masquée</span>}
-                      {r.is_highlighted && <span className="text-[10px] text-bw-teal">Mise en avant</span>}
+                      <span className="text-xs text-bw-muted">{new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
+                      {r.is_hidden && <span className="text-xs text-bw-amber">Masquée</span>}
+                      {r.is_highlighted && <span className="text-xs text-bw-teal">Mise en avant</span>}
                     </div>
                   </div>
                 ))}
@@ -1062,13 +1062,13 @@ export function ContextPanel(props: ContextPanelProps) {
               { id: "stats" as const, label: "Stats", icon: "📊", activeColor: "#8B5CF6" },
             ]).map((tab) => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                className={`px-2.5 py-1.5 rounded-xl text-[10px] font-medium cursor-pointer transition-all duration-200 ${activeTab === tab.id ? "text-white" : "text-bw-muted hover:text-bw-text hover:bg-white/[0.04]"}`}
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-medium cursor-pointer transition-all duration-200 ${activeTab === tab.id ? "text-white" : "text-bw-muted hover:text-bw-text hover:bg-white/[0.04]"}`}
                 style={activeTab === tab.id ? { background: `${tab.activeColor}15`, color: tab.activeColor } : undefined}>
                 <span className="mr-0.5">{tab.icon}</span>{tab.label}
               </button>
             ))}
           </div>
-          <button onClick={props.onClose} className="text-[10px] text-bw-muted hover:text-white cursor-pointer transition-colors ml-1">✕</button>
+          <button onClick={props.onClose} className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors ml-1">✕</button>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
@@ -1076,30 +1076,30 @@ export function ContextPanel(props: ContextPanelProps) {
         {activeTab === "students" && <StudentsContent {...props} />}
         {activeTab === "stats" && (
           <div className="space-y-4">
-            <p className="text-[10px] uppercase tracking-wider text-bw-muted font-semibold">Stats live</p>
+            <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Stats live</p>
             <div className="flex items-center gap-3 p-2.5 rounded-xl" style={{ background: "linear-gradient(135deg, rgba(78,205,196,0.06), transparent)" }}>
               <div className="relative w-14 h-14 flex-shrink-0">
                 <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
                   <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(78,205,196,0.1)" strokeWidth="3" />
                   <circle cx="18" cy="18" r="15.5" fill="none" strokeWidth="3" strokeLinecap="round" strokeDasharray={`${pct * 0.974} 100`} className="transition-all duration-500" style={{ stroke: pct === 100 ? "#10B981" : "#4ECDC4" }} />
                 </svg>
-                <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold tabular-nums" style={{ color: pct === 100 ? "#10B981" : "#4ECDC4" }}>{pct}%</span>
+                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold tabular-nums" style={{ color: pct === 100 ? "#10B981" : "#4ECDC4" }}>{pct}%</span>
               </div>
               <div className="space-y-0.5">
                 <p className="text-xs text-bw-text">{props.responsesCount}/{props.totalStudents} réponses</p>
-                <p className="text-[10px] text-bw-muted">{props.totalStudents - props.responsesCount} en attente</p>
+                <p className="text-xs text-bw-muted">{props.totalStudents - props.responsesCount} en attente</p>
               </div>
             </div>
             <div className="h-1.5 bg-bw-elevated rounded-full overflow-hidden">
               <div className="h-full bg-bw-teal rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {props.hiddenCount > 0 && <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-bw-amber/10 text-bw-amber">{props.hiddenCount} masquée{props.hiddenCount !== 1 ? "s" : ""}</span>}
-              {props.sessionStatus === "responding" && props.voteOptionCount > 0 && <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-bw-primary/10 text-bw-primary">{props.voteOptionCount} sélectionnée{props.voteOptionCount !== 1 ? "s" : ""}</span>}
-              {highlightedCount > 0 && <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-bw-teal/10 text-bw-teal">{highlightedCount} mise{highlightedCount !== 1 ? "s" : ""} en avant</span>}
+              {props.hiddenCount > 0 && <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-bw-amber/10 text-bw-amber">{props.hiddenCount} masquée{props.hiddenCount !== 1 ? "s" : ""}</span>}
+              {props.sessionStatus === "responding" && props.voteOptionCount > 0 && <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-bw-primary/10 text-bw-primary">{props.voteOptionCount} sélectionnée{props.voteOptionCount !== 1 ? "s" : ""}</span>}
+              {highlightedCount > 0 && <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-bw-teal/10 text-bw-teal">{highlightedCount} mise{highlightedCount !== 1 ? "s" : ""} en avant</span>}
             </div>
             <div className="space-y-1.5">
-              <p className="text-[10px] uppercase tracking-wider text-bw-muted font-semibold">Rythme d&apos;arrivée</p>
+              <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Rythme d&apos;arrivée</p>
               <ResponseRhythm responses={props.studentResponses} />
             </div>
           </div>

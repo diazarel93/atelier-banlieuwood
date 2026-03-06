@@ -116,13 +116,13 @@ export function StudentFiche({
             <div className="flex items-center gap-2 mt-0.5">
               <span className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stateInfo.color }} />
-                <span className="text-[10px]" style={{ color: stateInfo.color }}>{stateInfo.label}</span>
+                <span className="text-xs" style={{ color: stateInfo.color }}>{stateInfo.label}</span>
               </span>
               {student.hand_raised_at && (
-                <span className="text-[10px] text-amber-400 font-medium">✋ Main levée</span>
+                <span className="text-xs text-amber-400 font-medium">✋ Main levée</span>
               )}
               {warnings > 0 && (
-                <span className="text-[10px] text-amber-400 font-medium">{warnings}/3 avert.</span>
+                <span className="text-xs text-amber-400 font-medium">{warnings}/3 avert.</span>
               )}
             </div>
           </div>
@@ -131,7 +131,7 @@ export function StudentFiche({
 
       {/* Student responses */}
       <div className="space-y-2">
-        <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-muted">
+        <p className="text-xs uppercase tracking-wider font-semibold text-bw-muted">
           Réponses de {student.display_name} ({responses.length})
         </p>
         {responses.length > 0 ? (
@@ -173,7 +173,7 @@ export function StudentFiche({
 
       {/* Quick actions */}
       <div className="space-y-2">
-        <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-muted">Actions rapides</p>
+        <p className="text-xs uppercase tracking-wider font-semibold text-bw-muted">Actions rapides</p>
 
         {/* Quick nudge chips */}
         {!showNudgeInput && (
@@ -182,7 +182,7 @@ export function StudentFiche({
               <button
                 key={text}
                 onClick={() => handleSendNudge(text)}
-                className="text-[11px] px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-bw-text hover:bg-white/[0.08] cursor-pointer transition-all leading-snug text-left"
+                className="text-xs px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-bw-text hover:bg-white/[0.08] cursor-pointer transition-all leading-snug text-left"
               >
                 {text}
               </button>
@@ -215,7 +215,7 @@ export function StudentFiche({
         <div className="flex gap-1.5">
           <button
             onClick={() => setShowNudgeInput(!showNudgeInput)}
-            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium cursor-pointer transition-all ${
+            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all ${
               showNudgeInput ? "text-bw-primary bg-bw-primary/10" : "text-bw-text hover:bg-white/5"
             }`}
           >
@@ -225,7 +225,7 @@ export function StudentFiche({
           {onBroadcast && (
             <button
               onClick={onBroadcast}
-              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium text-bw-text hover:bg-white/5 cursor-pointer transition-all"
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-bw-text hover:bg-white/5 cursor-pointer transition-all"
             >
               <span className="text-sm">📢</span>
               Message classe
@@ -233,7 +233,7 @@ export function StudentFiche({
           )}
           <button
             onClick={() => onWarn(student.id)}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium text-amber-400 hover:bg-amber-500/10 cursor-pointer transition-all"
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-amber-400 hover:bg-amber-500/10 cursor-pointer transition-all"
           >
             <span className="text-sm">⚠️</span>
             {warnings > 0 ? `Avertir (${warnings}/3)` : "Avertir"}

@@ -273,7 +273,7 @@ export function ModuleBriefing({
             {/* TYPE BADGE — dominant visual element */}
             <div className="flex items-center gap-3">
               <div
-                className="px-4 py-1.5 rounded-lg text-[10px] font-black tracking-[0.2em] uppercase"
+                className="px-4 py-1.5 rounded-lg text-xs font-black tracking-[0.2em] uppercase"
                 style={{
                   background: `linear-gradient(135deg, ${module.color}50, ${module.color}25)`,
                   color: "white",
@@ -284,13 +284,13 @@ export function ModuleBriefing({
                 {typeLabel}
               </div>
               {phase && (
-                <span className="text-[10px] font-semibold text-white/40 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-white/40 uppercase tracking-wider">
                   {phase.emoji} {phase.label}
                 </span>
               )}
               <div className="flex-1" />
               {isCompleted && (
-                <span className="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-bw-teal/25 text-bw-teal border border-bw-teal/30">
+                <span className="text-xs uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-bw-teal/25 text-bw-teal border border-bw-teal/30">
                   Terminé
                 </span>
               )}
@@ -298,7 +298,7 @@ export function ModuleBriefing({
                 <motion.span
                   animate={{ opacity: [1, 0.7, 1] }}
                   transition={{ repeat: Infinity, duration: 1.5 }}
-                  className="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-bw-primary/25 text-bw-primary border border-bw-primary/30"
+                  className="text-xs uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-bw-primary/25 text-bw-primary border border-bw-primary/30"
                 >
                   En cours
                 </motion.span>
@@ -325,15 +325,15 @@ export function ModuleBriefing({
 
             {/* Meta pills */}
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 rounded-full text-white/80 bg-white/[0.06] border border-white/[0.08]">
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full text-white/80 bg-white/[0.06] border border-white/[0.08]">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
                 {module.duration}
               </span>
-              <span className="text-[11px] font-medium px-3 py-1 rounded-full text-white/80 bg-white/[0.06] border border-white/[0.08]">
+              <span className="text-xs font-medium px-3 py-1 rounded-full text-white/80 bg-white/[0.06] border border-white/[0.08]">
                 {module.questions} question{module.questions !== 1 ? "s" : ""}
               </span>
               {activity && activity.tags.slice(0, 2).map((tag) => (
-                <span key={tag} className="text-[10px] font-medium px-2.5 py-1 rounded-full" style={{ background: `${module.color}18`, color: module.color, border: `1px solid ${module.color}25` }}>
+                <span key={tag} className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ background: `${module.color}18`, color: module.color, border: `1px solid ${module.color}25` }}>
                   {tag}
                 </span>
               ))}
@@ -368,7 +368,7 @@ export function ModuleBriefing({
                   <h3 className="text-sm font-bold" style={{ color: module.color }}>{activity.label}</h3>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     {activity.tags.map((tag) => (
-                      <span key={tag} className="text-[9px] font-medium px-2 py-0.5 rounded-full bg-white/[0.06] text-white/50">
+                      <span key={tag} className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/[0.06] text-white/50">
                         {tag}
                       </span>
                     ))}
@@ -388,11 +388,11 @@ export function ModuleBriefing({
                   <div className="flex-1 h-2 rounded-full bg-white/[0.06] overflow-hidden">
                     <div className="h-full rounded-full w-[65%]" style={{ background: `linear-gradient(90deg, ${module.color}, ${module.color}60)` }} />
                   </div>
-                  <span className="text-[9px] text-bw-muted">Stats en temps réel</span>
+                  <span className="text-xs text-bw-muted">Stats en temps réel</span>
                 </div>
               )}
               {actType === "image" && (
-                <div className="px-5 pb-3 flex items-center gap-2 text-[10px] text-bw-muted">
+                <div className="px-5 pb-3 flex items-center gap-2 text-xs text-bw-muted">
                   <div className="w-10 h-7 rounded bg-white/[0.06] flex items-center justify-center text-lg">🖼️</div>
                   <span>Image projetée → Écriture → Confrontation de 2 textes</span>
                 </div>
@@ -404,17 +404,17 @@ export function ModuleBriefing({
                       {token}
                     </div>
                   ))}
-                  <span className="text-[9px] text-bw-muted ml-1">Jetons à placer</span>
+                  <span className="text-xs text-bw-muted ml-1">Jetons à placer</span>
                 </div>
               )}
               {actType === "debate" && (
                 <div className="px-5 pb-3 flex items-center gap-2">
                   <div className="flex-1 rounded-lg bg-white/[0.04] border border-white/[0.06] px-3 py-1.5 text-center">
-                    <span className="text-[10px] text-white/40">Vue A</span>
+                    <span className="text-xs text-white/40">Vue A</span>
                   </div>
                   <span className="text-xs font-bold text-white/20">VS</span>
                   <div className="flex-1 rounded-lg bg-white/[0.04] border border-white/[0.06] px-3 py-1.5 text-center">
-                    <span className="text-[10px] text-white/40">Vue B</span>
+                    <span className="text-xs text-white/40">Vue B</span>
                   </div>
                 </div>
               )}
@@ -438,7 +438,7 @@ export function ModuleBriefing({
               <span className="text-xs font-bold uppercase tracking-wider" style={{ color: module.color }}>
                 Aperçu des questions
               </span>
-              <span className="text-[10px] text-bw-muted ml-auto">{questions.length || module.questions} questions</span>
+              <span className="text-xs text-bw-muted ml-auto">{questions.length || module.questions} questions</span>
             </div>
             <div className="px-3 pb-3">
               {questionsLoading ? (
@@ -466,10 +466,10 @@ export function ModuleBriefing({
                             style={{ background: `${color}08`, border: `1px solid ${color}12` }}
                           >
                             <div className="flex items-center gap-1.5">
-                              <span className="text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `${color}20`, color }}>{q.position}</span>
-                              <span className="text-[9px] font-medium uppercase tracking-wider truncate" style={{ color }}>{q.restitutionLabel || q.category}</span>
+                              <span className="text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `${color}20`, color }}>{q.position}</span>
+                              <span className="text-xs font-medium uppercase tracking-wider truncate" style={{ color }}>{q.restitutionLabel || q.category}</span>
                             </div>
-                            <p className="text-[11px] text-bw-heading leading-snug line-clamp-2">{q.prompt}</p>
+                            <p className="text-xs text-bw-heading leading-snug line-clamp-2">{q.prompt}</p>
                           </motion.div>
                         );
                       })}
@@ -494,12 +494,12 @@ export function ModuleBriefing({
                             <div className="h-3" style={{ background: `linear-gradient(90deg, ${color}30, ${color}10, transparent)` }} />
                             <div className="p-4 space-y-2" style={{ background: `${color}05` }}>
                               <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-bold w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: `${color}20`, color }}>{q.position}</span>
-                                <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color }}>{q.restitutionLabel || q.category}</span>
+                                <span className="text-xs font-bold w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: `${color}20`, color }}>{q.position}</span>
+                                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color }}>{q.restitutionLabel || q.category}</span>
                               </div>
                               <p className="text-[15px] text-bw-heading leading-relaxed font-medium">{q.prompt}</p>
                               {q.nudgeText && (
-                                <p className="text-[10px] text-bw-muted italic border-l-2 pl-3 ml-1" style={{ borderColor: `${color}30` }}>Relance : {q.nudgeText}</p>
+                                <p className="text-xs text-bw-muted italic border-l-2 pl-3 ml-1" style={{ borderColor: `${color}30` }}>Relance : {q.nudgeText}</p>
                               )}
                             </div>
                           </motion.div>
@@ -526,13 +526,13 @@ export function ModuleBriefing({
                             >
                               {/* Circle on the line */}
                               <div className="absolute left-[8px] top-[12px] w-[14px] h-[14px] rounded-full flex items-center justify-center z-10" style={{ background: `${color}20`, border: `1.5px solid ${color}40` }}>
-                                <span className="text-[7px] font-bold" style={{ color }}>{q.position}</span>
+                                <span className="text-xs font-bold" style={{ color }}>{q.position}</span>
                               </div>
                               <div className="rounded-xl p-3" style={{ background: `linear-gradient(135deg, ${color}06, rgba(26,29,34,0.3))`, border: `1px solid ${color}12` }}>
-                                <span className="text-[9px] font-medium uppercase tracking-wider" style={{ color }}>{q.restitutionLabel || q.category}</span>
+                                <span className="text-xs font-medium uppercase tracking-wider" style={{ color }}>{q.restitutionLabel || q.category}</span>
                                 <p className="text-[13px] text-bw-heading leading-relaxed mt-1">{q.prompt}</p>
                                 {q.nudgeText && (
-                                  <p className="text-[10px] text-bw-muted italic mt-1.5">💡 {q.nudgeText}</p>
+                                  <p className="text-xs text-bw-muted italic mt-1.5">💡 {q.nudgeText}</p>
                                 )}
                               </div>
                             </motion.div>
@@ -559,7 +559,7 @@ export function ModuleBriefing({
               <div className="rounded-xl p-4" style={{ background: "linear-gradient(135deg, rgba(255,107,53,0.12), rgba(255,107,53,0.04))", border: "1px solid rgba(255,107,53,0.2)" }}>
                 <div className="flex items-center gap-1.5 mb-2">
                   <span className="text-sm">🎬</span>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-bw-primary">Note prof</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-bw-primary">Note prof</p>
                 </div>
                 <p className="text-xs text-bw-heading leading-relaxed">{module.teacherNote}</p>
               </div>
@@ -568,13 +568,13 @@ export function ModuleBriefing({
               <div className="rounded-xl p-4" style={{ background: "linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04))", border: "1px solid rgba(139,92,246,0.2)" }}>
                 <div className="flex items-center gap-1.5 mb-2">
                   <span className="text-sm">🎯</span>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-bw-violet">Objectif</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-bw-violet">Objectif</p>
                 </div>
                 <p className="text-xs text-bw-heading leading-relaxed line-clamp-4">{moduleGuide.objectifPedagogique}</p>
                 {moduleGuide.socleCommun?.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {moduleGuide.socleCommun.map((d) => (
-                      <span key={d} className="text-[9px] font-medium px-2 py-0.5 rounded-full bg-bw-violet/20 text-bw-violet border border-bw-violet/25" title={SOCLE_LABELS[d]}>{d}</span>
+                      <span key={d} className="text-xs font-medium px-2 py-0.5 rounded-full bg-bw-violet/20 text-bw-violet border border-bw-violet/25" title={SOCLE_LABELS[d]}>{d}</span>
                     ))}
                   </div>
                 )}
@@ -606,7 +606,7 @@ export function ModuleBriefing({
                       navigator.clipboard.writeText(moduleGuide.introADire);
                       toast.success("Copié !");
                     }}
-                    className="text-[10px] font-bold text-bw-teal cursor-pointer transition-all px-3 py-1 rounded-full bg-bw-teal/15 hover:bg-bw-teal/25 border border-bw-teal/25"
+                    className="text-xs font-bold text-bw-teal cursor-pointer transition-all px-3 py-1 rounded-full bg-bw-teal/15 hover:bg-bw-teal/25 border border-bw-teal/25"
                   >
                     Copier
                   </button>
@@ -644,17 +644,17 @@ export function ModuleBriefing({
                 >
                   <path d="M9 18l6-6-6-6" />
                 </svg>
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-bw-muted group-hover:text-white transition-colors">
+                <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted group-hover:text-white transition-colors">
                   Déroulé ({moduleGuide.duration})
                 </span>
-                <span className="text-[10px] text-bw-muted">{moduleGuide.phases.length} étapes</span>
+                <span className="text-xs text-bw-muted">{moduleGuide.phases.length} étapes</span>
               </button>
               {showDeroule && (
                 <div className="ml-1 space-y-0 mt-1">
                   {moduleGuide.phases.map((p, i) => (
                     <div key={i} className="flex gap-3">
                       <div className="flex flex-col items-center">
-                        <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0" style={{ backgroundColor: module.color + "20", color: module.color }}>
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ backgroundColor: module.color + "20", color: module.color }}>
                           {i + 1}
                         </div>
                         {i < moduleGuide.phases.length - 1 && <div className="w-px flex-1 bg-white/[0.06] my-0.5" />}
@@ -662,9 +662,9 @@ export function ModuleBriefing({
                       <div className="pb-3 flex-1 min-w-0">
                         <div className="flex items-baseline gap-2">
                           <span className="text-xs font-semibold">{p.name}</span>
-                          <span className="text-[10px] text-bw-muted">{p.timing}</span>
+                          <span className="text-xs text-bw-muted">{p.timing}</span>
                         </div>
-                        <p className="text-[11px] text-bw-muted leading-relaxed">{p.instruction}</p>
+                        <p className="text-xs text-bw-muted leading-relaxed">{p.instruction}</p>
                       </div>
                     </div>
                   ))}
@@ -692,15 +692,15 @@ export function ModuleBriefing({
                 >
                   <path d="M9 18l6-6-6-6" />
                 </svg>
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-bw-green group-hover:text-white transition-colors">
+                <span className="text-xs font-semibold uppercase tracking-wider text-bw-green group-hover:text-white transition-colors">
                   Conseils
                 </span>
-                <span className="text-[10px] text-bw-muted">{moduleGuide.conseils.length} tips</span>
+                <span className="text-xs text-bw-muted">{moduleGuide.conseils.length} tips</span>
               </button>
               {showConseils && (
                 <ul className="ml-5 mt-1 space-y-1">
                   {moduleGuide.conseils.map((tip, i) => (
-                    <li key={i} className="flex items-start gap-2 text-[11px] text-bw-text leading-relaxed">
+                    <li key={i} className="flex items-start gap-2 text-xs text-bw-text leading-relaxed">
                       <span className="text-bw-green flex-shrink-0">&#x2713;</span>
                       {tip}
                     </li>
@@ -727,7 +727,7 @@ export function ModuleBriefing({
       <div className="fixed bottom-0 left-0 right-0 z-30 glass border-t border-white/[0.06]">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
           {isCompleted && (
-            <span className="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-bw-teal/15 text-bw-teal flex-shrink-0">
+            <span className="text-xs uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-bw-teal/15 text-bw-teal flex-shrink-0">
               Terminé
             </span>
           )}

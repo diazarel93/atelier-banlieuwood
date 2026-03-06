@@ -97,7 +97,7 @@ export function TeamManager({ sessionId, teams, students }: TeamManagerProps) {
         <h4 className="text-xs font-bold uppercase tracking-wider text-bw-muted">Equipes</h4>
         <button
           onClick={() => { if (confirm("Supprimer toutes les equipes ?")) deleteTeams.mutate(); }}
-          className="text-[10px] text-bw-danger hover:text-bw-danger/80 cursor-pointer"
+          className="text-xs text-bw-danger hover:text-bw-danger/80 cursor-pointer"
         >
           Supprimer
         </button>
@@ -109,12 +109,12 @@ export function TeamManager({ sessionId, teams, students }: TeamManagerProps) {
             <div className="flex items-center gap-2 px-3 py-2" style={{ borderLeft: `3px solid ${team.team_color}` }}>
               <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: team.team_color }} />
               <span className="text-xs font-semibold flex-1">{team.team_name}</span>
-              <span className="text-[9px] text-bw-muted">{team.students.length}</span>
+              <span className="text-xs text-bw-muted">{team.students.length}</span>
             </div>
             {team.students.length > 0 && (
               <div className="px-3 pb-2 flex flex-wrap gap-1">
                 {team.students.map((s) => (
-                  <span key={s.id} className="text-[10px] bg-bw-elevated px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <span key={s.id} className="text-xs bg-bw-elevated px-2 py-0.5 rounded-full flex items-center gap-1">
                     <span>{s.avatar}</span>
                     <span className="truncate max-w-[60px]">{s.display_name}</span>
                   </span>
@@ -128,13 +128,13 @@ export function TeamManager({ sessionId, teams, students }: TeamManagerProps) {
       {/* Unassigned students */}
       {unassigned.length > 0 && (
         <div className="space-y-1.5">
-          <p className="text-[10px] text-bw-muted font-semibold uppercase">Non assignes ({unassigned.length})</p>
+          <p className="text-xs text-bw-muted font-semibold uppercase">Non assignes ({unassigned.length})</p>
           <div className="flex flex-wrap gap-1">
             {unassigned.map((s) => (
               <div key={s.id} className="relative">
                 <button
                   onClick={() => setAssigning(assigning === s.id ? null : s.id)}
-                  className="text-[10px] bg-bw-elevated px-2 py-1 rounded-full flex items-center gap-1 cursor-pointer hover:bg-bw-elevated/80 transition-colors border border-white/[0.06]"
+                  className="text-xs bg-bw-elevated px-2 py-1 rounded-full flex items-center gap-1 cursor-pointer hover:bg-bw-elevated/80 transition-colors border border-white/[0.06]"
                 >
                   <span>{s.avatar}</span>
                   <span className="truncate max-w-[60px]">{s.display_name}</span>
@@ -151,7 +151,7 @@ export function TeamManager({ sessionId, teams, students }: TeamManagerProps) {
                         <button
                           key={t.id}
                           onClick={() => assignStudent.mutate({ studentId: s.id, teamId: t.id })}
-                          className="w-full text-left px-2 py-1.5 rounded-lg text-[10px] hover:bg-bw-elevated cursor-pointer flex items-center gap-1.5 transition-colors"
+                          className="w-full text-left px-2 py-1.5 rounded-lg text-xs hover:bg-bw-elevated cursor-pointer flex items-center gap-1.5 transition-colors"
                         >
                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: t.team_color }} />
                           {t.team_name}

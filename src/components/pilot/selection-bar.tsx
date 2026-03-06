@@ -87,7 +87,7 @@ export function SelectionBar({
             color: ctaColor === "#7D828A" || disabled ? "#7D828A" : "white",
           }}
         >
-          {isPending ? "..." : ctaLabel} {!disabled && <span className="opacity-60 ml-1 text-[10px]">[{shortcutKey}]</span>}
+          {isPending ? "..." : ctaLabel} {!disabled && <span className="opacity-60 ml-1 text-xs">[{shortcutKey}]</span>}
         </button>
       </div>
     </div>

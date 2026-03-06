@@ -58,7 +58,7 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
 
             {/* Presets */}
             <div className="px-5 py-3 space-y-2">
-              <p className="text-[10px] uppercase tracking-wider text-bw-muted font-semibold">Messages rapides</p>
+              <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Messages rapides</p>
               <div className="grid grid-cols-3 gap-1.5">
                 {PRESETS.map((preset) => (
                   <button
@@ -68,7 +68,7 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
                     className="text-left p-2 rounded-lg border border-white/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40"
                   >
                     <span className="text-sm block">{preset.emoji}</span>
-                    <span className="text-[10px] text-bw-muted">{preset.label}</span>
+                    <span className="text-xs text-bw-muted">{preset.label}</span>
                   </button>
                 ))}
               </div>
@@ -76,7 +76,7 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
 
             {/* Custom message */}
             <div className="px-5 pb-4 space-y-2">
-              <p className="text-[10px] uppercase tracking-wider text-bw-muted font-semibold">Message personnalisé</p>
+              <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Message personnalisé</p>
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -97,13 +97,13 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
                   {isPending ? "..." : "Envoyer"}
                 </button>
               </div>
-              <p className="text-[10px] text-bw-muted text-right">{message.length}/200</p>
+              <p className="text-xs text-bw-muted text-right">{message.length}/200</p>
             </div>
 
             {/* History */}
             {history && history.length > 0 && (
               <div className="px-5 pb-4 space-y-2">
-                <p className="text-[10px] uppercase tracking-wider text-bw-muted font-semibold">Historique</p>
+                <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Historique</p>
                 <div className="max-h-32 overflow-y-auto space-y-1">
                   {history.slice(0, 10).map((item, i) => (
                     <button
@@ -113,7 +113,7 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
                       className="w-full text-left px-3 py-2 rounded-lg border border-white/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40 flex items-center gap-2"
                     >
                       <span className="text-xs text-bw-text truncate flex-1">{item.text}</span>
-                      <span className="text-[9px] text-bw-muted flex-shrink-0">
+                      <span className="text-xs text-bw-muted flex-shrink-0">
                         {item.sentAt.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                       </span>
                     </button>

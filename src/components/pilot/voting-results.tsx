@@ -51,7 +51,7 @@ export function VotingResults({
                   <span key={j} className="text-xs bg-bw-bg px-2 py-0.5 rounded-full text-bw-text">
                     {v.avatar} {v.display_name}
                     {v.team_name && (
-                      <span className="ml-1 text-[9px] font-medium" style={{ color: v.team_color }}>{v.team_name}</span>
+                      <span className="ml-1 text-xs font-medium" style={{ color: v.team_color }}>{v.team_name}</span>
                     )}
                   </span>
                 ))}

@@ -217,7 +217,7 @@ export function SessionExport({
 
             {/* Actions */}
             <div className="px-5 py-3 border-t border-white/[0.06] flex items-center justify-between flex-shrink-0">
-              <p className="text-[10px] text-bw-muted">{responses.length} réponses, {filename}</p>
+              <p className="text-xs text-bw-muted">{responses.length} réponses, {filename}</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => { navigator.clipboard.writeText(markdown); }}

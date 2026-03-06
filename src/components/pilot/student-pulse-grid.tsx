@@ -73,10 +73,10 @@ const StudentPulseItem = memo(function StudentPulseItem({
       <span className="text-sm">{student.avatar}</span>
       <span className="text-xs truncate flex-1">{student.display_name}</span>
       {student.state === "responded" && (
-        <span className="text-[9px] text-bw-teal font-bold">OK</span>
+        <span className="text-xs text-bw-teal font-bold">OK</span>
       )}
       {student.state === "stuck" && !student.hand_raised_at && (
-        <span className="text-[9px] text-bw-amber font-bold">?</span>
+        <span className="text-xs text-bw-amber font-bold">?</span>
       )}
       {student.hand_raised_at && (
         <motion.span
@@ -118,9 +118,9 @@ function StudentPulseGridInner({ students, onRemove, teams }: StudentPulseGridPr
 
     return (
       <div className="space-y-3">
-        <h4 className="text-[10px] uppercase tracking-wider font-bold flex items-center gap-2">
+        <h4 className="text-xs uppercase tracking-wider font-bold flex items-center gap-2">
           <span className="text-bw-teal">Joueurs</span>
-          <span className="px-1.5 py-0.5 rounded-full bg-bw-teal/10 text-bw-teal text-[9px] tabular-nums">{students.length}</span>
+          <span className="px-1.5 py-0.5 rounded-full bg-bw-teal/10 text-bw-teal text-xs tabular-nums">{students.length}</span>
         </h4>
         {teams.map((team) => {
           const teamMembers = sorted.filter((s) => teamStudentIds.get(team.id)?.has(s.id));
@@ -129,8 +129,8 @@ function StudentPulseGridInner({ students, onRemove, teams }: StudentPulseGridPr
             <div key={team.id} className="space-y-1">
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: team.team_color }} />
-                <span className="text-[10px] font-semibold">{team.team_name}</span>
-                <span className="text-[9px] text-bw-muted">({teamMembers.length})</span>
+                <span className="text-xs font-semibold">{team.team_name}</span>
+                <span className="text-xs text-bw-muted">({teamMembers.length})</span>
               </div>
               <div className="grid grid-cols-2 gap-1.5">
                 {teamMembers.map((s) => (
@@ -142,7 +142,7 @@ function StudentPulseGridInner({ students, onRemove, teams }: StudentPulseGridPr
         })}
         {unassigned.length > 0 && (
           <div className="space-y-1">
-            <span className="text-[10px] text-bw-muted font-semibold">Non assigne</span>
+            <span className="text-xs text-bw-muted font-semibold">Non assigne</span>
             <div className="grid grid-cols-2 gap-1.5">
               {unassigned.map((s) => (
                 <StudentPulseItem key={s.id} student={s} onRemove={onRemove} />
@@ -156,9 +156,9 @@ function StudentPulseGridInner({ students, onRemove, teams }: StudentPulseGridPr
 
   return (
     <div className="space-y-2">
-      <h4 className="text-[10px] uppercase tracking-wider font-bold flex items-center gap-2">
+      <h4 className="text-xs uppercase tracking-wider font-bold flex items-center gap-2">
         <span className="text-bw-teal">Joueurs</span>
-        <span className="px-1.5 py-0.5 rounded-full bg-bw-teal/10 text-bw-teal text-[9px] tabular-nums">{students.length}</span>
+        <span className="px-1.5 py-0.5 rounded-full bg-bw-teal/10 text-bw-teal text-xs tabular-nums">{students.length}</span>
       </h4>
       <div className="grid grid-cols-2 gap-1.5">
         {sorted.map((s) => (

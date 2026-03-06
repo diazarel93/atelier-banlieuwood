@@ -46,7 +46,7 @@ export function KeyboardShortcutsModal({
               {SHORTCUTS.map(({ key, action }) => (
                 <div key={key} className="flex items-center justify-between">
                   <span className="text-xs text-bw-text">{action}</span>
-                  <kbd className="text-[10px] px-2 py-0.5 rounded bg-bw-elevated border border-white/[0.06] text-bw-muted font-mono">{key}</kbd>
+                  <kbd className="text-xs px-2 py-0.5 rounded bg-bw-elevated border border-white/[0.06] text-bw-muted font-mono">{key}</kbd>
                 </div>
               ))}
             </div>

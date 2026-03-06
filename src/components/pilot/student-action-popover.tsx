@@ -105,13 +105,13 @@ export function StudentActionPopover({
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stateInfo.color }} />
-                  <span className="text-[10px]" style={{ color: stateInfo.color }}>{stateInfo.label}</span>
+                  <span className="text-xs" style={{ color: stateInfo.color }}>{stateInfo.label}</span>
                 </span>
                 {student.hand_raised_at && (
-                  <span className="text-[10px] text-amber-400 font-medium">✋ Main levée</span>
+                  <span className="text-xs text-amber-400 font-medium">✋ Main levée</span>
                 )}
                 {warnings > 0 && (
-                  <span className="text-[10px] text-amber-400 font-medium">{warnings}/3 avert.</span>
+                  <span className="text-xs text-amber-400 font-medium">{warnings}/3 avert.</span>
                 )}
               </div>
             </div>
@@ -125,7 +125,7 @@ export function StudentActionPopover({
           {/* Last response — the main thing the teacher wants to see */}
           {lastResponse && (
             <div className="mx-3 mb-2 rounded-lg p-2.5" style={{ background: "rgba(78,205,196,0.04)", border: "1px solid rgba(78,205,196,0.10)" }}>
-              <p className="text-[9px] uppercase tracking-wider font-bold text-bw-teal mb-1">Réponse</p>
+              <p className="text-xs uppercase tracking-wider font-bold text-bw-teal mb-1">Réponse</p>
               <p className="text-[13px] text-bw-text leading-relaxed">{lastResponse}</p>
             </div>
           )}
@@ -133,20 +133,20 @@ export function StudentActionPopover({
           {/* No response yet */}
           {!lastResponse && student.state !== "disconnected" && (
             <div className="mx-3 mb-2 rounded-lg p-2.5 bg-white/[0.02] border border-white/[0.06]">
-              <p className="text-[11px] text-bw-muted">Pas encore de réponse</p>
+              <p className="text-xs text-bw-muted">Pas encore de réponse</p>
             </div>
           )}
 
           {/* Quick nudge chips — shown for active & stuck */}
           {!showNudgeInput && (student.state === "active" || student.state === "stuck") && (
             <div className="px-3 pb-2">
-              <p className="text-[9px] uppercase tracking-wider font-bold text-bw-muted mb-1.5">Relance rapide</p>
+              <p className="text-xs uppercase tracking-wider font-bold text-bw-muted mb-1.5">Relance rapide</p>
               <div className="flex flex-wrap gap-1">
                 {QUICK_NUDGES.map((text) => (
                   <button
                     key={text}
                     onClick={() => handleSendNudge(text)}
-                    className="text-[11px] px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-bw-text hover:bg-white/[0.08] cursor-pointer transition-all leading-snug text-left"
+                    className="text-xs px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-bw-text hover:bg-white/[0.08] cursor-pointer transition-all leading-snug text-left"
                   >
                     {text}
                   </button>
@@ -182,7 +182,7 @@ export function StudentActionPopover({
                       Envoyer
                     </button>
                   </div>
-                  <p className="text-[9px] text-bw-muted mt-1 text-right tabular-nums">{nudgeText.length}/300</p>
+                  <p className="text-xs text-bw-muted mt-1 text-right tabular-nums">{nudgeText.length}/300</p>
                 </div>
               </motion.div>
             )}
@@ -225,7 +225,7 @@ function ActionButton({ icon, label, onClick, variant, active, grow }: {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium cursor-pointer transition-all ${grow ? "flex-1" : ""} ${
+      className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all ${grow ? "flex-1" : ""} ${
         variant === "warning"
           ? "text-amber-400 hover:bg-amber-500/10"
           : active

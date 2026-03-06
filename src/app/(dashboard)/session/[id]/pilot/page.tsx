@@ -928,12 +928,12 @@ function CockpitContent({
           {/* Module badge — prominent */}
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg flex-shrink-0" style={{ backgroundColor: `${moduleColor}15`, border: `1px solid ${moduleColor}25` }}>
             <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: moduleColor }} />
-            <span className="text-[10px] font-bold" style={{ color: moduleColor }}>M{session.current_module}</span>
-            <span className="text-[10px] font-medium text-bw-text">{moduleLabel}</span>
+            <span className="text-xs font-bold" style={{ color: moduleColor }}>M{session.current_module}</span>
+            <span className="text-xs font-medium text-bw-text">{moduleLabel}</span>
           </div>
           {/* Chapter / Question counter */}
           {(totalQuestions ?? 0) > 0 && (
-            <span className="text-[10px] text-bw-muted tabular-nums flex-shrink-0 font-mono">
+            <span className="text-xs text-bw-muted tabular-nums flex-shrink-0 font-mono">
               S{session.current_seance || 1} · Q{currentQIndex + 1}/{totalQuestions}
             </span>
           )}
@@ -947,7 +947,7 @@ function CockpitContent({
           {/* Student count */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-bw-green" />
-            <span className="text-[10px] text-bw-muted tabular-nums font-mono">
+            <span className="text-xs text-bw-muted tabular-nums font-mono">
               {activeStudents.length}/{totalStudents}
             </span>
           </div>
@@ -961,7 +961,7 @@ function CockpitContent({
                 setAutoAdvanceCountdown(0);
               }
             }}
-            className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-medium cursor-pointer transition-all flex-shrink-0 ${
+            className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-medium cursor-pointer transition-all flex-shrink-0 ${
               autoAdvance ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30" : "bg-white/[0.04] text-bw-muted border border-white/[0.06]"
             }`}
           >
@@ -977,11 +977,11 @@ function CockpitContent({
           <div className="flex-shrink-0 border-b border-white/[0.06]">
             <div className={`flex items-center gap-2 px-4 py-2 border-l-[3px] ${isPreviewing ? "border-l-bw-amber" : ""}`} style={isPreviewing ? undefined : { borderLeftColor: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
               {/* Category badge */}
-              <span className="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0"
+              <span className="text-xs font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0"
                 style={{ backgroundColor: `${CATEGORY_COLORS[universalCategoryLabel] || moduleColor}20`, color: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
                 {universalCategoryLabel}
               </span>
-              {isPreviewing && <span className="text-[9px] px-1.5 py-0.5 rounded bg-bw-amber/15 text-bw-amber font-bold uppercase flex-shrink-0">Apercu</span>}
+              {isPreviewing && <span className="text-xs px-1.5 py-0.5 rounded bg-bw-amber/15 text-bw-amber font-bold uppercase flex-shrink-0">Apercu</span>}
               {/* Question text */}
               <p className={`text-sm leading-snug flex-1 min-w-0 truncate font-medium ${isPreviewing ? "text-bw-amber" : "text-bw-heading"}`}>
                 {universalQuestionText}
@@ -993,7 +993,7 @@ function CockpitContent({
                     className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
                     ◀
                   </button>
-                  <span className="text-[10px] text-bw-muted tabular-nums">Q{displayIndex + 1}/{maxSituations}</span>
+                  <span className="text-xs text-bw-muted tabular-nums">Q{displayIndex + 1}/{maxSituations}</span>
                   <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
                     className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
                     ▶
@@ -1004,7 +1004,7 @@ function CockpitContent({
               {questionGuide && (
                 <button
                   onClick={() => setGuideExpanded(!guideExpanded)}
-                  className={`px-2 py-1 rounded-lg text-[10px] font-medium cursor-pointer transition-all flex-shrink-0 ${
+                  className={`px-2 py-1 rounded-lg text-xs font-medium cursor-pointer transition-all flex-shrink-0 ${
                     guideExpanded ? "bg-bw-green/15 text-bw-green border border-bw-green/30" : "text-bw-muted hover:text-bw-green bg-bw-elevated border border-white/[0.06]"
                   }`}
                 >
@@ -1024,12 +1024,12 @@ function CockpitContent({
                   <div className="px-4 pb-3 space-y-2">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div className="bg-bw-bg rounded-lg p-2.5 space-y-0.5">
-                        <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-green">Ce qu&apos;on attend</p>
-                        <p className="text-[11px] text-bw-text leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.whatToExpect}</p>
+                        <p className="text-xs uppercase tracking-wider font-semibold text-bw-green">Ce qu&apos;on attend</p>
+                        <p className="text-sm text-bw-text leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.whatToExpect}</p>
                       </div>
                       <div className="bg-bw-bg rounded-lg p-2.5 space-y-0.5">
-                        <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-amber">Pieges frequents</p>
-                        <p className="text-[11px] text-bw-amber leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.commonPitfalls}</p>
+                        <p className="text-xs uppercase tracking-wider font-semibold text-bw-amber">Pieges frequents</p>
+                        <p className="text-sm text-bw-amber leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.commonPitfalls}</p>
                       </div>
                     </div>
                     <QuickPhrases questionGuide={(isPreviewing ? previewGuide : questionGuide) ?? undefined} />
@@ -1041,12 +1041,12 @@ function CockpitContent({
             {isPreviewing && (
               <div className="px-4 pb-2">
                 <div className="bg-bw-amber/10 border border-bw-amber/30 rounded-lg px-3 py-2 flex items-center gap-3">
-                  <span className="text-[11px] text-bw-amber">Apercu Q{displayIndex + 1}</span>
+                  <span className="text-xs text-bw-amber">Apercu Q{displayIndex + 1}</span>
                   <div className="flex-1" />
                   <button onClick={() => setPreviewIndex(null)}
-                    className="text-[10px] text-bw-muted hover:text-white cursor-pointer">Retour Q{currentQIndex + 1}</button>
+                    className="text-xs text-bw-muted hover:text-white cursor-pointer">Retour Q{currentQIndex + 1}</button>
                   <button onClick={() => goToSituation(displayIndex)}
-                    className="text-[10px] px-2.5 py-1 bg-bw-amber text-black rounded-lg font-medium cursor-pointer hover:brightness-110">
+                    className="text-xs px-2.5 py-1 bg-bw-amber text-black rounded-lg font-medium cursor-pointer hover:brightness-110">
                     Lancer Q{displayIndex + 1}
                   </button>
                 </div>
@@ -1059,36 +1059,16 @@ function CockpitContent({
         <div className="flex-1 flex overflow-hidden min-h-0">
           {/* LEFT: Plan de classe + séances (40%, desktop only) */}
           <div className="hidden lg:flex lg:w-[40%] flex-shrink-0 flex-col overflow-y-auto border-r border-white/[0.06]">
-            {/* Module séances — compact horizontal row */}
-            {currentModuleLessons.length > 1 && (
-              <div className="flex-shrink-0 px-3 py-1.5 border-b border-white/[0.06] flex items-center gap-1.5 overflow-x-auto scrollbar-none">
-                {currentModuleLessons.map((lesson, i) => {
-                  const isCurrent = lesson.dbSeance === (session.current_seance || 1);
-                  const isPast = lesson.dbSeance < (session.current_seance || 1);
-                  return (
-                    <div key={lesson.id}
-                      className={`flex items-center gap-1 flex-shrink-0 text-[10px] transition-all ${
-                        isCurrent ? "font-semibold" : isPast ? "text-bw-muted/70" : "text-bw-muted/40"
-                      }`}
-                      style={isCurrent ? { color: moduleColor } : undefined}
-                    >
-                      {i > 0 && <span className="text-white/10 mr-0.5">·</span>}
-                      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isPast ? "bg-bw-teal" : isCurrent ? "animate-pulse" : "bg-white/10"}`}
-                        style={isCurrent ? { backgroundColor: moduleColor } : undefined} />
-                      <span className="whitespace-nowrap">{lesson.title}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
             {/* Mini stats bar */}
             {session.status !== "done" && (
-              <div className="flex-shrink-0 px-3 py-2 border-b border-white/[0.06] flex items-center gap-3 text-[10px]">
-                <span className="text-bw-muted tabular-nums">{unifiedRespondedCount}/{activeStudents.length} répondu{unifiedRespondedCount !== 1 ? "s" : ""}</span>
+              <div className="flex-shrink-0 px-3 py-2 border-b border-white/[0.06] flex items-center gap-3 text-xs">
                 {stuckStudents.length > 0 && (
-                  <span className="text-bw-danger tabular-nums">{stuckStudents.length} bloqué{stuckStudents.length > 1 ? "s" : ""}</span>
+                  <span className="text-bw-danger tabular-nums font-medium">● {stuckStudents.length} bloqué{stuckStudents.length > 1 ? "s" : ""}</span>
                 )}
-                {(() => { const h = session.students?.filter(s => s.hand_raised_at).length || 0; return h > 0 ? <span className="text-bw-amber">✋ {h} main{h > 1 ? "s" : ""} levée{h > 1 ? "s" : ""}</span> : null; })()}
+                {(() => { const h = session.students?.filter(s => s.hand_raised_at).length || 0; return h > 0 ? <span className="text-bw-amber font-medium">✋ {h} main{h > 1 ? "s" : ""}</span> : null; })()}
+                {stuckStudents.length === 0 && !(session.students?.some(s => s.hand_raised_at)) && (
+                  <span className="text-bw-muted">Plan de classe</span>
+                )}
               </div>
             )}
             {/* Classroom map */}
@@ -1152,24 +1132,21 @@ function CockpitContent({
           {/* ── TOOLBAR — clean, minimal header for right panel ── */}
           {session.status !== "done" && !focusMode && (
             <div className="flex items-center gap-2.5 pb-2 border-b border-white/[0.06]">
-              <span className="text-[11px] font-bold text-bw-heading uppercase tracking-wider">{unifiedLabel}</span>
-              <span className="text-[11px] text-bw-muted tabular-nums font-medium">
-                {unifiedRespondedCount}/{activeStudents.length}
-              </span>
+              <span className="text-xs font-semibold text-bw-heading uppercase tracking-wider">{unifiedLabel}</span>
               <div className="flex-1" />
               {(isBudgetQuiz || showM10Special || showM2ECSceneBuilder || showM2ECComparison) && (
                 <input
                   type="text" placeholder="Rechercher..." value={cardSearch}
                   onChange={(e) => setCardSearch(e.target.value)}
-                  className="w-24 px-2 py-1 rounded-lg text-[10px] bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
+                  className="w-32 px-2 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
                 />
               )}
               <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-xs text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors">
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-sm text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors">
                 📢
               </button>
               <button onClick={() => setShowExport(true)} title="Export (E)"
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-xs text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors">
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-sm text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors">
                 📋
               </button>
             </div>
@@ -1196,11 +1173,11 @@ function CockpitContent({
                 return (
                   <div key={opt.key} className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] text-bw-text flex items-center gap-1.5">
-                        <span className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold" style={{ backgroundColor: colors.bar, color: "#fff" }}>{opt.key.toUpperCase()}</span>
+                      <span className="text-xs text-bw-text flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: colors.bar, color: "#fff" }}>{opt.key.toUpperCase()}</span>
                         <span className="font-medium leading-tight">{opt.label}</span>
                       </span>
-                      <span className="text-[11px] tabular-nums font-medium ml-2 flex-shrink-0" style={{ color: count > 0 ? colors.text : "rgba(136,148,160,0.4)" }}>
+                      <span className="text-xs tabular-nums font-medium ml-2 flex-shrink-0" style={{ color: count > 0 ? colors.text : "rgba(136,148,160,0.4)" }}>
                         {count}/{total}
                       </span>
                     </div>
@@ -1270,8 +1247,8 @@ function CockpitContent({
                             <div key={cat.key} className="flex-1 text-center">
                               <div className="h-1.5 rounded-full mb-1"
                                 style={{ backgroundColor: cost > 0 ? cat.color : "rgba(255,255,255,0.05)", opacity: cost > 0 ? 0.7 : 1 }} />
-                              <span className="text-[9px] block" style={{ color: cat.color }}>{cat.label}</span>
-                              <span className="text-[10px] text-bw-muted block">{opt.label}</span>
+                              <span className="text-xs block" style={{ color: cat.color }}>{cat.label}</span>
+                              <span className="text-xs text-bw-muted block">{opt.label}</span>
                             </div>
                           );
                         })}
@@ -1312,7 +1289,7 @@ function CockpitContent({
                     <span className="text-sm font-semibold text-bw-heading">
                       {isM10Etsi ? "Et si..." : "Pitch"}
                     </span>
-                    <span className="text-[10px] text-bw-muted ml-auto uppercase tracking-wider">
+                    <span className="text-xs text-bw-muted ml-auto uppercase tracking-wider">
                       {module10Data?.type === "etsi" ? "Image + écriture"
                         : module10Data?.type === "qcm" ? "QCM narratif"
                         : module10Data?.type === "idea-bank" ? "Banque d'idées"
@@ -1355,7 +1332,7 @@ function CockpitContent({
                   />
                   <div className="bg-bw-elevated px-3 py-2 border-t border-white/[0.06]">
                     <p className="text-xs font-medium text-bw-teal">{module10Data.image.title}</p>
-                    <p className="text-[10px] text-bw-muted mt-0.5 line-clamp-2">{module10Data.image.description}</p>
+                    <p className="text-xs text-bw-muted mt-0.5 line-clamp-2">{module10Data.image.description}</p>
                   </div>
                 </div>
               )}
@@ -1366,11 +1343,11 @@ function CockpitContent({
                   <DiceBearAvatarMini options={module10Data.personnage.avatar || {}} size={40} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-bw-heading truncate">{module10Data.personnage.prenom}</p>
-                    <p className="text-[10px] text-bw-muted">{module10Data.personnage.trait}</p>
+                    <p className="text-xs text-bw-muted">{module10Data.personnage.trait}</p>
                   </div>
                   {module10Data.objectif && (
                     <div className="text-right">
-                      <p className="text-[10px] text-bw-muted">Objectif</p>
+                      <p className="text-xs text-bw-muted">Objectif</p>
                       <p className="text-xs text-bw-teal truncate max-w-[120px]">{module10Data.objectif}</p>
                     </div>
                   )}
@@ -1384,11 +1361,11 @@ function CockpitContent({
                   {module10Data.confrontation && (
                     <div className="grid grid-cols-2 gap-2">
                       <div className="bg-bw-teal/10 rounded-xl p-3 border border-bw-teal/20">
-                        <p className="text-[10px] text-bw-teal font-bold uppercase mb-1">Pitch A — {module10Data.confrontation.pitchA.prenom}</p>
+                        <p className="text-xs text-bw-teal font-bold uppercase mb-1">Pitch A — {module10Data.confrontation.pitchA.prenom}</p>
                         <p className="text-xs text-bw-text line-clamp-3">{module10Data.confrontation.pitchA.text}</p>
                       </div>
                       <div className="bg-bw-danger/10 rounded-xl p-3 border border-bw-danger/20">
-                        <p className="text-[10px] text-bw-danger font-bold uppercase mb-1">Pitch B — {module10Data.confrontation.pitchB.prenom}</p>
+                        <p className="text-xs text-bw-danger font-bold uppercase mb-1">Pitch B — {module10Data.confrontation.pitchB.prenom}</p>
                         <p className="text-xs text-bw-text line-clamp-3">{module10Data.confrontation.pitchB.text}</p>
                       </div>
                     </div>
@@ -1397,8 +1374,8 @@ function CockpitContent({
                   {module10Data.pitchList && module10Data.pitchList.length >= 2 && (
                     <div className="bg-bw-surface rounded-xl p-3 border border-white/[0.06] space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] text-bw-muted uppercase font-semibold tracking-wider">Choisir les pitchs à confronter</span>
-                        <span className="text-[10px] text-bw-muted">{selectedPitchIds.length}/2</span>
+                        <span className="text-xs text-bw-muted uppercase font-semibold tracking-wider">Choisir les pitchs à confronter</span>
+                        <span className="text-xs text-bw-muted">{selectedPitchIds.length}/2</span>
                       </div>
                       {module10Data.pitchList.map((p) => {
                         const isSelected = selectedPitchIds.includes(p.studentId);
@@ -1416,7 +1393,7 @@ function CockpitContent({
                                 : "bg-bw-bg border-white/[0.06] text-bw-muted hover:border-bw-teal/20"
                             }`}>
                             <span className="font-medium">{isSelected ? (idx === 0 ? "A" : "B") + " — " : ""}{p.prenom}</span>
-                            <span className="block text-[10px] text-bw-muted mt-0.5 line-clamp-1">{p.text}</span>
+                            <span className="block text-xs text-bw-muted mt-0.5 line-clamp-1">{p.text}</span>
                           </button>
                         );
                       })}
@@ -1447,7 +1424,7 @@ function CockpitContent({
               {/* Idea bank items */}
               {module10Data?.type === "idea-bank" && module10Data.ideaBankItems && module10Data.ideaBankItems.length > 0 && (
                 <div className="bg-bw-surface rounded-xl p-3 border border-white/[0.06] space-y-1.5">
-                  <p className="text-[10px] text-bw-muted uppercase font-semibold tracking-wider">💡 Banque d&apos;idées</p>
+                  <p className="text-xs text-bw-muted uppercase font-semibold tracking-wider">💡 Banque d&apos;idées</p>
                   {module10Data.ideaBankItems.slice(0, 5).map((item) => (
                     <div key={item.id} className="flex items-center gap-2 text-xs">
                       <span className="text-bw-teal font-medium tabular-nums">{item.votes}♥</span>
@@ -1455,7 +1432,7 @@ function CockpitContent({
                     </div>
                   ))}
                   {module10Data.ideaBankItems.length > 5 && (
-                    <p className="text-[10px] text-bw-muted">+{module10Data.ideaBankItems.length - 5} autres</p>
+                    <p className="text-xs text-bw-muted">+{module10Data.ideaBankItems.length - 5} autres</p>
                   )}
                 </div>
               )}
@@ -1617,12 +1594,12 @@ function CockpitContent({
                           {sc.elements.map((el) => {
                             const def = getElement(el.key);
                             return (
-                              <span key={el.key} className="text-[10px] px-1.5 py-0.5 rounded bg-white/[0.05] text-bw-text">
+                              <span key={el.key} className="text-xs px-1.5 py-0.5 rounded bg-white/[0.05] text-bw-text">
                                 {def?.label || el.key}
                               </span>
                             );
                           })}
-                          <span className="ml-auto text-[10px] text-bw-muted tabular-nums">{sc.tokens_used}🪙 {sc.slots_used}/5📦</span>
+                          <span className="ml-auto text-xs text-bw-muted tabular-nums">{sc.tokens_used}🪙 {sc.slots_used}/5📦</span>
                         </div>
                         {/* Inline actions — uniform with all modules */}
                         <GenericInlineActions
@@ -1708,7 +1685,7 @@ function CockpitContent({
                             isSelected ? "border-bw-pink/60 bg-bw-pink/5" : "border-white/[0.06] hover:border-white/[0.12]"
                           }`}>
                           <div className="flex items-center gap-2">
-                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center text-[10px] ${
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs ${
                               isSelected ? "border-bw-pink bg-bw-pink text-white" : "border-bw-muted"
                             }`}>
                               {isSelected && (selectedSceneIds.indexOf(sc.id) === 0 ? "A" : "B")}
@@ -1729,12 +1706,12 @@ function CockpitContent({
                             {sc.elements.map((el) => {
                               const def = getElement(el.key);
                               return (
-                                <span key={el.key} className="text-[10px] px-1.5 py-0.5 rounded bg-white/[0.05] text-bw-text">
+                                <span key={el.key} className="text-xs px-1.5 py-0.5 rounded bg-white/[0.05] text-bw-text">
                                   {def?.label || el.key}
                                 </span>
                               );
                             })}
-                            <span className="ml-auto text-[10px] text-bw-muted tabular-nums">{sc.tokens_used}🪙 {sc.slots_used}/5📦</span>
+                            <span className="ml-auto text-xs text-bw-muted tabular-nums">{sc.tokens_used}🪙 {sc.slots_used}/5📦</span>
                           </div>
                           {/* Inline actions — uniform with all modules */}
                           <div className="pl-7">
@@ -1888,7 +1865,7 @@ function CockpitContent({
                           <span className="text-sm">{r.students?.avatar}</span>
                           <span className={`text-sm font-medium text-bw-text ${r.is_hidden ? "line-through" : ""}`}>{r.students?.display_name}</span>
                           {r.reset_at && (
-                            <span className="text-[9px] px-1.5 py-px rounded-full bg-bw-amber/15 text-bw-amber border border-bw-amber/20">relancé</span>
+                            <span className="text-xs px-1.5 py-px rounded-full bg-bw-amber/15 text-bw-amber border border-bw-amber/20">relancé</span>
                           )}
                         </div>
                         <p className={`text-sm leading-relaxed text-bw-heading ${r.is_hidden ? "line-through text-bw-muted" : ""} ${r.reset_at ? "line-through text-bw-muted" : ""}`}>{r.text}</p>
@@ -1950,12 +1927,12 @@ function CockpitContent({
           {!focusMode && session.status === "responding" && notRespondedStudents.length > 0 && (
             <div className="rounded-xl border border-white/[0.06] p-3 space-y-2" style={{ background: "linear-gradient(135deg, rgba(136,148,160,0.03), transparent)" }}>
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">
+                <span className="text-xs font-bold uppercase tracking-wider text-bw-muted">
                   Pas encore répondu ({notRespondedStudents.length})
                 </span>
                 {stuckStudents.length > 0 && (
                   <button onClick={handleNudgeAllStuck}
-                    className="text-[10px] text-bw-amber hover:text-bw-amber/80 cursor-pointer transition-colors font-medium">
+                    className="text-xs text-bw-amber hover:text-bw-amber/80 cursor-pointer transition-colors font-medium">
                     Relancer {stuckStudents.length} bloqué{stuckStudents.length > 1 ? "s" : ""}
                   </button>
                 )}
@@ -1968,7 +1945,7 @@ function CockpitContent({
                   return (
                     <button key={s.id}
                       onClick={() => setFicheStudentId(s.id)}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-[11px] cursor-pointer transition-all ${
+                      className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-xs cursor-pointer transition-all ${
                         isStuck
                           ? "bg-red-500/[0.06] border-red-500/20 text-red-400 hover:bg-red-500/10"
                           : hasHand
@@ -1978,13 +1955,13 @@ function CockpitContent({
                     >
                       <span className="text-sm">{s.avatar}</span>
                       <span>{s.display_name}</span>
-                      {isStuck && <span className="text-[9px]">●</span>}
-                      {hasHand && <span className="text-[9px]">✋</span>}
+                      {isStuck && <span className="text-xs">●</span>}
+                      {hasHand && <span className="text-xs">✋</span>}
                     </button>
                   );
                 })}
                 {notRespondedStudents.length > 20 && (
-                  <span className="text-[10px] text-bw-muted self-center px-1">+{notRespondedStudents.length - 20} autres</span>
+                  <span className="text-xs text-bw-muted self-center px-1">+{notRespondedStudents.length - 20} autres</span>
                 )}
               </div>
             </div>
@@ -2020,7 +1997,7 @@ function CockpitContent({
                   />
                 </div>
                 <div className="flex items-center justify-end mt-1">
-                  <span className={`text-[10px] font-medium tabular-nums ${allDone ? "text-bw-teal" : "text-bw-muted"}`}>
+                  <span className={`text-xs font-medium tabular-nums ${allDone ? "text-bw-teal" : "text-bw-muted"}`}>
                     {unifiedRespondedCount}/{activeStudents.length} ({pct}%)
                   </span>
                 </div>
@@ -2082,7 +2059,7 @@ function CockpitContent({
                   disabled={updateSession.isPending || !!(nextAction as { disabled?: boolean }).disabled}
                   className="btn-glow w-full py-2 rounded-lg font-bold text-sm cursor-pointer transition-all duration-200 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                   style={{ backgroundColor: nextAction.color, color: nextAction.color === "#F59E0B" || nextAction.color === "#888" ? "black" : "white" }}>
-                  {nextAction.label} {nextAction.shortcut && <span className="opacity-60 ml-1 text-[10px]">[{nextAction.shortcut}]</span>}
+                  {nextAction.label} {nextAction.shortcut && <span className="opacity-60 ml-1 text-xs">[{nextAction.shortcut}]</span>}
                 </motion.button>
               ) : (
                 <div className="w-full py-2 rounded-lg text-sm text-center bg-bw-elevated text-bw-muted border border-white/[0.06]">
@@ -2165,7 +2142,7 @@ function CockpitContent({
                     className="text-bw-muted hover:text-white text-sm cursor-pointer">Fermer</button>
                 </div>
                 <span className="text-xs text-bw-muted tabular-nums">{activeStudents.length}/{totalStudents} connectes</span>
-                <div className="flex items-center gap-3 flex-wrap text-[10px] text-bw-muted">
+                <div className="flex items-center gap-3 flex-wrap text-xs text-bw-muted">
                   <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-bw-green" /> Repondu</span>
                   <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-bw-amber" /> En attente</span>
                   <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-bw-muted" /> Deconnecte</span>
@@ -2190,7 +2167,7 @@ function CockpitContent({
                           <span className="truncate flex-1 text-bw-text">{s.display_name}</span>
                           {st?.state === "responded" && <span className="text-bw-teal text-xs font-medium flex-shrink-0">OK</span>}
                           {st?.state === "stuck" && <span className="text-bw-amber text-xs flex-shrink-0">...</span>}
-                          {s.warnings > 0 && <span className="text-[10px] text-bw-amber">⚠️ {s.warnings}</span>}
+                          {s.warnings > 0 && <span className="text-xs text-bw-amber">⚠️ {s.warnings}</span>}
                           {s.is_active && (
                             <button onClick={(e) => { e.stopPropagation(); setKickTarget({ id: s.id, name: s.display_name }); }}
                               className="opacity-0 group-hover:opacity-100 text-bw-muted hover:text-bw-danger cursor-pointer transition-all duration-200">✕</button>

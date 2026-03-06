@@ -32,7 +32,7 @@ export function StuckAlert({ students, onNudgeAll, isPending }: StuckAlertProps)
             <p className="text-xs text-bw-amber font-medium">
               {students.length} élève{students.length > 1 ? "s" : ""} bloqué{students.length > 1 ? "s" : ""} depuis +1min
             </p>
-            <p className="text-[10px] text-bw-muted truncate">
+            <p className="text-xs text-bw-muted truncate">
               {students.map(s => s.name).join(", ")}
             </p>
           </div>
