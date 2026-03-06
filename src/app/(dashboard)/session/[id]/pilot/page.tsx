@@ -1113,8 +1113,8 @@ function CockpitContent({
 
         {/* ── SPLIT-PANEL LAYOUT ── */}
         <div className="flex-1 flex overflow-hidden min-h-0">
-          {/* LEFT: Classe en direct — 260-300px panel with pulse + tabs (list/map) */}
-          <div data-onboarding="classmap" className="hidden md:flex md:w-[260px] lg:w-[300px] flex-shrink-0 flex-col"
+          {/* LEFT: Classe en direct — 300px panel, hidden below lg */}
+          <div data-onboarding="classmap" className="hidden lg:flex w-[300px] flex-shrink-0 flex-col"
             style={{ background: "#FAF6EE", borderRight: "1px solid #EEE4D8" }}>
             {/* Compact pulse header */}
             <div className="px-4 pt-4 pb-2 flex-shrink-0">
@@ -2377,8 +2377,8 @@ function CockpitContent({
         </div>
         )}
         </div>
-          {/* RIGHT: Assistant pedagogique — 280-320px panel */}
-          <div className="hidden lg:flex lg:w-[280px] xl:w-[320px] flex-shrink-0 flex-col"
+          {/* RIGHT: Assistant pedagogique — 320px panel, hidden below xl */}
+          <div className="hidden xl:flex w-[320px] flex-shrink-0 flex-col"
             style={{ background: "#FAF6EE", borderLeft: "1px solid #EEE4D8" }}>
             {/* Title */}
             <div className="px-5 pt-5 pb-3 flex-shrink-0">
