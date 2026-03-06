@@ -334,11 +334,32 @@ export function ResponseStreamSection({
           <p className="text-xs text-bw-muted">{searchQuery.trim() ? `Aucune réponse pour "${searchQuery}"` : "Aucune réponse dans ce filtre"}</p>
         </div>
       ) : sessionStatus === "responding" ? (
-        <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-5 text-center space-y-2">
-          <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
-            className="text-2xl">✍️</motion.div>
-          <p className="text-sm text-bw-muted">En attente des réponses...</p>
-          <p className="text-sm text-bw-muted">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
+        <div
+          className="rounded-xl border border-white/[0.08] p-6 text-center"
+          style={{
+            background: "linear-gradient(135deg, rgba(78,205,196,0.04), rgba(139,92,246,0.03), transparent)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
+          }}
+        >
+          <motion.div
+            animate={{ y: [0, -4, 0], opacity: [0.5, 1, 0.5] }}
+            transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+            className="text-2xl mb-2"
+          >
+            ✍️
+          </motion.div>
+          <p className="text-sm text-bw-text font-medium">En attente des réponses...</p>
+          <p className="text-xs text-bw-muted mt-1">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
+          <div className="flex justify-center gap-1 mt-3">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="w-1.5 h-1.5 rounded-full bg-bw-teal/40"
+                animate={{ opacity: [0.3, 1, 0.3] }}
+                transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.3 }}
+              />
+            ))}
+          </div>
         </div>
       ) : null}
 
@@ -348,15 +369,22 @@ export function ResponseStreamSection({
         const notResponded = activeStudents.filter((s) => !respondedIds.has(s.id));
         if (notResponded.length === 0) return null;
         return (
-          <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-3 mt-2">
-            <p className="text-xs uppercase tracking-wider font-semibold text-bw-muted mb-2">
+          <div
+            className="rounded-xl border border-white/[0.08] p-3 mt-2"
+            style={{
+              background: "linear-gradient(135deg, rgba(136,148,160,0.04), transparent)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 1px 3px rgba(0,0,0,0.12)",
+            }}
+          >
+            <p className="text-xs uppercase tracking-wider font-semibold text-bw-muted mb-2 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-bw-muted/50" />
               Pas encore répondu ({notResponded.length})
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {notResponded.map((s) => (
-                <div key={s.id} className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+                <div key={s.id} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-200">
                   <span className="text-sm">{s.avatar || "🎭"}</span>
-                  <span className="text-xs text-bw-muted">{s.display_name || "Élève"}</span>
+                  <span className="text-xs text-bw-muted font-medium">{s.display_name || "Élève"}</span>
                 </div>
               ))}
             </div>

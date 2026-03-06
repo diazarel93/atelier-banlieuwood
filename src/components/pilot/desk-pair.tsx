@@ -67,7 +67,7 @@ function DeskPairInner({
         }}
       >
         <DeskSeat student={left} response={responseMap.get(left.id) || null} onClick={() => onStudentClick(left.id)} />
-        <div className="w-px my-2" style={{ background: "rgba(255,255,255,0.06)" }} />
+        <div className="w-px my-2" style={{ background: "rgba(255,255,255,0.10)" }} />
         {right ? (
           <DeskSeat student={right} response={responseMap.get(right.id) || null} onClick={() => onStudentClick(right.id)} />
         ) : (

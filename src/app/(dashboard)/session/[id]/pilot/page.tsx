@@ -1164,27 +1164,53 @@ function CockpitContent({
               d: { bar: "#F472B6", text: "#F9A8D4" },
             };
             return (
-            <div className="rounded-xl border border-white/[0.06] p-3 space-y-3">
+            <div className="space-y-2">
               {module1Data.questions[currentQIndex].options?.map((opt) => {
                 const count = module1Data.optionDistribution?.[opt.key] || 0;
                 const total = activeStudents.length;
                 const pct = total > 0 ? Math.round((count / total) * 100) : 0;
                 const colors = OPTION_COLORS[opt.key] || OPTION_COLORS.a;
+                const hasVotes = count > 0;
                 return (
-                  <div key={opt.key} className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-bw-text flex items-center gap-1.5">
-                        <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: colors.bar, color: "#fff" }}>{opt.key.toUpperCase()}</span>
-                        <span className="font-medium leading-tight">{opt.label}</span>
+                  <div
+                    key={opt.key}
+                    className="rounded-xl border p-3 transition-all duration-300"
+                    style={{
+                      borderColor: hasVotes ? `${colors.bar}35` : "rgba(255,255,255,0.08)",
+                      background: hasVotes
+                        ? `linear-gradient(135deg, ${colors.bar}0A, transparent 70%)`
+                        : "rgba(255,255,255,0.02)",
+                      boxShadow: hasVotes
+                        ? `0 0 12px ${colors.bar}12, inset 0 1px 0 rgba(255,255,255,0.06)`
+                        : "inset 0 1px 0 rgba(255,255,255,0.04)",
+                    }}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0"
+                        style={{
+                          backgroundColor: hasVotes ? colors.bar : `${colors.bar}40`,
+                          color: "#fff",
+                          boxShadow: hasVotes ? `0 0 10px ${colors.bar}40` : undefined,
+                        }}
+                      >
+                        {opt.key.toUpperCase()}
                       </span>
-                      <span className="text-xs tabular-nums font-medium ml-2 flex-shrink-0" style={{ color: count > 0 ? colors.text : "rgba(136,148,160,0.4)" }}>
+                      <span className="text-sm text-bw-text font-medium leading-snug flex-1">{opt.label}</span>
+                      <span
+                        className="text-sm tabular-nums font-bold flex-shrink-0"
+                        style={{ color: hasVotes ? colors.text : "rgba(136,148,160,0.35)" }}
+                      >
                         {count}/{total}
                       </span>
                     </div>
-                    <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
+                    <div className="mt-2 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
                       <motion.div
                         className="h-full rounded-full"
-                        style={{ backgroundColor: colors.bar }}
+                        style={{
+                          backgroundColor: colors.bar,
+                          boxShadow: hasVotes ? `0 0 8px ${colors.bar}50` : undefined,
+                        }}
                         animate={{ width: `${pct}%` }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
                       />
@@ -1916,23 +1942,52 @@ function CockpitContent({
 
           {/* ── EMPTY STATE — shown when responding with no responses yet ── */}
           {session.status === "responding" && unifiedRespondedCount === 0 && !isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !isBudgetQuiz && (
-            <div className="rounded-xl border border-white/[0.06] p-4 text-center">
-              <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-                className="text-xl mb-1">✍️</motion.div>
-              <p className="text-xs text-bw-muted">En attente des réponses...</p>
+            <div
+              className="rounded-xl border border-white/[0.08] p-6 text-center"
+              style={{
+                background: "linear-gradient(135deg, rgba(78,205,196,0.04), rgba(139,92,246,0.03), transparent)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
+              }}
+            >
+              <motion.div
+                animate={{ y: [0, -4, 0], opacity: [0.5, 1, 0.5] }}
+                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                className="text-2xl mb-2"
+              >
+                ✍️
+              </motion.div>
+              <p className="text-sm text-bw-text font-medium">En attente des réponses...</p>
+              <p className="text-xs text-bw-muted mt-1">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
+              <div className="flex justify-center gap-1 mt-3">
+                {[0, 1, 2].map((i) => (
+                  <motion.div
+                    key={i}
+                    className="w-1.5 h-1.5 rounded-full bg-bw-teal/40"
+                    animate={{ opacity: [0.3, 1, 0.3] }}
+                    transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.3 }}
+                  />
+                ))}
+              </div>
             </div>
           )}
 
           {/* ── PAS ENCORE RÉPONDU — bottom of right panel, always visible during responding ── */}
           {!focusMode && session.status === "responding" && notRespondedStudents.length > 0 && (
-            <div className="rounded-xl border border-white/[0.06] p-3 space-y-2" style={{ background: "linear-gradient(135deg, rgba(136,148,160,0.03), transparent)" }}>
+            <div
+              className="rounded-xl border border-white/[0.08] p-3 space-y-2.5"
+              style={{
+                background: "linear-gradient(135deg, rgba(136,148,160,0.04), transparent)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 1px 3px rgba(0,0,0,0.12)",
+              }}
+            >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-bw-muted">
+                <span className="text-xs font-bold uppercase tracking-wider text-bw-muted flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-bw-muted/50" />
                   Pas encore répondu ({notRespondedStudents.length})
                 </span>
                 {stuckStudents.length > 0 && (
                   <button onClick={handleNudgeAllStuck}
-                    className="text-xs text-bw-amber hover:text-bw-amber/80 cursor-pointer transition-colors font-medium">
+                    className="text-xs text-bw-amber hover:text-bw-amber/80 cursor-pointer transition-colors font-medium px-2 py-0.5 rounded-md bg-bw-amber/10 border border-bw-amber/20 hover:bg-bw-amber/15">
                     Relancer {stuckStudents.length} bloqué{stuckStudents.length > 1 ? "s" : ""}
                   </button>
                 )}
@@ -1945,17 +2000,17 @@ function CockpitContent({
                   return (
                     <button key={s.id}
                       onClick={() => setFicheStudentId(s.id)}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-xs cursor-pointer transition-all ${
+                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs cursor-pointer transition-all duration-200 ${
                         isStuck
-                          ? "bg-red-500/[0.06] border-red-500/20 text-red-400 hover:bg-red-500/10"
+                          ? "bg-red-500/[0.08] border-red-500/25 text-red-400 hover:bg-red-500/15 shadow-[0_0_8px_rgba(239,68,68,0.1)]"
                           : hasHand
-                            ? "bg-amber-500/[0.06] border-amber-500/20 text-amber-400 hover:bg-amber-500/10"
-                            : "bg-white/[0.03] border-white/[0.06] text-bw-muted hover:text-bw-text hover:bg-white/[0.06]"
+                            ? "bg-amber-500/[0.08] border-amber-500/25 text-amber-400 hover:bg-amber-500/15 shadow-[0_0_8px_rgba(245,158,11,0.1)]"
+                            : "bg-white/[0.03] border-white/[0.08] text-bw-muted hover:text-bw-text hover:bg-white/[0.06] hover:border-white/[0.12]"
                       }`}
                     >
                       <span className="text-sm">{s.avatar}</span>
-                      <span>{s.display_name}</span>
-                      {isStuck && <span className="text-xs">●</span>}
+                      <span className="font-medium">{s.display_name}</span>
+                      {isStuck && <span className="text-xs animate-pulse">●</span>}
                       {hasHand && <span className="text-xs">✋</span>}
                     </button>
                   );
