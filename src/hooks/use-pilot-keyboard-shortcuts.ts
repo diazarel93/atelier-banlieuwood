@@ -13,6 +13,7 @@ interface UsePilotKeyboardShortcutsProps {
   onCloseAll: () => void;
   onNextAction?: () => void;
   onToggleFocus?: () => void;
+  onToggleIntervention?: () => void;
   onTimerShortcut?: () => void;
   onSetTimerPreset?: (n: number) => void;
   timerModeActive?: boolean;
@@ -33,6 +34,7 @@ export function usePilotKeyboardShortcuts({
   onCloseAll,
   onNextAction,
   onToggleFocus,
+  onToggleIntervention,
   onTimerShortcut,
   onSetTimerPreset,
   timerModeActive,
@@ -69,6 +71,12 @@ export function usePilotKeyboardShortcuts({
             onToggleFocus();
           }
           break;
+        case "h": // H = toggle intervention/help mode
+          if (onToggleIntervention) {
+            e.preventDefault();
+            onToggleIntervention();
+          }
+          break;
         case "t": // T = timer mode
           if (onTimerShortcut) {
             e.preventDefault();
@@ -100,5 +108,5 @@ export function usePilotKeyboardShortcuts({
       window.removeEventListener("pilot-broadcast", handleBroadcastEvent);
       window.removeEventListener("pilot-shortcuts", handleShortcutsEvent);
     };
-  }, [sessionStatus, responsesCount, onPauseToggle, onShowBroadcast, onShowExport, onShowCompare, onToggleShortcuts, onCloseAll, onNextAction, onToggleFocus, onTimerShortcut, onSetTimerPreset, timerModeActive]);
+  }, [sessionStatus, responsesCount, onPauseToggle, onShowBroadcast, onShowExport, onShowCompare, onToggleShortcuts, onCloseAll, onNextAction, onToggleFocus, onToggleIntervention, onTimerShortcut, onSetTimerPreset, timerModeActive]);
 }

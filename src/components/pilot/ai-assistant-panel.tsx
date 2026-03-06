@@ -21,6 +21,7 @@ interface SessionContext {
   currentSeance: number;
   currentSituation: number;
   averageResponseTime?: number;
+  optionDistribution?: Record<string, number>;
 }
 
 interface AISuggestion {
@@ -123,6 +124,27 @@ function generateSuggestions(ctx: SessionContext): AISuggestion[] {
     });
   }
 
+  // Classe partagee — QCM votes split ~50/50 → suggest debate
+  if (ctx.optionDistribution) {
+    const counts = Object.entries(ctx.optionDistribution).sort((a, b) => b[1] - a[1]);
+    const totalVotes = counts.reduce((sum, [, v]) => sum + v, 0);
+    if (totalVotes >= 3 && counts.length >= 2) {
+      const [topKey, topCount] = counts[0];
+      const [secondKey, secondCount] = counts[1];
+      const topPct = (topCount / totalVotes) * 100;
+      const secondPct = (secondCount / totalVotes) * 100;
+      if (topPct >= 30 && secondPct >= 30 && (topPct - secondPct) < 15) {
+        suggestions.push({
+          id: "classe-partagee",
+          type: "insight",
+          message: `Classe partagee entre ${topKey.toUpperCase()} (${Math.round(topPct)}%) et ${secondKey.toUpperCase()} (${Math.round(secondPct)}%) ! Parfait pour lancer un debat.`,
+          priority: "high",
+          actionLabel: "Lancer un debat",
+        });
+      }
+    }
+  }
+
   // Low participation
   if (ctx.status === "responding" && ctx.totalStudents > 5 && ctx.responsesCount < 2 && ctx.elapsedSeconds > 60) {
     suggestions.push({
@@ -146,12 +168,14 @@ function AIAssistantPanelInner({
   onReformulate,
   onLaunchVote,
   onBroadcast,
+  onDebate,
 }: {
   context: SessionContext;
   onSendHint?: () => void;
   onReformulate?: () => void;
   onLaunchVote?: () => void;
   onBroadcast?: () => void;
+  onDebate?: () => void;
 }) {
   const [expanded, setExpanded] = useState(true);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
@@ -254,12 +278,14 @@ function AIAssistantPanelInner({
                               else if (suggestion.id === "slow-responses" && onReformulate) onReformulate();
                               else if (suggestion.id === "all-responded" && onLaunchVote) onLaunchVote();
                               else if (suggestion.id === "low-participation" && onBroadcast) onBroadcast();
+                              else if (suggestion.id === "classe-partagee" && onDebate) onDebate();
                               dismiss(suggestion.id);
                             }}
                             className="mt-2 h-7 px-3 rounded-[8px] text-[12px] font-semibold transition-colors cursor-pointer"
                             style={{
                               background: suggestion.id === "all-responded" ? "#4CAF50"
                                 : suggestion.id === "stuck-alert" ? "#F5A45B"
+                                : suggestion.id === "classe-partagee" ? "#E040FB"
                                 : "#6B8CFF",
                               color: "#fff",
                             }}

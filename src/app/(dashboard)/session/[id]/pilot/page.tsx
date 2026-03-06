@@ -59,6 +59,7 @@ import { TeamManager } from "@/components/pilot/team-manager";
 import { ClassroomMap } from "@/components/pilot/classroom-map";
 import { StudentFiche } from "@/components/pilot/student-fiche";
 import { AIAssistantPanel } from "@/components/pilot/ai-assistant-panel";
+import { CognitiveMap } from "@/components/pilot/cognitive-map";
 import { ComprehensionHeatmap } from "@/components/pilot/comprehension-heatmap";
 import { SessionStateBanner } from "@/components/pilot/session-state-banner";
 import { SessionProgressBar } from "@/components/pilot/session-progress-bar";
@@ -228,6 +229,7 @@ function CockpitContent({
   const [cardSearch, setCardSearch] = useState("");
   const [broadcastHistory, setBroadcastHistory] = useState<{ text: string; sentAt: Date }[]>([]);
   const [timerMode, setTimerMode] = useState(false);
+  const [interventionMode, setInterventionMode] = useState(false);
   const { play } = useSound();
 
   const queryClient = useQueryClient();
@@ -750,6 +752,7 @@ function CockpitContent({
     onCloseAll: handleCloseAllModals,
     onNextAction: handleNextActionCb,
     onToggleFocus: useCallback(() => setFocusMode(f => !f), []),
+    onToggleIntervention: useCallback(() => setInterventionMode(v => !v), []),
     onTimerShortcut: handleTimerShortcut,
     onSetTimerPreset: handleSetTimerPreset,
     timerModeActive: timerMode,
@@ -1146,12 +1149,28 @@ function CockpitContent({
                       {sPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${sPct}%`, background: "#EB5757" }} />}
                       {oPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${oPct}%`, background: "#C4BDB2" }} />}
                     </div>
-                    {/* Compact counters — single row */}
-                    <div className="flex items-center gap-3 text-[12px] font-semibold tabular-nums">
-                      <span style={{ color: "#4CAF50" }}>{respondedN} rep.</span>
-                      <span style={{ color: "#F2C94C" }}>{thinkingN} ref.</span>
-                      {stuckN > 0 && <span style={{ color: "#EB5757" }}>{stuckN} bloq.</span>}
-                      {offN > 0 && <span style={{ color: "#C4BDB2" }}>{offN} off</span>}
+                    {/* Pulse counters — 2x2 grid with icons */}
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[12px]">✅</span>
+                        <motion.span key={`r-${respondedN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-[16px] font-bold tabular-nums" style={{ color: "#4CAF50" }}>{respondedN}</motion.span>
+                        <span className="text-[12px] text-[#B0A99E]">repondu</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[12px]">🤔</span>
+                        <motion.span key={`t-${thinkingN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-[16px] font-bold tabular-nums" style={{ color: "#F2C94C" }}>{thinkingN}</motion.span>
+                        <span className="text-[12px] text-[#B0A99E]">reflexion</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[12px]">🔴</span>
+                        <motion.span key={`s-${stuckN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className={`text-[16px] font-bold tabular-nums ${stuckN > 0 ? "animate-pulse" : ""}`} style={{ color: "#EB5757" }}>{stuckN}</motion.span>
+                        <span className="text-[12px] text-[#B0A99E]">bloques</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[12px]">⚪</span>
+                        <motion.span key={`o-${offN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-[16px] font-bold tabular-nums" style={{ color: "#C4BDB2" }}>{offN}</motion.span>
+                        <span className="text-[12px] text-[#B0A99E]">absent</span>
+                      </div>
                     </div>
                     {/* Suggestion */}
                     {suggestion && (
@@ -1163,6 +1182,27 @@ function CockpitContent({
                   </div>
                 );
               })()}
+            </div>
+
+            {/* Intervention mode toggle */}
+            <div className="px-4 pb-1.5 flex-shrink-0">
+              <button
+                onClick={() => setInterventionMode(v => !v)}
+                className="w-full flex items-center justify-center gap-2 py-1.5 rounded-[10px] text-[12px] font-semibold cursor-pointer transition-all"
+                style={{
+                  background: interventionMode ? "#FFEBEE" : "#F7F3EA",
+                  border: `1.5px solid ${interventionMode ? "#EF5350" : "#EFE4D8"}`,
+                  color: interventionMode ? "#C62828" : "#7A7A7A",
+                }}
+              >
+                🎯 Mode aide {interventionMode ? "ON" : ""}
+                <span className="text-[10px] font-normal opacity-60">(H)</span>
+              </button>
+              {interventionMode && stuckStudents.length > 0 && (
+                <p className="text-[11px] font-bold text-[#C62828] text-center mt-1.5 animate-pulse">
+                  {stuckStudents.length} eleve{stuckStudents.length > 1 ? "s" : ""} {stuckStudents.length > 1 ? "ont" : "a"} besoin d&apos;aide
+                </p>
+              )}
             </div>
 
             {/* Tab toggle: Liste / Plan de classe */}
@@ -1216,34 +1256,91 @@ function CockpitContent({
                   })}
                 </div>
               ) : (
-                /* Spatial radar — 2-column grid like real classroom seating */
+                /* Spatial classroom — realistic desk layout with Tableau */
                 <div className="px-3 pb-3">
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {studentStates.map(s => {
-                      const raw = session.students?.find(st => st.id === s.id);
-                      if (!raw || !raw.is_active) return null;
-                      const hasHand = !!raw.hand_raised_at;
-                      const isStuck = s.state === "stuck";
-                      const bg = s.state === "responded" ? "#E8F5E9" : s.state === "stuck" ? "#FFEBEE" : s.state === "active" ? "#FFF8E1" : "#F5F5F5";
-                      const border = s.state === "responded" ? "#C8E6C9" : s.state === "stuck" ? "#FFCDD2" : s.state === "active" ? "#FFE082" : "#E0E0E0";
-                      const dot = s.state === "responded" ? "#4CAF50" : s.state === "stuck" ? "#EB5757" : s.state === "active" ? "#F2C94C" : "#C4BDB2";
-                      const firstName = raw.display_name.split(" ")[0];
-                      return (
-                        <motion.button
-                          key={s.id}
-                          onClick={() => setFicheStudentId(s.id)}
-                          animate={isStuck ? { scale: [1, 1.04, 1] } : {}}
-                          transition={isStuck ? { repeat: Infinity, duration: 1.5 } : undefined}
-                          className="flex items-center gap-1.5 px-2.5 py-2 rounded-[10px] cursor-pointer transition-all hover:brightness-95"
-                          style={{ background: bg, border: `1.5px solid ${border}` }}
-                          title={`${raw.display_name} — ${s.state}`}
-                        >
-                          <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: dot, boxShadow: isStuck ? `0 0 6px ${dot}50` : undefined }} />
-                          <span className="text-[12px] font-semibold text-[#2C2C2C] truncate leading-none">{firstName}</span>
-                          {hasHand && <span className="text-[10px] leading-none">✋</span>}
-                        </motion.button>
-                      );
-                    })}
+                  {/* Tableau (whiteboard) */}
+                  <div className="mx-auto mb-3 w-[85%] h-5 rounded-[6px] flex items-center justify-center" style={{ background: "#E8DFD2", border: "1px solid #D9CFC0" }}>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#B0A99E]">Tableau</span>
+                  </div>
+                  {/* Desk pairs — rows of 2 students per desk */}
+                  <div className="space-y-1.5">
+                    {(() => {
+                      const active = studentStates.filter(s => {
+                        const raw = session.students?.find(st => st.id === s.id);
+                        return raw && raw.is_active;
+                      });
+                      // Group into pairs (desk mates)
+                      const pairs: (typeof active[number] | null)[][] = [];
+                      for (let i = 0; i < active.length; i += 2) {
+                        pairs.push([active[i], active[i + 1] || null]);
+                      }
+                      return pairs.map((pair, rowIdx) => (
+                        <div key={rowIdx} className="grid grid-cols-2 gap-1.5">
+                          {pair.map((s, colIdx) => {
+                            if (!s) return <div key={colIdx} />;
+                            const raw = session.students?.find(st => st.id === s.id);
+                            if (!raw) return <div key={colIdx} />;
+                            const hasHand = !!raw.hand_raised_at;
+                            const isStuck = s.state === "stuck";
+                            const needsHelp = isStuck || hasHand;
+                            const bg = s.state === "responded" ? "#E8F5E9" : s.state === "stuck" ? "#FFEBEE" : s.state === "active" ? "#FFF8E1" : "#F5F5F5";
+                            const border = s.state === "responded" ? "#C8E6C9" : s.state === "stuck" ? "#FFCDD2" : s.state === "active" ? "#FFE082" : "#E0E0E0";
+                            const dot = s.state === "responded" ? "#4CAF50" : s.state === "stuck" ? "#EB5757" : s.state === "active" ? "#F2C94C" : "#C4BDB2";
+                            const firstName = raw.display_name.split(" ")[0];
+                            // Dynamic tooltip
+                            const studentResp = responses.find(r => r.student_id === s.id);
+                            const tooltipParts = [raw.display_name];
+                            if (s.state === "responded" && studentResp) {
+                              const respTime = respondingOpenedAt ? Math.round((new Date(studentResp.submitted_at).getTime() - respondingOpenedAt) / 1000) : 0;
+                              tooltipParts.push(`a repondu en ${respTime > 60 ? `${Math.floor(respTime / 60)}m${String(respTime % 60).padStart(2, "0")}` : `${respTime}s`}`);
+                              if (studentResp.text) tooltipParts.push(`"${studentResp.text.slice(0, 50)}${studentResp.text.length > 50 ? "..." : ""}"`);
+                            } else if (s.state === "active" && respondingOpenedAt) {
+                              const elapsed = Math.round((Date.now() - respondingOpenedAt) / 1000);
+                              tooltipParts.push(`en reflexion depuis ${elapsed > 60 ? `${Math.floor(elapsed / 60)}m${String(elapsed % 60).padStart(2, "0")}` : `${elapsed}s`}`);
+                            } else if (s.state === "stuck" && respondingOpenedAt) {
+                              const elapsed = Math.round((Date.now() - respondingOpenedAt) / 1000);
+                              tooltipParts.push(`bloque depuis ${elapsed > 60 ? `${Math.floor(elapsed / 60)}m${String(elapsed % 60).padStart(2, "0")}` : `${elapsed}s`}`);
+                            }
+                            // Intervention mode styles
+                            const imOpacity = interventionMode && !needsHelp ? 0.35 : 1;
+                            const imZIndex = interventionMode && needsHelp ? 10 : undefined;
+                            const imBorder = interventionMode
+                              ? isStuck ? "2.5px solid #EF5350" : hasHand ? "2.5px solid #FF9800" : `1.5px solid ${border}`
+                              : `1.5px solid ${border}`;
+                            const imGlow = interventionMode && isStuck ? "0 0 12px rgba(239,83,80,0.4)" : isStuck ? `0 0 6px ${dot}50` : undefined;
+                            return (
+                              <motion.button
+                                key={s.id}
+                                onClick={() => setFicheStudentId(s.id)}
+                                animate={
+                                  interventionMode && isStuck
+                                    ? { scale: [1.15, 1.2, 1.15] }
+                                    : isStuck ? { scale: [1, 1.04, 1] } : { scale: interventionMode ? (needsHelp ? 1.1 : 0.95) : 1 }
+                                }
+                                transition={isStuck ? { repeat: Infinity, duration: 1.5 } : { duration: 0.3 }}
+                                className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] cursor-pointer transition-all hover:brightness-95 relative"
+                                style={{
+                                  background: bg,
+                                  border: imBorder,
+                                  opacity: imOpacity,
+                                  zIndex: imZIndex,
+                                  boxShadow: imGlow,
+                                }}
+                                title={tooltipParts.join(" — ")}
+                              >
+                                <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: dot, boxShadow: imGlow }} />
+                                <span className="text-[13px] font-semibold text-[#2C2C2C] truncate leading-none">{firstName}</span>
+                                {hasHand && <span className="text-[10px] leading-none animate-bounce">✋</span>}
+                              </motion.button>
+                            );
+                          })}
+                        </div>
+                      ));
+                    })()}
+                  </div>
+                  {/* Bureau prof (bottom) */}
+                  <div className="mx-auto mt-3 w-[50%] h-4 rounded-[4px] flex items-center justify-center" style={{ background: "#D9CFC0" }}>
+                    <span className="text-[8px] font-bold uppercase tracking-widest text-[#9A8F7E]">Prof</span>
                   </div>
                   {/* Mini legend */}
                   <div className="flex items-center justify-center gap-3 mt-2.5 pt-2.5 text-[10px] text-[#B0A99E]" style={{ borderTop: "1px solid #EFE4D8" }}>
@@ -1334,10 +1431,10 @@ function CockpitContent({
           {/* M1 Positioning: option distribution bars only */}
           {isM1Positioning && module1Data?.type === "positioning" && !isPreviewing && module1Data.questions?.[currentQIndex]?.options && (() => {
             const OPTION_COLORS: Record<string, { bg: string; bgLight: string }> = {
-              a: { bg: "#6B8CFF", bgLight: "#EEF2FF" },
-              b: { bg: "#F5A45B", bgLight: "#FFF5EB" },
-              c: { bg: "#57C4B6", bgLight: "#EFFAF8" },
-              d: { bg: "#EC4899", bgLight: "#FDF2F8" },
+              a: { bg: "#7EA7F5", bgLight: "#EEF3FF" },
+              b: { bg: "#F3A765", bgLight: "#FFF3E8" },
+              c: { bg: "#6EC6B0", bgLight: "#E9F8F4" },
+              d: { bg: "#E78BB4", bgLight: "#FDECF4" },
             };
             const allCounts = module1Data.questions[currentQIndex].options?.map(o => module1Data.optionDistribution?.[o.key] || 0) || [];
             const maxCount = Math.max(...allCounts, 0);
@@ -2091,7 +2188,8 @@ function CockpitContent({
           )}
 
           {/* ── RESPONSES LIST (Budget/other — simpler display with inline actions) ── */}
-          {!isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && session.status !== "done" && responses.length > 0 && (
+          {/* M1 Positioning: responses moved to right panel to avoid center scroll */}
+          {!isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !isM1Positioning && session.status !== "done" && responses.length > 0 && (
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-[14px] font-semibold text-[#7A7A7A]">Reponses</span>
@@ -2164,43 +2262,50 @@ function CockpitContent({
             </div>
           )}
 
-          {/* ── EMPTY STATE — shown when responding with no responses yet ── */}
-          {session.status === "responding" && unifiedRespondedCount === 0 && !isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !isBudgetQuiz && (
+          {/* ── EMPTY STATE — lively waiting state with animated avatars ── */}
+          {session.status === "responding" && unifiedRespondedCount === 0 && responses.length === 0 && !isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !isBudgetQuiz && !isM1Positioning && (
             <div
-              className="rounded-[16px] p-8 text-center space-y-4"
+              className="rounded-[16px] p-8 text-center space-y-5"
               style={{
                 background: "#FFFFFF",
                 border: "1px solid #EFE4D8",
                 boxShadow: "0 4px 16px rgba(61,43,16,0.04)",
               }}
             >
-              <div className="relative w-16 h-16 mx-auto">
-                <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
-                  <circle cx="32" cy="32" r="28" fill="none" stroke="#EFE4D8" strokeWidth="3" />
-                  <motion.circle
-                    cx="32" cy="32" r="28" fill="none"
-                    stroke="#57C4B6" strokeWidth="3" strokeLinecap="round"
-                    strokeDasharray={`${2 * Math.PI * 28}`}
-                    animate={{ strokeDashoffset: [2 * Math.PI * 28, 0] }}
-                    transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+              {/* Animated student avatars — thinking */}
+              <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                {activeStudents.slice(0, 12).map((s, i) => (
+                  <motion.span
+                    key={s.id}
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-lg"
+                    style={{ background: "#FFF8E1", border: "2px solid #FFE082" }}
+                    animate={{ y: [0, -4, 0], opacity: [0.6, 1, 0.6] }}
+                    transition={{ repeat: Infinity, duration: 2, delay: i * 0.15, ease: "easeInOut" }}
+                    title={s.display_name}
+                  >
+                    {s.avatar}
+                  </motion.span>
+                ))}
+                {activeStudents.length > 12 && (
+                  <span className="text-[12px] text-[#B0A99E] font-semibold ml-1">+{activeStudents.length - 12}</span>
+                )}
+              </div>
+              {/* Thinking dots animation */}
+              <div className="flex items-center justify-center gap-1.5">
+                {[0, 1, 2].map(i => (
+                  <motion.span
+                    key={i}
+                    className="w-2 h-2 rounded-full"
+                    style={{ background: "#F2C94C" }}
+                    animate={{ scale: [1, 1.5, 1], opacity: [0.4, 1, 0.4] }}
+                    transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.3 }}
                   />
-                </svg>
-                <motion.span
-                  className="absolute inset-0 flex items-center justify-center text-2xl"
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                >
-                  ✍️
-                </motion.span>
+                ))}
               </div>
               <div>
-                <p className="text-[24px] font-bold tabular-nums text-[#57C4B6]">{unifiedRespondedCount}/{activeStudents.length}</p>
-                <p className="text-[13px] text-[#7A7A7A] mt-1">eleves ont repondu</p>
+                <p className="text-[20px] font-bold text-[#F2C94C]">{activeStudents.length} eleves reflechissent...</p>
+                <p className="text-[13px] text-[#B0A99E] mt-1">Les reponses apparaitront ici au fur et a mesure.</p>
               </div>
-              {activeStudents.length - unifiedRespondedCount > 0 && (
-                <p className="text-[14px] font-medium text-[#F2C94C]">{activeStudents.length - unifiedRespondedCount} eleve{activeStudents.length - unifiedRespondedCount > 1 ? "s" : ""} en reflexion...</p>
-              )}
-              <p className="text-[13px] text-[#B0A99E]">Les reponses apparaitront ici au fur et a mesure.</p>
               <div className="flex items-center justify-center gap-2.5">
                 <button onClick={() => setShowBroadcast(true)}
                   className="flex items-center gap-2 h-9 px-4 rounded-[10px] text-[13px] font-medium bg-white border border-[#E8DFD2] text-[#7A7A7A] hover:text-[#2C2C2C] hover:shadow-sm cursor-pointer transition-all">
@@ -2211,8 +2316,8 @@ function CockpitContent({
             </div>
           )}
 
-          {/* ── PAS ENCORE RÉPONDU — student chips ── */}
-          {!focusMode && session.status === "responding" && notRespondedStudents.length > 0 && (
+          {/* ── PAS ENCORE RÉPONDU — student chips (hidden for M1 Positioning — info visible in left panel plan de classe) ── */}
+          {!focusMode && !isM1Positioning && session.status === "responding" && notRespondedStudents.length > 0 && (
             <div
               className="rounded-[16px] p-4 space-y-3"
               style={{
@@ -2298,11 +2403,15 @@ function CockpitContent({
                     currentModule: session.current_module,
                     currentSeance: session.current_seance || 1,
                     currentSituation: session.current_situation_index || 0,
+                    optionDistribution: (isM1Positioning && module1Data?.optionDistribution)
+                      ? module1Data.optionDistribution as Record<string, number>
+                      : undefined,
                   }}
                   onSendHint={() => setShowBroadcast(true)}
                   onReformulate={() => setShowBroadcast(true)}
                   onLaunchVote={() => updateSession.mutate({ status: "voting", timer_ends_at: null })}
                   onBroadcast={() => setShowBroadcast(true)}
+                  onDebate={() => setShowBroadcast(true)}
                 />
               ) : responses.length > 0 ? (
                 <ComprehensionHeatmap
@@ -2327,6 +2436,67 @@ function CockpitContent({
                   <p className="text-xs text-bw-muted">Les suggestions apparaitront pendant la session.</p>
                 </div>
               )}
+
+              {/* Compact response feed for M1 Positioning (moved from center to avoid scroll) */}
+              {isM1Positioning && session.status !== "done" && (
+                <div className="rounded-[14px] overflow-hidden" style={{ background: "#FFFDF9", border: "1px solid #EFE4D8" }}>
+                  <div className="px-4 py-2.5 flex items-center justify-between" style={{ borderBottom: "1px solid #EFE4D8" }}>
+                    <span className="text-[13px] font-semibold text-[#2C2C2C]">Reponses</span>
+                    <span className="text-[13px] font-bold tabular-nums" style={{ color: responses.length > 0 ? "#4CAF50" : "#B0A99E" }}>
+                      {responses.filter(r => !r.reset_at).length}/{activeStudents.length}
+                    </span>
+                  </div>
+                  <div className="max-h-[300px] overflow-y-auto">
+                    {responses.length === 0 ? (
+                      <div className="px-4 py-4 text-center">
+                        <div className="flex items-center justify-center gap-1 mb-2">
+                          {[0, 1, 2].map(i => (
+                            <motion.span key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "#F2C94C" }}
+                              animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
+                              transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.3 }} />
+                          ))}
+                        </div>
+                        <p className="text-[12px] text-[#B0A99E]">En attente des reponses...</p>
+                      </div>
+                    ) : (
+                      <div className="px-3 py-2 space-y-1.5">
+                        {responses.filter(r => !r.is_hidden).map((r, i) => (
+                          <motion.div key={r.id} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: i * 0.03 }}
+                            className="flex items-start gap-2 p-2 rounded-[10px] hover:bg-[#F7F3EA] transition-colors cursor-pointer"
+                            onClick={() => setFicheStudentId(r.student_id)}
+                          >
+                            <span className="text-sm flex-shrink-0">{r.students?.avatar}</span>
+                            <div className="flex-1 min-w-0">
+                              <span className="text-[12px] font-semibold text-[#2C2C2C]">{r.students?.display_name}</span>
+                              <p className="text-[12px] text-[#7A7A7A] leading-snug truncate">{r.text}</p>
+                            </div>
+                            {r.is_highlighted && <span className="text-[10px] flex-shrink-0">⭐</span>}
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Carte cognitive — QCM thinking style (M1 Positioning only) */}
+              {isM1Positioning && module1Data?.optionDistribution && module1Data.questions?.[currentQIndex]?.options && (() => {
+                const dist = module1Data.optionDistribution as Record<string, number>;
+                const totalVotes = Object.values(dist).reduce((sum, v) => sum + v, 0);
+                if (totalVotes < 3) return null;
+                const cogOptions = module1Data.questions[currentQIndex].options!.map(o => ({
+                  key: o.key,
+                  label: o.label,
+                  count: dist[o.key] || 0,
+                }));
+                return (
+                  <>
+                    <div style={{ borderTop: "1px solid #EFE4D8" }} />
+                    <CognitiveMap options={cogOptions} total={totalVotes} />
+                  </>
+                );
+              })()}
             </div>
           </div>
         </div>
