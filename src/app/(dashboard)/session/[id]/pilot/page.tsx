@@ -938,50 +938,50 @@ function CockpitContent({
       {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* ── HEADER BAR — 72px, warm EdTech ── */}
-        <div className="flex items-center gap-4 px-6 flex-shrink-0 border-b" style={{ height: 72, background: "#F5EFE6", borderColor: "#E8DFD2" }}>
+        <div className="flex items-center gap-2 lg:gap-4 px-3 lg:px-6 flex-shrink-0 border-b" style={{ height: 72, background: "#F5EFE6", borderColor: "#E8DFD2" }}>
           {/* LEFT: branding + modules */}
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2 lg:gap-3 flex-shrink-0">
             {onOpenModules && (
               <button onClick={onOpenModules} title="Parcours des modules" className="w-9 h-9 rounded-[10px] flex items-center justify-center text-bw-muted hover:text-bw-heading bg-white border border-[#E8DFD2] cursor-pointer transition-colors flex-shrink-0 hover:shadow-sm">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
               </button>
             )}
-            <div className="flex flex-col">
-              <span className="text-[15px] font-semibold text-[#2C2C2C]">Les Etoiles de Clichy</span>
-              <span className="text-[11px] text-[#7A7A7A]">Cockpit pedagogique</span>
+            <div className="flex flex-col min-w-0">
+              <span className="text-[14px] lg:text-[15px] font-semibold text-[#2C2C2C] truncate">Les Etoiles de Clichy</span>
+              <span className="text-[11px] text-[#7A7A7A] hidden lg:block">Cockpit pedagogique</span>
             </div>
           </div>
 
-          {/* CENTER: session context */}
-          <div className="flex-1 flex items-center justify-center gap-3 min-w-0">
+          {/* CENTER: session context — items progressively hidden */}
+          <div className="flex-1 flex items-center justify-center gap-2 lg:gap-3 min-w-0">
             {/* Mission badge */}
-            <span className="px-3 py-1.5 rounded-full text-[13px] font-medium text-[#5B5B5B] flex-shrink-0" style={{ background: "#EFE8DD" }}>
-              Mission : {moduleLabel}
+            <span className="px-2 lg:px-3 py-1 lg:py-1.5 rounded-full text-[12px] lg:text-[13px] font-medium text-[#5B5B5B] truncate min-w-0" style={{ background: "#EFE8DD" }}>
+              <span className="hidden xl:inline">Mission : </span>{moduleLabel}
             </span>
             {(totalQuestions ?? 0) > 0 && (
               <>
-                <span className="text-[#D3CAB8]">·</span>
-                <span className="text-[14px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0">
-                  Question {currentQIndex + 1} / {totalQuestions}
+                <span className="text-[#D3CAB8] hidden xl:block">·</span>
+                <span className="text-[13px] lg:text-[14px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0 hidden xl:block">
+                  Q{currentQIndex + 1}/{totalQuestions}
                 </span>
               </>
             )}
             {respondingOpenedAt && (
               <>
-                <span className="text-[#D3CAB8]">·</span>
-                <span className="flex-shrink-0">
+                <span className="text-[#D3CAB8] hidden xl:block">·</span>
+                <span className="flex-shrink-0 hidden xl:block">
                   <ElapsedTimer startedAt={respondingOpenedAt} />
                 </span>
               </>
             )}
-            <span className="text-[#D3CAB8]">·</span>
-            <span className="text-[14px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0">
+            <span className="text-[#D3CAB8] hidden lg:block">·</span>
+            <span className="text-[13px] lg:text-[14px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0 hidden lg:block">
               {activeStudents.length} eleve{activeStudents.length !== 1 ? "s" : ""}
             </span>
           </div>
 
           {/* RIGHT: header actions */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
             {/* Auto-advance toggle */}
             <button
               onClick={() => {
@@ -992,21 +992,22 @@ function CockpitContent({
                   setAutoAdvanceCountdown(0);
                 }
               }}
-              className={`flex items-center gap-1.5 h-9 px-3 rounded-[10px] text-[13px] font-medium cursor-pointer transition-all ${
+              className={`flex items-center gap-1.5 h-9 px-2 lg:px-3 rounded-[10px] text-[13px] font-medium cursor-pointer transition-all ${
                 autoAdvance ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30" : "bg-white text-[#4A4A4A] border border-[#E8DFD2]"
               }`}
             >
               <div className={`w-5 h-3 rounded-full transition-all relative ${autoAdvance ? "bg-bw-teal" : "bg-black/10"}`}>
                 <div className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${autoAdvance ? "left-2" : "left-px"}`} />
               </div>
-              Auto{autoAdvance && autoAdvanceCountdown > 0 ? ` ${autoAdvanceCountdown}s` : ""}
+              <span className="hidden lg:inline">Auto{autoAdvance && autoAdvanceCountdown > 0 ? ` ${autoAdvanceCountdown}s` : ""}</span>
             </button>
             {/* Pause */}
             <button
               onClick={handlePauseToggle}
-              className="h-9 px-3 rounded-[10px] bg-white border border-[#E8DFD2] text-[13px] font-medium text-[#4A4A4A] hover:bg-[#F8F2E8] cursor-pointer transition-colors"
+              className="h-9 w-9 lg:w-auto lg:px-3 rounded-[10px] bg-white border border-[#E8DFD2] text-[13px] font-medium text-[#4A4A4A] hover:bg-[#F8F2E8] cursor-pointer transition-colors flex items-center justify-center"
             >
-              ⏸ Pause
+              <span className="lg:hidden">⏸</span>
+              <span className="hidden lg:inline">⏸ Pause</span>
             </button>
             {/* Broadcast */}
             <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
@@ -1023,9 +1024,9 @@ function CockpitContent({
 
         {/* ── QUESTION CARD — HERO: dominant, 40px padding, 36px text ── */}
         {universalQuestionText && (
-          <div className="flex-shrink-0 px-5 py-4">
-            <div className="rounded-[20px]" style={{
-              padding: "40px 40px 36px",
+          <div className="flex-shrink-0 px-3 sm:px-5 py-3 sm:py-4">
+            <div className="rounded-[16px] sm:rounded-[20px]" style={{
+              padding: "clamp(20px, 4vw, 40px) clamp(16px, 4vw, 40px) clamp(16px, 3.5vw, 36px)",
               background: "#FFFFFF",
               boxShadow: "0 12px 32px rgba(61,43,16,0.08), 0 4px 8px rgba(61,43,16,0.03)",
               border: "1px solid #E8DFD2",
