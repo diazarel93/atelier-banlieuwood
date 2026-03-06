@@ -48,17 +48,22 @@ function DeskPairInner({
         className="relative flex items-stretch rounded-xl border overflow-hidden transition-all duration-300"
         style={{
           borderColor: anyHand
-            ? "rgba(239,100,97,0.45)"
+            ? "rgba(239,100,97,0.50)"
             : allResponded
-              ? "rgba(78,205,196,0.25)"
+              ? "rgba(78,205,196,0.30)"
               : teamColor
-                ? `${teamColor}20`
-                : "rgba(255,255,255,0.07)",
+                ? `${teamColor}25`
+                : "rgba(255,255,255,0.10)",
           background: allResponded
-            ? "rgba(78,205,196,0.03)"
+            ? "rgba(78,205,196,0.06)"
             : anyNeedsHelp
-              ? "rgba(239,100,97,0.03)"
-              : "rgba(255,255,255,0.015)",
+              ? "rgba(239,100,97,0.05)"
+              : "rgba(255,255,255,0.03)",
+          boxShadow: anyHand
+            ? "0 0 16px rgba(239,100,97,0.15), 0 2px 4px rgba(0,0,0,0.2)"
+            : allResponded
+              ? "0 0 12px rgba(78,205,196,0.10), 0 2px 4px rgba(0,0,0,0.15)"
+              : "0 1px 3px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.08)",
         }}
       >
         <DeskSeat student={left} response={responseMap.get(left.id) || null} onClick={() => onStudentClick(left.id)} />
@@ -97,13 +102,13 @@ function DeskSeat({
         student.state === "disconnected" ? "opacity-30" : ""
       }`}
       whileTap={{ scale: 0.95 }}
-      whileHover={{ backgroundColor: "rgba(255,255,255,0.04)" }}
+      whileHover={{ backgroundColor: "rgba(255,255,255,0.06)", scale: 1.03 }}
     >
       {/* Avatar + badges */}
       <div className="relative">
         <div
           className="w-8 h-8 rounded-full flex items-center justify-center text-base"
-          style={{ boxShadow: `0 0 0 2px ${color}` }}
+          style={{ boxShadow: `0 0 0 2px ${color}, 0 0 8px ${color}40` }}
         >
           {student.avatar}
         </div>

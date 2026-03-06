@@ -1058,7 +1058,7 @@ function CockpitContent({
         {/* ── SPLIT-PANEL LAYOUT ── */}
         <div className="flex-1 flex overflow-hidden min-h-0">
           {/* LEFT: Plan de classe + séances (40%, desktop only) */}
-          <div className="hidden lg:flex lg:w-[40%] flex-shrink-0 flex-col overflow-y-auto border-r border-white/[0.06]">
+          <div className="hidden lg:flex lg:w-[40%] flex-shrink-0 flex-col overflow-y-auto border-r border-white/[0.10]">
             {/* Mini stats bar */}
             {session.status !== "done" && (
               <div className="flex-shrink-0 px-3 py-2 border-b border-white/[0.06] flex items-center gap-3 text-xs">
@@ -1981,24 +1981,31 @@ function CockpitContent({
 
       {/* ── FOOTER — progress + CTA + toggles ── */}
       {session.status !== "done" && session.status !== "paused" && (
-        <div className="flex-shrink-0 border-t border-white/[0.08] bg-bw-bg">
+        <div className="flex-shrink-0 border-t border-white/[0.10] bg-bw-bg" style={{ background: "linear-gradient(180deg, rgba(22,25,35,0.95), rgba(15,17,24,1))" }}>
           {/* ROW 1: Progress bar — full width */}
           {activeStudents.length > 0 && (() => {
             const pct = Math.round((unifiedRespondedCount / activeStudents.length) * 100);
             const allDone = unifiedRespondedCount >= activeStudents.length;
+            const halfDone = pct >= 50;
             return (
-              <div className="px-4 pt-2 pb-1.5">
-                <div className="relative h-2 w-full bg-white/[0.06] rounded-full overflow-hidden">
-                  <motion.div
-                    className={`h-full rounded-full ${allDone ? "bg-gradient-to-r from-bw-teal to-bw-green" : "bg-gradient-to-r from-blue-500/80 to-bw-teal"}`}
-                    animate={{ width: `${pct}%` }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    style={allDone ? { boxShadow: "0 0 12px rgba(78,205,196,0.5)" } : undefined}
-                  />
-                </div>
-                <div className="flex items-center justify-end mt-1">
-                  <span className={`text-xs font-medium tabular-nums ${allDone ? "text-bw-teal" : "text-bw-muted"}`}>
-                    {unifiedRespondedCount}/{activeStudents.length} ({pct}%)
+              <div className="px-4 pt-3 pb-1.5">
+                <div className="flex items-center gap-3">
+                  <div className="relative h-2.5 flex-1 bg-white/[0.08] rounded-full overflow-hidden">
+                    <motion.div
+                      className={`h-full rounded-full ${allDone ? "bg-gradient-to-r from-bw-teal to-bw-green" : "bg-gradient-to-r from-blue-500/80 to-bw-teal"}`}
+                      animate={{ width: `${pct}%` }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      style={{
+                        boxShadow: allDone
+                          ? "0 0 16px rgba(78,205,196,0.6), 0 0 4px rgba(78,205,196,0.4)"
+                          : halfDone
+                            ? "0 0 10px rgba(78,205,196,0.3), 0 0 3px rgba(78,205,196,0.2)"
+                            : undefined,
+                      }}
+                    />
+                  </div>
+                  <span className={`text-sm font-bold tabular-nums flex-shrink-0 ${allDone ? "text-bw-teal" : halfDone ? "text-bw-text" : "text-bw-muted"}`}>
+                    {unifiedRespondedCount}/{activeStudents.length}
                   </span>
                 </div>
               </div>
@@ -2062,12 +2069,12 @@ function CockpitContent({
                   {nextAction.label} {nextAction.shortcut && <span className="opacity-60 ml-1 text-xs">[{nextAction.shortcut}]</span>}
                 </motion.button>
               ) : (
-                <div className="w-full py-2 rounded-lg text-sm text-center bg-bw-elevated text-bw-muted border border-white/[0.06]">
+                <div className="w-full py-2.5 rounded-lg text-sm text-center bg-white/[0.04] text-bw-muted border border-white/[0.08]" style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)" }}>
                   {session.status === "responding"
-                    ? `En attente... (${respondedCount}/${activeStudents.length})`
+                    ? <span className="flex items-center justify-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-bw-teal animate-pulse" />En attente... <span className="text-bw-text font-semibold tabular-nums">{respondedCount}/{activeStudents.length}</span></span>
                     : session.status === "voting"
-                      ? `Vote en cours... (${voteData?.totalVotes || 0} votes)`
-                      : "En attente..."}
+                      ? <span className="flex items-center justify-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-bw-violet animate-pulse" />Vote en cours... <span className="text-bw-text font-semibold tabular-nums">{voteData?.totalVotes || 0} votes</span></span>
+                      : <span className="flex items-center justify-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-bw-muted animate-pulse" />En attente...</span>}
                 </div>
               )}
             </div>
