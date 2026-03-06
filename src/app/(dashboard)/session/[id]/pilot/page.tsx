@@ -38,7 +38,6 @@ import { Module5EmotionDistribution } from "@/components/pilot/module5-emotion-d
 import { KeyboardShortcutsModal } from "@/components/pilot/keyboard-shortcuts-modal";
 import { VotingResults } from "@/components/pilot/voting-results";
 import { ResponseStreamSection } from "@/components/pilot/response-stream-section";
-// TimerSection removed — timer info in header bar
 import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
 
 // New cockpit features
@@ -57,6 +56,7 @@ import { ContextPanel } from "@/components/pilot/context-panel";
 import { getNextAction, type NextAction } from "@/components/pilot/get-next-action";
 import { TeamManager } from "@/components/pilot/team-manager";
 import { ClassroomMap } from "@/components/pilot/classroom-map";
+import { TIMER_PRESETS, STUCK_THRESHOLD_MS, STUCK_DETECTION_DELAY_MS } from "@/components/pilot/pilot-settings";
 import { StudentFiche } from "@/components/pilot/student-fiche";
 import { AIAssistantPanel } from "@/components/pilot/ai-assistant-panel";
 import { CognitiveMap } from "@/components/pilot/cognitive-map";
@@ -141,6 +141,7 @@ function CockpitContent({
   highlightResponse,
   nudgeStudent,
   warnStudent,
+  lowerHand,
   scoreResponse,
   aiEvaluate,
   resetResponse,
@@ -176,6 +177,7 @@ function CockpitContent({
   highlightResponse: ReturnType<typeof useMutation<unknown, Error, { responseId: string; highlighted: boolean }>>;
   nudgeStudent: ReturnType<typeof useMutation<unknown, Error, { responseId: string; nudgeText: string }>>;
   warnStudent: ReturnType<typeof useMutation<unknown, Error, string>>;
+  lowerHand: ReturnType<typeof useMutation<unknown, Error, string>>;
   scoreResponse: ReturnType<typeof useMutation<unknown, Error, { responseId: string; score: number }>>;
   aiEvaluate: ReturnType<typeof useMutation<unknown, Error, string[]>>;
   resetResponse: ReturnType<typeof useMutation<unknown, Error, string>>;
@@ -473,8 +475,8 @@ function CockpitContent({
       const hasResponded = responses.some((r) => r.student_id === s.id) || moduleSubmittedIds.has(s.id);
       if (!s.is_active) return { id: s.id, state: "disconnected" as StudentState, display_name: s.display_name, avatar: s.avatar };
       if (hasResponded) return { id: s.id, state: "responded" as StudentState, display_name: s.display_name, avatar: s.avatar };
-      // Stuck: active, no response, > 60s since responding started
-      if (session.status === "responding" && respondingOpenedAt && (now - respondingOpenedAt) > 60_000) {
+      // Stuck: active, no response, > threshold since responding started
+      if (session.status === "responding" && respondingOpenedAt && (now - respondingOpenedAt) > STUCK_THRESHOLD_MS) {
         return { id: s.id, state: "stuck" as StudentState, display_name: s.display_name, avatar: s.avatar };
       }
       return { id: s.id, state: "active" as StudentState, display_name: s.display_name, avatar: s.avatar };
@@ -699,7 +701,7 @@ function CockpitContent({
   const stuckStudents = useMemo(() => {
     if (session.status !== "responding" || !respondingOpenedAt) return [];
     const elapsed = Date.now() - respondingOpenedAt;
-    if (elapsed < 60_000) return []; // wait at least 1min before flagging
+    if (elapsed < STUCK_DETECTION_DELAY_MS) return [];
     const respondedIds = new Set(responses.map((r) => r.student_id));
     return activeStudents
       .filter((s) => !respondedIds.has(s.id))
@@ -723,8 +725,6 @@ function CockpitContent({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleNextActionCb = useCallback(() => handleNextAction(), [nextAction, canGoNext, updateSession]);
-
-  const TIMER_PRESETS = [30, 60, 120, 180, 300];
 
   const handleTimerShortcut = useCallback(() => {
     setTimerMode((prev) => {
@@ -1258,6 +1258,43 @@ function CockpitContent({
                 </p>
               )}
             </div>
+
+            {/* Hand-raise queue — ordered by time, with dismiss */}
+            {(() => {
+              const hands = (session.students || [])
+                .filter(s => s.hand_raised_at && s.is_active && !s.kicked)
+                .sort((a, b) => new Date(a.hand_raised_at!).getTime() - new Date(b.hand_raised_at!).getTime());
+              if (hands.length === 0) return null;
+              return (
+                <div className="px-3 pb-1.5 flex-shrink-0">
+                  <div className="rounded-[10px] overflow-hidden" style={{ background: "#FFF8F0", border: "1px solid #F5DCC0" }}>
+                    <div className="flex items-center justify-between px-2.5 py-1.5">
+                      <span className="text-[11px] font-bold text-[#E88D2A] uppercase tracking-wider">
+                        ✋ Mains levees ({hands.length})
+                      </span>
+                    </div>
+                    <div className="px-2 pb-2 space-y-0.5">
+                      {hands.map((s, idx) => (
+                        <div key={s.id} className="flex items-center gap-2 px-2 py-1 rounded-[8px] hover:bg-[#FFF0E0] transition-colors">
+                          <span className="text-[10px] font-bold text-[#E88D2A] w-4 text-center tabular-nums">{idx + 1}</span>
+                          <button onClick={() => setFicheStudentId(s.id)} className="text-[12px] font-semibold text-[#2C2C2C] truncate flex-1 text-left cursor-pointer hover:underline">
+                            {s.display_name}
+                          </button>
+                          <button
+                            onClick={() => lowerHand.mutate(s.id)}
+                            disabled={lowerHand.isPending}
+                            title="Baisser la main"
+                            className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] text-[#B0A99E] hover:text-[#4CAF50] hover:bg-[#F0FAF4] cursor-pointer transition-colors disabled:opacity-40"
+                          >
+                            ✓
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Student list — always visible, split online/offline */}
             <div className="flex-1 overflow-y-auto min-h-0" role="list" aria-label="Liste des eleves">
@@ -3204,6 +3241,21 @@ export default function PilotPage() {
     onError: () => toast.error("Erreur"),
   });
 
+  const lowerHand = useMutation({
+    mutationFn: async (studentId: string) => {
+      const res = await fetch(`/api/sessions/${sessionId}/students/${studentId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "clear_hand" }),
+      });
+      if (!res.ok) throw new Error("Erreur");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pilot-session", sessionId] });
+    },
+  });
+
   const scoreResponse = useMutation({
     mutationFn: async ({ responseId, score }: { responseId: string; score: number }) => {
       const res = await fetch(`/api/sessions/${sessionId}/responses/${responseId}`, {
@@ -3540,6 +3592,7 @@ export default function PilotPage() {
             highlightResponse={highlightResponse}
             nudgeStudent={nudgeStudent}
             warnStudent={warnStudent}
+            lowerHand={lowerHand}
             scoreResponse={scoreResponse}
             aiEvaluate={aiEvaluate}
             resetResponse={resetResponse}

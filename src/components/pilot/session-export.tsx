@@ -87,6 +87,28 @@ function downloadMarkdown(content: string, filename: string) {
   URL.revokeObjectURL(url);
 }
 
+function downloadCSV(responses: ExportResponse[], filename: string) {
+  const escapeCSV = (s: string) => `"${s.replace(/"/g, '""')}"`;
+  const header = "Eleve,Reponse,Note Prof,Note IA,Mis en avant,Commentaire Prof,Heure";
+  const rows = responses.map(r => [
+    escapeCSV(r.studentName),
+    escapeCSV(r.text),
+    r.teacher_score || "",
+    r.ai_score || "",
+    r.is_highlighted ? "Oui" : "Non",
+    escapeCSV(r.teacher_comment || ""),
+    new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+  ].join(","));
+  const csv = "\uFEFF" + [header, ...rows].join("\n"); // BOM for Excel FR
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 function downloadPDF(props: Omit<SessionExportProps, "open" | "onClose">) {
   const { sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount } = props;
   const now = new Date().toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
@@ -230,6 +252,12 @@ export function SessionExport({
                   className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors"
                 >
                   .md
+                </button>
+                <button
+                  onClick={() => downloadCSV(responses, filename.replace(/\.md$/, ".csv"))}
+                  className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors"
+                >
+                  CSV
                 </button>
                 <button
                   onClick={() => downloadPDF({ sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount })}

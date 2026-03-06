@@ -1,16 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { DEFAULT_BROADCAST_PRESETS, BROADCAST_MAX_CHARS } from "./pilot-settings";
 
-const PRESETS = [
-  { emoji: "⏰", label: "Temps", text: "Il reste 30 secondes !" },
-  { emoji: "📝", label: "Justifier", text: "Pensez à justifier votre réponse" },
-  { emoji: "👀", label: "Relire", text: "Relisez bien avant de valider" },
-  { emoji: "🤫", label: "Silence", text: "Silence s'il vous plaît" },
-  { emoji: "💪", label: "Courage", text: "N'hésitez pas, il n'y a pas de mauvaise réponse !" },
-  { emoji: "🔔", label: "Répondez", text: "N'oubliez pas de répondre à la question !" },
-];
+const LS_KEY = "bw-broadcast-presets";
+
+type Preset = { emoji: string; label: string; text: string };
+
+function loadPresets(): Preset[] {
+  if (typeof window === "undefined") return [...DEFAULT_BROADCAST_PRESETS];
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return [...DEFAULT_BROADCAST_PRESETS];
+}
+
+function savePresets(presets: Preset[]) {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(presets)); } catch {}
+}
 
 interface BroadcastModalProps {
   open: boolean;
@@ -22,6 +31,39 @@ interface BroadcastModalProps {
 
 export function BroadcastModal({ open, onClose, onSend, isPending, history }: BroadcastModalProps) {
   const [message, setMessage] = useState("");
+  const [presets, setPresets] = useState<Preset[]>(loadPresets);
+  const [editMode, setEditMode] = useState(false);
+  const [editIdx, setEditIdx] = useState<number | null>(null);
+  const [editText, setEditText] = useState("");
+  const [editLabel, setEditLabel] = useState("");
+  const [editEmoji, setEditEmoji] = useState("");
+
+  // Sync on open
+  useEffect(() => { if (open) { setPresets(loadPresets()); setEditMode(false); } }, [open]);
+
+  const startEdit = useCallback((idx: number) => {
+    const p = presets[idx];
+    setEditIdx(idx);
+    setEditEmoji(p.emoji);
+    setEditLabel(p.label);
+    setEditText(p.text);
+  }, [presets]);
+
+  const saveEdit = useCallback(() => {
+    if (editIdx === null || !editText.trim()) return;
+    const updated = [...presets];
+    updated[editIdx] = { emoji: editEmoji || "💬", label: editLabel || "Custom", text: editText.trim() };
+    setPresets(updated);
+    savePresets(updated);
+    setEditIdx(null);
+  }, [editIdx, editEmoji, editLabel, editText, presets]);
+
+  const resetPresets = useCallback(() => {
+    const defaults = [...DEFAULT_BROADCAST_PRESETS] as unknown as Preset[];
+    setPresets(defaults);
+    savePresets(defaults);
+    setEditMode(false);
+  }, []);
 
   function handleSend(text: string) {
     if (!text.trim()) return;
@@ -58,18 +100,42 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
 
             {/* Presets */}
             <div className="px-5 py-3 space-y-2">
-              <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Messages rapides</p>
-              <div className="grid grid-cols-3 gap-2">
-                {PRESETS.map((preset) => (
-                  <button
-                    key={preset.label}
-                    onClick={() => handleSend(preset.text)}
-                    disabled={isPending}
-                    className="text-left p-2 rounded-lg border border-black/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40"
-                  >
-                    <span className="text-sm block">{preset.emoji}</span>
-                    <span className="text-xs text-bw-muted">{preset.label}</span>
+              <div className="flex items-center justify-between">
+                <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Messages rapides</p>
+                <div className="flex gap-1.5">
+                  {editMode && (
+                    <button onClick={resetPresets} className="text-[10px] text-bw-muted hover:text-red-400 cursor-pointer transition-colors">
+                      Reset
+                    </button>
+                  )}
+                  <button onClick={() => { setEditMode(!editMode); setEditIdx(null); }} className="text-[10px] text-bw-muted hover:text-bw-heading cursor-pointer transition-colors">
+                    {editMode ? "OK" : "Editer"}
                   </button>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {presets.map((preset, idx) => (
+                  editMode && editIdx === idx ? (
+                    <div key={idx} className="p-2 rounded-lg border border-bw-primary/30 bg-bw-primary/5 space-y-1">
+                      <div className="flex gap-1">
+                        <input value={editEmoji} onChange={e => setEditEmoji(e.target.value.slice(0, 2))} className="w-8 text-sm bg-transparent border-b border-bw-muted/30 outline-none text-center" />
+                        <input value={editLabel} onChange={e => setEditLabel(e.target.value.slice(0, 12))} className="flex-1 text-xs bg-transparent border-b border-bw-muted/30 outline-none text-bw-muted" placeholder="Label" />
+                      </div>
+                      <input value={editText} onChange={e => setEditText(e.target.value.slice(0, BROADCAST_MAX_CHARS))} className="w-full text-[10px] bg-transparent border-b border-bw-muted/30 outline-none text-bw-text" placeholder="Message..." />
+                      <button onClick={saveEdit} className="text-[10px] font-semibold text-bw-primary cursor-pointer">Sauver</button>
+                    </div>
+                  ) : (
+                    <button
+                      key={idx}
+                      onClick={() => editMode ? startEdit(idx) : handleSend(preset.text)}
+                      disabled={!editMode && isPending}
+                      className={`text-left p-2 rounded-lg border border-black/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40 ${editMode ? "ring-1 ring-dashed ring-bw-muted/20" : ""}`}
+                    >
+                      <span className="text-sm block">{preset.emoji}</span>
+                      <span className="text-xs text-bw-muted">{preset.label}</span>
+                      {editMode && <span className="text-[9px] text-bw-muted/50 block mt-0.5">cliquer pour editer</span>}
+                    </button>
+                  )
                 ))}
               </div>
             </div>
@@ -84,11 +150,11 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
                 <input
                   type="text"
                   value={message}
-                  onChange={(e) => setMessage(e.target.value.slice(0, 200))}
+                  onChange={(e) => setMessage(e.target.value.slice(0, BROADCAST_MAX_CHARS))}
                   onKeyDown={(e) => { if (e.key === "Enter") handleSend(message); }}
                   placeholder="Votre message..."
                   aria-label="Message personnalise"
-                  maxLength={200}
+                  maxLength={BROADCAST_MAX_CHARS}
                   className="flex-1 px-3 py-2 rounded-xl bg-bw-surface border border-black/[0.06] text-sm text-white placeholder:text-bw-muted outline-none focus:border-bw-primary/40"
                 />
                 <button
@@ -99,7 +165,7 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
                   {isPending ? "..." : "Envoyer"}
                 </button>
               </div>
-              <p className="text-xs text-bw-muted text-right">{message.length}/200</p>
+              <p className="text-xs text-bw-muted text-right">{message.length}/{BROADCAST_MAX_CHARS}</p>
             </div>
 
             {/* History */}

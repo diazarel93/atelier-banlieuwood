@@ -5,21 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 
-// Preset nudge messages the teacher can send
-const NUDGE_PRESETS = [
-  { label: "Développe", text: "Ta réponse est trop courte. Développe ton idée !" },
-  { label: "Sérieux", text: "Merci de répondre sérieusement." },
-  { label: "Hors-sujet", text: "Attention, ta réponse est hors-sujet. Relis la question." },
-  { label: "Bravo, +", text: "Bonne piste ! Peux-tu aller plus loin ?" },
-];
-
-// Quick one-click reactions — sends as nudge, appears instantly on student screen
-const QUICK_REACTIONS = [
-  { emoji: "👍", text: "Bien vu !", color: "#4ECDC4" },
-  { emoji: "🔥", text: "Excellente réponse !", color: "#F59E0B" },
-  { emoji: "💡", text: "Idée originale !", color: "#8B5CF6" },
-  { emoji: "🤔", text: "Creuse un peu plus cette idée...", color: "#EC4899" },
-];
+import { NUDGE_PRESETS, QUICK_REACTIONS } from "./pilot-settings";
 
 interface InlineActionsProps {
   responseId: string;
