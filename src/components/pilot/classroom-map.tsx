@@ -6,6 +6,7 @@ import type { StudentState } from "./pulse-ring";
 import type { SeatStudent } from "./seat-card";
 import { DeskPair, type DeskSize } from "./desk-pair";
 import { STATE_STYLE } from "./state-styles";
+import { FreeGridEditor } from "./free-grid-editor";
 
 export type ClassroomLayout = "rows" | "u-shape" | "islands" | "free";
 
@@ -39,6 +40,7 @@ interface ClassroomMapProps {
   layout?: ClassroomLayout;
   desksPerRow?: number;
   deskSize?: DeskSize;
+  sessionId?: string;
 }
 
 function toPairs<T>(arr: T[]): [T, T | undefined][] {
@@ -145,6 +147,7 @@ export function ClassroomMap({
   layout = "rows",
   desksPerRow = 3,
   deskSize = "md",
+  sessionId,
 }: ClassroomMapProps) {
   // Build merged response map
   const { responseMap } = useMemo(() => {
@@ -319,7 +322,17 @@ export function ClassroomMap({
   }
 
   function renderFreeLayout() {
-    // Adaptive columns based on student count
+    if (sessionId) {
+      return (
+        <FreeGridEditor
+          sessionId={sessionId}
+          students={students}
+          responseMap={responseMap}
+          onStudentClick={handleStudentClick}
+        />
+      );
+    }
+    // Fallback: adaptive grid (no sessionId = no persistence)
     const count = sortedStudents.length;
     const cols = Math.min(Math.max(Math.ceil(Math.sqrt(count)), 3), 6);
     return (

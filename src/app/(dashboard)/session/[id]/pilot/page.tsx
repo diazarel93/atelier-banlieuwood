@@ -41,6 +41,7 @@ import { ResponseStreamSection } from "@/components/pilot/response-stream-sectio
 import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
 
 // New cockpit features
+import { ClassDashboardPanel } from "@/components/pilot/class-dashboard-panel";
 import { BroadcastModal } from "@/components/pilot/broadcast-modal";
 import { CompareResponsesModal } from "@/components/pilot/compare-responses-modal";
 import { SessionExport } from "@/components/pilot/session-export";
@@ -1086,251 +1087,42 @@ function CockpitContent({
         )}
 
         {/* ── SPLIT-PANEL LAYOUT ── */}
-        <div className="flex-1 flex overflow-hidden min-h-0">
+        <div className="flex-1 flex overflow-hidden min-h-0" style={{ background: "linear-gradient(135deg, #F5EFE6 0%, #EDE5DA 50%, #F0E8DD 100%)" }}>
           {/* LEFT: Classe en direct — 300px panel, hidden below lg */}
-          <div data-onboarding="classmap" className="hidden md:flex w-[240px] lg:w-[300px] flex-shrink-0 flex-col"
-            style={{ background: "#FAF6EE", borderRight: "1px solid #EEE4D8" }}>
-            {/* Compact pulse header */}
-            <div className="px-4 pt-4 pb-2 flex-shrink-0">
-              {(() => {
-                const respondedN = studentStates.filter(s => s.state === "responded").length;
-                const thinkingN = studentStates.filter(s => s.state === "active").length;
-                const stuckN = studentStates.filter(s => s.state === "stuck").length;
-                const offN = studentStates.filter(s => s.state === "disconnected").length;
-                const total = respondedN + thinkingN + stuckN + offN;
-                const engagementPct = total > 0 ? Math.round(((respondedN + thinkingN) / total) * 100) : 0;
-                const rPct = total > 0 ? (respondedN / total) * 100 : 0;
-                const tPct = total > 0 ? (thinkingN / total) * 100 : 0;
-                const sPct = total > 0 ? (stuckN / total) * 100 : 0;
-                const oPct = total > 0 ? (offN / total) * 100 : 0;
-                const online = respondedN + thinkingN + stuckN;
-                let suggestion: { icon: string; text: string; color: string; bg: string } | null = null;
-                if (stuckN >= 3) suggestion = { icon: "💡", text: `${stuckN} bloques — Donnez un exemple`, color: "#C62828", bg: "#FFF5F5" };
-                else if (stuckN > 0) suggestion = { icon: "👀", text: `${stuckN} bloque${stuckN > 1 ? "s" : ""} — Coup de pouce ?`, color: "#E65100", bg: "#FFF8E1" };
-                else if (thinkingN > 0 && respondedN === 0) suggestion = { icon: "⏳", text: "Tous reflechissent — Laissez du temps", color: "#F57F17", bg: "#FFFCF5" };
-                else if (respondedN > 0 && respondedN === online && online > 0) suggestion = { icon: "🚀", text: "Tous ont repondu !", color: "#2E7D32", bg: "#F0FAF4" };
-                else if (respondedN > online * 0.7) suggestion = { icon: "📢", text: "Plus de 70% — Lancez la discussion ?", color: "#1565C0", bg: "#EEF2FF" };
-                return (
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#B0A99E]">Classe en direct</span>
-                    </div>
-
-                    {/* Donut radar + counters side by side */}
-                    <div className="flex items-center gap-3">
-                      {/* SVG Donut chart — 56px, animated */}
-                      <div className="relative flex-shrink-0" style={{ width: 56, height: 56 }}
-                        role="img" aria-label={`Engagement ${engagementPct}%: ${respondedN} repondu, ${thinkingN} reflexion, ${stuckN} bloques, ${offN} absents`}>
-                        <svg width="56" height="56" viewBox="0 0 56 56" className="transform -rotate-90">
-                          <circle cx="28" cy="28" r="22" fill="none" stroke="#EFE8DD" strokeWidth="6" />
-                          {(() => {
-                            const circumference = 2 * Math.PI * 22;
-                            const segments = [
-                              { pct: rPct, color: "#4CAF50" },
-                              { pct: tPct, color: "#F2C94C" },
-                              { pct: sPct, color: "#EB5757" },
-                              { pct: oPct, color: "#C4BDB2" },
-                            ];
-                            let offset = 0;
-                            return segments.map((seg, i) => {
-                              if (seg.pct <= 0) return null;
-                              const dash = (seg.pct / 100) * circumference;
-                              const gap = circumference - dash;
-                              const el = (
-                                <motion.circle
-                                  key={i}
-                                  cx="28" cy="28" r="22"
-                                  fill="none"
-                                  stroke={seg.color}
-                                  strokeWidth="6"
-                                  strokeLinecap="round"
-                                  initial={false}
-                                  animate={{
-                                    strokeDasharray: `${dash} ${gap}`,
-                                    strokeDashoffset: -offset,
-                                  }}
-                                  transition={{ duration: 0.7, ease: "easeOut" }}
-                                />
-                              );
-                              offset += dash;
-                              return el;
-                            });
-                          })()}
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <motion.span
-                            key={engagementPct}
-                            initial={{ scale: 1.15 }}
-                            animate={{ scale: 1 }}
-                            className="text-[14px] font-extrabold tabular-nums"
-                            style={{ color: engagementPct >= 70 ? "#4CAF50" : engagementPct >= 40 ? "#F2C94C" : "#EB5757" }}
-                          >
-                            {engagementPct}%
-                          </motion.span>
-                        </div>
-                      </div>
-
-                      {/* Compact counters — 2x2 grid */}
-                      <div className="grid grid-cols-2 gap-x-2.5 gap-y-1 flex-1">
-                        <div className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#4CAF50" }} />
-                          <motion.span key={`r-${respondedN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-[15px] font-bold tabular-nums" style={{ color: "#4CAF50" }}>{respondedN}</motion.span>
-                          <span className="text-[10px] text-[#B0A99E] truncate">rep.</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#F2C94C" }} />
-                          <motion.span key={`t-${thinkingN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-[15px] font-bold tabular-nums" style={{ color: "#F2C94C" }}>{thinkingN}</motion.span>
-                          <span className="text-[10px] text-[#B0A99E] truncate">ref.</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#EB5757", boxShadow: stuckN > 0 ? "0 0 6px #EB575740" : undefined }} />
-                          <motion.span key={`s-${stuckN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className={`text-[15px] font-bold tabular-nums ${stuckN > 0 ? "animate-pulse" : ""}`} style={{ color: "#EB5757" }}>{stuckN}</motion.span>
-                          <span className="text-[10px] text-[#B0A99E] truncate">bloq.</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#C4BDB2" }} />
-                          <motion.span key={`o-${offN}`} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-[15px] font-bold tabular-nums" style={{ color: "#C4BDB2" }}>{offN}</motion.span>
-                          <span className="text-[10px] text-[#B0A99E] truncate">abs.</span>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Suggestion */}
-                    {suggestion && (
-                      <div className="flex items-center gap-2 px-2.5 py-2 rounded-[10px]" style={{ background: suggestion.bg, border: `1px solid ${suggestion.color}20` }}>
-                        <span className="text-xs flex-shrink-0">{suggestion.icon}</span>
-                        <p className="text-[11px] font-medium leading-snug" style={{ color: suggestion.color }}>{suggestion.text}</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })()}
-            </div>
-
-            {/* Intervention mode toggle */}
-            <div className="px-4 pb-1.5 flex-shrink-0">
-              <button
-                onClick={() => setInterventionMode(v => !v)}
-                className="w-full flex items-center justify-center gap-2 py-1.5 rounded-[10px] text-[12px] font-semibold cursor-pointer transition-all"
-                style={{
-                  background: interventionMode ? "#FFEBEE" : "#F7F3EA",
-                  border: `1.5px solid ${interventionMode ? "#EF5350" : "#EFE4D8"}`,
-                  color: interventionMode ? "#C62828" : "#7A7A7A",
-                }}
-              >
-                🎯 Mode aide {interventionMode ? "ON" : ""}
-                <span className="text-[10px] font-normal opacity-60">(H)</span>
-              </button>
-              {interventionMode && stuckStudents.length > 0 && (
-                <p className="text-[11px] font-bold text-[#C62828] text-center mt-1.5 animate-pulse">
-                  {stuckStudents.length} eleve{stuckStudents.length > 1 ? "s" : ""} {stuckStudents.length > 1 ? "ont" : "a"} besoin d&apos;aide
-                </p>
-              )}
-            </div>
-
-            {/* Hand-raise queue — ordered by time, with dismiss */}
-            {(() => {
-              const hands = (session.students || [])
-                .filter(s => s.hand_raised_at && s.is_active && !s.kicked)
-                .sort((a, b) => new Date(a.hand_raised_at!).getTime() - new Date(b.hand_raised_at!).getTime());
-              if (hands.length === 0) return null;
-              return (
-                <div className="px-3 pb-1.5 flex-shrink-0">
-                  <div className="rounded-[10px] overflow-hidden" style={{ background: "#FFF8F0", border: "1px solid #F5DCC0" }}>
-                    <div className="flex items-center justify-between px-2.5 py-1.5">
-                      <span className="text-[11px] font-bold text-[#E88D2A] uppercase tracking-wider">
-                        ✋ Mains levees ({hands.length})
-                      </span>
-                    </div>
-                    <div className="px-2 pb-2 space-y-0.5">
-                      {hands.map((s, idx) => (
-                        <div key={s.id} className="flex items-center gap-2 px-2 py-1 rounded-[8px] hover:bg-[#FFF0E0] transition-colors">
-                          <span className="text-[10px] font-bold text-[#E88D2A] w-4 text-center tabular-nums">{idx + 1}</span>
-                          <button onClick={() => setFicheStudentId(s.id)} className="text-[12px] font-semibold text-[#2C2C2C] truncate flex-1 text-left cursor-pointer hover:underline">
-                            {s.display_name}
-                          </button>
-                          <button
-                            onClick={() => lowerHand.mutate(s.id)}
-                            disabled={lowerHand.isPending}
-                            title="Baisser la main"
-                            className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] text-[#B0A99E] hover:text-[#4CAF50] hover:bg-[#F0FAF4] cursor-pointer transition-colors disabled:opacity-40"
-                          >
-                            ✓
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* Student list — always visible, split online/offline */}
-            <div className="flex-1 overflow-y-auto min-h-0" role="list" aria-label="Liste des eleves">
-              <div className="px-3 pb-2">
-                {/* Online students */}
-                {studentStates.filter(s => s.state !== "disconnected").map(s => {
-                  const raw = session.students?.find(st => st.id === s.id);
-                  if (!raw || !raw.is_active) return null;
-                  const hasHand = !!raw.hand_raised_at;
-                  const warnings = raw.warnings || 0;
-                  const stateColor = s.state === "responded" ? "#4CAF50" : s.state === "stuck" ? "#EB5757" : s.state === "active" ? "#F2C94C" : "#C4BDB2";
-                  const stateLabel = s.state === "responded" ? "a repondu" : s.state === "stuck" ? "bloque" : "en reflexion";
-                  return (
-                    <button key={s.id} onClick={() => setFicheStudentId(s.id)} role="listitem"
-                      aria-label={`${raw.display_name} — ${stateLabel}${hasHand ? ", main levee" : ""}${warnings > 0 ? `, ${warnings} avertissement${warnings > 1 ? "s" : ""}` : ""}`}
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 text-left rounded-[10px] hover:bg-[#F3ECE3] focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:ring-offset-1 transition-colors cursor-pointer mb-0.5 outline-none"
-                      style={{ minHeight: 36 }}>
-                      <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: stateColor, boxShadow: s.state === "stuck" ? `0 0 6px ${stateColor}40` : undefined }} />
-                      <span className="text-[13px] font-semibold text-[#2C2C2C] truncate flex-1">{raw.display_name}</span>
-                      {hasHand && <span className="text-xs flex-shrink-0 animate-bounce">✋</span>}
-                      {warnings > 0 && <span className="text-[10px] font-bold px-1 py-0.5 rounded-full flex-shrink-0" style={{ background: "#FFF5EB", color: "#F5A45B" }}>⚠{warnings}</span>}
-                    </button>
-                  );
-                })}
-
-                {/* Disconnected students — collapsible */}
-                {(() => {
-                  const offline = studentStates.filter(s => s.state === "disconnected");
-                  if (offline.length === 0) return null;
-                  return (
-                    <details className="mt-2">
-                      <summary className="flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold text-[#B0A99E] cursor-pointer select-none hover:text-[#7A7A7A] transition-colors">
-                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#C4BDB2" }} />
-                        Hors ligne ({offline.length})
-                      </summary>
-                      <div className="mt-0.5">
-                        {offline.map(s => {
-                          const raw = session.students?.find(st => st.id === s.id);
-                          if (!raw || !raw.is_active) return null;
-                          return (
-                            <button key={s.id} onClick={() => setFicheStudentId(s.id)} role="listitem"
-                              aria-label={`${raw.display_name} — absent`}
-                              className="w-full flex items-center gap-2 px-2.5 py-1.5 text-left rounded-[10px] hover:bg-[#F3ECE3] focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:ring-offset-1 transition-colors cursor-pointer mb-0.5 outline-none opacity-50"
-                              style={{ minHeight: 36 }}>
-                              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#C4BDB2" }} />
-                              <span className="text-[13px] font-semibold text-[#B0A99E] truncate flex-1">{raw.display_name}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </details>
-                  );
-                })()}
-              </div>
-            </div>
-
-            {/* Stuck alert */}
-            {stuckStudents.length > 0 && (
-              <div className="px-3 py-2 border-t border-[#EFE4D8] flex-shrink-0">
-                <button onClick={handleNudgeAllStuck}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-[10px] bg-[#EB5757]/10 border border-[#EB5757]/20 text-[12px] font-semibold text-[#C62828] hover:bg-[#EB5757]/15 cursor-pointer transition-colors">
-                  🚀 Relancer {stuckStudents.length} bloque{stuckStudents.length > 1 ? "s" : ""}
-                </button>
-              </div>
-            )}
+          <div data-onboarding="classmap" className="hidden md:flex w-[240px] lg:w-[300px] flex-shrink-0 flex-col m-2 mr-0 rounded-2xl shadow-sm overflow-hidden"
+            style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.4)" }}>
+            <ClassDashboardPanel
+              session={session}
+              studentStates={studentStates}
+              stuckStudents={stuckStudents}
+              responses={responses}
+              teams={teams}
+              interventionMode={interventionMode}
+              setInterventionMode={setInterventionMode}
+              setFicheStudentId={setFicheStudentId}
+              lowerHand={lowerHand}
+              handleNudgeAllStuck={handleNudgeAllStuck}
+              classroomLayout={classroomLayout}
+              moduleResponseTexts={moduleResponseTexts}
+              onNudge={(responseId, text) => nudgeStudent.mutate({ responseId, nudgeText: text })}
+              onWarn={(sid) => warnStudent.mutate(sid)}
+              onBroadcast={openBroadcast}
+              cognitiveOptions={isM1Positioning && module1Data?.optionDistribution && module1Data.questions?.[currentQIndex]?.options
+                ? module1Data.questions[currentQIndex].options!.map((o: { key: string; label: string }) => ({
+                    key: o.key,
+                    label: o.label,
+                    count: (module1Data.optionDistribution as Record<string, number>)[o.key] || 0,
+                  }))
+                : undefined
+              }
+              cognitiveTotal={isM1Positioning && module1Data?.optionDistribution
+                ? Object.values(module1Data.optionDistribution as Record<string, number>).reduce((sum, v) => sum + v, 0)
+                : undefined
+              }
+            />
           </div>
-          {/* CENTER: Question + Responses — per pseudo-Figma: warm background */}
-          <div className="flex-1 overflow-y-auto min-h-0" style={{ background: "#F7F3EA" }}>
+          {/* CENTER: Question + Responses — glassmorphism */}
+          <div className="flex-1 overflow-y-auto min-h-0 m-2 rounded-2xl shadow-sm" style={{ background: "rgba(255,255,255,0.5)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.4)" }}>
           {ficheStudentId ? (
             <div className="px-4 py-4">
               {(() => {
@@ -1370,19 +1162,19 @@ function CockpitContent({
 
           {/* ── TOOLBAR — response section header ── */}
           {session.status !== "done" && !focusMode && (
-            <div data-onboarding="responses" className="flex items-center gap-2 pb-3" style={{ borderBottom: "1px solid #EFE4D8" }}>
-              {/* Toggle pill: Responses / Plan de classe */}
-              <div className="flex rounded-[10px] p-0.5 flex-shrink-0" style={{ background: "#EFE4D8" }} role="tablist" aria-label="Vue centrale">
+            <div data-onboarding="responses" className="flex items-center gap-2 pb-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.5)" }}>
+              {/* Toggle pill: Responses / Plan de classe — glassmorphism */}
+              <div className="flex rounded-xl p-0.5 flex-shrink-0" style={{ background: "rgba(255,255,255,0.4)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.3)" }} role="tablist" aria-label="Vue centrale">
                 <button
                   onClick={() => setCenterTab("responses")}
                   role="tab"
                   aria-selected={centerTab === "responses"}
                   aria-controls="center-responses"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-[13px] font-semibold transition-all cursor-pointer"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[10px] text-[13px] font-semibold transition-all cursor-pointer"
                   style={{
-                    background: centerTab === "responses" ? "#FFFFFF" : "transparent",
+                    background: centerTab === "responses" ? "rgba(255,255,255,0.8)" : "transparent",
                     color: centerTab === "responses" ? "#2C2C2C" : "#7A7A7A",
-                    boxShadow: centerTab === "responses" ? "0 1px 3px rgba(61,43,16,0.08)" : "none",
+                    boxShadow: centerTab === "responses" ? "0 2px 6px rgba(61,43,16,0.06)" : "none",
                   }}
                 >
                   {unifiedLabel}
@@ -1395,11 +1187,11 @@ function CockpitContent({
                   role="tab"
                   aria-selected={centerTab === "classmap"}
                   aria-controls="center-classmap"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-[13px] font-semibold transition-all cursor-pointer"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[10px] text-[13px] font-semibold transition-all cursor-pointer"
                   style={{
-                    background: centerTab === "classmap" ? "#FFFFFF" : "transparent",
+                    background: centerTab === "classmap" ? "rgba(255,255,255,0.8)" : "transparent",
                     color: centerTab === "classmap" ? "#2C2C2C" : "#7A7A7A",
-                    boxShadow: centerTab === "classmap" ? "0 1px 3px rgba(61,43,16,0.08)" : "none",
+                    boxShadow: centerTab === "classmap" ? "0 2px 6px rgba(61,43,16,0.06)" : "none",
                   }}
                 >
                   Plan de classe
@@ -2459,8 +2251,8 @@ function CockpitContent({
         )}
         </div>
           {/* RIGHT: Assistant pedagogique — 320px panel, hidden below xl */}
-          <div className="hidden lg:flex w-[260px] xl:w-[320px] flex-shrink-0 flex-col"
-            style={{ background: "#FAF6EE", borderLeft: "1px solid #EEE4D8" }}>
+          <div className="hidden lg:flex w-[260px] xl:w-[320px] flex-shrink-0 flex-col m-2 ml-0 rounded-2xl shadow-sm overflow-hidden"
+            style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.4)" }}>
             {/* Title */}
             <div className="px-5 pt-5 pb-3 flex-shrink-0">
               <h3 className="text-[18px] font-semibold text-[#2C2C2C]">Assistant pedagogique</h3>
@@ -2534,8 +2326,8 @@ function CockpitContent({
                 }
                 const totalVotes = responses.filter(r => !r.is_hidden).length;
                 return (
-                  <div className="rounded-[14px] overflow-hidden" style={{ background: "#FFFDF9", border: "1px solid #EFE4D8" }}>
-                    <div className="px-4 py-2.5 flex items-center justify-between" style={{ borderBottom: "1px solid #EFE4D8" }}>
+                  <div className="rounded-xl overflow-hidden" style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.4)" }}>
+                    <div className="px-4 py-2.5 flex items-center justify-between" style={{ borderBottom: "1px solid rgba(255,255,255,0.5)" }}>
                       <span className="text-[13px] font-semibold text-[#2C2C2C]">Qui a vote quoi</span>
                       <span className="text-[13px] font-bold tabular-nums" style={{ color: totalVotes > 0 ? "#4CAF50" : "#B0A99E" }}>
                         {totalVotes}/{activeStudents.length}
@@ -2609,57 +2401,57 @@ function CockpitContent({
         </div>
       </main>
 
-      {/* ── FOOTER — 76px sticky action bar per pseudo-Figma ── */}
+      {/* ── FOOTER — 76px sticky action bar — glassmorphism ── */}
       {session.status !== "done" && session.status !== "paused" && (
-        <div className="flex-shrink-0" style={{ background: "#F5EFE6", borderTop: "1px solid #E8DFD2" }}>
+        <div className="flex-shrink-0" style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderTop: "1px solid rgba(255,255,255,0.4)" }}>
           {/* Action buttons row + CTA */}
           <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-6" style={{ height: 68, minHeight: 68 }}>
             {/* LEFT: Action buttons — responsive: hide labels on small screens */}
             {session.status !== "waiting" && session.status !== "done" && (
-              <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 overflow-x-auto">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 overflow-x-auto">
                 {/* Groupe 1: Aider */}
-                <div className="flex items-center gap-1 px-1 py-0.5 rounded-[10px]" style={{ background: "#FAF6EE" }}>
+                <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
                   <button onClick={() => openBroadcastWith("Indice : ", "Envoyer un indice", "💡")}
-                    className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
-                    style={{ background: "#FFF0E6", borderColor: "#E6DBCF", color: "#8B4513" }}>
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
+                    style={{ background: "rgba(255,240,230,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#8B4513" }}>
                     💡 <span className="hidden sm:inline">Indice</span>
                   </button>
                   <button onClick={handleNudgeAllStuck} disabled={notRespondedStudents.length === 0}
-                    className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
-                    style={{ background: "#EBF2FF", borderColor: "#E6DBCF", color: "#3B5998" }}>
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                    style={{ background: "rgba(235,242,255,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#3B5998" }}>
                     🚀 <span className="hidden sm:inline">Relancer{notRespondedStudents.length > 0 ? ` (${notRespondedStudents.length})` : ""}</span>
                     <span className="sm:hidden">{notRespondedStudents.length > 0 ? notRespondedStudents.length : ""}</span>
                   </button>
                 </div>
                 {/* Separateur */}
-                <div className="w-px h-6 hidden sm:block" style={{ background: "#E8DFD2" }} />
+                <div className="w-px h-6 hidden sm:block" style={{ background: "rgba(255,255,255,0.4)" }} />
                 {/* Groupe 2: Discuter */}
-                <div className="flex items-center gap-1 px-1 py-0.5 rounded-[10px]" style={{ background: "#FAF6EE" }}>
+                <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
                   <button onClick={() => openBroadcastWith("Question pour la classe : ", "Lancer une discussion", "💬")}
-                    className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
-                    style={{ background: "#E8F5F2", borderColor: "#E6DBCF", color: "#1B5E50" }}>
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
+                    style={{ background: "rgba(232,245,242,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#1B5E50" }}>
                     💬 <span className="hidden sm:inline">Discussion</span>
                   </button>
                   <button onClick={() => setShowDebate(true)} disabled={visibleResponses.length < 1}
-                    className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
-                    style={{ background: "#F0ECF8", borderColor: "#E6DBCF", color: "#5B3A8E" }}>
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                    style={{ background: "rgba(240,236,248,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#5B3A8E" }}>
                     🎭 <span className="hidden sm:inline">Debat</span>
                   </button>
                 </div>
                 {/* Separateur */}
-                <div className="w-px h-6 hidden sm:block" style={{ background: "#E8DFD2" }} />
+                <div className="w-px h-6 hidden sm:block" style={{ background: "rgba(255,255,255,0.4)" }} />
                 {/* Groupe 3: Voter */}
                 <button onClick={() => { if (visibleResponses.length >= 2) setShowCompare(true); }} disabled={visibleResponses.length < 2}
-                  className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
-                  style={{ background: "#FFF8E6", borderColor: "#E6DBCF", color: "#8B6914" }}>
+                  className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                  style={{ background: "rgba(255,248,230,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#8B6914" }}>
                   ⚖️ <span className="hidden sm:inline">Comparer</span>
                 </button>
                 {/* Separateur */}
-                <div className="w-px h-6 hidden sm:block" style={{ background: "#E8DFD2" }} />
+                <div className="w-px h-6 hidden sm:block" style={{ background: "rgba(255,255,255,0.4)" }} />
                 {/* Groupe 4: Analytics */}
                 <button onClick={() => setShowWordCloud(true)} disabled={visibleResponses.length < 3}
-                  className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
-                  style={{ background: "#F0F8FF", borderColor: "#E6DBCF", color: "#2563EB" }}>
+                  className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                  style={{ background: "rgba(240,248,255,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#2563EB" }}>
                   ☁️ <span className="hidden sm:inline">Nuage</span>
                 </button>
               </div>
@@ -2725,11 +2517,11 @@ function CockpitContent({
                   whileHover={{ scale: 1.01 }}
                   onClick={handleNextAction}
                   disabled={updateSession.isPending || !!(nextAction as { disabled?: boolean }).disabled}
-                  className="w-full h-11 rounded-[12px] font-bold text-[14px] cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-11 rounded-xl font-bold text-[14px] cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
-                    backgroundColor: "#2C2C2C",
+                    background: "linear-gradient(135deg, #E53935 0%, #D81B60 100%)",
                     color: "white",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                    boxShadow: "0 4px 14px rgba(229,57,53,0.3)",
                   }}>
                   {nextAction.label} {nextAction.shortcut && <kbd className="inline-flex items-center justify-center w-5 h-5 ml-1.5 rounded bg-black/[0.08] text-[10px] font-mono">{nextAction.shortcut}</kbd>}
                 </motion.button>
@@ -2750,7 +2542,8 @@ function CockpitContent({
                 onClick={skipSituation}
                 disabled={updateSession.isPending}
                 title="Passer cette question"
-                className="h-11 px-3.5 rounded-[12px] flex items-center justify-center text-[#7A7A7A] bg-white border border-[#E8DFD2] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0 text-[13px] font-medium gap-1.5 hover:text-[#2C2C2C] hover:shadow-sm"
+                className="h-11 px-3.5 rounded-xl flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-all flex-shrink-0 text-[13px] font-medium gap-1.5 hover:shadow-sm"
+                style={{ background: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.5)", color: "#7A7A7A" }}
               >
                 Passer
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
