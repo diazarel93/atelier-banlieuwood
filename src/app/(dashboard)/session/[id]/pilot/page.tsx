@@ -1193,47 +1193,6 @@ function CockpitContent({
             </div>
           )}
 
-          {/* ── PAS ENCORE RÉPONDU — ABOVE module content for visibility ── */}
-          {!focusMode && session.status === "responding" && notRespondedStudents.length > 0 && (
-            <div className="rounded-xl border border-white/[0.06] p-3 space-y-2" style={{ background: "linear-gradient(135deg, rgba(136,148,160,0.04), transparent)" }}>
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">
-                  En attente ({notRespondedStudents.length})
-                </span>
-                {stuckStudents.length > 0 && (
-                  <button onClick={handleNudgeAllStuck}
-                    className="text-[10px] text-bw-amber hover:text-bw-amber/80 cursor-pointer transition-colors font-medium">
-                    Relancer {stuckStudents.length} bloqué{stuckStudents.length > 1 ? "s" : ""}
-                  </button>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {notRespondedStudents.map((s) => {
-                  const st = studentStates.find((ss) => ss.id === s.id);
-                  const isStuck = st?.state === "stuck";
-                  const hasHand = !!s.hand_raised_at;
-                  return (
-                    <button key={s.id}
-                      onClick={() => setFicheStudentId(s.id)}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-[11px] cursor-pointer transition-all ${
-                        isStuck
-                          ? "bg-red-500/[0.06] border-red-500/20 text-red-400 hover:bg-red-500/10"
-                          : hasHand
-                            ? "bg-amber-500/[0.06] border-amber-500/20 text-amber-400 hover:bg-amber-500/10"
-                            : "bg-white/[0.03] border-white/[0.06] text-bw-muted hover:text-bw-text hover:bg-white/[0.06]"
-                      }`}
-                    >
-                      <span className="text-sm">{s.avatar}</span>
-                      <span>{s.display_name}</span>
-                      {isStuck && <span className="text-[9px]">●</span>}
-                      {hasHand && <span className="text-[9px]">✋</span>}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
           {/* ── MODULE-SPECIFIC CONTENT ── */}
           <>
 
@@ -1999,7 +1958,58 @@ function CockpitContent({
             </div>
           )}
 
-          {/* Old empty state + old "pas encore répondu" removed — now unified in the section above module content */}
+          {/* ── EMPTY STATE — shown when responding with no responses yet ── */}
+          {session.status === "responding" && unifiedRespondedCount === 0 && !isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !isBudgetQuiz && (
+            <div className="rounded-xl border border-white/[0.06] p-4 text-center">
+              <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                className="text-xl mb-1">✍️</motion.div>
+              <p className="text-xs text-bw-muted">En attente des réponses...</p>
+            </div>
+          )}
+
+          {/* ── PAS ENCORE RÉPONDU — bottom of right panel, collapsible ── */}
+          {!focusMode && session.status === "responding" && notRespondedStudents.length > 0 && notRespondedStudents.length < activeStudents.length && (
+            <div className="rounded-xl border border-white/[0.06] p-3 space-y-2" style={{ background: "linear-gradient(135deg, rgba(136,148,160,0.03), transparent)" }}>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">
+                  Pas encore répondu ({notRespondedStudents.length})
+                </span>
+                {stuckStudents.length > 0 && (
+                  <button onClick={handleNudgeAllStuck}
+                    className="text-[10px] text-bw-amber hover:text-bw-amber/80 cursor-pointer transition-colors font-medium">
+                    Relancer {stuckStudents.length} bloqué{stuckStudents.length > 1 ? "s" : ""}
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {notRespondedStudents.slice(0, 12).map((s) => {
+                  const st = studentStates.find((ss) => ss.id === s.id);
+                  const isStuck = st?.state === "stuck";
+                  const hasHand = !!s.hand_raised_at;
+                  return (
+                    <button key={s.id}
+                      onClick={() => setFicheStudentId(s.id)}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-[11px] cursor-pointer transition-all ${
+                        isStuck
+                          ? "bg-red-500/[0.06] border-red-500/20 text-red-400 hover:bg-red-500/10"
+                          : hasHand
+                            ? "bg-amber-500/[0.06] border-amber-500/20 text-amber-400 hover:bg-amber-500/10"
+                            : "bg-white/[0.03] border-white/[0.06] text-bw-muted hover:text-bw-text hover:bg-white/[0.06]"
+                      }`}
+                    >
+                      <span className="text-sm">{s.avatar}</span>
+                      <span>{s.display_name}</span>
+                      {isStuck && <span className="text-[9px]">●</span>}
+                      {hasHand && <span className="text-[9px]">✋</span>}
+                    </button>
+                  );
+                })}
+                {notRespondedStudents.length > 12 && (
+                  <span className="text-[10px] text-bw-muted self-center px-1">+{notRespondedStudents.length - 12} autres</span>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Choices history (Standard Q&A) */}
           {!focusMode && isStandardQA && collectiveChoices.length > 0 && (
