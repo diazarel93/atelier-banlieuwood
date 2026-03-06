@@ -1315,7 +1315,7 @@ function CockpitContent({
                     <div className="mt-auto pt-3 flex items-end gap-4">
                       {/* Percentage hero — 36px/800 */}
                       <span
-                        className="text-[36px] font-extrabold tabular-nums leading-none flex-shrink-0"
+                        className="text-[40px] font-extrabold tabular-nums leading-none flex-shrink-0"
                         style={{ color: hasVotes ? "#fff" : `${colors.bg}50` }}
                       >
                         {pct}%
@@ -2128,6 +2128,9 @@ function CockpitContent({
                 <p className="text-[24px] font-bold tabular-nums text-[#57C4B6]">{unifiedRespondedCount}/{activeStudents.length}</p>
                 <p className="text-[13px] text-[#7A7A7A] mt-1">eleves ont repondu</p>
               </div>
+              {activeStudents.length - unifiedRespondedCount > 0 && (
+                <p className="text-[14px] font-medium text-[#F2C94C]">{activeStudents.length - unifiedRespondedCount} eleve{activeStudents.length - unifiedRespondedCount > 1 ? "s" : ""} en reflexion...</p>
+              )}
               <p className="text-[13px] text-[#B0A99E]">Les reponses apparaitront ici au fur et a mesure.</p>
               <div className="flex items-center justify-center gap-2.5">
                 <button onClick={() => setShowBroadcast(true)}
@@ -2261,29 +2264,40 @@ function CockpitContent({
           <div className="flex items-center gap-3 px-6" style={{ height: 76 }}>
             {/* LEFT: Action buttons */}
             {session.status !== "waiting" && session.status !== "done" && (
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <button onClick={() => setShowBroadcast(true)}
-                  className="h-11 px-3.5 rounded-[12px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
-                  style={{ background: "#FFF0E6", borderColor: "#E6DBCF", color: "#8B4513" }}>
-                  💡 Donner un indice
-                </button>
-                <button onClick={handleNudgeAllStuck} disabled={stuckStudents.length === 0}
-                  className="h-11 px-3.5 rounded-[12px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
-                  style={{ background: "#EBF2FF", borderColor: "#E6DBCF", color: "#3B5998" }}>
-                  🚀 Relancer{stuckStudents.length > 0 ? ` (${stuckStudents.length})` : ""}
-                </button>
-                <button onClick={() => setShowBroadcast(true)}
-                  className="h-11 px-3.5 rounded-[12px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
-                  style={{ background: "#E8F5F2", borderColor: "#E6DBCF", color: "#1B5E50" }}>
-                  💬 Discussion
-                </button>
-                <button onClick={() => setShowBroadcast(true)}
-                  className="h-11 px-3.5 rounded-[12px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
-                  style={{ background: "#F0ECF8", borderColor: "#E6DBCF", color: "#5B3A8E" }}>
-                  🎭 Lancer un debat
-                </button>
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                {/* Groupe 1: Aider */}
+                <div className="flex items-center gap-1 px-1 py-0.5 rounded-[10px]" style={{ background: "#FAF6EE" }}>
+                  <button onClick={() => setShowBroadcast(true)}
+                    className="h-10 px-3 rounded-[10px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
+                    style={{ background: "#FFF0E6", borderColor: "#E6DBCF", color: "#8B4513" }}>
+                    💡 Indice
+                  </button>
+                  <button onClick={handleNudgeAllStuck} disabled={stuckStudents.length === 0}
+                    className="h-10 px-3 rounded-[10px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
+                    style={{ background: "#EBF2FF", borderColor: "#E6DBCF", color: "#3B5998" }}>
+                    🚀 Relancer{stuckStudents.length > 0 ? ` (${stuckStudents.length})` : ""}
+                  </button>
+                </div>
+                {/* Separateur */}
+                <div className="w-px h-6" style={{ background: "#E8DFD2" }} />
+                {/* Groupe 2: Discuter */}
+                <div className="flex items-center gap-1 px-1 py-0.5 rounded-[10px]" style={{ background: "#FAF6EE" }}>
+                  <button onClick={() => setShowBroadcast(true)}
+                    className="h-10 px-3 rounded-[10px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
+                    style={{ background: "#E8F5F2", borderColor: "#E6DBCF", color: "#1B5E50" }}>
+                    💬 Discussion
+                  </button>
+                  <button onClick={() => setShowBroadcast(true)}
+                    className="h-10 px-3 rounded-[10px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
+                    style={{ background: "#F0ECF8", borderColor: "#E6DBCF", color: "#5B3A8E" }}>
+                    🎭 Debat
+                  </button>
+                </div>
+                {/* Separateur */}
+                <div className="w-px h-6" style={{ background: "#E8DFD2" }} />
+                {/* Groupe 3: Voter */}
                 <button onClick={() => { if (responses.length >= 2) setShowCompare(true); }} disabled={responses.length < 2}
-                  className="h-11 px-3.5 rounded-[12px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="h-10 px-3 rounded-[10px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
                   style={{ background: "#FFF8E6", borderColor: "#E6DBCF", color: "#8B6914" }}>
                   🗳️ Vote rapide
                 </button>
