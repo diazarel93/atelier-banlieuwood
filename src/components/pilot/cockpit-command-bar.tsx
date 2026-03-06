@@ -40,12 +40,12 @@ export function CockpitCommandBar({
   const maxSituations = getSeanceMax(currentModule, currentSeance);
 
   return (
-    <header className="glass sticky top-0 z-20 h-14 flex items-center px-4 flex-shrink-0 border-b border-white/[0.06]">
+    <header className="glass sticky top-0 z-20 h-14 flex items-center px-4 flex-shrink-0 border-b border-black/[0.04]">
       <div className="flex items-center gap-3 flex-1 min-w-0">
         {/* Back button */}
         <button
           onClick={onBack}
-          className="text-bw-muted hover:text-white transition-colors cursor-pointer text-sm flex-shrink-0"
+          className="text-bw-muted hover:text-bw-heading transition-colors cursor-pointer text-sm flex-shrink-0"
         >
           ←
         </button>

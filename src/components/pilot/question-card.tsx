@@ -21,7 +21,7 @@ function QuestionCardInner({
   questionGuide,
 }: QuestionCardProps) {
   const [guideExpanded, setGuideExpanded] = useState(false);
-  const color = CATEGORY_COLORS[category] || "#FF6B35";
+  const color = CATEGORY_COLORS[category] || "#F5A45B";
 
   return (
     <div className="glass-card overflow-hidden" style={{ borderColor: `${color}20`, background: `linear-gradient(135deg, ${color}08, rgba(26,29,34,0.6) 60%)` }}>
@@ -36,7 +36,7 @@ function QuestionCardInner({
           >
             {restitutionLabel || category}
           </span>
-          <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-white/[0.06] text-bw-text">Q{position}</span>
+          <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-black/[0.04] text-bw-text">Q{position}</span>
         </div>
         <p className="text-base leading-relaxed">{prompt}</p>
       </div>
@@ -46,10 +46,10 @@ function QuestionCardInner({
         <div className="border-t" style={{ borderColor: `${color}15` }}>
           <button
             onClick={() => setGuideExpanded(!guideExpanded)}
-            className="w-full px-4 py-2.5 flex items-center justify-between cursor-pointer hover:bg-white/[0.03] transition-colors"
+            className="w-full px-4 py-2.5 flex items-center justify-between cursor-pointer hover:bg-black/[0.03] transition-colors"
           >
             <div className="flex items-center gap-3 text-xs text-bw-muted min-w-0">
-              <span className="text-xs uppercase tracking-wider font-bold flex-shrink-0 px-1.5 py-0.5 rounded" style={{ color: "#FF6B35", background: "rgba(255,107,53,0.1)" }}>
+              <span className="text-xs uppercase tracking-wider font-bold flex-shrink-0 px-1.5 py-0.5 rounded" style={{ color: "#F5A45B", background: "rgba(255,107,53,0.1)" }}>
                 Guide
               </span>
               <span className="truncate">

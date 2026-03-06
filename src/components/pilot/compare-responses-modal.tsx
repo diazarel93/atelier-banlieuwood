@@ -52,21 +52,21 @@ export function CompareResponsesModal({
             initial={{ opacity: 0, y: 20, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.97 }}
-            className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] max-w-[95vw] max-h-[80vh] glass-card rounded-2xl border border-white/[0.08] overflow-hidden flex flex-col"
+            className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] max-w-[95vw] max-h-[80vh] glass-card rounded-2xl border border-black/[0.06] overflow-hidden flex flex-col"
           >
             {/* Header */}
-            <div className="px-5 py-3 border-b border-white/[0.06] flex items-center justify-between flex-shrink-0">
+            <div className="px-5 py-3 border-b border-black/[0.04] flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2">
                 <span className="text-lg">⚖️</span>
                 <h3 className="text-sm font-semibold">Comparer 2 réponses</h3>
                 <span className="text-xs text-bw-muted">{selectedIds.length}/2 sélectionnées</span>
               </div>
-              <button onClick={onClose} className="text-bw-muted hover:text-white text-sm cursor-pointer">✕</button>
+              <button onClick={onClose} className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">✕</button>
             </div>
 
             {/* Comparison view (when 2 selected) */}
             {selectedA && selectedB && (
-              <div className="px-5 py-3 border-b border-white/[0.06] flex-shrink-0">
+              <div className="px-5 py-3 border-b border-black/[0.04] flex-shrink-0">
                 <div className="grid grid-cols-2 gap-3">
                   {[selectedA, selectedB].map((r, i) => (
                     <div key={r.id} className="p-3 rounded-xl border border-bw-primary/20" style={{ background: `linear-gradient(135deg, rgba(255,107,53,${0.06 + i * 0.02}), transparent)` }}>
@@ -82,13 +82,13 @@ export function CompareResponsesModal({
                   <button
                     onClick={() => { onHighlightBoth(selectedA.id, selectedB.id); onClose(); }}
                     className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110"
-                    style={{ backgroundColor: "#FF6B35", color: "white" }}
+                    style={{ backgroundColor: "#F5A45B", color: "white" }}
                   >
                     Projeter les 2 →
                   </button>
                   <button
                     onClick={() => { onClearHighlights(); onClose(); }}
-                    className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-white/[0.06] hover:border-white/15 text-bw-muted hover:text-white transition-colors"
+                    className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors"
                   >
                     Tout dé-projeter
                   </button>
@@ -110,7 +110,7 @@ export function CompareResponsesModal({
                     className={`w-full text-left p-3 rounded-xl border transition-all duration-200 cursor-pointer ${
                       isSelected
                         ? "border-bw-primary/40 bg-bw-primary/5"
-                        : "border-white/[0.06] hover:border-white/15 hover:bg-white/[0.02]"
+                        : "border-black/[0.04] hover:border-black/10 hover:bg-black/[0.02]"
                     }`}
                   >
                     <div className="flex items-center gap-2 mb-1">

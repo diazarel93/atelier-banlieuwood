@@ -30,7 +30,7 @@ interface ComprehensionHeatmapProps {
 }
 
 function getHeatColor(score: number | null | undefined, hasResponse: boolean): string {
-  if (!hasResponse) return "rgba(255,255,255,0.02)"; // no response
+  if (!hasResponse) return "rgba(0,0,0,0.02)"; // no response
   if (score === null || score === undefined) return "rgba(78,205,196,0.15)"; // responded but no score
   if (score >= 4) return "rgba(16,185,129,0.5)"; // green — excellent
   if (score >= 3) return "rgba(78,205,196,0.4)"; // teal — good
@@ -63,8 +63,8 @@ function ComprehensionHeatmapInner({
   }
 
   return (
-    <div className="rounded-xl border border-white/[0.06] overflow-hidden">
-      <div className="px-3 py-2 border-b border-white/[0.06] flex items-center gap-2">
+    <div className="rounded-xl border border-black/[0.04] overflow-hidden">
+      <div className="px-3 py-2 border-b border-black/[0.04] flex items-center gap-2">
         <span className="text-sm">🗺️</span>
         <span className="text-xs font-semibold text-bw-heading">Heatmap Comprehension</span>
       </div>
@@ -72,7 +72,7 @@ function ComprehensionHeatmapInner({
       <div className="overflow-x-auto">
         <div className="min-w-fit">
           {/* Header row */}
-          <div className="flex items-center border-b border-white/[0.04]">
+          <div className="flex items-center border-b border-black/[0.04]">
             <div className="w-24 flex-shrink-0 px-2 py-1.5">
               <span className="text-xs text-bw-muted">Eleve</span>
             </div>
@@ -95,7 +95,7 @@ function ComprehensionHeatmapInner({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: si * 0.02 }}
-              className="flex items-center border-b border-white/[0.02] hover:bg-white/[0.02]"
+              className="flex items-center border-b border-black/[0.02] hover:bg-black/[0.02]"
             >
               <div className="w-24 flex-shrink-0 px-2 py-1 flex items-center gap-1.5 overflow-hidden">
                 <span className="text-xs">{student.avatar}</span>
@@ -135,7 +135,7 @@ function ComprehensionHeatmapInner({
       </div>
 
       {/* Legend */}
-      <div className="px-3 py-2 border-t border-white/[0.06] flex items-center gap-3 flex-wrap">
+      <div className="px-3 py-2 border-t border-black/[0.04] flex items-center gap-3 flex-wrap">
         <span className="text-xs text-bw-muted">Legende :</span>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded" style={{ background: "rgba(16,185,129,0.5)" }} />
@@ -154,7 +154,7 @@ function ComprehensionHeatmapInner({
           <span className="text-xs text-bw-muted">Difficile</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded" style={{ background: "rgba(255,255,255,0.02)" }} />
+          <div className="w-3 h-3 rounded" style={{ background: "rgba(0,0,0,0.02)" }} />
           <span className="text-xs text-bw-muted">Pas repondu</span>
         </div>
       </div>

@@ -59,11 +59,11 @@ export function FloatingNextAction({
         onClick={onExecute}
         disabled={isPending}
         data-onboarding="next-action"
-        className="fixed bottom-6 right-6 z-30 px-6 py-3 rounded-2xl font-bold text-sm cursor-pointer transition-colors disabled:opacity-50 flex items-center gap-2"
+        className="fixed bottom-6 right-6 z-30 h-12 px-6 rounded-[14px] font-bold text-[14px] cursor-pointer transition-colors disabled:opacity-50 flex items-center gap-2.5"
         style={{
-          backgroundColor: nextAction.color,
-          color: nextAction.color === "#F59E0B" || nextAction.color === "#888" ? "#000" : "#fff",
-          boxShadow: `0 4px 24px ${nextAction.color}50, 0 2px 8px rgba(0,0,0,0.3)`,
+          backgroundColor: "#2C2C2C",
+          color: "#fff",
+          boxShadow: "0 8px 32px rgba(44,44,44,0.25), 0 2px 8px rgba(0,0,0,0.15)",
           animation: allResponded ? "pulse-glow 2s ease-in-out infinite" : undefined,
         }}
       >
@@ -79,7 +79,7 @@ export function FloatingNextAction({
           </motion.span>
         </AnimatePresence>
         {nextAction.shortcut && (
-          <kbd className="w-5 h-5 rounded bg-white/[0.15] text-[10px] font-mono flex items-center justify-center">
+          <kbd className="w-5 h-5 rounded bg-black/[0.08] text-[10px] font-mono flex items-center justify-center">
             {nextAction.shortcut}
           </kbd>
         )}

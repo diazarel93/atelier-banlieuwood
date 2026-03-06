@@ -26,7 +26,7 @@ export function StuckAlert({ students, onNudgeAll, isPending }: StuckAlertProps)
         className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl border border-bw-amber/30"
         style={{
           background: "linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.04))",
-          boxShadow: "0 0 16px rgba(245,158,11,0.10), inset 0 1px 0 rgba(255,255,255,0.06)",
+          boxShadow: "0 0 16px rgba(245,158,11,0.10), inset 0 1px 0 rgba(0,0,0,0.04)",
         }}
       >
         <div className="flex items-center gap-2 min-w-0">

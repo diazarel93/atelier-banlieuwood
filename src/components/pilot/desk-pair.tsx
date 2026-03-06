@@ -12,10 +12,10 @@ import type { SeatStudent } from "./seat-card";
  *  - Gris   = pas connecté
  */
 const STATE_COLOR: Record<string, string> = {
-  responded: "#4ECDC4",
-  active: "#8894A0",      // gris-bleu neutre — c'est le state NORMAL
-  stuck: "#EF6461",       // corail doux au lieu de jaune criard
-  disconnected: "#555",
+  responded: "#4CAF50",
+  active: "#F2C94C",
+  stuck: "#EB5757",
+  disconnected: "#C4BDB2",
 };
 
 /** A single desk with 1-2 students sitting side by side */
@@ -53,12 +53,12 @@ function DeskPairInner({
               ? "rgba(78,205,196,0.30)"
               : teamColor
                 ? `${teamColor}25`
-                : "rgba(255,255,255,0.10)",
+                : "rgba(0,0,0,0.06)",
           background: allResponded
             ? "rgba(78,205,196,0.06)"
             : anyNeedsHelp
               ? "rgba(239,100,97,0.05)"
-              : "rgba(255,255,255,0.03)",
+              : "rgba(0,0,0,0.03)",
           boxShadow: anyHand
             ? "0 0 16px rgba(239,100,97,0.15), 0 2px 4px rgba(0,0,0,0.2)"
             : allResponded
@@ -67,7 +67,7 @@ function DeskPairInner({
         }}
       >
         <DeskSeat student={left} response={responseMap.get(left.id) || null} onClick={() => onStudentClick(left.id)} />
-        <div className="w-px my-2" style={{ background: "rgba(255,255,255,0.10)" }} />
+        <div className="w-px my-2" style={{ background: "rgba(0,0,0,0.06)" }} />
         {right ? (
           <DeskSeat student={right} response={responseMap.get(right.id) || null} onClick={() => onStudentClick(right.id)} />
         ) : (
@@ -102,7 +102,7 @@ function DeskSeat({
         student.state === "disconnected" ? "opacity-30" : ""
       }`}
       whileTap={{ scale: 0.95 }}
-      whileHover={{ backgroundColor: "rgba(255,255,255,0.06)", scale: 1.03 }}
+      whileHover={{ backgroundColor: "rgba(0,0,0,0.04)", scale: 1.03 }}
     >
       {/* Avatar + badges */}
       <div className="relative">
@@ -149,7 +149,7 @@ function DeskSeat({
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 500, damping: 15 }}
-              className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#4ECDC4] flex items-center justify-center"
+              className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#4CAF50] flex items-center justify-center"
               style={{ boxShadow: "0 0 8px rgba(78,205,196,0.5), 0 1px 2px rgba(0,0,0,0.2)" }}
             >
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
@@ -161,14 +161,14 @@ function DeskSeat({
               initial={{ scale: 0.5, opacity: 0.6 }}
               animate={{ scale: 2, opacity: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-[#4ECDC4] pointer-events-none"
+              className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-[#4CAF50] pointer-events-none"
             />
           </>
         )}
 
         {/* Stuck indicator */}
         {student.state === "stuck" && (
-          <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#EF6461] flex items-center justify-center text-xs font-black text-white shadow-sm">
+          <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#EB5757] flex items-center justify-center text-xs font-black text-white shadow-sm">
             !
           </span>
         )}

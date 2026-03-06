@@ -110,10 +110,10 @@ function CompetencyReportInner({ students, sessionTitle }: CompetencyReportProps
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: si * 0.05 }}
-              className="rounded-xl border border-white/[0.06] overflow-hidden"
+              className="rounded-xl border border-black/[0.04] overflow-hidden"
             >
               {/* Student header */}
-              <div className="px-4 py-3 bg-white/[0.02] border-b border-white/[0.04] flex items-center justify-between">
+              <div className="px-4 py-3 bg-black/[0.02] border-b border-black/[0.04] flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-lg">{student.studentAvatar}</span>
                   <span className="text-sm font-bold text-bw-heading">{student.studentName}</span>

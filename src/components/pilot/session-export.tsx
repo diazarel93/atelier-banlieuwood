@@ -98,13 +98,13 @@ function downloadPDF(props: Omit<SessionExportProps, "open" | "onClose">) {
     : null;
 
   const responsesHTML = responses.map(r => `
-    <div style="padding:10px 14px;margin:6px 0;border-radius:8px;border-left:3px solid ${r.is_highlighted ? "#FF6B35" : "#333"};background:${r.is_highlighted ? "#FFF7ED" : "#FAFAFA"}">
+    <div style="padding:10px 14px;margin:6px 0;border-radius:8px;border-left:3px solid ${r.is_highlighted ? "#F5A45B" : "#333"};background:${r.is_highlighted ? "#FFF7ED" : "#FAFAFA"}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
         <strong style="font-size:13px;color:#222">${r.studentName}</strong>
         <span style="font-size:11px;color:#888">${new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
       </div>
       <p style="font-size:14px;color:#333;margin:0;line-height:1.5">${r.text}</p>
-      ${r.teacher_score ? `<span style="font-size:11px;color:#FF6B35;font-weight:600">Note : ${r.teacher_score}/5</span>` : ""}
+      ${r.teacher_score ? `<span style="font-size:11px;color:#F5A45B;font-weight:600">Note : ${r.teacher_score}/5</span>` : ""}
       ${r.teacher_comment ? `<p style="font-size:12px;color:#666;margin:4px 0 0;font-style:italic">Prof : ${r.teacher_comment}</p>` : ""}
     </div>
   `).join("");
@@ -117,7 +117,7 @@ function downloadPDF(props: Omit<SessionExportProps, "open" | "onClose">) {
   <style>
     @page { margin: 20mm; size: A4; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #222; max-width: 700px; margin: 0 auto; padding: 40px 20px; }
-    .header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #FF6B35; }
+    .header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #F5A45B; }
     .header h1 { font-size: 24px; margin: 0 0 8px; color: #111; }
     .header .subtitle { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 2px; }
     .meta { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; }
@@ -128,7 +128,7 @@ function downloadPDF(props: Omit<SessionExportProps, "open" | "onClose">) {
     .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #999; font-weight: 600; margin: 24px 0 12px; }
     .stats { display: flex; gap: 16px; margin-bottom: 24px; }
     .stat { text-align: center; flex: 1; padding: 12px; border-radius: 8px; background: #F5F5F5; }
-    .stat .number { font-size: 24px; font-weight: 700; color: #FF6B35; }
+    .stat .number { font-size: 24px; font-weight: 700; color: #F5A45B; }
     .stat .label { font-size: 11px; color: #888; margin-top: 2px; }
     .footer { text-align: center; margin-top: 40px; padding-top: 16px; border-top: 1px solid #EEE; font-size: 11px; color: #AAA; }
   </style>
@@ -197,44 +197,44 @@ export function SessionExport({
             initial={{ opacity: 0, y: 20, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.97 }}
-            className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] max-w-[90vw] max-h-[80vh] glass-card rounded-2xl border border-white/[0.08] overflow-hidden flex flex-col"
+            className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] max-w-[90vw] max-h-[80vh] glass-card rounded-2xl border border-black/[0.06] overflow-hidden flex flex-col"
           >
             {/* Header */}
-            <div className="px-5 py-3 border-b border-white/[0.06] flex items-center justify-between flex-shrink-0">
+            <div className="px-5 py-3 border-b border-black/[0.04] flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2">
                 <span className="text-lg">📋</span>
                 <h3 className="text-sm font-semibold">Export de séance</h3>
               </div>
-              <button onClick={onClose} className="text-bw-muted hover:text-white text-sm cursor-pointer">✕</button>
+              <button onClick={onClose} className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">✕</button>
             </div>
 
             {/* Preview */}
             <div className="flex-1 overflow-y-auto px-5 py-3">
-              <pre className="text-xs text-bw-text leading-relaxed whitespace-pre-wrap font-mono bg-bw-surface rounded-xl p-4 border border-white/[0.06] max-h-[50vh] overflow-y-auto">
+              <pre className="text-xs text-bw-text leading-relaxed whitespace-pre-wrap font-mono bg-bw-surface rounded-xl p-4 border border-black/[0.04] max-h-[50vh] overflow-y-auto">
                 {markdown}
               </pre>
             </div>
 
             {/* Actions */}
-            <div className="px-5 py-3 border-t border-white/[0.06] flex items-center justify-between flex-shrink-0">
+            <div className="px-5 py-3 border-t border-black/[0.04] flex items-center justify-between flex-shrink-0">
               <p className="text-xs text-bw-muted">{responses.length} réponses, {filename}</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => { navigator.clipboard.writeText(markdown); }}
-                  className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-white/[0.06] hover:border-white/15 text-bw-muted hover:text-white transition-colors"
+                  className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors"
                 >
                   Copier
                 </button>
                 <button
                   onClick={() => downloadMarkdown(markdown, filename)}
-                  className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-white/[0.06] hover:border-white/15 text-bw-muted hover:text-white transition-colors"
+                  className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors"
                 >
                   .md
                 </button>
                 <button
                   onClick={() => downloadPDF({ sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount })}
                   className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110"
-                  style={{ backgroundColor: "#FF6B35", color: "white" }}
+                  style={{ backgroundColor: "#F5A45B", color: "white" }}
                 >
                   PDF
                 </button>

@@ -30,12 +30,12 @@ const STATE_RING: Record<StudentState, string> = {
   responded: "ring-bw-teal/60",
   active: "ring-bw-primary/40",
   stuck: "ring-bw-amber/60",
-  disconnected: "ring-white/[0.06]",
+  disconnected: "ring-black/[0.06]",
 };
 
 const STATE_BG: Record<StudentState, string> = {
   responded: "bg-bw-teal/10",
-  active: "bg-white/[0.03]",
+  active: "bg-black/[0.03]",
   stuck: "bg-bw-amber/10",
   disconnected: "bg-bw-bg/60",
 };

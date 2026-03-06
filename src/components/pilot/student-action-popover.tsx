@@ -115,7 +115,7 @@ export function StudentActionPopover({
                 )}
               </div>
             </div>
-            <button onClick={onClose} className="text-bw-muted hover:text-white cursor-pointer p-1.5 rounded-lg hover:bg-white/5 transition-colors">
+            <button onClick={onClose} className="text-bw-muted hover:text-bw-heading cursor-pointer p-1.5 rounded-lg hover:bg-white/5 transition-colors">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
@@ -132,7 +132,7 @@ export function StudentActionPopover({
 
           {/* No response yet */}
           {!lastResponse && student.state !== "disconnected" && (
-            <div className="mx-3 mb-2 rounded-lg p-2.5 bg-white/[0.02] border border-white/[0.06]">
+            <div className="mx-3 mb-2 rounded-lg p-2.5 bg-black/[0.02] border border-black/[0.04]">
               <p className="text-xs text-bw-muted">Pas encore de réponse</p>
             </div>
           )}
@@ -146,7 +146,7 @@ export function StudentActionPopover({
                   <button
                     key={text}
                     onClick={() => handleSendNudge(text)}
-                    className="text-xs px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-bw-text hover:bg-white/[0.08] cursor-pointer transition-all leading-snug text-left"
+                    className="text-xs px-2.5 py-1 rounded-lg bg-black/[0.03] border border-black/[0.06] text-bw-text hover:bg-black/[0.05] cursor-pointer transition-all leading-snug text-left"
                   >
                     {text}
                   </button>
@@ -189,7 +189,7 @@ export function StudentActionPopover({
           </AnimatePresence>
 
           {/* Actions */}
-          <div className="border-t border-white/[0.06] p-1.5 flex gap-1">
+          <div className="border-t border-black/[0.04] p-1.5 flex gap-1">
             <ActionButton
               icon="💬"
               label={showNudgeInput ? "Annuler" : "Message"}

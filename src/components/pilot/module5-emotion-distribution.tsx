@@ -13,7 +13,7 @@ export function Module5EmotionDistribution({
   const totalEmotions = Object.values(emotionDistribution).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="bg-bw-surface rounded-xl p-4 border border-white/[0.06] space-y-3">
+    <div className="bg-bw-surface rounded-xl p-4 border border-black/[0.04] space-y-3">
       <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Distribution des émotions choisies</span>
       {Object.entries(emotionDistribution).sort(([,a], [,b]) => b - a).map(([key, count], i) => {
         const emo = EMOTIONS.find(e => e.key === key);

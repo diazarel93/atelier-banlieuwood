@@ -9,7 +9,7 @@ interface PulseRingProps {
 
 const STATE_COLORS: Record<StudentState, string> = {
   responded: "#4ECDC4",  // bw-teal
-  active: "#FF6B35",     // bw-primary (orange)
+  active: "#F5A45B",     // bw-primary (orange)
   stuck: "#F59E0B",      // bw-amber
   disconnected: "#555960", // bw-muted/idle
 };

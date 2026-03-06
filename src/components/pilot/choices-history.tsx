@@ -42,7 +42,7 @@ export function ChoicesHistory({ choices }: ChoicesHistoryProps) {
                 </span>
               </div>
               {/* Tooltip on hover */}
-              <div className="hidden group-hover:block absolute z-20 left-0 top-full mt-1 bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-xs text-bw-text leading-relaxed max-w-[240px] shadow-xl">
+              <div className="hidden group-hover:block absolute z-20 left-0 top-full mt-1 bg-bw-elevated border border-black/[0.04] rounded-xl p-3 text-xs text-bw-text leading-relaxed max-w-[240px] shadow-xl">
                 <span className="text-xs uppercase tracking-wider block mb-1" style={{ color }}>
                   {c.restitution_label || c.category}
                 </span>

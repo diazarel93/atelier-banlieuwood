@@ -105,7 +105,7 @@ export function TeamManager({ sessionId, teams, students }: TeamManagerProps) {
 
       <div className="space-y-2">
         {teams.map((team) => (
-          <div key={team.id} className="rounded-xl border border-white/[0.06] overflow-hidden">
+          <div key={team.id} className="rounded-xl border border-black/[0.04] overflow-hidden">
             <div className="flex items-center gap-2 px-3 py-2" style={{ borderLeft: `3px solid ${team.team_color}` }}>
               <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: team.team_color }} />
               <span className="text-xs font-semibold flex-1">{team.team_name}</span>
@@ -134,7 +134,7 @@ export function TeamManager({ sessionId, teams, students }: TeamManagerProps) {
               <div key={s.id} className="relative">
                 <button
                   onClick={() => setAssigning(assigning === s.id ? null : s.id)}
-                  className="text-xs bg-bw-elevated px-2 py-1 rounded-full flex items-center gap-1 cursor-pointer hover:bg-bw-elevated/80 transition-colors border border-white/[0.06]"
+                  className="text-xs bg-bw-elevated px-2 py-1 rounded-full flex items-center gap-1 cursor-pointer hover:bg-bw-elevated/80 transition-colors border border-black/[0.04]"
                 >
                   <span>{s.avatar}</span>
                   <span className="truncate max-w-[60px]">{s.display_name}</span>

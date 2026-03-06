@@ -100,12 +100,12 @@ function ResponseCardInner({
 
   const borderColor =
     response.is_highlighted
-      ? "#FF6B35"
+      ? "#F5A45B"
       : state === "selected"
-        ? "#FF6B35"
+        ? "#6B8CFF"
         : state === "winner"
-          ? "#4ECDC4"
-          : "rgba(255,255,255,0.08)";
+          ? "#57C4B6"
+          : "#EFE4D8";
 
   const hasInteractions = !!(onComment && onHighlight && onNudge && onWarn && onScore);
 
@@ -116,44 +116,44 @@ function ResponseCardInner({
       initial={{ opacity: 0, y: 12, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      whileHover={{ y: -2, boxShadow: "0 4px 16px rgba(0,0,0,0.25), 0 0 8px rgba(78,205,196,0.08)" }}
+      whileHover={{ y: -2, boxShadow: "0 6px 20px rgba(61,43,16,0.08)" }}
       style={{
         borderColor,
         x,
         opacity: state === "hidden" ? 0.3 : undefined,
         background: state === "winner"
-          ? "linear-gradient(135deg, rgba(78,205,196,0.10), rgba(18,20,24,0.95))"
+          ? "#F0FAF8"
           : response.is_highlighted
-            ? "linear-gradient(135deg, rgba(255,107,53,0.08), rgba(18,20,24,0.95))"
-            : "linear-gradient(135deg, rgba(30,33,48,0.6), rgba(18,20,24,0.95))",
+            ? "#FFF8F0"
+            : "#FFFFFF",
         boxShadow: state === "winner"
-          ? "0 0 20px rgba(78,205,196,0.25), 0 2px 8px rgba(0,0,0,0.2)"
+          ? "0 4px 16px rgba(87,196,182,0.15)"
           : response.is_highlighted
-            ? "0 0 16px rgba(255,107,53,0.20), 0 2px 8px rgba(0,0,0,0.2)"
-            : "0 1px 3px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.08)",
+            ? "0 4px 16px rgba(245,164,91,0.12)"
+            : "0 2px 8px rgba(61,43,16,0.04)",
       }}
       drag={sessionStatus === "responding" && !response.reset_at ? "x" : false}
       dragConstraints={{ left: 0, right: 0 }}
       dragElastic={0.3}
       onDragEnd={handleDragEnd}
-      className={`glass-surface rounded-xl p-3 transition-all duration-200
-      ${swiped === "left" ? "border-bw-danger/40" : swiped === "right" ? "border-bw-primary/40" : ""}
+      className={`rounded-[14px] border p-4 transition-all duration-200
+      ${swiped === "left" ? "border-[#EB5757]/40" : swiped === "right" ? "border-[#6B8CFF]/40" : ""}
       ${response.reset_at ? "opacity-50" : ""}`}
     >
       {/* Header: avatar + name + time + status buttons */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-base">{response.students?.avatar}</span>
-            <span className={`text-sm font-medium ${state === "hidden" ? "line-through text-bw-muted" : ""}`}>
+          <div className="flex items-center gap-2.5 mb-1.5">
+            <span className="text-lg">{response.students?.avatar}</span>
+            <span className={`text-[14px] font-semibold ${state === "hidden" ? "line-through text-[#B0A99E]" : "text-[#2C2C2C]"}`}>
               {response.students?.display_name}
             </span>
-            <span className="text-xs text-bw-muted">{relativeTime(response.submitted_at)}</span>
+            <span className="text-[12px] text-[#B0A99E]">{relativeTime(response.submitted_at)}</span>
             {response.reset_at && (
               <span className="text-xs px-1.5 py-px rounded-full bg-bw-amber/15 text-bw-amber border border-bw-amber/20">relancé</span>
             )}
           </div>
-          <p className={`text-sm leading-relaxed ${state === "hidden" ? "line-through text-bw-muted" : response.reset_at ? "line-through text-bw-muted" : "text-bw-text"}`}>
+          <p className={`text-[14px] leading-relaxed ${state === "hidden" ? "line-through text-[#B0A99E]" : response.reset_at ? "line-through text-[#B0A99E]" : "text-[#4A4A4A]"}`}>
             {response.text}
           </p>
           {response.teacher_comment && (
@@ -190,13 +190,13 @@ function ResponseCardInner({
               disabled={isPending}
               aria-label={state === "selected" ? "Retirer du vote" : "Sélectionner pour le vote"}
               aria-pressed={state === "selected"}
-              className={`px-2.5 py-1.5 text-xs rounded-xl cursor-pointer transition-all duration-200 font-medium focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
+              className={`h-7 px-2.5 text-[12px] rounded-[9px] cursor-pointer transition-all duration-200 font-semibold focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none ${
                 state === "selected"
-                  ? "bg-bw-primary/20 text-bw-primary border border-bw-primary/30 shadow-[0_0_8px_rgba(255,107,53,0.15)]"
-                  : "hover:bg-bw-primary/10 hover:text-bw-primary text-bw-muted border border-transparent"
+                  ? "bg-[#6B8CFF] text-white border border-[#6B8CFF]"
+                  : "hover:bg-[#EEF2FF] hover:text-[#6B8CFF] text-[#7A7A7A] border border-[#E8DFD2]"
               }`}
             >
-              {state === "selected" ? "Au vote" : "Sélect."}
+              {state === "selected" ? "Au vote" : "Select."}
             </button>
           )}
           {sessionStatus === "responding" && (
@@ -204,7 +204,7 @@ function ResponseCardInner({
               onClick={onHide}
               disabled={isPending}
               aria-label={state === "hidden" ? "Montrer la réponse" : "Masquer la réponse"}
-              className="px-2 py-1.5 text-xs rounded-xl hover:bg-white/[0.08] hover:text-bw-text cursor-pointer transition-all duration-200 text-bw-muted focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none active:scale-95"
+              className="h-7 px-2.5 text-[12px] rounded-[9px] hover:bg-[#F7F3EA] hover:text-[#2C2C2C] cursor-pointer transition-all duration-200 text-[#B0A99E] border border-[#E8DFD2] font-medium focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none active:scale-95"
             >
               {state === "hidden" ? "Montrer" : "Masquer"}
             </button>

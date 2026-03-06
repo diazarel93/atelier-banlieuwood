@@ -27,14 +27,14 @@ export function GuideDrawer({ moduleGuide, onClose }: GuideDrawerProps) {
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: 280, opacity: 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        className="fixed inset-y-0 right-0 z-50 w-[280px] glass border-l border-white/[0.06] flex flex-col lg:relative lg:inset-auto lg:z-auto"
+        className="fixed inset-y-0 right-0 z-50 w-[280px] glass border-l border-black/[0.04] flex flex-col lg:relative lg:inset-auto lg:z-auto"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] flex-shrink-0 h-14">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-black/[0.04] flex-shrink-0 h-14">
           <h3 className="font-semibold text-sm">Guide complet</h3>
           <button
             onClick={onClose}
-            className="text-bw-muted hover:text-white text-xs cursor-pointer transition-colors"
+            className="text-bw-muted hover:text-bw-heading text-xs cursor-pointer transition-colors"
           >
             ✕
           </button>
@@ -100,7 +100,7 @@ export function GuideDrawer({ moduleGuide, onClose }: GuideDrawerProps) {
             </h4>
             <div className="space-y-2">
               {moduleGuide.phases.map((phase, i) => (
-                <div key={i} className="bg-bw-bg rounded-xl p-3 border border-white/[0.06]">
+                <div key={i} className="bg-bw-bg rounded-xl p-3 border border-black/[0.04]">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs font-bold text-bw-primary">{i + 1}</span>
                     <span className="text-xs font-semibold">{phase.name}</span>

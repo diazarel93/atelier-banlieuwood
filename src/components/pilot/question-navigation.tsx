@@ -47,11 +47,11 @@ export function QuestionNavigation({
       })}
       <div className="flex-1" />
       <button onClick={onPreviewPrev} disabled={displayIndex <= 0}
-        className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
+        className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-bw-heading bg-bw-elevated border border-black/[0.04] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
         ←
       </button>
       <button onClick={onPreviewNext} disabled={displayIndex >= maxSituations - 1}
-        className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
+        className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-bw-heading bg-bw-elevated border border-black/[0.04] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
         →
       </button>
     </div>

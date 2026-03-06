@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "motion/react";
-import { ClapperboardIllustration, FilmStripDecoration } from "@/components/cinema-illustrations";
 
 interface Student {
   id: string;
@@ -28,18 +27,15 @@ export function WelcomePanel({
   onCopyCode,
 }: WelcomePanelProps) {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-4 space-y-4 relative">
-      {/* Background film strips */}
-      <FilmStripDecoration className="left-0 top-0" />
-      <FilmStripDecoration className="right-0 bottom-0" />
+    <div className="max-w-2xl mx-auto px-6 py-6 space-y-5 relative">
 
-      {/* Session info — cinematic header */}
+      {/* Session info — warm EdTech header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-        <h1 className="text-xl font-bold font-cinema tracking-wider text-gradient-cinema">
+        <h1 className="text-[22px] font-bold text-[#2C2C2C]">
           {(sessionTitle || "Session").replace(/\s*[-—]\s*$/, "")}
         </h1>
-        <p className="text-xs text-bw-muted mt-1">{level}</p>
-        <div className="h-0.5 w-16 mx-auto mt-3 rounded-full bg-gradient-to-r from-bw-primary to-bw-gold" />
+        <p className="text-[13px] text-[#7A7A7A] mt-1">{level}</p>
+        <div className="h-0.5 w-16 mx-auto mt-4 rounded-full" style={{ background: "linear-gradient(90deg, #F5A45B, #57C4B6)" }} />
       </motion.div>
 
       {/* Onboarding when no students */}
@@ -47,32 +43,31 @@ export function WelcomePanel({
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative rounded-2xl overflow-hidden"
+          className="rounded-[20px] overflow-hidden"
+          style={{ background: "#FFFFFF", border: "1px solid #EFE4D8", boxShadow: "0 10px 24px rgba(61,43,16,0.06)" }}
         >
-          {/* Gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-bw-primary/10 via-bw-bg to-bw-violet/10" />
-          <div className="absolute inset-0 border border-bw-primary/20 rounded-2xl" />
-
-          <div className="relative p-4 space-y-3">
-            {/* Clapperboard illustration */}
+          <div className="p-6 space-y-4">
+            {/* Illustration */}
             <div className="flex justify-center">
               <motion.div
-                animate={{ rotate: [0, 2, -2, 0] }}
-                transition={{ repeat: Infinity, duration: 4, repeatDelay: 2 }}
+                animate={{ y: [0, -4, 0] }}
+                transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                className="w-16 h-16 rounded-[18px] flex items-center justify-center text-3xl"
+                style={{ background: "linear-gradient(135deg, #F5A45B15, #57C4B615)", border: "1px solid #EFE4D8" }}
               >
-                <ClapperboardIllustration size={72} />
+                🎓
               </motion.div>
             </div>
 
-            <p className="text-center text-lg font-semibold">
-              Prêt à tourner ? <span className="text-bw-primary">Action !</span>
+            <p className="text-center text-[18px] font-semibold text-[#2C2C2C]">
+              Pret a commencer ? <span className="text-[#F5A45B]">C&apos;est parti !</span>
             </p>
 
             <div className="space-y-3 max-w-sm mx-auto">
               {[
-                { num: "1", color: "#FF6B35", text: <>Projetez le <button onClick={onOpenQR} className="text-bw-primary underline cursor-pointer font-semibold">QR code</button> ou dictez le code</> },
-                { num: "2", color: "#4ECDC4", text: "Les élèves scannent et rejoignent la partie" },
-                { num: "3", color: "#8B5CF6", text: "Choisissez un module et lancez l'aventure" },
+                { num: "1", color: "#F5A45B", text: <>Projetez le <button onClick={onOpenQR} className="text-[#6B8CFF] underline cursor-pointer font-semibold">QR code</button> ou dictez le code</> },
+                { num: "2", color: "#57C4B6", text: "Les eleves scannent et rejoignent la session" },
+                { num: "3", color: "#6B8CFF", text: "Choisissez un module et lancez l'activite" },
               ].map((step, i) => (
                 <motion.div
                   key={step.num}
@@ -82,35 +77,35 @@ export function WelcomePanel({
                   className="flex items-center gap-3"
                 >
                   <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                    style={{ background: `linear-gradient(135deg, ${step.color}, ${step.color}AA)` }}
+                    className="w-8 h-8 rounded-[10px] flex items-center justify-center text-white text-[13px] font-bold flex-shrink-0"
+                    style={{ backgroundColor: step.color }}
                   >
                     {step.num}
                   </div>
-                  <span className="text-sm text-bw-text">{step.text}</span>
+                  <span className="text-[14px] text-[#4A4A4A]">{step.text}</span>
                 </motion.div>
               ))}
             </div>
 
             {/* Join code display */}
-            <div className="text-center pt-2">
-              <p className="text-xs uppercase tracking-widest text-bw-muted mb-2">Code de la partie</p>
+            <div className="text-center pt-3">
+              <p className="text-[11px] uppercase tracking-widest text-[#B0A99E] mb-2.5">Code de la session</p>
               <button onClick={onCopyCode} className="cursor-pointer group">
-                <div className="flex gap-1.5 justify-center">
+                <div className="flex gap-2 justify-center">
                   {joinCode.split("").map((char, i) => (
                     <motion.span
                       key={i}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 + i * 0.06 }}
-                      className="w-8 h-10 rounded-lg flex items-center justify-center text-lg font-bold font-mono border border-white/10 group-hover:border-bw-primary/40 transition-colors"
-                      style={{ background: "linear-gradient(180deg, rgba(255,107,53,0.08), rgba(255,107,53,0.02))" }}
+                      className="w-9 h-11 rounded-[10px] flex items-center justify-center text-[18px] font-bold font-mono text-[#2C2C2C] group-hover:border-[#6B8CFF]/40 transition-colors"
+                      style={{ background: "#F7F3EA", border: "1px solid #E8DFD2" }}
                     >
                       {char}
                     </motion.span>
                   ))}
                 </div>
-                <span className="text-xs text-bw-muted mt-2 inline-block group-hover:text-bw-primary transition-colors">
+                <span className="text-[12px] text-[#B0A99E] mt-2.5 inline-block group-hover:text-[#6B8CFF] transition-colors">
                   Cliquer pour copier
                 </span>
               </button>
@@ -124,22 +119,22 @@ export function WelcomePanel({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="rounded-xl border border-white/[0.08] overflow-hidden"
+          className="rounded-[16px] overflow-hidden"
+          style={{ background: "#FFFFFF", border: "1px solid #EFE4D8" }}
         >
-          <div className="px-4 py-3 border-b border-white/[0.06]"
-            style={{ background: "linear-gradient(90deg, rgba(78,205,196,0.08), transparent)" }}>
-            <div className="flex items-center gap-2">
+          <div className="px-4 py-3" style={{ borderBottom: "1px solid #EFE4D8", background: "#EFFAF8" }}>
+            <div className="flex items-center gap-2.5">
               <motion.div
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ repeat: Infinity, duration: 1.5 }}
-                className="w-2 h-2 rounded-full bg-bw-teal"
+                className="w-2.5 h-2.5 rounded-full bg-[#57C4B6]"
               />
-              <span className="text-sm font-medium text-bw-teal">
-                {activeStudents.length} élève{activeStudents.length !== 1 ? "s" : ""} connecté{activeStudents.length !== 1 ? "s" : ""}
+              <span className="text-[14px] font-semibold text-[#1B7A6E]">
+                {activeStudents.length} eleve{activeStudents.length !== 1 ? "s" : ""} connecte{activeStudents.length !== 1 ? "s" : ""}
               </span>
             </div>
           </div>
-          <div className="p-3 bg-bw-bg">
+          <div className="p-4">
             <div className="flex flex-wrap gap-2">
               {activeStudents.slice(0, 24).map((s, i) => (
                 <motion.span
@@ -147,15 +142,15 @@ export function WelcomePanel({
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: i * 0.03 }}
-                  className="text-xs px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-white/[0.06]"
-                  style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))" }}
+                  className="text-[12px] h-8 px-3 rounded-[10px] flex items-center gap-1.5 font-medium"
+                  style={{ background: "#F7F3EA", border: "1px solid #E8DFD2", color: "#4A4A4A" }}
                 >
                   <span className="text-sm">{s.avatar}</span>
-                  <span className="text-bw-text">{s.display_name}</span>
+                  <span>{s.display_name}</span>
                 </motion.span>
               ))}
               {activeStudents.length > 24 && (
-                <span className="text-xs text-bw-muted self-center">+{activeStudents.length - 24}</span>
+                <span className="text-[12px] text-[#B0A99E] self-center">+{activeStudents.length - 24}</span>
               )}
             </div>
           </div>
@@ -163,20 +158,20 @@ export function WelcomePanel({
       )}
 
       {/* CTA to select module */}
-      <div className="text-center py-4 space-y-3">
+      <div className="text-center py-5 space-y-3">
         <motion.div
           animate={{ y: [0, -5, 0] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center border border-white/[0.08]"
-          style={{ background: "linear-gradient(135deg, rgba(139,92,246,0.1), rgba(78,205,196,0.05))" }}
+          className="w-14 h-14 rounded-[16px] mx-auto flex items-center justify-center"
+          style={{ background: "#EEF2FF", border: "1px solid #D8E0F0" }}
         >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="1.5" strokeLinecap="round">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6B8CFF" strokeWidth="1.5" strokeLinecap="round">
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </motion.div>
         <div>
-          <p className="text-sm text-bw-text">Sélectionnez un module dans le menu</p>
-          <p className="text-xs text-bw-muted mt-1">Le menu est à gauche de votre écran</p>
+          <p className="text-[14px] text-[#2C2C2C] font-medium">Selectionnez un module dans le menu</p>
+          <p className="text-[12px] text-[#B0A99E] mt-1">Le menu est a gauche de votre ecran</p>
         </div>
       </div>
     </div>

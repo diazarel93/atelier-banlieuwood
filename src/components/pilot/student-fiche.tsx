@@ -95,7 +95,7 @@ export function StudentFiche({
       {/* Back button */}
       <button
         onClick={onBack}
-        className="flex items-center gap-1.5 text-xs text-bw-muted hover:text-white cursor-pointer transition-colors"
+        className="flex items-center gap-1.5 text-xs text-bw-muted hover:text-bw-heading cursor-pointer transition-colors"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         Retour au flux
@@ -165,7 +165,7 @@ export function StudentFiche({
             ))}
           </div>
         ) : (
-          <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-4 text-center">
+          <div className="bg-bw-surface rounded-xl border border-black/[0.04] p-4 text-center">
             <p className="text-xs text-bw-muted">Pas encore de réponse</p>
           </div>
         )}
@@ -182,7 +182,7 @@ export function StudentFiche({
               <button
                 key={text}
                 onClick={() => handleSendNudge(text)}
-                className="text-xs px-2.5 py-1.5 rounded-lg bg-white/[0.06] border border-white/[0.10] text-bw-text hover:bg-white/[0.10] hover:border-white/[0.16] cursor-pointer transition-all leading-snug text-left active:scale-95"
+                className="text-xs px-2.5 py-1.5 rounded-lg bg-black/[0.04] border border-black/[0.06] text-bw-text hover:bg-black/[0.06] hover:border-black/[0.12] cursor-pointer transition-all leading-snug text-left active:scale-95"
               >
                 {text}
               </button>
@@ -216,7 +216,7 @@ export function StudentFiche({
           <button
             onClick={() => setShowNudgeInput(!showNudgeInput)}
             className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all ${
-              showNudgeInput ? "text-bw-primary bg-bw-primary/10" : "text-bw-text hover:bg-white/[0.08]"
+              showNudgeInput ? "text-bw-primary bg-bw-primary/10" : "text-bw-text hover:bg-black/[0.05]"
             }`}
           >
             <span className="text-sm">💬</span>
@@ -225,7 +225,7 @@ export function StudentFiche({
           {onBroadcast && (
             <button
               onClick={onBroadcast}
-              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-bw-text hover:bg-white/[0.08] cursor-pointer transition-all"
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-bw-text hover:bg-black/[0.05] cursor-pointer transition-all"
             >
               <span className="text-sm">📢</span>
               Message classe

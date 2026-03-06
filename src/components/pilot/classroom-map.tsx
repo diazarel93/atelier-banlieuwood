@@ -148,9 +148,9 @@ export function ClassroomMap({
 
       {/* ── CLASSROOM FLOOR PLAN ── */}
       <div
-        className="relative rounded-2xl border border-white/[0.10] overflow-hidden"
+        className="relative rounded-2xl border border-black/[0.06] overflow-hidden"
         style={{
-          background: "rgba(255,255,255,0.03)",
+          background: "rgba(0,0,0,0.03)",
           boxShadow: "inset 0 0 40px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15)",
         }}
       >
@@ -159,13 +159,13 @@ export function ClassroomMap({
 
           {/* Teacher's desk — minimal */}
           <div className="flex justify-center">
-            <div className="flex items-center gap-2 px-5 py-1.5 rounded-lg border border-white/[0.12] bg-white/[0.04]">
+            <div className="flex items-center gap-2 px-5 py-1.5 rounded-lg border border-black/[0.08] bg-black/[0.03]">
               <span className="text-xs font-bold text-bw-muted uppercase tracking-widest">Tableau</span>
             </div>
           </div>
 
           {/* Separator */}
-          <div className="h-px bg-gradient-to-r from-transparent via-white/[0.10] to-transparent" />
+          <div className="h-px bg-gradient-to-r from-transparent via-black/[0.06] to-transparent" />
 
           {/* Desk rows */}
           <div className="space-y-3">
@@ -186,7 +186,7 @@ export function ClassroomMap({
                     <span className="text-xs font-semibold uppercase tracking-wider text-bw-text">
                       {group.teamName}
                     </span>
-                    <div className="flex-1 h-px bg-white/[0.06]" />
+                    <div className="flex-1 h-px bg-black/[0.04]" />
                     <span className="text-xs text-bw-muted tabular-nums">
                       {group.pairs.reduce((n, [l, r]) => n + (l.state === "responded" ? 1 : 0) + (r?.state === "responded" ? 1 : 0), 0)}/
                       {group.pairs.reduce((n, [, r]) => n + 1 + (r ? 1 : 0), 0)}
@@ -246,8 +246,8 @@ export function ClassroomMap({
       {/* Legend — minimal */}
       <div className="flex items-center justify-center gap-4 text-xs text-bw-muted">
         <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-bw-teal" /> Répondu</span>
-        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#8894A0" }} /> En cours</span>
-        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#EF6461" }} /> Bloqué</span>
+        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#F2C94C" }} /> En cours</span>
+        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#EB5757" }} /> Bloqué</span>
         <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#555" }} /> Hors ligne</span>
       </div>
 

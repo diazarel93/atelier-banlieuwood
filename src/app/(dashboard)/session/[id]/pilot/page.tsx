@@ -913,82 +913,105 @@ function CockpitContent({
 
       {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* ── COMPACT HEADER BAR ── */}
-        <div className="flex items-center gap-2.5 px-4 py-1.5 flex-shrink-0 border-b border-white/[0.10]" style={{ background: "linear-gradient(90deg, rgba(26,29,34,0.8), rgba(18,20,24,0.95))" }}>
-          {/* Modules button — opens sidebar drawer */}
-          {onOpenModules && (
-            <button onClick={onOpenModules} title="Parcours des modules" className="w-7 h-7 rounded-lg flex items-center justify-center text-bw-muted hover:text-white hover:bg-white/[0.06] cursor-pointer transition-colors flex-shrink-0">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-            </button>
-          )}
-          {/* Module badge — prominent */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg flex-shrink-0" style={{ backgroundColor: `${moduleColor}15`, border: `1px solid ${moduleColor}25` }}>
-            <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: moduleColor }} />
-            <span className="text-xs font-bold" style={{ color: moduleColor }}>M{session.current_module}</span>
-            <span className="cinema-title text-xs text-bw-text">{moduleLabel}</span>
-          </div>
-          {/* Chapter / Question counter */}
-          {(totalQuestions ?? 0) > 0 && (
-            <span className="text-xs text-bw-muted tabular-nums flex-shrink-0 font-mono">
-              S{session.current_seance || 1} · Q{currentQIndex + 1}/{totalQuestions}
-            </span>
-          )}
-          {/* Timer / elapsed */}
-          {respondingOpenedAt && (
-            <span className="flex-shrink-0">
-              <ElapsedTimer startedAt={respondingOpenedAt} />
-            </span>
-          )}
-          <div className="flex-1" />
-          {/* Student count */}
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-bw-green" />
-            <span className="text-xs text-bw-muted tabular-nums font-mono">
-              {activeStudents.length}/{totalStudents}
-            </span>
-          </div>
-          {/* Auto-advance toggle */}
-          <button
-            onClick={() => {
-              setAutoAdvance((v) => !v);
-              if (autoAdvanceTimerRef.current) {
-                clearTimeout(autoAdvanceTimerRef.current);
-                autoAdvanceTimerRef.current = null;
-                setAutoAdvanceCountdown(0);
-              }
-            }}
-            className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-medium cursor-pointer transition-all flex-shrink-0 ${
-              autoAdvance ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30" : "bg-white/[0.04] text-bw-muted border border-white/[0.10]"
-            }`}
-          >
-            <div className={`w-5 h-3 rounded-full transition-all relative ${autoAdvance ? "bg-bw-teal" : "bg-white/10"}`}>
-              <div className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all ${autoAdvance ? "left-2" : "left-px"}`} />
+        {/* ── HEADER BAR — 72px, warm EdTech ── */}
+        <div className="flex items-center gap-4 px-6 flex-shrink-0 border-b" style={{ height: 72, background: "#F5EFE6", borderColor: "#E8DFD2" }}>
+          {/* LEFT: branding + modules */}
+          <div className="flex items-center gap-3 flex-shrink-0">
+            {onOpenModules && (
+              <button onClick={onOpenModules} title="Parcours des modules" className="w-9 h-9 rounded-[10px] flex items-center justify-center text-bw-muted hover:text-bw-heading bg-white border border-[#E8DFD2] cursor-pointer transition-colors flex-shrink-0 hover:shadow-sm">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              </button>
+            )}
+            <div className="flex flex-col">
+              <span className="text-[15px] font-semibold text-[#2C2C2C]">Les Etoiles de Clichy</span>
+              <span className="text-[11px] text-[#7A7A7A]">Cockpit pedagogique</span>
             </div>
-            Auto{autoAdvance && autoAdvanceCountdown > 0 ? ` ${autoAdvanceCountdown}s` : ""}
-          </button>
+          </div>
+
+          {/* CENTER: session context */}
+          <div className="flex-1 flex items-center justify-center gap-3 min-w-0">
+            {/* Mission badge */}
+            <span className="px-3 py-1.5 rounded-full text-[13px] font-medium text-[#5B5B5B] flex-shrink-0" style={{ background: "#EFE8DD" }}>
+              Mission : {moduleLabel}
+            </span>
+            {(totalQuestions ?? 0) > 0 && (
+              <>
+                <span className="text-[#D3CAB8]">·</span>
+                <span className="text-[14px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0">
+                  Question {currentQIndex + 1} / {totalQuestions}
+                </span>
+              </>
+            )}
+            {respondingOpenedAt && (
+              <>
+                <span className="text-[#D3CAB8]">·</span>
+                <span className="flex-shrink-0">
+                  <ElapsedTimer startedAt={respondingOpenedAt} />
+                </span>
+              </>
+            )}
+            <span className="text-[#D3CAB8]">·</span>
+            <span className="text-[14px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0">
+              Participation : {activeStudents.length} / {totalStudents}
+            </span>
+          </div>
+
+          {/* RIGHT: header actions */}
+          <div className="flex items-center gap-2.5 flex-shrink-0">
+            {/* Auto-advance toggle */}
+            <button
+              onClick={() => {
+                setAutoAdvance((v) => !v);
+                if (autoAdvanceTimerRef.current) {
+                  clearTimeout(autoAdvanceTimerRef.current);
+                  autoAdvanceTimerRef.current = null;
+                  setAutoAdvanceCountdown(0);
+                }
+              }}
+              className={`flex items-center gap-1.5 h-9 px-3 rounded-[10px] text-[13px] font-medium cursor-pointer transition-all ${
+                autoAdvance ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30" : "bg-white text-[#4A4A4A] border border-[#E8DFD2]"
+              }`}
+            >
+              <div className={`w-5 h-3 rounded-full transition-all relative ${autoAdvance ? "bg-bw-teal" : "bg-black/10"}`}>
+                <div className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${autoAdvance ? "left-2" : "left-px"}`} />
+              </div>
+              Auto{autoAdvance && autoAdvanceCountdown > 0 ? ` ${autoAdvanceCountdown}s` : ""}
+            </button>
+            {/* Pause button */}
+            <button
+              onClick={handlePauseToggle}
+              className="h-9 px-3.5 rounded-[10px] bg-white border border-[#E8DFD2] text-[13px] font-medium text-[#4A4A4A] hover:bg-[#F8F2E8] cursor-pointer transition-colors"
+            >
+              ⏸ Pause
+            </button>
+          </div>
         </div>
 
-        {/* ── QUESTION BAR — UNIVERSAL, always visible with collapsible guide ── */}
+        {/* ── QUESTION CARD — per pseudo-Figma: 20px radius, 32px padding, soft shadow ── */}
         {universalQuestionText && (
-          <div className="flex-shrink-0 border-b border-white/[0.10]">
-            <div className="px-4 py-3" style={{ borderLeft: `3px solid ${isPreviewing ? "var(--color-bw-amber)" : (CATEGORY_COLORS[universalCategoryLabel] || moduleColor)}` }}>
+          <div className="flex-shrink-0 px-6 py-4">
+            <div className="rounded-[20px] p-8" style={{
+              background: "#FFFFFF",
+              boxShadow: "0 10px 24px rgba(61,43,16,0.06)",
+              border: "1px solid #EFE4D8",
+            }}>
               {/* Top row: badge + nav + guide */}
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="cinema-title text-xs px-2 py-0.5 rounded-full flex-shrink-0"
-                  style={{ backgroundColor: `${CATEGORY_COLORS[universalCategoryLabel] || moduleColor}20`, color: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
+              <div className="flex items-center gap-2.5 mb-4">
+                <span className="text-[13px] font-semibold px-3 py-1 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: `${CATEGORY_COLORS[universalCategoryLabel] || moduleColor}15`, color: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
                   {universalCategoryLabel}
                 </span>
-                {isPreviewing && <span className="text-xs px-1.5 py-0.5 rounded bg-bw-amber/15 text-bw-amber font-bold uppercase flex-shrink-0">Apercu</span>}
+                {isPreviewing && <span className="text-[11px] px-2 py-1 rounded-full bg-[#F5A45B]/15 text-[#D4842A] font-bold uppercase flex-shrink-0">Apercu</span>}
                 <div className="flex-1" />
                 {maxSituations > 1 && (
-                  <div className="flex items-center gap-1 flex-shrink-0">
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
                     <button onClick={previewPrev} disabled={displayIndex <= 0}
-                      className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.10] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                      className="w-8 h-8 rounded-[10px] flex items-center justify-center text-xs text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
                       ◀
                     </button>
-                    <span className="text-xs text-bw-muted tabular-nums">Q{displayIndex + 1}/{maxSituations}</span>
+                    <span className="text-[13px] text-[#7A7A7A] tabular-nums font-medium px-1">Q{displayIndex + 1}/{maxSituations}</span>
                     <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
-                      className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.10] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                      className="w-8 h-8 rounded-[10px] flex items-center justify-center text-xs text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
                       ▶
                     </button>
                   </div>
@@ -996,16 +1019,16 @@ function CockpitContent({
                 {questionGuide && (
                   <button
                     onClick={() => setGuideExpanded(!guideExpanded)}
-                    className={`px-2 py-1 rounded-lg text-xs font-medium cursor-pointer transition-all flex-shrink-0 ${
-                      guideExpanded ? "bg-bw-green/15 text-bw-green border border-bw-green/30" : "text-bw-muted hover:text-bw-green bg-bw-elevated border border-white/[0.10]"
+                    className={`h-8 px-3 rounded-[10px] text-[13px] font-medium cursor-pointer transition-all flex-shrink-0 border ${
+                      guideExpanded ? "bg-[#E8F5F2] text-[#1B5E50] border-[#C8E6DD]" : "text-[#7A7A7A] hover:text-[#1B5E50] bg-white border-[#E8DFD2]"
                     }`}
                   >
                     {guideExpanded ? "▴ Guide" : "▾ Guide"}
                   </button>
                 )}
               </div>
-              {/* Question text — HERO */}
-              <p className={`text-lg md:text-xl font-bold leading-tight ${isPreviewing ? "text-bw-amber" : "text-bw-heading"}`}>
+              {/* Question text — HERO per pseudo-Figma: 28px / 600 / #2C2C2C */}
+              <p className={`text-[24px] md:text-[28px] font-semibold leading-[1.3] ${isPreviewing ? "text-[#D4842A]" : "text-[#2C2C2C]"}`} style={{ maxWidth: "85%" }}>
                 {universalQuestionText}
               </p>
             </div>
@@ -1018,15 +1041,15 @@ function CockpitContent({
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="px-4 pb-3 space-y-2">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      <div className="bg-bw-bg rounded-lg p-2.5 space-y-0.5">
-                        <p className="text-xs uppercase tracking-wider font-semibold text-bw-green">Ce qu&apos;on attend</p>
-                        <p className="text-sm text-bw-text leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.whatToExpect}</p>
+                  <div className="mt-5 pt-5 space-y-3" style={{ borderTop: "1px solid #EFE4D8" }}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="rounded-[14px] p-4 space-y-1" style={{ background: "#F0FAF8", border: "1px solid #D5EDE8" }}>
+                        <p className="text-[11px] uppercase tracking-wider font-bold text-[#1B5E50]">Ce qu&apos;on attend</p>
+                        <p className="text-[13px] text-[#4A4A4A] leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.whatToExpect}</p>
                       </div>
-                      <div className="bg-bw-bg rounded-lg p-2.5 space-y-0.5">
-                        <p className="text-xs uppercase tracking-wider font-semibold text-bw-amber">Pieges frequents</p>
-                        <p className="text-sm text-bw-amber leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.commonPitfalls}</p>
+                      <div className="rounded-[14px] p-4 space-y-1" style={{ background: "#FFF8F0", border: "1px solid #F0DFC8" }}>
+                        <p className="text-[11px] uppercase tracking-wider font-bold text-[#8B6914]">Pieges frequents</p>
+                        <p className="text-[13px] text-[#8B6914] leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.commonPitfalls}</p>
                       </div>
                     </div>
                     <QuickPhrases questionGuide={(isPreviewing ? previewGuide : questionGuide) ?? undefined} />
@@ -1036,14 +1059,15 @@ function CockpitContent({
             </AnimatePresence>
             {/* Preview banner when looking ahead */}
             {isPreviewing && (
-              <div className="px-4 pb-2">
-                <div className="bg-bw-amber/10 border border-bw-amber/30 rounded-lg px-3 py-2 flex items-center gap-3">
-                  <span className="text-xs text-bw-amber">Apercu Q{displayIndex + 1}</span>
+              <div className="mt-4">
+                <div className="rounded-[14px] px-4 py-3 flex items-center gap-3" style={{ background: "#FFF8F0", border: "1px solid #F0DFC8" }}>
+                  <span className="text-[13px] text-[#D4842A] font-medium">Apercu Q{displayIndex + 1}</span>
                   <div className="flex-1" />
                   <button onClick={() => setPreviewIndex(null)}
-                    className="text-xs text-bw-muted hover:text-white cursor-pointer">Retour Q{currentQIndex + 1}</button>
+                    className="text-[13px] text-[#7A7A7A] hover:text-[#2C2C2C] cursor-pointer transition-colors">Retour Q{currentQIndex + 1}</button>
                   <button onClick={() => goToSituation(displayIndex)}
-                    className="text-xs px-2.5 py-1 bg-bw-amber text-black rounded-lg font-medium cursor-pointer hover:brightness-110">
+                    className="text-[13px] px-3.5 py-1.5 bg-[#F5A45B] text-white rounded-[10px] font-semibold cursor-pointer hover:brightness-105 transition-all"
+                    style={{ boxShadow: "0 2px 8px rgba(245,164,91,0.3)" }}>
                     Lancer Q{displayIndex + 1}
                   </button>
                 </div>
@@ -1054,121 +1078,125 @@ function CockpitContent({
 
         {/* ── SPLIT-PANEL LAYOUT ── */}
         <div className="flex-1 flex overflow-hidden min-h-0">
-          {/* LEFT: Plan de classe + séances (collapsible, desktop only) */}
-          <div data-onboarding="classmap" className={`hidden lg:flex flex-shrink-0 flex-col overflow-y-auto surface-inset transition-all duration-300 ${
-            mapCollapsed ? "w-12" : "lg:w-[40%]"
-          }`}>
-            {/* Header bar with collapse toggle */}
-            {session.status !== "done" && (
-              <div className="flex-shrink-0 px-2 py-2 border-b border-white/[0.10] flex items-center gap-2 text-xs">
-                <button
-                  onClick={() => setMapCollapsed(c => !c)}
-                  title={mapCollapsed ? "Ouvrir le plan de classe" : "Fermer le plan de classe"}
-                  className="w-6 h-6 rounded-lg flex items-center justify-center text-bw-muted hover:text-white hover:bg-white/[0.06] cursor-pointer transition-colors flex-shrink-0"
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                    {mapCollapsed ? <path d="M9 18l6-6-6-6" /> : <path d="M15 18l-6-6 6-6" />}
-                  </svg>
-                </button>
-                {!mapCollapsed && (
-                  <>
-                    {stuckStudents.length > 0 && (
-                      <span className="text-bw-danger tabular-nums font-medium">● {stuckStudents.length} bloque{stuckStudents.length > 1 ? "s" : ""}</span>
-                    )}
-                    {(() => { const h = session.students?.filter(s => s.hand_raised_at).length || 0; return h > 0 ? <span className="text-bw-amber font-medium">✋ {h} main{h > 1 ? "s" : ""}</span> : null; })()}
-                    {stuckStudents.length === 0 && !(session.students?.some(s => s.hand_raised_at)) && (
-                      <span className="text-bw-muted">Plan de classe</span>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-            {/* Collapsed mini strip */}
-            {mapCollapsed && (
-              <div className="flex-1 flex flex-col items-center gap-2 py-3 overflow-y-auto">
-                <span className="text-xs font-bold tabular-nums text-bw-teal [writing-mode:vertical-lr] rotate-180">
-                  {activeStudents.length}
-                </span>
-                <div className="flex flex-col gap-1">
-                  {studentStates.slice(0, 15).map(s => (
-                    <div key={s.id}
-                      className={`w-2.5 h-2.5 rounded-full ${
-                        s.state === "responded" ? "bg-bw-teal" :
-                        s.state === "stuck" ? "bg-bw-danger animate-pulse" :
-                        s.state === "active" ? "bg-bw-amber" :
-                        "bg-bw-muted/30"
-                      }`}
-                      title={`${s.display_name} — ${s.state}`}
-                    />
-                  ))}
-                  {studentStates.length > 15 && (
-                    <span className="text-[8px] text-bw-muted text-center">+{studentStates.length - 15}</span>
-                  )}
+          {/* LEFT: Classe en direct — 280px panel per pseudo-Figma */}
+          <div data-onboarding="classmap" className="hidden lg:flex w-[280px] flex-shrink-0 flex-col"
+            style={{ background: "#FAF6EE", borderRight: "1px solid #EEE4D8" }}>
+            {/* Title */}
+            <div className="px-5 pt-5 pb-3 flex-shrink-0">
+              <h3 className="text-[18px] font-semibold text-[#2C2C2C]">Classe en direct</h3>
+              <p className="text-[13px] text-[#7A7A7A] mt-0.5">Vue rapide de l&apos;etat des eleves</p>
+            </div>
+            {/* Avatar radar grid */}
+            <div className="px-5 pb-3 flex-shrink-0">
+              <div className="rounded-[14px] border border-[#EFE4D8] p-4" style={{ background: "#FFFDF9" }}>
+                <div className="grid grid-cols-4 gap-3">
+                  {studentStates.slice(0, 12).map(s => {
+                    const raw = session.students?.find(st => st.id === s.id);
+                    if (!raw?.is_active) return null;
+                    return (
+                      <button key={s.id} onClick={() => setFicheStudentId(s.id)}
+                        className="flex flex-col items-center gap-1 cursor-pointer group"
+                        title={`${raw.display_name} — ${s.state === "responded" ? "Répondu" : s.state === "stuck" ? "Bloqué" : "En réflexion"}`}
+                      >
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-base ring-[2.5px] transition-all ${
+                          s.state === "responded" ? "ring-[#4CAF50] bg-[#4CAF50]/10" :
+                          s.state === "stuck" ? "ring-[#EB5757] bg-[#EB5757]/10 animate-pulse" :
+                          "ring-[#F2C94C] bg-[#F2C94C]/10"
+                        }`} style={{ background: "#FFFDF9" }}>
+                          {raw.avatar}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+                {/* Legend */}
+                <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#EFE4D8]">
+                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#4CAF50]" /><span className="text-[12px] font-medium text-[#7A7A7A]">Repondu</span></div>
+                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#F2C94C]" /><span className="text-[12px] font-medium text-[#7A7A7A]">Reflexion</span></div>
+                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#EB5757]" /><span className="text-[12px] font-medium text-[#7A7A7A]">Bloque</span></div>
                 </div>
               </div>
-            )}
-            {/* Classroom map — full view */}
-            {!mapCollapsed && (
-            <div className="flex-1 p-3 overflow-y-auto">
-            <ClassroomMap
-              students={studentStates.map((s) => {
-                const raw = session.students?.find((st) => st.id === s.id);
-                return { ...s, hand_raised_at: raw?.hand_raised_at, warnings: raw?.warnings || 0 };
-              })}
-              teams={teams}
-              responses={responses}
-              moduleResponseTexts={moduleResponseTexts}
-              sessionStatus={session.status}
-              onNudge={(responseId, text) => nudgeStudent.mutate({ responseId, nudgeText: text })}
-              onWarn={(studentId) => warnStudent.mutate(studentId)}
-              onBroadcast={() => setShowBroadcast(true)}
-              onNudgeAllStuck={() => handleNudgeAllStuck()}
-              onStudentClick={setFicheStudentId}
-            />
-
-            {/* AI Assistant — contextual suggestions */}
-            {session.status !== "done" && (
-              <AIAssistantPanel
-                context={{
-                  status: session.status,
-                  totalStudents: activeStudents.length,
-                  responsesCount: respondedCount,
-                  stuckCount: stuckStudents.length,
-                  handsRaised: session.students?.filter(s => s.hand_raised_at).length || 0,
-                  elapsedSeconds: respondingOpenedAt
-                    ? Math.round((Date.now() - respondingOpenedAt) / 1000)
-                    : 0,
-                  currentModule: session.current_module,
-                  currentSeance: session.current_seance || 1,
-                  currentSituation: session.current_situation_index || 0,
-                }}
-              />
-            )}
-
-            {/* Comprehension Heatmap — visible when session is done */}
-            {session.status === "done" && responses.length > 0 && (
-              <ComprehensionHeatmap
-                students={activeStudents.map(s => ({
-                  id: s.id,
-                  display_name: s.display_name,
-                  avatar: s.avatar,
-                }))}
-                responses={responses.map((r, i) => ({
-                  student_id: r.student_id,
-                  situation_index: i,
-                  score: r.teacher_score ?? r.ai_score ?? null,
-                  has_response: true,
-                  was_retained: r.is_vote_option || false,
-                }))}
-                totalSituations={totalQuestions || 1}
-                currentSituation={session.current_situation_index || 0}
-              />
-            )}
             </div>
+            {/* Student list */}
+            <div className="flex-1 overflow-y-auto px-3 pb-2">
+              {studentStates.map(s => {
+                const raw = session.students?.find(st => st.id === s.id);
+                if (!raw || !raw.is_active) return null;
+                const hasHand = !!raw.hand_raised_at;
+                const warnings = raw.warnings || 0;
+                const team = teams?.find(t => t.students.some(ts => ts.id === s.id));
+                return (
+                  <button key={s.id} onClick={() => setFicheStudentId(s.id)}
+                    className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-[12px] hover:bg-[#F3ECE3] transition-colors cursor-pointer mb-1"
+                    style={{ minHeight: 48 }}>
+                    <span className="text-lg flex-shrink-0 w-7">{raw.avatar}</span>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[14px] font-medium text-[#2C2C2C] truncate block">{raw.display_name}</span>
+                      {team && <span className="text-[11px] text-[#7A7A7A] truncate block">{team.team_name}</span>}
+                    </div>
+                    {hasHand && <span className="text-sm flex-shrink-0 animate-bounce">✋</span>}
+                    {warnings > 0 && <span className="text-[11px] text-bw-amber flex-shrink-0">⚠{warnings}</span>}
+                    <span className={`text-[11px] px-2 py-1 rounded-full font-medium flex-shrink-0 ${
+                      s.state === "responded" ? "bg-[#4CAF50]/10 text-[#2E7D32]" :
+                      s.state === "stuck" ? "bg-[#EB5757]/10 text-[#C62828] animate-pulse" :
+                      s.state === "active" ? "bg-[#F2C94C]/10 text-[#8B6914]" :
+                      "bg-black/5 text-bw-muted"
+                    }`}>
+                      {s.state === "responded" ? "Repondu" : s.state === "stuck" ? "Bloque" : s.state === "active" ? "Reflechit" : "Off"}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {/* Stats with progress bars */}
+            {session.status !== "done" && (
+              <div className="px-5 pb-4 pt-2 border-t border-[#EFE4D8] flex-shrink-0">
+                <div className="rounded-[14px] border border-[#EFE4D8] p-4 space-y-3" style={{ background: "#FFFDF9" }}>
+                  {(() => {
+                    const responded = activeStudents.length > 0 ? Math.round((unifiedRespondedCount / activeStudents.length) * 100) : 0;
+                    const stuckPct = activeStudents.length > 0 ? Math.round((stuckStudents.length / activeStudents.length) * 100) : 0;
+                    const thinkingPct = Math.max(0, 100 - responded - stuckPct);
+                    return (
+                      <>
+                        <div>
+                          <div className="flex items-center justify-between mb-1"><span className="text-[12px] font-medium text-[#7A7A7A]">Repondu</span><span className="text-[12px] font-semibold text-[#2C2C2C] tabular-nums">{responded}%</span></div>
+                          <div className="h-2 bg-[#EFE8DD] rounded-full overflow-hidden"><div className="h-full bg-[#4CAF50] rounded-full transition-all duration-500" style={{ width: `${responded}%` }} /></div>
+                        </div>
+                        <div>
+                          <div className="flex items-center justify-between mb-1"><span className="text-[12px] font-medium text-[#7A7A7A]">En reflexion</span><span className="text-[12px] font-semibold text-[#2C2C2C] tabular-nums">{thinkingPct}%</span></div>
+                          <div className="h-2 bg-[#EFE8DD] rounded-full overflow-hidden"><div className="h-full bg-[#F2C94C] rounded-full transition-all duration-500" style={{ width: `${thinkingPct}%` }} /></div>
+                        </div>
+                        <div>
+                          <div className="flex items-center justify-between mb-1"><span className="text-[12px] font-medium text-[#7A7A7A]">Bloques</span><span className="text-[12px] font-semibold text-[#2C2C2C] tabular-nums">{stuckPct}%</span></div>
+                          <div className="h-2 bg-[#EFE8DD] rounded-full overflow-hidden"><div className="h-full bg-[#EB5757] rounded-full transition-all duration-500" style={{ width: `${stuckPct}%` }} /></div>
+                        </div>
+                      </>
+                    );
+                  })()}
+                </div>
+                {/* Summary text */}
+                <p className="text-[13px] text-[#6A625B] mt-3 leading-relaxed">
+                  {(() => {
+                    const responded = activeStudents.length > 0 ? Math.round((unifiedRespondedCount / activeStudents.length) * 100) : 0;
+                    const stuckPct = activeStudents.length > 0 ? Math.round((stuckStudents.length / activeStudents.length) * 100) : 0;
+                    const thinkingPct = Math.max(0, 100 - responded - stuckPct);
+                    return `${responded}% ont repondu, ${thinkingPct}% reflechissent, ${stuckPct}% sont bloques.`;
+                  })()}
+                </p>
+              </div>
+            )}
+            {/* Stuck alert */}
+            {stuckStudents.length > 0 && (
+              <div className="px-4 py-3 border-t border-[#EFE4D8] flex-shrink-0">
+                <button onClick={handleNudgeAllStuck}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-[12px] bg-[#EB5757]/10 border border-[#EB5757]/20 text-[13px] font-semibold text-[#C62828] hover:bg-[#EB5757]/15 cursor-pointer transition-colors">
+                  🚀 Relancer {stuckStudents.length} bloque{stuckStudents.length > 1 ? "s" : ""}
+                </button>
+              </div>
             )}
           </div>
-          {/* RIGHT: Flux ou Fiche (60%) */}
-          <div className="flex-1 overflow-y-auto min-h-0 surface-primary">
+          {/* CENTER: Question + Responses — per pseudo-Figma: warm background */}
+          <div className="flex-1 overflow-y-auto min-h-0" style={{ background: "#F7F3EA" }}>
           {ficheStudentId ? (
             <div className="px-4 py-4">
               {(() => {
@@ -1204,26 +1232,26 @@ function CockpitContent({
               })()}
             </div>
           ) : (
-          <div className="px-3 py-2 space-y-2.5">
+          <div className="px-6 py-4 space-y-4">
 
-          {/* ── TOOLBAR — clean, minimal header for right panel ── */}
+          {/* ── TOOLBAR — response section header ── */}
           {session.status !== "done" && !focusMode && (
-            <div data-onboarding="responses" className="flex items-center gap-2.5 pb-2 border-b border-white/[0.10]">
-              <span className="cinema-title text-sm text-bw-heading">{unifiedLabel}</span>
+            <div data-onboarding="responses" className="flex items-center gap-3 pb-3" style={{ borderBottom: "1px solid #EFE4D8" }}>
+              <span className="text-[16px] font-semibold text-[#2C2C2C]">{unifiedLabel}</span>
               <div className="flex-1" />
               {(isBudgetQuiz || showM10Special || showM2ECSceneBuilder || showM2ECComparison) && (
                 <input
                   type="text" placeholder="Rechercher..." value={cardSearch}
                   onChange={(e) => setCardSearch(e.target.value)}
-                  className="w-32 px-2 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.10] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
+                  className="w-36 h-8 px-3 rounded-[10px] text-[13px] bg-white border border-[#E8DFD2] text-[#2C2C2C] placeholder:text-[#B0A99E] focus:outline-none focus:border-[#6B8CFF]/40 transition-colors"
                 />
               )}
               <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-sm text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors">
+                className="w-8 h-8 rounded-[10px] flex items-center justify-center text-sm text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer transition-colors hover:shadow-sm">
                 📢
               </button>
               <button onClick={() => setShowExport(true)} title="Export (E)"
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-sm text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors">
+                className="w-8 h-8 rounded-[10px] flex items-center justify-center text-sm text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer transition-colors hover:shadow-sm">
                 📋
               </button>
             </div>
@@ -1234,14 +1262,14 @@ function CockpitContent({
 
           {/* M1 Positioning: option distribution bars only */}
           {isM1Positioning && module1Data?.type === "positioning" && !isPreviewing && module1Data.questions?.[currentQIndex]?.options && (() => {
-            const OPTION_COLORS: Record<string, { bar: string; text: string }> = {
-              a: { bar: "#60A5FA", text: "#93C5FD" },
-              b: { bar: "#4ECDC4", text: "#6EE7DB" },
-              c: { bar: "#FF6B35", text: "#FF8F66" },
-              d: { bar: "#F472B6", text: "#F9A8D4" },
+            const OPTION_COLORS: Record<string, { bg: string; bgLight: string }> = {
+              a: { bg: "#6B8CFF", bgLight: "#EEF2FF" },
+              b: { bg: "#F5A45B", bgLight: "#FFF5EB" },
+              c: { bg: "#57C4B6", bgLight: "#EFFAF8" },
+              d: { bg: "#EC4899", bgLight: "#FDF2F8" },
             };
             return (
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-3">
               {module1Data.questions[currentQIndex].options?.map((opt) => {
                 const count = module1Data.optionDistribution?.[opt.key] || 0;
                 const total = activeStudents.length;
@@ -1251,47 +1279,48 @@ function CockpitContent({
                 return (
                   <div
                     key={opt.key}
-                    className="rounded-xl border p-3.5 transition-all duration-300"
+                    className="rounded-[16px] p-5 transition-all duration-300 relative overflow-hidden"
                     style={{
-                      borderColor: hasVotes ? `${colors.bar}40` : "rgba(255,255,255,0.08)",
-                      background: `linear-gradient(135deg, ${colors.bar}${hasVotes ? "18" : "08"}, transparent 80%)`,
+                      minHeight: 128,
+                      background: hasVotes ? colors.bg : colors.bgLight,
+                      border: hasVotes ? "none" : `1px solid ${colors.bg}25`,
                       boxShadow: hasVotes
-                        ? `0 0 16px ${colors.bar}15, inset 0 1px 0 rgba(255,255,255,0.06)`
-                        : "inset 0 1px 0 rgba(255,255,255,0.04)",
+                        ? `0 4px 16px ${colors.bg}30`
+                        : "0 2px 8px rgba(0,0,0,0.04)",
                     }}
                   >
-                    <div className="flex items-start gap-2.5">
+                    <div className="flex items-start gap-3">
+                      {/* Badge rond 28x28 */}
                       <span
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0"
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-[13px] font-bold flex-shrink-0"
                         style={{
-                          backgroundColor: colors.bar,
-                          color: "#fff",
-                          boxShadow: `0 0 12px ${colors.bar}40`,
+                          backgroundColor: hasVotes ? "rgba(255,255,255,0.25)" : colors.bg,
+                          color: hasVotes ? "#fff" : "#fff",
                         }}
                       >
                         {opt.key.toUpperCase()}
                       </span>
-                      <span className="text-sm text-bw-text font-medium leading-snug flex-1 min-w-0">{opt.label}</span>
+                      <span className={`text-[14px] font-medium leading-snug flex-1 min-w-0 ${hasVotes ? "text-white" : "text-[#2C2C2C]"}`}>{opt.label}</span>
                     </div>
-                    <div className="mt-3 flex items-center gap-2.5">
+                    <div className="mt-4 flex items-end gap-3">
+                      {/* Percentage hero — 28px/700 */}
                       <span
-                        className="cinema-title text-lg tabular-nums flex-shrink-0"
-                        style={{ color: hasVotes ? colors.text : "rgba(136,148,160,0.30)" }}
+                        className="text-[28px] font-bold tabular-nums leading-none flex-shrink-0"
+                        style={{ color: hasVotes ? "#fff" : `${colors.bg}60` }}
                       >
                         {pct}%
                       </span>
-                      <div className="flex-1 h-2 bg-white/[0.06] rounded-full overflow-hidden">
-                        <motion.div
-                          className="h-full rounded-full"
-                          style={{
-                            backgroundColor: colors.bar,
-                            boxShadow: hasVotes ? `0 0 8px ${colors.bar}50` : undefined,
-                          }}
-                          animate={{ width: `${pct}%` }}
-                          transition={{ duration: 0.6, ease: "easeOut" }}
-                        />
+                      <div className="flex-1 space-y-1.5">
+                        <div className={`h-2 rounded-full overflow-hidden ${hasVotes ? "bg-white/20" : "bg-black/[0.04]"}`}>
+                          <motion.div
+                            className="h-full rounded-full"
+                            style={{ backgroundColor: hasVotes ? "#fff" : colors.bg }}
+                            animate={{ width: `${pct}%` }}
+                            transition={{ duration: 0.6, ease: "easeOut" }}
+                          />
+                        </div>
+                        <span className={`text-[11px] tabular-nums ${hasVotes ? "text-white/70" : "text-[#7A7A7A]"}`}>{count} / {total} eleves</span>
                       </div>
-                      <span className="text-xs tabular-nums text-bw-muted flex-shrink-0">{count}/{total}</span>
                     </div>
                   </div>
                 );
@@ -1305,7 +1334,7 @@ function CockpitContent({
             <>
               {module1Data.image ? (
                 <div className="space-y-2">
-                  <div className="rounded-xl overflow-hidden border border-white/[0.08] bg-bw-surface">
+                  <div className="rounded-xl overflow-hidden border border-black/[0.06] bg-bw-surface">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={module1Data.image.url} alt={module1Data.image.title}
                       className="w-full aspect-[16/10] object-cover" />
@@ -1313,7 +1342,7 @@ function CockpitContent({
                   <p className="text-xs text-bw-muted text-center">{module1Data.image.title}</p>
                 </div>
               ) : (
-                <div className="rounded-xl bg-bw-surface border border-white/[0.08] aspect-[16/10] flex items-center justify-center">
+                <div className="rounded-xl bg-bw-surface border border-black/[0.06] aspect-[16/10] flex items-center justify-center">
                   <p className="text-sm text-bw-muted">Image non disponible</p>
                 </div>
               )}
@@ -1335,7 +1364,7 @@ function CockpitContent({
               {budgetData && budgetData.budgets.length > 0 && (
                 <div className="space-y-2">
                   {budgetData.budgets.filter((b) => !cardSearch || (b.students?.display_name || "").toLowerCase().includes(cardSearch.toLowerCase())).map((b) => (
-                    <div key={b.id} className="bg-bw-surface rounded-xl p-3 border border-white/[0.10] space-y-2">
+                    <div key={b.id} className="bg-bw-surface rounded-xl p-3 border border-black/[0.06] space-y-2">
                       <div className="flex items-center gap-2">
                         <span className="text-base">{b.students?.avatar}</span>
                         <span className="text-sm font-medium text-bw-heading">{b.students?.display_name}</span>
@@ -1350,7 +1379,7 @@ function CockpitContent({
                           return (
                             <div key={cat.key} className="flex-1 text-center">
                               <div className="h-1.5 rounded-full mb-1"
-                                style={{ backgroundColor: cost > 0 ? cat.color : "rgba(255,255,255,0.05)", opacity: cost > 0 ? 0.7 : 1 }} />
+                                style={{ backgroundColor: cost > 0 ? cat.color : "rgba(0,0,0,0.05)", opacity: cost > 0 ? 0.7 : 1 }} />
                               <span className="text-xs block" style={{ color: cat.color }}>{cat.label}</span>
                               <span className="text-xs text-bw-muted block">{opt.label}</span>
                             </div>
@@ -1373,7 +1402,7 @@ function CockpitContent({
               )}
 
               {budgetSubmitted === 0 && session.status === "responding" && (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-6 text-center space-y-3">
+                <div className="bg-bw-surface rounded-xl border border-black/[0.06] p-6 text-center space-y-3">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                     className="text-3xl">💰</motion.div>
                   <div>
@@ -1383,7 +1412,7 @@ function CockpitContent({
                   <p className="text-xs text-bw-muted/70">Les choix budgetaires apparaitront ici.</p>
                   <div className="flex items-center justify-center gap-2">
                     <button onClick={() => setShowBroadcast(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-white/[0.10] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
                       📢 Message classe
                     </button>
                   </div>
@@ -1444,7 +1473,7 @@ function CockpitContent({
                     alt={module10Data.image.title}
                     className="w-full h-auto max-h-48 object-cover"
                   />
-                  <div className="bg-bw-elevated px-3 py-2 border-t border-white/[0.10]">
+                  <div className="bg-bw-elevated px-3 py-2 border-t border-black/[0.06]">
                     <p className="text-xs font-medium text-bw-teal">{module10Data.image.title}</p>
                     <p className="text-xs text-bw-muted mt-0.5 line-clamp-2">{module10Data.image.description}</p>
                   </div>
@@ -1453,7 +1482,7 @@ function CockpitContent({
 
               {/* Pitch — show personnage card if available */}
               {module10Data?.personnage && (module10Data.type === "objectif" || module10Data.type === "pitch" || module10Data.type === "chrono") && (
-                <div className="bg-bw-elevated rounded-xl p-3 border border-white/[0.10] flex items-center gap-3">
+                <div className="bg-bw-elevated rounded-xl p-3 border border-black/[0.06] flex items-center gap-3">
                   <DiceBearAvatarMini options={module10Data.personnage.avatar || {}} size={40} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-bw-heading truncate">{module10Data.personnage.prenom}</p>
@@ -1486,7 +1515,7 @@ function CockpitContent({
                   )}
                   {/* Pitch picker for teacher */}
                   {module10Data.pitchList && module10Data.pitchList.length >= 2 && (
-                    <div className="bg-bw-surface rounded-xl p-3 border border-white/[0.10] space-y-2">
+                    <div className="bg-bw-surface rounded-xl p-3 border border-black/[0.06] space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-bw-muted uppercase font-semibold tracking-wider">Choisir les pitchs à confronter</span>
                         <span className="text-xs text-bw-muted">{selectedPitchIds.length}/2</span>
@@ -1504,7 +1533,7 @@ function CockpitContent({
                             className={`w-full text-left p-2 rounded-lg border text-xs transition-colors cursor-pointer ${
                               isSelected
                                 ? idx === 0 ? "bg-bw-teal/10 border-bw-teal/30 text-bw-teal" : "bg-bw-danger/10 border-bw-danger/30 text-bw-danger"
-                                : "bg-bw-bg border-white/[0.10] text-bw-muted hover:border-bw-teal/20"
+                                : "bg-bw-bg border-black/[0.06] text-bw-muted hover:border-bw-teal/20"
                             }`}>
                             <span className="font-medium">{isSelected ? (idx === 0 ? "A" : "B") + " — " : ""}{p.prenom}</span>
                             <span className="block text-xs text-bw-muted mt-0.5 line-clamp-1">{p.text}</span>
@@ -1537,7 +1566,7 @@ function CockpitContent({
 
               {/* Idea bank items */}
               {module10Data?.type === "idea-bank" && module10Data.ideaBankItems && module10Data.ideaBankItems.length > 0 && (
-                <div className="bg-bw-surface rounded-xl p-3 border border-white/[0.10] space-y-1.5">
+                <div className="bg-bw-surface rounded-xl p-3 border border-black/[0.06] space-y-1.5">
                   <p className="text-xs text-bw-muted uppercase font-semibold tracking-wider">💡 Banque d&apos;idées</p>
                   {module10Data.ideaBankItems.slice(0, 5).map((item) => (
                     <div key={item.id} className="flex items-center gap-2 text-xs">
@@ -1557,7 +1586,7 @@ function CockpitContent({
                   {module10Data.allSubmissions.filter((sub) => !cardSearch || (sub.studentName || "").toLowerCase().includes(cardSearch.toLowerCase()) || (sub.text || "").toLowerCase().includes(cardSearch.toLowerCase())).map((sub, i) => (
                     <motion.div key={sub.studentId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.03 }}
-                      className="bg-bw-surface rounded-xl p-3 border border-white/[0.10] space-y-2">
+                      className="bg-bw-surface rounded-xl p-3 border border-black/[0.06] space-y-2">
                       <div className="flex items-start gap-2">
                         {sub.avatar && (
                           <DiceBearAvatarMini options={sub.avatar} size={28} />
@@ -1614,7 +1643,7 @@ function CockpitContent({
 
               {/* Top items when available */}
               {module5Data?.topItems && module5Data.topItems.length > 0 && (
-                <div className="bg-bw-surface rounded-xl p-4 border border-white/[0.10] space-y-2">
+                <div className="bg-bw-surface rounded-xl p-4 border border-black/[0.06] space-y-2">
                   <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Top contenus choisis</span>
                   {module5Data.topItems.map((item, i) => {
                     const catalog = CONTENT_CATALOG.find(c => c.key === item.key);
@@ -1641,7 +1670,7 @@ function CockpitContent({
 
               {/* Waiting state when no data yet */}
               {(!module5Data || module5Data.type !== "checklist") && session.status === "responding" && (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-6 text-center space-y-3">
+                <div className="bg-bw-surface rounded-xl border border-black/[0.06] p-6 text-center space-y-3">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                     className="text-2xl">📋</motion.div>
                   <div>
@@ -1651,7 +1680,7 @@ function CockpitContent({
                   <p className="text-xs text-bw-muted/70">Les choix des eleves apparaitront ici.</p>
                   <div className="flex items-center justify-center gap-2">
                     <button onClick={() => setShowBroadcast(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-white/[0.10] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
                       📢 Message classe
                     </button>
                   </div>
@@ -1676,10 +1705,10 @@ function CockpitContent({
                     puis choisit des éléments de mise en scène.
                   </p>
                   <div className="flex gap-3 text-xs">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-white/[0.10]">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-black/[0.06]">
                       <span>📦</span><span className="text-bw-text">{MAX_SLOTS} emplacements</span>
                     </div>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-white/[0.10]">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-black/[0.06]">
                       <span>🪙</span><span className="text-bw-text">{MAX_TOKENS} jetons max</span>
                     </div>
                   </div>
@@ -1700,7 +1729,7 @@ function CockpitContent({
                     return (
                       <motion.div key={sc.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.04 }}
-                        className="bg-bw-surface rounded-xl p-3 border border-white/[0.10] space-y-2">
+                        className="bg-bw-surface rounded-xl p-3 border border-black/[0.06] space-y-2">
                         <div className="flex items-center gap-2">
                           <span className="text-base">{sc.students?.avatar || "👤"}</span>
                           <span className="text-sm font-medium text-bw-heading">{sc.students?.display_name || "Élève"}</span>
@@ -1717,7 +1746,7 @@ function CockpitContent({
                           {sc.elements.map((el) => {
                             const def = getElement(el.key);
                             return (
-                              <span key={el.key} className="text-xs px-1.5 py-0.5 rounded bg-white/[0.05] text-bw-text">
+                              <span key={el.key} className="text-xs px-1.5 py-0.5 rounded bg-black/[0.04] text-bw-text">
                                 {def?.label || el.key}
                               </span>
                             );
@@ -1742,7 +1771,7 @@ function CockpitContent({
 
               {/* Waiting state when no scenes yet */}
               {(!scenesData || scenesData.scenes.length === 0) && session.status === "responding" && (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-6 text-center space-y-3">
+                <div className="bg-bw-surface rounded-xl border border-black/[0.06] p-6 text-center space-y-3">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                     className="text-2xl">🎬</motion.div>
                   <div>
@@ -1752,7 +1781,7 @@ function CockpitContent({
                   <p className="text-xs text-bw-muted/70">Les scenes apparaitront ici au fur et a mesure.</p>
                   <div className="flex items-center justify-center gap-2">
                     <button onClick={() => setShowBroadcast(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-white/[0.10] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
                       📢 Message classe
                     </button>
                   </div>
@@ -1814,7 +1843,7 @@ function CockpitContent({
                             });
                           }}
                           className={`bg-bw-surface rounded-xl p-3 border-2 cursor-pointer transition-all space-y-2 ${
-                            isSelected ? "border-bw-pink/60 bg-bw-pink/5" : "border-white/[0.10] hover:border-white/[0.12]"
+                            isSelected ? "border-bw-pink/60 bg-bw-pink/5" : "border-black/[0.06] hover:border-black/[0.10]"
                           }`}>
                           <div className="flex items-center gap-2">
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs ${
@@ -1838,7 +1867,7 @@ function CockpitContent({
                             {sc.elements.map((el) => {
                               const def = getElement(el.key);
                               return (
-                                <span key={el.key} className="text-xs px-1.5 py-0.5 rounded bg-white/[0.05] text-bw-text">
+                                <span key={el.key} className="text-xs px-1.5 py-0.5 rounded bg-black/[0.04] text-bw-text">
                                   {def?.label || el.key}
                                 </span>
                               );
@@ -1866,7 +1895,7 @@ function CockpitContent({
 
               {/* Waiting state when no scenes yet */}
               {(!scenesData || scenesData.scenes.length === 0) && (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-6 text-center space-y-3">
+                <div className="bg-bw-surface rounded-xl border border-black/[0.06] p-6 text-center space-y-3">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                     className="text-3xl">⚔️</motion.div>
                   <div>
@@ -1876,7 +1905,7 @@ function CockpitContent({
                   <p className="text-xs text-bw-muted/70">Les scenes des eleves apparaitront ici pour la confrontation.</p>
                   <div className="flex items-center justify-center gap-2">
                     <button onClick={() => setShowBroadcast(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-white/[0.10] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
                       📢 Message classe
                     </button>
                   </div>
@@ -1900,7 +1929,7 @@ function CockpitContent({
 
           {/* Voting empty state — no votes yet */}
           {isStandardQA && (session.status === "voting" || session.status === "reviewing") && (!voteData || voteData.totalVotes === 0) && (
-            <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-4 text-center space-y-2">
+            <div className="bg-bw-surface rounded-xl border border-black/[0.06] p-4 text-center space-y-2">
               <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                 className="text-2xl">🗳️</motion.div>
               <p className="text-sm text-bw-muted">Vote en cours...</p>
@@ -1986,7 +2015,7 @@ function CockpitContent({
           {!isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && session.status !== "done" && responses.length > 0 && (
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <span className="cinema-title text-sm text-bw-muted">Reponses</span>
+                <span className="text-[14px] font-semibold text-[#7A7A7A]">Reponses</span>
                 <div className="flex items-center gap-2">
                   {hiddenCount > 0 && (
                     <span className="text-xs text-bw-muted">{hiddenCount} masquee{hiddenCount > 1 ? "s" : ""}</span>
@@ -1999,7 +2028,7 @@ function CockpitContent({
                   <motion.div key={r.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.03 }}
                     className={`bg-bw-surface rounded-xl p-3 border transition-colors duration-200 ${
-                      r.is_highlighted ? "border-bw-primary/30 shadow-[0_0_8px_rgba(255,107,53,0.1)]" : r.reset_at ? "border-bw-amber/20" : "border-white/[0.10]"
+                      r.is_highlighted ? "border-bw-primary/30 shadow-[0_0_8px_rgba(255,107,53,0.1)]" : r.reset_at ? "border-bw-amber/20" : "border-black/[0.06]"
                     } ${r.is_hidden ? "opacity-30" : ""} ${r.reset_at ? "opacity-50" : ""}`}>
                     <div className="flex justify-between items-start gap-2">
                       <div className="flex-1 min-w-0">
@@ -2017,7 +2046,7 @@ function CockpitContent({
                         <div className="flex items-center gap-1 flex-shrink-0">
                           <button onClick={() => toggleHide.mutate({ responseId: r.id, is_hidden: !r.is_hidden })}
                             disabled={toggleHide.isPending}
-                            className="px-2 py-1 text-xs rounded-lg hover:bg-white/[0.08] cursor-pointer transition-colors text-bw-muted hover:text-bw-text">
+                            className="px-2 py-1 text-xs rounded-lg hover:bg-black/[0.05] cursor-pointer transition-colors text-bw-muted hover:text-bw-text">
                             {r.is_hidden ? "Montrer" : "Masquer"}
                           </button>
                           {!r.is_hidden && !r.reset_at && (
@@ -2059,28 +2088,23 @@ function CockpitContent({
           {/* ── EMPTY STATE — shown when responding with no responses yet ── */}
           {session.status === "responding" && unifiedRespondedCount === 0 && !isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !isBudgetQuiz && (
             <div
-              className="rounded-xl border border-white/[0.08] p-6 text-center space-y-3"
+              className="rounded-[16px] p-8 text-center space-y-4"
               style={{
-                background: "linear-gradient(135deg, rgba(78,205,196,0.04), rgba(139,92,246,0.03), transparent)",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
+                background: "#FFFFFF",
+                border: "1px solid #EFE4D8",
+                boxShadow: "0 4px 16px rgba(61,43,16,0.04)",
               }}
             >
               <div className="relative w-16 h-16 mx-auto">
                 <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
-                  <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="3" />
+                  <circle cx="32" cy="32" r="28" fill="none" stroke="#EFE4D8" strokeWidth="3" />
                   <motion.circle
                     cx="32" cy="32" r="28" fill="none"
-                    stroke="url(#waitGradient2)" strokeWidth="3" strokeLinecap="round"
+                    stroke="#57C4B6" strokeWidth="3" strokeLinecap="round"
                     strokeDasharray={`${2 * Math.PI * 28}`}
                     animate={{ strokeDashoffset: [2 * Math.PI * 28, 0] }}
                     transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
                   />
-                  <defs>
-                    <linearGradient id="waitGradient2" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="#4ECDC4" stopOpacity="0.8" />
-                      <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.4" />
-                    </linearGradient>
-                  </defs>
                 </svg>
                 <motion.span
                   className="absolute inset-0 flex items-center justify-center text-2xl"
@@ -2091,42 +2115,44 @@ function CockpitContent({
                 </motion.span>
               </div>
               <div>
-                <p className="text-lg font-bold tabular-nums text-bw-teal">{unifiedRespondedCount}/{activeStudents.length}</p>
-                <p className="text-xs text-bw-muted mt-0.5">eleves ont repondu</p>
+                <p className="text-[24px] font-bold tabular-nums text-[#57C4B6]">{unifiedRespondedCount}/{activeStudents.length}</p>
+                <p className="text-[13px] text-[#7A7A7A] mt-1">eleves ont repondu</p>
               </div>
-              <p className="text-xs text-bw-muted/70">Les reponses apparaitront ici au fur et a mesure.</p>
-              <div className="flex items-center justify-center gap-2">
+              <p className="text-[13px] text-[#B0A99E]">Les reponses apparaitront ici au fur et a mesure.</p>
+              <div className="flex items-center justify-center gap-2.5">
                 <button onClick={() => setShowBroadcast(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-white/[0.10] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+                  className="flex items-center gap-2 h-9 px-4 rounded-[10px] text-[13px] font-medium bg-white border border-[#E8DFD2] text-[#7A7A7A] hover:text-[#2C2C2C] hover:shadow-sm cursor-pointer transition-all">
                   📢 Message classe
                 </button>
               </div>
-              <p className="text-xs text-bw-muted/50 italic">Astuce : projetez la question sur l&apos;ecran ↗</p>
+              <p className="text-[12px] text-[#C4BDB2] italic">Astuce : projetez la question sur l&apos;ecran ↗</p>
             </div>
           )}
 
-          {/* ── PAS ENCORE RÉPONDU — bottom of right panel, always visible during responding ── */}
+          {/* ── PAS ENCORE RÉPONDU — student chips ── */}
           {!focusMode && session.status === "responding" && notRespondedStudents.length > 0 && (
             <div
-              className="rounded-xl border border-white/[0.08] p-3 space-y-2.5"
+              className="rounded-[16px] p-4 space-y-3"
               style={{
-                background: "linear-gradient(135deg, rgba(136,148,160,0.04), transparent)",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 1px 3px rgba(0,0,0,0.12)",
+                background: "#FFFFFF",
+                border: "1px solid #EFE4D8",
+                boxShadow: "0 2px 8px rgba(61,43,16,0.04)",
               }}
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-bw-muted flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-bw-muted/50" />
-                  Pas encore répondu ({notRespondedStudents.length})
+                <span className="text-[13px] font-semibold text-[#7A7A7A] flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#F2C94C]" />
+                  Pas encore repondu ({notRespondedStudents.length})
                 </span>
                 {stuckStudents.length > 0 && (
                   <button onClick={handleNudgeAllStuck}
-                    className="text-xs text-bw-amber hover:text-bw-amber/80 cursor-pointer transition-colors font-medium px-2 py-0.5 rounded-md bg-bw-amber/10 border border-bw-amber/20 hover:bg-bw-amber/15">
-                    Relancer {stuckStudents.length} bloqué{stuckStudents.length > 1 ? "s" : ""}
+                    className="text-[12px] font-semibold cursor-pointer transition-colors px-2.5 py-1 rounded-[8px]"
+                    style={{ background: "#FFF0E6", color: "#8B4513", border: "1px solid #E6DBCF" }}>
+                    Relancer {stuckStudents.length} bloque{stuckStudents.length > 1 ? "s" : ""}
                   </button>
                 )}
               </div>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {notRespondedStudents.slice(0, 20).map((s) => {
                   const st = studentStates.find((ss) => ss.id === s.id);
                   const isStuck = st?.state === "stuck";
@@ -2134,23 +2160,22 @@ function CockpitContent({
                   return (
                     <button key={s.id}
                       onClick={() => setFicheStudentId(s.id)}
-                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs cursor-pointer transition-all duration-200 ${
-                        isStuck
-                          ? "bg-red-500/[0.08] border-red-500/25 text-red-400 hover:bg-red-500/15 shadow-[0_0_8px_rgba(239,68,68,0.1)]"
-                          : hasHand
-                            ? "bg-amber-500/[0.08] border-amber-500/25 text-amber-400 hover:bg-amber-500/15 shadow-[0_0_8px_rgba(245,158,11,0.1)]"
-                            : "bg-white/[0.03] border-white/[0.08] text-bw-muted hover:text-bw-text hover:bg-white/[0.06] hover:border-white/[0.12]"
-                      }`}
+                      className="flex items-center gap-1.5 h-8 px-3 rounded-[10px] text-[12px] font-medium cursor-pointer transition-all duration-200"
+                      style={{
+                        background: isStuck ? "#FFEBEE" : hasHand ? "#FFF8E1" : "#F7F3EA",
+                        border: `1px solid ${isStuck ? "#FFCDD2" : hasHand ? "#FFE082" : "#E8DFD2"}`,
+                        color: isStuck ? "#C62828" : hasHand ? "#F57F17" : "#4A4A4A",
+                      }}
                     >
                       <span className="text-sm">{s.avatar}</span>
-                      <span className="font-medium">{s.display_name}</span>
-                      {isStuck && <span className="text-xs animate-pulse">●</span>}
+                      <span>{s.display_name}</span>
+                      {isStuck && <span className="text-[10px] animate-pulse">●</span>}
                       {hasHand && <span className="text-xs">✋</span>}
                     </button>
                   );
                 })}
                 {notRespondedStudents.length > 20 && (
-                  <span className="text-xs text-bw-muted self-center px-1">+{notRespondedStudents.length - 20} autres</span>
+                  <span className="text-[12px] text-[#B0A99E] self-center px-1">+{notRespondedStudents.length - 20} autres</span>
                 )}
               </div>
             </div>
@@ -2165,101 +2190,114 @@ function CockpitContent({
         </div>
         )}
         </div>
+          {/* RIGHT: Assistant pedagogique — 320px panel per pseudo-Figma */}
+          <div className="hidden xl:flex w-[320px] flex-shrink-0 flex-col"
+            style={{ background: "#FAF6EE", borderLeft: "1px solid #EEE4D8" }}>
+            {/* Title */}
+            <div className="px-5 pt-5 pb-3 flex-shrink-0">
+              <h3 className="text-[18px] font-semibold text-[#2C2C2C]">Assistant pedagogique</h3>
+              <p className="text-[13px] text-[#7A7A7A] mt-0.5">Aide a la lecture de la classe</p>
+            </div>
+            {/* AI suggestions + insights */}
+            <div className="flex-1 overflow-y-auto px-5 pb-5 space-y-4">
+              {session.status !== "done" ? (
+                <AIAssistantPanel
+                  context={{
+                    status: session.status,
+                    totalStudents: activeStudents.length,
+                    responsesCount: respondedCount,
+                    stuckCount: stuckStudents.length,
+                    handsRaised: session.students?.filter(s => s.hand_raised_at).length || 0,
+                    elapsedSeconds: respondingOpenedAt
+                      ? Math.round((Date.now() - respondingOpenedAt) / 1000)
+                      : 0,
+                    currentModule: session.current_module,
+                    currentSeance: session.current_seance || 1,
+                    currentSituation: session.current_situation_index || 0,
+                  }}
+                />
+              ) : responses.length > 0 ? (
+                <ComprehensionHeatmap
+                  students={activeStudents.map(s => ({
+                    id: s.id,
+                    display_name: s.display_name,
+                    avatar: s.avatar,
+                  }))}
+                  responses={responses.map((r, i) => ({
+                    student_id: r.student_id,
+                    situation_index: i,
+                    score: r.teacher_score ?? r.ai_score ?? null,
+                    has_response: true,
+                    was_retained: r.is_vote_option || false,
+                  }))}
+                  totalSituations={totalQuestions || 1}
+                  currentSituation={session.current_situation_index || 0}
+                />
+              ) : (
+                <div className="text-center py-8 space-y-2">
+                  <span className="text-2xl">🎬</span>
+                  <p className="text-xs text-bw-muted">Les suggestions apparaitront pendant la session.</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </main>
 
-      {/* ── FOOTER — progress + CTA + toggles ── */}
+      {/* ── FOOTER — 76px sticky action bar per pseudo-Figma ── */}
       {session.status !== "done" && session.status !== "paused" && (
-        <div className="flex-shrink-0 border-t border-white/[0.10] bg-bw-bg" style={{ background: "linear-gradient(180deg, rgba(22,25,35,0.95), rgba(15,17,24,1))" }}>
-          {/* ROW 1: Progress bar — full width */}
-          {activeStudents.length > 0 && (() => {
-            const pct = Math.round((unifiedRespondedCount / activeStudents.length) * 100);
-            const allDone = unifiedRespondedCount >= activeStudents.length;
-            const halfDone = pct >= 50;
-            return (
-              <div className="px-4 pt-3 pb-1.5">
-                <div className="flex items-center gap-3">
-                  <div className="relative h-2.5 flex-1 bg-white/[0.08] rounded-full overflow-hidden">
-                    <motion.div
-                      className={`h-full rounded-full ${allDone ? "bg-gradient-to-r from-bw-teal to-bw-green" : "bg-gradient-to-r from-blue-500/80 to-bw-teal"}`}
-                      animate={{ width: `${pct}%` }}
-                      transition={{ duration: 0.4, ease: "easeOut" }}
-                      style={{
-                        boxShadow: allDone
-                          ? "0 0 16px rgba(78,205,196,0.6), 0 0 4px rgba(78,205,196,0.4)"
-                          : halfDone
-                            ? "0 0 10px rgba(78,205,196,0.3), 0 0 3px rgba(78,205,196,0.2)"
-                            : undefined,
-                      }}
-                    />
-                    {/* Milestone markers at 25/50/75/100% */}
-                    {[25, 50, 75, 100].map((milestone) => {
-                      const reached = pct >= milestone;
-                      return (
-                        <div
-                          key={milestone}
-                          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-500"
-                          style={{ left: `${milestone}%` }}
-                        >
-                          <div
-                            className={`w-3 h-3 rounded-full border-2 transition-all duration-500 ${
-                              reached
-                                ? "bg-bw-teal border-bw-teal scale-110"
-                                : "bg-bw-bg border-white/20 scale-100"
-                            }`}
-                            style={{
-                              boxShadow: reached
-                                ? "0 0 8px rgba(78,205,196,0.5), 0 0 2px rgba(78,205,196,0.3)"
-                                : "0 1px 2px rgba(0,0,0,0.3)",
-                            }}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <span className={`text-sm font-bold tabular-nums flex-shrink-0 ${allDone ? "text-bw-teal" : halfDone ? "text-bw-text" : "text-bw-muted"}`}>
-                    {unifiedRespondedCount}/{activeStudents.length}
-                  </span>
-                </div>
-              </div>
-            );
-          })()}
-          {/* ROW 2: Quick action buttons */}
-          {session.status !== "waiting" && session.status !== "done" && (
-            <div className="px-4 pb-1.5 flex items-center gap-1.5 flex-wrap">
-              <button onClick={() => setShowBroadcast(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-bw-elevated border border-white/[0.08] text-bw-muted hover:text-bw-amber hover:border-bw-amber/30 cursor-pointer transition-colors">
-                <span className="text-sm">💡</span> Indice
-              </button>
-              {stuckStudents.length > 0 && (
-                <button onClick={handleNudgeAllStuck} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-bw-amber/10 border border-bw-amber/25 text-bw-amber hover:bg-bw-amber/20 cursor-pointer transition-colors">
-                  <span className="text-sm">🚀</span> Relancer {stuckStudents.length} bloques
+        <div className="flex-shrink-0" style={{ background: "#F5EFE6", borderTop: "1px solid #E8DFD2" }}>
+          {/* Action buttons row + CTA */}
+          <div className="flex items-center gap-3 px-6" style={{ height: 76 }}>
+            {/* LEFT: Action buttons */}
+            {session.status !== "waiting" && session.status !== "done" && (
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button onClick={() => setShowBroadcast(true)}
+                  className="h-11 px-3.5 rounded-[12px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
+                  style={{ background: "#FFF0E6", borderColor: "#E6DBCF", color: "#8B4513" }}>
+                  💡 Donner un indice
                 </button>
-              )}
-              <button onClick={() => setShowBroadcast(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-bw-elevated border border-white/[0.08] text-bw-muted hover:text-bw-violet hover:border-bw-violet/30 cursor-pointer transition-colors">
-                <span className="text-sm">💬</span> Discussion
-              </button>
-              <button onClick={() => setShowBroadcast(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-bw-elevated border border-white/[0.08] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
-                <span className="text-sm">📢</span> Message
-              </button>
-            </div>
-          )}
+                <button onClick={handleNudgeAllStuck} disabled={stuckStudents.length === 0}
+                  className="h-11 px-3.5 rounded-[12px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
+                  style={{ background: "#EBF2FF", borderColor: "#E6DBCF", color: "#3B5998" }}>
+                  🚀 Relancer{stuckStudents.length > 0 ? ` (${stuckStudents.length})` : ""}
+                </button>
+                <button onClick={() => setShowBroadcast(true)}
+                  className="h-11 px-3.5 rounded-[12px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
+                  style={{ background: "#E8F5F2", borderColor: "#E6DBCF", color: "#1B5E50" }}>
+                  💬 Discussion
+                </button>
+                <button onClick={() => setShowBroadcast(true)}
+                  className="h-11 px-3.5 rounded-[12px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
+                  style={{ background: "#F0ECF8", borderColor: "#E6DBCF", color: "#5B3A8E" }}>
+                  🎭 Lancer un debat
+                </button>
+                <button onClick={() => { if (responses.length >= 2) setShowCompare(true); }} disabled={responses.length < 2}
+                  className="h-11 px-3.5 rounded-[12px] text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
+                  style={{ background: "#FFF8E6", borderColor: "#E6DBCF", color: "#8B6914" }}>
+                  🗳️ Vote rapide
+                </button>
+              </div>
+            )}
+            <div className="flex-1" />
 
-          {/* ROW 3: [←] [CTA] [→] [toggles] */}
-          <div ref={footerCtaRef} className="px-4 pb-2 flex items-center gap-2">
+          {/* RIGHT: Navigation + CTA */}
+          <div ref={footerCtaRef} className="flex items-center gap-3 flex-shrink-0">
             {/* Back button for non-QA modules */}
             {!isStandardQA && (session.current_situation_index || 0) > 0 && (
               <button
                 onClick={prevSituation}
                 disabled={updateSession.isPending}
                 title="Question précédente"
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.10] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+                className="h-11 px-3.5 rounded-[12px] flex items-center justify-center text-[#4A4A4A] bg-white border border-[#E6DBCF] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0 text-[13px] font-medium gap-1.5"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Precedente
               </button>
             )}
 
-            {/* Main CTA */}
-            <div className="flex-1 min-w-0">
+            {/* Main CTA — Suivant is dominant */}
+            <div className="min-w-[180px]">
               {session.status === "waiting" ? (
                 <motion.button
                   whileTap={{ scale: 0.95 }}
@@ -2273,13 +2311,10 @@ function CockpitContent({
                     }
                   }}
                   disabled={updateSession.isPending}
-                  className={`w-full py-2.5 px-6 rounded-xl font-bold text-sm cursor-pointer transition-all duration-300 disabled:opacity-50 text-white ${
-                    isPreviewing ? "bg-bw-amber" : "bg-bw-teal"
-                  }`}
+                  className="w-full h-11 px-6 rounded-[12px] font-bold text-[14px] cursor-pointer transition-all duration-300 disabled:opacity-50 text-white"
                   style={{
-                    boxShadow: isPreviewing
-                      ? "0 0 24px rgba(245,158,11,0.35), 0 0 60px rgba(245,158,11,0.12)"
-                      : "0 0 20px rgba(78,205,196,0.35), 0 0 50px rgba(78,205,196,0.12)",
+                    backgroundColor: isPreviewing ? "#F5A45B" : "#2C2C2C",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                   }}>
                   {isPreviewing ? `Lancer Q${displayIndex + 1}` : "Ouvrir les réponses"}
                 </motion.button>
@@ -2305,16 +2340,16 @@ function CockpitContent({
                   whileHover={{ scale: 1.01 }}
                   onClick={handleNextAction}
                   disabled={updateSession.isPending || !!(nextAction as { disabled?: boolean }).disabled}
-                  className="btn-glow w-full py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-11 rounded-[12px] font-bold text-[14px] cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
-                    backgroundColor: nextAction.color,
-                    color: nextAction.color === "#F59E0B" || nextAction.color === "#888" ? "black" : "white",
-                    boxShadow: `0 0 20px ${nextAction.color}50, 0 0 40px ${nextAction.color}20, 0 2px 8px rgba(0,0,0,0.2)`,
+                    backgroundColor: "#2C2C2C",
+                    color: "white",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                   }}>
-                  {nextAction.label} {nextAction.shortcut && <kbd className="inline-flex items-center justify-center w-5 h-5 ml-1.5 rounded bg-white/[0.15] text-[10px] font-mono">{nextAction.shortcut}</kbd>}
+                  {nextAction.label} {nextAction.shortcut && <kbd className="inline-flex items-center justify-center w-5 h-5 ml-1.5 rounded bg-black/[0.08] text-[10px] font-mono">{nextAction.shortcut}</kbd>}
                 </motion.button>
               ) : (
-                <div className="w-full py-2.5 rounded-lg text-sm text-center bg-white/[0.04] text-bw-muted border border-white/[0.08]" style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)" }}>
+                <div className="w-full py-2.5 rounded-lg text-sm text-center bg-bw-elevated text-bw-muted border border-black/[0.06]" style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.04)" }}>
                   {session.status === "responding"
                     ? <span className="flex items-center justify-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-bw-teal animate-pulse" />En attente... <span className="text-bw-text font-semibold tabular-nums">{respondedCount}/{activeStudents.length}</span></span>
                     : session.status === "voting"
@@ -2330,37 +2365,38 @@ function CockpitContent({
                 onClick={skipSituation}
                 disabled={updateSession.isPending}
                 title="Passer cette question"
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.10] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+                className="h-11 px-3.5 rounded-[12px] flex items-center justify-center text-[#4A4A4A] bg-white border border-[#E6DBCF] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0 text-[13px] font-medium gap-1.5"
               >
+                Suivant
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
             )}
 
-            {/* Compact toggles — icon buttons */}
-            <div className="flex items-center gap-0.5 flex-shrink-0 ml-1">
+            {/* Compact toggles */}
+            <div className="flex items-center gap-1 flex-shrink-0 ml-1">
               <button
                 onClick={() => setFocusMode(f => !f)}
                 title={focusMode ? "Quitter le mode focus" : "Mode focus (F)"}
-                className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-                  focusMode ? "bg-bw-violet/20 text-bw-violet" : "text-bw-muted hover:text-white hover:bg-white/[0.08]"
+                className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
+                  focusMode ? "bg-bw-violet/15 text-bw-violet border-bw-violet/30" : "text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border-[#E8DFD2]"
                 }`}
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="10" /></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="10" /></svg>
               </button>
               <button
                 onClick={() => updateSession.mutate({ sharing_enabled: !session.sharing_enabled })}
                 title={session.sharing_enabled ? "Partage activé" : "Partage désactivé"}
-                className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-                  session.sharing_enabled ? "bg-bw-teal/20 text-bw-teal" : "text-bw-muted hover:text-white hover:bg-white/[0.08]"
+                className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
+                  session.sharing_enabled ? "bg-bw-teal/15 text-bw-teal border-bw-teal/30" : "text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border-[#E8DFD2]"
                 }`}
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
               </button>
               <button
                 onClick={() => updateSession.mutate({ mute_sounds: !session.mute_sounds })}
                 title={session.mute_sounds ? "Sons désactivés" : "Sons activés"}
-                className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-                  session.mute_sounds ? "text-bw-muted hover:text-white hover:bg-white/[0.08]" : "bg-bw-amber/15 text-bw-amber"
+                className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
+                  session.mute_sounds ? "text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border-[#E8DFD2]" : "bg-bw-amber/15 text-bw-amber border-bw-amber/30"
                 }`}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">{session.mute_sounds ? <><path d="M11 5L6 9H2v6h4l5 4z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></> : <><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></>}</svg>
@@ -2368,11 +2404,12 @@ function CockpitContent({
               <button
                 onClick={() => setShowShortcuts(true)}
                 title="Raccourcis clavier (?)"
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-bw-muted hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
+                className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] transition-all cursor-pointer"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg>
               </button>
             </div>
+          </div>
           </div>
         </div>
       )}
@@ -2410,7 +2447,7 @@ function CockpitContent({
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-semibold">Joueurs</span>
                   <button onClick={() => setShowStudents(false)}
-                    className="text-bw-muted hover:text-white text-sm cursor-pointer">Fermer</button>
+                    className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">Fermer</button>
                 </div>
                 <span className="text-xs text-bw-muted tabular-nums">{activeStudents.length}/{totalStudents} connectes</span>
                 <div className="flex items-center gap-3 flex-wrap text-xs text-bw-muted">
@@ -3254,11 +3291,11 @@ export default function PilotPage() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed right-0 top-0 bottom-0 z-50 w-[320px] max-w-[85vw] bg-bw-bg border-l border-white/[0.10] overflow-y-auto lg:hidden"
+              className="fixed right-0 top-0 bottom-0 z-50 w-[320px] max-w-[85vw] bg-bw-bg border-l border-black/[0.06] overflow-y-auto lg:hidden"
             >
-              <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.10]">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-black/[0.06]">
                 <span className="text-sm font-semibold">Contexte</span>
-                <button onClick={() => setMobileContextOpen(false)} className="text-bw-muted hover:text-white cursor-pointer text-sm">✕</button>
+                <button onClick={() => setMobileContextOpen(false)} className="text-bw-muted hover:text-bw-heading cursor-pointer text-sm">✕</button>
               </div>
               <ContextPanel
                 moduleGuide={activeModule ? getModuleGuide(activeModule.id) : undefined}

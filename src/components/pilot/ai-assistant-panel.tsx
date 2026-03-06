@@ -37,10 +37,10 @@ const SUGGESTION_ICONS: Record<string, string> = {
   action: "🎬",
 };
 
-const PRIORITY_STYLES: Record<string, string> = {
-  low: "border-white/[0.06] bg-white/[0.02]",
-  medium: "border-bw-amber/20 bg-bw-amber/5",
-  high: "border-bw-danger/20 bg-bw-danger/5",
+const PRIORITY_STYLES: Record<string, { bg: string; border: string }> = {
+  low: { bg: "#F7F3EA", border: "#EFE4D8" },
+  medium: { bg: "#FFF8F0", border: "#F0DFC8" },
+  high: { bg: "#FFF4E8", border: "#F0D4B8" },
 };
 
 function generateSuggestions(ctx: SessionContext): AISuggestion[] {
@@ -157,35 +157,35 @@ function AIAssistantPanelInner({
   const hasHighPriority = activeSuggestions.some((s) => s.priority === "high");
 
   return (
-    <div className="rounded-xl border border-white/[0.06] overflow-hidden">
+    <div className="rounded-[14px] overflow-hidden" style={{ background: "#FFFDF9", border: "1px solid #EFE4D8" }}>
       {/* Header */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-3 py-2.5 cursor-pointer hover:bg-white/[0.03] transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-[#F7F3EA] transition-colors"
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <motion.span
             animate={hasHighPriority ? { scale: [1, 1.2, 1] } : {}}
             transition={{ repeat: Infinity, duration: 1.5 }}
-            className="text-sm"
+            className="text-base"
           >
             🤖
           </motion.span>
-          <span className="text-xs font-semibold text-bw-violet">Assistant IA</span>
+          <span className="text-[13px] font-semibold text-[#2C2C2C]">Suggestions IA</span>
           {activeSuggestions.length > 0 && (
-            <span className="px-1.5 py-0.5 rounded-full bg-bw-violet/20 text-bw-violet text-xs font-bold tabular-nums">
+            <span className="w-5 h-5 rounded-full bg-[#6B8CFF] text-white text-[11px] font-bold flex items-center justify-center tabular-nums">
               {activeSuggestions.length}
             </span>
           )}
         </div>
         <svg
-          width="12"
-          height="12"
+          width="14"
+          height="14"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="currentColor"
+          stroke="#7A7A7A"
           strokeWidth="2"
-          className={`text-bw-muted transition-transform ${expanded ? "rotate-180" : ""}`}
+          className={`transition-transform ${expanded ? "rotate-180" : ""}`}
         >
           <path d="M6 9l6 6 6-6" />
         </svg>
@@ -201,27 +201,31 @@ function AIAssistantPanelInner({
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="px-3 pb-3 space-y-2">
+            <div className="px-4 pb-4 space-y-2.5" style={{ borderTop: "1px solid #EFE4D8" }}>
+              <div className="pt-3" />
               {activeSuggestions.length === 0 ? (
-                <p className="text-xs text-bw-muted text-center py-3">
+                <p className="text-[13px] text-[#B0A99E] text-center py-4">
                   Tout roule ! Pas de suggestion pour le moment.
                 </p>
               ) : (
-                activeSuggestions.map((suggestion, i) => (
+                activeSuggestions.map((suggestion, i) => {
+                  const styles = PRIORITY_STYLES[suggestion.priority] || PRIORITY_STYLES.low;
+                  return (
                   <motion.div
                     key={suggestion.id}
                     initial={{ opacity: 0, x: -8 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 8 }}
                     transition={{ delay: i * 0.05 }}
-                    className={`rounded-lg border p-2.5 ${PRIORITY_STYLES[suggestion.priority]}`}
+                    className="rounded-[12px] p-3.5"
+                    style={{ background: styles.bg, border: `1px solid ${styles.border}` }}
                   >
-                    <div className="flex items-start gap-2">
-                      <span className="text-sm flex-shrink-0 mt-0.5">
+                    <div className="flex items-start gap-2.5">
+                      <span className="text-base flex-shrink-0 mt-0.5">
                         {SUGGESTION_ICONS[suggestion.type]}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-bw-text leading-relaxed">
+                        <p className="text-[13px] text-[#4A4A4A] leading-relaxed">
                           {suggestion.message}
                         </p>
                         {suggestion.actionLabel && (
@@ -231,7 +235,8 @@ function AIAssistantPanelInner({
                               else if (suggestion.id === "slow-responses" && onReformulate) onReformulate();
                               dismiss(suggestion.id);
                             }}
-                            className="mt-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-bw-violet/20 text-bw-violet hover:bg-bw-violet/30 transition-colors cursor-pointer"
+                            className="mt-2 h-7 px-3 rounded-[8px] text-[12px] font-semibold transition-colors cursor-pointer"
+                            style={{ background: "#6B8CFF", color: "#fff" }}
                           >
                             {suggestion.actionLabel}
                           </button>
@@ -239,13 +244,14 @@ function AIAssistantPanelInner({
                       </div>
                       <button
                         onClick={() => dismiss(suggestion.id)}
-                        className="text-bw-muted hover:text-bw-text text-xs cursor-pointer flex-shrink-0"
+                        className="text-[#B0A99E] hover:text-[#7A7A7A] text-xs cursor-pointer flex-shrink-0"
                       >
                         ✕
                       </button>
                     </div>
                   </motion.div>
-                ))
+                  );
+                })
               )}
             </div>
           </motion.div>

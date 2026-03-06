@@ -33,7 +33,7 @@ export function VotingResults({
             className={`rounded-xl p-4 border transition-all ${
               i === 0
                 ? "border-bw-primary/35 bg-bw-primary/[0.06]"
-                : "border-white/[0.10] bg-bw-surface"
+                : "border-black/[0.06] bg-bw-surface"
             }`}
             style={i === 0 ? { boxShadow: "0 0 20px rgba(255,107,53,0.12), 0 2px 8px rgba(0,0,0,0.2)" } : { boxShadow: "0 1px 3px rgba(0,0,0,0.12)" }}>
             <div className="flex justify-between items-start mb-2">
@@ -44,7 +44,7 @@ export function VotingResults({
               <span className="text-lg font-bold tabular-nums" style={{ color: i === 0 ? "var(--color-bw-primary)" : "var(--color-bw-muted)" }}>{pct}%</span>
             </div>
             <p className="text-sm mb-2 text-bw-heading">{vr.response.text}</p>
-            <div className="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden mb-2">
+            <div className="w-full bg-black/[0.04] rounded-full h-2 overflow-hidden mb-2">
               <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 className="h-full rounded-full"
@@ -56,7 +56,7 @@ export function VotingResults({
             {vr.voters.length > 0 && (
               <div className="flex gap-1 flex-wrap">
                 {vr.voters.map((v, j) => (
-                  <span key={j} className="text-xs bg-white/[0.05] px-2 py-0.5 rounded-full text-bw-text border border-white/[0.08]">
+                  <span key={j} className="text-xs bg-black/[0.04] px-2 py-0.5 rounded-full text-bw-text border border-black/[0.06]">
                     {v.avatar} {v.display_name}
                     {v.team_name && (
                       <span className="ml-1 text-xs font-medium" style={{ color: v.team_color }}>{v.team_name}</span>

@@ -107,9 +107,9 @@ function ModuleSidebarInner({
       {/* ── FLOATING PHASE DOCK — sm+ ── */}
       <div className="fixed left-2.5 top-1/2 -translate-y-1/2 z-30 hidden sm:flex items-start gap-0">
         {/* Phase icon strip */}
-        <div className="flex flex-col items-center gap-1.5 py-2.5 px-1.5 rounded-2xl bg-bw-deep/80 backdrop-blur-md border border-white/[0.08] shadow-xl">
+        <div className="flex flex-col items-center gap-1.5 py-2.5 px-1.5 rounded-2xl bg-white/95 backdrop-blur-md border border-black/[0.06] shadow-xl">
           {/* Global progress mini */}
-          <div className="flex flex-col items-center gap-0.5 pb-1 border-b border-white/[0.06] mb-0.5 w-full">
+          <div className="flex flex-col items-center gap-0.5 pb-1 border-b border-black/[0.04] mb-0.5 w-full">
             <span className="text-xs text-bw-muted font-semibold">Modules</span>
             <span className="text-xs tabular-nums" style={{ color: globalDone === allMods.length && globalDone > 0 ? "#4ECDC4" : "#555960" }}>
               {globalDone}/{allMods.length}
@@ -127,7 +127,7 @@ function ModuleSidebarInner({
                 onClick={() => setExpandedPhaseId(isExpanded ? null : phase.id)}
                 title={phase.label}
                 className={`relative w-9 h-9 rounded-xl flex items-center justify-center text-base transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
-                  isExpanded ? "scale-110" : "hover:scale-105 hover:bg-white/[0.06]"
+                  isExpanded ? "scale-110" : "hover:scale-105 hover:bg-black/[0.04]"
                 }`}
                 style={{
                   background: isExpanded
@@ -156,7 +156,7 @@ function ModuleSidebarInner({
 
                 {/* All done badge */}
                 {allDone && (
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-bw-deep flex items-center justify-center z-10">
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-white flex items-center justify-center z-10">
                     <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" strokeWidth="4" strokeLinecap="round">
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
@@ -184,7 +184,7 @@ function ModuleSidebarInner({
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, x: -8, scale: 0.95 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="ml-2 w-[220px] rounded-2xl bg-bw-deep/90 backdrop-blur-md border border-white/[0.08] shadow-2xl overflow-hidden"
+                className="ml-2 w-[220px] rounded-2xl bg-white/95 backdrop-blur-md border border-black/[0.06] shadow-2xl overflow-hidden"
               >
                 {/* Phase header */}
                 <div className="px-3 pt-3 pb-2">
@@ -200,7 +200,7 @@ function ModuleSidebarInner({
                     </div>
                   </div>
                   {/* Mini progress bar */}
-                  <div className="mt-2 h-1 rounded-full bg-white/[0.06] overflow-hidden">
+                  <div className="mt-2 h-1 rounded-full bg-black/[0.04] overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
@@ -232,7 +232,7 @@ function ModuleSidebarInner({
                           setExpandedPhaseId(null);
                         }}
                         className={`w-full px-2 py-1.5 rounded-lg flex items-center gap-2 text-left transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
-                          isActive ? "" : "hover:bg-white/[0.04]"
+                          isActive ? "" : "hover:bg-black/[0.03]"
                         }`}
                         style={isActive ? { background: `linear-gradient(90deg, ${mod.color}15, ${mod.color}05)` } : undefined}
                       >
@@ -325,7 +325,7 @@ export function MobileSidebarDrawer({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -240, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed inset-y-0 left-0 z-50 w-[280px] border-r border-white/[0.06] bg-bw-surface overflow-y-auto"
+            className="fixed inset-y-0 left-0 z-50 w-[280px] border-r border-black/[0.04] bg-bw-surface overflow-y-auto"
           >
             {children}
           </motion.div>

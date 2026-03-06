@@ -102,7 +102,7 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
         <button
           onClick={() => generatePools(true)}
           disabled={generating}
-          className="text-xs text-white/30 hover:text-white/60 transition-colors"
+          className="text-xs text-white/30 hover:text-bw-heading/60 transition-colors"
         >
           Regenerer (ecrase les existantes)
         </button>
@@ -230,7 +230,7 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
         <button
           onClick={() => generatePools(true)}
           disabled={generating}
-          className="text-xs text-white/20 hover:text-white/50 transition-colors"
+          className="text-xs text-white/20 hover:text-bw-heading/50 transition-colors"
         >
           Regenerer les cartes
         </button>

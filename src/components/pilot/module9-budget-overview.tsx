@@ -42,7 +42,7 @@ export function Module9BudgetOverview({
 
       {/* Class averages */}
       {budgetSubmitted > 0 && (
-        <div className="bg-bw-surface rounded-xl p-4 border border-white/[0.06] space-y-3">
+        <div className="bg-bw-surface rounded-xl p-4 border border-black/[0.04] space-y-3">
           <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Moyenne de la classe</span>
           {PRODUCTION_CATEGORIES.map((cat) => {
             const avg = budgetAverages[cat.key] || 0;

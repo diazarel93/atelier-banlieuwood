@@ -318,18 +318,18 @@ export function ModuleBriefing({
                 </div>
               </motion.div>
               <div>
-                <h1 className="text-2xl font-bold font-cinema tracking-wide">{module.title}</h1>
+                <h1 className="text-2xl font-bold font-sans tracking-wide">{module.title}</h1>
                 <p className="text-sm text-white/50">{module.subtitle}</p>
               </div>
             </div>
 
             {/* Meta pills */}
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full text-white/80 bg-white/[0.06] border border-white/[0.08]">
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full text-white/80 bg-black/[0.04] border border-black/[0.06]">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
                 {module.duration}
               </span>
-              <span className="text-xs font-medium px-3 py-1 rounded-full text-white/80 bg-white/[0.06] border border-white/[0.08]">
+              <span className="text-xs font-medium px-3 py-1 rounded-full text-white/80 bg-black/[0.04] border border-black/[0.06]">
                 {module.questions} question{module.questions !== 1 ? "s" : ""}
               </span>
               {activity && activity.tags.slice(0, 2).map((tag) => (
@@ -368,7 +368,7 @@ export function ModuleBriefing({
                   <h3 className="text-sm font-bold" style={{ color: module.color }}>{activity.label}</h3>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     {activity.tags.map((tag) => (
-                      <span key={tag} className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/[0.06] text-white/50">
+                      <span key={tag} className="text-xs font-medium px-2 py-0.5 rounded-full bg-black/[0.04] text-white/50">
                         {tag}
                       </span>
                     ))}
@@ -385,7 +385,7 @@ export function ModuleBriefing({
               {/* Type-specific visual preview */}
               {actType === "quiz" && (
                 <div className="px-5 pb-3 flex items-center gap-2">
-                  <div className="flex-1 h-2 rounded-full bg-white/[0.06] overflow-hidden">
+                  <div className="flex-1 h-2 rounded-full bg-black/[0.04] overflow-hidden">
                     <div className="h-full rounded-full w-[65%]" style={{ background: `linear-gradient(90deg, ${module.color}, ${module.color}60)` }} />
                   </div>
                   <span className="text-xs text-bw-muted">Stats en temps réel</span>
@@ -393,14 +393,14 @@ export function ModuleBriefing({
               )}
               {actType === "image" && (
                 <div className="px-5 pb-3 flex items-center gap-2 text-xs text-bw-muted">
-                  <div className="w-10 h-7 rounded bg-white/[0.06] flex items-center justify-center text-lg">🖼️</div>
+                  <div className="w-10 h-7 rounded bg-black/[0.04] flex items-center justify-center text-lg">🖼️</div>
                   <span>Image projetée → Écriture → Confrontation de 2 textes</span>
                 </div>
               )}
               {actType === "game" && (
                 <div className="px-5 pb-3 flex items-center gap-2">
                   {["🎭", "📍", "🔊", "⏰", "💬"].map((token, i) => (
-                    <div key={i} className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-sm">
+                    <div key={i} className="w-8 h-8 rounded-lg bg-black/[0.03] border border-black/[0.06] flex items-center justify-center text-sm">
                       {token}
                     </div>
                   ))}
@@ -409,11 +409,11 @@ export function ModuleBriefing({
               )}
               {actType === "debate" && (
                 <div className="px-5 pb-3 flex items-center gap-2">
-                  <div className="flex-1 rounded-lg bg-white/[0.04] border border-white/[0.06] px-3 py-1.5 text-center">
+                  <div className="flex-1 rounded-lg bg-black/[0.03] border border-black/[0.04] px-3 py-1.5 text-center">
                     <span className="text-xs text-white/40">Vue A</span>
                   </div>
                   <span className="text-xs font-bold text-white/20">VS</span>
-                  <div className="flex-1 rounded-lg bg-white/[0.04] border border-white/[0.06] px-3 py-1.5 text-center">
+                  <div className="flex-1 rounded-lg bg-black/[0.03] border border-black/[0.04] px-3 py-1.5 text-center">
                     <span className="text-xs text-white/40">Vue B</span>
                   </div>
                 </div>
@@ -444,7 +444,7 @@ export function ModuleBriefing({
               {questionsLoading ? (
                 <div className="space-y-2 pt-2">
                   {Array.from({ length: 3 }, (_, i) => (
-                    <div key={i} className="h-14 rounded-xl bg-white/[0.03] animate-pulse" />
+                    <div key={i} className="h-14 rounded-xl bg-black/[0.03] animate-pulse" />
                   ))}
                 </div>
               ) : questions.length === 0 ? (
@@ -644,7 +644,7 @@ export function ModuleBriefing({
                 >
                   <path d="M9 18l6-6-6-6" />
                 </svg>
-                <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted group-hover:text-white transition-colors">
+                <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted group-hover:text-bw-heading transition-colors">
                   Déroulé ({moduleGuide.duration})
                 </span>
                 <span className="text-xs text-bw-muted">{moduleGuide.phases.length} étapes</span>
@@ -657,7 +657,7 @@ export function ModuleBriefing({
                         <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ backgroundColor: module.color + "20", color: module.color }}>
                           {i + 1}
                         </div>
-                        {i < moduleGuide.phases.length - 1 && <div className="w-px flex-1 bg-white/[0.06] my-0.5" />}
+                        {i < moduleGuide.phases.length - 1 && <div className="w-px flex-1 bg-black/[0.04] my-0.5" />}
                       </div>
                       <div className="pb-3 flex-1 min-w-0">
                         <div className="flex items-baseline gap-2">
@@ -692,7 +692,7 @@ export function ModuleBriefing({
                 >
                   <path d="M9 18l6-6-6-6" />
                 </svg>
-                <span className="text-xs font-semibold uppercase tracking-wider text-bw-green group-hover:text-white transition-colors">
+                <span className="text-xs font-semibold uppercase tracking-wider text-bw-green group-hover:text-bw-heading transition-colors">
                   Conseils
                 </span>
                 <span className="text-xs text-bw-muted">{moduleGuide.conseils.length} tips</span>
@@ -724,7 +724,7 @@ export function ModuleBriefing({
       </div>
 
       {/* ── CTA — sticky bottom ── */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 glass border-t border-white/[0.06]">
+      <div className="fixed bottom-0 left-0 right-0 z-30 glass border-t border-black/[0.04]">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
           {isCompleted && (
             <span className="text-xs uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-bw-teal/15 text-bw-teal flex-shrink-0">

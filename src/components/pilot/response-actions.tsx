@@ -99,7 +99,7 @@ function InlineActionsInner({
   return (
     <div className="space-y-2">
       {/* Quick reaction buttons — one-click feedback with sent flash */}
-      <div className="flex items-center gap-1 pt-1.5 border-t border-white/[0.06]">
+      <div className="flex items-center gap-1 pt-1.5 border-t border-black/[0.04]">
         {QUICK_REACTIONS.map((r) => (
           <motion.button
             key={r.emoji}
@@ -123,7 +123,7 @@ function InlineActionsInner({
             <span className="text-xs leading-none">{sentReaction === r.emoji ? "✓" : r.emoji}</span>
           </motion.button>
         ))}
-        <div className="w-px h-4 bg-white/[0.06] mx-0.5" />
+        <div className="w-px h-4 bg-black/[0.04] mx-0.5" />
       </div>
 
       {/* Action buttons row — 2 primary + overflow */}
@@ -187,17 +187,17 @@ function InlineActionsInner({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -4, scale: 0.95 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute right-0 bottom-full mb-1.5 z-50 w-44 bg-bw-surface border border-white/[0.08] rounded-xl shadow-2xl overflow-hidden"
+                  className="absolute right-0 bottom-full mb-1.5 z-50 w-44 bg-bw-surface border border-black/[0.06] rounded-xl shadow-2xl overflow-hidden"
                 >
                   {/* Relancer */}
                   <button onClick={() => { setShowNudgePicker(!showNudgePicker); setShowOverflow(false); }}
-                    className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2">
+                    className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-black/[0.05] cursor-pointer transition-colors flex items-center gap-2">
                     <span className="w-4 text-center">🔄</span> Relancer
                   </button>
                   {/* Noter */}
                   <button onClick={() => { setShowScorePicker(!showScorePicker); setShowOverflow(false); }}
                     disabled={isScorePending}
-                    className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2 disabled:opacity-40">
+                    className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-black/[0.05] cursor-pointer transition-colors flex items-center gap-2 disabled:opacity-40">
                     <span className="w-4 text-center">⭐</span> {teacherScore > 0 ? `Note: ${teacherScore}/5` : "Noter"}
                   </button>
                   {/* Annotation flags */}
@@ -208,7 +208,7 @@ function InlineActionsInner({
                   ] as const).map((f) => (
                     <button key={f.key}
                       onClick={() => { onFlag(responseId, teacherFlag === f.key ? null : f.key); setShowOverflow(false); }}
-                      className={`w-full text-left px-3 py-2 text-xs hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2 ${
+                      className={`w-full text-left px-3 py-2 text-xs hover:bg-black/[0.05] cursor-pointer transition-colors flex items-center gap-2 ${
                         teacherFlag === f.key ? "text-bw-teal" : "text-bw-text"
                       }`}>
                       <span className="w-4 text-center">{f.icon}</span> {teacherFlag === f.key ? `✓ ${f.label}` : f.label}
@@ -217,7 +217,7 @@ function InlineActionsInner({
                   {/* Signaler */}
                   <button onClick={() => { handleWarn(); setShowOverflow(false); }}
                     disabled={isWarnPending}
-                    className="w-full text-left px-3 py-2 text-xs text-bw-danger hover:bg-bw-danger/10 cursor-pointer transition-colors flex items-center gap-2 disabled:opacity-40 border-t border-white/[0.06]">
+                    className="w-full text-left px-3 py-2 text-xs text-bw-danger hover:bg-bw-danger/10 cursor-pointer transition-colors flex items-center gap-2 disabled:opacity-40 border-t border-black/[0.04]">
                     <span className="w-4 text-center">🚩</span> Signaler {warnings > 0 && `(${warnings}/3)`}
                   </button>
                 </motion.div>
@@ -251,7 +251,7 @@ function InlineActionsInner({
                       setShowNudgePicker(false);
                     }}
                     aria-label={`Envoyer : ${preset.text}`}
-                    className="px-2.5 py-1.5 bg-bw-bg border border-white/[0.06] rounded-xl text-xs text-bw-text hover:border-bw-amber/30 hover:text-bw-amber cursor-pointer transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
+                    className="px-2.5 py-1.5 bg-bw-bg border border-black/[0.04] rounded-xl text-xs text-bw-text hover:border-bw-amber/30 hover:text-bw-amber cursor-pointer transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
                   >
                     {preset.label}
                   </button>
@@ -385,7 +385,7 @@ function InlineActionsInner({
               <div className="flex gap-1.5">
                 <button onClick={onCancelComment}
                   aria-label="Annuler le commentaire"
-                  className="flex-1 py-1.5 rounded-xl bg-bw-bg text-bw-muted text-xs font-medium cursor-pointer border border-white/[0.06] focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none">
+                  className="flex-1 py-1.5 rounded-xl bg-bw-bg text-bw-muted text-xs font-medium cursor-pointer border border-black/[0.04] focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none">
                   Annuler
                 </button>
                 <button
@@ -466,7 +466,7 @@ function GenericInlineActionsInner({
   return (
     <div className="space-y-2">
       {/* Quick reaction buttons — same as InlineActions */}
-      <div className="flex items-center gap-1 pt-1.5 border-t border-white/[0.06]">
+      <div className="flex items-center gap-1 pt-1.5 border-t border-black/[0.04]">
         {QUICK_REACTIONS.map((r) => (
           <button
             key={r.emoji}
@@ -478,7 +478,7 @@ function GenericInlineActionsInner({
             <span className="text-xs leading-none">{r.emoji}</span>
           </button>
         ))}
-        <div className="w-px h-4 bg-white/[0.06] mx-0.5" />
+        <div className="w-px h-4 bg-black/[0.04] mx-0.5" />
       </div>
 
       {/* Action buttons row — identical layout to InlineActions */}
@@ -611,7 +611,7 @@ function GenericInlineActionsInner({
                       setShowNudgePicker(false);
                     }}
                     aria-label={`Envoyer : ${preset.text}`}
-                    className="px-2.5 py-1.5 bg-bw-bg border border-white/[0.06] rounded-xl text-xs text-bw-text hover:border-bw-amber/30 hover:text-bw-amber cursor-pointer transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
+                    className="px-2.5 py-1.5 bg-bw-bg border border-black/[0.04] rounded-xl text-xs text-bw-text hover:border-bw-amber/30 hover:text-bw-amber cursor-pointer transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
                   >
                     {preset.label}
                   </button>
@@ -746,7 +746,7 @@ function GenericInlineActionsInner({
               <div className="flex gap-1.5">
                 <button onClick={() => { setIsCommenting(false); setCommentText(""); }}
                   aria-label="Annuler le commentaire"
-                  className="flex-1 py-1.5 rounded-xl bg-bw-bg text-bw-muted text-xs font-medium cursor-pointer border border-white/[0.06] focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none">
+                  className="flex-1 py-1.5 rounded-xl bg-bw-bg text-bw-muted text-xs font-medium cursor-pointer border border-black/[0.04] focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none">
                   Annuler
                 </button>
                 <button

@@ -45,15 +45,15 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
             initial={{ opacity: 0, y: 20, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.97 }}
-            className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] max-w-[90vw] glass-card rounded-2xl border border-white/[0.08] overflow-hidden"
+            className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] max-w-[90vw] glass-card rounded-2xl border border-black/[0.06] overflow-hidden"
           >
             {/* Header */}
-            <div className="px-5 py-3 border-b border-white/[0.06] flex items-center justify-between">
+            <div className="px-5 py-3 border-b border-black/[0.04] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-lg" aria-hidden="true">📢</span>
                 <h3 id="broadcast-title" className="text-sm font-semibold">Message à toute la classe</h3>
               </div>
-              <button onClick={onClose} aria-label="Fermer" className="text-bw-muted hover:text-white text-sm cursor-pointer">✕</button>
+              <button onClick={onClose} aria-label="Fermer" className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">✕</button>
             </div>
 
             {/* Presets */}
@@ -65,7 +65,7 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
                     key={preset.label}
                     onClick={() => handleSend(preset.text)}
                     disabled={isPending}
-                    className="text-left p-2 rounded-lg border border-white/[0.10] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40"
+                    className="text-left p-2 rounded-lg border border-black/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40"
                   >
                     <span className="text-sm block">{preset.emoji}</span>
                     <span className="text-xs text-bw-muted">{preset.label}</span>
@@ -75,7 +75,7 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
             </div>
 
             {/* Separator */}
-            <div className="mx-5 h-px bg-white/[0.06]" />
+            <div className="mx-5 h-px bg-black/[0.04]" />
 
             {/* Custom message */}
             <div className="px-5 py-3 space-y-2">
@@ -89,7 +89,7 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
                   placeholder="Votre message..."
                   aria-label="Message personnalise"
                   maxLength={200}
-                  className="flex-1 px-3 py-2 rounded-xl bg-bw-surface border border-white/[0.10] text-sm text-white placeholder:text-bw-muted outline-none focus:border-bw-primary/40"
+                  className="flex-1 px-3 py-2 rounded-xl bg-bw-surface border border-black/[0.06] text-sm text-white placeholder:text-bw-muted outline-none focus:border-bw-primary/40"
                 />
                 <button
                   onClick={() => handleSend(message)}
@@ -112,7 +112,7 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
                       key={i}
                       onClick={() => handleSend(item.text)}
                       disabled={isPending}
-                      className="w-full text-left px-3 py-2 rounded-lg border border-white/[0.10] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40 flex items-center gap-2"
+                      className="w-full text-left px-3 py-2 rounded-lg border border-black/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40 flex items-center gap-2"
                     >
                       <span className="text-xs text-bw-text truncate flex-1">{item.text}</span>
                       <span className="text-xs text-bw-muted flex-shrink-0">

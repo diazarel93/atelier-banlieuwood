@@ -51,7 +51,7 @@ export function TimerSection({
               ({formatEstimate(remainingQuestions)})
             </span>
           )}
-          <div className="w-16 h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
+          <div className="w-16 h-1.5 rounded-full bg-black/[0.05] overflow-hidden">
             <div
               className="h-full rounded-full bg-bw-teal transition-all duration-500"
               style={{ width: `${((currentSituationIndex + 1) / totalSituations) * 100}%` }}
@@ -66,7 +66,7 @@ export function TimerSection({
           {[30, 60, 120, 180, 300].map((sec) => (
             <button key={sec}
               onClick={() => onSetTimer(new Date(Date.now() + sec * 1000).toISOString())}
-              className="px-2 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.06] active:scale-95 text-bw-text cursor-pointer transition-colors duration-200">
+              className="px-2 py-1 rounded-lg text-xs bg-bw-elevated border border-black/[0.06] hover:border-white/20 hover:bg-black/[0.04] active:scale-95 text-bw-text cursor-pointer transition-colors duration-200">
               {sec < 60 ? `${sec}s` : `${sec / 60}m`}
             </button>
           ))}
@@ -75,12 +75,12 @@ export function TimerSection({
               <input type="number" min="10" max="600" value={customTimerValue} onChange={(e) => setCustomTimerValue(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && customTimerValue) { onSetTimer(new Date(Date.now() + parseInt(customTimerValue) * 1000).toISOString()); setCustomTimerOpen(false); setCustomTimerValue(""); } }}
                 placeholder="sec" autoFocus
-                className="w-14 px-1.5 py-1 rounded-lg text-xs bg-bw-surface border border-white/[0.06] text-white outline-none focus:border-bw-primary/40" />
+                className="w-14 px-1.5 py-1 rounded-lg text-xs bg-bw-surface border border-black/[0.04] text-white outline-none focus:border-bw-primary/40" />
               <button onClick={() => setCustomTimerOpen(false)} className="text-xs text-bw-muted cursor-pointer">✕</button>
             </div>
           ) : (
             <button onClick={() => setCustomTimerOpen(true)} title="Timer personnalisé"
-              className="px-2 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.06] active:scale-95 text-bw-muted cursor-pointer transition-colors duration-200">
+              className="px-2 py-1 rounded-lg text-xs bg-bw-elevated border border-black/[0.06] hover:border-white/20 hover:bg-black/[0.04] active:scale-95 text-bw-muted cursor-pointer transition-colors duration-200">
               ⏱️
             </button>
           )}
@@ -90,7 +90,7 @@ export function TimerSection({
           {/* Retour question précédente */}
           {currentSituationIndex > 0 && sessionStatus === "waiting" && (
             <button onClick={onPrevQuestion} title="Question précédente"
-              className="px-2.5 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.06] active:scale-95 text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">
+              className="px-2.5 py-1 rounded-lg text-xs bg-bw-elevated border border-black/[0.06] hover:border-white/20 hover:bg-black/[0.04] active:scale-95 text-bw-muted hover:text-bw-heading cursor-pointer transition-colors duration-200">
               ← Précédente
             </button>
           )}

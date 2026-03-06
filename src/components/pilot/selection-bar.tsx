@@ -15,12 +15,6 @@ interface SelectionBarProps {
   pulse?: boolean;
 }
 
-const CTA_GLOW: Record<string, string> = {
-  "#FF6B35": "0 0 20px rgba(255,107,53,0.35), 0 0 40px rgba(255,107,53,0.15)",
-  "#8B5CF6": "0 0 20px rgba(139,92,246,0.35), 0 0 40px rgba(139,92,246,0.15)",
-  "#4ECDC4": "0 0 20px rgba(78,205,196,0.35), 0 0 40px rgba(78,205,196,0.15)",
-};
-
 export function SelectionBar({
   status,
   responsesCount,
@@ -35,25 +29,26 @@ export function SelectionBar({
 }: SelectionBarProps) {
   let leftText = "";
   let ctaLabel = "";
-  let ctaColor = "#FF6B35";
+  let ctaColor = "#2C2C2C";
   let shortcutKey = "N";
 
   if (status === "responding") {
     leftText = `${responsesCount}/${totalStudents} rep.`;
     if (selectedCount < 2) {
-      ctaLabel = `${selectedCount}/2 min — sélectionner`;
-      ctaColor = "#7D828A";
+      ctaLabel = `${selectedCount}/2 min — selectionner`;
+      ctaColor = "#B0A99E";
     } else {
       ctaLabel = "LANCER LE VOTE";
+      ctaColor = "#2C2C2C";
     }
   } else if (status === "voting") {
     leftText = `${totalVotes}/${totalStudents} votes`;
-    ctaLabel = "VOIR RÉSULTATS";
-    ctaColor = "#8B5CF6";
+    ctaLabel = "VOIR RESULTATS";
+    ctaColor = "#2C2C2C";
   } else if (status === "reviewing") {
     leftText = "";
     ctaLabel = "QUESTION SUIVANTE";
-    ctaColor = "#4ECDC4";
+    ctaColor = "#2C2C2C";
   } else {
     return null;
   }
@@ -63,20 +58,20 @@ export function SelectionBar({
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <div className="flex items-center gap-3 text-sm">
-        {leftText && <span className="text-bw-muted font-medium tabular-nums">{leftText}</span>}
+      <div className="flex items-center gap-3 text-[13px]">
+        {leftText && <span className="text-[#7A7A7A] font-medium tabular-nums">{leftText}</span>}
         {status === "responding" && selectedCount > 0 && (
-          <span className="text-bw-primary font-bold tabular-nums">{selectedCount} sélect.</span>
+          <span className="text-[#6B8CFF] font-bold tabular-nums">{selectedCount} select.</span>
         )}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5">
         {showQuickVote && (
           <motion.button
             onClick={onQuickVote}
             disabled={isPending}
-            title="Vote rapide : auto-sélection + lancer"
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold cursor-pointer transition-all hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed bg-bw-primary text-white"
-            style={{ boxShadow: "0 0 16px rgba(255,107,53,0.3), 0 0 4px rgba(255,107,53,0.2)" }}
+            title="Vote rapide : auto-selection + lancer"
+            className="flex items-center gap-1.5 h-11 px-4 rounded-[12px] text-[13px] font-bold cursor-pointer transition-all hover:brightness-105 disabled:opacity-40 disabled:cursor-not-allowed text-white"
+            style={{ background: "#F5A45B", boxShadow: "0 4px 12px rgba(245,164,91,0.25)" }}
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.02 }}
           >
@@ -89,20 +84,20 @@ export function SelectionBar({
         <motion.button
           onClick={onAction}
           disabled={disabled}
-          className={`btn-glow px-5 py-2.5 rounded-xl text-sm font-bold cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
-            pulse && !disabled ? "ring-2 ring-bw-teal/50" : ""
+          className={`h-11 px-5 rounded-[12px] text-[14px] font-bold cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+            pulse && !disabled ? "ring-2 ring-[#57C4B6]/40" : ""
           }`}
           style={{
-            backgroundColor: disabled ? "#22252B" : ctaColor,
-            color: ctaColor === "#7D828A" || disabled ? "#7D828A" : "white",
-            boxShadow: disabled ? undefined : CTA_GLOW[ctaColor],
+            backgroundColor: disabled ? "#E8DFD2" : ctaColor,
+            color: disabled ? "#B0A99E" : "white",
+            boxShadow: disabled ? undefined : "0 4px 12px rgba(0,0,0,0.15)",
           }}
           whileTap={disabled ? {} : { scale: 0.95 }}
           whileHover={disabled ? {} : { scale: 1.02 }}
           animate={pulse && !disabled ? { scale: [1, 1.02, 1] } : {}}
           transition={pulse && !disabled ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : {}}
         >
-          {isPending ? "..." : ctaLabel} {!disabled && <span className="opacity-60 ml-1 text-xs">[{shortcutKey}]</span>}
+          {isPending ? "..." : ctaLabel} {!disabled && <kbd className="inline-flex items-center justify-center w-5 h-5 ml-1.5 rounded bg-white/[0.15] text-[10px] font-mono">{shortcutKey}</kbd>}
         </motion.button>
       </div>
     </div>

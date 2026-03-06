@@ -57,7 +57,7 @@ export interface ContextDocksProps extends ContextPanelProps {
 
 const STATE_COLORS: Record<StudentStateValue, string> = {
   responded: "#4ECDC4",
-  active: "#FF6B35",
+  active: "#F5A45B",
   stuck: "#F59E0B",
   disconnected: "#444",
 };
@@ -158,13 +158,13 @@ export function ContextDocks(props: ContextDocksProps) {
       {/* ── UPPER DOCK — Guide + Stats + Timer ── */}
       <div className="fixed right-2.5 top-[30%] -translate-y-1/2 z-30 hidden lg:flex items-start gap-0 flex-row-reverse">
         {/* Icon strip */}
-        <div className="flex flex-col items-center gap-1.5 py-2.5 px-1.5 rounded-2xl bg-bw-deep/80 backdrop-blur-md border border-white/[0.08] shadow-xl">
+        <div className="flex flex-col items-center gap-1.5 py-2.5 px-1.5 rounded-2xl bg-bw-deep/80 backdrop-blur-md border border-black/[0.06] shadow-xl">
           {/* Guide */}
           <DockButton
             active={upperOpen === "guide"}
             onClick={() => toggleUpper("guide")}
             title="Guide pédagogique (G)"
-            color="#FF6B35"
+            color="#F5A45B"
             hasContent={hasGuideContent}
             emoji="📖"
             shortcut="G"
@@ -204,7 +204,7 @@ export function ContextDocks(props: ContextDocksProps) {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 8, scale: 0.95 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="mr-2 w-[260px] max-h-[60vh] rounded-2xl bg-bw-deep/90 backdrop-blur-md border border-white/[0.08] shadow-2xl overflow-hidden flex flex-col"
+              className="mr-2 w-[260px] max-h-[60vh] rounded-2xl bg-bw-deep/90 backdrop-blur-md border border-black/[0.06] shadow-2xl overflow-hidden flex flex-col"
             >
               <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
                 {upperOpen === "guide" && <GuideContent {...props} />}
@@ -219,7 +219,7 @@ export function ContextDocks(props: ContextDocksProps) {
       {/* ── LOWER DOCK — Students + Broadcast + Teams ── */}
       <div className="fixed right-2.5 top-[68%] -translate-y-1/2 z-30 hidden lg:flex items-start gap-0 flex-row-reverse">
         {/* Icon strip */}
-        <div className="flex flex-col items-center gap-1.5 py-2.5 px-1.5 rounded-2xl bg-bw-deep/80 backdrop-blur-md border border-white/[0.08] shadow-xl">
+        <div className="flex flex-col items-center gap-1.5 py-2.5 px-1.5 rounded-2xl bg-bw-deep/80 backdrop-blur-md border border-black/[0.06] shadow-xl">
           {/* Students */}
           <DockButton
             active={lowerOpen === "students"}
@@ -239,7 +239,7 @@ export function ContextDocks(props: ContextDocksProps) {
             active={lowerOpen === "broadcast"}
             onClick={() => toggleLower("broadcast")}
             title="Message classe (B)"
-            color="#FF6B35"
+            color="#F5A45B"
             emoji="📢"
             shortcut="B"
           />
@@ -267,7 +267,7 @@ export function ContextDocks(props: ContextDocksProps) {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 8, scale: 0.95 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="mr-2 w-[260px] max-h-[60vh] rounded-2xl bg-bw-deep/90 backdrop-blur-md border border-white/[0.08] shadow-2xl overflow-hidden flex flex-col"
+              className="mr-2 w-[260px] max-h-[60vh] rounded-2xl bg-bw-deep/90 backdrop-blur-md border border-black/[0.06] shadow-2xl overflow-hidden flex flex-col"
             >
               <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
                 {lowerOpen === "students" && <StudentsContent {...props} />}
@@ -331,7 +331,7 @@ function DockButton({
           ? "opacity-30 cursor-not-allowed"
           : active
             ? "scale-110 cursor-pointer"
-            : "hover:scale-105 hover:bg-white/[0.06] cursor-pointer"
+            : "hover:scale-105 hover:bg-black/[0.04] cursor-pointer"
       }`}
       style={{
         background: active
@@ -612,7 +612,7 @@ function TimerContent({
           {onClearTimer && (
             <button
               onClick={onClearTimer}
-              className="w-full py-1.5 rounded-xl text-xs font-medium text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] hover:border-white/15 cursor-pointer transition-colors duration-200"
+              className="w-full py-1.5 rounded-xl text-xs font-medium text-bw-muted hover:text-bw-heading bg-bw-elevated border border-black/[0.04] hover:border-black/10 cursor-pointer transition-colors duration-200"
             >
               Annuler le chrono
             </button>
@@ -655,7 +655,7 @@ function BroadcastContent({ onBroadcast }: { onBroadcast?: () => void }) {
 
       <div className="flex items-center gap-2 text-xs text-bw-muted">
         <span className="text-bw-muted/40">Raccourci :</span>
-        <kbd className="px-1.5 py-0.5 rounded bg-bw-elevated border border-white/[0.08] text-xs font-mono">B</kbd>
+        <kbd className="px-1.5 py-0.5 rounded bg-bw-elevated border border-black/[0.06] text-xs font-mono">B</kbd>
       </div>
     </div>
   );
@@ -685,7 +685,7 @@ function TeamsContent({ teams }: { teams: { id: string; team_name: string; team_
         {teams.map((team) => (
           <div
             key={team.id}
-            className="rounded-xl p-2.5 border border-white/[0.06] space-y-1.5"
+            className="rounded-xl p-2.5 border border-black/[0.04] space-y-1.5"
             style={{ background: `linear-gradient(135deg, ${team.team_color}08, transparent)` }}
           >
             <div className="flex items-center gap-2">
@@ -738,7 +738,7 @@ function StudentsContent({
       <div className="space-y-4">
         <button
           onClick={() => onSelectStudent(null)}
-          className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors"
+          className="text-xs text-bw-muted hover:text-bw-heading cursor-pointer transition-colors"
         >
           ← Retour
         </button>
@@ -806,7 +806,7 @@ function StudentsContent({
               }}
               placeholder="Ton message..."
               autoFocus
-              className="w-full px-2.5 py-1.5 rounded-xl bg-bw-surface border border-white/[0.06] text-xs text-white placeholder:text-bw-muted outline-none focus:border-bw-teal/40"
+              className="w-full px-2.5 py-1.5 rounded-xl bg-bw-surface border border-black/[0.04] text-xs text-white placeholder:text-bw-muted outline-none focus:border-bw-teal/40"
             />
             <div className="flex gap-1.5">
               <button
@@ -825,7 +825,7 @@ function StudentsContent({
               </button>
               <button
                 onClick={() => { setNudgeStudentId(null); setNudgeText(""); }}
-                className="text-xs px-2 py-1 rounded text-bw-muted hover:text-white cursor-pointer"
+                className="text-xs px-2 py-1 rounded text-bw-muted hover:text-bw-heading cursor-pointer"
               >
                 Annuler
               </button>
@@ -849,7 +849,7 @@ function StudentsContent({
                       ? "border-bw-amber/20 opacity-60"
                       : r.is_highlighted
                         ? "border-bw-teal/30"
-                        : "border-white/[0.06]"
+                        : "border-black/[0.04]"
                   }`}
                 >
                   <p className="text-bw-text">{r.text}</p>
@@ -897,7 +897,7 @@ function StudentsContent({
               <button
                 key={s.id}
                 onClick={() => onSelectStudent(s)}
-                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-xl cursor-pointer transition-colors duration-200 hover:bg-white/[0.04] text-left"
+                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-xl cursor-pointer transition-colors duration-200 hover:bg-black/[0.03] text-left"
               >
                 <span
                   className="w-2 h-2 rounded-full flex-shrink-0"
@@ -980,9 +980,9 @@ export function ContextPanel(props: ContextPanelProps) {
     const studentState = getState(props.selectedStudent.id);
     return (
       <aside className="w-full flex flex-col h-full flex-shrink-0">
-        <div className="flex items-center justify-between px-3 py-2.5 border-b border-white/[0.06] flex-shrink-0">
-          <button onClick={() => props.onSelectStudent(null)} className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors">← Retour</button>
-          <button onClick={props.onClose} className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors">✕</button>
+        <div className="flex items-center justify-between px-3 py-2.5 border-b border-black/[0.04] flex-shrink-0">
+          <button onClick={() => props.onSelectStudent(null)} className="text-xs text-bw-muted hover:text-bw-heading cursor-pointer transition-colors">← Retour</button>
+          <button onClick={props.onClose} className="text-xs text-bw-muted hover:text-bw-heading cursor-pointer transition-colors">✕</button>
         </div>
         <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
           <div className="flex items-center gap-2">
@@ -1019,11 +1019,11 @@ export function ContextPanel(props: ContextPanelProps) {
               <input type="text" value={nudgeText} onChange={(e) => setNudgeText(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && nudgeText.trim()) { props.onNudge!(props.selectedStudent!.id, nudgeText.trim()); setNudgeStudentId(null); setNudgeText(""); toast.success("Message envoyé"); } }}
                 placeholder="Ton message..." autoFocus
-                className="w-full px-2.5 py-1.5 rounded-xl bg-bw-surface border border-white/[0.06] text-xs text-white placeholder:text-bw-muted outline-none focus:border-bw-teal/40" />
+                className="w-full px-2.5 py-1.5 rounded-xl bg-bw-surface border border-black/[0.04] text-xs text-white placeholder:text-bw-muted outline-none focus:border-bw-teal/40" />
               <div className="flex gap-1.5">
                 <button onClick={() => { if (nudgeText.trim()) { props.onNudge!(props.selectedStudent!.id, nudgeText.trim()); setNudgeStudentId(null); setNudgeText(""); toast.success("Message envoyé"); } }}
                   disabled={!nudgeText.trim()} className="text-xs px-2 py-1 rounded bg-bw-teal text-black font-medium cursor-pointer disabled:opacity-40">Envoyer</button>
-                <button onClick={() => { setNudgeStudentId(null); setNudgeText(""); }} className="text-xs px-2 py-1 rounded text-bw-muted hover:text-white cursor-pointer">Annuler</button>
+                <button onClick={() => { setNudgeStudentId(null); setNudgeText(""); }} className="text-xs px-2 py-1 rounded text-bw-muted hover:text-bw-heading cursor-pointer">Annuler</button>
               </div>
             </div>
           )}
@@ -1034,7 +1034,7 @@ export function ContextPanel(props: ContextPanelProps) {
             ) : (
               <div className="space-y-1.5">
                 {props.studentResponses.map((r) => (
-                  <div key={r.id} className={`bg-bw-surface rounded-xl p-2.5 border text-xs leading-relaxed ${r.is_hidden ? "border-bw-amber/20 opacity-60" : r.is_highlighted ? "border-bw-teal/30" : "border-white/[0.06]"}`}>
+                  <div key={r.id} className={`bg-bw-surface rounded-xl p-2.5 border text-xs leading-relaxed ${r.is_hidden ? "border-bw-amber/20 opacity-60" : r.is_highlighted ? "border-bw-teal/30" : "border-black/[0.04]"}`}>
                     <p className="text-bw-text">{r.text}</p>
                     <div className="flex items-center gap-2 mt-1.5">
                       <span className="text-xs text-bw-muted">{new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
@@ -1053,22 +1053,22 @@ export function ContextPanel(props: ContextPanelProps) {
 
   return (
     <aside className="w-full flex flex-col h-full flex-shrink-0">
-      <div className="border-b border-white/[0.06] flex-shrink-0">
+      <div className="border-b border-black/[0.04] flex-shrink-0">
         <div className="flex items-center justify-between px-3 py-2">
           <div className="flex items-center gap-0.5">
             {([
-              { id: "guide" as const, label: "Guide", icon: "📖", activeColor: "#FF6B35" },
+              { id: "guide" as const, label: "Guide", icon: "📖", activeColor: "#F5A45B" },
               { id: "students" as const, label: "Élèves", icon: "👥", activeColor: "#4ECDC4" },
               { id: "stats" as const, label: "Stats", icon: "📊", activeColor: "#8B5CF6" },
             ]).map((tab) => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                className={`px-2.5 py-1.5 rounded-xl text-xs font-medium cursor-pointer transition-all duration-200 ${activeTab === tab.id ? "text-white" : "text-bw-muted hover:text-bw-text hover:bg-white/[0.04]"}`}
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-medium cursor-pointer transition-all duration-200 ${activeTab === tab.id ? "text-white" : "text-bw-muted hover:text-bw-text hover:bg-black/[0.03]"}`}
                 style={activeTab === tab.id ? { background: `${tab.activeColor}15`, color: tab.activeColor } : undefined}>
                 <span className="mr-0.5">{tab.icon}</span>{tab.label}
               </button>
             ))}
           </div>
-          <button onClick={props.onClose} className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors ml-1">✕</button>
+          <button onClick={props.onClose} className="text-xs text-bw-muted hover:text-bw-heading cursor-pointer transition-colors ml-1">✕</button>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">

@@ -31,7 +31,7 @@ export function SessionProgressBar({ currentIndex, total, getStatus }: SessionPr
                 ? "bg-bw-teal"
                 : s === "current"
                   ? "bg-bw-primary"
-                  : "bg-white/[0.12]"
+                  : "bg-black/[0.08]"
             }`}
             style={{ flex: 1 }}
             initial={false}
