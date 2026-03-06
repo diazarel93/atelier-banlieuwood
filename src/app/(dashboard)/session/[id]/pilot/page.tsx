@@ -1219,43 +1219,6 @@ function CockpitContent({
                 );
               })}
             </div>
-            {/* Stats with progress bars */}
-            {session.status !== "done" && (
-              <div className="px-5 pb-4 pt-2 border-t border-[#EFE4D8] flex-shrink-0">
-                <div className="rounded-[14px] border border-[#EFE4D8] p-4 space-y-3" style={{ background: "#FFFDF9" }}>
-                  {(() => {
-                    const responded = activeStudents.length > 0 ? Math.round((unifiedRespondedCount / activeStudents.length) * 100) : 0;
-                    const stuckPct = activeStudents.length > 0 ? Math.round((stuckStudents.length / activeStudents.length) * 100) : 0;
-                    const thinkingPct = Math.max(0, 100 - responded - stuckPct);
-                    return (
-                      <>
-                        <div>
-                          <div className="flex items-center justify-between mb-1"><span className="text-[12px] font-medium text-[#7A7A7A]">Repondu</span><span className="text-[12px] font-semibold text-[#2C2C2C] tabular-nums">{responded}%</span></div>
-                          <div className="h-2 bg-[#EFE8DD] rounded-full overflow-hidden"><div className="h-full bg-[#4CAF50] rounded-full transition-all duration-500" style={{ width: `${responded}%` }} /></div>
-                        </div>
-                        <div>
-                          <div className="flex items-center justify-between mb-1"><span className="text-[12px] font-medium text-[#7A7A7A]">En reflexion</span><span className="text-[12px] font-semibold text-[#2C2C2C] tabular-nums">{thinkingPct}%</span></div>
-                          <div className="h-2 bg-[#EFE8DD] rounded-full overflow-hidden"><div className="h-full bg-[#F2C94C] rounded-full transition-all duration-500" style={{ width: `${thinkingPct}%` }} /></div>
-                        </div>
-                        <div>
-                          <div className="flex items-center justify-between mb-1"><span className="text-[12px] font-medium text-[#7A7A7A]">Bloques</span><span className="text-[12px] font-semibold text-[#2C2C2C] tabular-nums">{stuckPct}%</span></div>
-                          <div className="h-2 bg-[#EFE8DD] rounded-full overflow-hidden"><div className="h-full bg-[#EB5757] rounded-full transition-all duration-500" style={{ width: `${stuckPct}%` }} /></div>
-                        </div>
-                      </>
-                    );
-                  })()}
-                </div>
-                {/* Summary text */}
-                <p className="text-[13px] text-[#6A625B] mt-3 leading-relaxed">
-                  {(() => {
-                    const responded = activeStudents.length > 0 ? Math.round((unifiedRespondedCount / activeStudents.length) * 100) : 0;
-                    const stuckPct = activeStudents.length > 0 ? Math.round((stuckStudents.length / activeStudents.length) * 100) : 0;
-                    const thinkingPct = Math.max(0, 100 - responded - stuckPct);
-                    return `${responded}% ont repondu, ${thinkingPct}% reflechissent, ${stuckPct}% sont bloques.`;
-                  })()}
-                </p>
-              </div>
-            )}
             {/* Stuck alert */}
             {stuckStudents.length > 0 && (
               <div className="px-4 py-3 border-t border-[#EFE4D8] flex-shrink-0">
@@ -1339,6 +1302,8 @@ function CockpitContent({
               c: { bg: "#57C4B6", bgLight: "#EFFAF8" },
               d: { bg: "#EC4899", bgLight: "#FDF2F8" },
             };
+            const allCounts = module1Data.questions[currentQIndex].options?.map(o => module1Data.optionDistribution?.[o.key] || 0) || [];
+            const maxCount = Math.max(...allCounts, 0);
             return (
             <div className="grid grid-cols-2 gap-3">
               {module1Data.questions[currentQIndex].options?.map((opt) => {
@@ -1347,18 +1312,23 @@ function CockpitContent({
                 const pct = total > 0 ? Math.round((count / total) * 100) : 0;
                 const colors = OPTION_COLORS[opt.key] || OPTION_COLORS.a;
                 const hasVotes = count > 0;
+                const isDominant = count > 0 && count === maxCount && allCounts.filter(c => c === maxCount).length === 1;
                 return (
-                  <div
+                  <motion.div
                     key={opt.key}
+                    animate={isDominant ? { scale: [1, 1.02, 1] } : { scale: 1 }}
+                    transition={isDominant ? { repeat: Infinity, duration: 2.5, ease: "easeInOut" } : undefined}
                     className="rounded-[18px] transition-all duration-300 relative overflow-hidden flex flex-col justify-between"
                     style={{
                       padding: "20px 22px",
                       minHeight: 152,
                       background: hasVotes ? colors.bg : colors.bgLight,
                       border: hasVotes ? "none" : `1px solid ${colors.bg}20`,
-                      boxShadow: hasVotes
-                        ? `0 6px 24px ${colors.bg}35, 0 2px 6px ${colors.bg}15`
-                        : "0 2px 8px rgba(61,43,16,0.04)",
+                      boxShadow: isDominant
+                        ? `0 8px 32px ${colors.bg}45, 0 4px 12px ${colors.bg}20`
+                        : hasVotes
+                          ? `0 6px 24px ${colors.bg}35, 0 2px 6px ${colors.bg}15`
+                          : "0 2px 8px rgba(61,43,16,0.04)",
                     }}
                   >
                     <div className="flex items-start gap-3">
@@ -1394,7 +1364,7 @@ function CockpitContent({
                         <span className={`text-[12px] tabular-nums font-medium ${hasVotes ? "text-white/80" : "text-[#7A7A7A]"}`}>{count} / {total} eleves</span>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
@@ -2290,6 +2260,10 @@ function CockpitContent({
                     currentSeance: session.current_seance || 1,
                     currentSituation: session.current_situation_index || 0,
                   }}
+                  onSendHint={() => setShowBroadcast(true)}
+                  onReformulate={() => setShowBroadcast(true)}
+                  onLaunchVote={() => updateSession.mutate({ status: "voting", timer_ends_at: null })}
+                  onBroadcast={() => setShowBroadcast(true)}
                 />
               ) : responses.length > 0 ? (
                 <ComprehensionHeatmap

@@ -116,6 +116,7 @@ function generateSuggestions(ctx: SessionContext): AISuggestion[] {
       type: "insight",
       message: "Tres peu de reponses. Essayez de lire la question a voix haute ou de donner un exemple.",
       priority: "medium",
+      actionLabel: "Message classe",
     });
   }
 
@@ -129,10 +130,14 @@ function AIAssistantPanelInner({
   context,
   onSendHint,
   onReformulate,
+  onLaunchVote,
+  onBroadcast,
 }: {
   context: SessionContext;
   onSendHint?: () => void;
   onReformulate?: () => void;
+  onLaunchVote?: () => void;
+  onBroadcast?: () => void;
 }) {
   const [expanded, setExpanded] = useState(true);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
@@ -233,10 +238,17 @@ function AIAssistantPanelInner({
                             onClick={() => {
                               if (suggestion.id === "stuck-alert" && onSendHint) onSendHint();
                               else if (suggestion.id === "slow-responses" && onReformulate) onReformulate();
+                              else if (suggestion.id === "all-responded" && onLaunchVote) onLaunchVote();
+                              else if (suggestion.id === "low-participation" && onBroadcast) onBroadcast();
                               dismiss(suggestion.id);
                             }}
                             className="mt-2 h-7 px-3 rounded-[8px] text-[12px] font-semibold transition-colors cursor-pointer"
-                            style={{ background: "#6B8CFF", color: "#fff" }}
+                            style={{
+                              background: suggestion.id === "all-responded" ? "#4CAF50"
+                                : suggestion.id === "stuck-alert" ? "#F5A45B"
+                                : "#6B8CFF",
+                              color: "#fff",
+                            }}
                           >
                             {suggestion.actionLabel}
                           </button>
