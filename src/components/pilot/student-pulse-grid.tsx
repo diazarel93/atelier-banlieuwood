@@ -58,10 +58,18 @@ const StudentPulseItem = memo(function StudentPulseItem({
     if (confirm(`Retirer ${student.display_name} ?`)) onRemove!(student.id);
   }, [student.id, student.display_name, onRemove]);
 
+  const STATE_GLOW: Record<StudentState, string | undefined> = {
+    responded: "0 0 8px rgba(78,205,196,0.15)",
+    active: undefined,
+    stuck: "0 0 8px rgba(245,158,11,0.15)",
+    disconnected: undefined,
+  };
+
   return (
     <motion.div
       layout
       className={`flex items-center gap-2 px-2.5 py-2 rounded-xl ring-1 ${STATE_RING[student.state]} ${STATE_BG[student.state]} group relative`}
+      style={{ boxShadow: STATE_GLOW[student.state] }}
     >
       {student.state === "active" && (
         <motion.div
@@ -70,7 +78,29 @@ const StudentPulseItem = memo(function StudentPulseItem({
           className="absolute inset-0 rounded-xl ring-1 ring-bw-primary/30 pointer-events-none"
         />
       )}
-      <span className="text-sm">{student.avatar}</span>
+      <motion.span
+        className="text-sm"
+        animate={
+          student.state === "responded"
+            ? { scale: [1, 1.15, 1] }
+            : student.state === "stuck"
+              ? { rotate: [-3, 3, -3] }
+              : student.state === "active"
+                ? { scale: [1, 1.06, 1] }
+                : {}
+        }
+        transition={
+          student.state === "responded"
+            ? { duration: 0.5, ease: "easeOut" }
+            : student.state === "stuck"
+              ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" }
+              : student.state === "active"
+                ? { repeat: Infinity, duration: 3, ease: "easeInOut" }
+                : {}
+        }
+      >
+        {student.avatar}
+      </motion.span>
       <span className="text-xs truncate flex-1">{student.display_name}</span>
       {student.state === "responded" && (
         <span className="text-xs text-bw-teal font-bold">OK</span>

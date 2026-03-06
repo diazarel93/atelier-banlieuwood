@@ -113,9 +113,10 @@ function ResponseCardInner({
     <motion.article
       aria-label={`Réponse de ${response.students?.display_name || "élève"}`}
       layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -1 }}
+      initial={{ opacity: 0, y: 12, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      whileHover={{ y: -2, boxShadow: "0 4px 16px rgba(0,0,0,0.25), 0 0 8px rgba(78,205,196,0.08)" }}
       style={{
         borderColor,
         x,

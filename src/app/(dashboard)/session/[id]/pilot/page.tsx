@@ -1943,28 +1943,49 @@ function CockpitContent({
           {/* ── EMPTY STATE — shown when responding with no responses yet ── */}
           {session.status === "responding" && unifiedRespondedCount === 0 && !isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !isBudgetQuiz && (
             <div
-              className="rounded-xl border border-white/[0.08] p-6 text-center"
+              className="rounded-xl border border-white/[0.08] p-8 text-center"
               style={{
                 background: "linear-gradient(135deg, rgba(78,205,196,0.04), rgba(139,92,246,0.03), transparent)",
                 boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
               }}
             >
-              <motion.div
-                animate={{ y: [0, -4, 0], opacity: [0.5, 1, 0.5] }}
-                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-                className="text-2xl mb-2"
-              >
-                ✍️
-              </motion.div>
-              <p className="text-sm text-bw-text font-medium">En attente des réponses...</p>
-              <p className="text-xs text-bw-muted mt-1">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
-              <div className="flex justify-center gap-1 mt-3">
+              {/* Animated progress ring */}
+              <div className="relative w-16 h-16 mx-auto mb-3">
+                <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
+                  <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="3" />
+                  <motion.circle
+                    cx="32" cy="32" r="28" fill="none"
+                    stroke="url(#waitGradient2)" strokeWidth="3" strokeLinecap="round"
+                    strokeDasharray={`${2 * Math.PI * 28}`}
+                    animate={{ strokeDashoffset: [2 * Math.PI * 28, 0] }}
+                    transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+                  />
+                  <defs>
+                    <linearGradient id="waitGradient2" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#4ECDC4" stopOpacity="0.8" />
+                      <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.4" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <motion.span
+                  className="absolute inset-0 flex items-center justify-center text-2xl"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                >
+                  ✍️
+                </motion.span>
+              </div>
+              <p className="text-sm text-bw-text font-semibold">En attente des réponses</p>
+              <p className="text-xs text-bw-muted mt-1">
+                <span className="tabular-nums font-medium text-bw-teal">{activeStudents.length}</span> élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}
+              </p>
+              <div className="flex justify-center gap-1.5 mt-3">
                 {[0, 1, 2].map((i) => (
                   <motion.div
                     key={i}
-                    className="w-1.5 h-1.5 rounded-full bg-bw-teal/40"
-                    animate={{ opacity: [0.3, 1, 0.3] }}
-                    transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.3 }}
+                    className="w-2 h-2 rounded-full bg-bw-teal"
+                    animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.2, 0.8] }}
+                    transition={{ repeat: Infinity, duration: 1.4, delay: i * 0.3, ease: "easeInOut" }}
                   />
                 ))}
               </div>
@@ -2058,6 +2079,30 @@ function CockpitContent({
                             : undefined,
                       }}
                     />
+                    {/* Milestone markers at 25/50/75/100% */}
+                    {[25, 50, 75, 100].map((milestone) => {
+                      const reached = pct >= milestone;
+                      return (
+                        <div
+                          key={milestone}
+                          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-500"
+                          style={{ left: `${milestone}%` }}
+                        >
+                          <div
+                            className={`w-3 h-3 rounded-full border-2 transition-all duration-500 ${
+                              reached
+                                ? "bg-bw-teal border-bw-teal scale-110"
+                                : "bg-bw-bg border-white/20 scale-100"
+                            }`}
+                            style={{
+                              boxShadow: reached
+                                ? "0 0 8px rgba(78,205,196,0.5), 0 0 2px rgba(78,205,196,0.3)"
+                                : "0 1px 2px rgba(0,0,0,0.3)",
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                   <span className={`text-sm font-bold tabular-nums flex-shrink-0 ${allDone ? "text-bw-teal" : halfDone ? "text-bw-text" : "text-bw-muted"}`}>
                     {unifiedRespondedCount}/{activeStudents.length}
@@ -2083,7 +2128,9 @@ function CockpitContent({
             {/* Main CTA */}
             <div className="flex-1 min-w-0">
               {session.status === "waiting" ? (
-                <motion.button whileTap={{ scale: 0.97 }}
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.01 }}
                   onClick={() => {
                     if (isPreviewing) {
                       setPreviewIndex(null);
@@ -2093,10 +2140,14 @@ function CockpitContent({
                     }
                   }}
                   disabled={updateSession.isPending}
-                  className={`w-full py-2 px-6 rounded-lg font-semibold text-sm cursor-pointer transition-all duration-300 disabled:opacity-50 text-white ${
-                    isPreviewing ? "bg-bw-amber btn-glow-amber" : "bg-bw-teal btn-glow-teal"
+                  className={`w-full py-2.5 px-6 rounded-xl font-bold text-sm cursor-pointer transition-all duration-300 disabled:opacity-50 text-white ${
+                    isPreviewing ? "bg-bw-amber" : "bg-bw-teal"
                   }`}
-                  style={{ boxShadow: isPreviewing ? "0 0 24px rgba(245,158,11,0.3), 0 0 60px rgba(245,158,11,0.1)" : undefined }}>
+                  style={{
+                    boxShadow: isPreviewing
+                      ? "0 0 24px rgba(245,158,11,0.35), 0 0 60px rgba(245,158,11,0.12)"
+                      : "0 0 20px rgba(78,205,196,0.35), 0 0 50px rgba(78,205,196,0.12)",
+                  }}>
                   {isPreviewing ? `Lancer Q${displayIndex + 1}` : "Ouvrir les réponses"}
                 </motion.button>
               ) : isStandardQA && session.status !== "waiting" ? (
@@ -2116,11 +2167,17 @@ function CockpitContent({
                   pulse={allResponded}
                 />
               ) : nextAction ? (
-                <motion.button whileTap={{ scale: 0.97 }}
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.01 }}
                   onClick={handleNextAction}
                   disabled={updateSession.isPending || !!(nextAction as { disabled?: boolean }).disabled}
-                  className="btn-glow w-full py-2 rounded-lg font-bold text-sm cursor-pointer transition-all duration-200 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-                  style={{ backgroundColor: nextAction.color, color: nextAction.color === "#F59E0B" || nextAction.color === "#888" ? "black" : "white" }}>
+                  className="btn-glow w-full py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    backgroundColor: nextAction.color,
+                    color: nextAction.color === "#F59E0B" || nextAction.color === "#888" ? "black" : "white",
+                    boxShadow: `0 0 20px ${nextAction.color}50, 0 0 40px ${nextAction.color}20, 0 2px 8px rgba(0,0,0,0.2)`,
+                  }}>
                   {nextAction.label} {nextAction.shortcut && <span className="opacity-60 ml-1 text-xs">[{nextAction.shortcut}]</span>}
                 </motion.button>
               ) : (

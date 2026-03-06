@@ -77,6 +77,7 @@ function InlineActionsInner({
   const [lastNudge, setLastNudge] = useState(NUDGE_PRESETS[0]);
   const [showScorePicker, setShowScorePicker] = useState(false);
   const [hoverStar, setHoverStar] = useState(0);
+  const [sentReaction, setSentReaction] = useState<string | null>(null);
 
   const handleToggleHighlight = useCallback(() => {
     onHighlight(responseId, !isHighlighted);
@@ -96,19 +97,30 @@ function InlineActionsInner({
 
   return (
     <div className="space-y-2">
-      {/* Quick reaction buttons — one-click feedback */}
+      {/* Quick reaction buttons — one-click feedback with sent flash */}
       <div className="flex items-center gap-1 pt-1.5 border-t border-white/[0.06]">
         {QUICK_REACTIONS.map((r) => (
-          <button
+          <motion.button
             key={r.emoji}
-            onClick={() => onNudge(responseId, r.text)}
+            onClick={() => {
+              onNudge(responseId, r.text);
+              setSentReaction(r.emoji);
+              setTimeout(() => setSentReaction(null), 1200);
+            }}
             disabled={isNudgePending}
             title={r.text}
-            className="flex items-center gap-0.5 px-1.5 py-1 rounded-lg text-xs cursor-pointer transition-all hover:scale-105 disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
-            style={{ background: `${r.color}12`, border: `1px solid ${r.color}20` }}
+            className="relative flex items-center gap-0.5 px-1.5 py-1 rounded-lg text-xs cursor-pointer transition-all disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
+            style={{
+              background: sentReaction === r.emoji ? `${r.color}30` : `${r.color}12`,
+              border: `1px solid ${sentReaction === r.emoji ? `${r.color}60` : `${r.color}20`}`,
+              boxShadow: sentReaction === r.emoji ? `0 0 12px ${r.color}30` : undefined,
+            }}
+            whileTap={{ scale: 0.85 }}
+            animate={sentReaction === r.emoji ? { scale: [1, 1.3, 1] } : {}}
+            transition={{ duration: 0.3 }}
           >
-            <span className="text-xs leading-none">{r.emoji}</span>
-          </button>
+            <span className="text-xs leading-none">{sentReaction === r.emoji ? "✓" : r.emoji}</span>
+          </motion.button>
         ))}
         <div className="w-px h-4 bg-white/[0.06] mx-0.5" />
       </div>
@@ -227,12 +239,13 @@ function InlineActionsInner({
         </button>
 
         {/* Signaler (warn) */}
-        <button
+        <motion.button
           onClick={handleWarn}
           disabled={isWarnPending}
           aria-label={`Signaler l'élève — ${warnings} sur 3 avertissements`}
           className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors text-bw-muted hover:text-bw-danger hover:bg-bw-danger/10 disabled:opacity-40 ml-auto focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
           title={`Signaler — ${warnings}/3 avertissement${warnings > 1 ? "s" : ""}`}
+          whileTap={{ scale: 0.9, backgroundColor: "rgba(239,68,68,0.15)" }}
         >
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
@@ -243,7 +256,7 @@ function InlineActionsInner({
               {warnings}/3
             </span>
           )}
-        </button>
+        </motion.button>
 
         {/* Supprimer commentaire */}
         {teacherComment && !isCommenting && (

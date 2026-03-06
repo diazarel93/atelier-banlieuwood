@@ -106,12 +106,30 @@ function DeskSeat({
     >
       {/* Avatar + badges */}
       <div className="relative">
-        <div
+        <motion.div
           className="w-8 h-8 rounded-full flex items-center justify-center text-base"
           style={{ boxShadow: `0 0 0 2px ${color}, 0 0 8px ${color}40` }}
+          animate={
+            student.state === "responded"
+              ? { scale: [1, 1.08, 1] }
+              : student.state === "stuck"
+                ? { rotate: [-2, 2, -2] }
+                : student.state === "active"
+                  ? { scale: [1, 1.04, 1] }
+                  : {}
+          }
+          transition={
+            student.state === "responded"
+              ? { duration: 0.5, ease: "easeOut", times: [0, 0.4, 1] }
+              : student.state === "stuck"
+                ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" }
+                : student.state === "active"
+                  ? { repeat: Infinity, duration: 3, ease: "easeInOut" }
+                  : {}
+          }
         >
           {student.avatar}
-        </div>
+        </motion.div>
 
         {/* Hand raised */}
         {student.hand_raised_at && (
@@ -124,18 +142,28 @@ function DeskSeat({
           </motion.span>
         )}
 
-        {/* Responded check */}
+        {/* Responded check — pop + glow */}
         {student.state === "responded" && (
-          <motion.span
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 500, damping: 20 }}
-            className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#4ECDC4] flex items-center justify-center shadow-sm"
-          >
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12l5 5L20 7" />
-            </svg>
-          </motion.span>
+          <>
+            <motion.span
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 15 }}
+              className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#4ECDC4] flex items-center justify-center"
+              style={{ boxShadow: "0 0 8px rgba(78,205,196,0.5), 0 1px 2px rgba(0,0,0,0.2)" }}
+            >
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12l5 5L20 7" />
+              </svg>
+            </motion.span>
+            {/* Success ring burst */}
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0.6 }}
+              animate={{ scale: 2, opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-[#4ECDC4] pointer-events-none"
+            />
+          </>
         )}
 
         {/* Stuck indicator */}

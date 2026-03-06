@@ -335,28 +335,49 @@ export function ResponseStreamSection({
         </div>
       ) : sessionStatus === "responding" ? (
         <div
-          className="rounded-xl border border-white/[0.08] p-6 text-center"
+          className="rounded-xl border border-white/[0.08] p-8 text-center"
           style={{
             background: "linear-gradient(135deg, rgba(78,205,196,0.04), rgba(139,92,246,0.03), transparent)",
             boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
           }}
         >
-          <motion.div
-            animate={{ y: [0, -4, 0], opacity: [0.5, 1, 0.5] }}
-            transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-            className="text-2xl mb-2"
-          >
-            ✍️
-          </motion.div>
-          <p className="text-sm text-bw-text font-medium">En attente des réponses...</p>
-          <p className="text-xs text-bw-muted mt-1">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
-          <div className="flex justify-center gap-1 mt-3">
+          {/* Animated progress ring */}
+          <div className="relative w-16 h-16 mx-auto mb-3">
+            <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="3" />
+              <motion.circle
+                cx="32" cy="32" r="28" fill="none"
+                stroke="url(#waitGradient)" strokeWidth="3" strokeLinecap="round"
+                strokeDasharray={`${2 * Math.PI * 28}`}
+                animate={{ strokeDashoffset: [2 * Math.PI * 28, 0] }}
+                transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+              />
+              <defs>
+                <linearGradient id="waitGradient" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#4ECDC4" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.4" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <motion.span
+              className="absolute inset-0 flex items-center justify-center text-2xl"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            >
+              ✍️
+            </motion.span>
+          </div>
+          <p className="text-sm text-bw-text font-semibold">En attente des réponses</p>
+          <p className="text-xs text-bw-muted mt-1">
+            <span className="tabular-nums font-medium text-bw-teal">{activeStudents.length}</span> élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}
+          </p>
+          <div className="flex justify-center gap-1.5 mt-3">
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                className="w-1.5 h-1.5 rounded-full bg-bw-teal/40"
-                animate={{ opacity: [0.3, 1, 0.3] }}
-                transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.3 }}
+                className="w-2 h-2 rounded-full bg-bw-teal"
+                animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.2, 0.8] }}
+                transition={{ repeat: Infinity, duration: 1.4, delay: i * 0.3, ease: "easeInOut" }}
               />
             ))}
           </div>
