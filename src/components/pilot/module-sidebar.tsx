@@ -394,7 +394,7 @@ export function MobileSidebarDrawer({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/40 sm:hidden"
+            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
             onClick={onClose}
           />
           <motion.div
@@ -402,7 +402,7 @@ export function MobileSidebarDrawer({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -240, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed inset-y-0 left-0 z-50 w-[240px] border-r border-white/[0.06] sm:hidden bg-bw-surface"
+            className="fixed inset-y-0 left-0 z-50 w-[280px] border-r border-white/[0.06] bg-bw-surface overflow-y-auto"
           >
             {children}
           </motion.div>
