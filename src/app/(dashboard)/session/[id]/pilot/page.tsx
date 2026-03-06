@@ -938,34 +938,36 @@ function CockpitContent({
       {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* ── HEADER BAR — 72px, warm EdTech ── */}
-        <div className="flex items-center gap-2 lg:gap-4 px-3 lg:px-6 flex-shrink-0 border-b" style={{ height: 72, background: "#F5EFE6", borderColor: "#E8DFD2" }}>
+        <div className="flex items-center gap-2 xl:gap-4 px-3 xl:px-6 flex-shrink-0 border-b" style={{ height: 72, background: "#F5EFE6", borderColor: "#E8DFD2" }}>
           {/* LEFT: branding + modules */}
-          <div className="flex items-center gap-2 lg:gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
             {onOpenModules && (
               <button onClick={onOpenModules} title="Parcours des modules" className="w-9 h-9 rounded-[10px] flex items-center justify-center text-bw-muted hover:text-bw-heading bg-white border border-[#E8DFD2] cursor-pointer transition-colors flex-shrink-0 hover:shadow-sm">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
               </button>
             )}
             <div className="flex flex-col min-w-0">
-              <span className="text-[14px] lg:text-[15px] font-semibold text-[#2C2C2C] truncate">Les Etoiles de Clichy</span>
-              <span className="text-[11px] text-[#7A7A7A] hidden lg:block">Cockpit pedagogique</span>
+              <span className="text-[14px] font-semibold text-[#2C2C2C] truncate">Les Etoiles de Clichy</span>
+              <span className="text-[11px] text-[#7A7A7A] hidden xl:block">Cockpit pedagogique</span>
             </div>
           </div>
 
-          {/* CENTER: session context — items progressively hidden */}
-          <div className="flex-1 flex items-center justify-center gap-2 lg:gap-3 min-w-0">
-            {/* Mission badge */}
-            <span className="px-2 lg:px-3 py-1 lg:py-1.5 rounded-full text-[12px] lg:text-[13px] font-medium text-[#5B5B5B] truncate min-w-0" style={{ background: "#EFE8DD" }}>
-              <span className="hidden xl:inline">Mission : </span>{moduleLabel}
+          {/* CENTER: session context — items progressively revealed */}
+          <div className="flex-1 flex items-center justify-center gap-2 min-w-0">
+            {/* Mission badge — always visible, truncates */}
+            <span className="px-2 xl:px-3 py-1 rounded-full text-[12px] xl:text-[13px] font-medium text-[#5B5B5B] truncate min-w-0" style={{ background: "#EFE8DD" }}>
+              {moduleLabel}
             </span>
+            {/* Question counter — xl only */}
             {(totalQuestions ?? 0) > 0 && (
               <>
                 <span className="text-[#D3CAB8] hidden xl:block">·</span>
-                <span className="text-[13px] lg:text-[14px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0 hidden xl:block">
+                <span className="text-[13px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0 hidden xl:block">
                   Q{currentQIndex + 1}/{totalQuestions}
                 </span>
               </>
             )}
+            {/* Timer — xl only */}
             {respondingOpenedAt && (
               <>
                 <span className="text-[#D3CAB8] hidden xl:block">·</span>
@@ -974,15 +976,16 @@ function CockpitContent({
                 </span>
               </>
             )}
-            <span className="text-[#D3CAB8] hidden lg:block">·</span>
-            <span className="text-[13px] lg:text-[14px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0 hidden lg:block">
+            {/* Student count — xl only */}
+            <span className="text-[#D3CAB8] hidden xl:block">·</span>
+            <span className="text-[13px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0 hidden xl:block">
               {activeStudents.length} eleve{activeStudents.length !== 1 ? "s" : ""}
             </span>
           </div>
 
-          {/* RIGHT: header actions */}
-          <div className="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
-            {/* Auto-advance toggle */}
+          {/* RIGHT: header actions — compact by default */}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            {/* Auto-advance toggle — icon only, label at xl */}
             <button
               onClick={() => {
                 setAutoAdvance((v) => !v);
@@ -992,22 +995,22 @@ function CockpitContent({
                   setAutoAdvanceCountdown(0);
                 }
               }}
-              className={`flex items-center gap-1.5 h-9 px-2 lg:px-3 rounded-[10px] text-[13px] font-medium cursor-pointer transition-all ${
+              className={`flex items-center gap-1.5 h-9 px-2 xl:px-3 rounded-[10px] text-[13px] font-medium cursor-pointer transition-all ${
                 autoAdvance ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30" : "bg-white text-[#4A4A4A] border border-[#E8DFD2]"
               }`}
             >
               <div className={`w-5 h-3 rounded-full transition-all relative ${autoAdvance ? "bg-bw-teal" : "bg-black/10"}`}>
                 <div className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${autoAdvance ? "left-2" : "left-px"}`} />
               </div>
-              <span className="hidden lg:inline">Auto{autoAdvance && autoAdvanceCountdown > 0 ? ` ${autoAdvanceCountdown}s` : ""}</span>
+              <span className="hidden xl:inline">Auto{autoAdvance && autoAdvanceCountdown > 0 ? ` ${autoAdvanceCountdown}s` : ""}</span>
             </button>
-            {/* Pause */}
+            {/* Pause — icon only, label at xl */}
             <button
               onClick={handlePauseToggle}
-              className="h-9 w-9 lg:w-auto lg:px-3 rounded-[10px] bg-white border border-[#E8DFD2] text-[13px] font-medium text-[#4A4A4A] hover:bg-[#F8F2E8] cursor-pointer transition-colors flex items-center justify-center"
+              className="h-9 w-9 xl:w-auto xl:px-3 rounded-[10px] bg-white border border-[#E8DFD2] text-[13px] font-medium text-[#4A4A4A] hover:bg-[#F8F2E8] cursor-pointer transition-colors flex items-center justify-center"
             >
-              <span className="lg:hidden">⏸</span>
-              <span className="hidden lg:inline">⏸ Pause</span>
+              <span className="xl:hidden">⏸</span>
+              <span className="hidden xl:inline">⏸ Pause</span>
             </button>
             {/* Broadcast */}
             <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
@@ -1115,7 +1118,7 @@ function CockpitContent({
         {/* ── SPLIT-PANEL LAYOUT ── */}
         <div className="flex-1 flex overflow-hidden min-h-0">
           {/* LEFT: Classe en direct — 300px panel, hidden below lg */}
-          <div data-onboarding="classmap" className="hidden lg:flex w-[300px] flex-shrink-0 flex-col"
+          <div data-onboarding="classmap" className="hidden md:flex w-[240px] lg:w-[300px] flex-shrink-0 flex-col"
             style={{ background: "#FAF6EE", borderRight: "1px solid #EEE4D8" }}>
             {/* Compact pulse header */}
             <div className="px-4 pt-4 pb-2 flex-shrink-0">
@@ -2379,7 +2382,7 @@ function CockpitContent({
         )}
         </div>
           {/* RIGHT: Assistant pedagogique — 320px panel, hidden below xl */}
-          <div className="hidden xl:flex w-[320px] flex-shrink-0 flex-col"
+          <div className="hidden lg:flex w-[260px] xl:w-[320px] flex-shrink-0 flex-col"
             style={{ background: "#FAF6EE", borderLeft: "1px solid #EEE4D8" }}>
             {/* Title */}
             <div className="px-5 pt-5 pb-3 flex-shrink-0">
