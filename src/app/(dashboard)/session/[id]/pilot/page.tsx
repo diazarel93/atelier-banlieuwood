@@ -740,6 +740,9 @@ function CockpitContent({
     setShowCompare(false);
     setShowShortcuts(false);
     setShowRevealAnswer(false);
+    setShowDebate(false);
+    setShowWordCloud(false);
+    setSpotlightResponse(null);
     setTimerMode(false);
   }, []);
 
@@ -787,14 +790,6 @@ function CockpitContent({
     setShowBroadcast(false);
     play("send");
     toast.success("Message envoyé à toute la classe");
-  }
-
-  // ── Batch nudge stuck students ──
-  function handleNudgeAllStuck() {
-    // For students with responses, use nudge; broadcast covers all
-    updateSession.mutate({ broadcast_message: "N'oubliez pas de répondre à la question !", broadcast_at: new Date().toISOString() });
-    play("send");
-    toast.success(`Relance envoyée à ${stuckStudents.length} élève${stuckStudents.length > 1 ? "s" : ""}`);
   }
 
   // ── Bulk: highlight all visible ──
@@ -944,6 +939,14 @@ function CockpitContent({
     moduleSubmittedIds.forEach(id => respondedIds.add(id));
     return activeStudents.filter(s => !respondedIds.has(s.id));
   }, [session.status, responses, activeStudents, moduleSubmittedIds]);
+
+  // ── Batch nudge students who haven't responded ──
+  function handleNudgeAllStuck() {
+    const count = notRespondedStudents.length || stuckStudents.length;
+    updateSession.mutate({ broadcast_message: "N'oubliez pas de répondre à la question !", broadcast_at: new Date().toISOString() });
+    play("send");
+    toast.success(`Relance envoyée à la classe (${count} en attente)`);
+  }
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
@@ -2543,7 +2546,7 @@ function CockpitContent({
                   onReformulate={() => openBroadcastWith("Reformulation : ", "Reformuler la consigne", "🔄")}
                   onLaunchVote={() => updateSession.mutate({ status: "voting", timer_ends_at: null })}
                   onBroadcast={openBroadcast}
-                  onDebate={() => responses.length >= 2 ? setShowDebate(true) : openBroadcastWith("Pour ce debat : quels arguments pour et contre ?", "Lancer un debat", "🎭")}
+                  onDebate={() => setShowDebate(true)}
                 />
               ) : responses.length > 0 ? (
                 <ComprehensionHeatmap
@@ -2675,11 +2678,11 @@ function CockpitContent({
                     style={{ background: "#FFF0E6", borderColor: "#E6DBCF", color: "#8B4513" }}>
                     💡 <span className="hidden sm:inline">Indice</span>
                   </button>
-                  <button onClick={handleNudgeAllStuck} disabled={stuckStudents.length === 0}
+                  <button onClick={handleNudgeAllStuck} disabled={notRespondedStudents.length === 0}
                     className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
                     style={{ background: "#EBF2FF", borderColor: "#E6DBCF", color: "#3B5998" }}>
-                    🚀 <span className="hidden sm:inline">Relancer{stuckStudents.length > 0 ? ` (${stuckStudents.length})` : ""}</span>
-                    <span className="sm:hidden">{stuckStudents.length > 0 ? stuckStudents.length : ""}</span>
+                    🚀 <span className="hidden sm:inline">Relancer{notRespondedStudents.length > 0 ? ` (${notRespondedStudents.length})` : ""}</span>
+                    <span className="sm:hidden">{notRespondedStudents.length > 0 ? notRespondedStudents.length : ""}</span>
                   </button>
                 </div>
                 {/* Separateur */}
@@ -2691,8 +2694,8 @@ function CockpitContent({
                     style={{ background: "#E8F5F2", borderColor: "#E6DBCF", color: "#1B5E50" }}>
                     💬 <span className="hidden sm:inline">Discussion</span>
                   </button>
-                  <button onClick={() => responses.length >= 2 ? setShowDebate(true) : openBroadcastWith("Pour ce debat : quels arguments pour et contre ?", "Lancer un debat", "🎭")}
-                    className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
+                  <button onClick={() => setShowDebate(true)} disabled={visibleResponses.length < 1}
+                    className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
                     style={{ background: "#F0ECF8", borderColor: "#E6DBCF", color: "#5B3A8E" }}>
                     🎭 <span className="hidden sm:inline">Debat</span>
                   </button>
@@ -2700,15 +2703,15 @@ function CockpitContent({
                 {/* Separateur */}
                 <div className="w-px h-6 hidden sm:block" style={{ background: "#E8DFD2" }} />
                 {/* Groupe 3: Voter */}
-                <button onClick={() => { if (responses.length >= 2) setShowCompare(true); }} disabled={responses.length < 2}
+                <button onClick={() => { if (visibleResponses.length >= 2) setShowCompare(true); }} disabled={visibleResponses.length < 2}
                   className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
                   style={{ background: "#FFF8E6", borderColor: "#E6DBCF", color: "#8B6914" }}>
-                  🗳️ <span className="hidden sm:inline">Vote rapide</span>
+                  ⚖️ <span className="hidden sm:inline">Comparer</span>
                 </button>
                 {/* Separateur */}
                 <div className="w-px h-6 hidden sm:block" style={{ background: "#E8DFD2" }} />
                 {/* Groupe 4: Analytics */}
-                <button onClick={() => setShowWordCloud(true)} disabled={responses.length < 3}
+                <button onClick={() => setShowWordCloud(true)} disabled={visibleResponses.length < 3}
                   className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border disabled:opacity-30 disabled:cursor-not-allowed"
                   style={{ background: "#F0F8FF", borderColor: "#E6DBCF", color: "#2563EB" }}>
                   ☁️ <span className="hidden sm:inline">Nuage</span>

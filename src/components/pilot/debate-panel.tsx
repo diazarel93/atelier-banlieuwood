@@ -72,10 +72,11 @@ export function DebatePanel({ open, onClose, responses, onBroadcast, onSpotlight
     });
   };
 
-  if (!open || camps.length < 2) return null;
+  if (!open) return null;
 
-  const campA = camps[selectedCamps[0]];
-  const campB = camps[selectedCamps[1]];
+  const notEnoughCamps = camps.length < 2;
+  const campA = notEnoughCamps ? null : camps[selectedCamps[0]];
+  const campB = notEnoughCamps ? null : camps[selectedCamps[1]];
   const totalInDebate = (campA?.responses.length || 0) + (campB?.responses.length || 0);
 
   return (
@@ -103,8 +104,29 @@ export function DebatePanel({ open, onClose, responses, onBroadcast, onSpotlight
               <button onClick={onClose} className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">✕</button>
             </div>
 
+            {/* Not enough distinct positions */}
+            {notEnoughCamps && (
+              <div className="px-5 py-10 text-center space-y-3">
+                <span className="text-4xl">🤝</span>
+                <p className="text-sm font-semibold text-bw-heading">Pas assez de positions differentes</p>
+                <p className="text-xs text-bw-muted max-w-xs mx-auto">
+                  {responses.length === 0
+                    ? "Aucune reponse visible pour creer un debat."
+                    : camps.length === 1
+                      ? `Tous les eleves ont repondu la meme chose : "${camps[0].label}"`
+                      : "Il faut au moins 2 reponses visibles pour lancer un debat."}
+                </p>
+                <button
+                  onClick={() => { onBroadcast("Pour ce debat : quels arguments pour et contre ?"); onClose(); }}
+                  className="mt-2 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110 active:scale-95 border border-black/[0.06] text-bw-text hover:bg-black/[0.03]"
+                >
+                  📢 Envoyer un message a la place
+                </button>
+              </div>
+            )}
+
             {/* Camp selector pills */}
-            {camps.length > 2 && (
+            {!notEnoughCamps && camps.length > 2 && (
               <div className="px-5 py-2 border-b border-black/[0.04] flex flex-wrap gap-1.5">
                 <span className="text-xs text-bw-muted mr-1 self-center">Positions :</span>
                 {camps.map((camp, i) => (
@@ -128,6 +150,7 @@ export function DebatePanel({ open, onClose, responses, onBroadcast, onSpotlight
             )}
 
             {/* Split view */}
+            {!notEnoughCamps && (
             <div className="flex-1 overflow-y-auto px-5 py-4">
               <div className="grid grid-cols-2 gap-4 h-full">
                 {[campA, campB].map((camp, idx) => {
@@ -174,8 +197,10 @@ export function DebatePanel({ open, onClose, responses, onBroadcast, onSpotlight
                 })}
               </div>
             </div>
+            )}
 
             {/* Actions footer */}
+            {!notEnoughCamps && (
             <div className="px-5 py-3 border-t border-black/[0.04] flex items-center justify-between flex-shrink-0">
               <span className="text-xs text-bw-muted">{totalInDebate} eleves dans le debat</span>
               <div className="flex gap-2">
@@ -191,6 +216,7 @@ export function DebatePanel({ open, onClose, responses, onBroadcast, onSpotlight
                 </button>
               </div>
             </div>
+            )}
           </motion.div>
         </>
       )}
