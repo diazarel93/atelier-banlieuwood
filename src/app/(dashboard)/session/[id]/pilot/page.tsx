@@ -918,7 +918,7 @@ function CockpitContent({
       {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* ── COMPACT HEADER BAR ── */}
-        <div className="flex items-center gap-2.5 px-4 py-1.5 flex-shrink-0 border-b border-white/[0.06]" style={{ background: "linear-gradient(90deg, rgba(26,29,34,0.8), rgba(18,20,24,0.95))" }}>
+        <div className="flex items-center gap-2.5 px-4 py-1.5 flex-shrink-0 border-b border-white/[0.10]" style={{ background: "linear-gradient(90deg, rgba(26,29,34,0.8), rgba(18,20,24,0.95))" }}>
           {/* Modules button — opens sidebar drawer */}
           {onOpenModules && (
             <button onClick={onOpenModules} title="Parcours des modules" className="w-7 h-7 rounded-lg flex items-center justify-center text-bw-muted hover:text-white hover:bg-white/[0.06] cursor-pointer transition-colors flex-shrink-0">
@@ -962,7 +962,7 @@ function CockpitContent({
               }
             }}
             className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-medium cursor-pointer transition-all flex-shrink-0 ${
-              autoAdvance ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30" : "bg-white/[0.04] text-bw-muted border border-white/[0.06]"
+              autoAdvance ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30" : "bg-white/[0.04] text-bw-muted border border-white/[0.10]"
             }`}
           >
             <div className={`w-5 h-3 rounded-full transition-all relative ${autoAdvance ? "bg-bw-teal" : "bg-white/10"}`}>
@@ -974,7 +974,7 @@ function CockpitContent({
 
         {/* ── QUESTION BAR — UNIVERSAL, always visible with collapsible guide ── */}
         {universalQuestionText && (
-          <div className="flex-shrink-0 border-b border-white/[0.06]">
+          <div className="flex-shrink-0 border-b border-white/[0.10]">
             <div className={`flex items-center gap-2 px-4 py-2 border-l-[3px] ${isPreviewing ? "border-l-bw-amber" : ""}`} style={isPreviewing ? undefined : { borderLeftColor: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
               {/* Category badge */}
               <span className="text-xs font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0"
@@ -990,12 +990,12 @@ function CockpitContent({
               {maxSituations > 1 && (
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button onClick={previewPrev} disabled={displayIndex <= 0}
-                    className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                    className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.10] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
                     ◀
                   </button>
                   <span className="text-xs text-bw-muted tabular-nums">Q{displayIndex + 1}/{maxSituations}</span>
                   <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
-                    className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                    className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.10] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
                     ▶
                   </button>
                 </div>
@@ -1005,7 +1005,7 @@ function CockpitContent({
                 <button
                   onClick={() => setGuideExpanded(!guideExpanded)}
                   className={`px-2 py-1 rounded-lg text-xs font-medium cursor-pointer transition-all flex-shrink-0 ${
-                    guideExpanded ? "bg-bw-green/15 text-bw-green border border-bw-green/30" : "text-bw-muted hover:text-bw-green bg-bw-elevated border border-white/[0.06]"
+                    guideExpanded ? "bg-bw-green/15 text-bw-green border border-bw-green/30" : "text-bw-muted hover:text-bw-green bg-bw-elevated border border-white/[0.10]"
                   }`}
                 >
                   {guideExpanded ? "▴ Guide" : "▾ Guide"}
@@ -1061,7 +1061,7 @@ function CockpitContent({
           <div className="hidden lg:flex lg:w-[40%] flex-shrink-0 flex-col overflow-y-auto border-r border-white/[0.10]">
             {/* Mini stats bar */}
             {session.status !== "done" && (
-              <div className="flex-shrink-0 px-3 py-2 border-b border-white/[0.06] flex items-center gap-3 text-xs">
+              <div className="flex-shrink-0 px-3 py-2 border-b border-white/[0.10] flex items-center gap-3 text-xs">
                 {stuckStudents.length > 0 && (
                   <span className="text-bw-danger tabular-nums font-medium">● {stuckStudents.length} bloqué{stuckStudents.length > 1 ? "s" : ""}</span>
                 )}
@@ -1131,14 +1131,14 @@ function CockpitContent({
 
           {/* ── TOOLBAR — clean, minimal header for right panel ── */}
           {session.status !== "done" && !focusMode && (
-            <div className="flex items-center gap-2.5 pb-2 border-b border-white/[0.06]">
+            <div className="flex items-center gap-2.5 pb-2 border-b border-white/[0.10]">
               <span className="text-xs font-semibold text-bw-heading uppercase tracking-wider">{unifiedLabel}</span>
               <div className="flex-1" />
               {(isBudgetQuiz || showM10Special || showM2ECSceneBuilder || showM2ECComparison) && (
                 <input
                   type="text" placeholder="Rechercher..." value={cardSearch}
                   onChange={(e) => setCardSearch(e.target.value)}
-                  className="w-32 px-2 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.06] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
+                  className="w-32 px-2 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.10] text-bw-text placeholder:text-bw-muted/50 focus:outline-none focus:border-bw-teal/40"
                 />
               )}
               <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
@@ -1257,7 +1257,7 @@ function CockpitContent({
               {budgetData && budgetData.budgets.length > 0 && (
                 <div className="space-y-2">
                   {budgetData.budgets.filter((b) => !cardSearch || (b.students?.display_name || "").toLowerCase().includes(cardSearch.toLowerCase())).map((b) => (
-                    <div key={b.id} className="bg-bw-surface rounded-xl p-3 border border-white/[0.06] space-y-2">
+                    <div key={b.id} className="bg-bw-surface rounded-xl p-3 border border-white/[0.10] space-y-2">
                       <div className="flex items-center gap-2">
                         <span className="text-base">{b.students?.avatar}</span>
                         <span className="text-sm font-medium text-bw-heading">{b.students?.display_name}</span>
@@ -1295,7 +1295,7 @@ function CockpitContent({
               )}
 
               {budgetSubmitted === 0 && (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-8 text-center space-y-2">
+                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-8 text-center space-y-2">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                     className="text-3xl">💰</motion.div>
                   <p className="text-sm text-bw-muted">En attente des choix budgetaires...</p>
@@ -1356,7 +1356,7 @@ function CockpitContent({
                     alt={module10Data.image.title}
                     className="w-full h-auto max-h-48 object-cover"
                   />
-                  <div className="bg-bw-elevated px-3 py-2 border-t border-white/[0.06]">
+                  <div className="bg-bw-elevated px-3 py-2 border-t border-white/[0.10]">
                     <p className="text-xs font-medium text-bw-teal">{module10Data.image.title}</p>
                     <p className="text-xs text-bw-muted mt-0.5 line-clamp-2">{module10Data.image.description}</p>
                   </div>
@@ -1365,7 +1365,7 @@ function CockpitContent({
 
               {/* Pitch — show personnage card if available */}
               {module10Data?.personnage && (module10Data.type === "objectif" || module10Data.type === "pitch" || module10Data.type === "chrono") && (
-                <div className="bg-bw-elevated rounded-xl p-3 border border-white/[0.06] flex items-center gap-3">
+                <div className="bg-bw-elevated rounded-xl p-3 border border-white/[0.10] flex items-center gap-3">
                   <DiceBearAvatarMini options={module10Data.personnage.avatar || {}} size={40} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-bw-heading truncate">{module10Data.personnage.prenom}</p>
@@ -1398,7 +1398,7 @@ function CockpitContent({
                   )}
                   {/* Pitch picker for teacher */}
                   {module10Data.pitchList && module10Data.pitchList.length >= 2 && (
-                    <div className="bg-bw-surface rounded-xl p-3 border border-white/[0.06] space-y-2">
+                    <div className="bg-bw-surface rounded-xl p-3 border border-white/[0.10] space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-bw-muted uppercase font-semibold tracking-wider">Choisir les pitchs à confronter</span>
                         <span className="text-xs text-bw-muted">{selectedPitchIds.length}/2</span>
@@ -1416,7 +1416,7 @@ function CockpitContent({
                             className={`w-full text-left p-2 rounded-lg border text-xs transition-colors cursor-pointer ${
                               isSelected
                                 ? idx === 0 ? "bg-bw-teal/10 border-bw-teal/30 text-bw-teal" : "bg-bw-danger/10 border-bw-danger/30 text-bw-danger"
-                                : "bg-bw-bg border-white/[0.06] text-bw-muted hover:border-bw-teal/20"
+                                : "bg-bw-bg border-white/[0.10] text-bw-muted hover:border-bw-teal/20"
                             }`}>
                             <span className="font-medium">{isSelected ? (idx === 0 ? "A" : "B") + " — " : ""}{p.prenom}</span>
                             <span className="block text-xs text-bw-muted mt-0.5 line-clamp-1">{p.text}</span>
@@ -1449,7 +1449,7 @@ function CockpitContent({
 
               {/* Idea bank items */}
               {module10Data?.type === "idea-bank" && module10Data.ideaBankItems && module10Data.ideaBankItems.length > 0 && (
-                <div className="bg-bw-surface rounded-xl p-3 border border-white/[0.06] space-y-1.5">
+                <div className="bg-bw-surface rounded-xl p-3 border border-white/[0.10] space-y-1.5">
                   <p className="text-xs text-bw-muted uppercase font-semibold tracking-wider">💡 Banque d&apos;idées</p>
                   {module10Data.ideaBankItems.slice(0, 5).map((item) => (
                     <div key={item.id} className="flex items-center gap-2 text-xs">
@@ -1469,7 +1469,7 @@ function CockpitContent({
                   {module10Data.allSubmissions.filter((sub) => !cardSearch || (sub.studentName || "").toLowerCase().includes(cardSearch.toLowerCase()) || (sub.text || "").toLowerCase().includes(cardSearch.toLowerCase())).map((sub, i) => (
                     <motion.div key={sub.studentId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.03 }}
-                      className="bg-bw-surface rounded-xl p-3 border border-white/[0.06] space-y-2">
+                      className="bg-bw-surface rounded-xl p-3 border border-white/[0.10] space-y-2">
                       <div className="flex items-start gap-2">
                         {sub.avatar && (
                           <DiceBearAvatarMini options={sub.avatar} size={28} />
@@ -1526,7 +1526,7 @@ function CockpitContent({
 
               {/* Top items when available */}
               {module5Data?.topItems && module5Data.topItems.length > 0 && (
-                <div className="bg-bw-surface rounded-xl p-4 border border-white/[0.06] space-y-2">
+                <div className="bg-bw-surface rounded-xl p-4 border border-white/[0.10] space-y-2">
                   <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Top contenus choisis</span>
                   {module5Data.topItems.map((item, i) => {
                     const catalog = CONTENT_CATALOG.find(c => c.key === item.key);
@@ -1553,7 +1553,7 @@ function CockpitContent({
 
               {/* Waiting state when no data yet */}
               {(!module5Data || module5Data.type !== "checklist") && session.status === "responding" && (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-6 text-center space-y-2">
+                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-6 text-center space-y-2">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                     className="text-2xl">📋</motion.div>
                   <p className="text-sm text-bw-muted">En attente des checklists...</p>
@@ -1579,10 +1579,10 @@ function CockpitContent({
                     puis choisit des éléments de mise en scène.
                   </p>
                   <div className="flex gap-3 text-xs">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-white/[0.06]">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-white/[0.10]">
                       <span>📦</span><span className="text-bw-text">{MAX_SLOTS} emplacements</span>
                     </div>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-white/[0.06]">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-white/[0.10]">
                       <span>🪙</span><span className="text-bw-text">{MAX_TOKENS} jetons max</span>
                     </div>
                   </div>
@@ -1603,7 +1603,7 @@ function CockpitContent({
                     return (
                       <motion.div key={sc.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.04 }}
-                        className="bg-bw-surface rounded-xl p-3 border border-white/[0.06] space-y-2">
+                        className="bg-bw-surface rounded-xl p-3 border border-white/[0.10] space-y-2">
                         <div className="flex items-center gap-2">
                           <span className="text-base">{sc.students?.avatar || "👤"}</span>
                           <span className="text-sm font-medium text-bw-heading">{sc.students?.display_name || "Élève"}</span>
@@ -1645,7 +1645,7 @@ function CockpitContent({
 
               {/* Waiting state when no scenes yet */}
               {(!scenesData || scenesData.scenes.length === 0) && session.status === "responding" && (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-6 text-center space-y-2">
+                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-6 text-center space-y-2">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                     className="text-2xl">🎬</motion.div>
                   <p className="text-sm text-bw-muted">En attente des scènes...</p>
@@ -1708,7 +1708,7 @@ function CockpitContent({
                             });
                           }}
                           className={`bg-bw-surface rounded-xl p-3 border-2 cursor-pointer transition-all space-y-2 ${
-                            isSelected ? "border-bw-pink/60 bg-bw-pink/5" : "border-white/[0.06] hover:border-white/[0.12]"
+                            isSelected ? "border-bw-pink/60 bg-bw-pink/5" : "border-white/[0.10] hover:border-white/[0.12]"
                           }`}>
                           <div className="flex items-center gap-2">
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs ${
@@ -1760,7 +1760,7 @@ function CockpitContent({
 
               {/* Waiting state when no scenes yet */}
               {(!scenesData || scenesData.scenes.length === 0) && (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-8 text-center space-y-2">
+                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-8 text-center space-y-2">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                     className="text-3xl">⚔️</motion.div>
                   <p className="text-sm text-bw-muted">En attente des scènes des élèves...</p>
@@ -1784,7 +1784,7 @@ function CockpitContent({
 
           {/* Voting empty state — no votes yet */}
           {isStandardQA && (session.status === "voting" || session.status === "reviewing") && (!voteData || voteData.totalVotes === 0) && (
-            <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-4 text-center space-y-2">
+            <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-4 text-center space-y-2">
               <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                 className="text-2xl">🗳️</motion.div>
               <p className="text-sm text-bw-muted">Vote en cours...</p>
@@ -1883,7 +1883,7 @@ function CockpitContent({
                   <motion.div key={r.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.03 }}
                     className={`bg-bw-surface rounded-xl p-3 border transition-colors duration-200 ${
-                      r.is_highlighted ? "border-bw-primary/30 shadow-[0_0_8px_rgba(255,107,53,0.1)]" : r.reset_at ? "border-bw-amber/20" : "border-white/[0.06]"
+                      r.is_highlighted ? "border-bw-primary/30 shadow-[0_0_8px_rgba(255,107,53,0.1)]" : r.reset_at ? "border-bw-amber/20" : "border-white/[0.10]"
                     } ${r.is_hidden ? "opacity-30" : ""} ${r.reset_at ? "opacity-50" : ""}`}>
                     <div className="flex justify-between items-start gap-2">
                       <div className="flex-1 min-w-0">
@@ -1901,7 +1901,7 @@ function CockpitContent({
                         <div className="flex items-center gap-1 flex-shrink-0">
                           <button onClick={() => toggleHide.mutate({ responseId: r.id, is_hidden: !r.is_hidden })}
                             disabled={toggleHide.isPending}
-                            className="px-2 py-1 text-xs rounded-lg hover:bg-white/5 cursor-pointer transition-colors text-bw-muted hover:text-bw-text">
+                            className="px-2 py-1 text-xs rounded-lg hover:bg-white/[0.08] cursor-pointer transition-colors text-bw-muted hover:text-bw-text">
                             {r.is_hidden ? "Montrer" : "Masquer"}
                           </button>
                           {!r.is_hidden && !r.reset_at && (
@@ -2074,7 +2074,7 @@ function CockpitContent({
                 onClick={prevSituation}
                 disabled={updateSession.isPending}
                 title="Question précédente"
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.10] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
               </button>
@@ -2140,7 +2140,7 @@ function CockpitContent({
                 onClick={skipSituation}
                 disabled={updateSession.isPending}
                 title="Passer cette question"
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.10] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
@@ -2152,7 +2152,7 @@ function CockpitContent({
                 onClick={() => setFocusMode(f => !f)}
                 title={focusMode ? "Quitter le mode focus" : "Mode focus (F)"}
                 className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-                  focusMode ? "bg-bw-violet/20 text-bw-violet" : "text-bw-muted hover:text-white hover:bg-white/5"
+                  focusMode ? "bg-bw-violet/20 text-bw-violet" : "text-bw-muted hover:text-white hover:bg-white/[0.08]"
                 }`}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="10" /></svg>
@@ -2161,7 +2161,7 @@ function CockpitContent({
                 onClick={() => updateSession.mutate({ sharing_enabled: !session.sharing_enabled })}
                 title={session.sharing_enabled ? "Partage activé" : "Partage désactivé"}
                 className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-                  session.sharing_enabled ? "bg-bw-teal/20 text-bw-teal" : "text-bw-muted hover:text-white hover:bg-white/5"
+                  session.sharing_enabled ? "bg-bw-teal/20 text-bw-teal" : "text-bw-muted hover:text-white hover:bg-white/[0.08]"
                 }`}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
@@ -2170,7 +2170,7 @@ function CockpitContent({
                 onClick={() => updateSession.mutate({ mute_sounds: !session.mute_sounds })}
                 title={session.mute_sounds ? "Sons désactivés" : "Sons activés"}
                 className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-                  session.mute_sounds ? "text-bw-muted hover:text-white hover:bg-white/5" : "bg-bw-amber/15 text-bw-amber"
+                  session.mute_sounds ? "text-bw-muted hover:text-white hover:bg-white/[0.08]" : "bg-bw-amber/15 text-bw-amber"
                 }`}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">{session.mute_sounds ? <><path d="M11 5L6 9H2v6h4l5 4z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></> : <><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></>}</svg>
@@ -2178,7 +2178,7 @@ function CockpitContent({
               <button
                 onClick={() => setShowShortcuts(true)}
                 title="Raccourcis clavier (?)"
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-bw-muted hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-bw-muted hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg>
               </button>
@@ -3045,9 +3045,9 @@ export default function PilotPage() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed right-0 top-0 bottom-0 z-50 w-[320px] max-w-[85vw] bg-bw-bg border-l border-white/[0.06] overflow-y-auto lg:hidden"
+              className="fixed right-0 top-0 bottom-0 z-50 w-[320px] max-w-[85vw] bg-bw-bg border-l border-white/[0.10] overflow-y-auto lg:hidden"
             >
-              <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.10]">
                 <span className="text-sm font-semibold">Contexte</span>
                 <button onClick={() => setMobileContextOpen(false)} className="text-bw-muted hover:text-white cursor-pointer text-sm">✕</button>
               </div>

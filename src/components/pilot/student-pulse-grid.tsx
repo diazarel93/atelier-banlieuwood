@@ -35,9 +35,9 @@ const STATE_RING: Record<StudentState, string> = {
 
 const STATE_BG: Record<StudentState, string> = {
   responded: "bg-bw-teal/10",
-  active: "bg-bw-bg",
+  active: "bg-white/[0.03]",
   stuck: "bg-bw-amber/10",
-  disconnected: "bg-bw-bg opacity-40",
+  disconnected: "bg-bw-bg/60",
 };
 
 const STATE_ORDER: Record<StudentState, number> = {
@@ -67,7 +67,7 @@ const StudentPulseItem = memo(function StudentPulseItem({
         <motion.div
           animate={{ opacity: [0.3, 1, 0.3] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute inset-0 rounded-xl ring-1 ring-bw-teal/30 pointer-events-none"
+          className="absolute inset-0 rounded-xl ring-1 ring-bw-primary/30 pointer-events-none"
         />
       )}
       <span className="text-sm">{student.avatar}</span>

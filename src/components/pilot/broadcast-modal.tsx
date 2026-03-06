@@ -59,13 +59,13 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
             {/* Presets */}
             <div className="px-5 py-3 space-y-2">
               <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Messages rapides</p>
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-3 gap-2">
                 {PRESETS.map((preset) => (
                   <button
                     key={preset.label}
                     onClick={() => handleSend(preset.text)}
                     disabled={isPending}
-                    className="text-left p-2 rounded-lg border border-white/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40"
+                    className="text-left p-2 rounded-lg border border-white/[0.10] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40"
                   >
                     <span className="text-sm block">{preset.emoji}</span>
                     <span className="text-xs text-bw-muted">{preset.label}</span>
@@ -74,8 +74,11 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
               </div>
             </div>
 
+            {/* Separator */}
+            <div className="mx-5 h-px bg-white/[0.06]" />
+
             {/* Custom message */}
-            <div className="px-5 pb-4 space-y-2">
+            <div className="px-5 py-3 space-y-2">
               <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Message personnalisé</p>
               <div className="flex gap-2">
                 <input
@@ -86,13 +89,12 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
                   placeholder="Votre message..."
                   aria-label="Message personnalise"
                   maxLength={200}
-                  className="flex-1 px-3 py-2 rounded-xl bg-bw-surface border border-white/[0.06] text-sm text-white placeholder:text-bw-muted outline-none focus:border-bw-primary/40"
+                  className="flex-1 px-3 py-2 rounded-xl bg-bw-surface border border-white/[0.10] text-sm text-white placeholder:text-bw-muted outline-none focus:border-bw-primary/40"
                 />
                 <button
                   onClick={() => handleSend(message)}
                   disabled={isPending || !message.trim()}
-                  className="px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer transition-all hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: "#FF6B35", color: "white" }}
+                  className="px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer transition-all hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 bg-bw-primary text-white"
                 >
                   {isPending ? "..." : "Envoyer"}
                 </button>
@@ -110,7 +112,7 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history }: Br
                       key={i}
                       onClick={() => handleSend(item.text)}
                       disabled={isPending}
-                      className="w-full text-left px-3 py-2 rounded-lg border border-white/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40 flex items-center gap-2"
+                      className="w-full text-left px-3 py-2 rounded-lg border border-white/[0.10] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40 flex items-center gap-2"
                     >
                       <span className="text-xs text-bw-text truncate flex-1">{item.text}</span>
                       <span className="text-xs text-bw-muted flex-shrink-0">

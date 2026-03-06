@@ -67,8 +67,7 @@ export function SelectionBar({
             onClick={onQuickVote}
             disabled={isPending}
             title="Vote rapide : auto-sélection + lancer"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer transition-all hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ backgroundColor: "#FF6B35", color: "white" }}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer transition-all hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 bg-bw-primary text-white"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
@@ -80,7 +79,7 @@ export function SelectionBar({
           onClick={onAction}
           disabled={disabled}
           className={`btn-glow px-4 py-2 rounded-lg text-xs font-bold cursor-pointer transition-all hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed ${
-            pulse && !disabled ? "animate-pulse ring-2 ring-green-400/50" : ""
+            pulse && !disabled ? "animate-pulse ring-2 ring-bw-teal/50" : ""
           }`}
           style={{
             backgroundColor: disabled ? "#22252B" : ctaColor,

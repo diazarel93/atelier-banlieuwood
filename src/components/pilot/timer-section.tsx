@@ -47,13 +47,13 @@ export function TimerSection({
             Q{currentSituationIndex + 1}/{totalSituations}
           </span>
           {remainingQuestions != null && remainingQuestions > 0 && (
-            <span className="text-xs text-bw-muted/60" title={`${remainingQuestions} questions restantes, estimation basée sur ~90s/question`}>
+            <span className="text-xs text-bw-muted" title={`${remainingQuestions} questions restantes, estimation basée sur ~90s/question`}>
               ({formatEstimate(remainingQuestions)})
             </span>
           )}
-          <div className="w-16 h-1 rounded-full bg-white/[0.06] overflow-hidden">
+          <div className="w-16 h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
             <div
-              className="h-full rounded-full bg-bw-teal/50 transition-all duration-500"
+              className="h-full rounded-full bg-bw-teal transition-all duration-500"
               style={{ width: `${((currentSituationIndex + 1) / totalSituations) * 100}%` }}
             />
           </div>
@@ -66,7 +66,7 @@ export function TimerSection({
           {[30, 60, 120, 180, 300].map((sec) => (
             <button key={sec}
               onClick={() => onSetTimer(new Date(Date.now() + sec * 1000).toISOString())}
-              className="px-2 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.06] hover:border-white/15 text-bw-text cursor-pointer transition-colors duration-200">
+              className="px-2 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.06] active:scale-95 text-bw-text cursor-pointer transition-colors duration-200">
               {sec < 60 ? `${sec}s` : `${sec / 60}m`}
             </button>
           ))}
@@ -80,7 +80,7 @@ export function TimerSection({
             </div>
           ) : (
             <button onClick={() => setCustomTimerOpen(true)} title="Timer personnalisé"
-              className="px-2 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.06] hover:border-white/15 text-bw-muted cursor-pointer transition-colors duration-200">
+              className="px-2 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.06] active:scale-95 text-bw-muted cursor-pointer transition-colors duration-200">
               ⏱️
             </button>
           )}
@@ -90,7 +90,7 @@ export function TimerSection({
           {/* Retour question précédente */}
           {currentSituationIndex > 0 && sessionStatus === "waiting" && (
             <button onClick={onPrevQuestion} title="Question précédente"
-              className="px-2.5 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.06] hover:border-white/15 text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">
+              className="px-2.5 py-1 rounded-lg text-xs bg-bw-elevated border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.06] active:scale-95 text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">
               ← Précédente
             </button>
           )}

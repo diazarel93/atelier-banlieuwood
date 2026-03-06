@@ -177,12 +177,12 @@ export function StudentFiche({
 
         {/* Quick nudge chips */}
         {!showNudgeInput && (
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5">
             {QUICK_NUDGES.map((text) => (
               <button
                 key={text}
                 onClick={() => handleSendNudge(text)}
-                className="text-xs px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-bw-text hover:bg-white/[0.08] cursor-pointer transition-all leading-snug text-left"
+                className="text-xs px-2.5 py-1.5 rounded-lg bg-white/[0.06] border border-white/[0.10] text-bw-text hover:bg-white/[0.10] hover:border-white/[0.16] cursor-pointer transition-all leading-snug text-left active:scale-95"
               >
                 {text}
               </button>
@@ -216,7 +216,7 @@ export function StudentFiche({
           <button
             onClick={() => setShowNudgeInput(!showNudgeInput)}
             className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all ${
-              showNudgeInput ? "text-bw-primary bg-bw-primary/10" : "text-bw-text hover:bg-white/5"
+              showNudgeInput ? "text-bw-primary bg-bw-primary/10" : "text-bw-text hover:bg-white/[0.08]"
             }`}
           >
             <span className="text-sm">💬</span>
@@ -225,7 +225,7 @@ export function StudentFiche({
           {onBroadcast && (
             <button
               onClick={onBroadcast}
-              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-bw-text hover:bg-white/5 cursor-pointer transition-all"
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-bw-text hover:bg-white/[0.08] cursor-pointer transition-all"
             >
               <span className="text-sm">📢</span>
               Message classe
@@ -233,7 +233,7 @@ export function StudentFiche({
           )}
           <button
             onClick={() => onWarn(student.id)}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-amber-400 hover:bg-amber-500/10 cursor-pointer transition-all"
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-bw-amber hover:bg-bw-amber/10 cursor-pointer transition-all active:scale-95"
           >
             <span className="text-sm">⚠️</span>
             {warnings > 0 ? `Avertir (${warnings}/3)` : "Avertir"}

@@ -71,7 +71,7 @@ export function PilotTopBar({
   const [kebabOpen, setKebabOpen] = useState(false);
 
   return (
-    <header className="glass border-b border-white/[0.06] px-3 py-2 flex-shrink-0 z-20">
+    <header className="glass border-b border-white/[0.10] px-3 py-2 flex-shrink-0 z-20" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>
       <div className="flex items-center gap-2">
         {/* Left: sidebar toggle + session title */}
         <div className="flex items-center gap-2 min-w-0">
@@ -85,7 +85,7 @@ export function PilotTopBar({
               <path d="M3 12h18M3 6h18M3 18h18" />
             </svg>
           </button>
-          <span className="text-xs text-bw-muted truncate max-w-[160px] hidden md:inline">{sessionTitle}</span>
+          <span className="text-sm font-medium text-bw-text truncate max-w-[200px] hidden md:inline">{sessionTitle}</span>
         </div>
 
         {/* Spacer */}
@@ -95,7 +95,7 @@ export function PilotTopBar({
         <div className="flex items-center gap-2">
           {/* Timer badge */}
           {hasTimer && (
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-bw-primary/10 border border-bw-primary/20">
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-bw-primary/15 border border-bw-primary/30" style={{ boxShadow: "0 0 12px rgba(255,107,53,0.15)" }}>
               <CountdownTimer endsAt={timerEndsAt!} size="sm" onExpired={onTimerExpired} />
               <button onClick={onClearTimer}
                 className="text-xs text-bw-primary hover:text-white cursor-pointer ml-0.5">✕</button>
@@ -114,9 +114,9 @@ export function PilotTopBar({
 
           {/* Join code */}
           <button onClick={onCopyCode}
-            className="hidden md:flex items-center gap-1.5 bg-bw-elevated px-2.5 py-1.5 rounded-xl border border-white/[0.06] hover:border-white/15 cursor-pointer transition-colors duration-200">
+            className="hidden md:flex items-center gap-1.5 bg-bw-elevated px-2.5 py-1.5 rounded-xl border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.08] active:scale-95 cursor-pointer transition-colors duration-200">
             <span className="font-mono font-bold text-xs tracking-wider">{joinCode}</span>
-            <span className="text-xs text-bw-muted">{codeCopied ? "✓" : "Copier"}</span>
+            <span className={`text-xs ${codeCopied ? "text-bw-teal font-medium" : "text-bw-muted"}`}>{codeCopied ? "✓ Copié" : "Copier"}</span>
           </button>
 
           {/* Pause/Resume */}
@@ -131,7 +131,7 @@ export function PilotTopBar({
 
           {/* Projection */}
           <button onClick={onOpenScreen}
-            className="hidden md:inline-flex px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-xs cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
+            className="hidden md:inline-flex px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.08] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
             title="Ouvrir l'écran de projection">
             Écran ↗
           </button>
@@ -139,7 +139,7 @@ export function PilotTopBar({
           {/* Mobile context panel */}
           {onOpenMobileContext && moduleView === "cockpit" && activeModuleLabel && (
             <button onClick={onOpenMobileContext}
-              className="lg:hidden px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-xs cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
+              className="lg:hidden px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.08] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
               title="Panneau contexte">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
@@ -152,7 +152,7 @@ export function PilotTopBar({
           <div className="relative">
             <button
               onClick={() => setKebabOpen(!kebabOpen)}
-              className="hidden md:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.06] hover:border-white/15 text-xs cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
+              className="hidden md:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.08] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
               title="Plus d'options"
             >
               ⋯
@@ -169,25 +169,25 @@ export function PilotTopBar({
                     className="absolute right-0 top-full mt-1.5 z-50 w-48 bg-bw-surface border border-white/[0.08] rounded-xl shadow-2xl overflow-hidden"
                   >
                     <button onClick={() => { onToggleQR(); setKebabOpen(false); }}
-                      className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.06] cursor-pointer transition-colors flex items-center gap-2">
+                      className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2">
                       <span className="w-5 text-center text-sm">📱</span> QR Code
                     </button>
                     {onToggleMute && (
                       <button onClick={() => { onToggleMute(); setKebabOpen(false); }}
-                        className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.06] cursor-pointer transition-colors flex items-center gap-2">
+                        className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2">
                         <span className="w-5 text-center text-sm">{muteSounds ? "\uD83D\uDD07" : "\uD83D\uDD0A"}</span>
                         {muteSounds ? "Réactiver les sons" : "Couper les sons"}
                       </button>
                     )}
                     {onBroadcast && activeModuleLabel && (
                       <button onClick={() => { onBroadcast(); setKebabOpen(false); }}
-                        className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.06] cursor-pointer transition-colors flex items-center gap-2">
+                        className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2">
                         <span className="w-5 text-center text-sm">📢</span> Message classe
                       </button>
                     )}
                     {onShortcuts && (
                       <button onClick={() => { onShortcuts(); setKebabOpen(false); }}
-                        className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.06] cursor-pointer transition-colors flex items-center gap-2">
+                        className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2">
                         <span className="w-5 text-center text-sm">⌨️</span> Raccourcis clavier
                       </button>
                     )}

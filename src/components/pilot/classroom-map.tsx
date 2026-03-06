@@ -147,19 +147,25 @@ export function ClassroomMap({
     <div className="space-y-3">
 
       {/* ── CLASSROOM FLOOR PLAN ── */}
-      <div className="relative rounded-2xl border border-white/[0.06] overflow-hidden bg-white/[0.015]">
+      <div
+        className="relative rounded-2xl border border-white/[0.10] overflow-hidden"
+        style={{
+          background: "rgba(255,255,255,0.03)",
+          boxShadow: "inset 0 0 40px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15)",
+        }}
+      >
 
         <div className="relative p-4 sm:p-5 space-y-3">
 
           {/* Teacher's desk — minimal */}
           <div className="flex justify-center">
-            <div className="flex items-center gap-2 px-5 py-1.5 rounded-lg border border-white/[0.08] bg-white/[0.02]">
+            <div className="flex items-center gap-2 px-5 py-1.5 rounded-lg border border-white/[0.12] bg-white/[0.04]">
               <span className="text-xs font-bold text-bw-muted uppercase tracking-widest">Tableau</span>
             </div>
           </div>
 
           {/* Separator */}
-          <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+          <div className="h-px bg-gradient-to-r from-transparent via-white/[0.10] to-transparent" />
 
           {/* Desk rows */}
           <div className="space-y-3">
@@ -175,12 +181,12 @@ export function ClassroomMap({
                 {group.teamName && (
                   <div className="flex items-center gap-2 px-1">
                     {group.teamColor && group.teamColor !== "#666" && (
-                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: group.teamColor }} />
+                      <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: group.teamColor, boxShadow: `0 0 6px ${group.teamColor}40` }} />
                     )}
-                    <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-bw-text">
                       {group.teamName}
                     </span>
-                    <div className="flex-1 h-px bg-white/[0.04]" />
+                    <div className="flex-1 h-px bg-white/[0.06]" />
                     <span className="text-xs text-bw-muted tabular-nums">
                       {group.pairs.reduce((n, [l, r]) => n + (l.state === "responded" ? 1 : 0) + (r?.state === "responded" ? 1 : 0), 0)}/
                       {group.pairs.reduce((n, [, r]) => n + 1 + (r ? 1 : 0), 0)}
@@ -229,8 +235,8 @@ export function ClassroomMap({
               animate={{ opacity: 1, scale: 1 }}
               className="flex justify-center pt-1"
             >
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-bw-teal/8 border border-bw-teal/15">
-                <span className="text-xs font-medium text-bw-teal">Tout le monde a répondu</span>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-bw-teal/12 border border-bw-teal/25" style={{ boxShadow: "0 0 16px rgba(78,205,196,0.15)" }}>
+                <span className="text-xs font-semibold text-bw-teal">Tout le monde a répondu</span>
               </div>
             </motion.div>
           )}
@@ -238,11 +244,11 @@ export function ClassroomMap({
       </div>
 
       {/* Legend — minimal */}
-      <div className="flex items-center justify-center gap-4 text-xs text-bw-muted/60">
-        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#4ECDC4]" /> Répondu</span>
-        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#8894A0]" /> En cours</span>
-        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#EF6461]" /> Bloqué</span>
-        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#555]" /> Hors ligne</span>
+      <div className="flex items-center justify-center gap-4 text-xs text-bw-muted">
+        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-bw-teal" /> Répondu</span>
+        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#8894A0" }} /> En cours</span>
+        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#EF6461" }} /> Bloqué</span>
+        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#555" }} /> Hors ligne</span>
       </div>
 
       {/* Student action popover */}
