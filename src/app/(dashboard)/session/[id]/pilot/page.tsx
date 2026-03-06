@@ -1097,33 +1097,76 @@ function CockpitContent({
             <div className="px-5 pt-5 pb-2 flex-shrink-0">
               <h3 className="text-[18px] font-semibold text-[#2C2C2C]">Classe en direct</h3>
             </div>
-            {/* Radar engagement — big counters at a glance */}
+            {/* Class Pulse — engagement bar + counters + contextual suggestion */}
             <div className="px-5 pb-3 flex-shrink-0">
-              <div className="rounded-[14px] p-3" style={{ background: "#FFFFFF", border: "1px solid #E8DFD2", boxShadow: "0 2px 6px rgba(61,43,16,0.04)" }}>
+              <div className="rounded-[14px] p-3 space-y-3" style={{ background: "#FFFFFF", border: "1px solid #E8DFD2", boxShadow: "0 2px 6px rgba(61,43,16,0.04)" }}>
                 {(() => {
                   const respondedN = studentStates.filter(s => s.state === "responded").length;
                   const thinkingN = studentStates.filter(s => s.state === "active").length;
                   const stuckN = studentStates.filter(s => s.state === "stuck").length;
                   const offN = studentStates.filter(s => s.state === "disconnected").length;
+                  const online = respondedN + thinkingN + stuckN;
+                  const total = online + offN;
+                  const engagementPct = total > 0 ? Math.round(((respondedN + thinkingN) / total) * 100) : 0;
+                  // Stacked engagement bar percentages
+                  const rPct = total > 0 ? (respondedN / total) * 100 : 0;
+                  const tPct = total > 0 ? (thinkingN / total) * 100 : 0;
+                  const sPct = total > 0 ? (stuckN / total) * 100 : 0;
+                  const oPct = total > 0 ? (offN / total) * 100 : 0;
+                  // Contextual suggestion
+                  let suggestion: { icon: string; text: string; color: string; bg: string } | null = null;
+                  if (stuckN >= 3) {
+                    suggestion = { icon: "💡", text: `${stuckN} bloques — Donnez un exemple concret ou reformulez la question`, color: "#C62828", bg: "#FFF5F5" };
+                  } else if (stuckN > 0 && stuckN < 3) {
+                    suggestion = { icon: "👀", text: `${stuckN} bloque${stuckN > 1 ? "s" : ""} — Un coup de pouce individuel ?`, color: "#E65100", bg: "#FFF8E1" };
+                  } else if (thinkingN > 0 && respondedN === 0) {
+                    suggestion = { icon: "⏳", text: "Tout le monde reflechit — Laissez-leur du temps", color: "#F57F17", bg: "#FFFCF5" };
+                  } else if (respondedN > 0 && respondedN === online && online > 0) {
+                    suggestion = { icon: "🚀", text: "Tous ont repondu — Passez a la suite !", color: "#2E7D32", bg: "#F0FAF4" };
+                  } else if (respondedN > online * 0.7) {
+                    suggestion = { icon: "📢", text: "Plus de 70% ont repondu — Lancez la discussion ?", color: "#1565C0", bg: "#EEF2FF" };
+                  }
                   return (
-                    <div className="grid grid-cols-4 gap-1">
-                      <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: "#F0FAF4" }}>
-                        <span className="text-[20px] font-bold tabular-nums" style={{ color: "#4CAF50" }}>{respondedN}</span>
-                        <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Repondu</span>
+                    <>
+                      {/* Header with engagement % */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#B0A99E]">Pulse de classe</span>
+                        <span className="text-[13px] font-bold tabular-nums" style={{ color: engagementPct >= 70 ? "#4CAF50" : engagementPct >= 40 ? "#F2C94C" : "#EB5757" }}>{engagementPct}% actifs</span>
                       </div>
-                      <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: "#FFFCF5" }}>
-                        <span className="text-[20px] font-bold tabular-nums" style={{ color: "#F2C94C" }}>{thinkingN}</span>
-                        <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Reflexion</span>
+                      {/* Stacked engagement bar */}
+                      <div className="h-3 rounded-full overflow-hidden flex" style={{ background: "#EFE8DD" }}>
+                        {rPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${rPct}%`, background: "#4CAF50" }} />}
+                        {tPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${tPct}%`, background: "#F2C94C" }} />}
+                        {sPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${sPct}%`, background: "#EB5757" }} />}
+                        {oPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${oPct}%`, background: "#C4BDB2" }} />}
                       </div>
-                      <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: stuckN > 0 ? "#FFF5F5" : "#FAFAFA" }}>
-                        <span className="text-[20px] font-bold tabular-nums" style={{ color: stuckN > 0 ? "#EB5757" : "#C4BDB2" }}>{stuckN}</span>
-                        <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Bloque</span>
+                      {/* Counters row */}
+                      <div className="grid grid-cols-4 gap-1">
+                        <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: "#F0FAF4" }}>
+                          <span className="text-[20px] font-bold tabular-nums" style={{ color: "#4CAF50" }}>{respondedN}</span>
+                          <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Repondu</span>
+                        </div>
+                        <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: "#FFFCF5" }}>
+                          <span className="text-[20px] font-bold tabular-nums" style={{ color: "#F2C94C" }}>{thinkingN}</span>
+                          <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Reflexion</span>
+                        </div>
+                        <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: stuckN > 0 ? "#FFF5F5" : "#FAFAFA" }}>
+                          <span className="text-[20px] font-bold tabular-nums" style={{ color: stuckN > 0 ? "#EB5757" : "#C4BDB2" }}>{stuckN}</span>
+                          <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Bloque</span>
+                        </div>
+                        <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: "#F7F5F2" }}>
+                          <span className="text-[20px] font-bold tabular-nums" style={{ color: "#C4BDB2" }}>{offN}</span>
+                          <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Off</span>
+                        </div>
                       </div>
-                      <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: "#F7F5F2" }}>
-                        <span className="text-[20px] font-bold tabular-nums" style={{ color: "#C4BDB2" }}>{offN}</span>
-                        <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Off</span>
-                      </div>
-                    </div>
+                      {/* Contextual pedagogical suggestion */}
+                      {suggestion && (
+                        <div className="flex items-start gap-2 px-3 py-2.5 rounded-[10px] transition-all duration-300" style={{ background: suggestion.bg, border: `1px solid ${suggestion.color}20` }}>
+                          <span className="text-sm flex-shrink-0 mt-0.5">{suggestion.icon}</span>
+                          <p className="text-[12px] font-medium leading-snug" style={{ color: suggestion.color }}>{suggestion.text}</p>
+                        </div>
+                      )}
+                    </>
                   );
                 })()}
               </div>

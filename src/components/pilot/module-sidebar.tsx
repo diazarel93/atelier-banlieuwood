@@ -3,7 +3,6 @@
 import { memo, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { type ModuleDef, type PhaseDef } from "@/lib/modules-data";
-import { ModuleIcon } from "./module-icon";
 
 interface ModuleSidebarProps {
   modules: ModuleDef[];
@@ -99,21 +98,21 @@ function ModuleSidebarInner({
 
   return (
     <>
-      {/* ── FLOATING PHASE DOCK — sm+ ── */}
-      <div className="fixed left-2.5 top-1/2 -translate-y-1/2 z-30 hidden sm:flex items-start gap-0">
-        {/* Phase icon strip */}
+      {/* ── FLOATING DOCK — icons strip ── */}
+      <div className="fixed left-3 top-1/2 -translate-y-1/2 z-30 hidden sm:flex items-start gap-0">
         <div
-          className="flex flex-col items-center gap-1.5 py-2.5 px-1.5 rounded-[16px]"
+          className="flex flex-col items-center gap-1 py-3 px-1.5"
           style={{
+            borderRadius: 18,
             background: "#FFFFFF",
             border: "1px solid #E8DFD2",
-            boxShadow: "0 4px 16px rgba(61,43,16,0.08), 0 1px 3px rgba(61,43,16,0.04)",
+            boxShadow: "0 4px 20px rgba(61,43,16,0.08), 0 1px 3px rgba(61,43,16,0.04)",
           }}
         >
-          {/* Global progress mini */}
-          <div className="flex flex-col items-center gap-0.5 pb-1.5 mb-0.5 w-full" style={{ borderBottom: "1px solid #EFE4D8" }}>
-            <span className="text-[11px] font-semibold text-[#7A7A7A] uppercase tracking-wider">Modules</span>
-            <span className="text-[12px] font-bold tabular-nums" style={{ color: globalDone === allMods.length && globalDone > 0 ? "#57C4B6" : "#5B5B5B" }}>
+          {/* Global progress */}
+          <div className="flex flex-col items-center gap-0.5 pb-2 mb-1 w-full" style={{ borderBottom: "1px solid #EFE4D8" }}>
+            <span className="text-[10px] font-bold text-[#B0A99E] uppercase tracking-widest">Modules</span>
+            <span className="text-[13px] font-bold tabular-nums" style={{ color: globalDone === allMods.length && globalDone > 0 ? "#4CAF50" : "#2C2C2C" }}>
               {globalDone}/{allMods.length}
             </span>
           </div>
@@ -128,39 +127,37 @@ function ModuleSidebarInner({
                 key={phase.id}
                 onClick={() => setExpandedPhaseId(isExpanded ? null : phase.id)}
                 title={phase.label}
-                className="relative w-9 h-9 rounded-[10px] flex items-center justify-center text-base transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none"
+                className="relative w-10 h-10 rounded-[12px] flex items-center justify-center text-lg transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none"
                 style={{
-                  transform: isExpanded ? "scale(1.1)" : undefined,
                   background: isExpanded
-                    ? `linear-gradient(135deg, ${phase.color}25, ${phase.color}08)`
+                    ? `${phase.color}18`
                     : isActivePhase
-                      ? `linear-gradient(135deg, ${phase.color}15, ${phase.color}05)`
+                      ? `${phase.color}0A`
                       : undefined,
                   border: isExpanded
-                    ? `1.5px solid ${phase.color}40`
+                    ? `2px solid ${phase.color}50`
                     : isActivePhase
-                      ? `1px solid ${phase.color}20`
-                      : "1px solid transparent",
+                      ? `1.5px solid ${phase.color}25`
+                      : "1.5px solid transparent",
+                  transform: isExpanded ? "scale(1.08)" : undefined,
                 }}
               >
-                <span className="leading-none relative z-10">{phase.emoji}</span>
+                <span className="leading-none">{phase.emoji}</span>
 
-                {/* Active phase pulse */}
+                {/* Active pulse */}
                 {isActivePhase && !isExpanded && (
                   <motion.div
-                    className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full"
-                    style={{ backgroundColor: phase.color }}
-                    animate={{ scale: [0.8, 1.3, 0.8], opacity: [0.7, 1, 0.7] }}
+                    className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full"
+                    style={{ backgroundColor: phase.color, border: "2px solid #FFFFFF" }}
+                    animate={{ scale: [0.8, 1.2, 0.8], opacity: [0.6, 1, 0.6] }}
                     transition={{ repeat: Infinity, duration: 1.5 }}
                   />
                 )}
 
-                {/* All done badge */}
+                {/* Done badge */}
                 {allDone && (
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center z-10" style={{ background: "#FFFFFF", border: "1px solid #D5EDE8" }}>
-                    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#57C4B6" strokeWidth="4" strokeLinecap="round">
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
+                  <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center" style={{ background: "#FFFFFF", border: "1.5px solid #C6E9D0", boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}>
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="3.5" strokeLinecap="round"><path d="M20 6L9 17l-5-5" /></svg>
                   </div>
                 )}
               </button>
@@ -168,7 +165,7 @@ function ModuleSidebarInner({
           })}
         </div>
 
-        {/* ── Phase detail panel — modules list ── */}
+        {/* ── DETAIL PANEL — wide, readable ── */}
         <AnimatePresence mode="wait">
           {expandedPhaseId && (() => {
             const phase = phases.find((p) => p.id === expandedPhaseId);
@@ -181,56 +178,61 @@ function ModuleSidebarInner({
             return (
               <motion.div
                 key={expandedPhaseId}
-                initial={{ opacity: 0, x: -8, scale: 0.95 }}
+                initial={{ opacity: 0, x: -10, scale: 0.96 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: -8, scale: 0.95 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="ml-2 w-[230px] rounded-[16px] overflow-hidden"
+                exit={{ opacity: 0, x: -10, scale: 0.96 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
+                className="ml-2.5 w-[320px] overflow-hidden"
                 style={{
+                  borderRadius: 18,
                   background: "#FFFFFF",
                   border: "1px solid #E8DFD2",
-                  boxShadow: "0 8px 32px rgba(61,43,16,0.10), 0 2px 8px rgba(61,43,16,0.04)",
+                  boxShadow: "0 8px 32px rgba(61,43,16,0.12), 0 2px 8px rgba(61,43,16,0.05)",
                 }}
               >
                 {/* Phase header */}
-                <div className="px-3.5 pt-3.5 pb-2">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-[10px] flex items-center justify-center text-lg" style={{ background: `${phase.color}15` }}>
+                <div className="px-4 pt-4 pb-3">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-10 h-10 rounded-[12px] flex items-center justify-center text-xl flex-shrink-0"
+                      style={{ background: `${phase.color}15`, border: `1.5px solid ${phase.color}25` }}
+                    >
                       {phase.emoji}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <span className="text-[14px] font-semibold text-[#2C2C2C] truncate block">{phase.label}</span>
-                      <span className="text-[12px] tabular-nums" style={{ color: done === total && done > 0 ? "#57C4B6" : "#7A7A7A" }}>
-                        {done}/{total} termine{done !== 1 ? "s" : ""}
-                      </span>
+                      <h3 className="text-[16px] font-bold text-[#2C2C2C] leading-tight">{phase.label}</h3>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-[13px] tabular-nums font-medium" style={{ color: done === total && done > 0 ? "#4CAF50" : "#7A7A7A" }}>
+                          {done}/{total} termine{done !== 1 ? "s" : ""}
+                        </span>
+                        {done === total && done > 0 && (
+                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "#F0FAF4", color: "#4CAF50" }}>Complet</span>
+                        )}
+                      </div>
                     </div>
                   </div>
+
                   {/* Progress bar */}
-                  <div className="mt-2.5 h-1.5 rounded-full overflow-hidden" style={{ background: "#F0EBE0" }}>
+                  <div className="mt-3 h-2 rounded-full overflow-hidden" style={{ background: "#F0EBE0" }}>
                     <motion.div
                       className="h-full rounded-full"
                       initial={{ width: 0 }}
                       animate={{ width: `${total > 0 ? Math.round((done / total) * 100) : 0}%` }}
-                      transition={{ duration: 0.5, ease: "easeOut" }}
+                      transition={{ duration: 0.6, ease: "easeOut" }}
                       style={{
                         background: done === total && done > 0
-                          ? "linear-gradient(90deg, #57C4B6, #4CAF50)"
-                          : `linear-gradient(90deg, ${phase.color}, ${phase.color}90)`,
+                          ? "linear-gradient(90deg, #4CAF50, #66BB6A)"
+                          : `linear-gradient(90deg, ${phase.color}, ${phase.color}BB)`,
                       }}
                     />
                   </div>
                 </div>
 
                 {/* Divider */}
-                <div className="mx-3 h-px" style={{ background: "#EFE4D8" }} />
+                <div className="h-px mx-4" style={{ background: "#EFE4D8" }} />
 
-                {/* Seances label */}
-                <div className="px-3.5 pt-2 pb-1">
-                  <span className="text-[11px] uppercase tracking-wider font-semibold text-[#B0A99E]">Seances</span>
-                </div>
-
-                {/* Module list */}
-                <div className="px-2 pb-2.5 space-y-0.5">
+                {/* Seances list */}
+                <div className="p-2.5 space-y-1">
                   {phaseMods.map((mod) => {
                     const status = getModuleStatus(mod);
                     const isActive = mod.id === activeModuleId;
@@ -240,53 +242,58 @@ function ModuleSidebarInner({
                     return (
                       <button
                         key={mod.id}
-                        onClick={() => {
-                          onSelectModule(mod.id);
-                          setExpandedPhaseId(null);
-                        }}
-                        className="w-full px-2.5 py-2 rounded-[10px] flex items-center gap-2.5 text-left transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none"
+                        onClick={() => { onSelectModule(mod.id); setExpandedPhaseId(null); }}
+                        className="w-full text-left rounded-[12px] transition-all duration-150 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none group"
                         style={{
+                          padding: isActive ? "10px 12px" : "8px 12px",
                           background: isActive
-                            ? `linear-gradient(90deg, ${mod.color}12, ${mod.color}04)`
+                            ? `linear-gradient(135deg, ${mod.color}10, ${mod.color}05)`
                             : undefined,
-                          border: isActive ? `1px solid ${mod.color}20` : "1px solid transparent",
+                          border: isActive ? `1.5px solid ${mod.color}30` : "1.5px solid transparent",
                         }}
                         onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = "#FAF6EE"; }}
                         onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = ""; }}
                       >
-                        {/* Status indicator */}
-                        <span className="flex-shrink-0 text-xs">
+                        <div className="flex items-center gap-3">
+                          {/* Status indicator */}
                           {isDone ? (
-                            <span className="w-4 h-4 rounded-full inline-flex items-center justify-center" style={{ background: "#EFFAF8" }}>
-                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#57C4B6" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5" /></svg>
-                            </span>
+                            <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "#F0FAF4", border: "1.5px solid #C6E9D0" }}>
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5" /></svg>
+                            </div>
                           ) : isActive ? (
-                            <span className="w-4 h-4 rounded-full inline-flex items-center justify-center" style={{ background: `${mod.color}20` }}>
-                              <span className="w-2 h-2 rounded-full block" style={{ background: mod.color }} />
-                            </span>
+                            <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `${mod.color}20`, border: `1.5px solid ${mod.color}40` }}>
+                              <motion.div
+                                className="w-2 h-2 rounded-full"
+                                style={{ background: mod.color }}
+                                animate={{ scale: [1, 1.3, 1] }}
+                                transition={{ repeat: Infinity, duration: 1.5 }}
+                              />
+                            </div>
                           ) : (
-                            <span className="w-4 h-4 rounded-full inline-flex items-center justify-center" style={{ background: "#F0EBE0" }}>
-                              <span className="w-1.5 h-1.5 rounded-full block" style={{ background: "#C4BDB2" }} />
-                            </span>
+                            <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "#F0EBE0" }}>
+                              <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#C4BDB2" }} />
+                            </div>
                           )}
-                        </span>
 
-                        {/* Icon */}
-                        <div className="w-4 h-4 flex-shrink-0" style={{ color: isDone ? "#57C4B6" : isActive ? mod.color : "#7A7A7A" }}>
-                          <ModuleIcon iconKey={mod.iconKey} size={16} />
+                          {/* Title — FULL, no truncation */}
+                          <span className={`text-[14px] leading-snug flex-1 ${
+                            isActive ? "text-[#2C2C2C] font-semibold" : isDone ? "text-[#B0A99E]" : "text-[#5B5B5B] group-hover:text-[#2C2C2C]"
+                          }`}>
+                            {mod.title}
+                          </span>
+
+                          {/* Duration badge (non-active) */}
+                          {!isActive && (
+                            <span className="text-[12px] text-[#B0A99E] flex-shrink-0 tabular-nums">{mod.duration}</span>
+                          )}
                         </div>
 
-                        {/* Title */}
-                        <span className={`text-[13px] truncate flex-1 ${isActive ? "text-[#2C2C2C] font-medium" : isDone ? "text-[#B0A99E]" : "text-[#5B5B5B]"}`}>
-                          {mod.title}
-                        </span>
-
-                        {/* Right side: active info */}
+                        {/* Active module: progress row below title */}
                         {isActive && (
-                          <div className="flex items-center gap-1.5 flex-shrink-0">
+                          <div className="flex items-center gap-2.5 mt-2 ml-8">
                             {qCount > 0 && (
-                              <span className="text-[11px] text-[#7A7A7A] tabular-nums">
-                                {(currentQuestionIndex ?? 0) + 1}/{qCount}
+                              <span className="text-[12px] font-medium tabular-nums" style={{ color: mod.color }}>
+                                Question {(currentQuestionIndex ?? 0) + 1}/{qCount}
                               </span>
                             )}
                             {responsesCount !== undefined && responsesCount > 0 && (
@@ -294,19 +301,16 @@ function ModuleSidebarInner({
                                 key={responsesCount}
                                 initial={{ scale: 1.3, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
-                                className="text-[11px] font-bold tabular-nums px-1.5 py-0.5 rounded-full"
-                                style={{ background: "#EFFAF8", color: "#57C4B6" }}
+                                className="text-[11px] font-bold tabular-nums px-2 py-0.5 rounded-full"
+                                style={{ background: "#F0FAF4", color: "#4CAF50" }}
                               >
-                                {responsesCount}
+                                {responsesCount} rep.
                               </motion.span>
                             )}
-                            {elapsed && <span className="text-[11px] tabular-nums" style={{ color: "#F5A45B" }}>{elapsed}</span>}
+                            {elapsed && (
+                              <span className="text-[11px] tabular-nums font-medium" style={{ color: "#F5A45B" }}>{elapsed}</span>
+                            )}
                           </div>
-                        )}
-
-                        {/* Duration for non-active */}
-                        {!isActive && (
-                          <span className="text-[11px] text-[#B0A99E] flex-shrink-0">{mod.duration}</span>
                         )}
                       </button>
                     );
@@ -350,15 +354,15 @@ export function MobileSidebarDrawer({
             onClick={onClose}
           />
           <motion.div
-            initial={{ x: -280, opacity: 0 }}
+            initial={{ x: -300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -280, opacity: 0 }}
+            exit={{ x: -300, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed inset-y-0 left-0 z-50 w-[280px] overflow-y-auto"
+            className="fixed inset-y-0 left-0 z-50 w-[300px] overflow-y-auto"
             style={{
               background: "#FFFFFF",
               borderRight: "1px solid #E8DFD2",
-              boxShadow: "4px 0 24px rgba(61,43,16,0.08)",
+              boxShadow: "4px 0 24px rgba(61,43,16,0.10)",
             }}
           >
             {children}
