@@ -195,6 +195,7 @@ function CockpitContent({
   onOpenScreen?: () => void;
 }) {
   const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
+  const [leftPanelTab, setLeftPanelTab] = useState<"list" | "map">("list");
   const [guideExpanded, setGuideExpanded] = useState(false);
   const footerCtaRef = useRef<HTMLDivElement | null>(null);
   const [mapCollapsed, setMapCollapsed] = useState(true);
@@ -1109,121 +1110,144 @@ function CockpitContent({
 
         {/* ── SPLIT-PANEL LAYOUT ── */}
         <div className="flex-1 flex overflow-hidden min-h-0">
-          {/* LEFT: Classe en direct — 280px panel per pseudo-Figma */}
-          <div data-onboarding="classmap" className="hidden lg:flex w-[280px] flex-shrink-0 flex-col"
+          {/* LEFT: Classe en direct — 300px panel with pulse + tabs (list/map) */}
+          <div data-onboarding="classmap" className="hidden lg:flex w-[300px] flex-shrink-0 flex-col"
             style={{ background: "#FAF6EE", borderRight: "1px solid #EEE4D8" }}>
-            {/* Title */}
-            <div className="px-5 pt-5 pb-2 flex-shrink-0">
-              <h3 className="text-[18px] font-semibold text-[#2C2C2C]">Classe en direct</h3>
+            {/* Compact pulse header */}
+            <div className="px-4 pt-4 pb-2 flex-shrink-0">
+              {(() => {
+                const respondedN = studentStates.filter(s => s.state === "responded").length;
+                const thinkingN = studentStates.filter(s => s.state === "active").length;
+                const stuckN = studentStates.filter(s => s.state === "stuck").length;
+                const offN = studentStates.filter(s => s.state === "disconnected").length;
+                const total = respondedN + thinkingN + stuckN + offN;
+                const engagementPct = total > 0 ? Math.round(((respondedN + thinkingN) / total) * 100) : 0;
+                const rPct = total > 0 ? (respondedN / total) * 100 : 0;
+                const tPct = total > 0 ? (thinkingN / total) * 100 : 0;
+                const sPct = total > 0 ? (stuckN / total) * 100 : 0;
+                const oPct = total > 0 ? (offN / total) * 100 : 0;
+                const online = respondedN + thinkingN + stuckN;
+                let suggestion: { icon: string; text: string; color: string; bg: string } | null = null;
+                if (stuckN >= 3) suggestion = { icon: "💡", text: `${stuckN} bloques — Donnez un exemple`, color: "#C62828", bg: "#FFF5F5" };
+                else if (stuckN > 0) suggestion = { icon: "👀", text: `${stuckN} bloque${stuckN > 1 ? "s" : ""} — Coup de pouce ?`, color: "#E65100", bg: "#FFF8E1" };
+                else if (thinkingN > 0 && respondedN === 0) suggestion = { icon: "⏳", text: "Tous reflechissent — Laissez du temps", color: "#F57F17", bg: "#FFFCF5" };
+                else if (respondedN > 0 && respondedN === online && online > 0) suggestion = { icon: "🚀", text: "Tous ont repondu !", color: "#2E7D32", bg: "#F0FAF4" };
+                else if (respondedN > online * 0.7) suggestion = { icon: "📢", text: "Plus de 70% — Lancez la discussion ?", color: "#1565C0", bg: "#EEF2FF" };
+                return (
+                  <div className="space-y-2">
+                    {/* Engagement + stacked bar */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#B0A99E]">Classe en direct</span>
+                      <span className="text-[13px] font-bold tabular-nums" style={{ color: engagementPct >= 70 ? "#4CAF50" : engagementPct >= 40 ? "#F2C94C" : "#EB5757" }}>{engagementPct}%</span>
+                    </div>
+                    <div className="h-2.5 rounded-full overflow-hidden flex" style={{ background: "#EFE8DD" }}>
+                      {rPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${rPct}%`, background: "#4CAF50" }} />}
+                      {tPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${tPct}%`, background: "#F2C94C" }} />}
+                      {sPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${sPct}%`, background: "#EB5757" }} />}
+                      {oPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${oPct}%`, background: "#C4BDB2" }} />}
+                    </div>
+                    {/* Compact counters — single row */}
+                    <div className="flex items-center gap-3 text-[12px] font-semibold tabular-nums">
+                      <span style={{ color: "#4CAF50" }}>{respondedN} rep.</span>
+                      <span style={{ color: "#F2C94C" }}>{thinkingN} ref.</span>
+                      {stuckN > 0 && <span style={{ color: "#EB5757" }}>{stuckN} bloq.</span>}
+                      {offN > 0 && <span style={{ color: "#C4BDB2" }}>{offN} off</span>}
+                    </div>
+                    {/* Suggestion */}
+                    {suggestion && (
+                      <div className="flex items-center gap-2 px-2.5 py-2 rounded-[10px]" style={{ background: suggestion.bg, border: `1px solid ${suggestion.color}20` }}>
+                        <span className="text-xs flex-shrink-0">{suggestion.icon}</span>
+                        <p className="text-[11px] font-medium leading-snug" style={{ color: suggestion.color }}>{suggestion.text}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
-            {/* Class Pulse — engagement bar + counters + contextual suggestion */}
-            <div className="px-5 pb-3 flex-shrink-0">
-              <div className="rounded-[14px] p-3 space-y-3" style={{ background: "#FFFFFF", border: "1px solid #E8DFD2", boxShadow: "0 2px 6px rgba(61,43,16,0.04)" }}>
-                {(() => {
-                  const respondedN = studentStates.filter(s => s.state === "responded").length;
-                  const thinkingN = studentStates.filter(s => s.state === "active").length;
-                  const stuckN = studentStates.filter(s => s.state === "stuck").length;
-                  const offN = studentStates.filter(s => s.state === "disconnected").length;
-                  const online = respondedN + thinkingN + stuckN;
-                  const total = online + offN;
-                  const engagementPct = total > 0 ? Math.round(((respondedN + thinkingN) / total) * 100) : 0;
-                  // Stacked engagement bar percentages
-                  const rPct = total > 0 ? (respondedN / total) * 100 : 0;
-                  const tPct = total > 0 ? (thinkingN / total) * 100 : 0;
-                  const sPct = total > 0 ? (stuckN / total) * 100 : 0;
-                  const oPct = total > 0 ? (offN / total) * 100 : 0;
-                  // Contextual suggestion
-                  let suggestion: { icon: string; text: string; color: string; bg: string } | null = null;
-                  if (stuckN >= 3) {
-                    suggestion = { icon: "💡", text: `${stuckN} bloques — Donnez un exemple concret ou reformulez la question`, color: "#C62828", bg: "#FFF5F5" };
-                  } else if (stuckN > 0 && stuckN < 3) {
-                    suggestion = { icon: "👀", text: `${stuckN} bloque${stuckN > 1 ? "s" : ""} — Un coup de pouce individuel ?`, color: "#E65100", bg: "#FFF8E1" };
-                  } else if (thinkingN > 0 && respondedN === 0) {
-                    suggestion = { icon: "⏳", text: "Tout le monde reflechit — Laissez-leur du temps", color: "#F57F17", bg: "#FFFCF5" };
-                  } else if (respondedN > 0 && respondedN === online && online > 0) {
-                    suggestion = { icon: "🚀", text: "Tous ont repondu — Passez a la suite !", color: "#2E7D32", bg: "#F0FAF4" };
-                  } else if (respondedN > online * 0.7) {
-                    suggestion = { icon: "📢", text: "Plus de 70% ont repondu — Lancez la discussion ?", color: "#1565C0", bg: "#EEF2FF" };
-                  }
-                  return (
-                    <>
-                      {/* Header with engagement % */}
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#B0A99E]">Pulse de classe</span>
-                        <span className="text-[13px] font-bold tabular-nums" style={{ color: engagementPct >= 70 ? "#4CAF50" : engagementPct >= 40 ? "#F2C94C" : "#EB5757" }}>{engagementPct}% actifs</span>
-                      </div>
-                      {/* Stacked engagement bar */}
-                      <div className="h-3 rounded-full overflow-hidden flex" style={{ background: "#EFE8DD" }}>
-                        {rPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${rPct}%`, background: "#4CAF50" }} />}
-                        {tPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${tPct}%`, background: "#F2C94C" }} />}
-                        {sPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${sPct}%`, background: "#EB5757" }} />}
-                        {oPct > 0 && <div className="h-full transition-all duration-700" style={{ width: `${oPct}%`, background: "#C4BDB2" }} />}
-                      </div>
-                      {/* Counters row */}
-                      <div className="grid grid-cols-4 gap-1">
-                        <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: "#F0FAF4" }}>
-                          <span className="text-[20px] font-bold tabular-nums" style={{ color: "#4CAF50" }}>{respondedN}</span>
-                          <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Repondu</span>
-                        </div>
-                        <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: "#FFFCF5" }}>
-                          <span className="text-[20px] font-bold tabular-nums" style={{ color: "#F2C94C" }}>{thinkingN}</span>
-                          <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Reflexion</span>
-                        </div>
-                        <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: stuckN > 0 ? "#FFF5F5" : "#FAFAFA" }}>
-                          <span className="text-[20px] font-bold tabular-nums" style={{ color: stuckN > 0 ? "#EB5757" : "#C4BDB2" }}>{stuckN}</span>
-                          <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Bloque</span>
-                        </div>
-                        <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: "#F7F5F2" }}>
-                          <span className="text-[20px] font-bold tabular-nums" style={{ color: "#C4BDB2" }}>{offN}</span>
-                          <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Off</span>
-                        </div>
-                      </div>
-                      {/* Contextual pedagogical suggestion */}
-                      {suggestion && (
-                        <div className="flex items-start gap-2 px-3 py-2.5 rounded-[10px] transition-all duration-300" style={{ background: suggestion.bg, border: `1px solid ${suggestion.color}20` }}>
-                          <span className="text-sm flex-shrink-0 mt-0.5">{suggestion.icon}</span>
-                          <p className="text-[12px] font-medium leading-snug" style={{ color: suggestion.color }}>{suggestion.text}</p>
-                        </div>
-                      )}
-                    </>
-                  );
-                })()}
+
+            {/* Tab toggle: Liste / Plan de classe */}
+            <div className="px-4 pb-2 flex-shrink-0">
+              <div className="flex rounded-[10px] p-0.5" style={{ background: "#EFE4D8" }}>
+                <button
+                  onClick={() => setLeftPanelTab("list")}
+                  className="flex-1 text-[12px] font-semibold py-1.5 rounded-[8px] transition-all cursor-pointer"
+                  style={{
+                    background: leftPanelTab === "list" ? "#FFFFFF" : "transparent",
+                    color: leftPanelTab === "list" ? "#2C2C2C" : "#7A7A7A",
+                    boxShadow: leftPanelTab === "list" ? "0 1px 3px rgba(61,43,16,0.08)" : "none",
+                  }}
+                >
+                  Liste
+                </button>
+                <button
+                  onClick={() => setLeftPanelTab("map")}
+                  className="flex-1 text-[12px] font-semibold py-1.5 rounded-[8px] transition-all cursor-pointer"
+                  style={{
+                    background: leftPanelTab === "map" ? "#FFFFFF" : "transparent",
+                    color: leftPanelTab === "map" ? "#2C2C2C" : "#7A7A7A",
+                    boxShadow: leftPanelTab === "map" ? "0 1px 3px rgba(61,43,16,0.08)" : "none",
+                  }}
+                >
+                  Plan de classe
+                </button>
               </div>
             </div>
-            {/* Student list */}
-            <div className="flex-1 overflow-y-auto px-3 pb-2">
-              {studentStates.map(s => {
-                const raw = session.students?.find(st => st.id === s.id);
-                if (!raw || !raw.is_active) return null;
-                const hasHand = !!raw.hand_raised_at;
-                const warnings = raw.warnings || 0;
-                const team = teams?.find(t => t.students.some(ts => ts.id === s.id));
-                const stateColor = s.state === "responded" ? "#4CAF50" : s.state === "stuck" ? "#EB5757" : s.state === "active" ? "#F2C94C" : "#C4BDB2";
-                return (
-                  <button key={s.id} onClick={() => setFicheStudentId(s.id)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-left rounded-[12px] hover:bg-[#F3ECE3] transition-colors cursor-pointer mb-0.5"
-                    style={{ minHeight: 44 }}>
-                    {/* State dot */}
-                    <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: stateColor, boxShadow: s.state === "stuck" ? `0 0 6px ${stateColor}40` : undefined }} />
-                    {/* Name — PRIMARY */}
-                    <div className="flex-1 min-w-0">
-                      <span className="text-[14px] font-semibold text-[#2C2C2C] truncate block">{raw.display_name}</span>
-                      {team && <span className="text-[11px] text-[#B0A99E] truncate block">{team.team_name}</span>}
-                    </div>
-                    {/* Badges */}
-                    {hasHand && <span className="text-sm flex-shrink-0 animate-bounce">✋</span>}
-                    {warnings > 0 && <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: "#FFF5EB", color: "#F5A45B" }}>⚠{warnings}</span>}
-                    {/* Small avatar */}
-                    <span className="text-sm flex-shrink-0 opacity-60">{raw.avatar}</span>
-                  </button>
-                );
-              })}
+
+            {/* Tab content — scrollable */}
+            <div className="flex-1 overflow-y-auto min-h-0">
+              {leftPanelTab === "list" ? (
+                <div className="px-3 pb-2">
+                  {studentStates.map(s => {
+                    const raw = session.students?.find(st => st.id === s.id);
+                    if (!raw || !raw.is_active) return null;
+                    const hasHand = !!raw.hand_raised_at;
+                    const warnings = raw.warnings || 0;
+                    const team = teams?.find(t => t.students.some(ts => ts.id === s.id));
+                    const stateColor = s.state === "responded" ? "#4CAF50" : s.state === "stuck" ? "#EB5757" : s.state === "active" ? "#F2C94C" : "#C4BDB2";
+                    return (
+                      <button key={s.id} onClick={() => setFicheStudentId(s.id)}
+                        className="w-full flex items-center gap-2 px-2.5 py-1.5 text-left rounded-[10px] hover:bg-[#F3ECE3] transition-colors cursor-pointer mb-0.5"
+                        style={{ minHeight: 36 }}>
+                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: stateColor, boxShadow: s.state === "stuck" ? `0 0 6px ${stateColor}40` : undefined }} />
+                        <span className="text-[13px] font-semibold text-[#2C2C2C] truncate flex-1">{raw.display_name}</span>
+                        {hasHand && <span className="text-xs flex-shrink-0 animate-bounce">✋</span>}
+                        {warnings > 0 && <span className="text-[10px] font-bold px-1 py-0.5 rounded-full flex-shrink-0" style={{ background: "#FFF5EB", color: "#F5A45B" }}>⚠{warnings}</span>}
+                        <span className="text-xs flex-shrink-0 opacity-50">{raw.avatar}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="px-3 pb-3">
+                  <ClassroomMap
+                    students={studentStates.map(s => {
+                      const raw = session.students?.find(st => st.id === s.id);
+                      return {
+                        id: s.id,
+                        display_name: raw?.display_name || "",
+                        avatar: raw?.avatar || "",
+                        state: s.state,
+                        hand_raised_at: raw?.hand_raised_at || null,
+                        warnings: raw?.warnings || 0,
+                      };
+                    })}
+                    teams={teams || []}
+                    responses={responses}
+                    sessionStatus={session.status}
+                    onNudge={(responseId, text) => nudgeStudent.mutate({ responseId, nudgeText: text })}
+                    onWarn={(studentId) => warnStudent.mutate(studentId)}
+                    onBroadcast={() => setShowBroadcast(true)}
+                    onStudentClick={(studentId) => setFicheStudentId(studentId)}
+                  />
+                </div>
+              )}
             </div>
+
             {/* Stuck alert */}
             {stuckStudents.length > 0 && (
-              <div className="px-4 py-3 border-t border-[#EFE4D8] flex-shrink-0">
+              <div className="px-3 py-2 border-t border-[#EFE4D8] flex-shrink-0">
                 <button onClick={handleNudgeAllStuck}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-[12px] bg-[#EB5757]/10 border border-[#EB5757]/20 text-[13px] font-semibold text-[#C62828] hover:bg-[#EB5757]/15 cursor-pointer transition-colors">
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-[10px] bg-[#EB5757]/10 border border-[#EB5757]/20 text-[12px] font-semibold text-[#C62828] hover:bg-[#EB5757]/15 cursor-pointer transition-colors">
                   🚀 Relancer {stuckStudents.length} bloque{stuckStudents.length > 1 ? "s" : ""}
                 </button>
               </div>
