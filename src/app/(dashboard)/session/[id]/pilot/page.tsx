@@ -1153,27 +1153,37 @@ function CockpitContent({
               })()}
             </div>
           ) : (
-          <div className="px-4 py-3 space-y-3">
+          <div className="px-3 py-2 space-y-2.5">
 
-          {/* ── UNIFIED TOOLBAR — visible for all modules ── */}
-          {session.status !== "done" && !focusMode && (
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">{unifiedLabel}</span>
-                <motion.span
-                  key={unifiedRespondedCount}
-                  initial={{ scale: 1.2, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-lg ${
-                    unifiedRespondedCount >= activeStudents.length && activeStudents.length > 0
-                      ? "bg-green-500/15 text-green-400"
-                      : "bg-bw-teal/10 text-bw-teal"
-                  }`}
-                >
-                  {unifiedRespondedCount}/{activeStudents.length}
-                </motion.span>
+          {/* ── UNIFIED TOOLBAR — sticky header for right panel ── */}
+          {session.status !== "done" && !focusMode && (() => {
+            const pct = activeStudents.length > 0 ? Math.round((unifiedRespondedCount / activeStudents.length) * 100) : 0;
+            const allDone = unifiedRespondedCount >= activeStudents.length && activeStudents.length > 0;
+            return (
+            <div className="flex items-center gap-3 pb-2 border-b border-white/[0.06]">
+              {/* Mini progress ring */}
+              <div className="relative w-10 h-10 flex-shrink-0">
+                <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="3" />
+                  <motion.circle cx="18" cy="18" r="15" fill="none"
+                    stroke={allDone ? "#4ECDC4" : "#60A5FA"}
+                    strokeWidth="3" strokeLinecap="round"
+                    strokeDasharray="94.2" animate={{ strokeDashoffset: 94.2 - (94.2 * pct / 100) }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                  />
+                </svg>
+                <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold tabular-nums text-white">{pct}%</span>
               </div>
-              <div className="flex items-center gap-1">
+              {/* Label + count */}
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-bw-heading uppercase tracking-wide">{unifiedLabel}</p>
+                <p className="text-[11px] text-bw-muted">
+                  <span className={`font-bold tabular-nums ${allDone ? "text-bw-teal" : "text-white"}`}>{unifiedRespondedCount}</span>
+                  <span>/{activeStudents.length} répondu{unifiedRespondedCount !== 1 ? "s" : ""}</span>
+                </p>
+              </div>
+              {/* Actions */}
+              <div className="flex items-center gap-1 flex-shrink-0">
                 {(isBudgetQuiz || showM10Special || showM2ECSceneBuilder || showM2ECComparison) && (
                   <input
                     type="text" placeholder="Rechercher..." value={cardSearch}
@@ -1182,16 +1192,17 @@ function CockpitContent({
                   />
                 )}
                 <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
-                  className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors">
                   📢
                 </button>
                 <button onClick={() => setShowExport(true)} title="Export (E)"
-                  className="px-2 py-1 rounded-lg text-[10px] text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.06]">
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors">
                   📋
                 </button>
               </div>
             </div>
-          )}
+            );
+          })()}
 
           {/* ── MODULE-SPECIFIC CONTENT ── */}
           <>
@@ -2023,21 +2034,27 @@ function CockpitContent({
         </div>
       </main>
 
-      {/* ── COMPACT FOOTER — progress bar + CTA + toggles ── */}
+      {/* ── FOOTER — progress + CTA + toggles ── */}
       {session.status !== "done" && session.status !== "paused" && (
-        <div className="flex-shrink-0 border-t border-white/[0.08]" style={{ background: "linear-gradient(180deg, rgba(26,29,34,0.9), rgba(18,20,24,0.98))" }}>
-          {/* Progress bar */}
+        <div className="flex-shrink-0 border-t border-white/[0.08] bg-bw-bg">
+          {/* Progress bar with label */}
           {session.status === "responding" && activeStudents.length > 0 && (() => {
             const pct = Math.round((unifiedRespondedCount / activeStudents.length) * 100);
             const allDone = unifiedRespondedCount >= activeStudents.length;
             return (
-              <div className="relative h-1 w-full bg-white/[0.04]">
-                <motion.div
-                  className={`h-full ${allDone ? "bg-gradient-to-r from-bw-teal to-bw-green" : "bg-gradient-to-r from-bw-teal/80 to-bw-teal"}`}
-                  animate={{ width: `${pct}%` }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                  style={allDone ? { boxShadow: "0 0 12px rgba(78,205,196,0.5)" } : undefined}
-                />
+              <div className="px-4 pt-2 pb-1">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] text-bw-muted font-medium">{unifiedRespondedCount}/{activeStudents.length} répondu{unifiedRespondedCount !== 1 ? "s" : ""}</span>
+                  <span className={`text-[10px] font-bold tabular-nums ${allDone ? "text-bw-teal" : "text-bw-muted"}`}>{pct}%</span>
+                </div>
+                <div className="relative h-1.5 w-full bg-white/[0.06] rounded-full overflow-hidden">
+                  <motion.div
+                    className={`h-full rounded-full ${allDone ? "bg-gradient-to-r from-bw-teal to-bw-green" : "bg-gradient-to-r from-blue-500/80 to-bw-teal"}`}
+                    animate={{ width: `${pct}%` }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    style={allDone ? { boxShadow: "0 0 12px rgba(78,205,196,0.5)" } : undefined}
+                  />
+                </div>
               </div>
             );
           })()}
