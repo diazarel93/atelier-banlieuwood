@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "motion/react";
 import type { StudentState } from "./pulse-ring";
 import type { SeatStudent } from "./seat-card";
 import { DeskPair } from "./desk-pair";
-import { StudentActionPopover } from "./student-action-popover";
 
 export type ClassroomLayout = "rows" | "u-shape" | "islands" | "free";
 
@@ -40,13 +39,6 @@ interface ClassroomMapProps {
   desksPerRow?: number;
 }
 
-const STATE_ORDER: Record<StudentState, number> = {
-  stuck: 0,
-  active: 1,
-  responded: 2,
-  disconnected: 3,
-};
-
 const STATE_STYLE: Record<string, { dot: string; bg: string; border: string; text: string }> = {
   responded: { dot: "#4CAF50", bg: "#F0FAF4", border: "#C6E9D0", text: "#2C2C2C" },
   active: { dot: "#F2C94C", bg: "#FFFCF5", border: "#F0E4C0", text: "#2C2C2C" },
@@ -62,6 +54,15 @@ function toPairs<T>(arr: T[]): [T, T | undefined][] {
   return pairs;
 }
 
+/** Sort priority: hand raised > stuck > active > responded > disconnected */
+function studentSortKey(s: SeatStudent): number {
+  if (s.hand_raised_at) return -1;
+  if (s.state === "stuck") return 0;
+  if (s.state === "active") return 1;
+  if (s.state === "responded") return 2;
+  return 3; // disconnected
+}
+
 /** Free-layout individual student chip */
 function FreeStudentChip({
   student,
@@ -74,13 +75,15 @@ function FreeStudentChip({
 }) {
   const [hovered, setHovered] = useState(false);
   const s = STATE_STYLE[student.state] || STATE_STYLE.disconnected;
+  const stateLabel = student.state === "responded" ? "a repondu" : student.state === "stuck" ? "bloque" : student.state === "active" ? "en reflexion" : "absent";
 
   return (
     <motion.button
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="relative flex flex-col items-center gap-1 p-2.5 rounded-[12px] cursor-pointer transition-all"
+      aria-label={`${student.display_name} — ${stateLabel}${student.hand_raised_at ? ", main levee" : ""}`}
+      className="relative flex flex-col items-center gap-1 p-2.5 rounded-[12px] cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-[#6B8CFF]"
       style={{
         background: s.bg,
         border: `1.5px solid ${s.border}`,
@@ -147,16 +150,12 @@ export function ClassroomMap({
   layout = "rows",
   desksPerRow = 3,
 }: ClassroomMapProps) {
-  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
-
   // Build merged response map
-  const { responseMap, responseIdMap } = useMemo(() => {
+  const { responseMap } = useMemo(() => {
     const rMap = new Map<string, string>();
-    const idMap = new Map<string, string>();
     for (const r of responses) {
       if (!r.is_hidden && !r.reset_at && !rMap.has(r.student_id)) {
         rMap.set(r.student_id, r.text);
-        idMap.set(r.student_id, r.id);
       }
     }
     if (moduleResponseTexts) {
@@ -164,7 +163,7 @@ export function ClassroomMap({
         if (!rMap.has(studentId)) rMap.set(studentId, text);
       }
     }
-    return { responseMap: rMap, responseIdMap: idMap };
+    return { responseMap: rMap };
   }, [responses, moduleResponseTexts]);
 
   // Stats
@@ -181,31 +180,15 @@ export function ClassroomMap({
   const onlineTotal = total - disconnectedCount;
   const hasTeams = teams.length > 0;
 
+  // Sort: hand raised first, then stuck, active, responded, disconnected
   const sortedStudents = useMemo(
-    () => [...students].sort((a, b) => STATE_ORDER[a.state] - STATE_ORDER[b.state]),
+    () => [...students].sort((a, b) => studentSortKey(a) - studentSortKey(b)),
     [students]
   );
 
-  const selectedStudent = useMemo(
-    () => (selectedStudentId ? students.find((s) => s.id === selectedStudentId) || null : null),
-    [selectedStudentId, students]
-  );
-
   const handleStudentClick = useCallback((studentId: string) => {
-    if (onStudentClick) {
-      onStudentClick(studentId);
-    } else {
-      setSelectedStudentId(studentId);
-    }
+    if (onStudentClick) onStudentClick(studentId);
   }, [onStudentClick]);
-
-  const handleNudge = useCallback(
-    (studentId: string, text: string) => {
-      const responseId = responseIdMap.get(studentId);
-      if (responseId) onNudge(responseId, text);
-    },
-    [responseIdMap, onNudge]
-  );
 
   // Build desk rows (pairs grouped by team)
   const deskRows = useMemo(() => {
@@ -237,7 +220,6 @@ export function ClassroomMap({
     for (let i = 0; i < pairs.length; i += desksPerRow) {
       rows.push(pairs.slice(i, i + desksPerRow));
     }
-    // Split each row into left/right halves with a center aisle when >= 4 desks per row
     const hasAisle = desksPerRow >= 4;
     const aisleAt = Math.ceil(desksPerRow / 2);
 
@@ -245,42 +227,21 @@ export function ClassroomMap({
       <div key={rowIdx} className="flex justify-center items-start gap-2 sm:gap-3">
         {hasAisle ? (
           <>
-            {/* Left side */}
             {row.slice(0, aisleAt).map(([left, right], deskIdx) => (
-              <DeskPair
-                key={`${left.id}-${deskIdx}`}
-                left={left} right={right}
-                responseMap={responseMap}
-                onStudentClick={handleStudentClick}
-                teamColor={teamColor || undefined}
-              />
+              <DeskPair key={`${left.id}-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} />
             ))}
-            {/* Center aisle */}
             {row.length > aisleAt && (
               <div className="w-4 sm:w-6 flex-shrink-0 self-stretch flex items-center justify-center">
                 <div className="w-px h-full" style={{ background: "linear-gradient(to bottom, transparent, #E8DFD2 30%, #E8DFD2 70%, transparent)" }} />
               </div>
             )}
-            {/* Right side */}
             {row.slice(aisleAt).map(([left, right], deskIdx) => (
-              <DeskPair
-                key={`${left.id}-r-${deskIdx}`}
-                left={left} right={right}
-                responseMap={responseMap}
-                onStudentClick={handleStudentClick}
-                teamColor={teamColor || undefined}
-              />
+              <DeskPair key={`${left.id}-r-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} />
             ))}
           </>
         ) : (
           row.map(([left, right], deskIdx) => (
-            <DeskPair
-              key={`${left.id}-${deskIdx}`}
-              left={left} right={right}
-              responseMap={responseMap}
-              onStudentClick={handleStudentClick}
-              teamColor={teamColor || undefined}
-            />
+            <DeskPair key={`${left.id}-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} />
           ))
         )}
       </div>
@@ -298,24 +259,26 @@ export function ClassroomMap({
 
     return (
       <div className="space-y-3">
-        {/* Top: left column + empty center + right column */}
+        {/* U sides: left + center open area + right */}
         <div className="flex justify-between gap-3">
-          {/* Left column */}
           <div className="flex flex-col gap-2">
             {leftPairs.map(([left, right], i) => (
               <DeskPair key={`l-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} />
             ))}
           </div>
-          {/* Center spacer */}
-          <div className="flex-1 min-w-[60px]" />
-          {/* Right column */}
+          {/* Center: teacher area marker */}
+          <div className="flex-1 min-w-[60px] flex items-center justify-center">
+            <div className="px-3 py-1 rounded-[8px]" style={{ background: "#EFE8DD", border: "1px dashed #D9CFC0" }}>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-[#B0A99E]">Prof</span>
+            </div>
+          </div>
           <div className="flex flex-col gap-2">
             {rightPairs.map(([left, right], i) => (
               <DeskPair key={`r-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} />
             ))}
           </div>
         </div>
-        {/* Bottom row */}
+        {/* Bottom row — closing the U */}
         {bottomPairs.length > 0 && (
           <div className="flex justify-center gap-2 sm:gap-3 flex-wrap">
             {bottomPairs.map(([left, right], i) => (
@@ -328,26 +291,24 @@ export function ClassroomMap({
   }
 
   function renderIslands() {
-    // Group pairs by 2 → each island = 2 desk pairs face to face
     const islands: [SeatStudent, SeatStudent | undefined][][] = [];
     for (let i = 0; i < allPairs.length; i += 2) {
       islands.push(allPairs.slice(i, i + 2));
     }
     return (
-      <div className="flex flex-wrap justify-center gap-4">
+      <div className="flex flex-wrap justify-center gap-5">
         {islands.map((island, idx) => (
           <div
             key={idx}
-            className="flex flex-col gap-0.5 p-2 rounded-[14px]"
-            style={{ background: "#F3ECE3", border: "1px dashed #E8DFD2" }}
+            className="flex flex-col gap-1.5 p-2.5 rounded-[16px]"
+            style={{ background: "#F3ECE3", border: "1px solid #E8DFD2", boxShadow: "0 1px 4px rgba(61,43,16,0.04)" }}
           >
             {island.map(([left, right], pairIdx) => (
-              <DeskPair
-                key={`is-${left.id}-${pairIdx}`}
-                left={left} right={right}
-                responseMap={responseMap}
-                onStudentClick={handleStudentClick}
-              />
+              <div key={`is-${left.id}-${pairIdx}`} style={pairIdx === 1 ? { transform: "scaleY(-1)" } : undefined}>
+                <div style={pairIdx === 1 ? { transform: "scaleY(-1)" } : undefined}>
+                  <DeskPair left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} />
+                </div>
+              </div>
             ))}
           </div>
         ))}
@@ -356,8 +317,11 @@ export function ClassroomMap({
   }
 
   function renderFreeLayout() {
+    // Adaptive columns based on student count
+    const count = sortedStudents.length;
+    const cols = Math.min(Math.max(Math.ceil(Math.sqrt(count)), 3), 6);
     return (
-      <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2 justify-items-center">
+      <div className="grid gap-2 justify-items-center" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
         {sortedStudents.map((student) => (
           <FreeStudentChip
             key={student.id}
@@ -371,11 +335,11 @@ export function ClassroomMap({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" role="region" aria-label="Plan de classe">
 
       {/* ── CLASSROOM FLOOR PLAN ── */}
       <div
-        className="relative overflow-hidden"
+        className="relative overflow-visible"
         style={{
           borderRadius: 16,
           background: "#FAF6EE",
@@ -404,45 +368,45 @@ export function ClassroomMap({
           {/* Separator */}
           <div className="h-px" style={{ background: "linear-gradient(to right, transparent, #E8DFD2, transparent)" }} />
 
-          {/* Desk layout — dispatched by layout prop */}
-          <div className="space-y-3">
-            {layout === "u-shape" ? renderUShape()
-              : layout === "islands" ? renderIslands()
-              : layout === "free" ? renderFreeLayout()
-              : /* rows (default) */ deskRows.map((group, gi) => (
-              <motion.div
-                key={group.teamId}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: gi * 0.04 }}
-                className="space-y-1.5"
-              >
-                {/* Team label */}
-                {group.teamName && (
-                  <div className="flex items-center gap-2 px-1">
-                    {group.teamColor && group.teamColor !== "#B0A99E" && (
-                      <div
-                        className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                        style={{
-                          backgroundColor: group.teamColor,
-                          boxShadow: `0 0 6px ${group.teamColor}30`,
-                        }}
-                      />
-                    )}
-                    <span className="text-[12px] font-semibold uppercase tracking-wider text-[#5B5B5B]">
-                      {group.teamName}
-                    </span>
-                    <div className="flex-1 h-px" style={{ background: "#EFE4D8" }} />
-                    <span className="text-[12px] text-[#B0A99E] tabular-nums font-medium">
-                      {group.pairs.reduce((n, [l, r]) => n + (l.state === "responded" ? 1 : 0) + (r?.state === "responded" ? 1 : 0), 0)}/
-                      {group.pairs.reduce((n, [, r]) => n + 1 + (r ? 1 : 0), 0)}
-                    </span>
-                  </div>
-                )}
-                {renderRowsLayout(group.pairs, group.teamColor)}
-              </motion.div>
-            ))}
-          </div>
+          {/* Desk layout — animated layout transitions */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={layout}
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-3"
+            >
+              {layout === "u-shape" ? renderUShape()
+                : layout === "islands" ? renderIslands()
+                : layout === "free" ? renderFreeLayout()
+                : /* rows */ deskRows.map((group, gi) => (
+                <motion.div
+                  key={group.teamId}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: gi * 0.04 }}
+                  className="space-y-1.5"
+                >
+                  {group.teamName && (
+                    <div className="flex items-center gap-2 px-1">
+                      {group.teamColor && group.teamColor !== "#B0A99E" && (
+                        <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: group.teamColor, boxShadow: `0 0 6px ${group.teamColor}30` }} />
+                      )}
+                      <span className="text-[12px] font-semibold uppercase tracking-wider text-[#5B5B5B]">{group.teamName}</span>
+                      <div className="flex-1 h-px" style={{ background: "#EFE4D8" }} />
+                      <span className="text-[12px] text-[#B0A99E] tabular-nums font-medium">
+                        {group.pairs.reduce((n, [l, r]) => n + (l.state === "responded" ? 1 : 0) + (r?.state === "responded" ? 1 : 0), 0)}/
+                        {group.pairs.reduce((n, [, r]) => n + 1 + (r ? 1 : 0), 0)}
+                      </span>
+                    </div>
+                  )}
+                  {renderRowsLayout(group.pairs, group.teamColor)}
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
 
           {/* Empty state */}
           {total === 0 && (
@@ -476,26 +440,12 @@ export function ClassroomMap({
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-4 text-[11px] text-[#B0A99E]">
-        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ background: "#4CAF50" }} /> Repondu</span>
-        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ background: "#F2C94C" }} /> En cours</span>
-        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ background: "#EB5757" }} /> Bloque</span>
-        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ background: "#C4BDB2" }} /> Hors ligne</span>
+      <div className="flex items-center justify-center gap-4 text-[11px] text-[#B0A99E]" role="list" aria-label="Legende des etats">
+        <span className="flex items-center gap-1.5" role="listitem"><span className="w-2 h-2 rounded-full" style={{ background: "#4CAF50" }} /> Repondu</span>
+        <span className="flex items-center gap-1.5" role="listitem"><span className="w-2 h-2 rounded-full" style={{ background: "#F2C94C" }} /> En cours</span>
+        <span className="flex items-center gap-1.5" role="listitem"><span className="w-2 h-2 rounded-full" style={{ background: "#EB5757" }} /> Bloque</span>
+        <span className="flex items-center gap-1.5" role="listitem"><span className="w-2 h-2 rounded-full" style={{ background: "#C4BDB2" }} /> Hors ligne</span>
       </div>
-
-      {/* Student action popover */}
-      <AnimatePresence>
-        {selectedStudent && (
-          <StudentActionPopover
-            student={selectedStudent}
-            lastResponse={responseMap.get(selectedStudent.id) || null}
-            onClose={() => setSelectedStudentId(null)}
-            onNudge={handleNudge}
-            onWarn={onWarn}
-            onBroadcast={onBroadcast ? () => { onBroadcast(); setSelectedStudentId(null); } : undefined}
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 }

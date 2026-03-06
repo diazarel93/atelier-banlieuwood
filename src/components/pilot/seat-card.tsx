@@ -1,6 +1,3 @@
-"use client";
-
-import { memo } from "react";
 import type { StudentState } from "./pulse-ring";
 
 export interface SeatStudent {
@@ -11,15 +8,3 @@ export interface SeatStudent {
   hand_raised_at?: string | null;
   warnings?: number;
 }
-
-export const SeatCard = memo(function SeatCardInner({
-  student,
-  lastResponse,
-  onClick,
-}: {
-  student: SeatStudent;
-  lastResponse: string | null;
-  onClick: () => void;
-}) {
-  return null; // Deprecated — use DeskPair
-});

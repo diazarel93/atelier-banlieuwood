@@ -204,7 +204,7 @@ function CockpitContent({
   const onboarding = usePilotOnboarding();
   const [reformulating, setReformulating] = useState<Response | null>(null);
   const [reformulatedText, setReformulatedText] = useState("");
-  const [respondingStartedAt] = useState<number>(Date.now());
+  // respondingStartedAt removed — use respondingOpenedAt instead (set on status transition)
   const [selectedSceneIds, setSelectedSceneIds] = useState<string[]>([]);
   const [selectedPitchIds, setSelectedPitchIds] = useState<string[]>([]);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
@@ -214,6 +214,7 @@ function CockpitContent({
 
   // ── New feature state ──
   const [showBroadcast, setShowBroadcast] = useState(false);
+  const openBroadcast = useCallback(() => setShowBroadcast(true), []);
   const [showExport, setShowExport] = useState(false);
   const [showCompare, setShowCompare] = useState(false);
   const [showRevealAnswer, setShowRevealAnswer] = useState(false);
@@ -473,12 +474,12 @@ function CockpitContent({
       if (!s.is_active) return { id: s.id, state: "disconnected" as StudentState, display_name: s.display_name, avatar: s.avatar };
       if (hasResponded) return { id: s.id, state: "responded" as StudentState, display_name: s.display_name, avatar: s.avatar };
       // Stuck: active, no response, > 60s since responding started
-      if (session.status === "responding" && (now - respondingStartedAt) > 60_000) {
+      if (session.status === "responding" && respondingOpenedAt && (now - respondingOpenedAt) > 60_000) {
         return { id: s.id, state: "stuck" as StudentState, display_name: s.display_name, avatar: s.avatar };
       }
       return { id: s.id, state: "active" as StudentState, display_name: s.display_name, avatar: s.avatar };
     });
-  }, [session.students, session.status, responses, respondingStartedAt, moduleSubmittedIds]);
+  }, [session.students, session.status, responses, respondingOpenedAt, moduleSubmittedIds]);
 
   // Actually change the session (launches the question for students)
   function goToSituation(index: number) {
@@ -746,7 +747,7 @@ function CockpitContent({
     sessionStatus: session.status,
     responsesCount: responses.length,
     onPauseToggle: handlePauseToggle,
-    onShowBroadcast: useCallback(() => setShowBroadcast(true), []),
+    onShowBroadcast: openBroadcast,
     onShowExport: useCallback(() => setShowExport(true), []),
     onShowCompare: useCallback(() => setShowCompare(true), []),
     onToggleShortcuts: useCallback(() => setShowShortcuts((v) => !v), []),
@@ -948,7 +949,7 @@ function CockpitContent({
               </button>
             )}
             <div className="flex flex-col min-w-0">
-              <span className="text-[14px] font-semibold text-[#2C2C2C] truncate">Les Etoiles de Clichy</span>
+              <span className="text-[14px] font-semibold text-[#2C2C2C] truncate">{session.title || "Session"}</span>
               <span className="text-[11px] text-[#7A7A7A] hidden xl:block">Cockpit pedagogique</span>
             </div>
           </div>
@@ -1014,7 +1015,7 @@ function CockpitContent({
               <span className="hidden xl:inline">⏸ Pause</span>
             </button>
             {/* Broadcast */}
-            <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
+            <button onClick={openBroadcast} title="Message classe (B)"
               className="w-9 h-9 rounded-[10px] flex items-center justify-center text-sm text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer transition-colors hover:shadow-sm">
               📢
             </button>
@@ -1045,14 +1046,14 @@ function CockpitContent({
                 <div className="flex-1" />
                 {maxSituations > 1 && (
                   <div className="flex items-center gap-1.5 flex-shrink-0">
-                    <button onClick={previewPrev} disabled={displayIndex <= 0}
-                      className="w-8 h-8 rounded-[10px] flex items-center justify-center text-xs text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-                      ◀
+                    <button onClick={previewPrev} disabled={displayIndex <= 0} aria-label="Question precedente"
+                      className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                     </button>
                     <span className="text-[13px] text-[#7A7A7A] tabular-nums font-medium px-1">Q{displayIndex + 1}/{maxSituations}</span>
-                    <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
-                      className="w-8 h-8 rounded-[10px] flex items-center justify-center text-xs text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-                      ▶
+                    <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1} aria-label="Question suivante"
+                      className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                     </button>
                   </div>
                 )}
@@ -1149,12 +1150,11 @@ function CockpitContent({
 
                     {/* Donut radar + counters side by side */}
                     <div className="flex items-center gap-3">
-                      {/* SVG Donut chart — 56px */}
-                      <div className="relative flex-shrink-0" style={{ width: 56, height: 56 }}>
+                      {/* SVG Donut chart — 56px, animated */}
+                      <div className="relative flex-shrink-0" style={{ width: 56, height: 56 }}
+                        role="img" aria-label={`Engagement ${engagementPct}%: ${respondedN} repondu, ${thinkingN} reflexion, ${stuckN} bloques, ${offN} absents`}>
                         <svg width="56" height="56" viewBox="0 0 56 56" className="transform -rotate-90">
-                          {/* Background ring */}
                           <circle cx="28" cy="28" r="22" fill="none" stroke="#EFE8DD" strokeWidth="6" />
-                          {/* Segments: responded → thinking → stuck → disconnected */}
                           {(() => {
                             const circumference = 2 * Math.PI * 22;
                             const segments = [
@@ -1169,16 +1169,19 @@ function CockpitContent({
                               const dash = (seg.pct / 100) * circumference;
                               const gap = circumference - dash;
                               const el = (
-                                <circle
+                                <motion.circle
                                   key={i}
                                   cx="28" cy="28" r="22"
                                   fill="none"
                                   stroke={seg.color}
                                   strokeWidth="6"
-                                  strokeDasharray={`${dash} ${gap}`}
-                                  strokeDashoffset={-offset}
                                   strokeLinecap="round"
-                                  className="transition-all duration-700"
+                                  initial={false}
+                                  animate={{
+                                    strokeDasharray: `${dash} ${gap}`,
+                                    strokeDashoffset: -offset,
+                                  }}
+                                  transition={{ duration: 0.7, ease: "easeOut" }}
                                 />
                               );
                               offset += dash;
@@ -1186,11 +1189,16 @@ function CockpitContent({
                             });
                           })()}
                         </svg>
-                        {/* Center engagement % */}
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-[14px] font-extrabold tabular-nums" style={{ color: engagementPct >= 70 ? "#4CAF50" : engagementPct >= 40 ? "#F2C94C" : "#EB5757" }}>
+                          <motion.span
+                            key={engagementPct}
+                            initial={{ scale: 1.15 }}
+                            animate={{ scale: 1 }}
+                            className="text-[14px] font-extrabold tabular-nums"
+                            style={{ color: engagementPct >= 70 ? "#4CAF50" : engagementPct >= 40 ? "#F2C94C" : "#EB5757" }}
+                          >
                             {engagementPct}%
-                          </span>
+                          </motion.span>
                         </div>
                       </div>
 
@@ -1252,7 +1260,7 @@ function CockpitContent({
             </div>
 
             {/* Student list — always visible */}
-            <div className="flex-1 overflow-y-auto min-h-0">
+            <div className="flex-1 overflow-y-auto min-h-0" role="list" aria-label="Liste des eleves">
               <div className="px-3 pb-2">
                 {studentStates.map(s => {
                   const raw = session.students?.find(st => st.id === s.id);
@@ -1260,9 +1268,11 @@ function CockpitContent({
                   const hasHand = !!raw.hand_raised_at;
                   const warnings = raw.warnings || 0;
                   const stateColor = s.state === "responded" ? "#4CAF50" : s.state === "stuck" ? "#EB5757" : s.state === "active" ? "#F2C94C" : "#C4BDB2";
+                  const stateLabel = s.state === "responded" ? "a repondu" : s.state === "stuck" ? "bloque" : s.state === "active" ? "en reflexion" : "absent";
                   return (
-                    <button key={s.id} onClick={() => setFicheStudentId(s.id)}
-                      className="w-full flex items-center gap-2 px-2.5 py-1.5 text-left rounded-[10px] hover:bg-[#F3ECE3] transition-colors cursor-pointer mb-0.5"
+                    <button key={s.id} onClick={() => setFicheStudentId(s.id)} role="listitem"
+                      aria-label={`${raw.display_name} — ${stateLabel}${hasHand ? ", main levee" : ""}${warnings > 0 ? `, ${warnings} avertissement${warnings > 1 ? "s" : ""}` : ""}`}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 text-left rounded-[10px] hover:bg-[#F3ECE3] focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:ring-offset-1 transition-colors cursor-pointer mb-0.5 outline-none"
                       style={{ minHeight: 36 }}>
                       <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: stateColor, boxShadow: s.state === "stuck" ? `0 0 6px ${stateColor}40` : undefined }} />
                       <span className="text-[13px] font-semibold text-[#2C2C2C] truncate flex-1">{raw.display_name}</span>
@@ -1306,7 +1316,7 @@ function CockpitContent({
                       if (r) nudgeStudent.mutate({ responseId: r.id, nudgeText: text });
                     }}
                     onWarn={(sid) => warnStudent.mutate(sid)}
-                    onBroadcast={() => setShowBroadcast(true)}
+                    onBroadcast={openBroadcast}
                     toggleHide={toggleHide}
                     toggleVoteOption={toggleVoteOption}
                     commentResponse={commentResponse}
@@ -1327,9 +1337,12 @@ function CockpitContent({
           {session.status !== "done" && !focusMode && (
             <div data-onboarding="responses" className="flex items-center gap-2 pb-3" style={{ borderBottom: "1px solid #EFE4D8" }}>
               {/* Toggle pill: Responses / Plan de classe */}
-              <div className="flex rounded-[10px] p-0.5 flex-shrink-0" style={{ background: "#EFE4D8" }}>
+              <div className="flex rounded-[10px] p-0.5 flex-shrink-0" style={{ background: "#EFE4D8" }} role="tablist" aria-label="Vue centrale">
                 <button
                   onClick={() => setCenterTab("responses")}
+                  role="tab"
+                  aria-selected={centerTab === "responses"}
+                  aria-controls="center-responses"
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-[13px] font-semibold transition-all cursor-pointer"
                   style={{
                     background: centerTab === "responses" ? "#FFFFFF" : "transparent",
@@ -1344,6 +1357,9 @@ function CockpitContent({
                 </button>
                 <button
                   onClick={() => setCenterTab("classmap")}
+                  role="tab"
+                  aria-selected={centerTab === "classmap"}
+                  aria-controls="center-classmap"
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-[13px] font-semibold transition-all cursor-pointer"
                   style={{
                     background: centerTab === "classmap" ? "#FFFFFF" : "transparent",
@@ -1379,7 +1395,7 @@ function CockpitContent({
                   className="w-36 h-8 px-3 rounded-[10px] text-[13px] bg-white border border-[#E8DFD2] text-[#2C2C2C] placeholder:text-[#B0A99E] focus:outline-none focus:border-[#6B8CFF]/40 transition-colors"
                 />
               )}
-              <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
+              <button onClick={openBroadcast} title="Message classe (B)"
                 className="w-8 h-8 rounded-[10px] flex items-center justify-center text-sm text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer transition-colors hover:shadow-sm">
                 📢
               </button>
@@ -1390,8 +1406,12 @@ function CockpitContent({
             </div>
           )}
 
-          {/* ── CLASSMAP TAB ── */}
-          {centerTab === "classmap" && (
+          {/* ── TAB CONTENT with animated transitions ── */}
+          <AnimatePresence mode="wait">
+          {centerTab === "classmap" ? (
+            <motion.div key="classmap" id="center-classmap" role="tabpanel"
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}>
             <ClassroomMap
               students={studentStates.map(s => {
                 const raw = session.students?.find(st => st.id === s.id);
@@ -1410,16 +1430,20 @@ function CockpitContent({
               sessionStatus={session.status}
               onNudge={(responseId, text) => nudgeStudent.mutate({ responseId, nudgeText: text })}
               onWarn={(sid) => warnStudent.mutate(sid)}
-              onBroadcast={() => setShowBroadcast(true)}
+              onBroadcast={openBroadcast}
               onNudgeAllStuck={() => handleNudgeAllStuck()}
               onStudentClick={(sid) => setFicheStudentId(sid)}
               layout={classroomLayout}
               desksPerRow={classroomLayout === "rows" ? 4 : 3}
             />
-          )}
+            </motion.div>
+          ) : (
+            <motion.div key="responses" id="center-responses" role="tabpanel"
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}>
 
           {/* ── MODULE-SPECIFIC CONTENT ── */}
-          {centerTab === "responses" && <>
+          <>
 
           {/* M1 Positioning: option distribution bars only */}
           {isM1Positioning && module1Data?.type === "positioning" && !isPreviewing && module1Data.questions?.[currentQIndex]?.options && (() => {
@@ -1580,7 +1604,7 @@ function CockpitContent({
                   </div>
                   <p className="text-xs text-bw-muted/70">Les choix budgetaires apparaitront ici.</p>
                   <div className="flex items-center justify-center gap-2">
-                    <button onClick={() => setShowBroadcast(true)}
+                    <button onClick={openBroadcast}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
                       📢 Message classe
                     </button>
@@ -1848,7 +1872,7 @@ function CockpitContent({
                   </div>
                   <p className="text-xs text-bw-muted/70">Les choix des eleves apparaitront ici.</p>
                   <div className="flex items-center justify-center gap-2">
-                    <button onClick={() => setShowBroadcast(true)}
+                    <button onClick={openBroadcast}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
                       📢 Message classe
                     </button>
@@ -1949,7 +1973,7 @@ function CockpitContent({
                   </div>
                   <p className="text-xs text-bw-muted/70">Les scenes apparaitront ici au fur et a mesure.</p>
                   <div className="flex items-center justify-center gap-2">
-                    <button onClick={() => setShowBroadcast(true)}
+                    <button onClick={openBroadcast}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
                       📢 Message classe
                     </button>
@@ -2073,7 +2097,7 @@ function CockpitContent({
                   </div>
                   <p className="text-xs text-bw-muted/70">Les scenes des eleves apparaitront ici pour la confrontation.</p>
                   <div className="flex items-center justify-center gap-2">
-                    <button onClick={() => setShowBroadcast(true)}
+                    <button onClick={openBroadcast}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
                       📢 Message classe
                     </button>
@@ -2154,7 +2178,7 @@ function CockpitContent({
               setResponseFilter={setResponseFilter}
               responseSortMode={responseSortMode}
               setResponseSortMode={setResponseSortMode}
-              onShowBroadcast={() => setShowBroadcast(true)}
+              onShowBroadcast={openBroadcast}
               onShowCompare={() => setShowCompare(true)}
               onShowExport={() => setShowExport(true)}
               showRevealAnswer={showRevealAnswer}
@@ -2300,7 +2324,7 @@ function CockpitContent({
                 <p className="text-[13px] text-[#B0A99E] mt-1">Les reponses apparaitront ici au fur et a mesure.</p>
               </div>
               <div className="flex items-center justify-center gap-2.5">
-                <button onClick={() => setShowBroadcast(true)}
+                <button onClick={openBroadcast}
                   className="flex items-center gap-2 h-9 px-4 rounded-[10px] text-[13px] font-medium bg-white border border-[#E8DFD2] text-[#7A7A7A] hover:text-[#2C2C2C] hover:shadow-sm cursor-pointer transition-all">
                   📢 Message classe
                 </button>
@@ -2366,7 +2390,10 @@ function CockpitContent({
             <ChoicesHistory choices={collectiveChoices} />
           )}
 
-          </>}
+          </>
+          </motion.div>
+          )}
+          </AnimatePresence>
         </div>
         )}
         </div>
@@ -2400,11 +2427,11 @@ function CockpitContent({
                       ? module1Data.optionDistribution as Record<string, number>
                       : undefined,
                   }}
-                  onSendHint={() => setShowBroadcast(true)}
-                  onReformulate={() => setShowBroadcast(true)}
+                  onSendHint={openBroadcast}
+                  onReformulate={openBroadcast}
                   onLaunchVote={() => updateSession.mutate({ status: "voting", timer_ends_at: null })}
-                  onBroadcast={() => setShowBroadcast(true)}
-                  onDebate={() => setShowBroadcast(true)}
+                  onBroadcast={openBroadcast}
+                  onDebate={openBroadcast}
                 />
               ) : responses.length > 0 ? (
                 <ComprehensionHeatmap
@@ -2531,7 +2558,7 @@ function CockpitContent({
               <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 overflow-x-auto">
                 {/* Groupe 1: Aider */}
                 <div className="flex items-center gap-1 px-1 py-0.5 rounded-[10px]" style={{ background: "#FAF6EE" }}>
-                  <button onClick={() => setShowBroadcast(true)}
+                  <button onClick={openBroadcast}
                     className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
                     style={{ background: "#FFF0E6", borderColor: "#E6DBCF", color: "#8B4513" }}>
                     💡 <span className="hidden sm:inline">Indice</span>
@@ -2547,12 +2574,12 @@ function CockpitContent({
                 <div className="w-px h-6 hidden sm:block" style={{ background: "#E8DFD2" }} />
                 {/* Groupe 2: Discuter */}
                 <div className="flex items-center gap-1 px-1 py-0.5 rounded-[10px]" style={{ background: "#FAF6EE" }}>
-                  <button onClick={() => setShowBroadcast(true)}
+                  <button onClick={openBroadcast}
                     className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
                     style={{ background: "#E8F5F2", borderColor: "#E6DBCF", color: "#1B5E50" }}>
                     💬 <span className="hidden sm:inline">Discussion</span>
                   </button>
-                  <button onClick={() => setShowBroadcast(true)}
+                  <button onClick={openBroadcast}
                     className="h-9 sm:h-10 px-2 sm:px-3 rounded-[10px] text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-colors whitespace-nowrap border"
                     style={{ background: "#F0ECF8", borderColor: "#E6DBCF", color: "#5B3A8E" }}>
                     🎭 <span className="hidden sm:inline">Debat</span>

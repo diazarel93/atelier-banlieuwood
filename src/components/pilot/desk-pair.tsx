@@ -40,7 +40,6 @@ function DeskPairInner({
 
   return (
     <motion.div
-      layout
       className="flex flex-col items-center"
       initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -95,12 +94,15 @@ function DeskSeat({
   const [hovered, setHovered] = useState(false);
   const s = STATE_STYLE[student.state] || DEFAULT_STYLE;
 
+  const stateLabel = student.state === "responded" ? "a repondu" : student.state === "stuck" ? "bloque" : student.state === "active" ? "en reflexion" : "absent";
+
   return (
     <motion.button
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="relative flex items-center gap-2 px-2.5 py-2 cursor-pointer transition-colors w-[90px]"
+      aria-label={`${student.display_name} — ${stateLabel}${student.hand_raised_at ? ", main levee" : ""}`}
+      className="relative flex items-center gap-2 px-2.5 py-2 cursor-pointer transition-colors w-[90px] outline-none focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:rounded-[8px]"
       style={{ opacity: student.state === "disconnected" ? 0.4 : 1 }}
       whileTap={{ scale: 0.96 }}
       whileHover={{ backgroundColor: "#FAF6EE" }}
