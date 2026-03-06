@@ -196,7 +196,7 @@ function CockpitContent({
   const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
   const [guideExpanded, setGuideExpanded] = useState(false);
   const footerCtaRef = useRef<HTMLDivElement | null>(null);
-  const [mapCollapsed, setMapCollapsed] = useState(false);
+  const [mapCollapsed, setMapCollapsed] = useState(true);
   const onboarding = usePilotOnboarding();
   const [reformulating, setReformulating] = useState<Response | null>(null);
   const [reformulatedText, setReformulatedText] = useState("");
@@ -910,11 +910,6 @@ function CockpitContent({
         onTogglePause={handlePauseToggle}
         onViewResults={() => router.push(`/session/${sessionId}/results`)}
       />
-
-      {/* ── PROGRESS BAR — question dots ── */}
-      {(totalQuestions ?? 0) > 1 && (
-        <SessionProgressBar currentIndex={currentQIndex} total={totalQuestions!} />
-      )}
 
       {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}
       <main className="flex-1 flex flex-col overflow-hidden">
