@@ -1202,7 +1202,6 @@ function CockpitContent({
                     if (!raw || !raw.is_active) return null;
                     const hasHand = !!raw.hand_raised_at;
                     const warnings = raw.warnings || 0;
-                    const team = teams?.find(t => t.students.some(ts => ts.id === s.id));
                     const stateColor = s.state === "responded" ? "#4CAF50" : s.state === "stuck" ? "#EB5757" : s.state === "active" ? "#F2C94C" : "#C4BDB2";
                     return (
                       <button key={s.id} onClick={() => setFicheStudentId(s.id)}
@@ -1212,33 +1211,47 @@ function CockpitContent({
                         <span className="text-[13px] font-semibold text-[#2C2C2C] truncate flex-1">{raw.display_name}</span>
                         {hasHand && <span className="text-xs flex-shrink-0 animate-bounce">✋</span>}
                         {warnings > 0 && <span className="text-[10px] font-bold px-1 py-0.5 rounded-full flex-shrink-0" style={{ background: "#FFF5EB", color: "#F5A45B" }}>⚠{warnings}</span>}
-                        <span className="text-xs flex-shrink-0 opacity-50">{raw.avatar}</span>
                       </button>
                     );
                   })}
                 </div>
               ) : (
+                /* Mini radar — compact colored chips grid */
                 <div className="px-3 pb-3">
-                  <ClassroomMap
-                    students={studentStates.map(s => {
+                  <div className="flex flex-wrap gap-1.5">
+                    {studentStates.map(s => {
                       const raw = session.students?.find(st => st.id === s.id);
-                      return {
-                        id: s.id,
-                        display_name: raw?.display_name || "",
-                        avatar: raw?.avatar || "",
-                        state: s.state,
-                        hand_raised_at: raw?.hand_raised_at || null,
-                        warnings: raw?.warnings || 0,
-                      };
+                      if (!raw || !raw.is_active) return null;
+                      const hasHand = !!raw.hand_raised_at;
+                      const isStuck = s.state === "stuck";
+                      const bg = s.state === "responded" ? "#E8F5E9" : s.state === "stuck" ? "#FFEBEE" : s.state === "active" ? "#FFF8E1" : "#F5F5F5";
+                      const border = s.state === "responded" ? "#C8E6C9" : s.state === "stuck" ? "#FFCDD2" : s.state === "active" ? "#FFE082" : "#E0E0E0";
+                      const dot = s.state === "responded" ? "#4CAF50" : s.state === "stuck" ? "#EB5757" : s.state === "active" ? "#F2C94C" : "#C4BDB2";
+                      const firstName = raw.display_name.split(" ")[0];
+                      return (
+                        <motion.button
+                          key={s.id}
+                          onClick={() => setFicheStudentId(s.id)}
+                          animate={isStuck ? { scale: [1, 1.05, 1] } : {}}
+                          transition={isStuck ? { repeat: Infinity, duration: 1.5 } : undefined}
+                          className="flex items-center gap-1.5 px-2 py-1.5 rounded-[8px] cursor-pointer transition-all hover:brightness-95"
+                          style={{ background: bg, border: `1px solid ${border}` }}
+                          title={`${raw.display_name} — ${s.state}`}
+                        >
+                          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: dot }} />
+                          <span className="text-[11px] font-semibold text-[#2C2C2C] leading-none">{firstName}</span>
+                          {hasHand && <span className="text-[10px] leading-none">✋</span>}
+                        </motion.button>
+                      );
                     })}
-                    teams={teams || []}
-                    responses={responses}
-                    sessionStatus={session.status}
-                    onNudge={(responseId, text) => nudgeStudent.mutate({ responseId, nudgeText: text })}
-                    onWarn={(studentId) => warnStudent.mutate(studentId)}
-                    onBroadcast={() => setShowBroadcast(true)}
-                    onStudentClick={(studentId) => setFicheStudentId(studentId)}
-                  />
+                  </div>
+                  {/* Mini legend */}
+                  <div className="flex items-center gap-3 mt-3 text-[10px] text-[#B0A99E]">
+                    <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full" style={{ background: "#4CAF50" }} /> Rep.</span>
+                    <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full" style={{ background: "#F2C94C" }} /> Ref.</span>
+                    <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full" style={{ background: "#EB5757" }} /> Bloq.</span>
+                    <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full" style={{ background: "#C4BDB2" }} /> Off</span>
+                  </div>
                 </div>
               )}
             </div>
