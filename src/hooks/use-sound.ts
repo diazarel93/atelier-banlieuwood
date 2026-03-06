@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 // Lightweight sound effects using Web Audio API — no external files needed
 // Each sound is generated procedurally
@@ -236,7 +236,7 @@ const SOUNDS: Record<SoundName, (ctx: AudioContext) => void> = {
 export function useSound(opts?: { muted?: boolean }) {
   const ctxRef = useRef<AudioContext | null>(null);
   const mutedRef = useRef(opts?.muted ?? false);
-  mutedRef.current = opts?.muted ?? false;
+  useEffect(() => { mutedRef.current = opts?.muted ?? false; }, [opts?.muted]);
 
   const play = useCallback((name: SoundName) => {
     if (mutedRef.current) return;

@@ -85,7 +85,7 @@ Ne mets AUCUN texte avant ou après le JSON.`;
 // ——— USER PROMPT BUILDERS ———
 
 export function buildBilanUserPrompt(data: SessionFullData): string {
-  const { session, students, responses, votes, collectiveChoices, stats } = data;
+  const { session, students, responses, collectiveChoices, stats } = data;
   const visibleResponses = responses.filter((r) => !r.is_hidden);
 
   // Student participation map

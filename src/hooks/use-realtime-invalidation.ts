@@ -77,7 +77,7 @@ export function useRealtimeInvalidation(sessionId: string) {
     // 1. postgres_changes for child tables (filtered by session_id)
     for (const table of CHILD_TABLES) {
       channel.on(
-        "postgres_changes" as "postgres_changes",
+        "postgres_changes" as const,
         {
           event: "*",
           schema: "public",

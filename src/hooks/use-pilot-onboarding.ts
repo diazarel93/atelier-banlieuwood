@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 const STORAGE_KEY = "bw-pilot-onboarding-done";
 
@@ -19,16 +19,12 @@ const STEPS: OnboardingStep[] = [
 ];
 
 export function usePilotOnboarding() {
-  const [done, setDone] = useState(true); // Default to true to avoid flash
+  // Initialize from localStorage synchronously to avoid flash
+  const [done, setDone] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return !!localStorage.getItem(STORAGE_KEY);
+  });
   const [currentStep, setCurrentStep] = useState(0);
-
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) {
-      setDone(false);
-      setCurrentStep(0);
-    }
-  }, []);
 
   const dismiss = useCallback(() => {
     setDone(true);
