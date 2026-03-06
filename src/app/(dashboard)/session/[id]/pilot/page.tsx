@@ -1051,33 +1051,26 @@ function CockpitContent({
         <div className="flex-1 flex overflow-hidden min-h-0">
           {/* LEFT: Plan de classe + séances (40%, desktop only) */}
           <div className="hidden lg:flex lg:w-[40%] flex-shrink-0 flex-col overflow-y-auto border-r border-white/[0.06]">
-            {/* Module séances list */}
+            {/* Module séances — compact horizontal row */}
             {currentModuleLessons.length > 1 && (
-              <div className="flex-shrink-0 px-3 pt-3 pb-2 border-b border-white/[0.06]">
-                <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-muted mb-1.5">Séances</p>
-                <div className="flex flex-wrap gap-1">
-                  {currentModuleLessons.map((lesson) => {
-                    const isCurrent = lesson.dbSeance === (session.current_seance || 1);
-                    const isPast = lesson.dbSeance < (session.current_seance || 1);
-                    return (
-                      <div
-                        key={lesson.id}
-                        className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] transition-all ${
-                          isCurrent
-                            ? "font-medium border"
-                            : isPast
-                              ? "text-bw-muted"
-                              : "text-bw-muted/60"
-                        }`}
-                        style={isCurrent ? { backgroundColor: `${moduleColor}15`, color: moduleColor, borderColor: `${moduleColor}30` } : undefined}
-                      >
-                        {isPast && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="text-bw-teal"><path d="M5 12l5 5L20 7"/></svg>}
-                        {isCurrent && <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: moduleColor }} />}
-                        <span className="truncate">{lesson.title}</span>
-                      </div>
-                    );
-                  })}
-                </div>
+              <div className="flex-shrink-0 px-3 py-1.5 border-b border-white/[0.06] flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+                {currentModuleLessons.map((lesson, i) => {
+                  const isCurrent = lesson.dbSeance === (session.current_seance || 1);
+                  const isPast = lesson.dbSeance < (session.current_seance || 1);
+                  return (
+                    <div key={lesson.id}
+                      className={`flex items-center gap-1 flex-shrink-0 text-[10px] transition-all ${
+                        isCurrent ? "font-semibold" : isPast ? "text-bw-muted/70" : "text-bw-muted/40"
+                      }`}
+                      style={isCurrent ? { color: moduleColor } : undefined}
+                    >
+                      {i > 0 && <span className="text-white/10 mr-0.5">·</span>}
+                      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isPast ? "bg-bw-teal" : isCurrent ? "animate-pulse" : "bg-white/10"}`}
+                        style={isCurrent ? { backgroundColor: moduleColor } : undefined} />
+                      <span className="whitespace-nowrap">{lesson.title}</span>
+                    </div>
+                  );
+                })}
               </div>
             )}
             {/* Mini stats bar */}
@@ -3039,12 +3032,7 @@ export default function PilotPage() {
         )}
       </AnimatePresence>
 
-      <HelpButton pageKey="pilot" tips={[
-        { title: "Pilotez la session", description: "Utilisez le bouton central pour avancer les questions. Les eleves recoivent la question en temps reel." },
-        { title: "Retour et Passer", description: "Les fleches a cote du bouton principal permettent de revenir en arriere ou de passer une question." },
-        { title: "Panneau lateral", description: "Le panneau droit affiche le guide pedagogique et les reponses des eleves. Cliquez sur une reponse pour la mettre en avant." },
-        { title: "Diffusion et Timer", description: "Envoyez un message a toute la classe ou lancez un compte a rebours depuis la barre du haut." },
-      ]} />
+      {/* HelpButton removed — was blocking footer toggles on pilot view */}
     </div>
   );
 }
