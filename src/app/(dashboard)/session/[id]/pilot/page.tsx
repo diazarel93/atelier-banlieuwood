@@ -971,42 +971,43 @@ function CockpitContent({
         {/* ── QUESTION BAR — UNIVERSAL, always visible with collapsible guide ── */}
         {universalQuestionText && (
           <div className="flex-shrink-0 border-b border-white/[0.10]">
-            <div className={`flex items-center gap-2 px-4 py-2 border-l-[3px] ${isPreviewing ? "border-l-bw-amber" : ""}`} style={isPreviewing ? undefined : { borderLeftColor: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
-              {/* Category badge */}
-              <span className="cinema-title text-xs px-2 py-0.5 rounded-full flex-shrink-0"
-                style={{ backgroundColor: `${CATEGORY_COLORS[universalCategoryLabel] || moduleColor}20`, color: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
-                {universalCategoryLabel}
-              </span>
-              {isPreviewing && <span className="text-xs px-1.5 py-0.5 rounded bg-bw-amber/15 text-bw-amber font-bold uppercase flex-shrink-0">Apercu</span>}
-              {/* Question text */}
-              <p className={`text-base leading-snug flex-1 min-w-0 truncate font-semibold ${isPreviewing ? "text-bw-amber" : "text-bw-heading"}`}>
+            <div className="px-4 py-3" style={{ borderLeft: `3px solid ${isPreviewing ? "var(--color-bw-amber)" : (CATEGORY_COLORS[universalCategoryLabel] || moduleColor)}` }}>
+              {/* Top row: badge + nav + guide */}
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="cinema-title text-xs px-2 py-0.5 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: `${CATEGORY_COLORS[universalCategoryLabel] || moduleColor}20`, color: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
+                  {universalCategoryLabel}
+                </span>
+                {isPreviewing && <span className="text-xs px-1.5 py-0.5 rounded bg-bw-amber/15 text-bw-amber font-bold uppercase flex-shrink-0">Apercu</span>}
+                <div className="flex-1" />
+                {maxSituations > 1 && (
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button onClick={previewPrev} disabled={displayIndex <= 0}
+                      className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.10] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                      ◀
+                    </button>
+                    <span className="text-xs text-bw-muted tabular-nums">Q{displayIndex + 1}/{maxSituations}</span>
+                    <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
+                      className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.10] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                      ▶
+                    </button>
+                  </div>
+                )}
+                {questionGuide && (
+                  <button
+                    onClick={() => setGuideExpanded(!guideExpanded)}
+                    className={`px-2 py-1 rounded-lg text-xs font-medium cursor-pointer transition-all flex-shrink-0 ${
+                      guideExpanded ? "bg-bw-green/15 text-bw-green border border-bw-green/30" : "text-bw-muted hover:text-bw-green bg-bw-elevated border border-white/[0.10]"
+                    }`}
+                  >
+                    {guideExpanded ? "▴ Guide" : "▾ Guide"}
+                  </button>
+                )}
+              </div>
+              {/* Question text — HERO */}
+              <p className={`text-lg md:text-xl font-bold leading-tight ${isPreviewing ? "text-bw-amber" : "text-bw-heading"}`}>
                 {universalQuestionText}
               </p>
-              {/* Question navigation compact */}
-              {maxSituations > 1 && (
-                <div className="flex items-center gap-1 flex-shrink-0">
-                  <button onClick={previewPrev} disabled={displayIndex <= 0}
-                    className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.10] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-                    ◀
-                  </button>
-                  <span className="text-xs text-bw-muted tabular-nums">Q{displayIndex + 1}/{maxSituations}</span>
-                  <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
-                    className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.10] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-                    ▶
-                  </button>
-                </div>
-              )}
-              {/* Guide toggle */}
-              {questionGuide && (
-                <button
-                  onClick={() => setGuideExpanded(!guideExpanded)}
-                  className={`px-2 py-1 rounded-lg text-xs font-medium cursor-pointer transition-all flex-shrink-0 ${
-                    guideExpanded ? "bg-bw-green/15 text-bw-green border border-bw-green/30" : "text-bw-muted hover:text-bw-green bg-bw-elevated border border-white/[0.10]"
-                  }`}
-                >
-                  {guideExpanded ? "▴ Guide" : "▾ Guide"}
-                </button>
-              )}
             </div>
             {/* Collapsible guide section */}
             <AnimatePresence>
@@ -1240,7 +1241,7 @@ function CockpitContent({
               d: { bar: "#F472B6", text: "#F9A8D4" },
             };
             return (
-            <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-2.5">
               {module1Data.questions[currentQIndex].options?.map((opt) => {
                 const count = module1Data.optionDistribution?.[opt.key] || 0;
                 const total = activeStudents.length;
@@ -1250,46 +1251,47 @@ function CockpitContent({
                 return (
                   <div
                     key={opt.key}
-                    className="rounded-xl border p-3 transition-all duration-300"
+                    className="rounded-xl border p-3.5 transition-all duration-300"
                     style={{
-                      borderColor: hasVotes ? `${colors.bar}35` : "rgba(255,255,255,0.08)",
-                      background: hasVotes
-                        ? `linear-gradient(135deg, ${colors.bar}0A, transparent 70%)`
-                        : "rgba(255,255,255,0.02)",
+                      borderColor: hasVotes ? `${colors.bar}40` : "rgba(255,255,255,0.08)",
+                      background: `linear-gradient(135deg, ${colors.bar}${hasVotes ? "18" : "08"}, transparent 80%)`,
                       boxShadow: hasVotes
-                        ? `0 0 12px ${colors.bar}12, inset 0 1px 0 rgba(255,255,255,0.06)`
+                        ? `0 0 16px ${colors.bar}15, inset 0 1px 0 rgba(255,255,255,0.06)`
                         : "inset 0 1px 0 rgba(255,255,255,0.04)",
                     }}
                   >
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-start gap-2.5">
                       <span
-                        className="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0"
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0"
                         style={{
-                          backgroundColor: hasVotes ? colors.bar : `${colors.bar}40`,
+                          backgroundColor: colors.bar,
                           color: "#fff",
-                          boxShadow: hasVotes ? `0 0 10px ${colors.bar}40` : undefined,
+                          boxShadow: `0 0 12px ${colors.bar}40`,
                         }}
                       >
                         {opt.key.toUpperCase()}
                       </span>
-                      <span className="text-sm text-bw-text font-medium leading-snug flex-1">{opt.label}</span>
-                      <span
-                        className="text-sm tabular-nums font-bold flex-shrink-0"
-                        style={{ color: hasVotes ? colors.text : "rgba(136,148,160,0.35)" }}
-                      >
-                        {count}/{total}
-                      </span>
+                      <span className="text-sm text-bw-text font-medium leading-snug flex-1 min-w-0">{opt.label}</span>
                     </div>
-                    <div className="mt-2 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full rounded-full"
-                        style={{
-                          backgroundColor: colors.bar,
-                          boxShadow: hasVotes ? `0 0 8px ${colors.bar}50` : undefined,
-                        }}
-                        animate={{ width: `${pct}%` }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                      />
+                    <div className="mt-3 flex items-center gap-2.5">
+                      <span
+                        className="cinema-title text-lg tabular-nums flex-shrink-0"
+                        style={{ color: hasVotes ? colors.text : "rgba(136,148,160,0.30)" }}
+                      >
+                        {pct}%
+                      </span>
+                      <div className="flex-1 h-2 bg-white/[0.06] rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full rounded-full"
+                          style={{
+                            backgroundColor: colors.bar,
+                            boxShadow: hasVotes ? `0 0 8px ${colors.bar}50` : undefined,
+                          }}
+                          animate={{ width: `${pct}%` }}
+                          transition={{ duration: 0.6, ease: "easeOut" }}
+                        />
+                      </div>
+                      <span className="text-xs tabular-nums text-bw-muted flex-shrink-0">{count}/{total}</span>
                     </div>
                   </div>
                 );
@@ -2222,7 +2224,27 @@ function CockpitContent({
               </div>
             );
           })()}
-          {/* ROW 2: [←] [CTA] [→] [toggles] */}
+          {/* ROW 2: Quick action buttons */}
+          {session.status !== "waiting" && session.status !== "done" && (
+            <div className="px-4 pb-1.5 flex items-center gap-1.5 flex-wrap">
+              <button onClick={() => setShowBroadcast(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-bw-elevated border border-white/[0.08] text-bw-muted hover:text-bw-amber hover:border-bw-amber/30 cursor-pointer transition-colors">
+                <span className="text-sm">💡</span> Indice
+              </button>
+              {stuckStudents.length > 0 && (
+                <button onClick={handleNudgeAllStuck} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-bw-amber/10 border border-bw-amber/25 text-bw-amber hover:bg-bw-amber/20 cursor-pointer transition-colors">
+                  <span className="text-sm">🚀</span> Relancer {stuckStudents.length} bloques
+                </button>
+              )}
+              <button onClick={() => setShowBroadcast(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-bw-elevated border border-white/[0.08] text-bw-muted hover:text-bw-violet hover:border-bw-violet/30 cursor-pointer transition-colors">
+                <span className="text-sm">💬</span> Discussion
+              </button>
+              <button onClick={() => setShowBroadcast(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-bw-elevated border border-white/[0.08] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+                <span className="text-sm">📢</span> Message
+              </button>
+            </div>
+          )}
+
+          {/* ROW 3: [←] [CTA] [→] [toggles] */}
           <div ref={footerCtaRef} className="px-4 pb-2 flex items-center gap-2">
             {/* Back button for non-QA modules */}
             {!isStandardQA && (session.current_situation_index || 0) > 0 && (
