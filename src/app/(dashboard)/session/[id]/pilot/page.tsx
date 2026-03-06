@@ -195,7 +195,7 @@ function CockpitContent({
   onOpenScreen?: () => void;
 }) {
   const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
-  const [leftPanelTab, setLeftPanelTab] = useState<"list" | "map">("list");
+  const [leftPanelTab, setLeftPanelTab] = useState<"list" | "map">("map");
   const [guideExpanded, setGuideExpanded] = useState(false);
   const footerCtaRef = useRef<HTMLDivElement | null>(null);
   const [mapCollapsed, setMapCollapsed] = useState(true);
@@ -1169,17 +1169,6 @@ function CockpitContent({
             <div className="px-4 pb-2 flex-shrink-0">
               <div className="flex rounded-[10px] p-0.5" style={{ background: "#EFE4D8" }}>
                 <button
-                  onClick={() => setLeftPanelTab("list")}
-                  className="flex-1 text-[12px] font-semibold py-1.5 rounded-[8px] transition-all cursor-pointer"
-                  style={{
-                    background: leftPanelTab === "list" ? "#FFFFFF" : "transparent",
-                    color: leftPanelTab === "list" ? "#2C2C2C" : "#7A7A7A",
-                    boxShadow: leftPanelTab === "list" ? "0 1px 3px rgba(61,43,16,0.08)" : "none",
-                  }}
-                >
-                  Liste
-                </button>
-                <button
                   onClick={() => setLeftPanelTab("map")}
                   className="flex-1 text-[12px] font-semibold py-1.5 rounded-[8px] transition-all cursor-pointer"
                   style={{
@@ -1189,6 +1178,17 @@ function CockpitContent({
                   }}
                 >
                   Plan de classe
+                </button>
+                <button
+                  onClick={() => setLeftPanelTab("list")}
+                  className="flex-1 text-[12px] font-semibold py-1.5 rounded-[8px] transition-all cursor-pointer"
+                  style={{
+                    background: leftPanelTab === "list" ? "#FFFFFF" : "transparent",
+                    color: leftPanelTab === "list" ? "#2C2C2C" : "#7A7A7A",
+                    boxShadow: leftPanelTab === "list" ? "0 1px 3px rgba(61,43,16,0.08)" : "none",
+                  }}
+                >
+                  Liste
                 </button>
               </div>
             </div>
