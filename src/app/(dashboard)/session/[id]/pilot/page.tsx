@@ -1978,8 +1978,8 @@ function CockpitContent({
             </div>
           )}
 
-          {/* ── PAS ENCORE RÉPONDU — bottom of right panel, collapsible ── */}
-          {!focusMode && session.status === "responding" && notRespondedStudents.length > 0 && notRespondedStudents.length < activeStudents.length && (
+          {/* ── PAS ENCORE RÉPONDU — bottom of right panel, always visible during responding ── */}
+          {!focusMode && session.status === "responding" && notRespondedStudents.length > 0 && (
             <div className="rounded-xl border border-white/[0.06] p-3 space-y-2" style={{ background: "linear-gradient(135deg, rgba(136,148,160,0.03), transparent)" }}>
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">
@@ -1993,7 +1993,7 @@ function CockpitContent({
                 )}
               </div>
               <div className="flex flex-wrap gap-1.5">
-                {notRespondedStudents.slice(0, 12).map((s) => {
+                {notRespondedStudents.slice(0, 20).map((s) => {
                   const st = studentStates.find((ss) => ss.id === s.id);
                   const isStuck = st?.state === "stuck";
                   const hasHand = !!s.hand_raised_at;
@@ -2015,8 +2015,8 @@ function CockpitContent({
                     </button>
                   );
                 })}
-                {notRespondedStudents.length > 12 && (
-                  <span className="text-[10px] text-bw-muted self-center px-1">+{notRespondedStudents.length - 12} autres</span>
+                {notRespondedStudents.length > 20 && (
+                  <span className="text-[10px] text-bw-muted self-center px-1">+{notRespondedStudents.length - 20} autres</span>
                 )}
               </div>
             </div>
@@ -2037,8 +2037,8 @@ function CockpitContent({
       {/* ── FOOTER — progress + CTA + toggles ── */}
       {session.status !== "done" && session.status !== "paused" && (
         <div className="flex-shrink-0 border-t border-white/[0.08] bg-bw-bg">
-          {/* Progress bar with label */}
-          {session.status === "responding" && activeStudents.length > 0 && (() => {
+          {/* Progress bar with label — visible for responding, voting, reviewing */}
+          {(session.status === "responding" || session.status === "voting" || session.status === "reviewing" || session.status === "waiting") && activeStudents.length > 0 && (() => {
             const pct = Math.round((unifiedRespondedCount / activeStudents.length) * 100);
             const allDone = unifiedRespondedCount >= activeStudents.length;
             return (
