@@ -65,6 +65,7 @@ import { AIAssistantPanel } from "@/components/pilot/ai-assistant-panel";
 import { CognitiveMap } from "@/components/pilot/cognitive-map";
 import { ComprehensionHeatmap } from "@/components/pilot/comprehension-heatmap";
 import { SessionStateBanner } from "@/components/pilot/session-state-banner";
+import { CockpitHeader } from "@/components/pilot/cockpit-header";
 import { SessionProgressBar } from "@/components/pilot/session-progress-bar";
 import { FloatingNextAction } from "@/components/pilot/floating-next-action";
 import { OnboardingHints } from "@/components/pilot/onboarding-hints";
@@ -950,105 +951,49 @@ function CockpitContent({
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      {/* ── STATUS BANNER — always visible, color-coded by state ── */}
-      <SessionStateBanner
-        status={session.status}
+      {/* ── COCKPIT HEADER — Phase stepper + status bar + controls ── */}
+      <CockpitHeader
+        sessionTitle={session.title || "Session"}
+        phases={PHASES}
+        modules={MODULES}
+        activeModuleId={currentMod?.id || null}
+        completedModules={session.completed_modules || []}
+        moduleLabel={moduleLabel}
+        moduleColor={moduleColor}
+        questionCounter={(totalQuestions ?? 0) > 0 ? `Q${currentQIndex + 1}/${totalQuestions}` : null}
+        respondingOpenedAt={respondingOpenedAt}
+        activeStudentCount={activeStudents.length}
+        autoAdvance={autoAdvance}
+        onToggleAuto={() => {
+          setAutoAdvance((v) => !v);
+          if (autoAdvanceTimerRef.current) {
+            clearTimeout(autoAdvanceTimerRef.current);
+            autoAdvanceTimerRef.current = null;
+            setAutoAdvanceCountdown(0);
+          }
+        }}
+        autoAdvanceCountdown={autoAdvanceCountdown}
+        onPause={handlePauseToggle}
+        onBroadcast={openBroadcast}
+        onScreen={onOpenScreen || (() => {})}
+        onOpenModules={onOpenModules || (() => {})}
+        onPhaseClick={(phaseId) => {
+          // Open sidebar on first module of that phase
+          const phase = PHASES.find((p) => p.id === phaseId);
+          if (phase && phase.moduleIds[0]) {
+            onOpenModules?.();
+          }
+        }}
+        sessionStatus={session.status}
         respondedCount={unifiedRespondedCount}
         totalStudents={activeStudents.length}
         voteCount={voteData?.totalVotes || 0}
-        onTogglePause={handlePauseToggle}
+        onTogglePauseFromBanner={handlePauseToggle}
         onViewResults={() => router.push(`/session/${sessionId}/results`)}
       />
 
       {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* ── HEADER BAR — 72px, warm EdTech ── */}
-        <div className="flex items-center gap-2 xl:gap-4 px-3 xl:px-6 flex-shrink-0 border-b" style={{ height: 72, background: "#F5EFE6", borderColor: "#E8DFD2" }}>
-          {/* LEFT: branding + modules */}
-          <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
-            {onOpenModules && (
-              <button onClick={onOpenModules} title="Parcours des modules" className="w-9 h-9 rounded-[10px] flex items-center justify-center text-bw-muted hover:text-bw-heading bg-white border border-[#E8DFD2] cursor-pointer transition-colors flex-shrink-0 hover:shadow-sm">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-              </button>
-            )}
-            <div className="flex flex-col min-w-0">
-              <span className="text-[14px] font-semibold text-[#2C2C2C] truncate">{session.title || "Session"}</span>
-              <span className="text-[11px] text-[#7A7A7A] hidden xl:block">Cockpit pedagogique</span>
-            </div>
-          </div>
-
-          {/* CENTER: session context — items progressively revealed */}
-          <div className="flex-1 flex items-center justify-center gap-2 min-w-0">
-            {/* Mission badge — always visible, truncates */}
-            <span className="px-2 xl:px-3 py-1 rounded-full text-[12px] xl:text-[13px] font-medium text-[#5B5B5B] truncate min-w-0" style={{ background: "#EFE8DD" }}>
-              {moduleLabel}
-            </span>
-            {/* Question counter — xl only */}
-            {(totalQuestions ?? 0) > 0 && (
-              <>
-                <span className="text-[#D3CAB8] hidden xl:block">·</span>
-                <span className="text-[13px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0 hidden xl:block">
-                  Q{currentQIndex + 1}/{totalQuestions}
-                </span>
-              </>
-            )}
-            {/* Timer — xl only */}
-            {respondingOpenedAt && (
-              <>
-                <span className="text-[#D3CAB8] hidden xl:block">·</span>
-                <span className="flex-shrink-0 hidden xl:block">
-                  <ElapsedTimer startedAt={respondingOpenedAt} />
-                </span>
-              </>
-            )}
-            {/* Student count — xl only */}
-            <span className="text-[#D3CAB8] hidden xl:block">·</span>
-            <span className="text-[13px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0 hidden xl:block">
-              {activeStudents.length} eleve{activeStudents.length !== 1 ? "s" : ""}
-            </span>
-          </div>
-
-          {/* RIGHT: header actions — compact by default */}
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            {/* Auto-advance toggle — icon only, label at xl */}
-            <button
-              onClick={() => {
-                setAutoAdvance((v) => !v);
-                if (autoAdvanceTimerRef.current) {
-                  clearTimeout(autoAdvanceTimerRef.current);
-                  autoAdvanceTimerRef.current = null;
-                  setAutoAdvanceCountdown(0);
-                }
-              }}
-              className={`flex items-center gap-1.5 h-9 px-2 xl:px-3 rounded-[10px] text-[13px] font-medium cursor-pointer transition-all ${
-                autoAdvance ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30" : "bg-white text-[#4A4A4A] border border-[#E8DFD2]"
-              }`}
-            >
-              <div className={`w-5 h-3 rounded-full transition-all relative ${autoAdvance ? "bg-bw-teal" : "bg-black/10"}`}>
-                <div className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${autoAdvance ? "left-2" : "left-px"}`} />
-              </div>
-              <span className="hidden xl:inline">Auto{autoAdvance && autoAdvanceCountdown > 0 ? ` ${autoAdvanceCountdown}s` : ""}</span>
-            </button>
-            {/* Pause — icon only, label at xl */}
-            <button
-              onClick={handlePauseToggle}
-              className="h-9 w-9 xl:w-auto xl:px-3 rounded-[10px] bg-white border border-[#E8DFD2] text-[13px] font-medium text-[#4A4A4A] hover:bg-[#F8F2E8] cursor-pointer transition-colors flex items-center justify-center"
-            >
-              <span className="xl:hidden">⏸</span>
-              <span className="hidden xl:inline">⏸ Pause</span>
-            </button>
-            {/* Broadcast */}
-            <button onClick={openBroadcast} title="Message classe (B)"
-              className="w-9 h-9 rounded-[10px] flex items-center justify-center text-sm text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer transition-colors hover:shadow-sm">
-              📢
-            </button>
-            {/* Screen */}
-            <button onClick={onOpenScreen} title="Ecran eleves"
-              className="w-9 h-9 rounded-[10px] flex items-center justify-center text-sm text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer transition-colors hover:shadow-sm">
-              🖥
-            </button>
-          </div>
-        </div>
 
         {/* ── QUESTION CARD — HERO: dominant, 40px padding, 36px text ── */}
         {universalQuestionText && (
@@ -1540,6 +1485,7 @@ function CockpitContent({
               layout={classroomLayout}
               desksPerRow={classroomLayout === "rows" ? 4 : 3}
               deskSize="md"
+              sessionId={session.id}
             />
             </motion.div>
           ) : (

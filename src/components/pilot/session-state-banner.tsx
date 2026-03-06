@@ -9,6 +9,8 @@ interface SessionStateBannerProps {
   voteCount?: number;
   onViewResults?: () => void;
   onTogglePause?: () => void;
+  /** Compact inline mode for embedding in the header status bar */
+  compact?: boolean;
 }
 
 const STATE_CONFIG: Record<string, { bg: string; border: string; text: string; accent: string; label: string; sub: string }> = {
@@ -61,6 +63,7 @@ export function SessionStateBanner({
   voteCount = 0,
   onViewResults,
   onTogglePause,
+  compact = false,
 }: SessionStateBannerProps) {
   const config = STATE_CONFIG[status];
   if (!config) return null;
@@ -83,6 +86,63 @@ export function SessionStateBanner({
   const pct = totalStudents > 0 ? (respondedCount / totalStudents) * 100 : 0;
   const showRing = status === "responding" && totalStudents > 0;
 
+  // ── Compact mode: inline dot + label + counter, no background band ──
+  if (compact) {
+    return (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={status}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="flex items-center gap-2"
+        >
+          {/* Pulse dot */}
+          <motion.span
+            className="w-2 h-2 rounded-full flex-shrink-0"
+            style={{ backgroundColor: config.accent }}
+            animate={status === "responding" || status === "voting" ? { scale: [1, 1.3, 1] } : {}}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+          />
+
+          {/* Label */}
+          <span className="text-[12px] font-semibold whitespace-nowrap" style={{ color: config.text }}>
+            {config.label}
+          </span>
+
+          {/* Counter */}
+          {counterText && (
+            <span className="text-[12px] font-medium tabular-nums" style={{ color: `${config.text}CC` }}>
+              {counterText}
+            </span>
+          )}
+
+          {/* Compact actions */}
+          {status === "paused" && onTogglePause && (
+            <button
+              onClick={onTogglePause}
+              className="h-6 px-2 rounded-md text-[11px] font-semibold cursor-pointer transition-colors"
+              style={{ background: config.accent, color: "#fff" }}
+            >
+              Reprendre
+            </button>
+          )}
+          {status === "done" && onViewResults && (
+            <button
+              onClick={onViewResults}
+              className="h-6 px-2 rounded-md text-[11px] font-semibold cursor-pointer transition-colors"
+              style={{ background: config.accent, color: "#fff" }}
+            >
+              Resultats
+            </button>
+          )}
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+
+  // ── Full mode: original banner ──
   return (
     <AnimatePresence mode="wait">
       <motion.div
