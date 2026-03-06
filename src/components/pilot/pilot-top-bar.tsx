@@ -44,7 +44,6 @@ interface PilotTopBarProps {
 export function PilotTopBar({
   sessionTitle,
   activeModuleLabel,
-  moduleColor,
   activeStudents,
   joinCode,
   codeCopied,
@@ -73,7 +72,7 @@ export function PilotTopBar({
   return (
     <header className="glass border-b border-white/[0.10] px-3 py-2 flex-shrink-0 z-20" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>
       <div className="flex items-center gap-2">
-        {/* Left: sidebar toggle + session title */}
+        {/* Left: sidebar toggle + title */}
         <div className="flex items-center gap-2 min-w-0">
           {/* Mobile sidebar toggle */}
           <button
@@ -88,10 +87,45 @@ export function PilotTopBar({
           <span className="text-sm font-medium text-bw-text truncate max-w-[200px] hidden md:inline">{sessionTitle}</span>
         </div>
 
+        {/* Left controls — Pause + Broadcast (always visible) */}
+        <div className="flex items-center gap-1.5 ml-2">
+          {/* Pause/Resume — PROMOTED: always visible */}
+          {activeModuleLabel && !isDone && (
+            <button onClick={onTogglePause}
+              title={isPaused ? "Reprendre (Espace)" : "Pause (Espace)"}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs cursor-pointer transition-colors duration-200 ${
+                isPaused ? "bg-bw-amber/10 border-bw-amber/30 text-bw-amber" : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:text-white"
+              }`}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                {isPaused
+                  ? <polygon points="5 3 19 12 5 21 5 3" />
+                  : <><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></>}
+              </svg>
+              {isPaused ? "Reprendre" : "Pause"}
+              <kbd className="w-4 h-4 rounded bg-white/[0.08] text-[9px] font-mono flex items-center justify-center text-bw-muted">
+                ⎵
+              </kbd>
+            </button>
+          )}
+
+          {/* Broadcast — PROMOTED: standalone button */}
+          {onBroadcast && activeModuleLabel && !isDone && (
+            <button onClick={onBroadcast}
+              data-onboarding="broadcast"
+              title="Message classe (B)"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-white/[0.06] bg-bw-elevated text-xs text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 hover:bg-bw-primary/10 cursor-pointer transition-colors duration-200">
+              <span className="text-sm">📢</span>
+              <kbd className="w-4 h-4 rounded bg-white/[0.08] text-[9px] font-mono flex items-center justify-center text-bw-muted">
+                B
+              </kbd>
+            </button>
+          )}
+        </div>
+
         {/* Spacer */}
         <div className="flex-1" />
 
-        {/* Right: timer, students, code, pause, projection, kebab */}
+        {/* Right: timer, students, projection, kebab */}
         <div className="flex items-center gap-2">
           {/* Timer badge */}
           {hasTimer && (
@@ -112,28 +146,11 @@ export function PilotTopBar({
             <span className="tabular-nums font-medium">{activeStudents.length}</span>
           </button>
 
-          {/* Join code */}
-          <button onClick={onCopyCode}
-            className="hidden md:flex items-center gap-1.5 bg-bw-elevated px-2.5 py-1.5 rounded-xl border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.08] active:scale-95 cursor-pointer transition-colors duration-200">
-            <span className="font-mono font-bold text-xs tracking-wider">{joinCode}</span>
-            <span className={`text-xs ${codeCopied ? "text-bw-teal font-medium" : "text-bw-muted"}`}>{codeCopied ? "✓ Copié" : "Copier"}</span>
-          </button>
-
-          {/* Pause/Resume */}
-          {activeModuleLabel && !isDone && (
-            <button onClick={onTogglePause}
-              className={`px-2.5 py-1.5 rounded-xl border text-xs cursor-pointer transition-colors duration-200 ${
-                isPaused ? "bg-bw-amber/10 border-bw-amber/30 text-bw-amber" : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:text-white"
-              }`}>
-              {isPaused ? "Reprendre" : "Pause"}
-            </button>
-          )}
-
           {/* Projection */}
           <button onClick={onOpenScreen}
             className="hidden md:inline-flex px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.08] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-white transition-colors duration-200"
-            title="Ouvrir l'écran de projection">
-            Écran ↗
+            title="Ouvrir l'ecran de projection">
+            Ecran ↗
           </button>
 
           {/* Mobile context panel */}
@@ -148,7 +165,7 @@ export function PilotTopBar({
             </button>
           )}
 
-          {/* Kebab overflow menu */}
+          {/* Kebab overflow menu — now contains Code, QR, Mute, Shortcuts */}
           <div className="relative">
             <button
               onClick={() => setKebabOpen(!kebabOpen)}
@@ -166,8 +183,15 @@ export function PilotTopBar({
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -4, scale: 0.95 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-1.5 z-50 w-48 bg-bw-surface border border-white/[0.08] rounded-xl shadow-2xl overflow-hidden"
+                    className="absolute right-0 top-full mt-1.5 z-50 w-52 bg-bw-surface border border-white/[0.08] rounded-xl shadow-2xl overflow-hidden"
                   >
+                    {/* Join code — moved here */}
+                    <button onClick={() => { onCopyCode(); setKebabOpen(false); }}
+                      className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2">
+                      <span className="w-5 text-center text-sm">🔑</span>
+                      Code : <span className="font-mono font-bold tracking-wider">{joinCode}</span>
+                      {codeCopied && <span className="text-bw-teal ml-auto">✓</span>}
+                    </button>
                     <button onClick={() => { onToggleQR(); setKebabOpen(false); }}
                       className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2">
                       <span className="w-5 text-center text-sm">📱</span> QR Code
@@ -176,19 +200,14 @@ export function PilotTopBar({
                       <button onClick={() => { onToggleMute(); setKebabOpen(false); }}
                         className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2">
                         <span className="w-5 text-center text-sm">{muteSounds ? "\uD83D\uDD07" : "\uD83D\uDD0A"}</span>
-                        {muteSounds ? "Réactiver les sons" : "Couper les sons"}
-                      </button>
-                    )}
-                    {onBroadcast && activeModuleLabel && (
-                      <button onClick={() => { onBroadcast(); setKebabOpen(false); }}
-                        className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2">
-                        <span className="w-5 text-center text-sm">📢</span> Message classe
+                        {muteSounds ? "Reactiver les sons" : "Couper les sons"}
                       </button>
                     )}
                     {onShortcuts && (
                       <button onClick={() => { onShortcuts(); setKebabOpen(false); }}
                         className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2">
                         <span className="w-5 text-center text-sm">⌨️</span> Raccourcis clavier
+                        <kbd className="ml-auto w-4 h-4 rounded bg-white/[0.08] text-[9px] font-mono flex items-center justify-center text-bw-muted">?</kbd>
                       </button>
                     )}
                   </motion.div>

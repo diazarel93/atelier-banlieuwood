@@ -134,13 +134,15 @@ export function ResponseStreamSection({
         </div>
         <div className="flex items-center gap-1">
           <button onClick={onShowBroadcast} title="Message classe (B)"
-            className="px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.10]">
+            className="flex items-center gap-1 px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.10]">
             📢
+            <kbd className="w-4 h-4 rounded bg-white/[0.08] text-[9px] font-mono flex items-center justify-center text-bw-muted">B</kbd>
           </button>
           {responses.length >= 2 && (
             <button onClick={onShowCompare} title="Comparer (C)"
-              className="px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-violet hover:bg-bw-violet/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.10]">
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-violet hover:bg-bw-violet/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.10]">
               ⚖️
+              <kbd className="w-4 h-4 rounded bg-white/[0.08] text-[9px] font-mono flex items-center justify-center text-bw-muted">C</kbd>
             </button>
           )}
           {highlightedCount > 0 && (
@@ -158,8 +160,9 @@ export function ResponseStreamSection({
             </button>
           )}
           <button onClick={onShowExport} title="Export (E)"
-            className="px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.10]">
+            className="flex items-center gap-1 px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-white/[0.10]">
             📋
+            <kbd className="w-4 h-4 rounded bg-white/[0.08] text-[9px] font-mono flex items-center justify-center text-bw-muted">E</kbd>
           </button>
         </div>
       </div>
@@ -335,14 +338,14 @@ export function ResponseStreamSection({
         </div>
       ) : sessionStatus === "responding" ? (
         <div
-          className="rounded-xl border border-white/[0.08] p-8 text-center"
+          className="rounded-xl border border-white/[0.08] p-6 text-center space-y-3"
           style={{
             background: "linear-gradient(135deg, rgba(78,205,196,0.04), rgba(139,92,246,0.03), transparent)",
             boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
           }}
         >
-          {/* Animated progress ring */}
-          <div className="relative w-16 h-16 mx-auto mb-3">
+          {/* Animated spinner + counter */}
+          <div className="relative w-16 h-16 mx-auto">
             <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
               <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="3" />
               <motion.circle
@@ -367,20 +370,21 @@ export function ResponseStreamSection({
               ✍️
             </motion.span>
           </div>
-          <p className="text-sm text-bw-text font-semibold">En attente des réponses</p>
-          <p className="text-xs text-bw-muted mt-1">
-            <span className="tabular-nums font-medium text-bw-teal">{activeStudents.length}</span> élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}
-          </p>
-          <div className="flex justify-center gap-1.5 mt-3">
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                className="w-2 h-2 rounded-full bg-bw-teal"
-                animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.2, 0.8] }}
-                transition={{ repeat: Infinity, duration: 1.4, delay: i * 0.3, ease: "easeInOut" }}
-              />
-            ))}
+          <div>
+            <p className="text-lg font-bold tabular-nums text-bw-teal">
+              {respondedCount}/{activeStudents.length}
+            </p>
+            <p className="text-xs text-bw-muted mt-0.5">eleves ont repondu</p>
           </div>
+          <p className="text-xs text-bw-muted/70">Les reponses apparaitront ici au fur et a mesure.</p>
+          {/* Quick actions */}
+          <div className="flex items-center justify-center gap-2">
+            <button onClick={onShowBroadcast}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-white/[0.10] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+              📢 Message classe
+            </button>
+          </div>
+          <p className="text-xs text-bw-muted/50 italic">Astuce : projetez la question sur l&apos;ecran ↗</p>
         </div>
       ) : null}
 

@@ -61,6 +61,11 @@ import { ClassroomMap } from "@/components/pilot/classroom-map";
 import { StudentFiche } from "@/components/pilot/student-fiche";
 import { AIAssistantPanel } from "@/components/pilot/ai-assistant-panel";
 import { ComprehensionHeatmap } from "@/components/pilot/comprehension-heatmap";
+import { SessionStateBanner } from "@/components/pilot/session-state-banner";
+import { SessionProgressBar } from "@/components/pilot/session-progress-bar";
+import { FloatingNextAction } from "@/components/pilot/floating-next-action";
+import { OnboardingHints } from "@/components/pilot/onboarding-hints";
+import { usePilotOnboarding } from "@/hooks/use-pilot-onboarding";
 
 interface Session {
   id: string;
@@ -190,6 +195,9 @@ function CockpitContent({
 }) {
   const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
   const [guideExpanded, setGuideExpanded] = useState(false);
+  const footerCtaRef = useRef<HTMLDivElement | null>(null);
+  const [mapCollapsed, setMapCollapsed] = useState(false);
+  const onboarding = usePilotOnboarding();
   const [reformulating, setReformulating] = useState<Response | null>(null);
   const [reformulatedText, setReformulatedText] = useState("");
   const [respondingStartedAt] = useState<number>(Date.now());
@@ -893,28 +901,19 @@ function CockpitContent({
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      {/* ── STATUS BAR ── */}
-      {session.status === "paused" && (
-        <motion.div
-          animate={{ opacity: [0.8, 1, 0.8] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="bg-bw-amber/10 border-b border-bw-amber/20 px-4 py-3 text-center flex-shrink-0 flex items-center justify-center gap-2"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2.5" strokeLinecap="round">
-            <rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" />
-          </svg>
-          <p className="text-sm text-bw-amber font-semibold">En pause</p>
-        </motion.div>
-      )}
-      {session.status === "done" && (
-        <div className="bg-bw-green/10 border-b border-bw-green/20 px-4 py-3 text-center flex-shrink-0 flex items-center justify-center gap-3">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12l5 5L20 7" />
-          </svg>
-          <p className="text-sm text-bw-green font-semibold">Module terminé</p>
-          <button onClick={() => router.push(`/session/${sessionId}/results`)}
-            className="text-sm text-bw-primary hover:underline cursor-pointer">Voir les résultats →</button>
-        </div>
+      {/* ── STATUS BANNER — always visible, color-coded by state ── */}
+      <SessionStateBanner
+        status={session.status}
+        respondedCount={unifiedRespondedCount}
+        totalStudents={activeStudents.length}
+        voteCount={voteData?.totalVotes || 0}
+        onTogglePause={handlePauseToggle}
+        onViewResults={() => router.push(`/session/${sessionId}/results`)}
+      />
+
+      {/* ── PROGRESS BAR — question dots ── */}
+      {(totalQuestions ?? 0) > 1 && (
+        <SessionProgressBar currentIndex={currentQIndex} total={totalQuestions!} />
       )}
 
       {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}
@@ -1059,21 +1058,61 @@ function CockpitContent({
 
         {/* ── SPLIT-PANEL LAYOUT ── */}
         <div className="flex-1 flex overflow-hidden min-h-0">
-          {/* LEFT: Plan de classe + séances (40%, desktop only) */}
-          <div className="hidden lg:flex lg:w-[40%] flex-shrink-0 flex-col overflow-y-auto border-r border-white/[0.10]">
-            {/* Mini stats bar */}
+          {/* LEFT: Plan de classe + séances (collapsible, desktop only) */}
+          <div data-onboarding="classmap" className={`hidden lg:flex flex-shrink-0 flex-col overflow-y-auto border-r border-white/[0.10] transition-all duration-300 ${
+            mapCollapsed ? "w-12" : "lg:w-[40%]"
+          }`}>
+            {/* Header bar with collapse toggle */}
             {session.status !== "done" && (
-              <div className="flex-shrink-0 px-3 py-2 border-b border-white/[0.10] flex items-center gap-3 text-xs">
-                {stuckStudents.length > 0 && (
-                  <span className="text-bw-danger tabular-nums font-medium">● {stuckStudents.length} bloqué{stuckStudents.length > 1 ? "s" : ""}</span>
-                )}
-                {(() => { const h = session.students?.filter(s => s.hand_raised_at).length || 0; return h > 0 ? <span className="text-bw-amber font-medium">✋ {h} main{h > 1 ? "s" : ""}</span> : null; })()}
-                {stuckStudents.length === 0 && !(session.students?.some(s => s.hand_raised_at)) && (
-                  <span className="text-bw-muted">Plan de classe</span>
+              <div className="flex-shrink-0 px-2 py-2 border-b border-white/[0.10] flex items-center gap-2 text-xs">
+                <button
+                  onClick={() => setMapCollapsed(c => !c)}
+                  title={mapCollapsed ? "Ouvrir le plan de classe" : "Fermer le plan de classe"}
+                  className="w-6 h-6 rounded-lg flex items-center justify-center text-bw-muted hover:text-white hover:bg-white/[0.06] cursor-pointer transition-colors flex-shrink-0"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    {mapCollapsed ? <path d="M9 18l6-6-6-6" /> : <path d="M15 18l-6-6 6-6" />}
+                  </svg>
+                </button>
+                {!mapCollapsed && (
+                  <>
+                    {stuckStudents.length > 0 && (
+                      <span className="text-bw-danger tabular-nums font-medium">● {stuckStudents.length} bloque{stuckStudents.length > 1 ? "s" : ""}</span>
+                    )}
+                    {(() => { const h = session.students?.filter(s => s.hand_raised_at).length || 0; return h > 0 ? <span className="text-bw-amber font-medium">✋ {h} main{h > 1 ? "s" : ""}</span> : null; })()}
+                    {stuckStudents.length === 0 && !(session.students?.some(s => s.hand_raised_at)) && (
+                      <span className="text-bw-muted">Plan de classe</span>
+                    )}
+                  </>
                 )}
               </div>
             )}
-            {/* Classroom map */}
+            {/* Collapsed mini strip */}
+            {mapCollapsed && (
+              <div className="flex-1 flex flex-col items-center gap-2 py-3 overflow-y-auto">
+                <span className="text-xs font-bold tabular-nums text-bw-teal [writing-mode:vertical-lr] rotate-180">
+                  {activeStudents.length}
+                </span>
+                <div className="flex flex-col gap-1">
+                  {studentStates.slice(0, 15).map(s => (
+                    <div key={s.id}
+                      className={`w-2.5 h-2.5 rounded-full ${
+                        s.state === "responded" ? "bg-bw-teal" :
+                        s.state === "stuck" ? "bg-bw-danger animate-pulse" :
+                        s.state === "active" ? "bg-bw-amber" :
+                        "bg-bw-muted/30"
+                      }`}
+                      title={`${s.display_name} — ${s.state}`}
+                    />
+                  ))}
+                  {studentStates.length > 15 && (
+                    <span className="text-[8px] text-bw-muted text-center">+{studentStates.length - 15}</span>
+                  )}
+                </div>
+              </div>
+            )}
+            {/* Classroom map — full view */}
+            {!mapCollapsed && (
             <div className="flex-1 p-3 overflow-y-auto">
             <ClassroomMap
               students={studentStates.map((s) => {
@@ -1130,6 +1169,7 @@ function CockpitContent({
               />
             )}
             </div>
+            )}
           </div>
           {/* RIGHT: Flux ou Fiche (60%) */}
           <div className="flex-1 overflow-y-auto min-h-0">
@@ -1172,7 +1212,7 @@ function CockpitContent({
 
           {/* ── TOOLBAR — clean, minimal header for right panel ── */}
           {session.status !== "done" && !focusMode && (
-            <div className="flex items-center gap-2.5 pb-2 border-b border-white/[0.10]">
+            <div data-onboarding="responses" className="flex items-center gap-2.5 pb-2 border-b border-white/[0.10]">
               <span className="text-xs font-semibold text-bw-heading uppercase tracking-wider">{unifiedLabel}</span>
               <div className="flex-1" />
               {(isBudgetQuiz || showM10Special || showM2ECSceneBuilder || showM2ECComparison) && (
@@ -1335,11 +1375,21 @@ function CockpitContent({
                 </div>
               )}
 
-              {budgetSubmitted === 0 && (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-8 text-center space-y-2">
+              {budgetSubmitted === 0 && session.status === "responding" && (
+                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-6 text-center space-y-3">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                     className="text-3xl">💰</motion.div>
-                  <p className="text-sm text-bw-muted">En attente des choix budgetaires...</p>
+                  <div>
+                    <p className="text-lg font-bold tabular-nums text-bw-teal">{budgetSubmitted}/{activeStudents.length}</p>
+                    <p className="text-xs text-bw-muted mt-0.5">budgets soumis</p>
+                  </div>
+                  <p className="text-xs text-bw-muted/70">Les choix budgetaires apparaitront ici.</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <button onClick={() => setShowBroadcast(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-white/[0.10] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+                      📢 Message classe
+                    </button>
+                  </div>
                 </div>
               )}
             </>
@@ -1594,11 +1644,20 @@ function CockpitContent({
 
               {/* Waiting state when no data yet */}
               {(!module5Data || module5Data.type !== "checklist") && session.status === "responding" && (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-6 text-center space-y-2">
+                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-6 text-center space-y-3">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                     className="text-2xl">📋</motion.div>
-                  <p className="text-sm text-bw-muted">En attente des checklists...</p>
-                  <p className="text-xs text-bw-muted">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
+                  <div>
+                    <p className="text-lg font-bold tabular-nums text-bw-teal">{module5Data?.submittedCount || 0}/{activeStudents.length}</p>
+                    <p className="text-xs text-bw-muted mt-0.5">checklists soumises</p>
+                  </div>
+                  <p className="text-xs text-bw-muted/70">Les choix des eleves apparaitront ici.</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <button onClick={() => setShowBroadcast(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-white/[0.10] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+                      📢 Message classe
+                    </button>
+                  </div>
                 </div>
               )}
             </>
@@ -1686,11 +1745,20 @@ function CockpitContent({
 
               {/* Waiting state when no scenes yet */}
               {(!scenesData || scenesData.scenes.length === 0) && session.status === "responding" && (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-6 text-center space-y-2">
+                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-6 text-center space-y-3">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                     className="text-2xl">🎬</motion.div>
-                  <p className="text-sm text-bw-muted">En attente des scènes...</p>
-                  <p className="text-xs text-bw-muted">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
+                  <div>
+                    <p className="text-lg font-bold tabular-nums text-bw-teal">{scenesData?.count || 0}/{activeStudents.length}</p>
+                    <p className="text-xs text-bw-muted mt-0.5">scenes construites</p>
+                  </div>
+                  <p className="text-xs text-bw-muted/70">Les scenes apparaitront ici au fur et a mesure.</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <button onClick={() => setShowBroadcast(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-white/[0.10] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+                      📢 Message classe
+                    </button>
+                  </div>
                 </div>
               )}
             </>
@@ -1801,10 +1869,20 @@ function CockpitContent({
 
               {/* Waiting state when no scenes yet */}
               {(!scenesData || scenesData.scenes.length === 0) && (
-                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-8 text-center space-y-2">
+                <div className="bg-bw-surface rounded-xl border border-white/[0.10] p-6 text-center space-y-3">
                   <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
                     className="text-3xl">⚔️</motion.div>
-                  <p className="text-sm text-bw-muted">En attente des scènes des élèves...</p>
+                  <div>
+                    <p className="text-lg font-bold tabular-nums text-bw-teal">{scenesData?.count || 0}/{activeStudents.length}</p>
+                    <p className="text-xs text-bw-muted mt-0.5">scenes disponibles</p>
+                  </div>
+                  <p className="text-xs text-bw-muted/70">Les scenes des eleves apparaitront ici pour la confrontation.</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <button onClick={() => setShowBroadcast(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-white/[0.10] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+                      📢 Message classe
+                    </button>
+                  </div>
                 </div>
               )}
             </>
@@ -1984,14 +2062,13 @@ function CockpitContent({
           {/* ── EMPTY STATE — shown when responding with no responses yet ── */}
           {session.status === "responding" && unifiedRespondedCount === 0 && !isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !isBudgetQuiz && (
             <div
-              className="rounded-xl border border-white/[0.08] p-8 text-center"
+              className="rounded-xl border border-white/[0.08] p-6 text-center space-y-3"
               style={{
                 background: "linear-gradient(135deg, rgba(78,205,196,0.04), rgba(139,92,246,0.03), transparent)",
                 boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
               }}
             >
-              {/* Animated progress ring */}
-              <div className="relative w-16 h-16 mx-auto mb-3">
+              <div className="relative w-16 h-16 mx-auto">
                 <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
                   <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="3" />
                   <motion.circle
@@ -2016,20 +2093,18 @@ function CockpitContent({
                   ✍️
                 </motion.span>
               </div>
-              <p className="text-sm text-bw-text font-semibold">En attente des réponses</p>
-              <p className="text-xs text-bw-muted mt-1">
-                <span className="tabular-nums font-medium text-bw-teal">{activeStudents.length}</span> élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}
-              </p>
-              <div className="flex justify-center gap-1.5 mt-3">
-                {[0, 1, 2].map((i) => (
-                  <motion.div
-                    key={i}
-                    className="w-2 h-2 rounded-full bg-bw-teal"
-                    animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.2, 0.8] }}
-                    transition={{ repeat: Infinity, duration: 1.4, delay: i * 0.3, ease: "easeInOut" }}
-                  />
-                ))}
+              <div>
+                <p className="text-lg font-bold tabular-nums text-bw-teal">{unifiedRespondedCount}/{activeStudents.length}</p>
+                <p className="text-xs text-bw-muted mt-0.5">eleves ont repondu</p>
               </div>
+              <p className="text-xs text-bw-muted/70">Les reponses apparaitront ici au fur et a mesure.</p>
+              <div className="flex items-center justify-center gap-2">
+                <button onClick={() => setShowBroadcast(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-white/[0.10] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+                  📢 Message classe
+                </button>
+              </div>
+              <p className="text-xs text-bw-muted/50 italic">Astuce : projetez la question sur l&apos;ecran ↗</p>
             </div>
           )}
 
@@ -2153,7 +2228,7 @@ function CockpitContent({
             );
           })()}
           {/* ROW 2: [←] [CTA] [→] [toggles] */}
-          <div className="px-4 pb-2 flex items-center gap-2">
+          <div ref={footerCtaRef} className="px-4 pb-2 flex items-center gap-2">
             {/* Back button for non-QA modules */}
             {!isStandardQA && (session.current_situation_index || 0) > 0 && (
               <button
@@ -2219,7 +2294,7 @@ function CockpitContent({
                     color: nextAction.color === "#F59E0B" || nextAction.color === "#888" ? "black" : "white",
                     boxShadow: `0 0 20px ${nextAction.color}50, 0 0 40px ${nextAction.color}20, 0 2px 8px rgba(0,0,0,0.2)`,
                   }}>
-                  {nextAction.label} {nextAction.shortcut && <span className="opacity-60 ml-1 text-xs">[{nextAction.shortcut}]</span>}
+                  {nextAction.label} {nextAction.shortcut && <kbd className="inline-flex items-center justify-center w-5 h-5 ml-1.5 rounded bg-white/[0.15] text-[10px] font-mono">{nextAction.shortcut}</kbd>}
                 </motion.button>
               ) : (
                 <div className="w-full py-2.5 rounded-lg text-sm text-center bg-white/[0.04] text-bw-muted border border-white/[0.08]" style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)" }}>
@@ -2284,6 +2359,25 @@ function CockpitContent({
           </div>
         </div>
       )}
+
+      {/* ── FLOATING NEXT ACTION — fixed bottom-right, hides when footer visible ── */}
+      <FloatingNextAction
+        nextAction={nextAction}
+        onExecute={handleNextAction}
+        isPending={updateSession.isPending}
+        allResponded={allResponded}
+        footerRef={footerCtaRef}
+      />
+
+      {/* ── ONBOARDING HINTS (first visit tooltips) ── */}
+      <OnboardingHints
+        show={onboarding.showOnboarding}
+        step={onboarding.currentStep}
+        stepIndex={onboarding.stepIndex}
+        totalSteps={onboarding.totalSteps}
+        onNext={onboarding.nextStep}
+        onDismiss={onboarding.dismiss}
+      />
 
       {/* ── STUDENTS DRAWER (slide from right) ── */}
       <AnimatePresence>

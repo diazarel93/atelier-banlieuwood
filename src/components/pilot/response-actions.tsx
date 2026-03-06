@@ -78,6 +78,7 @@ function InlineActionsInner({
   const [showScorePicker, setShowScorePicker] = useState(false);
   const [hoverStar, setHoverStar] = useState(0);
   const [sentReaction, setSentReaction] = useState<string | null>(null);
+  const [showOverflow, setShowOverflow] = useState(false);
 
   const handleToggleHighlight = useCallback(() => {
     onHighlight(responseId, !isHighlighted);
@@ -125,67 +126,14 @@ function InlineActionsInner({
         <div className="w-px h-4 bg-white/[0.06] mx-0.5" />
       </div>
 
-      {/* Action buttons row */}
+      {/* Action buttons row — 2 primary + overflow */}
       <div className="flex items-center gap-1.5">
-        {/* Parler / Commenter */}
-        <button
-          onClick={onStartComment}
-          aria-label={teacherComment ? "Modifier le commentaire" : "Commenter la réponse"}
-          className={`btn-glow flex items-center gap-1 px-2 py-1 rounded-xl text-xs font-medium cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
-            teacherComment || isCommenting
-              ? "bg-bw-teal/15 text-bw-teal"
-              : "text-bw-muted hover:text-bw-text hover:bg-white/5"
-          }`}
-        >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-          </svg>
-          {teacherComment ? "Commenté" : "Parler"}
-        </button>
-
-        {/* Relancer / Nudge — split button */}
-        <div className="flex items-center">
-          <button
-            onClick={() => {
-              onNudge(responseId, lastNudge.text);
-            }}
-            disabled={isNudgePending}
-            aria-label={`Relancer : ${lastNudge.label}`}
-            className={`btn-glow flex items-center gap-1 px-2 py-1 rounded-l-xl text-xs font-medium cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
-              showNudgePicker
-                ? "bg-bw-amber/15 text-bw-amber"
-                : "text-bw-muted hover:text-bw-amber hover:bg-bw-amber/10"
-            } disabled:opacity-40`}
-          >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <polyline points="23 4 23 10 17 10" />
-              <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
-            </svg>
-            {isNudgePending ? "..." : lastNudge.label}
-          </button>
-          <button
-            onClick={() => setShowNudgePicker(!showNudgePicker)}
-            disabled={isNudgePending}
-            aria-label="Choisir un autre message de relance"
-            aria-expanded={showNudgePicker}
-            className={`flex items-center px-1 py-1 rounded-r-xl border-l border-white/10 text-xs cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
-              showNudgePicker
-                ? "bg-bw-amber/15 text-bw-amber"
-                : "text-bw-muted hover:text-bw-amber hover:bg-bw-amber/10"
-            } disabled:opacity-40`}
-          >
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Projeter */}
+        {/* Projeter — PRIMARY action */}
         <button
           onClick={handleToggleHighlight}
           aria-label={isHighlighted ? "Retirer la mise en avant" : "Mettre en avant la réponse"}
           aria-pressed={isHighlighted}
-          className={`btn-glow flex items-center gap-1 px-2 py-1 rounded-xl text-xs font-medium cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
+          className={`btn-glow flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-medium cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
             isHighlighted
               ? "bg-bw-primary/15 text-bw-primary"
               : "text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10"
@@ -194,83 +142,89 @@ function InlineActionsInner({
           <svg width="11" height="11" viewBox="0 0 24 24" fill={isHighlighted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
-          {isHighlighted ? "Projeté" : "Projeter"}
+          {isHighlighted ? "Projete" : "Projeter"}
         </button>
 
-        {/* Annotation flags — star, flag, bookmark */}
-        {onFlag && (
-          <div className="flex items-center gap-0.5">
-            {([
-              { key: "star", icon: "⭐", label: "Excellent", color: "#F59E0B" },
-              { key: "flag", icon: "🚩", label: "À revoir", color: "#EF4444" },
-              { key: "bookmark", icon: "🔖", label: "À projeter", color: "#8B5CF6" },
-            ] as const).map((f) => (
-              <button
-                key={f.key}
-                onClick={() => onFlag(responseId, teacherFlag === f.key ? null : f.key)}
-                title={teacherFlag === f.key ? `Retirer ${f.label}` : f.label}
-                className={`px-1 py-1 rounded-lg text-xs cursor-pointer transition-all focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
-                  teacherFlag === f.key ? "scale-110" : "opacity-40 hover:opacity-80"
-                }`}
-                style={teacherFlag === f.key ? { background: `${f.color}20` } : undefined}
-              >
-                {f.icon}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Noter (score) */}
+        {/* Parler — PRIMARY action */}
         <button
-          onClick={() => setShowScorePicker(!showScorePicker)}
-          disabled={isScorePending}
-          aria-label={teacherScore > 0 ? `Note actuelle : ${teacherScore} sur 5` : "Noter la réponse"}
-          aria-expanded={showScorePicker}
-          className={`btn-glow flex items-center gap-1 px-2 py-1 rounded-xl text-xs font-medium cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
-            teacherScore > 0 || showScorePicker
-              ? "bg-bw-green/15 text-bw-green"
-              : "text-bw-muted hover:text-bw-green hover:bg-bw-green/10"
-          } disabled:opacity-40`}
-        >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill={teacherScore > 0 ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-          </svg>
-          {teacherScore > 0 ? `${teacherScore}/5` : "Noter"}
-        </button>
-
-        {/* Signaler (warn) */}
-        <motion.button
-          onClick={handleWarn}
-          disabled={isWarnPending}
-          aria-label={`Signaler l'élève — ${warnings} sur 3 avertissements`}
-          className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors text-bw-muted hover:text-bw-danger hover:bg-bw-danger/10 disabled:opacity-40 ml-auto focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
-          title={`Signaler — ${warnings}/3 avertissement${warnings > 1 ? "s" : ""}`}
-          whileTap={{ scale: 0.9, backgroundColor: "rgba(239,68,68,0.15)" }}
+          onClick={onStartComment}
+          aria-label={teacherComment ? "Modifier le commentaire" : "Commenter la reponse"}
+          className={`btn-glow flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-medium cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
+            teacherComment || isCommenting
+              ? "bg-bw-teal/15 text-bw-teal"
+              : "text-bw-muted hover:text-bw-text hover:bg-white/5"
+          }`}
         >
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-            <line x1="4" y1="22" x2="4" y2="15" />
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
           </svg>
-          {warnings > 0 && (
-            <span className={`text-xs font-bold ${warnings >= 2 ? "text-bw-danger" : "text-bw-amber"}`}>
-              {warnings}/3
-            </span>
-          )}
-        </motion.button>
+          {teacherComment ? "Commente" : "Parler"}
+        </button>
 
-        {/* Supprimer commentaire */}
         {teacherComment && !isCommenting && (
-          <button
-            onClick={handleDeleteComment}
-            aria-label="Supprimer le commentaire"
-            className="px-1.5 py-1 rounded-md text-xs cursor-pointer transition-colors text-bw-muted hover:text-bw-danger hover:bg-bw-danger/10 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
-            title="Supprimer commentaire"
-          >
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+          <button onClick={handleDeleteComment} aria-label="Supprimer le commentaire"
+            className="px-1 py-1 rounded-md text-xs cursor-pointer transition-colors text-bw-muted hover:text-bw-danger focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
+            title="Supprimer commentaire">✕</button>
         )}
+
+        <div className="flex-1" />
+
+        {/* Overflow menu — remaining actions */}
+        <div className="relative">
+          <button
+            onClick={() => setShowOverflow(p => !p)}
+            aria-label="Plus d'actions"
+            className="flex items-center px-2 py-1 rounded-xl text-xs text-bw-muted hover:text-bw-text hover:bg-white/5 cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
+          >
+            ⋯
+          </button>
+          <AnimatePresence>
+            {showOverflow && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowOverflow(false)} />
+                <motion.div
+                  initial={{ opacity: 0, y: -4, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 bottom-full mb-1.5 z-50 w-44 bg-bw-surface border border-white/[0.08] rounded-xl shadow-2xl overflow-hidden"
+                >
+                  {/* Relancer */}
+                  <button onClick={() => { setShowNudgePicker(!showNudgePicker); setShowOverflow(false); }}
+                    className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2">
+                    <span className="w-4 text-center">🔄</span> Relancer
+                  </button>
+                  {/* Noter */}
+                  <button onClick={() => { setShowScorePicker(!showScorePicker); setShowOverflow(false); }}
+                    disabled={isScorePending}
+                    className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2 disabled:opacity-40">
+                    <span className="w-4 text-center">⭐</span> {teacherScore > 0 ? `Note: ${teacherScore}/5` : "Noter"}
+                  </button>
+                  {/* Annotation flags */}
+                  {onFlag && ([
+                    { key: "star", icon: "⭐", label: "Excellent" },
+                    { key: "flag", icon: "🚩", label: "A revoir" },
+                    { key: "bookmark", icon: "🔖", label: "A projeter" },
+                  ] as const).map((f) => (
+                    <button key={f.key}
+                      onClick={() => { onFlag(responseId, teacherFlag === f.key ? null : f.key); setShowOverflow(false); }}
+                      className={`w-full text-left px-3 py-2 text-xs hover:bg-white/[0.08] cursor-pointer transition-colors flex items-center gap-2 ${
+                        teacherFlag === f.key ? "text-bw-teal" : "text-bw-text"
+                      }`}>
+                      <span className="w-4 text-center">{f.icon}</span> {teacherFlag === f.key ? `✓ ${f.label}` : f.label}
+                    </button>
+                  ))}
+                  {/* Signaler */}
+                  <button onClick={() => { handleWarn(); setShowOverflow(false); }}
+                    disabled={isWarnPending}
+                    className="w-full text-left px-3 py-2 text-xs text-bw-danger hover:bg-bw-danger/10 cursor-pointer transition-colors flex items-center gap-2 disabled:opacity-40 border-t border-white/[0.06]">
+                    <span className="w-4 text-center">🚩</span> Signaler {warnings > 0 && `(${warnings}/3)`}
+                  </button>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Nudge picker — preset messages + custom */}
