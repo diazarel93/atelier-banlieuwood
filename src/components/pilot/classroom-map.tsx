@@ -7,6 +7,8 @@ import type { SeatStudent } from "./seat-card";
 import { DeskPair } from "./desk-pair";
 import { StudentActionPopover } from "./student-action-popover";
 
+export type ClassroomLayout = "rows" | "u-shape" | "islands" | "free";
+
 interface Team {
   id: string;
   team_name: string;
@@ -34,6 +36,8 @@ interface ClassroomMapProps {
   onBroadcast?: () => void;
   onNudgeAllStuck?: (text: string) => void;
   onStudentClick?: (studentId: string) => void;
+  layout?: ClassroomLayout;
+  desksPerRow?: number;
 }
 
 const STATE_ORDER: Record<StudentState, number> = {
@@ -43,12 +47,90 @@ const STATE_ORDER: Record<StudentState, number> = {
   disconnected: 3,
 };
 
+const STATE_STYLE: Record<string, { dot: string; bg: string; border: string; text: string }> = {
+  responded: { dot: "#4CAF50", bg: "#F0FAF4", border: "#C6E9D0", text: "#2C2C2C" },
+  active: { dot: "#F2C94C", bg: "#FFFCF5", border: "#F0E4C0", text: "#2C2C2C" },
+  stuck: { dot: "#EB5757", bg: "#FFF5F5", border: "#F5C4C4", text: "#2C2C2C" },
+  disconnected: { dot: "#C4BDB2", bg: "#F7F5F2", border: "#E8E2D8", text: "#B0A99E" },
+};
+
 function toPairs<T>(arr: T[]): [T, T | undefined][] {
   const pairs: [T, T | undefined][] = [];
   for (let i = 0; i < arr.length; i += 2) {
     pairs.push([arr[i], arr[i + 1]]);
   }
   return pairs;
+}
+
+/** Free-layout individual student chip */
+function FreeStudentChip({
+  student,
+  response,
+  onClick,
+}: {
+  student: SeatStudent;
+  response: string | null;
+  onClick: () => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+  const s = STATE_STYLE[student.state] || STATE_STYLE.disconnected;
+
+  return (
+    <motion.button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="relative flex flex-col items-center gap-1 p-2.5 rounded-[12px] cursor-pointer transition-all"
+      style={{
+        background: s.bg,
+        border: `1.5px solid ${s.border}`,
+        opacity: student.state === "disconnected" ? 0.4 : 1,
+        boxShadow: student.state === "stuck" ? `0 0 8px ${s.dot}30` : "0 1px 3px rgba(61,43,16,0.04)",
+      }}
+      whileTap={{ scale: 0.96 }}
+      whileHover={{ scale: 1.03 }}
+    >
+      <div className="relative">
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center text-base"
+          style={{ background: "#FFFFFF", border: `2px solid ${s.dot}` }}
+        >
+          {student.avatar}
+        </div>
+        {student.hand_raised_at && (
+          <motion.span animate={{ y: [0, -2, 0] }} transition={{ repeat: Infinity, duration: 0.8 }}
+            className="absolute -top-1 -right-1 text-[10px]">✋</motion.span>
+        )}
+        {student.state === "responded" && (
+          <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }}
+            className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center"
+            style={{ background: "#4CAF50", boxShadow: "0 1px 3px rgba(76,175,80,0.4)" }}>
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round"><path d="M5 12l5 5L20 7" /></svg>
+          </motion.span>
+        )}
+        {student.state === "stuck" && (
+          <motion.span animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 1.2 }}
+            className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-black text-white"
+            style={{ background: "#EB5757" }}>!</motion.span>
+        )}
+      </div>
+      <span className="text-[11px] font-semibold truncate max-w-[56px] leading-tight" style={{ color: s.text }}>
+        {student.display_name.split(" ")[0]}
+      </span>
+
+      {/* Tooltip */}
+      <AnimatePresence>
+        {hovered && response && (
+          <motion.div
+            initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 4 }}
+            className="absolute z-30 bottom-full mb-2 left-1/2 -translate-x-1/2 w-[200px] rounded-[12px] p-3 pointer-events-none"
+            style={{ background: "#FFFFFF", border: "1px solid #E8DFD2", boxShadow: "0 8px 24px rgba(61,43,16,0.12)" }}>
+            <p className="text-[12px] text-[#5B5B5B] leading-snug line-clamp-3">{response}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.button>
+  );
 }
 
 export function ClassroomMap({
@@ -62,6 +144,8 @@ export function ClassroomMap({
   onBroadcast,
   onNudgeAllStuck,
   onStudentClick,
+  layout = "rows",
+  desksPerRow = 3,
 }: ClassroomMapProps) {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
 
@@ -123,7 +207,7 @@ export function ClassroomMap({
     [responseIdMap, onNudge]
   );
 
-  // Build desk rows
+  // Build desk rows (pairs grouped by team)
   const deskRows = useMemo(() => {
     if (hasTeams) {
       const rows: { teamId: string; teamName: string; teamColor: string; pairs: [SeatStudent, SeatStudent | undefined][] }[] = [];
@@ -143,6 +227,114 @@ export function ClassroomMap({
     return [{ teamId: "__all__", teamName: "", teamColor: "", pairs: toPairs(sortedStudents) }];
   }, [hasTeams, teams, sortedStudents]);
 
+  // Flat pairs list for U-shape / islands layouts
+  const allPairs = useMemo(() => deskRows.flatMap((g) => g.pairs), [deskRows]);
+
+  // ── LAYOUT RENDERERS ──
+
+  function renderRowsLayout(pairs: [SeatStudent, SeatStudent | undefined][], teamColor?: string) {
+    const rows: [SeatStudent, SeatStudent | undefined][][] = [];
+    for (let i = 0; i < pairs.length; i += desksPerRow) {
+      rows.push(pairs.slice(i, i + desksPerRow));
+    }
+    return rows.map((row, rowIdx) => (
+      <div key={rowIdx} className="flex justify-center gap-2 sm:gap-3">
+        {row.map(([left, right], deskIdx) => (
+          <DeskPair
+            key={`${left.id}-${deskIdx}`}
+            left={left} right={right}
+            responseMap={responseMap}
+            onStudentClick={handleStudentClick}
+            teamColor={teamColor || undefined}
+          />
+        ))}
+      </div>
+    ));
+  }
+
+  function renderUShape() {
+    const n = allPairs.length;
+    const leftCount = Math.floor(n / 3);
+    const rightCount = Math.floor(n / 3);
+    const bottomCount = n - leftCount - rightCount;
+    const leftPairs = allPairs.slice(0, leftCount);
+    const bottomPairs = allPairs.slice(leftCount, leftCount + bottomCount);
+    const rightPairs = allPairs.slice(leftCount + bottomCount);
+
+    return (
+      <div className="space-y-3">
+        {/* Top: left column + empty center + right column */}
+        <div className="flex justify-between gap-3">
+          {/* Left column */}
+          <div className="flex flex-col gap-2">
+            {leftPairs.map(([left, right], i) => (
+              <DeskPair key={`l-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} />
+            ))}
+          </div>
+          {/* Center spacer */}
+          <div className="flex-1 min-w-[60px]" />
+          {/* Right column */}
+          <div className="flex flex-col gap-2">
+            {rightPairs.map(([left, right], i) => (
+              <DeskPair key={`r-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} />
+            ))}
+          </div>
+        </div>
+        {/* Bottom row */}
+        {bottomPairs.length > 0 && (
+          <div className="flex justify-center gap-2 sm:gap-3 flex-wrap">
+            {bottomPairs.map(([left, right], i) => (
+              <DeskPair key={`b-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function renderIslands() {
+    // Group pairs by 2 → each island = 2 desk pairs face to face
+    const islands: [SeatStudent, SeatStudent | undefined][][] = [];
+    for (let i = 0; i < allPairs.length; i += 2) {
+      islands.push(allPairs.slice(i, i + 2));
+    }
+    return (
+      <div className="flex flex-wrap justify-center gap-4">
+        {islands.map((island, idx) => (
+          <div
+            key={idx}
+            className="flex flex-col gap-0.5 p-2 rounded-[14px]"
+            style={{ background: "#F3ECE3", border: "1px dashed #E8DFD2" }}
+          >
+            {island.map(([left, right], pairIdx) => (
+              <DeskPair
+                key={`is-${left.id}-${pairIdx}`}
+                left={left} right={right}
+                responseMap={responseMap}
+                onStudentClick={handleStudentClick}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  function renderFreeLayout() {
+    return (
+      <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2 justify-items-center">
+        {sortedStudents.map((student) => (
+          <FreeStudentChip
+            key={student.id}
+            student={student}
+            response={responseMap.get(student.id) || null}
+            onClick={() => handleStudentClick(student.id)}
+          />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
 
@@ -159,7 +351,7 @@ export function ClassroomMap({
 
         <div className="relative p-4 sm:p-5 space-y-3">
 
-          {/* Teacher's desk */}
+          {/* Teacher's desk / Tableau */}
           <div className="flex justify-center">
             <div
               className="flex items-center gap-2 px-5 py-1.5"
@@ -177,9 +369,12 @@ export function ClassroomMap({
           {/* Separator */}
           <div className="h-px" style={{ background: "linear-gradient(to right, transparent, #E8DFD2, transparent)" }} />
 
-          {/* Desk rows */}
+          {/* Desk layout — dispatched by layout prop */}
           <div className="space-y-3">
-            {deskRows.map((group, gi) => (
+            {layout === "u-shape" ? renderUShape()
+              : layout === "islands" ? renderIslands()
+              : layout === "free" ? renderFreeLayout()
+              : /* rows (default) */ deskRows.map((group, gi) => (
               <motion.div
                 key={group.teamId}
                 initial={{ opacity: 0, y: 8 }}
@@ -209,29 +404,7 @@ export function ClassroomMap({
                     </span>
                   </div>
                 )}
-
-                {/* Rows of desks */}
-                {(() => {
-                  const desksPerRow = 3;
-                  const rows: [SeatStudent, SeatStudent | undefined][][] = [];
-                  for (let i = 0; i < group.pairs.length; i += desksPerRow) {
-                    rows.push(group.pairs.slice(i, i + desksPerRow));
-                  }
-                  return rows.map((row, rowIdx) => (
-                    <div key={rowIdx} className="flex justify-center gap-2 sm:gap-3">
-                      {row.map(([left, right], deskIdx) => (
-                        <DeskPair
-                          key={`${left.id}-${deskIdx}`}
-                          left={left}
-                          right={right}
-                          responseMap={responseMap}
-                          onStudentClick={handleStudentClick}
-                          teamColor={group.teamColor || undefined}
-                        />
-                      ))}
-                    </div>
-                  ));
-                })()}
+                {renderRowsLayout(group.pairs, group.teamColor)}
               </motion.div>
             ))}
           </div>
