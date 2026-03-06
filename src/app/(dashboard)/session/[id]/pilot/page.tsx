@@ -465,6 +465,21 @@ function CockpitContent({
     ? getQuestionGuide(session.current_seance || 1, (session.current_situation_index || 0) + 1, session.current_module)
     : undefined;
 
+  // Helper: M10 activity label
+  const getM10ActivityLabel = (type?: string) => {
+    switch (type) {
+      case "etsi": return "Et si... — Image + ecriture";
+      case "qcm": return "QCM narratif";
+      case "idea-bank": return "Banque d'idees";
+      case "avatar": return "Creation personnage";
+      case "objectif": return "Objectif + Obstacle";
+      case "pitch": return "Assemblage pitch";
+      case "chrono": return "Test chrono 60s";
+      case "confrontation": return "Confrontation";
+      default: return null;
+    }
+  };
+
   // Build set of students who submitted via module-specific endpoints (M10, M9, M2EC)
   const moduleSubmittedIds = useMemo(() => {
     const ids = new Set<string>();
@@ -847,6 +862,61 @@ function CockpitContent({
   const showM10Special = isM10Any && !(isM10Etsi && displayIndex === 1);
   const showStandardQA = (isStandardQA || (isM2ECAny && !showM2ECSpecial && !showM2ECComparison) || (isM10Any && !showM10Special)) && !isM12Any;
 
+  // ── Universal question text — used by the header question bar for ALL modules ──
+  const universalQuestionText: string | null = (() => {
+    if (isPreviewing) {
+      // For preview, compute text from allSituations or module-specific data
+      if (isM1Positioning && module1Data?.questions?.[displayIndex]) {
+        return module1Data.questions[displayIndex].text;
+      }
+      const ps = allSituations.find(s => s.position === displayIndex + 1);
+      if (ps?.prompt) return ps.prompt;
+      if (situation?.prompt) return situation.prompt;
+      // M10 / M2EC preview labels
+      if (showM10Special) {
+        const m10Label = isM10Etsi
+          ? (displayIndex === 0 ? "Et si... — Image + ecriture" : displayIndex === 1 ? "QCM narratif" : "Banque d'idees")
+          : (displayIndex === 0 ? "Creation personnage" : displayIndex === 1 ? "Objectif + Obstacle" : displayIndex === 2 ? "Ecriture pitch" : displayIndex === 3 ? "Test chrono" : "Confrontation");
+        return m10Label;
+      }
+      if (showM2ECChecklist) return "Checklist de contenus";
+      if (showM2ECSceneBuilder) return "Construction de scene";
+      if (showM2ECComparison) return "Confrontation de scenes";
+      if (isM12Any) return module12Data?.mancheLabel || `Manche ${module12Data?.manche || 1}`;
+      return null;
+    }
+    // Live mode — current question
+    if (situation?.prompt) return situation.prompt;
+    if (isM1Positioning && module1Data?.questions?.[currentQIndex]) return module1Data.questions[currentQIndex].text;
+    if (module1Data?.question?.text) return module1Data.question.text;
+    if (module10Data) return getM10ActivityLabel(module10Data.type);
+    if (showM2ECChecklist) return "Checklist de contenus";
+    if (showM2ECSceneBuilder) return "Construction de scene";
+    if (showM2ECComparison) return "Confrontation de scenes";
+    if (isM12Any) return module12Data?.mancheLabel || `Manche ${module12Data?.manche || 1}`;
+    return null;
+  })();
+
+  // ── Universal category label — for the header question bar badge ──
+  const universalCategoryLabel: string = (() => {
+    if (isPreviewing) {
+      const ps = allSituations.find(s => s.position === displayIndex + 1);
+      if (ps?.restitutionLabel || ps?.category) return ps.restitutionLabel || ps.category;
+    }
+    if (situation?.restitutionLabel || situation?.category) return situation.restitutionLabel || situation.category;
+    if (isM1Positioning) return "Positionnement";
+    if (isM1Image) return "Image";
+    if (isM1Notebook) return "Carnet";
+    if (isBudgetQuiz) return "Budget";
+    if (showM10Special && isM10Etsi) return "Et si...";
+    if (showM10Special && isM10Pitch) return "Pitch";
+    if (showM2ECChecklist) return "Checklist";
+    if (showM2ECSceneBuilder) return "Scene";
+    if (showM2ECComparison) return "Confrontation";
+    if (isM12Any) return "Construction";
+    return moduleLabel;
+  })();
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* ── STATUS BAR ── */}
@@ -927,38 +997,28 @@ function CockpitContent({
           )}
         </div>
 
-        {/* ── QUESTION BAR — always visible with collapsible guide ── */}
-        {(showStandardQA || isM1Positioning) && situation && (
+        {/* ── QUESTION BAR — UNIVERSAL, always visible with collapsible guide ── */}
+        {universalQuestionText && (
           <div className="flex-shrink-0 border-b border-white/[0.06]">
             <div className="flex items-center gap-2 px-4 py-2">
               {/* Category badge */}
               <span className="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0"
-                style={{ backgroundColor: `${CATEGORY_COLORS[situation.category] || moduleColor}20`, color: CATEGORY_COLORS[situation.category] || moduleColor }}>
-                {(() => {
-                if (isPreviewing) {
-                  const ps = allSituations.find(s => s.position === displayIndex + 1);
-                  return ps?.restitutionLabel || ps?.category || situation.restitutionLabel || situation.category;
-                }
-                return situation.restitutionLabel || situation.category;
-              })()}
+                style={{ backgroundColor: `${CATEGORY_COLORS[universalCategoryLabel] || moduleColor}20`, color: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
+                {universalCategoryLabel}
               </span>
               {isPreviewing && <span className="text-[9px] px-1.5 py-0.5 rounded bg-bw-amber/15 text-bw-amber font-bold uppercase flex-shrink-0">Apercu</span>}
               {/* Question text */}
-              <p className={`text-sm leading-snug flex-1 min-w-0 truncate ${isPreviewing ? "text-bw-amber" : "text-bw-text"}`}>{
-                isPreviewing
-                  ? (isM1Positioning
-                    ? (module1Data?.questions?.[displayIndex]?.text ?? situation.prompt)
-                    : (allSituations.find(s => s.position === displayIndex + 1)?.prompt ?? situation.prompt))
-                  : situation.prompt
-              }</p>
+              <p className={`text-sm leading-snug flex-1 min-w-0 truncate ${isPreviewing ? "text-bw-amber" : "text-bw-text"}`}>
+                {universalQuestionText}
+              </p>
               {/* Question navigation compact */}
-              {(totalQuestions ?? 0) > 1 && (
+              {maxSituations > 1 && (
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button onClick={previewPrev} disabled={displayIndex <= 0}
                     className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
                     ◀
                   </button>
-                  <span className="text-[10px] text-bw-muted tabular-nums">Q{displayIndex + 1}/{totalQuestions}</span>
+                  <span className="text-[10px] text-bw-muted tabular-nums">Q{displayIndex + 1}/{maxSituations}</span>
                   <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
                     className="px-1.5 py-1 rounded-lg text-xs text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
                     ▶
@@ -993,7 +1053,7 @@ function CockpitContent({
                         <p className="text-[11px] text-bw-text leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.whatToExpect}</p>
                       </div>
                       <div className="bg-bw-bg rounded-lg p-2.5 space-y-0.5">
-                        <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-amber">Pièges fréquents</p>
+                        <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-amber">Pieges frequents</p>
                         <p className="text-[11px] text-bw-amber leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.commonPitfalls}</p>
                       </div>
                     </div>
@@ -1006,7 +1066,7 @@ function CockpitContent({
             {isPreviewing && (
               <div className="px-4 pb-2">
                 <div className="bg-bw-amber/10 border border-bw-amber/30 rounded-lg px-3 py-2 flex items-center gap-3">
-                  <span className="text-[11px] text-bw-amber">Aperçu Q{displayIndex + 1}</span>
+                  <span className="text-[11px] text-bw-amber">Apercu Q{displayIndex + 1}</span>
                   <div className="flex-1" />
                   <button onClick={() => setPreviewIndex(null)}
                     className="text-[10px] text-bw-muted hover:text-white cursor-pointer">Retour Q{currentQIndex + 1}</button>
@@ -1017,21 +1077,6 @@ function CockpitContent({
                 </div>
               </div>
             )}
-          </div>
-        )}
-        {/* Preview banner for non-standard views */}
-        {isPreviewing && !(showStandardQA || isM1Positioning) && (
-          <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-2">
-            <div className="bg-bw-amber/10 border border-bw-amber/30 rounded-lg px-3 py-2 flex items-center gap-3">
-              <span className="text-[11px] text-bw-amber">Aperçu Q{displayIndex + 1}</span>
-              <div className="flex-1" />
-              <button onClick={() => setPreviewIndex(null)}
-                className="text-[10px] text-bw-muted hover:text-white cursor-pointer">Retour Q{currentQIndex + 1}</button>
-              <button onClick={() => goToSituation(displayIndex)}
-                className="text-[10px] px-2.5 py-1 bg-bw-amber text-black rounded-lg font-medium cursor-pointer hover:brightness-110">
-                Lancer Q{displayIndex + 1}
-              </button>
-            </div>
           </div>
         )}
 
@@ -1217,15 +1262,7 @@ function CockpitContent({
                   <p className="text-sm text-bw-muted">Image non disponible</p>
                 </div>
               )}
-              {/* Single question */}
-              {module1Data.question && (
-                <div className="bg-bw-elevated rounded-xl border border-white/[0.08] p-4">
-                  <p className="text-sm text-bw-heading leading-snug">{module1Data.question.text}</p>
-                </div>
-              )}
               {/* Responses are rendered by the unified ResponseStreamSection below */}
-              {/* Quick phrases for image */}
-              <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
@@ -1251,15 +1288,7 @@ function CockpitContent({
                   </button>
                 </div>
               </div>
-              {/* Consigne */}
-              {module1Data.question && (
-                <div className="bg-bw-elevated rounded-xl border border-white/[0.08] p-4">
-                  <p className="text-sm text-bw-heading leading-snug">{module1Data.question.text}</p>
-                </div>
-              )}
               {/* Notebooks are rendered by the unified ResponseStreamSection below */}
-              {/* Quick phrases for notebook */}
-              <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
@@ -1344,25 +1373,13 @@ function CockpitContent({
                   <p className="text-sm text-bw-muted">En attente des choix budgetaires...</p>
                 </div>
               )}
-              <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
           {/* ── MODULE 10: Et si... + Pitch overview ── */}
           {showM10Special && (
             <>
-              {/* Preview guide card */}
-              {isPreviewing && (() => {
-                const m10Label = isM10Etsi
-                  ? (displayIndex === 0 ? "Et si..." : displayIndex === 1 ? "QCM narratif" : "Banque d'idées")
-                  : (displayIndex === 0 ? "Création personnage" : displayIndex === 1 ? "Objectif + Obstacle" : displayIndex === 2 ? "Écriture pitch" : displayIndex === 3 ? "Test chrono" : "Confrontation");
-                const m10Desc = isM10Etsi
-                  ? (displayIndex === 0 ? "Les élèves imaginent un « Et si... » à partir d'une image et rédigent leur scénario alternatif." : displayIndex === 1 ? "QCM de direction narrative — les élèves choisissent parmi plusieurs orientations." : "Les élèves partagent leurs idées dans la banque collective et votent.")
-                  : (displayIndex === 0 ? "Chaque élève crée son personnage avec avatar, traits et objectif." : displayIndex === 1 ? "Définir l'objectif principal et l'obstacle majeur du personnage." : displayIndex === 2 ? "Assembler les éléments en un pitch structuré." : displayIndex === 3 ? "60 secondes pour pitcher oralement." : "Les pitchs s'affrontent, la classe vote.");
-                return <PreviewGuideCard label={m10Label} description={m10Desc} guide={previewGuide} position={displayIndex} />;
-              })()}
-
-              {/* Activity context — hidden when preview guide card is showing same info */}
+              {/* Activity context */}
               {!isPreviewing && (
                 <div className="glass-card p-4 space-y-2">
                   <div className="flex items-center gap-2">
@@ -1573,63 +1590,6 @@ function CockpitContent({
                 </div>
               )}
 
-              {/* Quick phrases for Module 10 special positions */}
-              <QuickPhrases questionGuide={questionGuide} />
-            </>
-          )}
-
-          {/* ── MODULE 10: Preview banner + Nav pills for all positions ── */}
-          {showM10Special && (
-            <>
-              {isPreviewing && (
-                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-                  className="bg-bw-amber/10 border border-bw-amber/30 rounded-xl px-4 py-3 flex items-center gap-3">
-                  <span className="text-xs text-bw-amber">Prévisualisation — les élèves ne voient pas ce changement</span>
-                  <div className="flex-1" />
-                  <button onClick={() => setPreviewIndex(null)}
-                    className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">Retour</button>
-                  <button onClick={() => { goToSituation(displayIndex); }}
-                    className="btn-glow text-xs px-3 py-1 bg-bw-amber text-black rounded-xl font-medium cursor-pointer transition-all duration-200 hover:brightness-110">
-                    Lancer
-                  </button>
-                </motion.div>
-              )}
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {Array.from({ length: maxSituations }, (_, i) => {
-                  const isCurrent = i === currentQIndex;
-                  const isPreview = i === displayIndex;
-                  const isPast = i < currentQIndex;
-                  const specialLabel = isM10Etsi
-                    ? (i === 0 ? "✨ Et si" : i === 1 ? "Q2" : "💡 Banque")
-                    : (i === 0 ? "🎭 Perso" : i === 1 ? "🎯 Conflit" : i === 2 ? "📝 Pitch" : i === 3 ? "⏱️ Chrono" : "⚔️ Vote");
-                  const specialTitle = isM10Etsi
-                    ? (i === 0 ? "Image + écriture « Et si... »" : i === 1 ? "QCM direction narrative" : "Banque d'idées collective")
-                    : (i === 0 ? "Création du personnage" : i === 1 ? "Objectif + Obstacle" : i === 2 ? "Écriture du pitch" : i === 3 ? "Test chrono 60s" : "Confrontation + Vote");
-                  return (
-                    <button key={i} onClick={() => previewSituation(i)} title={specialTitle}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 ${
-                        isPreview && isPreviewing ? "bg-bw-amber text-black shadow-lg shadow-bw-amber/20 scale-110"
-                          : isCurrent ? "bg-bw-pink text-white shadow-lg shadow-bw-pink/20"
-                          : isPast ? "bg-bw-teal/15 text-bw-teal"
-                          : "bg-bw-elevated text-bw-muted hover:text-bw-text hover:bg-bw-surface"
-                      }`}>
-                      {isPast && !isPreview ? (
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="inline mr-1"><path d="M5 12l5 5L20 7"/></svg>
-                      ) : null}
-                      {specialLabel}
-                    </button>
-                  );
-                })}
-                <div className="flex-1" />
-                <button onClick={previewPrev} disabled={displayIndex <= 0}
-                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
-                  ←
-                </button>
-                <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
-                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
-                  →
-                </button>
-              </div>
             </>
           )}
 
@@ -1643,69 +1603,9 @@ function CockpitContent({
             />
           )}
 
-          {/* ── MODULE 2 EC: Preview banner + Nav pills for special positions ── */}
-          {(showM2ECSpecial || showM2ECComparison) && (
-            <>
-              {isPreviewing && (
-                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-                  className="bg-bw-amber/10 border border-bw-amber/30 rounded-xl px-4 py-3 flex items-center gap-3">
-                  <span className="text-xs text-bw-amber">Prévisualisation — les élèves ne voient pas ce changement</span>
-                  <div className="flex-1" />
-                  <button onClick={() => setPreviewIndex(null)}
-                    className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors duration-200">Retour</button>
-                  <button onClick={() => { goToSituation(displayIndex); }}
-                    className="btn-glow text-xs px-3 py-1 bg-bw-amber text-black rounded-xl font-medium cursor-pointer transition-all duration-200 hover:brightness-110">
-                    Lancer
-                  </button>
-                </motion.div>
-              )}
-              <div className="flex items-center gap-1.5">
-                {Array.from({ length: maxSituations }, (_, i) => {
-                  const isCurrent = i === currentQIndex;
-                  const isPreview = i === displayIndex;
-                  const isPast = i < currentQIndex;
-                  const specialLabel = (seance === 1 && i === 0) ? "📋 Checklist"
-                    : (seance === 2 && i === 1) ? "🎬 Scène"
-                    : (seance === 3 && i === 0) ? "⚔️ Duel"
-                    : `Q${i + 1}`;
-                  const specialTitle = (seance === 1 && i === 0) ? "Checklist de contenus (3 min)"
-                    : (seance === 2 && i === 1) ? "Construction de scène"
-                    : (seance === 3 && i === 0) ? "Confrontation de scènes"
-                    : `Question ${i + 1}`;
-                  return (
-                    <button key={i} onClick={() => previewSituation(i)} title={specialTitle}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 ${
-                        isPreview && isPreviewing ? "bg-bw-amber text-black shadow-lg shadow-bw-amber/20 scale-110"
-                          : isCurrent ? "bg-bw-pink text-white shadow-lg shadow-bw-pink/20"
-                          : isPast ? "bg-bw-teal/15 text-bw-teal"
-                          : "bg-bw-elevated text-bw-muted hover:text-bw-text hover:bg-bw-surface"
-                      }`}>
-                      {isPast && !isPreview ? (
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="inline mr-1"><path d="M5 12l5 5L20 7"/></svg>
-                      ) : null}
-                      {specialLabel}
-                    </button>
-                  );
-                })}
-                <div className="flex-1" />
-                <button onClick={previewPrev} disabled={displayIndex <= 0}
-                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
-                  ←
-                </button>
-                <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1}
-                  className="px-3 py-2 rounded-xl text-sm text-bw-muted hover:text-white bg-bw-elevated border border-white/[0.06] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors duration-200">
-                  →
-                </button>
-              </div>
-            </>
-          )}
-
           {/* ── MODULE 2 EC: Checklist cockpit ── */}
           {showM2ECChecklist && (
             <>
-              {/* Preview guide card */}
-              {isPreviewing && <PreviewGuideCard label="Checklist" description="Les élèves choisissent 3 contenus minimum parmi 20 oeuvres, puis sélectionnent celui qui les touche le plus." guide={previewGuide} position={displayIndex} />}
-
               {/* Toolbar — same style as ResponseStreamSection */}
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
@@ -1776,16 +1676,12 @@ function CockpitContent({
                   <p className="text-xs text-bw-muted">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
                 </div>
               )}
-              <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
           {/* ── MODULE 2 EC: Scene Builder cockpit ── */}
           {showM2ECSceneBuilder && (
             <>
-              {/* Preview guide card */}
-              {isPreviewing && <PreviewGuideCard label="Construction de scène" description="Chaque élève construit une scène autour de l'émotion choisie : intention, obstacle, changement + éléments de mise en scène." guide={previewGuide} position={displayIndex} />}
-
               {/* What students are doing — hidden when preview guide shows same info */}
               {!isPreviewing && (
                 <div className="glass-card !border-bw-pink/20 p-4 space-y-3">
@@ -1896,16 +1792,12 @@ function CockpitContent({
                   <p className="text-xs text-bw-muted">{activeStudents.length} élève{activeStudents.length > 1 ? "s" : ""} connecté{activeStudents.length > 1 ? "s" : ""}</p>
                 </div>
               )}
-              <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
           {/* ── MODULE 2 EC: Comparison cockpit (séance 3) ── */}
           {showM2ECComparison && (
             <>
-              {/* Preview guide card */}
-              {isPreviewing && <PreviewGuideCard label="Confrontation" description="Sélectionnez 2 scènes à projeter côte-à-côte. La classe compare les choix narratifs et les éléments de mise en scène." guide={previewGuide} position={displayIndex} />}
-
               {/* Toolbar — same style as ResponseStreamSection */}
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
@@ -2039,7 +1931,6 @@ function CockpitContent({
                   <p className="text-sm text-bw-muted">En attente des scènes des élèves...</p>
                 </div>
               )}
-              <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
