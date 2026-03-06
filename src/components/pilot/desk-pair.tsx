@@ -5,18 +5,20 @@ import { motion, AnimatePresence } from "motion/react";
 import type { SeatStudent } from "./seat-card";
 
 /**
- * Palette pensée "prof" :
- *  - Teal   = répondu, c'est bon ✓
- *  - Neutre = en train de bosser (normal, pas besoin d'attirer l'attention)
- *  - Corail  = besoin d'aide / bloqué
- *  - Gris   = pas connecté
+ * Warm EdTech state palette:
+ *  - Green  = repondu, OK
+ *  - Amber  = en cours (neutre-chaud)
+ *  - Red    = bloque / besoin d'aide
+ *  - Muted  = deconnecte
  */
-const STATE_COLOR: Record<string, string> = {
-  responded: "#4CAF50",
-  active: "#F2C94C",
-  stuck: "#EB5757",
-  disconnected: "#C4BDB2",
+const STATE_STYLE: Record<string, { dot: string; bg: string; border: string; text: string }> = {
+  responded: { dot: "#4CAF50", bg: "#F0FAF4", border: "#C6E9D0", text: "#2C2C2C" },
+  active:    { dot: "#F2C94C", bg: "#FFFCF5", border: "#F0E4C0", text: "#2C2C2C" },
+  stuck:     { dot: "#EB5757", bg: "#FFF5F5", border: "#F5C4C4", text: "#2C2C2C" },
+  disconnected: { dot: "#C4BDB2", bg: "#F7F5F2", border: "#E8E2D8", text: "#B0A99E" },
 };
+
+const DEFAULT_STYLE = { dot: "#C4BDB2", bg: "#F7F5F2", border: "#E8E2D8", text: "#B0A99E" };
 
 /** A single desk with 1-2 students sitting side by side */
 function DeskPairInner({
@@ -45,34 +47,34 @@ function DeskPairInner({
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
     >
       <div
-        className="relative flex items-stretch rounded-xl border overflow-hidden transition-all duration-300"
+        className="relative flex items-stretch overflow-hidden transition-all duration-300"
         style={{
-          borderColor: anyHand
-            ? "rgba(239,100,97,0.50)"
-            : allResponded
-              ? "rgba(78,205,196,0.30)"
-              : teamColor
-                ? `${teamColor}25`
-                : "rgba(0,0,0,0.06)",
+          borderRadius: 14,
+          border: `1px solid ${
+            anyHand ? "#F5C4C4"
+            : allResponded ? "#C6E9D0"
+            : teamColor ? `${teamColor}30`
+            : "#E8DFD2"
+          }`,
           background: allResponded
-            ? "rgba(78,205,196,0.06)"
+            ? "#F7FDF9"
             : anyNeedsHelp
-              ? "rgba(239,100,97,0.05)"
-              : "rgba(0,0,0,0.03)",
+              ? "#FFFAFA"
+              : "#FFFFFF",
           boxShadow: anyHand
-            ? "0 0 16px rgba(239,100,97,0.15), 0 2px 4px rgba(0,0,0,0.2)"
+            ? "0 2px 12px rgba(235,87,87,0.12), 0 1px 3px rgba(61,43,16,0.06)"
             : allResponded
-              ? "0 0 12px rgba(78,205,196,0.10), 0 2px 4px rgba(0,0,0,0.15)"
-              : "0 1px 3px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.08)",
+              ? "0 2px 12px rgba(76,175,80,0.08), 0 1px 3px rgba(61,43,16,0.04)"
+              : "0 2px 8px rgba(61,43,16,0.05), 0 1px 2px rgba(61,43,16,0.03)",
         }}
       >
         <DeskSeat student={left} response={responseMap.get(left.id) || null} onClick={() => onStudentClick(left.id)} />
-        <div className="w-px my-2" style={{ background: "rgba(0,0,0,0.06)" }} />
+        <div className="w-px my-2.5" style={{ background: "#EFE4D8" }} />
         {right ? (
           <DeskSeat student={right} response={responseMap.get(right.id) || null} onClick={() => onStudentClick(right.id)} />
         ) : (
-          <div className="w-[80px] flex items-center justify-center opacity-20">
-            <div className="w-6 h-6 rounded-full border border-dashed border-white/20" />
+          <div className="w-[90px] flex items-center justify-center" style={{ opacity: 0.3 }}>
+            <div className="w-5 h-5 rounded-full" style={{ border: "1.5px dashed #D3CAB8" }} />
           </div>
         )}
       </div>
@@ -80,7 +82,7 @@ function DeskPairInner({
   );
 }
 
-/** A single seat within a desk */
+/** A single seat — NAME FIRST design (teacher knows 30 students by name) */
 function DeskSeat({
   student,
   response,
@@ -91,98 +93,83 @@ function DeskSeat({
   onClick: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
-  const color = STATE_COLOR[student.state] || "#555";
+  const s = STATE_STYLE[student.state] || DEFAULT_STYLE;
 
   return (
     <motion.button
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`relative flex flex-col items-center gap-0.5 px-2.5 py-2 cursor-pointer transition-colors w-[80px] ${
-        student.state === "disconnected" ? "opacity-30" : ""
-      }`}
-      whileTap={{ scale: 0.95 }}
-      whileHover={{ backgroundColor: "rgba(0,0,0,0.04)", scale: 1.03 }}
+      className="relative flex items-center gap-2 px-2.5 py-2 cursor-pointer transition-colors w-[90px]"
+      style={{ opacity: student.state === "disconnected" ? 0.4 : 1 }}
+      whileTap={{ scale: 0.96 }}
+      whileHover={{ backgroundColor: "#FAF6EE" }}
     >
-      {/* Avatar + badges */}
-      <div className="relative">
-        <motion.div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-base"
-          style={{ boxShadow: `0 0 0 2px ${color}, 0 0 8px ${color}40` }}
-          animate={
-            student.state === "responded"
-              ? { scale: [1, 1.08, 1] }
-              : student.state === "stuck"
-                ? { rotate: [-2, 2, -2] }
-                : student.state === "active"
-                  ? { scale: [1, 1.04, 1] }
-                  : {}
-          }
-          transition={
-            student.state === "responded"
-              ? { duration: 0.5, ease: "easeOut", times: [0, 0.4, 1] }
-              : student.state === "stuck"
-                ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" }
-                : student.state === "active"
-                  ? { repeat: Infinity, duration: 3, ease: "easeInOut" }
-                  : {}
-          }
+      {/* State dot + avatar */}
+      <div className="relative flex-shrink-0">
+        {/* Small avatar with state ring */}
+        <div
+          className="w-7 h-7 rounded-full flex items-center justify-center text-sm"
+          style={{
+            background: s.bg,
+            border: `2px solid ${s.dot}`,
+            boxShadow: student.state === "stuck" ? `0 0 8px ${s.dot}30` : undefined,
+          }}
         >
           {student.avatar}
-        </motion.div>
+        </div>
 
         {/* Hand raised */}
         {student.hand_raised_at && (
           <motion.span
-            animate={{ y: [0, -3, 0] }}
+            animate={{ y: [0, -2, 0] }}
             transition={{ repeat: Infinity, duration: 0.8 }}
-            className="absolute -top-1.5 -right-1.5 text-xs"
+            className="absolute -top-1 -right-1 text-[10px]"
           >
             ✋
           </motion.span>
         )}
 
-        {/* Responded check — pop + glow */}
+        {/* Responded check */}
         {student.state === "responded" && (
-          <>
-            <motion.span
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 500, damping: 15 }}
-              className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#4CAF50] flex items-center justify-center"
-              style={{ boxShadow: "0 0 8px rgba(78,205,196,0.5), 0 1px 2px rgba(0,0,0,0.2)" }}
-            >
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12l5 5L20 7" />
-              </svg>
-            </motion.span>
-            {/* Success ring burst */}
-            <motion.div
-              initial={{ scale: 0.5, opacity: 0.6 }}
-              animate={{ scale: 2, opacity: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-[#4CAF50] pointer-events-none"
-            />
-          </>
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 500, damping: 15 }}
+            className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center"
+            style={{ background: "#4CAF50", boxShadow: "0 1px 3px rgba(76,175,80,0.4)" }}
+          >
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round">
+              <path d="M5 12l5 5L20 7" />
+            </svg>
+          </motion.span>
         )}
 
         {/* Stuck indicator */}
         {student.state === "stuck" && (
-          <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#EB5757] flex items-center justify-center text-xs font-black text-white shadow-sm">
+          <motion.span
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ repeat: Infinity, duration: 1.2 }}
+            className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-black text-white"
+            style={{ background: "#EB5757", boxShadow: "0 1px 3px rgba(235,87,87,0.4)" }}
+          >
             !
-          </span>
+          </motion.span>
         )}
 
         {/* Warning badge */}
         {(student.warnings ?? 0) > 0 && (
-          <span className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-amber-500 flex items-center justify-center text-xs font-bold text-black shadow-sm">
+          <span className="absolute -top-1 -left-1 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold text-white" style={{ background: "#F5A45B", boxShadow: "0 1px 2px rgba(245,164,91,0.4)" }}>
             {student.warnings}
           </span>
         )}
       </div>
 
-      {/* Name */}
-      <span className="text-xs leading-tight truncate max-w-[68px] text-bw-text font-medium">
+      {/* Name — PRIMARY element */}
+      <span
+        className="text-[12px] leading-tight truncate max-w-[48px] font-semibold"
+        style={{ color: s.text }}
+      >
         {student.display_name}
       </span>
 
@@ -194,11 +181,20 @@ function DeskSeat({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.12 }}
-            className="absolute z-30 bottom-full mb-1.5 left-1/2 -translate-x-1/2 w-[200px] bg-bw-surface border border-white/10 rounded-lg p-2.5 shadow-xl pointer-events-none"
+            className="absolute z-30 bottom-full mb-2 left-1/2 -translate-x-1/2 w-[220px] rounded-[12px] p-3 pointer-events-none"
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid #E8DFD2",
+              boxShadow: "0 8px 24px rgba(61,43,16,0.12), 0 2px 6px rgba(61,43,16,0.06)",
+            }}
           >
-            <p className="text-xs text-bw-teal font-semibold mb-0.5">{student.display_name}</p>
-            <p className="text-sm text-bw-text leading-snug line-clamp-4">{response}</p>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-bw-surface border-r border-b border-white/10 rotate-45 -mt-1" />
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-sm">{student.avatar}</span>
+              <span className="text-[13px] font-semibold text-[#2C2C2C]">{student.display_name}</span>
+            </div>
+            <p className="text-[13px] text-[#5B5B5B] leading-snug line-clamp-4">{response}</p>
+            {/* Arrow */}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 w-2.5 h-2.5 rotate-45 -mt-1.5" style={{ background: "#FFFFFF", borderRight: "1px solid #E8DFD2", borderBottom: "1px solid #E8DFD2" }} />
           </motion.div>
         )}
       </AnimatePresence>

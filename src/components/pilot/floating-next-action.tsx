@@ -35,7 +35,7 @@ export function FloatingNextAction({
       ([entry]) => {
         setFooterVisible(entry.isIntersecting);
       },
-      { threshold: 0.3 }
+      { threshold: 0.1 }
     );
     observerRef.current.observe(el);
 

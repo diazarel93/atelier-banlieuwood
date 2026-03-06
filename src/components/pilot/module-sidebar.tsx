@@ -52,12 +52,10 @@ function ModuleSidebarInner({
     return "available";
   }
 
-  // Phase containing the active module
   const activePhase = activeModuleId
     ? phases.find((p) => p.moduleIds.includes(activeModuleId))
     : null;
 
-  // Only show phases that have at least 1 non-disabled module
   const visiblePhases = phases.filter((phase) =>
     phase.moduleIds.some((id) => {
       const mod = modules.find((m) => m.id === id);
@@ -73,18 +71,15 @@ function ModuleSidebarInner({
     return { done, total: phaseMods.length, allDone: done === phaseMods.length && done > 0 };
   }
 
-  // Global progress
   const allMods = modules.filter((m) => !m.disabled);
   const globalDone = allMods.filter((m) => completedModules.includes(m.id)).length;
 
-  // ── Auto-expand active phase when activeModuleId changes ──
   useEffect(() => {
     if (activeModuleId && activePhase) {
       setExpandedPhaseId(activePhase.id);
     }
   }, [activeModuleId, activePhase]);
 
-  // ── Keyboard shortcuts: digits 1-9 toggle phases ──
   const handleKey = useCallback((e: KeyboardEvent) => {
     const tag = (e.target as HTMLElement)?.tagName;
     if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (e.target as HTMLElement)?.isContentEditable) return;
@@ -107,11 +102,18 @@ function ModuleSidebarInner({
       {/* ── FLOATING PHASE DOCK — sm+ ── */}
       <div className="fixed left-2.5 top-1/2 -translate-y-1/2 z-30 hidden sm:flex items-start gap-0">
         {/* Phase icon strip */}
-        <div className="flex flex-col items-center gap-1.5 py-2.5 px-1.5 rounded-2xl bg-white/95 backdrop-blur-md border border-black/[0.06] shadow-xl">
+        <div
+          className="flex flex-col items-center gap-1.5 py-2.5 px-1.5 rounded-[16px]"
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #E8DFD2",
+            boxShadow: "0 4px 16px rgba(61,43,16,0.08), 0 1px 3px rgba(61,43,16,0.04)",
+          }}
+        >
           {/* Global progress mini */}
-          <div className="flex flex-col items-center gap-0.5 pb-1 border-b border-black/[0.04] mb-0.5 w-full">
-            <span className="text-xs text-bw-muted font-semibold">Modules</span>
-            <span className="text-xs tabular-nums" style={{ color: globalDone === allMods.length && globalDone > 0 ? "#4ECDC4" : "#555960" }}>
+          <div className="flex flex-col items-center gap-0.5 pb-1.5 mb-0.5 w-full" style={{ borderBottom: "1px solid #EFE4D8" }}>
+            <span className="text-[11px] font-semibold text-[#7A7A7A] uppercase tracking-wider">Modules</span>
+            <span className="text-[12px] font-bold tabular-nums" style={{ color: globalDone === allMods.length && globalDone > 0 ? "#57C4B6" : "#5B5B5B" }}>
               {globalDone}/{allMods.length}
             </span>
           </div>
@@ -126,19 +128,18 @@ function ModuleSidebarInner({
                 key={phase.id}
                 onClick={() => setExpandedPhaseId(isExpanded ? null : phase.id)}
                 title={phase.label}
-                className={`relative w-9 h-9 rounded-xl flex items-center justify-center text-base transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
-                  isExpanded ? "scale-110" : "hover:scale-105 hover:bg-black/[0.04]"
-                }`}
+                className="relative w-9 h-9 rounded-[10px] flex items-center justify-center text-base transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none"
                 style={{
+                  transform: isExpanded ? "scale(1.1)" : undefined,
                   background: isExpanded
-                    ? `linear-gradient(135deg, ${phase.color}30, ${phase.color}10)`
+                    ? `linear-gradient(135deg, ${phase.color}25, ${phase.color}08)`
                     : isActivePhase
-                      ? `linear-gradient(135deg, ${phase.color}20, ${phase.color}08)`
+                      ? `linear-gradient(135deg, ${phase.color}15, ${phase.color}05)`
                       : undefined,
                   border: isExpanded
-                    ? `1.5px solid ${phase.color}50`
+                    ? `1.5px solid ${phase.color}40`
                     : isActivePhase
-                      ? `1px solid ${phase.color}25`
+                      ? `1px solid ${phase.color}20`
                       : "1px solid transparent",
                 }}
               >
@@ -156,8 +157,8 @@ function ModuleSidebarInner({
 
                 {/* All done badge */}
                 {allDone && (
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-white flex items-center justify-center z-10">
-                    <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" strokeWidth="4" strokeLinecap="round">
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center z-10" style={{ background: "#FFFFFF", border: "1px solid #D5EDE8" }}>
+                    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#57C4B6" strokeWidth="4" strokeLinecap="round">
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
                   </div>
@@ -184,40 +185,52 @@ function ModuleSidebarInner({
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, x: -8, scale: 0.95 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="ml-2 w-[220px] rounded-2xl bg-white/95 backdrop-blur-md border border-black/[0.06] shadow-2xl overflow-hidden"
+                className="ml-2 w-[230px] rounded-[16px] overflow-hidden"
+                style={{
+                  background: "#FFFFFF",
+                  border: "1px solid #E8DFD2",
+                  boxShadow: "0 8px 32px rgba(61,43,16,0.10), 0 2px 8px rgba(61,43,16,0.04)",
+                }}
               >
                 {/* Phase header */}
-                <div className="px-3 pt-3 pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg leading-none">{phase.emoji}</span>
+                <div className="px-3.5 pt-3.5 pb-2">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-[10px] flex items-center justify-center text-lg" style={{ background: `${phase.color}15` }}>
+                      {phase.emoji}
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-sm font-semibold text-bw-heading truncate">{phase.label}</span>
-                        <span className="text-xs tabular-nums flex-shrink-0" style={{ color: done === total && done > 0 ? "#4ECDC4" : "#555960" }}>
-                          {done}/{total}
-                        </span>
-                      </div>
+                      <span className="text-[14px] font-semibold text-[#2C2C2C] truncate block">{phase.label}</span>
+                      <span className="text-[12px] tabular-nums" style={{ color: done === total && done > 0 ? "#57C4B6" : "#7A7A7A" }}>
+                        {done}/{total} termine{done !== 1 ? "s" : ""}
+                      </span>
                     </div>
                   </div>
-                  {/* Mini progress bar */}
-                  <div className="mt-2 h-1 rounded-full bg-black/[0.04] overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-500"
+                  {/* Progress bar */}
+                  <div className="mt-2.5 h-1.5 rounded-full overflow-hidden" style={{ background: "#F0EBE0" }}>
+                    <motion.div
+                      className="h-full rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${total > 0 ? Math.round((done / total) * 100) : 0}%` }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
                       style={{
-                        width: `${total > 0 ? Math.round((done / total) * 100) : 0}%`,
-                        background: done === total && done > 0 ? "linear-gradient(90deg, #4ECDC4, #10B981)" : `linear-gradient(90deg, ${phase.color}, ${phase.color}80)`,
+                        background: done === total && done > 0
+                          ? "linear-gradient(90deg, #57C4B6, #4CAF50)"
+                          : `linear-gradient(90deg, ${phase.color}, ${phase.color}90)`,
                       }}
                     />
                   </div>
                 </div>
 
-                {/* Séances label */}
-                <div className="px-3 pt-1 pb-0.5">
-                  <span className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Séances</span>
+                {/* Divider */}
+                <div className="mx-3 h-px" style={{ background: "#EFE4D8" }} />
+
+                {/* Seances label */}
+                <div className="px-3.5 pt-2 pb-1">
+                  <span className="text-[11px] uppercase tracking-wider font-semibold text-[#B0A99E]">Seances</span>
                 </div>
 
-                {/* Module list — flat, no step numbers or connectors */}
-                <div className="px-2 pb-2 space-y-0.5">
+                {/* Module list */}
+                <div className="px-2 pb-2.5 space-y-0.5">
                   {phaseMods.map((mod) => {
                     const status = getModuleStatus(mod);
                     const isActive = mod.id === activeModuleId;
@@ -231,33 +244,48 @@ function ModuleSidebarInner({
                           onSelectModule(mod.id);
                           setExpandedPhaseId(null);
                         }}
-                        className={`w-full px-2 py-1.5 rounded-lg flex items-center gap-2 text-left transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
-                          isActive ? "" : "hover:bg-black/[0.03]"
-                        }`}
-                        style={isActive ? { background: `linear-gradient(90deg, ${mod.color}15, ${mod.color}05)` } : undefined}
+                        className="w-full px-2.5 py-2 rounded-[10px] flex items-center gap-2.5 text-left transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none"
+                        style={{
+                          background: isActive
+                            ? `linear-gradient(90deg, ${mod.color}12, ${mod.color}04)`
+                            : undefined,
+                          border: isActive ? `1px solid ${mod.color}20` : "1px solid transparent",
+                        }}
+                        onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = "#FAF6EE"; }}
+                        onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = ""; }}
                       >
                         {/* Status indicator */}
                         <span className="flex-shrink-0 text-xs">
-                          {isDone ? <span className="text-bw-teal">✓</span>
-                            : isActive ? <span style={{ color: mod.color }}>●</span>
-                            : <span className="text-bw-muted/40">○</span>}
+                          {isDone ? (
+                            <span className="w-4 h-4 rounded-full inline-flex items-center justify-center" style={{ background: "#EFFAF8" }}>
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#57C4B6" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5" /></svg>
+                            </span>
+                          ) : isActive ? (
+                            <span className="w-4 h-4 rounded-full inline-flex items-center justify-center" style={{ background: `${mod.color}20` }}>
+                              <span className="w-2 h-2 rounded-full block" style={{ background: mod.color }} />
+                            </span>
+                          ) : (
+                            <span className="w-4 h-4 rounded-full inline-flex items-center justify-center" style={{ background: "#F0EBE0" }}>
+                              <span className="w-1.5 h-1.5 rounded-full block" style={{ background: "#C4BDB2" }} />
+                            </span>
+                          )}
                         </span>
 
                         {/* Icon */}
-                        <div className="w-3.5 h-3.5 flex-shrink-0" style={{ color: isDone ? "#4ECDC4" : mod.color }}>
-                          <ModuleIcon iconKey={mod.iconKey} size={14} />
+                        <div className="w-4 h-4 flex-shrink-0" style={{ color: isDone ? "#57C4B6" : isActive ? mod.color : "#7A7A7A" }}>
+                          <ModuleIcon iconKey={mod.iconKey} size={16} />
                         </div>
 
                         {/* Title */}
-                        <span className={`text-sm truncate flex-1 ${isActive ? "text-bw-heading font-medium" : isDone ? "text-bw-muted" : "text-bw-text"}`}>
+                        <span className={`text-[13px] truncate flex-1 ${isActive ? "text-[#2C2C2C] font-medium" : isDone ? "text-[#B0A99E]" : "text-[#5B5B5B]"}`}>
                           {mod.title}
                         </span>
 
                         {/* Right side: active info */}
                         {isActive && (
-                          <div className="flex items-center gap-1 flex-shrink-0">
+                          <div className="flex items-center gap-1.5 flex-shrink-0">
                             {qCount > 0 && (
-                              <span className="text-xs text-bw-muted tabular-nums">
+                              <span className="text-[11px] text-[#7A7A7A] tabular-nums">
                                 {(currentQuestionIndex ?? 0) + 1}/{qCount}
                               </span>
                             )}
@@ -266,18 +294,19 @@ function ModuleSidebarInner({
                                 key={responsesCount}
                                 initial={{ scale: 1.3, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
-                                className="text-xs font-bold text-bw-teal bg-bw-teal/10 px-1 py-px rounded-full tabular-nums"
+                                className="text-[11px] font-bold tabular-nums px-1.5 py-0.5 rounded-full"
+                                style={{ background: "#EFFAF8", color: "#57C4B6" }}
                               >
                                 {responsesCount}
                               </motion.span>
                             )}
-                            {elapsed && <span className="text-xs text-bw-primary tabular-nums">{elapsed}</span>}
+                            {elapsed && <span className="text-[11px] tabular-nums" style={{ color: "#F5A45B" }}>{elapsed}</span>}
                           </div>
                         )}
 
                         {/* Duration for non-active */}
                         {!isActive && (
-                          <span className="text-xs text-bw-muted flex-shrink-0">{mod.duration}</span>
+                          <span className="text-[11px] text-[#B0A99E] flex-shrink-0">{mod.duration}</span>
                         )}
                       </button>
                     );
@@ -317,15 +346,20 @@ export function MobileSidebarDrawer({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
             onClick={onClose}
           />
           <motion.div
-            initial={{ x: -240, opacity: 0 }}
+            initial={{ x: -280, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -240, opacity: 0 }}
+            exit={{ x: -280, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed inset-y-0 left-0 z-50 w-[280px] border-r border-black/[0.04] bg-bw-surface overflow-y-auto"
+            className="fixed inset-y-0 left-0 z-50 w-[280px] overflow-y-auto"
+            style={{
+              background: "#FFFFFF",
+              borderRight: "1px solid #E8DFD2",
+              boxShadow: "4px 0 24px rgba(61,43,16,0.08)",
+            }}
           >
             {children}
           </motion.div>

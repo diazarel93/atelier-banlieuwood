@@ -50,7 +50,6 @@ import { HelpButton } from "@/components/help-button";
 import { ConfirmModal } from "@/components/confirm-modal";
 
 // Layout components
-import { PilotTopBar } from "@/components/pilot/pilot-top-bar";
 import { ModuleSidebar, MobileSidebarDrawer } from "@/components/pilot/module-sidebar";
 import { WelcomePanel } from "@/components/pilot/welcome-panel";
 import { ModuleBriefing } from "@/components/pilot/module-briefing";
@@ -158,6 +157,7 @@ function CockpitContent({
   onSelectStudent,
   teams,
   onOpenModules,
+  onOpenScreen,
 }: {
   session: Session;
   situationData: Record<string, unknown> | null;
@@ -192,6 +192,7 @@ function CockpitContent({
   onSelectStudent: (student: Student) => void;
   teams: { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[];
   onOpenModules?: () => void;
+  onOpenScreen?: () => void;
 }) {
   const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
   const [guideExpanded, setGuideExpanded] = useState(false);
@@ -952,12 +953,12 @@ function CockpitContent({
             )}
             <span className="text-[#D3CAB8]">·</span>
             <span className="text-[14px] font-medium text-[#5B5B5B] tabular-nums flex-shrink-0">
-              Participation : {activeStudents.length} / {totalStudents}
+              {activeStudents.length} eleve{activeStudents.length !== 1 ? "s" : ""}
             </span>
           </div>
 
           {/* RIGHT: header actions */}
-          <div className="flex items-center gap-2.5 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0">
             {/* Auto-advance toggle */}
             <button
               onClick={() => {
@@ -977,26 +978,37 @@ function CockpitContent({
               </div>
               Auto{autoAdvance && autoAdvanceCountdown > 0 ? ` ${autoAdvanceCountdown}s` : ""}
             </button>
-            {/* Pause button */}
+            {/* Pause */}
             <button
               onClick={handlePauseToggle}
-              className="h-9 px-3.5 rounded-[10px] bg-white border border-[#E8DFD2] text-[13px] font-medium text-[#4A4A4A] hover:bg-[#F8F2E8] cursor-pointer transition-colors"
+              className="h-9 px-3 rounded-[10px] bg-white border border-[#E8DFD2] text-[13px] font-medium text-[#4A4A4A] hover:bg-[#F8F2E8] cursor-pointer transition-colors"
             >
               ⏸ Pause
+            </button>
+            {/* Broadcast */}
+            <button onClick={() => setShowBroadcast(true)} title="Message classe (B)"
+              className="w-9 h-9 rounded-[10px] flex items-center justify-center text-sm text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer transition-colors hover:shadow-sm">
+              📢
+            </button>
+            {/* Screen */}
+            <button onClick={onOpenScreen} title="Ecran eleves"
+              className="w-9 h-9 rounded-[10px] flex items-center justify-center text-sm text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer transition-colors hover:shadow-sm">
+              🖥
             </button>
           </div>
         </div>
 
-        {/* ── QUESTION CARD — per pseudo-Figma: 20px radius, 32px padding, soft shadow ── */}
+        {/* ── QUESTION CARD — HERO: dominant, 40px padding, 36px text ── */}
         {universalQuestionText && (
-          <div className="flex-shrink-0 px-6 py-4">
-            <div className="rounded-[20px] p-8" style={{
+          <div className="flex-shrink-0 px-5 py-4">
+            <div className="rounded-[20px]" style={{
+              padding: "40px 40px 36px",
               background: "#FFFFFF",
-              boxShadow: "0 10px 24px rgba(61,43,16,0.06)",
-              border: "1px solid #EFE4D8",
+              boxShadow: "0 12px 32px rgba(61,43,16,0.08), 0 4px 8px rgba(61,43,16,0.03)",
+              border: "1px solid #E8DFD2",
             }}>
               {/* Top row: badge + nav + guide */}
-              <div className="flex items-center gap-2.5 mb-4">
+              <div className="flex items-center gap-2.5 mb-5">
                 <span className="text-[13px] font-semibold px-3 py-1 rounded-full flex-shrink-0"
                   style={{ backgroundColor: `${CATEGORY_COLORS[universalCategoryLabel] || moduleColor}15`, color: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
                   {universalCategoryLabel}
@@ -1027,8 +1039,8 @@ function CockpitContent({
                   </button>
                 )}
               </div>
-              {/* Question text — HERO per pseudo-Figma: 28px / 600 / #2C2C2C */}
-              <p className={`text-[24px] md:text-[28px] font-semibold leading-[1.3] ${isPreviewing ? "text-[#D4842A]" : "text-[#2C2C2C]"}`} style={{ maxWidth: "85%" }}>
+              {/* Question text — HERO: 32-36px, strong, dominant */}
+              <p className={`text-[28px] md:text-[36px] font-bold leading-[1.25] ${isPreviewing ? "text-[#D4842A]" : "text-[#2C2C2C]"}`}>
                 {universalQuestionText}
               </p>
             </div>
@@ -1082,39 +1094,38 @@ function CockpitContent({
           <div data-onboarding="classmap" className="hidden lg:flex w-[280px] flex-shrink-0 flex-col"
             style={{ background: "#FAF6EE", borderRight: "1px solid #EEE4D8" }}>
             {/* Title */}
-            <div className="px-5 pt-5 pb-3 flex-shrink-0">
+            <div className="px-5 pt-5 pb-2 flex-shrink-0">
               <h3 className="text-[18px] font-semibold text-[#2C2C2C]">Classe en direct</h3>
-              <p className="text-[13px] text-[#7A7A7A] mt-0.5">Vue rapide de l&apos;etat des eleves</p>
             </div>
-            {/* Avatar radar grid */}
+            {/* Radar engagement — big counters at a glance */}
             <div className="px-5 pb-3 flex-shrink-0">
-              <div className="rounded-[14px] border border-[#EFE4D8] p-4" style={{ background: "#FFFDF9" }}>
-                <div className="grid grid-cols-4 gap-3">
-                  {studentStates.slice(0, 12).map(s => {
-                    const raw = session.students?.find(st => st.id === s.id);
-                    if (!raw?.is_active) return null;
-                    return (
-                      <button key={s.id} onClick={() => setFicheStudentId(s.id)}
-                        className="flex flex-col items-center gap-1 cursor-pointer group"
-                        title={`${raw.display_name} — ${s.state === "responded" ? "Répondu" : s.state === "stuck" ? "Bloqué" : "En réflexion"}`}
-                      >
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-base ring-[2.5px] transition-all ${
-                          s.state === "responded" ? "ring-[#4CAF50] bg-[#4CAF50]/10" :
-                          s.state === "stuck" ? "ring-[#EB5757] bg-[#EB5757]/10 animate-pulse" :
-                          "ring-[#F2C94C] bg-[#F2C94C]/10"
-                        }`} style={{ background: "#FFFDF9" }}>
-                          {raw.avatar}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-                {/* Legend */}
-                <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#EFE4D8]">
-                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#4CAF50]" /><span className="text-[12px] font-medium text-[#7A7A7A]">Repondu</span></div>
-                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#F2C94C]" /><span className="text-[12px] font-medium text-[#7A7A7A]">Reflexion</span></div>
-                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#EB5757]" /><span className="text-[12px] font-medium text-[#7A7A7A]">Bloque</span></div>
-                </div>
+              <div className="rounded-[14px] p-3" style={{ background: "#FFFFFF", border: "1px solid #E8DFD2", boxShadow: "0 2px 6px rgba(61,43,16,0.04)" }}>
+                {(() => {
+                  const respondedN = studentStates.filter(s => s.state === "responded").length;
+                  const thinkingN = studentStates.filter(s => s.state === "active").length;
+                  const stuckN = studentStates.filter(s => s.state === "stuck").length;
+                  const offN = studentStates.filter(s => s.state === "disconnected").length;
+                  return (
+                    <div className="grid grid-cols-4 gap-1">
+                      <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: "#F0FAF4" }}>
+                        <span className="text-[20px] font-bold tabular-nums" style={{ color: "#4CAF50" }}>{respondedN}</span>
+                        <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Repondu</span>
+                      </div>
+                      <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: "#FFFCF5" }}>
+                        <span className="text-[20px] font-bold tabular-nums" style={{ color: "#F2C94C" }}>{thinkingN}</span>
+                        <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Reflexion</span>
+                      </div>
+                      <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: stuckN > 0 ? "#FFF5F5" : "#FAFAFA" }}>
+                        <span className="text-[20px] font-bold tabular-nums" style={{ color: stuckN > 0 ? "#EB5757" : "#C4BDB2" }}>{stuckN}</span>
+                        <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Bloque</span>
+                      </div>
+                      <div className="flex flex-col items-center py-1.5 rounded-[10px]" style={{ background: "#F7F5F2" }}>
+                        <span className="text-[20px] font-bold tabular-nums" style={{ color: "#C4BDB2" }}>{offN}</span>
+                        <span className="text-[10px] font-semibold text-[#7A7A7A] mt-0.5">Off</span>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
             {/* Student list */}
@@ -1125,25 +1136,23 @@ function CockpitContent({
                 const hasHand = !!raw.hand_raised_at;
                 const warnings = raw.warnings || 0;
                 const team = teams?.find(t => t.students.some(ts => ts.id === s.id));
+                const stateColor = s.state === "responded" ? "#4CAF50" : s.state === "stuck" ? "#EB5757" : s.state === "active" ? "#F2C94C" : "#C4BDB2";
                 return (
                   <button key={s.id} onClick={() => setFicheStudentId(s.id)}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-[12px] hover:bg-[#F3ECE3] transition-colors cursor-pointer mb-1"
-                    style={{ minHeight: 48 }}>
-                    <span className="text-lg flex-shrink-0 w-7">{raw.avatar}</span>
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-left rounded-[12px] hover:bg-[#F3ECE3] transition-colors cursor-pointer mb-0.5"
+                    style={{ minHeight: 44 }}>
+                    {/* State dot */}
+                    <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: stateColor, boxShadow: s.state === "stuck" ? `0 0 6px ${stateColor}40` : undefined }} />
+                    {/* Name — PRIMARY */}
                     <div className="flex-1 min-w-0">
-                      <span className="text-[14px] font-medium text-[#2C2C2C] truncate block">{raw.display_name}</span>
-                      {team && <span className="text-[11px] text-[#7A7A7A] truncate block">{team.team_name}</span>}
+                      <span className="text-[14px] font-semibold text-[#2C2C2C] truncate block">{raw.display_name}</span>
+                      {team && <span className="text-[11px] text-[#B0A99E] truncate block">{team.team_name}</span>}
                     </div>
+                    {/* Badges */}
                     {hasHand && <span className="text-sm flex-shrink-0 animate-bounce">✋</span>}
-                    {warnings > 0 && <span className="text-[11px] text-bw-amber flex-shrink-0">⚠{warnings}</span>}
-                    <span className={`text-[11px] px-2 py-1 rounded-full font-medium flex-shrink-0 ${
-                      s.state === "responded" ? "bg-[#4CAF50]/10 text-[#2E7D32]" :
-                      s.state === "stuck" ? "bg-[#EB5757]/10 text-[#C62828] animate-pulse" :
-                      s.state === "active" ? "bg-[#F2C94C]/10 text-[#8B6914]" :
-                      "bg-black/5 text-bw-muted"
-                    }`}>
-                      {s.state === "responded" ? "Repondu" : s.state === "stuck" ? "Bloque" : s.state === "active" ? "Reflechit" : "Off"}
-                    </span>
+                    {warnings > 0 && <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: "#FFF5EB", color: "#F5A45B" }}>⚠{warnings}</span>}
+                    {/* Small avatar */}
+                    <span className="text-sm flex-shrink-0 opacity-60">{raw.avatar}</span>
                   </button>
                 );
               })}
@@ -1279,39 +1288,40 @@ function CockpitContent({
                 return (
                   <div
                     key={opt.key}
-                    className="rounded-[16px] p-5 transition-all duration-300 relative overflow-hidden"
+                    className="rounded-[18px] transition-all duration-300 relative overflow-hidden flex flex-col justify-between"
                     style={{
-                      minHeight: 128,
+                      padding: "20px 22px",
+                      minHeight: 152,
                       background: hasVotes ? colors.bg : colors.bgLight,
-                      border: hasVotes ? "none" : `1px solid ${colors.bg}25`,
+                      border: hasVotes ? "none" : `1px solid ${colors.bg}20`,
                       boxShadow: hasVotes
-                        ? `0 4px 16px ${colors.bg}30`
-                        : "0 2px 8px rgba(0,0,0,0.04)",
+                        ? `0 6px 24px ${colors.bg}35, 0 2px 6px ${colors.bg}15`
+                        : "0 2px 8px rgba(61,43,16,0.04)",
                     }}
                   >
                     <div className="flex items-start gap-3">
-                      {/* Badge rond 28x28 */}
+                      {/* Badge */}
                       <span
-                        className="w-7 h-7 rounded-full flex items-center justify-center text-[13px] font-bold flex-shrink-0"
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-[14px] font-bold flex-shrink-0"
                         style={{
                           backgroundColor: hasVotes ? "rgba(255,255,255,0.25)" : colors.bg,
-                          color: hasVotes ? "#fff" : "#fff",
+                          color: "#fff",
                         }}
                       >
                         {opt.key.toUpperCase()}
                       </span>
-                      <span className={`text-[14px] font-medium leading-snug flex-1 min-w-0 ${hasVotes ? "text-white" : "text-[#2C2C2C]"}`}>{opt.label}</span>
+                      <span className={`text-[16px] font-medium leading-snug flex-1 min-w-0 ${hasVotes ? "text-white" : "text-[#2C2C2C]"}`}>{opt.label}</span>
                     </div>
-                    <div className="mt-4 flex items-end gap-3">
-                      {/* Percentage hero — 28px/700 */}
+                    <div className="mt-auto pt-3 flex items-end gap-4">
+                      {/* Percentage hero — 36px/800 */}
                       <span
-                        className="text-[28px] font-bold tabular-nums leading-none flex-shrink-0"
-                        style={{ color: hasVotes ? "#fff" : `${colors.bg}60` }}
+                        className="text-[36px] font-extrabold tabular-nums leading-none flex-shrink-0"
+                        style={{ color: hasVotes ? "#fff" : `${colors.bg}50` }}
                       >
                         {pct}%
                       </span>
                       <div className="flex-1 space-y-1.5">
-                        <div className={`h-2 rounded-full overflow-hidden ${hasVotes ? "bg-white/20" : "bg-black/[0.04]"}`}>
+                        <div className={`h-3 rounded-full overflow-hidden ${hasVotes ? "bg-white/20" : "bg-black/[0.04]"}`}>
                           <motion.div
                             className="h-full rounded-full"
                             style={{ backgroundColor: hasVotes ? "#fff" : colors.bg }}
@@ -1319,7 +1329,7 @@ function CockpitContent({
                             transition={{ duration: 0.6, ease: "easeOut" }}
                           />
                         </div>
-                        <span className={`text-[11px] tabular-nums ${hasVotes ? "text-white/70" : "text-[#7A7A7A]"}`}>{count} / {total} eleves</span>
+                        <span className={`text-[12px] tabular-nums font-medium ${hasVotes ? "text-white/80" : "text-[#7A7A7A]"}`}>{count} / {total} eleves</span>
                       </div>
                     </div>
                   </div>
@@ -2365,9 +2375,9 @@ function CockpitContent({
                 onClick={skipSituation}
                 disabled={updateSession.isPending}
                 title="Passer cette question"
-                className="h-11 px-3.5 rounded-[12px] flex items-center justify-center text-[#4A4A4A] bg-white border border-[#E6DBCF] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0 text-[13px] font-medium gap-1.5"
+                className="h-11 px-3.5 rounded-[12px] flex items-center justify-center text-[#7A7A7A] bg-white border border-[#E8DFD2] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0 text-[13px] font-medium gap-1.5 hover:text-[#2C2C2C] hover:shadow-sm"
               >
-                Suivant
+                Passer
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
             )}
@@ -3083,44 +3093,7 @@ export default function PilotPage() {
 
   // ——— Unified Layout ———
   return (
-    <div className="h-dvh flex flex-col bg-bw-bg">
-      {/* ── TOP BAR ── */}
-      <PilotTopBar
-        sessionTitle={(session.title || "Session").replace(/\s*[-—]\s*$/, "")}
-        activeModuleLabel={hasActiveModule ? activeModule!.title : null}
-        moduleColor={activeModule?.color || "#FF6B35"}
-        questionCounter={hasActiveModule ? questionCounter : null}
-        activeStudents={activeStudents}
-        joinCode={session.join_code}
-        codeCopied={codeCopied}
-        timerEndsAt={session.timer_ends_at}
-        isPaused={session.status === "paused"}
-        isDone={session.status === "done"}
-        moduleView={moduleView}
-        onToggleSidebar={() => setMobileSidebarOpen((prev) => !prev)}
-        onCopyCode={copyCode}
-        onToggleQR={() => setShowQR(!showQR)}
-        onOpenScreen={() => window.open(`/session/${sessionId}/screen`, "_blank")}
-        onTogglePause={() => updateSession.mutate({ status: session.status === "paused" ? "waiting" : "paused" })}
-        onClearTimer={() => updateSession.mutate({ timer_ends_at: null })}
-        onToggleStudents={() => setShowStudents(!showStudents)}
-        showStudents={showStudents}
-        currentQuestionIndex={hasActiveModule ? currentQuestionIndex : undefined}
-        totalQuestions={hasActiveModule ? totalQuestions : undefined}
-        onBroadcast={() => {
-          // Broadcast is handled in CockpitContent, but we still expose a top-bar shortcut
-          // It dispatches a custom event that CockpitContent listens to
-          window.dispatchEvent(new CustomEvent("pilot-broadcast"));
-        }}
-        onShortcuts={() => window.dispatchEvent(new CustomEvent("pilot-shortcuts"))}
-        muteSounds={session.mute_sounds ?? false}
-        onToggleMute={() => updateSession.mutate({ mute_sounds: !session.mute_sounds })}
-        onTimerExpired={() => {
-          playSound("drumroll");
-          toast("Temps ecoulé !", { icon: "⏰" });
-        }}
-        onOpenMobileContext={() => setMobileContextOpen(true)}
-      />
+    <div className="h-dvh flex flex-col" style={{ background: "#F7F3EA" }}>
 
       {/* ── QR Panel ── */}
       <AnimatePresence>
@@ -3129,7 +3102,7 @@ export default function PilotPage() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="border-b border-white/5 overflow-hidden flex-shrink-0"
+            className="border-b border-[#E8DFD2] overflow-hidden flex-shrink-0"
           >
             <div className="max-w-4xl mx-auto px-4 py-6 flex items-center justify-center gap-8">
               <div className="bg-white p-3 rounded-xl">
@@ -3233,6 +3206,7 @@ export default function PilotPage() {
             onSelectStudent={(s) => { setSelectedStudentId(s.id); setShowStudents(false); }}
             teams={teams || []}
             onOpenModules={() => setMobileSidebarOpen(true)}
+            onOpenScreen={() => window.open(`/session/${sessionId}/screen`, "_blank")}
           />
           </ErrorBoundary>
         ) : (
