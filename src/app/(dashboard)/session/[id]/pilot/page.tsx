@@ -459,6 +459,7 @@ function CockpitContent({
   );
   const moduleLabel = currentMod?.title || "Module";
   const moduleColor = currentMod?.color || "#FF6B35";
+  const currentModuleLessons = MODULES.filter((m) => m.dbModule === session.current_module);
   const moduleGuide = currentMod ? getModuleGuide(currentMod.id) : undefined;
   const questionGuide = (session.current_module === 1 || session.current_module === 3 || session.current_module === 4 || session.current_module === 9 || (session.current_module === 2 && !isM2ECSpecial && !isM2ECComparison) || isM10Any || isM12Any)
     ? getQuestionGuide(session.current_seance || 1, (session.current_situation_index || 0) + 1, session.current_module)
@@ -927,16 +928,29 @@ function CockpitContent({
         </div>
 
         {/* ── QUESTION BAR — always visible with collapsible guide ── */}
-        {(showStandardQA || isM1Positioning) && situation && !isPreviewing && (
+        {(showStandardQA || isM1Positioning) && situation && (
           <div className="flex-shrink-0 border-b border-white/[0.06]">
             <div className="flex items-center gap-2 px-4 py-2">
               {/* Category badge */}
               <span className="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0"
                 style={{ backgroundColor: `${CATEGORY_COLORS[situation.category] || moduleColor}20`, color: CATEGORY_COLORS[situation.category] || moduleColor }}>
-                {situation.restitutionLabel || situation.category}
+                {(() => {
+                if (isPreviewing) {
+                  const ps = allSituations.find(s => s.position === displayIndex + 1);
+                  return ps?.restitutionLabel || ps?.category || situation.restitutionLabel || situation.category;
+                }
+                return situation.restitutionLabel || situation.category;
+              })()}
               </span>
+              {isPreviewing && <span className="text-[9px] px-1.5 py-0.5 rounded bg-bw-amber/15 text-bw-amber font-bold uppercase flex-shrink-0">Apercu</span>}
               {/* Question text */}
-              <p className="text-sm text-bw-text leading-snug flex-1 min-w-0 truncate">{situation.prompt}</p>
+              <p className={`text-sm leading-snug flex-1 min-w-0 truncate ${isPreviewing ? "text-bw-amber" : "text-bw-text"}`}>{
+                isPreviewing
+                  ? (isM1Positioning
+                    ? (module1Data?.questions?.[displayIndex]?.text ?? situation.prompt)
+                    : (allSituations.find(s => s.position === displayIndex + 1)?.prompt ?? situation.prompt))
+                  : situation.prompt
+              }</p>
               {/* Question navigation compact */}
               {(totalQuestions ?? 0) > 1 && (
                 <div className="flex items-center gap-1 flex-shrink-0">
@@ -965,7 +979,7 @@ function CockpitContent({
             </div>
             {/* Collapsible guide section */}
             <AnimatePresence>
-              {guideExpanded && questionGuide && (
+              {guideExpanded && (isPreviewing ? previewGuide : questionGuide) && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
@@ -976,14 +990,14 @@ function CockpitContent({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div className="bg-bw-bg rounded-lg p-2.5 space-y-0.5">
                         <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-green">Ce qu&apos;on attend</p>
-                        <p className="text-[11px] text-bw-text leading-relaxed">{questionGuide.whatToExpect}</p>
+                        <p className="text-[11px] text-bw-text leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.whatToExpect}</p>
                       </div>
                       <div className="bg-bw-bg rounded-lg p-2.5 space-y-0.5">
                         <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-amber">Pièges fréquents</p>
-                        <p className="text-[11px] text-bw-amber leading-relaxed">{questionGuide.commonPitfalls}</p>
+                        <p className="text-[11px] text-bw-amber leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.commonPitfalls}</p>
                       </div>
                     </div>
-                    <QuickPhrases questionGuide={questionGuide} />
+                    <QuickPhrases questionGuide={(isPreviewing ? previewGuide : questionGuide) ?? undefined} />
                   </div>
                 </motion.div>
               )}
@@ -1023,8 +1037,39 @@ function CockpitContent({
 
         {/* ── SPLIT-PANEL LAYOUT ── */}
         <div className="flex-1 flex overflow-hidden min-h-0">
-          {/* LEFT: Plan de classe (40%, desktop only) */}
-          <div className="hidden lg:flex lg:w-[40%] flex-shrink-0 flex-col overflow-y-auto border-r border-white/[0.06] p-3">
+          {/* LEFT: Plan de classe + séances (40%, desktop only) */}
+          <div className="hidden lg:flex lg:w-[40%] flex-shrink-0 flex-col overflow-y-auto border-r border-white/[0.06]">
+            {/* Module séances list */}
+            {currentModuleLessons.length > 1 && (
+              <div className="flex-shrink-0 px-3 pt-3 pb-2 border-b border-white/[0.06]">
+                <p className="text-[9px] uppercase tracking-wider font-semibold text-bw-muted mb-1.5">Séances</p>
+                <div className="flex flex-wrap gap-1">
+                  {currentModuleLessons.map((lesson) => {
+                    const isCurrent = lesson.dbSeance === (session.current_seance || 1);
+                    const isPast = lesson.dbSeance < (session.current_seance || 1);
+                    return (
+                      <div
+                        key={lesson.id}
+                        className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] transition-all ${
+                          isCurrent
+                            ? "font-medium border"
+                            : isPast
+                              ? "text-bw-muted"
+                              : "text-bw-muted/60"
+                        }`}
+                        style={isCurrent ? { backgroundColor: `${moduleColor}15`, color: moduleColor, borderColor: `${moduleColor}30` } : undefined}
+                      >
+                        {isPast && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="text-bw-teal"><path d="M5 12l5 5L20 7"/></svg>}
+                        {isCurrent && <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: moduleColor }} />}
+                        <span className="truncate">{lesson.title}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            {/* Classroom map */}
+            <div className="flex-1 p-3 overflow-y-auto">
             <ClassroomMap
               students={studentStates.map((s) => {
                 const raw = session.students?.find((st) => st.id === s.id);
@@ -1040,6 +1085,7 @@ function CockpitContent({
               onNudgeAllStuck={() => handleNudgeAllStuck()}
               onStudentClick={setFicheStudentId}
             />
+            </div>
           </div>
           {/* RIGHT: Flux ou Fiche (60%) */}
           <div className="flex-1 overflow-y-auto min-h-0">
@@ -1083,75 +1129,12 @@ function CockpitContent({
           {/* ── CONTEXT ZONE — what the teacher needs to see ── */}
           <>
 
-          {/* Standard Q&A: Preview card only (question now in header bar) */}
-          {showStandardQA && isPreviewing && (() => {
-            const previewSit = allSituations.find((s) => s.position === displayIndex + 1);
-            const color = CATEGORY_COLORS[previewSit?.category || previewGuide?.category || ""] || "#F59E0B";
-            return (
-              <div className="glass-card overflow-hidden" style={{ borderColor: `${color}20`, background: `linear-gradient(135deg, ${color}08, rgba(26,29,34,0.6) 60%)` }}>
-                <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, #F59E0B, ${color}80)` }} />
-                <div className="p-4 pb-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs font-bold uppercase px-2.5 py-1 rounded-full"
-                      style={{ background: `linear-gradient(135deg, ${color}25, ${color}10)`, color, border: `1px solid ${color}30` }}>
-                      {previewSit?.restitutionLabel || previewGuide?.label || previewSit?.category || "—"}
-                    </span>
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-bw-amber/15 text-bw-amber">Q{displayIndex + 1}</span>
-                    <span className="text-[10px] text-bw-amber uppercase tracking-wider font-semibold ml-auto">Apercu</span>
-                  </div>
-                  {previewSit?.prompt ? (
-                    <p className="text-base leading-relaxed text-bw-text">{previewSit.prompt}</p>
-                  ) : (
-                    <p className="text-sm text-bw-muted italic">Question non disponible — cliquez Lancer pour l&apos;ouvrir</p>
-                  )}
-                </div>
-                {previewGuide && (
-                  <div className="border-t px-4 py-3 space-y-2.5" style={{ borderColor: `${color}15` }}>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      <div className="bg-bw-bg rounded-lg p-3 space-y-1">
-                        <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-green">Ce qu&apos;on attend</p>
-                        <p className="text-xs text-bw-text leading-relaxed">{previewGuide.whatToExpect}</p>
-                      </div>
-                      <div className="bg-bw-bg rounded-lg p-3 space-y-1">
-                        <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-amber">Pièges fréquents</p>
-                        <p className="text-xs text-bw-amber leading-relaxed">{previewGuide.commonPitfalls}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })()}
+          {/* Standard Q&A: preview + nav now in header question bar */}
 
-          {/* Standard Q&A: Question nav pills */}
-          {showStandardQA && (
-            <QuestionNavigation
-              maxSituations={maxSituations}
-              currentQIndex={currentQIndex}
-              displayIndex={displayIndex}
-              isPreviewing={isPreviewing}
-              moduleColor={moduleColor}
-              onPreviewSituation={previewSituation}
-              onPreviewPrev={previewPrev}
-              onPreviewNext={previewNext}
-            />
-          )}
-
-          {/* M1 Positioning: question nav + option distribution */}
+          {/* M1 Positioning: toolbar + option distribution (nav + guide now in header bar) */}
           {isM1Positioning && module1Data?.type === "positioning" && module1Data.questions && (
             <>
-              {/* Question nav pills + arrows */}
-              <QuestionNavigation
-                maxSituations={maxSituations}
-                currentQIndex={currentQIndex}
-                displayIndex={displayIndex}
-                isPreviewing={isPreviewing}
-                moduleColor={moduleColor}
-                onPreviewSituation={previewSituation}
-                onPreviewPrev={previewPrev}
-                onPreviewNext={previewNext}
-              />
-              {/* Toolbar — same style as ResponseStreamSection */}
+              {/* Toolbar */}
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Positionnement</span>
@@ -1171,33 +1154,9 @@ function CockpitContent({
                 </div>
               </div>
 
-              {/* Question card — current or preview */}
-              {isPreviewing ? (() => {
-                const previewQ = module1Data.questions?.[displayIndex];
-                return (
-                  <PreviewGuideCard label={`Q${displayIndex + 1}`} description={previewQ?.text} guide={previewGuide} position={displayIndex}>
-                    {previewQ?.options && (
-                      <div className="mt-3 space-y-1.5">
-                        {previewQ.options.map((opt) => (
-                          <div key={opt.key} className="flex items-center gap-2 text-xs">
-                            <span className="text-bw-violet font-bold w-5">{opt.key.toUpperCase()}</span>
-                            <span className="text-bw-text">{opt.label}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {!previewQ && (
-                      <p className="text-sm text-bw-muted italic mt-2">Question non disponible — cliquez Lancer pour l&apos;ouvrir</p>
-                    )}
-                  </PreviewGuideCard>
-                );
-              })() : module1Data.questions[currentQIndex] && (
+              {/* Option distribution bars (current question only) */}
+              {!isPreviewing && module1Data.questions[currentQIndex]?.options && (
                 <div className="bg-bw-elevated rounded-xl border border-white/[0.08] p-4 space-y-3">
-                  <p className="text-sm text-bw-heading leading-snug">
-                    <span className="text-bw-violet font-medium mr-1.5">Q{currentQIndex + 1}</span>
-                    {module1Data.questions[currentQIndex].text}
-                  </p>
-                  {/* Option distribution bars */}
                   {module1Data.questions[currentQIndex].options?.map((opt) => {
                     const count = module1Data.optionDistribution?.[opt.key] || 0;
                     const total = activeStudents.length;
@@ -1219,8 +1178,6 @@ function CockpitContent({
                   })}
                 </div>
               )}
-              {/* Quick phrases for positioning */}
-              <QuickPhrases questionGuide={questionGuide} />
             </>
           )}
 
@@ -2281,16 +2238,24 @@ function CockpitContent({
       {/* ── COMPACT FOOTER — progress bar + CTA + toggles ── */}
       {session.status !== "done" && session.status !== "paused" && (
         <div className="flex-shrink-0 glass border-t border-white/[0.08]">
-          {/* Progress bar */}
-          {session.status === "responding" && activeStudents.length > 0 && (
-            <div className="h-1 w-full bg-white/[0.04]">
-              <motion.div
-                className="h-full bg-bw-teal"
-                animate={{ width: `${Math.round((respondedCount / activeStudents.length) * 100)}%` }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-              />
-            </div>
-          )}
+          {/* Progress bar with label */}
+          {session.status === "responding" && activeStudents.length > 0 && (() => {
+            const pct = Math.round((respondedCount / activeStudents.length) * 100);
+            const allDone = respondedCount >= activeStudents.length;
+            return (
+              <div className="relative h-1.5 w-full bg-white/[0.04]">
+                <motion.div
+                  className={`h-full ${allDone ? "bg-gradient-to-r from-bw-teal to-bw-green" : "bg-bw-teal"}`}
+                  animate={{ width: `${pct}%` }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  style={allDone ? { boxShadow: "0 0 8px rgba(78,205,196,0.4)" } : undefined}
+                />
+                <span className="absolute right-2 -top-4 text-[9px] tabular-nums font-mono text-bw-muted">
+                  {respondedCount}/{activeStudents.length} ({pct}%)
+                </span>
+              </div>
+            );
+          })()}
           <div className="px-4 py-2 flex items-center gap-2">
             {/* Back button for non-QA modules */}
             {!isStandardQA && (session.current_situation_index || 0) > 0 && (
@@ -2389,6 +2354,15 @@ function CockpitContent({
                 }`}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+              </button>
+              <button
+                onClick={() => updateSession.mutate({ mute_sounds: !session.mute_sounds })}
+                title={session.mute_sounds ? "Sons désactivés" : "Sons activés"}
+                className={`p-1.5 rounded-lg text-[10px] transition-all cursor-pointer ${
+                  session.mute_sounds ? "text-bw-muted hover:text-white hover:bg-white/5" : "bg-bw-amber/15 text-bw-amber"
+                }`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">{session.mute_sounds ? <><path d="M11 5L6 9H2v6h4l5 4z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></> : <><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></>}</svg>
               </button>
               <button
                 onClick={() => setShowShortcuts(true)}
