@@ -218,6 +218,7 @@ function CockpitContent({
   const [focusMode, setFocusMode] = useState(false);
   const [kickTarget, setKickTarget] = useState<{ id: string; name: string } | null>(null);
   const allRespondedNotified = useRef(false);
+  const prevResponseCountRef = useRef(0);
   const [allResponded, setAllResponded] = useState(false);
   const [autoAdvance, setAutoAdvance] = useState(false);
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -631,6 +632,24 @@ function CockpitContent({
       toast.success("Tout le monde a répondu !", { icon: "🎉" });
     }
   }, [responses.length, activeStudents.length, session.status, play]);
+
+  // ── Soft notification: new response received ──
+  useEffect(() => {
+    if (session.status !== "responding") {
+      prevResponseCountRef.current = responses.length;
+      return;
+    }
+    const prev = prevResponseCountRef.current;
+    const curr = responses.length;
+    if (curr > prev && prev > 0) {
+      const newest = responses[responses.length - 1];
+      const studentName = session.students?.find(s => s.id === newest?.student_id)?.display_name;
+      if (studentName) {
+        toast(`${studentName} a repondu`, { icon: "✏️", duration: 2000, style: { fontSize: 13, padding: "8px 14px" } });
+      }
+    }
+    prevResponseCountRef.current = curr;
+  }, [responses.length, responses, session.status, session.students]);
 
   // ── Auto-advance: when all responded + autoAdvance enabled, advance after 4s countdown ──
   useEffect(() => {
