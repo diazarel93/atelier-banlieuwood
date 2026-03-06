@@ -1193,33 +1193,93 @@ function CockpitContent({
             </div>
           )}
 
+          {/* ── PAS ENCORE RÉPONDU — ABOVE module content for visibility ── */}
+          {!focusMode && session.status === "responding" && notRespondedStudents.length > 0 && (
+            <div className="rounded-xl border border-white/[0.06] p-3 space-y-2" style={{ background: "linear-gradient(135deg, rgba(136,148,160,0.04), transparent)" }}>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">
+                  En attente ({notRespondedStudents.length})
+                </span>
+                {stuckStudents.length > 0 && (
+                  <button onClick={handleNudgeAllStuck}
+                    className="text-[10px] text-bw-amber hover:text-bw-amber/80 cursor-pointer transition-colors font-medium">
+                    Relancer {stuckStudents.length} bloqué{stuckStudents.length > 1 ? "s" : ""}
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {notRespondedStudents.map((s) => {
+                  const st = studentStates.find((ss) => ss.id === s.id);
+                  const isStuck = st?.state === "stuck";
+                  const hasHand = !!s.hand_raised_at;
+                  return (
+                    <button key={s.id}
+                      onClick={() => setFicheStudentId(s.id)}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-[11px] cursor-pointer transition-all ${
+                        isStuck
+                          ? "bg-red-500/[0.06] border-red-500/20 text-red-400 hover:bg-red-500/10"
+                          : hasHand
+                            ? "bg-amber-500/[0.06] border-amber-500/20 text-amber-400 hover:bg-amber-500/10"
+                            : "bg-white/[0.03] border-white/[0.06] text-bw-muted hover:text-bw-text hover:bg-white/[0.06]"
+                      }`}
+                    >
+                      <span className="text-sm">{s.avatar}</span>
+                      <span>{s.display_name}</span>
+                      {isStuck && <span className="text-[9px]">●</span>}
+                      {hasHand && <span className="text-[9px]">✋</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* ── MODULE-SPECIFIC CONTENT ── */}
           <>
 
           {/* M1 Positioning: option distribution bars only */}
-          {isM1Positioning && module1Data?.type === "positioning" && !isPreviewing && module1Data.questions?.[currentQIndex]?.options && (
-            <div className="bg-bw-elevated rounded-xl border border-white/[0.08] p-4 space-y-3">
+          {isM1Positioning && module1Data?.type === "positioning" && !isPreviewing && module1Data.questions?.[currentQIndex]?.options && (() => {
+            const OPTION_COLORS: Record<string, { bar: string; text: string; bg: string }> = {
+              a: { bar: "#60A5FA", text: "#93C5FD", bg: "rgba(96,165,250,0.08)" },
+              b: { bar: "#4ECDC4", text: "#6EE7DB", bg: "rgba(78,205,196,0.08)" },
+              c: { bar: "#FF6B35", text: "#FF8F66", bg: "rgba(255,107,53,0.08)" },
+              d: { bar: "#F472B6", text: "#F9A8D4", bg: "rgba(244,114,182,0.08)" },
+            };
+            return (
+            <div className="space-y-2">
               {module1Data.questions[currentQIndex].options?.map((opt) => {
                 const count = module1Data.optionDistribution?.[opt.key] || 0;
                 const total = activeStudents.length;
                 const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                const colors = OPTION_COLORS[opt.key] || OPTION_COLORS.a;
+                const isLeading = count > 0 && count === Math.max(...Object.values(module1Data.optionDistribution || {}));
                 return (
-                  <div key={opt.key} className="space-y-1">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-bw-text">
-                        <span className="text-bw-violet font-bold mr-1.5">{opt.key.toUpperCase()}</span>
-                        {opt.label}
+                  <div key={opt.key} className="rounded-xl border border-white/[0.06] p-3 transition-all" style={{ background: count > 0 ? colors.bg : "transparent" }}>
+                    <div className="flex items-center justify-between text-xs mb-1.5">
+                      <span className="text-bw-text flex items-center gap-1.5">
+                        <span className="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-bold" style={{ backgroundColor: colors.bar, color: "#fff" }}>{opt.key.toUpperCase()}</span>
+                        <span className="font-medium">{opt.label}</span>
                       </span>
-                      <span className="text-bw-muted tabular-nums">{count}/{total}</span>
+                      <span className="tabular-nums font-bold" style={{ color: count > 0 ? colors.text : "rgba(136,148,160,0.5)" }}>
+                        {count > 0 && <span className="text-lg mr-0.5">{count}</span>}
+                        <span className="text-[10px] text-bw-muted">/{total}</span>
+                        {pct > 0 && <span className="text-[10px] ml-1" style={{ color: colors.text }}>{pct}%</span>}
+                      </span>
                     </div>
-                    <div className="h-2 bg-bw-bg rounded-full overflow-hidden">
-                      <motion.div className="h-full bg-bw-violet rounded-full" animate={{ width: `${pct}%` }} />
+                    <div className="h-2.5 bg-white/[0.04] rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full rounded-full"
+                        style={{ backgroundColor: colors.bar, boxShadow: isLeading ? `0 0 8px ${colors.bar}40` : undefined }}
+                        animate={{ width: `${pct}%` }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                      />
                     </div>
                   </div>
                 );
               })}
             </div>
-          )}
+            );
+          })()}
 
           {/* M1 Image: image display only */}
           {isM1Image && module1Data?.type === "image" && (
@@ -1939,42 +1999,7 @@ function CockpitContent({
             </div>
           )}
 
-          {/* M1/Budget empty state */}
-          {!isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && session.status === "responding" && responses.length === 0 && !isBudgetQuiz && !isM2ECChecklist && !isM2ECSceneBuilder && !isM2ECComparison && (
-            <div className="bg-bw-surface rounded-xl border border-white/[0.06] p-5 text-center space-y-2">
-              <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
-                className="text-2xl">✍️</motion.div>
-              <p className="text-sm text-bw-muted">En attente des reponses...</p>
-            </div>
-          )}
-
-          {/* ── PAS ENCORE RÉPONDU — visible during responding for ALL modules ── */}
-          {!focusMode && session.status === "responding" && notRespondedStudents.length > 0 && (
-            <div className="rounded-xl border border-white/[0.06] p-3 space-y-2" style={{ background: "linear-gradient(135deg, rgba(136,148,160,0.04), transparent)" }}>
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">
-                  Pas encore repondu ({notRespondedStudents.length})
-                </span>
-                {notRespondedStudents.length > 0 && stuckStudents.length > 0 && (
-                  <button onClick={handleNudgeAllStuck}
-                    className="text-[10px] text-bw-amber hover:text-bw-amber/80 cursor-pointer transition-colors">
-                    Relancer tous
-                  </button>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {notRespondedStudents.map((s) => (
-                  <button key={s.id}
-                    onClick={() => setFicheStudentId(s.id)}
-                    className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[11px] text-bw-muted hover:text-bw-text hover:bg-white/[0.06] cursor-pointer transition-all"
-                  >
-                    <span className="text-sm">{s.avatar}</span>
-                    <span>{s.display_name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Old empty state + old "pas encore répondu" removed — now unified in the section above module content */}
 
           {/* Choices history (Standard Q&A) */}
           {!focusMode && isStandardQA && collectiveChoices.length > 0 && (
