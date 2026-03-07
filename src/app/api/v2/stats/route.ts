@@ -43,10 +43,15 @@ export async function GET(req: NextRequest) {
   }
 
   // Fetch OIE scores
-  const { data: oieScores } = await supabase
+  const { data: oieScores, error: oieErr } = await supabase
     .from("session_oie_scores")
     .select("student_id, observation, imagination, expression, response_count")
     .in("session_id", sessionIds);
+
+  if (oieErr) {
+    console.error("[stats] OIE scores query failed:", oieErr.message);
+    return NextResponse.json({ error: `OIE query failed: ${oieErr.message}` }, { status: 500 });
+  }
 
   // Fetch student names
   const studentIds = [

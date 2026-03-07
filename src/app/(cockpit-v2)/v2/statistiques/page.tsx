@@ -31,7 +31,10 @@ async function fetchStats(
   if (classLabel) params.set("classLabel", classLabel);
   if (sessionId) params.set("sessionId", sessionId);
   const res = await fetch(`/api/v2/stats?${params}`);
-  if (!res.ok) throw new Error("Erreur chargement stats");
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || `Erreur ${res.status}`);
+  }
   return res.json();
 }
 
