@@ -107,7 +107,7 @@ function ResponseCardInner({
         ? "#6B8CFF"
         : state === "winner"
           ? "#57C4B6"
-          : "#EFE4D8";
+          : "rgba(255,255,255,0.5)";
 
   const hasInteractions = !!(onComment && onHighlight && onNudge && onWarn && onScore);
 
@@ -118,16 +118,18 @@ function ResponseCardInner({
       initial={{ opacity: 0, y: 12, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      whileHover={{ y: -2, boxShadow: "0 6px 20px rgba(61,43,16,0.08)" }}
+      whileHover={{ y: -2, boxShadow: "0 6px 20px rgba(61,43,16,0.10)" }}
       style={{
         borderColor,
         x,
         opacity: state === "hidden" ? 0.3 : undefined,
         background: state === "winner"
-          ? "#F0FAF8"
+          ? "rgba(240,250,248,0.75)"
           : response.is_highlighted
-            ? "#FFF8F0"
-            : "#FFFFFF",
+            ? "rgba(255,248,240,0.75)"
+            : "rgba(255,255,255,0.7)",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
         boxShadow: state === "winner"
           ? "0 4px 16px rgba(87,196,182,0.15)"
           : response.is_highlighted

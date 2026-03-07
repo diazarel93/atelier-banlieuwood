@@ -38,9 +38,9 @@ function CognitiveMapInner({ options, total }: CognitiveMapProps) {
   return (
     <div
       className="rounded-[14px] overflow-hidden"
-      style={{ background: "#FFFDF9", border: "1px solid #EFE4D8" }}
+      style={{ background: "rgba(255,255,255,0.7)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.5)" }}
     >
-      <div className="px-4 py-3" style={{ borderBottom: "1px solid #EFE4D8" }}>
+      <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.5)" }}>
         <h4 className="text-[14px] font-bold text-[#2C2C2C]">Comment pense la classe</h4>
       </div>
       <div className="px-4 py-3 space-y-2.5">
@@ -59,7 +59,7 @@ function CognitiveMapInner({ options, total }: CognitiveMapProps) {
               </div>
               <div
                 className="h-2 rounded-full overflow-hidden"
-                style={{ background: "#EFE8DD" }}
+                style={{ background: "rgba(239,232,221,0.5)" }}
               >
                 <motion.div
                   className="h-full rounded-full"
