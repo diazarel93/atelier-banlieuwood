@@ -87,14 +87,9 @@ export function CockpitHeader({
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <div className="flex flex-col min-w-0">
-            <span className="text-[14px] font-semibold text-[#2C2C2C] truncate">
-              {sessionTitle}
-            </span>
-            <span className="text-[11px] text-[#7A7A7A] hidden xl:block">
-              Cockpit pedagogique
-            </span>
-          </div>
+          <span className="text-[18px] font-semibold text-[#2C2C2C] tracking-tight">
+            cockpit
+          </span>
         </div>
 
         {/* CENTER/RIGHT: Phase Stepper — takes remaining space */}
@@ -158,18 +153,8 @@ export function CockpitHeader({
           </span>
         </div>
 
-        {/* CENTER: Session state banner (compact) */}
-        <div className="flex-1 flex justify-center min-w-0">
-          <SessionStateBanner
-            status={sessionStatus}
-            respondedCount={respondedCount}
-            totalStudents={totalStudents}
-            voteCount={voteCount}
-            onTogglePause={onTogglePauseFromBanner}
-            onViewResults={onViewResults}
-            compact
-          />
-        </div>
+        {/* Spacer */}
+        <div className="flex-1" />
 
         {/* RIGHT: Controls */}
         <div className="flex items-center gap-1.5 flex-shrink-0">
@@ -199,16 +184,7 @@ export function CockpitHeader({
             <span className="hidden xl:inline">⏸ Pause</span>
           </button>
 
-          {/* Broadcast */}
-          <button
-            onClick={onBroadcast}
-            title="Message classe (B)"
-            className="w-8 h-8 rounded-[10px] flex items-center justify-center text-sm text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer transition-colors hover:shadow-sm"
-          >
-            📢
-          </button>
-
-          {/* Screen */}
+          {/* Screen — compact icon */}
           <button
             onClick={onScreen}
             title="Ecran eleves"
