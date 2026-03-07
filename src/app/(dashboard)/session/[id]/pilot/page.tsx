@@ -1095,10 +1095,6 @@ function CockpitContent({
               session={session}
               studentStates={studentStates}
               stuckStudents={stuckStudents}
-              responses={responses}
-              teams={teams}
-              interventionMode={interventionMode}
-              setInterventionMode={setInterventionMode}
               setFicheStudentId={setFicheStudentId}
               lowerHand={lowerHand}
               handleNudgeAllStuck={handleNudgeAllStuck}

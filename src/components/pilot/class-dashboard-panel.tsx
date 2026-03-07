@@ -27,10 +27,6 @@ interface ClassDashboardPanelProps {
   };
   studentStates: { id: string; state: StudentState; display_name: string; avatar: string }[];
   stuckStudents: { id: string; name: string }[];
-  responses: { student_id: string; is_hidden?: boolean; text?: string; students?: { avatar?: string; display_name?: string } }[];
-  teams: { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[];
-  interventionMode: boolean;
-  setInterventionMode: (fn: (v: boolean) => boolean) => void;
   setFicheStudentId: (id: string) => void;
   lowerHand: { mutate: (id: string) => void; isPending: boolean };
   handleNudgeAllStuck: () => void;
@@ -59,17 +55,13 @@ function ClassDashboardPanelInner({
   session,
   studentStates,
   stuckStudents,
-  responses,
-  teams,
-  interventionMode,
-  setInterventionMode,
   setFicheStudentId,
   lowerHand,
   handleNudgeAllStuck,
   cognitiveOptions,
   cognitiveTotal,
 }: ClassDashboardPanelProps) {
-  const [mapExpanded, setMapExpanded] = useState(false);
+  const [mapExpanded, setMapExpanded] = useState(true);
 
   // Compute engagement stats
   const stats = useMemo(() => {
@@ -210,25 +202,6 @@ function ClassDashboardPanelInner({
           )}
         </GlassCard>
 
-        {/* ── Intervention mode toggle ── */}
-        <button
-          onClick={() => setInterventionMode(v => !v)}
-          className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-[12px] font-semibold cursor-pointer transition-all"
-          style={{
-            background: interventionMode ? "rgba(255,235,238,0.8)" : "rgba(255,255,255,0.5)",
-            border: `1.5px solid ${interventionMode ? "#EF5350" : "rgba(255,255,255,0.5)"}`,
-            color: interventionMode ? "#C62828" : "#7A7A7A",
-          }}
-        >
-          🎯 Mode aide {interventionMode ? "ON" : ""}
-          <span className="text-[10px] font-normal opacity-60">(H)</span>
-        </button>
-        {interventionMode && stuckStudents.length > 0 && (
-          <p className="text-[11px] font-bold text-[#C62828] text-center animate-pulse">
-            {stuckStudents.length} eleve{stuckStudents.length > 1 ? "s" : ""} {stuckStudents.length > 1 ? "ont" : "a"} besoin d&apos;aide
-          </p>
-        )}
-
         {/* ── MAINS LEVEES ── */}
         {hands.length > 0 && (
           <GlassCard className="!p-0 overflow-hidden">
@@ -300,66 +273,6 @@ function ClassDashboardPanelInner({
               </motion.div>
             )}
           </AnimatePresence>
-        </GlassCard>
-
-        {/* ── Student list — online/offline ── */}
-        <GlassCard className="!p-0 overflow-hidden">
-          <div className="px-3 py-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#B0A99E]">
-              Eleves ({stats.online}/{stats.total})
-            </span>
-          </div>
-          <div className="px-2 pb-2" role="list" aria-label="Liste des eleves">
-            {/* Online students */}
-            {studentStates.filter(s => s.state !== "disconnected").map(s => {
-              const raw = session.students?.find(st => st.id === s.id);
-              if (!raw || !raw.is_active) return null;
-              const hasHand = !!raw.hand_raised_at;
-              const warnings = raw.warnings || 0;
-              const stateColor = s.state === "responded" ? "#4CAF50" : s.state === "stuck" ? "#EB5757" : s.state === "active" ? "#F2C94C" : "#C4BDB2";
-              const stateLabel = s.state === "responded" ? "a repondu" : s.state === "stuck" ? "bloque" : "en reflexion";
-              return (
-                <button key={s.id} onClick={() => setFicheStudentId(s.id)} role="listitem"
-                  aria-label={`${raw.display_name} — ${stateLabel}${hasHand ? ", main levee" : ""}${warnings > 0 ? `, ${warnings} avertissement${warnings > 1 ? "s" : ""}` : ""}`}
-                  className="w-full flex items-center gap-2 px-2.5 py-1.5 text-left rounded-lg hover:bg-white/60 focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:ring-offset-1 transition-colors cursor-pointer mb-0.5 outline-none"
-                  style={{ minHeight: 34 }}>
-                  <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: stateColor, boxShadow: s.state === "stuck" ? `0 0 6px ${stateColor}40` : undefined }} />
-                  <span className="text-[12px] font-semibold text-[#2C2C2C] truncate flex-1">{raw.display_name}</span>
-                  {hasHand && <span className="text-xs flex-shrink-0 animate-bounce">✋</span>}
-                  {warnings > 0 && <span className="text-[10px] font-bold px-1 py-0.5 rounded-full flex-shrink-0" style={{ background: "rgba(255,245,235,0.8)", color: "#F5A45B" }}>⚠{warnings}</span>}
-                </button>
-              );
-            })}
-
-            {/* Disconnected — collapsible */}
-            {(() => {
-              const offline = studentStates.filter(s => s.state === "disconnected");
-              if (offline.length === 0) return null;
-              return (
-                <details className="mt-1.5">
-                  <summary className="flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold text-[#B0A99E] cursor-pointer select-none hover:text-[#7A7A7A] transition-colors">
-                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#C4BDB2" }} />
-                    Hors ligne ({offline.length})
-                  </summary>
-                  <div className="mt-0.5">
-                    {offline.map(s => {
-                      const raw = session.students?.find(st => st.id === s.id);
-                      if (!raw || !raw.is_active) return null;
-                      return (
-                        <button key={s.id} onClick={() => setFicheStudentId(s.id)} role="listitem"
-                          aria-label={`${raw.display_name} — absent`}
-                          className="w-full flex items-center gap-2 px-2.5 py-1.5 text-left rounded-lg hover:bg-white/40 transition-colors cursor-pointer mb-0.5 outline-none opacity-50"
-                          style={{ minHeight: 34 }}>
-                          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#C4BDB2" }} />
-                          <span className="text-[12px] font-semibold text-[#B0A99E] truncate flex-1">{raw.display_name}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </details>
-              );
-            })()}
-          </div>
         </GlassCard>
 
         {/* ── COGNITIVE MAP — horizontal bars (M1 Positioning only) ── */}
