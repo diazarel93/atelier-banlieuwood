@@ -113,7 +113,7 @@ export default function SessionPreparePage() {
             )}
             {ss.canViewResults && (
               <Link
-                href={`/session/${session.id}/results`}
+                href={`/v2/seances/${session.id}/results`}
                 className="flex items-center justify-center gap-2 rounded-xl border border-[var(--color-bw-border)] py-3 text-sm font-semibold text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
               >
                 {ss.ctaLabel}

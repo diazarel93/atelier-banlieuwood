@@ -47,7 +47,7 @@ function SessionRow({ session }: { session: SessionSummary }) {
         </Link>
       ) : ss.canViewResults ? (
         <Link
-          href={`/session/${session.id}/results`}
+          href={`/v2/seances/${session.id}/results`}
           className="shrink-0 rounded-lg bg-[var(--color-bw-surface-dim)] px-3 py-1 text-xs font-medium text-bw-muted hover:text-bw-heading transition-colors"
         >
           {ss.ctaShort}

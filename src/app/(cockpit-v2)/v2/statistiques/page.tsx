@@ -73,7 +73,7 @@ export default function StatistiquesPage() {
           )}
           {sessionId && (
             <Link
-              href={`/session/${sessionId}/results`}
+              href={`/v2/seances/${sessionId}/results`}
               className="rounded-lg border border-[var(--color-bw-border)] px-3 py-1.5 text-xs font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
             >
               Voir les résultats
