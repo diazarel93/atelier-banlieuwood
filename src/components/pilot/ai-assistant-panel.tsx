@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, memo, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { computeCognitiveState, type CognitiveStateResult } from "@/components/pilot/class-cognitive-state";
 import { NarrativeRadar, computeNarrativeScores } from "@/components/pilot/narrative-radar";
+import { ClassDynamicsRadar, computeClassDynamics } from "@/components/pilot/class-dynamics-radar";
 
 // ═══════════════════════════════════════════════════════════════
 // AI ASSISTANT — 4-bloc restructured panel
@@ -32,6 +33,8 @@ interface SessionContext {
   completedModules?: string[];
   currentPhaseId?: string | null;
   totalModuleCount?: number;
+  // Dynamics radar
+  disconnectedCount?: number;
 }
 
 // QCM vote data passed from page.tsx
@@ -416,6 +419,37 @@ function AIAssistantPanelInner({
               <span className="text-[12px] font-bold text-[#6B3FA0]">Radar narratif</span>
             </div>
             <NarrativeRadar scores={radarScores} size={170} />
+          </div>
+        );
+      })()}
+
+      {/* ═══ BLOC 2.75: RADAR DYNAMIQUE DE CLASSE ═══ */}
+      {context.status === "responding" && context.totalStudents > 0 && (() => {
+        const optSpread = (() => {
+          if (!context.optionDistribution) return 0;
+          const counts = Object.values(context.optionDistribution);
+          const total = counts.reduce((s, c) => s + c, 0);
+          if (total < 2 || counts.length < 2) return 0;
+          const sorted = [...counts].sort((a, b) => b - a);
+          return sorted.length >= 2 ? Math.min(1, sorted[1] / sorted[0]) : 0;
+        })();
+        const dynamicsScores = computeClassDynamics({
+          responsePct: context.totalStudents > 0 ? (context.responsesCount / context.totalStudents) * 100 : 0,
+          avgResponseTimeSec: context.averageResponseTime || 0,
+          stuckPct: context.totalStudents > 0 ? (context.stuckCount / context.totalStudents) * 100 : 0,
+          handsRaisedPct: context.totalStudents > 0 ? (context.handsRaised / context.totalStudents) * 100 : 0,
+          optionSpread: optSpread,
+          activeTimeSec: context.elapsedSeconds,
+          disconnectedPct: context.totalStudents > 0 ? ((context.disconnectedCount || 0) / context.totalStudents) * 100 : 0,
+          totalResponses: context.responsesCount,
+          totalStudents: context.totalStudents,
+        });
+        return (
+          <div
+            className="rounded-xl p-3.5"
+            style={{ background: "rgba(59,89,152,0.04)", border: "1px solid rgba(59,89,152,0.10)" }}
+          >
+            <ClassDynamicsRadar scores={dynamicsScores} size={160} />
           </div>
         );
       })()}

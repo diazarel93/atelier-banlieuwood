@@ -134,6 +134,13 @@ export function ResponseStreamSection({
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-sm text-bw-muted">Reponses</span>
+          <span className="text-[12px] font-bold tabular-nums px-1.5 py-0.5 rounded-full"
+            style={{
+              background: respondedCount >= activeStudents.length && activeStudents.length > 0 ? "rgba(76,175,80,0.1)" : "rgba(107,140,255,0.08)",
+              color: respondedCount >= activeStudents.length && activeStudents.length > 0 ? "#4CAF50" : "#3B5998",
+            }}>
+            {respondedCount}/{activeStudents.length}
+          </span>
           <ElapsedTimer startedAt={respondingOpenedAt} />
         </div>
         <div className="flex items-center gap-1">

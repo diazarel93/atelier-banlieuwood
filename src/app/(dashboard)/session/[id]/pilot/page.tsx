@@ -1186,6 +1186,7 @@ function CockpitContent({
                     }}
                     onWarn={(sid) => warnStudent.mutate(sid)}
                     onBroadcast={openBroadcast}
+                    respondingOpenedAt={respondingOpenedAt}
                     toggleHide={toggleHide}
                     toggleVoteOption={toggleVoteOption}
                     commentResponse={commentResponse}
@@ -2341,6 +2342,7 @@ function CockpitContent({
                     completedModules: session.completed_modules || [],
                     currentPhaseId: currentMod ? getPhaseForModule(currentMod.id)?.id || null : null,
                     totalModuleCount: MODULES.filter(m => !m.disabled && !m.comingSoon).length,
+                    disconnectedCount: (session.students || []).filter(s => !s.is_active || s.kicked).length,
                   }}
                   onSendHint={() => openBroadcastWith("Petit indice : ", "Envoyer un indice", "💡")}
                   onReformulate={() => openBroadcastWith("Reformulation : ", "Reformuler la consigne", "🔄")}

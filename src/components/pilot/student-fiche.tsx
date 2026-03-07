@@ -31,6 +31,8 @@ interface StudentFicheProps {
   state: string;
   responses: ResponseCardResponse[];
   sessionStatus: string;
+  /** When the current question was opened (for response time calc) */
+  respondingOpenedAt?: number | null;
   onBack: () => void;
   onNudge: (studentId: string, text: string) => void;
   onWarn: (studentId: string) => void;
@@ -60,6 +62,7 @@ export function StudentFiche({
   onBroadcast,
   onPrivateHint,
   onViewProgression,
+  respondingOpenedAt,
   toggleHide,
   toggleVoteOption,
   commentResponse,
@@ -147,6 +150,33 @@ export function StudentFiche({
           </div>
         </div>
       </div>
+
+      {/* Response time indicator */}
+      {responses.length > 0 && respondingOpenedAt && (() => {
+        const firstResponse = responses[0];
+        const responseMs = new Date(firstResponse.submitted_at).getTime() - respondingOpenedAt;
+        if (responseMs <= 0 || responseMs > 600000) return null;
+        const secs = Math.round(responseMs / 1000);
+        const isFast = secs < 20;
+        const isSlow = secs > 60;
+        return (
+          <div
+            className="flex items-center gap-2 px-3 py-2 rounded-[10px]"
+            style={{
+              background: isFast ? "rgba(76,175,80,0.06)" : isSlow ? "rgba(235,87,87,0.06)" : "rgba(107,140,255,0.06)",
+              border: `1px solid ${isFast ? "rgba(76,175,80,0.15)" : isSlow ? "rgba(235,87,87,0.15)" : "rgba(107,140,255,0.15)"}`,
+            }}
+          >
+            <span className="text-[10px]">{isFast ? "⚡" : isSlow ? "🐢" : "⏱️"}</span>
+            <span className="text-[11px] font-semibold" style={{ color: isFast ? "#2E7D32" : isSlow ? "#C62828" : "#3B5998" }}>
+              Temps de reponse : {secs}s
+            </span>
+            <span className="text-[10px] text-[#B0A99E]">
+              {isFast ? "(rapide)" : isSlow ? "(lent)" : ""}
+            </span>
+          </div>
+        );
+      })()}
 
       {/* Student responses */}
       <div className="space-y-2">
