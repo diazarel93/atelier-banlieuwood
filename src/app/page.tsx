@@ -195,6 +195,12 @@ export default function Home() {
               Le Festival
             </Link>
             <Link
+              href="/v2"
+              className="text-[13px] text-[#8b8b8e] hover:text-bw-heading px-3 py-1.5 rounded-md hover:bg-white/[0.04] transition-all duration-150 hidden sm:block"
+            >
+              Mon espace
+            </Link>
+            <Link
               href="/login"
               className="ml-2 h-8 px-3.5 inline-flex items-center text-[13px] font-medium rounded-lg bg-[#ededef] text-[#0F1118] hover:bg-white transition-all duration-150"
             >
