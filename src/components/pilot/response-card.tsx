@@ -111,13 +111,32 @@ function ResponseCardInner({
 
   const hasInteractions = !!(onComment && onHighlight && onNudge && onWarn && onScore);
 
+  // "New" response: arrived less than 3 seconds ago
+  const isNew = Date.now() - new Date(response.submitted_at).getTime() < 3000;
+
   return (
     <motion.article
       aria-label={`Réponse de ${response.students?.display_name || "élève"}`}
       layout
-      initial={{ opacity: 0, y: 12, scale: 0.97 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      initial={{ opacity: 0, y: 16, scale: 0.95 }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        boxShadow: isNew
+          ? ["0 0 0 0px rgba(107,140,255,0.3)", "0 0 0 6px rgba(107,140,255,0)", "0 2px 8px rgba(61,43,16,0.04)"]
+          : state === "winner"
+            ? "0 4px 16px rgba(87,196,182,0.15)"
+            : response.is_highlighted
+              ? "0 4px 16px rgba(245,164,91,0.12)"
+              : "0 2px 8px rgba(61,43,16,0.04)",
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 400,
+        damping: 22,
+        boxShadow: isNew ? { duration: 0.8, ease: "easeOut" } : undefined,
+      }}
       whileHover={{ y: -2, boxShadow: "0 6px 20px rgba(61,43,16,0.10)" }}
       style={{
         borderColor,
@@ -130,11 +149,6 @@ function ResponseCardInner({
             : "rgba(255,255,255,0.7)",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
-        boxShadow: state === "winner"
-          ? "0 4px 16px rgba(87,196,182,0.15)"
-          : response.is_highlighted
-            ? "0 4px 16px rgba(245,164,91,0.12)"
-            : "0 2px 8px rgba(61,43,16,0.04)",
       }}
       drag={sessionStatus === "responding" && !response.reset_at ? "x" : false}
       dragConstraints={{ left: 0, right: 0 }}

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, memo, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { computeCognitiveState, type CognitiveStateResult } from "@/components/pilot/class-cognitive-state";
+import { NarrativeRadar, computeNarrativeScores } from "@/components/pilot/narrative-radar";
 
 // ═══════════════════════════════════════════════════════════════
 // AI ASSISTANT — 4-bloc restructured panel
@@ -27,6 +28,10 @@ interface SessionContext {
   currentSituation: number;
   averageResponseTime?: number;
   optionDistribution?: Record<string, number>;
+  // Radar narratif
+  completedModules?: string[];
+  currentPhaseId?: string | null;
+  totalModuleCount?: number;
 }
 
 // QCM vote data passed from page.tsx
@@ -385,6 +390,35 @@ function AIAssistantPanelInner({
           </div>
         </div>
       )}
+
+      {/* ═══ BLOC 2.5: RADAR NARRATIF ═══ */}
+      {context.completedModules && context.completedModules.length > 0 && (() => {
+        const responsePct = context.totalStudents > 0
+          ? Math.round((context.responsesCount / context.totalStudents) * 100)
+          : 0;
+        const stuckPct = context.totalStudents > 0
+          ? Math.round((context.stuckCount / context.totalStudents) * 100)
+          : 0;
+        const radarScores = computeNarrativeScores(
+          context.completedModules!,
+          context.totalModuleCount || 20,
+          context.currentPhaseId || null,
+          responsePct,
+          stuckPct,
+        );
+        return (
+          <div
+            className="rounded-xl p-3.5"
+            style={{ background: "rgba(245,243,255,0.6)", border: "1px solid rgba(139,92,246,0.12)" }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-sm">🎯</span>
+              <span className="text-[12px] font-bold text-[#6B3FA0]">Radar narratif</span>
+            </div>
+            <NarrativeRadar scores={radarScores} size={170} />
+          </div>
+        );
+      })()}
 
       {/* ═══ BLOC 3: SUGGESTIONS PÉDAGOGIQUES — grouped ═══ */}
       {activeSuggestions.length > 0 && (

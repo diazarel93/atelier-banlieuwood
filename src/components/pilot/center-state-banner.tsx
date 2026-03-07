@@ -88,11 +88,19 @@ export function CenterStateBanner({
 
   const styles = SEVERITY_STYLES[bannerState.severity];
 
+  const isWarn = bannerState.severity === "warn";
+  const isAlert = bannerState.severity === "alert";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -4 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        x: isWarn ? [0, -2, 2, -1, 1, 0] : 0,
+      }}
       exit={{ opacity: 0, y: -4 }}
+      transition={isWarn ? { x: { duration: 0.4, ease: "easeInOut" } } : undefined}
       className="flex items-center gap-2.5 px-4 rounded-[12px]"
       style={{
         height: 48,
@@ -100,10 +108,18 @@ export function CenterStateBanner({
         border: `1px solid ${styles.border}`,
       }}
     >
-      <span className="text-sm flex-shrink-0">{bannerState.icon}</span>
+      {/* Icon with pulse on alert */}
+      <motion.span
+        className="text-sm flex-shrink-0"
+        animate={isAlert ? { scale: [1, 1.15, 1] } : {}}
+        transition={isAlert ? { repeat: Infinity, duration: 1.5 } : undefined}
+      >
+        {bannerState.icon}
+      </motion.span>
       <p className="text-[13px] font-semibold leading-snug" style={{ color: styles.color }}>
         {bannerState.text}
       </p>
+      {/* Animated dots for "thinking" state */}
       {bannerState.severity === "info" && (
         <div className="flex items-center gap-0.5 ml-auto">
           {[0, 1, 2].map((i) => (
@@ -116,6 +132,15 @@ export function CenterStateBanner({
             />
           ))}
         </div>
+      )}
+      {/* Flash indicator for divided/alert */}
+      {(isWarn || isAlert) && (
+        <motion.span
+          className="w-1.5 h-1.5 rounded-full ml-auto flex-shrink-0"
+          style={{ background: styles.color }}
+          animate={{ opacity: [1, 0.3, 1] }}
+          transition={{ repeat: Infinity, duration: 1 }}
+        />
       )}
     </motion.div>
   );

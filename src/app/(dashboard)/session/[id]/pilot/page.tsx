@@ -67,6 +67,7 @@ import { ComprehensionHeatmap } from "@/components/pilot/comprehension-heatmap";
 import { SessionStateBanner } from "@/components/pilot/session-state-banner";
 import { CenterStateBanner } from "@/components/pilot/center-state-banner";
 import { CockpitHeader } from "@/components/pilot/cockpit-header";
+import { SessionTimeline, createTimelineEvent, type TimelineEvent } from "@/components/pilot/session-timeline";
 import { SessionProgressBar } from "@/components/pilot/session-progress-bar";
 import { FloatingNextAction } from "@/components/pilot/floating-next-action";
 import { OnboardingHints } from "@/components/pilot/onboarding-hints";
@@ -248,6 +249,16 @@ function CockpitContent({
   const allRespondedNotified = useRef(false);
   const prevResponseCountRef = useRef(0);
   const [allResponded, setAllResponded] = useState(false);
+
+  // ── Session timeline events ──
+  const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[]>([]);
+  const timelineTracked = useRef<Set<string>>(new Set());
+  const addTimelineEvent = useCallback((type: Parameters<typeof createTimelineEvent>[0], label: string, detail?: string, severity?: "info" | "positive" | "warning" | "highlight") => {
+    const key = `${type}-${label}`;
+    if (timelineTracked.current.has(key)) return;
+    timelineTracked.current.add(key);
+    setTimelineEvents(prev => [...prev, createTimelineEvent(type, label, detail, severity)]);
+  }, []);
   const [autoAdvance, setAutoAdvance] = useState(false);
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState(0);
@@ -645,11 +656,13 @@ function CockpitContent({
   useEffect(() => {
     if (session.status === "responding") {
       setRespondingOpenedAt((prev) => prev ?? Date.now());
+      addTimelineEvent("question_launched", "Question lancee", `Q${(session.current_situation_index || 0) + 1}`, "info");
     } else {
       setRespondingOpenedAt(null);
       allRespondedNotified.current = false;
       setAllResponded(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session.status]);
 
   // ── Notification: all students responded ──
@@ -660,6 +673,7 @@ function CockpitContent({
       setAllResponded(true);
       play("success");
       toast.success("Tout le monde a répondu !", { icon: "🎉" });
+      addTimelineEvent("all_responded", "Tout le monde a repondu", `${activeStudents.length} eleves`, "positive");
     }
   }, [responses.length, activeStudents.length, session.status, play]);
 
@@ -677,6 +691,14 @@ function CockpitContent({
       if (studentName) {
         toast(`${studentName} a repondu`, { icon: "✏️", duration: 2000, style: { fontSize: 13, padding: "8px 14px" } });
       }
+    }
+    // Timeline events: first response, half responded
+    if (curr === 1 && prev === 0) {
+      const name = session.students?.find(s => s.id === responses[0]?.student_id)?.display_name;
+      addTimelineEvent("first_response", "Premiere reponse", name || undefined, "positive");
+    }
+    if (activeStudents.length > 2 && curr >= Math.ceil(activeStudents.length / 2) && prev < Math.ceil(activeStudents.length / 2)) {
+      addTimelineEvent("half_responded", "50% ont repondu", `${curr}/${activeStudents.length}`, "info");
     }
     prevResponseCountRef.current = curr;
   }, [responses.length, responses, session.status, session.students]);
@@ -730,6 +752,25 @@ function CockpitContent({
       .filter((s) => !respondedIds.has(s.id))
       .map((s) => ({ id: s.id, name: s.display_name, avatar: s.avatar }));
   }, [session.status, respondingOpenedAt, responses, activeStudents]);
+
+  // ── Timeline: stuck detected ──
+  const prevStuckCountRef = useRef(0);
+  useEffect(() => {
+    const n = stuckStudents.length;
+    if (n >= 3 && prevStuckCountRef.current < 3) {
+      addTimelineEvent("stuck_detected", `${n} eleves bloques`, stuckStudents.slice(0, 3).map(s => s.name?.split(" ")[0]).join(", "), "warning");
+    }
+    prevStuckCountRef.current = n;
+  }, [stuckStudents, addTimelineEvent]);
+
+  // ── Timeline: vote launched ──
+  const prevStatusRef = useRef(session.status);
+  useEffect(() => {
+    if (session.status === "voting" && prevStatusRef.current !== "voting") {
+      addTimelineEvent("vote_launched", "Vote lance", undefined, "highlight");
+    }
+    prevStatusRef.current = session.status;
+  }, [session.status, addTimelineEvent]);
 
   // ── Keyboard shortcuts (extracted hook) ──
   const handlePauseToggle = useCallback(() => {
@@ -793,6 +834,7 @@ function CockpitContent({
     setShowBroadcast(false);
     play("send");
     toast.success("Message envoyé à toute la classe");
+    addTimelineEvent("broadcast_sent", "Message envoye", message.slice(0, 50), "info");
   }
 
   // ── Bulk: highlight all visible ──
@@ -949,6 +991,7 @@ function CockpitContent({
     updateSession.mutate({ broadcast_message: "N'oubliez pas de répondre à la question !", broadcast_at: new Date().toISOString() });
     play("send");
     toast.success(`Relance envoyée à la classe (${count} en attente)`);
+    addTimelineEvent("nudge_sent", "Relance envoyee", `${count} eleves`, "info");
   }
 
   return (
@@ -2295,12 +2338,15 @@ function CockpitContent({
                     optionDistribution: (isM1Positioning && module1Data?.optionDistribution)
                       ? module1Data.optionDistribution as Record<string, number>
                       : undefined,
+                    completedModules: session.completed_modules || [],
+                    currentPhaseId: currentMod ? getPhaseForModule(currentMod.id)?.id || null : null,
+                    totalModuleCount: MODULES.filter(m => !m.disabled && !m.comingSoon).length,
                   }}
                   onSendHint={() => openBroadcastWith("Petit indice : ", "Envoyer un indice", "💡")}
                   onReformulate={() => openBroadcastWith("Reformulation : ", "Reformuler la consigne", "🔄")}
                   onLaunchVote={() => updateSession.mutate({ status: "voting", timer_ends_at: null })}
                   onBroadcast={openBroadcast}
-                  onDebate={() => setShowDebate(true)}
+                  onDebate={() => { setShowDebate(true); addTimelineEvent("debate_launched", "Debat lance", undefined, "highlight"); }}
                   onStudentClick={(id) => setFicheStudentId(id)}
                   qcmVoteData={isM1Positioning && module1Data?.questions?.[currentQIndex]?.options ? (() => {
                     const opts = module1Data.questions![currentQIndex].options!;
@@ -2345,6 +2391,12 @@ function CockpitContent({
               )}
 
               {/* Vote columns + Carte cognitive now rendered inside AIAssistantPanel */}
+
+              {/* Session Timeline — replay of key moments */}
+              <SessionTimeline
+                events={timelineEvents}
+                sessionStartedAt={sessionStartedAt}
+              />
             </div>
           </div>
         </div>
@@ -2390,7 +2442,7 @@ function CockpitContent({
                       style={{ background: "rgba(232,245,242,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#1B5E50" }}>
                       💬 <span className="hidden sm:inline">Discussion</span>
                     </button>
-                    <button onClick={() => setShowDebate(true)} disabled={visibleResponses.length < 1}
+                    <button onClick={() => { setShowDebate(true); addTimelineEvent("debate_launched", "Debat lance", undefined, "highlight"); }} disabled={visibleResponses.length < 1}
                       className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
                       style={{ background: "rgba(240,236,248,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#5B3A8E" }}>
                       🎭 <span className="hidden sm:inline">Debat</span>
@@ -3037,6 +3089,7 @@ export default function PilotPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pilot-session", sessionId] });
+      toast.success("Main baissée");
     },
   });
 

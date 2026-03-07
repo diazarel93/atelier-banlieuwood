@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { motion } from "motion/react";
 import type { StudentState } from "@/components/pilot/pulse-ring";
 
 // ═══════════════════════════════════════════════════════════════
@@ -140,26 +141,56 @@ function StudentCircle({
   const fill = STATE_FILL[student.state];
   const isOff = student.state === "disconnected";
   const fontSize = size >= 28 ? 11 : size >= 26 ? 10 : 9;
+  const isResponded = student.state === "responded";
+  const isStuck = student.state === "stuck";
+  const hasHand = !!student.hand_raised_at;
 
   return (
-    <button
+    <motion.button
       onClick={onClick}
       title={`${student.display_name} — ${LEGEND.find((l) => l.state === student.state)?.label || "Absent"}`}
-      className="relative flex items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110 hover:brightness-105 focus-visible:ring-2 focus-visible:ring-[#6B8CFF] outline-none"
+      className="relative flex items-center justify-center rounded-full cursor-pointer focus-visible:ring-2 focus-visible:ring-[#6B8CFF] outline-none"
       style={{
         width: size,
         height: size,
         background: fill.bg,
         border: `2px solid ${fill.border}`,
         opacity: isOff ? 0.35 : 1,
+        boxShadow: hasHand
+          ? "0 0 8px rgba(235,87,87,0.4)"
+          : isResponded
+            ? "0 0 6px rgba(76,175,80,0.3)"
+            : isStuck
+              ? "0 0 8px rgba(235,87,87,0.3)"
+              : undefined,
       }}
+      initial={false}
+      animate={{
+        scale: isResponded ? [1.25, 1] : isStuck ? [1.15, 1] : 1,
+      }}
+      transition={{ type: "spring", stiffness: 500, damping: 15 }}
+      whileHover={{ scale: 1.15 }}
+      whileTap={{ scale: 0.92 }}
     >
       <span className="leading-none select-none" style={{ fontSize }}>{student.avatar || "👤"}</span>
-      {student.hand_raised_at && (
-        <span className="absolute -top-1.5 -right-1.5 text-[9px] animate-bounce drop-shadow-sm">
+      {hasHand && (
+        <motion.span
+          className="absolute -top-1.5 -right-1.5 text-[9px] drop-shadow-sm"
+          animate={{ y: [0, -2, 0], scale: [1, 1.1, 1] }}
+          transition={{ repeat: Infinity, duration: 0.8 }}
+        >
           ✋
-        </span>
+        </motion.span>
       )}
-    </button>
+      {/* Glow ring for hand raised */}
+      {hasHand && (
+        <motion.span
+          className="absolute inset-[-3px] rounded-full pointer-events-none"
+          style={{ border: "2px solid rgba(235,87,87,0.35)" }}
+          animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.08, 1] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+        />
+      )}
+    </motion.button>
   );
 }

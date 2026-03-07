@@ -172,18 +172,29 @@ function ClassDashboardPanelInner({
                   );
                 })}
               </svg>
+              {/* Celebration glow ring when all responded */}
+              {stats.respondedN > 0 && stats.respondedN === stats.online && (
+                <motion.div
+                  className="absolute inset-[-4px] rounded-full pointer-events-none"
+                  style={{ border: "2px solid rgba(76,175,80,0.3)" }}
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: [1, 1.08, 1], opacity: [0.6, 0.2, 0.6] }}
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                />
+              )}
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <motion.span
                   key={stats.respondedN}
-                  initial={{ scale: 1.15 }}
+                  initial={{ scale: 1.2 }}
                   animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 15 }}
                   className="text-[18px] font-extrabold tabular-nums leading-none"
                   style={{ color: stats.responsePct >= 70 ? "#4CAF50" : stats.responsePct >= 30 ? "#F2C94C" : "#B0A99E" }}
                 >
                   {stats.respondedN}/{stats.online}
                 </motion.span>
                 <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] mt-0.5">
-                  reponses
+                  {stats.respondedN > 0 && stats.respondedN === stats.online ? "complet !" : "reponses"}
                 </span>
               </div>
             </div>

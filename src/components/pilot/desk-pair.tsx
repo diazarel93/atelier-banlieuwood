@@ -120,11 +120,21 @@ function DeskSeat({
           {student.avatar}
         </div>
 
-        {/* Hand raised */}
+        {/* Hand raised glow ring */}
         {student.hand_raised_at && (
           <motion.span
-            animate={{ y: [0, -2, 0] }}
-            transition={{ repeat: Infinity, duration: 0.8 }}
+            className="absolute inset-[-2px] rounded-full pointer-events-none"
+            style={{ border: "2px solid rgba(235,87,87,0.3)" }}
+            animate={{ opacity: [0.3, 0.7, 0.3], scale: [1, 1.06, 1] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+          />
+        )}
+        {/* Hand raised icon */}
+        {student.hand_raised_at && (
+          <motion.span
+            initial={{ scale: 0, y: 0 }}
+            animate={{ scale: 1, y: [0, -2, 0] }}
+            transition={{ scale: { type: "spring", stiffness: 500 }, y: { repeat: Infinity, duration: 0.8 } }}
             className="absolute -top-1 -right-1 text-[10px]"
           >
             ✋
