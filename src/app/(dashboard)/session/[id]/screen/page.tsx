@@ -28,6 +28,7 @@ import { ScreenHeader } from "@/components/screen/screen-header";
 import { ObjectiveBanner } from "@/components/screen/objective-banner";
 import { FloatingReactions } from "@/components/screen/floating-reactions";
 import { WordCloud } from "@/components/screen/word-cloud";
+import { RevealMode } from "@/components/screen/reveal-mode";
 import { ApplauseMeter } from "@/components/screen/applause-meter";
 import { ReactionBar } from "@/components/reaction-bar";
 import { ErrorBoundary } from "@/components/error-boundary";
@@ -88,6 +89,26 @@ export default function ScreenPage() {
     },
     refetchInterval: 10_000,
     enabled: !!data?.session && data.session.status === "responding" && !!currentSituationId,
+  });
+
+  // Reveal mode — fetch full responses with student info when reveal is active
+  const revealPhase = data?.session?.revealPhase;
+  const { data: revealResponses } = useQuery<{ id: string; text: string; studentName: string; avatar: string }[]>({
+    queryKey: ["screen-reveal", sessionId, currentSituationId],
+    queryFn: async () => {
+      if (!currentSituationId) return [];
+      const res = await fetch(`/api/sessions/${sessionId}/responses?situationId=${currentSituationId}`);
+      if (!res.ok) return [];
+      const all: { id: string; text: string; students?: { display_name: string; avatar: string } }[] = await res.json();
+      return all.map((r) => ({
+        id: r.id,
+        text: r.text,
+        studentName: r.students?.display_name || "?",
+        avatar: r.students?.avatar || "🎭",
+      }));
+    },
+    refetchInterval: 10_000,
+    enabled: !!data?.session && data.session.status === "reviewing" && revealPhase != null && !!currentSituationId,
   });
 
   // Reaction counts for vote results
@@ -1732,8 +1753,19 @@ export default function ScreenPage() {
             </motion.div>
           )}
 
+          {/* REVIEWING — progressive reveal mode */}
+          {session.status === "reviewing" && revealPhase != null && (
+            <RevealMode
+              phase={revealPhase}
+              responsesCount={data?.responsesCount || 0}
+              responses={revealResponses || []}
+              categoryColor={categoryColor}
+              situationPrompt={situation?.prompt || ""}
+            />
+          )}
+
           {/* REVIEWING — collective choice celebration */}
-          {session.status === "reviewing" && collectiveChoice && (
+          {session.status === "reviewing" && revealPhase == null && collectiveChoice && (
             <motion.div key={`result-${collectiveChoice.id}`}
               className="max-w-3xl w-full text-center space-y-5 relative">
               {/* Phase 1: Black fade overlay (0→0.5s) */}
@@ -1815,7 +1847,7 @@ export default function ScreenPage() {
           )}
 
           {/* REVIEWING — applause meter from reactions during voting phase */}
-          {session.status === "reviewing" && collectiveChoice && voteData && voteData.results.length >= 2 && screenReactions && (
+          {session.status === "reviewing" && revealPhase == null && collectiveChoice && voteData && voteData.results.length >= 2 && screenReactions && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -1842,7 +1874,7 @@ export default function ScreenPage() {
           )}
 
           {/* FIX #4: REVIEWING without choice yet — show last vote results instead of empty screen */}
-          {session.status === "reviewing" && !collectiveChoice && !isM2ECComparison && !(session.currentModule === 1 && (data.module1?.type === "positioning" || data.module1?.type === "notebook")) && (
+          {session.status === "reviewing" && revealPhase == null && !collectiveChoice && !isM2ECComparison && !(session.currentModule === 1 && (data.module1?.type === "positioning" || data.module1?.type === "notebook")) && (
             <motion.div key="reviewing-wait" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="max-w-3xl w-full space-y-6">
               <div className="text-center space-y-3">

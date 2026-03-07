@@ -106,6 +106,7 @@ export const patchSessionSchema = z
     broadcast_message: z.string().max(200).nullable().optional(),
     broadcast_at: z.string().nullable().optional(),
     mute_sounds: z.boolean().optional(),
+    reveal_phase: z.number().int().min(0).max(4).nullable().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, {
     message: "Rien a mettre a jour",

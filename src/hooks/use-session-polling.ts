@@ -142,6 +142,7 @@ export interface SessionState {
     broadcastMessage?: string | null;
     broadcastAt?: string | null;
     muteSounds?: boolean;
+    revealPhase?: number | null;
   };
   situation: {
     id: string;

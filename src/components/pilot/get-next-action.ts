@@ -17,8 +17,17 @@ export function getNextAction(
   budgetSubmitted: number,
   canGoNext?: boolean,
   currentSeance?: number,
-  currentSituationIndex?: number
+  currentSituationIndex?: number,
+  revealPhase?: number | null
 ): NextAction | null {
+  // Reveal mode: progressive phase stepping
+  if (status === "reviewing" && revealPhase != null) {
+    if (revealPhase < 4) {
+      return { label: `Phase suivante (${revealPhase + 1}/4)`, action: "reveal-next", color: "#8B5CF6", shortcut: "N" };
+    }
+    return { label: "Question suivante", action: "next", color: "#4ECDC4", shortcut: "N" };
+  }
+
   // Module 9 séance 2 = budget quiz (special flow, old Module 2)
   const isBudgetQuiz = currentModule === 9 && currentSeance === 2;
 

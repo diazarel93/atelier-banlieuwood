@@ -66,6 +66,7 @@ import { AIAssistantPanel } from "@/components/pilot/ai-assistant-panel";
 import { ComprehensionHeatmap } from "@/components/pilot/comprehension-heatmap";
 import { SessionStateBanner } from "@/components/pilot/session-state-banner";
 import { CenterStateBanner } from "@/components/pilot/center-state-banner";
+import { computeAttentionQueue } from "@/components/pilot/attention-priority";
 import { CockpitHeader } from "@/components/pilot/cockpit-header";
 import { SessionTimeline, createTimelineEvent, type TimelineEvent } from "@/components/pilot/session-timeline";
 import { SessionProgressBar } from "@/components/pilot/session-progress-bar";
@@ -86,6 +87,7 @@ interface Session {
   completed_modules: string[];
   sharing_enabled: boolean;
   mute_sounds: boolean;
+  reveal_phase: number | null;
   students: Student[];
 }
 
@@ -385,7 +387,7 @@ function CockpitContent({
     maxSituations, canGoNext, canGoPrev, seance,
   } = useCockpitModuleFlags(session);
 
-  const nextAction = getNextAction(session.status, visibleResponses.length, voteOptionCount, !!(voteData && voteData.totalVotes > 0), session.current_module, budgetSubmitted, canGoNext, session.current_seance || 1, session.current_situation_index || 0);
+  const nextAction = getNextAction(session.status, visibleResponses.length, voteOptionCount, !!(voteData && voteData.totalVotes > 0), session.current_module, budgetSubmitted, canGoNext, session.current_seance || 1, session.current_situation_index || 0, session.reveal_phase);
 
   // Module 1 data from situationData (redesigned)
   const module1Data = (situationData as { module1?: {
@@ -521,7 +523,7 @@ function CockpitContent({
   function goToSituation(index: number) {
     setPreviewIndex(null);
     setCardSearch("");
-    updateSession.mutate({ current_situation_index: index, status: "responding", timer_ends_at: null });
+    updateSession.mutate({ current_situation_index: index, status: "responding", timer_ends_at: null, reveal_phase: null });
   }
 
   // Local-only preview — doesn't affect students
@@ -565,6 +567,11 @@ function CockpitContent({
 
   function handleNextAction() {
     if (!nextAction || !nextAction.action || (nextAction as { disabled?: boolean }).disabled) return;
+    if (nextAction.action === "reveal-next") {
+      const currentPhase = session.reveal_phase ?? 0;
+      updateSession.mutate({ reveal_phase: currentPhase + 1 });
+      return;
+    }
     if (nextAction.action === "next") {
       if (canGoNext) {
         nextSituation();
@@ -752,6 +759,24 @@ function CockpitContent({
       .filter((s) => !respondedIds.has(s.id))
       .map((s) => ({ id: s.id, name: s.display_name, avatar: s.avatar }));
   }, [session.status, respondingOpenedAt, responses, activeStudents]);
+
+  // ── Attention priority active? (for CenterStateBanner deduplication) ──
+  const hasPrimaryAttention = useMemo(() => {
+    const handsStudents = (session.students || []).filter(s => s.hand_raised_at && s.is_active && !s.kicked);
+    const queue = computeAttentionQueue({
+      stuckCount: stuckStudents.length,
+      stuckNames: stuckStudents.slice(0, 3).map(s => s.name),
+      handsRaised: handsStudents.length,
+      handsNames: handsStudents.map(s => s.display_name?.split(" ")[0] || s.display_name),
+      handsRaisedAt: handsStudents.map(s => s.hand_raised_at ?? null),
+      responsesCount: respondedCount,
+      totalStudents: activeStudents.length,
+      onlineStudents: activeStudents.filter(s => s.is_active).length,
+      elapsedSeconds: respondingOpenedAt ? Math.floor((Date.now() - respondingOpenedAt) / 1000) : 0,
+      status: session.status,
+    });
+    return queue.length > 0;
+  }, [session.students, session.status, stuckStudents, respondedCount, activeStudents, respondingOpenedAt]);
 
   // ── Timeline: stuck detected ──
   const prevStuckCountRef = useRef(0);
@@ -1216,6 +1241,7 @@ function CockpitContent({
               optionLabels={isM1Positioning && module1Data?.questions?.[currentQIndex]?.options
                 ? Object.fromEntries(module1Data.questions[currentQIndex].options!.map((o: { key: string; label: string }) => [o.key, o.label]))
                 : undefined}
+              primaryAttentionActive={hasPrimaryAttention}
             />
           )}
 
@@ -2520,21 +2546,39 @@ function CockpitContent({
                   {isPreviewing ? `Lancer Q${displayIndex + 1}` : "Ouvrir les réponses"}
                 </motion.button>
               ) : isStandardQA && session.status !== "waiting" ? (
-                <SelectionBar
-                  status={session.status}
-                  responsesCount={responses.length}
-                  totalStudents={activeStudents.length}
-                  selectedCount={voteOptionCount}
-                  totalVotes={voteData?.totalVotes}
-                  onAction={handleSelectionBarAction}
-                  onQuickVote={handleQuickVote}
-                  actionDisabled={
-                    (session.status === "responding" && voteOptionCount < 2) ||
-                    (session.status === "voting" && (!voteData || voteData.totalVotes === 0))
-                  }
-                  isPending={updateSession.isPending}
-                  pulse={allResponded}
-                />
+                <div className="space-y-2">
+                  <SelectionBar
+                    status={session.status}
+                    responsesCount={responses.length}
+                    totalStudents={activeStudents.length}
+                    selectedCount={voteOptionCount}
+                    totalVotes={voteData?.totalVotes}
+                    onAction={handleSelectionBarAction}
+                    onQuickVote={handleQuickVote}
+                    actionDisabled={
+                      (session.status === "responding" && voteOptionCount < 2) ||
+                      (session.status === "voting" && (!voteData || voteData.totalVotes === 0))
+                    }
+                    isPending={updateSession.isPending}
+                    pulse={allResponded}
+                  />
+                  {session.status === "responding" && responses.length > 0 && (
+                    <motion.button
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => updateSession.mutate({ status: "reviewing", reveal_phase: 0, timer_ends_at: null })}
+                      disabled={updateSession.isPending}
+                      className="w-full h-9 rounded-lg text-[13px] font-medium cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed border"
+                      style={{ color: "#8B5CF6", borderColor: "#8B5CF620", background: "#8B5CF608" }}
+                    >
+                      <span className="flex items-center justify-center gap-1.5">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/></svg>
+                        Révéler les réponses
+                      </span>
+                    </motion.button>
+                  )}
+                </div>
               ) : nextAction ? (
                 <motion.button
                   whileTap={{ scale: 0.95 }}

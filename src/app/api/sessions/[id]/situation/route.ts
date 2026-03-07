@@ -250,6 +250,7 @@ export async function GET(
       broadcastMessage: session.broadcast_message || null,
       broadcastAt: session.broadcast_at || null,
       muteSounds: session.mute_sounds ?? false,
+      revealPhase: session.reveal_phase ?? null,
     },
     situation: situation
       ? {
@@ -310,6 +311,7 @@ async function handleModule1(req: NextRequest, session: any, sessionId: string, 
     sharingEnabled: session.sharing_enabled || false,
     broadcastMessage: session.broadcast_message || null,
     broadcastAt: session.broadcast_at || null,
+    revealPhase: session.reveal_phase ?? null,
   };
 
   // ── SÉANCE 1: Positionnement (8 QCM) ──
@@ -681,6 +683,7 @@ async function handleModule2EC(req: NextRequest, session: any, sessionId: string
     sharingEnabled: session.sharing_enabled || false,
     broadcastMessage: session.broadcast_message || null,
     broadcastAt: session.broadcast_at || null,
+    revealPhase: session.reveal_phase ?? null,
   };
 
   // ── SÉANCE 1, INDEX 0: Checklist (special component) ──
@@ -1036,6 +1039,7 @@ async function handleModule10(req: NextRequest, session: any, sessionId: string,
     sharingEnabled: session.sharing_enabled || false,
     broadcastMessage: session.broadcast_message || null,
     broadcastAt: session.broadcast_at || null,
+    revealPhase: session.reveal_phase ?? null,
   };
 
   const baseResponse = {
@@ -1705,6 +1709,7 @@ async function handleModule11(req: NextRequest, session: any, sessionId: string,
     broadcastMessage: session.broadcast_message || null,
     broadcastAt: session.broadcast_at || null,
     muteSounds: session.mute_sounds ?? false,
+    revealPhase: session.reveal_phase ?? null,
   };
 
   // Fetch situation from DB
@@ -1894,6 +1899,7 @@ async function handleModule12(req: NextRequest, session: any, sessionId: string,
     broadcastMessage: session.broadcast_message || null,
     broadcastAt: session.broadcast_at || null,
     muteSounds: session.mute_sounds ?? false,
+    revealPhase: session.reveal_phase ?? null,
   };
 
   // Fetch pool for current manche

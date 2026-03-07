@@ -1,14 +1,16 @@
 "use client";
 
-import { useState, useEffect, useCallback, memo, useMemo } from "react";
+import { useState, useEffect, useCallback, memo, useMemo, type ReactNode } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { computeCognitiveState, type CognitiveStateResult } from "@/components/pilot/class-cognitive-state";
 import { NarrativeRadar, computeNarrativeScores } from "@/components/pilot/narrative-radar";
 import { ClassDynamicsRadar, computeClassDynamics } from "@/components/pilot/class-dynamics-radar";
+import { AttentionPriority, computeAttentionQueue, type AttentionSignals } from "@/components/pilot/attention-priority";
 
 // ═══════════════════════════════════════════════════════════════
-// AI ASSISTANT — 4-bloc restructured panel
-// Bloc 1: Alerts (hands + stuck)
+// AI ASSISTANT — 5-bloc restructured panel
+// Bloc 0: ATTENTION PRIORITY (single primary alert)
+// Bloc 1: Alerts (hands + stuck) — subdued when priority active
 // Bloc 2: Analyse IA (cognitive state + live stats)
 // Bloc 3: Suggestions pédagogiques (grouped)
 // Bloc 4: Qui a voté quoi (QCM vote columns)
@@ -217,6 +219,43 @@ function generateSuggestions(ctx: SessionContext): AISuggestion[] {
   });
 }
 
+// ── Collapsible section for radars ──
+function CollapsibleRadar({ icon, label, color, bg, border, defaultOpen = false, children }: {
+  icon: string; label: string; color: string; bg: string; border: string; defaultOpen?: boolean; children: ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: bg, border: `1px solid ${border}` }}>
+      <button
+        onClick={() => setOpen(v => !v)}
+        className="w-full flex items-center justify-between px-3.5 py-2.5 cursor-pointer hover:brightness-95 transition-all"
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-sm">{icon}</span>
+          <span className="text-[12px] font-bold" style={{ color }}>{label}</span>
+        </div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"
+          className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} style={{ opacity: 0.5 }}>
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-3.5 pb-3">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 const VOTE_COLORS: Record<string, string> = { a: "#7EA7F5", b: "#F3A765", c: "#6EC6B0", d: "#E78BB4" };
 const VOTE_BG: Record<string, string> = { a: "#EEF3FF", b: "#FFF3E8", c: "#E9F8F4", d: "#FDECF4" };
 
@@ -259,17 +298,6 @@ function AIAssistantPanelInner({
 
   const activeSuggestions = suggestions.filter((s) => !dismissed.has(s.id));
 
-  // Group suggestions
-  const grouped = useMemo(() => {
-    const groups: Record<string, AISuggestion[]> = { stimulation: [], interaction: [], analyse: [] };
-    for (const s of activeSuggestions) {
-      const g = s.group || "analyse";
-      if (!groups[g]) groups[g] = [];
-      groups[g].push(s);
-    }
-    return groups;
-  }, [activeSuggestions]);
-
   // Cognitive state for analysis bloc
   const cognitiveState = useMemo<CognitiveStateResult | null>(
     () => computeCognitiveState(
@@ -295,6 +323,71 @@ function AIAssistantPanelInner({
     }).sort((a, b) => b.ms - a.ms);
   }, [context.handsNames, context.handsRaisedAt]);
 
+  // Detect class division from optionDistribution
+  const divisionInfo = useMemo(() => {
+    if (!context.optionDistribution) return null;
+    const counts = Object.entries(context.optionDistribution).sort((a, b) => b[1] - a[1]);
+    const totalVotes = counts.reduce((sum, [, v]) => sum + v, 0);
+    if (totalVotes < 3 || counts.length < 2) return null;
+    const [topKey, topCount] = counts[0];
+    const [secondKey, secondCount] = counts[1];
+    const topPct = Math.round((topCount / totalVotes) * 100);
+    const secondPct = Math.round((secondCount / totalVotes) * 100);
+    if (topPct >= 30 && secondPct >= 30 && (topPct - secondPct) < 15) {
+      return { isDivided: true, label: `${topKey.toUpperCase()} (${topPct}%) vs ${secondKey.toUpperCase()} (${secondPct}%)` };
+    }
+    return null;
+  }, [context.optionDistribution]);
+
+  // Attention signals for priority system
+  const attentionSignals = useMemo<AttentionSignals>(() => ({
+    stuckCount: context.stuckCount,
+    stuckNames: context.stuckNames,
+    handsRaised: context.handsRaised,
+    handsNames: context.handsNames,
+    handsRaisedAt: context.handsRaisedAt,
+    responsesCount: context.responsesCount,
+    totalStudents: context.totalStudents,
+    onlineStudents: context.totalStudents - (context.disconnectedCount || 0),
+    elapsedSeconds: context.elapsedSeconds,
+    status: context.status,
+    isClassDivided: divisionInfo?.isDivided || false,
+    divisionLabel: divisionInfo?.label,
+  }), [context, divisionInfo]);
+
+  // Check if attention priority has an active alert (for deduplication)
+  const attentionQueue = useMemo(() => computeAttentionQueue(attentionSignals), [attentionSignals]);
+  const hasPrimaryAttention = attentionQueue.length > 0;
+  const primaryCoversHands = attentionQueue[0]?.id === "urgent-hand" || attentionQueue[0]?.id === "multiple-hands";
+  const primaryCoversStuck = attentionQueue[0]?.id === "mass-stuck";
+
+  // Group suggestions — exclude those duplicated by attention priority
+  const ATTENTION_COVERED_IDS = new Set(["stuck-alert", "total-silence", "all-responded", "classe-partagee"]);
+  const grouped = useMemo(() => {
+    const groups: Record<string, AISuggestion[]> = { stimulation: [], interaction: [], analyse: [] };
+    for (const s of activeSuggestions) {
+      if (hasPrimaryAttention && ATTENTION_COVERED_IDS.has(s.id)) continue;
+      const g = s.group || "analyse";
+      if (!groups[g]) groups[g] = [];
+      groups[g].push(s);
+    }
+    return groups;
+  }, [activeSuggestions, hasPrimaryAttention]);
+
+  // Route attention actions to existing callbacks
+  const handleAttentionAction = useCallback((actionId: string) => {
+    switch (actionId) {
+      case "broadcast": onBroadcast?.(); break;
+      case "hint": onSendHint?.(); break;
+      case "debate": onDebate?.(); break;
+      case "vote": onLaunchVote?.(); break;
+      case "see-hand":
+      case "see-alerts":
+        // Scroll down to the alerts bloc
+        break;
+    }
+  }, [onBroadcast, onSendHint, onDebate, onLaunchVote]);
+
   function handleSuggestionAction(suggestion: AISuggestion) {
     if (suggestion.id === "stuck-alert" && onSendHint) onSendHint();
     else if (suggestion.id === "slow-responses" && onReformulate) onReformulate();
@@ -308,18 +401,30 @@ function AIAssistantPanelInner({
 
   return (
     <div className="space-y-3">
-      {/* ═══ BLOC 1: ALERTES — always on top ═══ */}
+      {/* ═══ BLOC 0: ATTENTION PRIORITY — single primary focus ═══ */}
+      <AttentionPriority
+        signals={attentionSignals}
+        onAction={handleAttentionAction}
+      />
+
+      {/* ═══ BLOC 1: ALERTES — subdued when primary covers same signal ═══ */}
       {(sortedHands.length > 0 || context.stuckCount > 0) && (
         <div
-          className="rounded-xl overflow-hidden"
-          style={{ background: "rgba(255,244,232,0.6)", border: "1px solid rgba(232,168,87,0.15)" }}
+          className="rounded-xl overflow-hidden transition-opacity duration-300"
+          style={{
+            background: "rgba(255,244,232,0.6)",
+            border: "1px solid rgba(232,168,87,0.15)",
+            opacity: hasPrimaryAttention ? 0.55 : 1,
+          }}
         >
           <div className="px-3.5 py-2.5 flex items-center gap-2" style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}>
             <span className="text-sm">🔔</span>
-            <span className="text-[12px] font-bold text-[#8B4513] uppercase tracking-wider">Alertes</span>
+            <span className="text-[12px] font-bold text-[#8B4513] uppercase tracking-wider">
+              {hasPrimaryAttention ? "Details" : "Alertes"}
+            </span>
           </div>
           <div className="px-3.5 py-2 space-y-1.5">
-            {/* Hands raised with duration */}
+            {/* Hands raised with duration — always show for detail */}
             {sortedHands.map((h, i) => (
               <div key={i} className="flex items-center gap-2 text-[12px]">
                 <span className="text-sm flex-shrink-0">✋</span>
@@ -327,7 +432,7 @@ function AIAssistantPanelInner({
                 <span className="text-[10px] text-[#B0A99E]">{h.duration}</span>
               </div>
             ))}
-            {/* Stuck names (not already shown in suggestions) */}
+            {/* Stuck names */}
             {context.stuckNames && context.stuckNames.length > 0 && sortedHands.length === 0 && (
               <div className="flex items-center gap-2 text-[12px]">
                 <span className="text-sm flex-shrink-0">⚠️</span>
@@ -359,16 +464,18 @@ function AIAssistantPanelInner({
                 {cognitiveState.icon} {cognitiveState.text}
               </p>
             )}
-            {/* Contextual pedagogical advice — actionable, not just stats */}
+            {/* Contextual pedagogical advice — skips alerts already covered by AttentionPriority */}
             <p className="text-[12px] text-[#4A6FA5] leading-relaxed">
               {context.responsesCount === 0 && context.elapsedSeconds < 30
                 ? "Les eleves decouvrent la question. Laissez-les lire."
                 : context.responsesCount === 0 && context.elapsedSeconds >= 30 && context.elapsedSeconds < 90
                   ? "La classe reflechit. Pas de reponse encore — c'est normal."
                   : context.responsesCount === 0 && context.elapsedSeconds >= 90
-                    ? "Aucune reponse apres 1min30. Reformulez ou donnez un exemple concret."
+                    // Silence — already handled by AttentionPriority, show softer version
+                    ? (hasPrimaryAttention ? "La classe ne repond pas encore. Observez les reactions." : "Aucune reponse apres 1min30. Reformulez ou donnez un exemple concret.")
                     : context.responsesCount < context.totalStudents * 0.3 && context.stuckCount >= 3
-                      ? `${context.stuckCount} eleves bloques. Donnez un indice ou lisez la question a voix haute.`
+                      // Stuck — already handled by AttentionPriority
+                      ? (hasPrimaryAttention ? `${context.stuckCount} eleves en difficulte. Suivez la suggestion ci-dessus.` : `${context.stuckCount} eleves bloques. Donnez un indice ou lisez la question a voix haute.`)
                       : context.responsesCount < context.totalStudents * 0.3 && context.elapsedSeconds > 120
                         ? "Peu de reponses apres 2 min. Proposez un exemple pour debloquer."
                         : context.responsesCount < context.totalStudents * 0.5
@@ -376,16 +483,16 @@ function AIAssistantPanelInner({
                           : context.responsesCount >= context.totalStudents * 0.8 && context.elapsedSeconds < 120
                             ? "Excellente dynamique ! La classe est tres engagee."
                             : context.responsesCount >= context.totalStudents
-                              ? "Tout le monde a repondu. Lancez le vote ou passez a la discussion."
+                              ? (hasPrimaryAttention ? "Phase de reponse terminee." : "Tout le monde a repondu. Lancez le vote ou passez a la discussion.")
                               : `${Math.round((context.responsesCount / context.totalStudents) * 100)}% ont repondu. Rythme correct.`}
             </p>
-            {/* Actionable micro-suggestion */}
-            {context.stuckCount > 0 && context.stuckCount < 3 && (
+            {/* Actionable micro-suggestion — only when AttentionPriority doesn't cover it */}
+            {!hasPrimaryAttention && context.stuckCount > 0 && context.stuckCount < 3 && (
               <p className="text-[11px] italic" style={{ color: "#7B9BD4" }}>
                 Conseil : cliquez sur un eleve bloque pour lui envoyer un indice prive.
               </p>
             )}
-            {context.responsesCount > 0 && context.responsesCount === context.totalStudents && (
+            {!hasPrimaryAttention && context.responsesCount > 0 && context.responsesCount === context.totalStudents && (
               <p className="text-[11px] italic" style={{ color: "#7B9BD4" }}>
                 Conseil : comparez les reponses ou lancez un debat.
               </p>
@@ -394,7 +501,7 @@ function AIAssistantPanelInner({
         </div>
       )}
 
-      {/* ═══ BLOC 2.5: RADAR NARRATIF ═══ */}
+      {/* ═══ BLOC 2.5: RADAR NARRATIF (collapsible, closed by default in live) ═══ */}
       {context.completedModules && context.completedModules.length > 0 && (() => {
         const responsePct = context.totalStudents > 0
           ? Math.round((context.responsesCount / context.totalStudents) * 100)
@@ -410,16 +517,12 @@ function AIAssistantPanelInner({
           stuckPct,
         );
         return (
-          <div
-            className="rounded-xl p-3.5"
-            style={{ background: "rgba(245,243,255,0.6)", border: "1px solid rgba(139,92,246,0.12)" }}
+          <CollapsibleRadar
+            icon="🎯" label="Radar narratif" color="#6B3FA0"
+            bg="rgba(245,243,255,0.6)" border="rgba(139,92,246,0.12)"
           >
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-sm">🎯</span>
-              <span className="text-[12px] font-bold text-[#6B3FA0]">Radar narratif</span>
-            </div>
             <NarrativeRadar scores={radarScores} size={170} />
-          </div>
+          </CollapsibleRadar>
         );
       })()}
 
@@ -445,12 +548,12 @@ function AIAssistantPanelInner({
           totalStudents: context.totalStudents,
         });
         return (
-          <div
-            className="rounded-xl p-3.5"
-            style={{ background: "rgba(59,89,152,0.04)", border: "1px solid rgba(59,89,152,0.10)" }}
+          <CollapsibleRadar
+            icon="📡" label="Dynamique de classe" color="#3B5998"
+            bg="rgba(59,89,152,0.04)" border="rgba(59,89,152,0.10)"
           >
             <ClassDynamicsRadar scores={dynamicsScores} size={160} />
-          </div>
+          </CollapsibleRadar>
         );
       })()}
 
