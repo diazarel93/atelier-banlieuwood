@@ -21,17 +21,10 @@ export async function GET(req: NextRequest) {
   const sessionId = url.searchParams.get("sessionId");
 
   // Fetch facilitator's sessions
-  let sessionsQuery = supabase
+  const { data: sessions, error: sessErr } = await supabase
     .from("sessions")
     .select("id, title, status")
     .eq("facilitator_id", user.id);
-
-  // class_label filter (column may not exist yet if migration not run)
-  // if (classLabel) {
-  //   sessionsQuery = sessionsQuery.eq("class_label", classLabel);
-  // }
-
-  const { data: sessions, error: sessErr } = await sessionsQuery;
   if (sessErr) {
     return NextResponse.json({ error: sessErr.message }, { status: 500 });
   }
