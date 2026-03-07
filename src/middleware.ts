@@ -10,6 +10,7 @@ export const config = {
     // Protected routes
     "/dashboard/:path*",
     "/session/:path*",
+    "/v2/:path*",
     // Auth routes (redirect if already logged in)
     "/login",
     "/reset-password",
