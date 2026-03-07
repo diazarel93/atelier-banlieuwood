@@ -3,7 +3,7 @@
 import { useState, useMemo, memo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { StudentState } from "@/components/pilot/pulse-ring";
-import { ClassroomMap } from "@/components/pilot/classroom-map";
+import { MiniClassroomGrid } from "@/components/pilot/mini-classroom-grid";
 import { CognitiveMap } from "@/components/pilot/cognitive-map";
 
 // ═══════════════════════════════════════════════════════════════
@@ -34,12 +34,6 @@ interface ClassDashboardPanelProps {
   setFicheStudentId: (id: string) => void;
   lowerHand: { mutate: (id: string) => void; isPending: boolean };
   handleNudgeAllStuck: () => void;
-  // ClassroomMap props
-  classroomLayout: "rows" | "u-shape" | "islands" | "free";
-  moduleResponseTexts: Map<string, string>;
-  onNudge: (responseId: string, text: string) => void;
-  onWarn: (sid: string) => void;
-  onBroadcast: () => void;
   // CognitiveMap props (optional — only for M1 Positioning)
   cognitiveOptions?: { key: string; label: string; count: number }[];
   cognitiveTotal?: number;
@@ -72,11 +66,6 @@ function ClassDashboardPanelInner({
   setFicheStudentId,
   lowerHand,
   handleNudgeAllStuck,
-  classroomLayout,
-  moduleResponseTexts,
-  onNudge,
-  onWarn,
-  onBroadcast,
   cognitiveOptions,
   cognitiveTotal,
 }: ClassDashboardPanelProps) {
@@ -295,34 +284,19 @@ function ClassDashboardPanelInner({
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="px-1 pb-2" style={{ maxHeight: 280, overflowY: "auto" }}>
-                  <ClassroomMap
-                    students={studentStates.map(s => {
-                      const raw = session.students?.find(st => st.id === s.id);
-                      return {
-                        id: s.id,
-                        display_name: raw?.display_name || "",
-                        avatar: raw?.avatar || "",
-                        state: s.state,
-                        hand_raised_at: raw?.hand_raised_at || null,
-                        warnings: raw?.warnings || 0,
-                      };
-                    })}
-                    teams={teams}
-                    responses={responses as never[]}
-                    moduleResponseTexts={moduleResponseTexts}
-                    sessionStatus={session.status}
-                    onNudge={(responseId, text) => onNudge(responseId, text)}
-                    onWarn={(sid) => onWarn(sid)}
-                    onBroadcast={onBroadcast}
-                    onNudgeAllStuck={handleNudgeAllStuck}
-                    onStudentClick={(sid) => setFicheStudentId(sid)}
-                    layout={classroomLayout}
-                    desksPerRow={classroomLayout === "rows" ? 4 : 3}
-                    deskSize="sm"
-                    sessionId={session.id}
-                  />
-                </div>
+                <MiniClassroomGrid
+                  studentStates={studentStates.map(s => {
+                    const raw = session.students?.find(st => st.id === s.id);
+                    return {
+                      id: s.id,
+                      state: s.state,
+                      display_name: raw?.display_name || s.display_name,
+                      avatar: raw?.avatar || s.avatar,
+                      hand_raised_at: raw?.hand_raised_at,
+                    };
+                  })}
+                  onStudentClick={(sid) => setFicheStudentId(sid)}
+                />
               </motion.div>
             )}
           </AnimatePresence>

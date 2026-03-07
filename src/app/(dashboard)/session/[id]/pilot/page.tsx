@@ -1102,11 +1102,6 @@ function CockpitContent({
               setFicheStudentId={setFicheStudentId}
               lowerHand={lowerHand}
               handleNudgeAllStuck={handleNudgeAllStuck}
-              classroomLayout={classroomLayout}
-              moduleResponseTexts={moduleResponseTexts}
-              onNudge={(responseId, text) => nudgeStudent.mutate({ responseId, nudgeText: text })}
-              onWarn={(sid) => warnStudent.mutate(sid)}
-              onBroadcast={openBroadcast}
               cognitiveOptions={isM1Positioning && module1Data?.optionDistribution && module1Data.questions?.[currentQIndex]?.options
                 ? module1Data.questions[currentQIndex].options!.map((o: { key: string; label: string }) => ({
                     key: o.key,
