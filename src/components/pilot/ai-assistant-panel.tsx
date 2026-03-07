@@ -69,6 +69,7 @@ const ACTION_COLORS: Record<string, string> = {
   "send-example": "#8B6914",
   "launch-debate": "#5B3A8E",
   "launch-poll": "#1B5E50",
+  "total-silence": "#C62828",
 };
 
 const GROUP_LABELS: Record<string, { label: string; icon: string }> = {
@@ -103,22 +104,34 @@ function generateSuggestions(ctx: SessionContext): AISuggestion[] {
     suggestions.push({
       id: "slow-responses",
       type: "insight",
-      message: "Moins de la moitie ont repondu apres 2 min. Proposez un exemple concret.",
+      message: "Peu de reponses apres 2 min. Reformulez la question ou donnez un exemple concret pour debloquer la classe.",
       priority: "medium",
       group: "stimulation",
-      actionLabel: "Reformuler",
+      actionLabel: "Reformuler la question",
     });
   }
 
-  // Send example — stimulation (new)
+  // Send example — stimulation
   if (ctx.status === "responding" && ctx.responsesCount > 0 && ctx.responsesCount < ctx.totalStudents * 0.5 && ctx.elapsedSeconds > 60) {
     suggestions.push({
       id: "send-example",
       type: "tip",
-      message: "Proposer un exemple concret pour debloquer les hesitants.",
+      message: "Les hesitants ont besoin d'un declic. Envoyez un exemple concret ou une piste de reflexion.",
       priority: "low",
       group: "stimulation",
-      actionLabel: "Exemple",
+      actionLabel: "Envoyer un exemple",
+    });
+  }
+
+  // Early silence — nobody answered yet after 90s
+  if (ctx.status === "responding" && ctx.responsesCount === 0 && ctx.elapsedSeconds > 90 && ctx.totalStudents > 3) {
+    suggestions.push({
+      id: "total-silence",
+      type: "alert",
+      message: "Aucune reponse. Lisez la question a voix haute ou proposez un premier element de reponse.",
+      priority: "high",
+      group: "stimulation",
+      actionLabel: "Relancer la classe",
     });
   }
 
@@ -147,7 +160,7 @@ function generateSuggestions(ctx: SessionContext): AISuggestion[] {
         suggestions.push({
           id: "classe-partagee",
           type: "insight",
-          message: `Classe partagee entre ${topKey.toUpperCase()} (${Math.round(topPct)}%) et ${secondKey.toUpperCase()} (${Math.round(secondPct)}%). Parfait pour un debat !`,
+          message: `La classe hesite entre ${topKey.toUpperCase()} (${Math.round(topPct)}%) et ${secondKey.toUpperCase()} (${Math.round(secondPct)}%). Moment ideal pour un debat — demandez a chaque camp de justifier.`,
           priority: "high",
           group: "interaction",
           actionLabel: "Lancer un debat",
@@ -161,10 +174,10 @@ function generateSuggestions(ctx: SessionContext): AISuggestion[] {
     suggestions.push({
       id: "low-participation",
       type: "insight",
-      message: "Tres peu de reponses. Lisez la question a voix haute ou donnez un exemple.",
+      message: "La classe est silencieuse. Relancez a l'oral ou envoyez un message d'encouragement collectif.",
       priority: "medium",
       group: "interaction",
-      actionLabel: "Message classe",
+      actionLabel: "Encourager la classe",
     });
   }
 
@@ -278,6 +291,7 @@ function AIAssistantPanelInner({
     if (suggestion.id === "stuck-alert" && onSendHint) onSendHint();
     else if (suggestion.id === "slow-responses" && onReformulate) onReformulate();
     else if (suggestion.id === "send-example" && onBroadcast) onBroadcast();
+    else if (suggestion.id === "total-silence" && onBroadcast) onBroadcast();
     else if (suggestion.id === "all-responded" && onLaunchVote) onLaunchVote();
     else if (suggestion.id === "low-participation" && onBroadcast) onBroadcast();
     else if (suggestion.id === "classe-partagee" && onDebate) onDebate();
@@ -330,20 +344,44 @@ function AIAssistantPanelInner({
             <span className="text-sm">✨</span>
             <span className="text-[12px] font-bold text-[#3B5998]">Analyse en direct</span>
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {/* Cognitive state phrase */}
             {cognitiveState && (
               <p className="text-[12px] font-semibold leading-relaxed" style={{ color: "#4A6FA5" }}>
                 {cognitiveState.icon} {cognitiveState.text}
               </p>
             )}
-            {/* Response rate */}
+            {/* Contextual pedagogical advice — actionable, not just stats */}
             <p className="text-[12px] text-[#4A6FA5] leading-relaxed">
-              {Math.round((context.responsesCount / context.totalStudents) * 100)}% des eleves ont repondu
-              {context.stuckCount > 0 ? ` — ${context.stuckCount} en difficulte.` : "."}
-              {context.elapsedSeconds > 180 ? " Rythme lent, pensez a relancer." : ""}
-              {context.responsesCount >= context.totalStudents * 0.8 && context.elapsedSeconds < 120 ? " Bonne dynamique !" : ""}
+              {context.responsesCount === 0 && context.elapsedSeconds < 30
+                ? "Les eleves decouvrent la question. Laissez-les lire."
+                : context.responsesCount === 0 && context.elapsedSeconds >= 30 && context.elapsedSeconds < 90
+                  ? "La classe reflechit. Pas de reponse encore — c'est normal."
+                  : context.responsesCount === 0 && context.elapsedSeconds >= 90
+                    ? "Aucune reponse apres 1min30. Reformulez ou donnez un exemple concret."
+                    : context.responsesCount < context.totalStudents * 0.3 && context.stuckCount >= 3
+                      ? `${context.stuckCount} eleves bloques. Donnez un indice ou lisez la question a voix haute.`
+                      : context.responsesCount < context.totalStudents * 0.3 && context.elapsedSeconds > 120
+                        ? "Peu de reponses apres 2 min. Proposez un exemple pour debloquer."
+                        : context.responsesCount < context.totalStudents * 0.5
+                          ? `${Math.round((context.responsesCount / context.totalStudents) * 100)}% ont repondu. Encouragez les hesitants.`
+                          : context.responsesCount >= context.totalStudents * 0.8 && context.elapsedSeconds < 120
+                            ? "Excellente dynamique ! La classe est tres engagee."
+                            : context.responsesCount >= context.totalStudents
+                              ? "Tout le monde a repondu. Lancez le vote ou passez a la discussion."
+                              : `${Math.round((context.responsesCount / context.totalStudents) * 100)}% ont repondu. Rythme correct.`}
             </p>
+            {/* Actionable micro-suggestion */}
+            {context.stuckCount > 0 && context.stuckCount < 3 && (
+              <p className="text-[11px] italic" style={{ color: "#7B9BD4" }}>
+                Conseil : cliquez sur un eleve bloque pour lui envoyer un indice prive.
+              </p>
+            )}
+            {context.responsesCount > 0 && context.responsesCount === context.totalStudents && (
+              <p className="text-[11px] italic" style={{ color: "#7B9BD4" }}>
+                Conseil : comparez les reponses ou lancez un debat.
+              </p>
+            )}
           </div>
         </div>
       )}

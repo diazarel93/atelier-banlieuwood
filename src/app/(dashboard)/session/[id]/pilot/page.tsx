@@ -2360,7 +2360,7 @@ function CockpitContent({
               <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 overflow-x-auto">
                 {/* Stimulation */}
                 <div className="flex flex-col items-center gap-0.5">
-                  <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] hidden sm:block">Stimulation</span>
+                  <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] hidden sm:flex items-center gap-1">💡 Stimulation</span>
                   <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
                     <button onClick={() => openBroadcastWith("Indice : ", "Envoyer un indice", "💡")}
                       className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
@@ -2383,7 +2383,7 @@ function CockpitContent({
                 <div className="w-px h-6 hidden sm:block" style={{ background: "rgba(255,255,255,0.4)" }} />
                 {/* Interaction */}
                 <div className="flex flex-col items-center gap-0.5">
-                  <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] hidden sm:block">Interaction</span>
+                  <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] hidden sm:flex items-center gap-1">💬 Interaction</span>
                   <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
                     <button onClick={() => openBroadcastWith("Question pour la classe : ", "Lancer une discussion", "💬")}
                       className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
@@ -2405,7 +2405,7 @@ function CockpitContent({
                 <div className="w-px h-6 hidden sm:block" style={{ background: "rgba(255,255,255,0.4)" }} />
                 {/* Analyse */}
                 <div className="flex flex-col items-center gap-0.5">
-                  <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] hidden sm:block">Analyse</span>
+                  <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] hidden sm:flex items-center gap-1">📊 Analyse</span>
                   <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
                     <button onClick={() => { if (visibleResponses.length >= 2) setShowCompare(true); }} disabled={visibleResponses.length < 2}
                       className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"

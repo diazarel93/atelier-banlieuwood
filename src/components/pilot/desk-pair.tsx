@@ -113,8 +113,8 @@ function DeskSeat({
           className={`${dim.avatar} rounded-full flex items-center justify-center`}
           style={{
             background: s.bg,
-            border: `2px solid ${s.dot}`,
-            boxShadow: student.state === "stuck" ? `0 0 8px ${s.dot}30` : undefined,
+            border: `2.5px solid ${s.dot}`,
+            boxShadow: student.state === "stuck" ? `0 0 10px ${s.dot}40` : student.state === "responded" ? `0 0 6px ${s.dot}25` : undefined,
           }}
         >
           {student.avatar}

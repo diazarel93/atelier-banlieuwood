@@ -147,9 +147,9 @@ function ClassDashboardPanelInner({
         {/* ── DONUT + LEGEND ── */}
         <GlassCard>
           <div className="flex items-center gap-4">
-            {/* SVG Donut — 100px */}
+            {/* SVG Donut — 100px — shows RESPONSE progress, not engagement */}
             <div className="relative flex-shrink-0" style={{ width: 100, height: 100 }}
-              role="img" aria-label={`Engagement ${stats.engagementPct}%`}>
+              role="img" aria-label={`Participation ${stats.respondedN}/${stats.online}`}>
               <svg width="100" height="100" viewBox="0 0 100 100" className="transform -rotate-90">
                 <circle cx="50" cy="50" r="40" fill="none" stroke="#EFE8DD" strokeWidth="8" />
                 {donutSegments.map((seg, i) => {
@@ -172,16 +172,19 @@ function ClassDashboardPanelInner({
                   );
                 })}
               </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <motion.span
-                  key={stats.engagementPct}
+                  key={stats.respondedN}
                   initial={{ scale: 1.15 }}
                   animate={{ scale: 1 }}
-                  className="text-[20px] font-extrabold tabular-nums"
-                  style={{ color: stats.engagementPct >= 70 ? "#4CAF50" : stats.engagementPct >= 40 ? "#F2C94C" : "#EB5757" }}
+                  className="text-[18px] font-extrabold tabular-nums leading-none"
+                  style={{ color: stats.responsePct >= 70 ? "#4CAF50" : stats.responsePct >= 30 ? "#F2C94C" : "#B0A99E" }}
                 >
-                  {stats.engagementPct}%
+                  {stats.respondedN}/{stats.online}
                 </motion.span>
+                <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] mt-0.5">
+                  reponses
+                </span>
               </div>
             </div>
 
