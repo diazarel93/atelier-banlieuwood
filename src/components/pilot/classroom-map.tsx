@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { StudentState } from "./pulse-ring";
 import type { SeatStudent } from "./seat-card";
@@ -349,11 +349,35 @@ export function ClassroomMap({
     );
   }
 
+  // ── Auto-scale: shrink content to fit container width ──
+  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [fitScale, setFitScale] = useState(1);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const content = contentRef.current;
+    if (!container || !content) return;
+
+    function measure() {
+      const cw = container!.clientWidth;
+      const sw = content!.scrollWidth;
+      setFitScale(sw > cw ? Math.max(cw / sw, 0.6) : 1);
+    }
+
+    measure();
+    // Re-measure on resize
+    const observer = new ResizeObserver(measure);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [layout, students.length, desksPerRow]);
+
   return (
     <div className="space-y-2" role="region" aria-label="Plan de classe">
 
       {/* ── CLASSROOM FLOOR PLAN ── */}
       <div
+        ref={containerRef}
         className="relative overflow-hidden"
         style={{
           borderRadius: 16,
@@ -363,7 +387,15 @@ export function ClassroomMap({
         }}
       >
 
-        <div className="relative p-3 sm:p-4 space-y-2">
+        <div
+          ref={contentRef}
+          className="relative p-3 sm:p-4 space-y-2"
+          style={{
+            transform: fitScale < 1 ? `scale(${fitScale})` : undefined,
+            transformOrigin: "top center",
+            height: fitScale < 1 ? `calc(100% * ${fitScale})` : undefined,
+          }}
+        >
 
           {/* Teacher's desk / Tableau */}
           <div className="flex justify-center">
