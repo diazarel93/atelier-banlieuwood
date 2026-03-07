@@ -141,7 +141,7 @@ export default function SessionDetailPage() {
                     Revoir la structure
                   </Link>
                   <Link
-                    href={`/session/${session.id}/results`}
+                    href={`/v2/seances/${session.id}/results`}
                     className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
                   >
                     {ss.ctaLabel}
