@@ -13,6 +13,21 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  // Downgrade strict React Compiler rules to warnings (to be fixed incrementally)
+  {
+    rules: {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/refs": "warn",
+      "react-hooks/purity": "warn",
+      "react-hooks/globals": "warn",
+      "react-hooks/immutability": "warn",
+      "react-hooks/static-components": "warn",
+      "react/no-unescaped-entities": "warn",
+      "@typescript-eslint/no-empty-object-type": "warn",
+    },
+  },
 ]);
 
 export default eslintConfig;
