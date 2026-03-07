@@ -280,7 +280,7 @@ function CockpitContent({
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d?.situations) setAllSituations(d.situations); })
       .catch(() => {});
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [session?.id, session?.current_module, session?.current_seance]);
 
   const situation = (situationData as { situation?: { id: string; position: number; category: string; restitutionLabel: string; prompt: string } })?.situation;
@@ -765,7 +765,7 @@ function CockpitContent({
     updateSession.mutate({ timer_ends_at: endsAt });
     setTimerMode(false);
     toast.success(`Timer ${seconds >= 60 ? `${seconds / 60}min` : `${seconds}s`} lancé`);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [updateSession]);
 
   usePilotKeyboardShortcuts({

@@ -30,7 +30,7 @@ export function SelectionBar({
   let leftText = "";
   let ctaLabel = "";
   let ctaColor = "#2C2C2C";
-  let shortcutKey = "N";
+  const shortcutKey = "N";
 
   if (status === "responding") {
     leftText = `${responsesCount}/${totalStudents} rep.`;

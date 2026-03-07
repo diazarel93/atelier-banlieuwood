@@ -861,7 +861,7 @@ async function handleModule2EC(req: NextRequest, session: any, sessionId: string
 }
 
 // Standard situation handler with optional module5 data
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 async function handleStandardWithModule5(
   req: NextRequest,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1525,7 +1525,7 @@ async function handleModule10(req: NextRequest, session: any, sessionId: string,
 }
 
 // Standard situation handler with optional module10 data
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 async function handleStandardWithModule10(
   req: NextRequest,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

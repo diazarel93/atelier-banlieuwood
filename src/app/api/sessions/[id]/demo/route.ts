@@ -175,7 +175,7 @@ export async function DELETE(
 
 // ── Helper: find the current situation for the session ──
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 async function getCurrentSituation(
   admin: ReturnType<typeof createAdminClient>,
   sessionId: string,

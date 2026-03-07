@@ -139,7 +139,7 @@ export function ContextDocks(props: ContextDocksProps) {
     else if (key === "e") { e.preventDefault(); toggleLower("students"); }
     else if (key === "t" && !e.ctrlKey && !e.metaKey) { e.preventDefault(); toggleUpper("timer"); }
     else if (key === "b" && !e.ctrlKey && !e.metaKey) { e.preventDefault(); toggleLower("broadcast"); }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   useEffect(() => {

@@ -34,7 +34,7 @@ export async function GET() {
   // Get current situation responses for active sessions
   const activeSessionIds = (data || []).filter((s: Record<string, unknown>) => s.status === "responding").map((s: Record<string, unknown>) => s.id as string);
 
-  let responseMap: Record<string, Set<string>> = {};
+  const responseMap: Record<string, Set<string>> = {};
   if (activeSessionIds.length > 0) {
     const { data: responses } = await supabase
       .from("responses")
