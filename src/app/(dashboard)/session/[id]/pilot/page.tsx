@@ -1290,8 +1290,8 @@ function CockpitContent({
               onNudgeAllStuck={() => handleNudgeAllStuck()}
               onStudentClick={(sid) => setFicheStudentId(sid)}
               layout={classroomLayout}
-              desksPerRow={classroomLayout === "rows" ? 4 : 3}
-              deskSize="md"
+              desksPerRow={classroomLayout === "rows" ? (activeStudents.length > 20 ? 4 : 3) : 3}
+              deskSize={activeStudents.length > 20 ? "xs" : activeStudents.length > 12 ? "sm" : "md"}
               sessionId={session.id}
             />
             </motion.div>

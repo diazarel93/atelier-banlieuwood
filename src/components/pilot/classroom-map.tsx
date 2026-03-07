@@ -223,19 +223,19 @@ export function ClassroomMap({
     const aisleAt = Math.ceil(desksPerRow / 2);
 
     return rows.map((row, rowIdx) => (
-      <div key={rowIdx} className="flex items-center gap-2 sm:gap-3">
+      <div key={rowIdx} className="flex items-center gap-1.5 sm:gap-2">
         {/* Row number */}
         <span className="w-5 text-[10px] font-bold text-[#C4BDB2] text-right flex-shrink-0 tabular-nums select-none">
           R{rowIdx + 1}
         </span>
-        <div className="flex justify-center items-start gap-2 sm:gap-3 flex-1">
+        <div className="flex justify-center items-start gap-1.5 sm:gap-2 flex-1">
           {hasAisle ? (
             <>
               {row.slice(0, aisleAt).map(([left, right], deskIdx) => (
                 <DeskPair key={`${left.id}-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} size={deskSize} />
               ))}
               {row.length > aisleAt && (
-                <div className="w-8 sm:w-10 flex-shrink-0 self-stretch flex items-center justify-center">
+                <div className="w-4 sm:w-6 flex-shrink-0 self-stretch flex items-center justify-center">
                   <div className="w-px h-full" style={{ background: "linear-gradient(to bottom, transparent, #D9CFC0 20%, #D9CFC0 80%, transparent)" }} />
                 </div>
               )}
@@ -350,11 +350,11 @@ export function ClassroomMap({
   }
 
   return (
-    <div className="space-y-3" role="region" aria-label="Plan de classe">
+    <div className="space-y-2" role="region" aria-label="Plan de classe">
 
       {/* ── CLASSROOM FLOOR PLAN ── */}
       <div
-        className="relative overflow-visible"
+        className="relative overflow-hidden"
         style={{
           borderRadius: 16,
           background: "#FAF6EE",
@@ -363,7 +363,7 @@ export function ClassroomMap({
         }}
       >
 
-        <div className="relative p-4 sm:p-5 space-y-3">
+        <div className="relative p-3 sm:p-4 space-y-2">
 
           {/* Teacher's desk / Tableau */}
           <div className="flex justify-center">
@@ -391,7 +391,7 @@ export function ClassroomMap({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.2 }}
-              className="space-y-3"
+              className="space-y-2"
             >
               {layout === "u-shape" ? renderUShape()
                 : layout === "islands" ? renderIslands()
@@ -402,7 +402,7 @@ export function ClassroomMap({
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: gi * 0.04 }}
-                  className="space-y-1.5"
+                  className="space-y-1"
                 >
                   {group.teamName && (
                     <div className="flex items-center gap-2 px-1">

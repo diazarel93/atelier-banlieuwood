@@ -5,10 +5,11 @@ import { motion, AnimatePresence } from "motion/react";
 import type { SeatStudent } from "./seat-card";
 import { STATE_STYLE, DEFAULT_STYLE } from "./state-styles";
 
-export type DeskSize = "sm" | "md";
+export type DeskSize = "xs" | "sm" | "md";
 
 /** Dimension presets */
 const SIZE = {
+  xs: { seat: "w-[72px]", empty: "w-[72px]", avatar: "w-6 h-6 text-xs", name: "text-[11px] max-w-[38px]", px: "px-1.5 py-1.5", gap: "gap-1.5" },
   sm: { seat: "w-[90px]", empty: "w-[90px]", avatar: "w-7 h-7 text-sm", name: "text-[12px] max-w-[48px]", px: "px-2.5 py-2", gap: "gap-2" },
   md: { seat: "w-[120px]", empty: "w-[120px]", avatar: "w-9 h-9 text-base", name: "text-[13px] max-w-[68px]", px: "px-3 py-2.5", gap: "gap-2.5" },
 } as const;
