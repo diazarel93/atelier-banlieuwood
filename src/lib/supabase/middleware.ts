@@ -50,6 +50,13 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith("/login") ||
     pathname.startsWith("/reset-password");
 
+  // Redirect /dashboard → /v2
+  if (pathname === "/dashboard" && user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/v2";
+    return NextResponse.redirect(url);
+  }
+
   // Redirect unauthenticated users away from protected routes
   if (isProtected && !user) {
     const url = request.nextUrl.clone();
@@ -60,7 +67,7 @@ export async function updateSession(request: NextRequest) {
   // Redirect authenticated users away from auth routes to dashboard
   if (isAuthRoute && user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
+    url.pathname = "/v2";
     return NextResponse.redirect(url);
   }
 
