@@ -63,9 +63,9 @@ import { WordCloud } from "@/components/pilot/word-cloud";
 import { TIMER_PRESETS, STUCK_THRESHOLD_MS, STUCK_DETECTION_DELAY_MS } from "@/components/pilot/pilot-settings";
 import { StudentFiche } from "@/components/pilot/student-fiche";
 import { AIAssistantPanel } from "@/components/pilot/ai-assistant-panel";
-import { CognitiveMap } from "@/components/pilot/cognitive-map";
 import { ComprehensionHeatmap } from "@/components/pilot/comprehension-heatmap";
 import { SessionStateBanner } from "@/components/pilot/session-state-banner";
+import { CenterStateBanner } from "@/components/pilot/center-state-banner";
 import { CockpitHeader } from "@/components/pilot/cockpit-header";
 import { SessionProgressBar } from "@/components/pilot/session-progress-bar";
 import { FloatingNextAction } from "@/components/pilot/floating-next-action";
@@ -1043,6 +1043,12 @@ function CockpitContent({
               <p className={`text-[28px] md:text-[36px] font-bold leading-[1.25] ${isPreviewing ? "text-[#D4842A]" : "text-[#2C2C2C]"}`}>
                 {universalQuestionText}
               </p>
+              {/* Pedagogical subtitle from guide */}
+              {(isPreviewing ? previewGuide : questionGuide)?.whatToExpect && (
+                <p className="mt-2 text-[14px] text-[#7A7A7A] leading-relaxed">
+                  {(isPreviewing ? previewGuide : questionGuide)!.whatToExpect}
+                </p>
+              )}
             </div>
             {/* Collapsible guide section */}
             <AnimatePresence>
@@ -1089,7 +1095,7 @@ function CockpitContent({
         )}
 
         {/* ── SPLIT-PANEL LAYOUT ── */}
-        <div className="flex-1 flex overflow-hidden min-h-0" style={{ background: "linear-gradient(135deg, #F5EFE6 0%, #EDE5DA 50%, #F0E8DD 100%)" }}>
+        <div className="flex-1 flex overflow-hidden min-h-0" style={{ background: "#F6F2EA" }}>
           {/* LEFT: Classe en direct — 300px panel, hidden below lg */}
           <div data-onboarding="classmap" className="hidden md:flex w-[240px] lg:w-[300px] flex-shrink-0 flex-col m-2 mr-0 rounded-2xl shadow-sm overflow-hidden"
             style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.4)" }}>
@@ -1152,6 +1158,22 @@ function CockpitContent({
             </div>
           ) : (
           <div className="px-3 sm:px-6 py-4 space-y-4">
+
+          {/* ── CENTER STATE BANNER — contextual class status ── */}
+          {centerTab === "responses" && (
+            <CenterStateBanner
+              sessionStatus={session.status}
+              studentStates={studentStates}
+              responsesCount={respondedCount}
+              totalStudents={activeStudents.length}
+              optionDistribution={isM1Positioning && module1Data?.optionDistribution
+                ? module1Data.optionDistribution as Record<string, number>
+                : undefined}
+              optionLabels={isM1Positioning && module1Data?.questions?.[currentQIndex]?.options
+                ? Object.fromEntries(module1Data.questions[currentQIndex].options!.map((o: { key: string; label: string }) => [o.key, o.label]))
+                : undefined}
+            />
+          )}
 
           {/* ── TOOLBAR — response section header ── */}
           {session.status !== "done" && !focusMode && (
@@ -2263,6 +2285,7 @@ function CockpitContent({
                     stuckNames: stuckStudents.map(s => s.name?.split(" ")[0] || s.name),
                     handsRaised: session.students?.filter(s => s.hand_raised_at).length || 0,
                     handsNames: session.students?.filter(s => s.hand_raised_at).map(s => s.display_name?.split(" ")[0] || s.display_name) || [],
+                    handsRaisedAt: session.students?.filter(s => s.hand_raised_at).map(s => s.hand_raised_at ?? null) || [],
                     elapsedSeconds: respondingOpenedAt
                       ? Math.round((Date.now() - respondingOpenedAt) / 1000)
                       : 0,
@@ -2278,6 +2301,24 @@ function CockpitContent({
                   onLaunchVote={() => updateSession.mutate({ status: "voting", timer_ends_at: null })}
                   onBroadcast={openBroadcast}
                   onDebate={() => setShowDebate(true)}
+                  onStudentClick={(id) => setFicheStudentId(id)}
+                  qcmVoteData={isM1Positioning && module1Data?.questions?.[currentQIndex]?.options ? (() => {
+                    const opts = module1Data.questions![currentQIndex].options!;
+                    const votesByOption: Record<string, { avatar: string; name: string; id: string }[]> = {};
+                    for (const opt of opts) votesByOption[opt.key] = [];
+                    for (const r of responses.filter(r => !r.is_hidden)) {
+                      const key = r.text?.trim().toLowerCase();
+                      if (key && votesByOption[key]) {
+                        votesByOption[key].push({ avatar: r.students?.avatar || "", name: r.students?.display_name || "", id: r.student_id });
+                      }
+                    }
+                    return {
+                      options: opts,
+                      votesByOption,
+                      totalVotes: responses.filter(r => !r.is_hidden).length,
+                      totalStudents: activeStudents.length,
+                    };
+                  })() : undefined}
                 />
               ) : responses.length > 0 ? (
                 <ComprehensionHeatmap
@@ -2303,92 +2344,7 @@ function CockpitContent({
                 </div>
               )}
 
-              {/* Vote columns for M1 Positioning (QCM sondage view) */}
-              {isM1Positioning && session.status !== "done" && (() => {
-                const opts = module1Data?.questions?.[currentQIndex]?.options || [];
-                const VOTE_COLORS: Record<string, string> = { a: "#7EA7F5", b: "#F3A765", c: "#6EC6B0", d: "#E78BB4" };
-                const VOTE_BG: Record<string, string> = { a: "#EEF3FF", b: "#FFF3E8", c: "#E9F8F4", d: "#FDECF4" };
-                // Group responses by option key
-                const votesByOption: Record<string, { avatar: string; name: string; id: string }[]> = {};
-                for (const opt of opts) votesByOption[opt.key] = [];
-                for (const r of responses.filter(r => !r.is_hidden)) {
-                  const key = r.text?.trim().toLowerCase();
-                  if (key && votesByOption[key]) {
-                    votesByOption[key].push({ avatar: r.students?.avatar || "", name: r.students?.display_name || "", id: r.student_id });
-                  }
-                }
-                const totalVotes = responses.filter(r => !r.is_hidden).length;
-                return (
-                  <div className="rounded-xl overflow-hidden" style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.4)" }}>
-                    <div className="px-4 py-2.5 flex items-center justify-between" style={{ borderBottom: "1px solid rgba(255,255,255,0.5)" }}>
-                      <span className="text-[13px] font-semibold text-[#2C2C2C]">Qui a vote quoi</span>
-                      <span className="text-[13px] font-bold tabular-nums" style={{ color: totalVotes > 0 ? "#4CAF50" : "#B0A99E" }}>
-                        {totalVotes}/{activeStudents.length}
-                      </span>
-                    </div>
-                    <div className="max-h-[320px] overflow-y-auto px-3 py-2.5 space-y-2.5">
-                      {totalVotes === 0 ? (
-                        <div className="py-3 text-center">
-                          <div className="flex items-center justify-center gap-1 mb-2">
-                            {[0, 1, 2].map(i => (
-                              <motion.span key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "#F2C94C" }}
-                                animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
-                                transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.3 }} />
-                            ))}
-                          </div>
-                          <p className="text-[12px] text-[#B0A99E]">En attente des votes...</p>
-                        </div>
-                      ) : (
-                        opts.map(opt => {
-                          const voters = votesByOption[opt.key] || [];
-                          if (voters.length === 0) return null;
-                          const color = VOTE_COLORS[opt.key] || "#7A7A7A";
-                          const bg = VOTE_BG[opt.key] || "#F7F3EA";
-                          return (
-                            <div key={opt.key}>
-                              <div className="flex items-center gap-2 mb-1.5">
-                                <span className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0"
-                                  style={{ background: color }}>{opt.key.toUpperCase()}</span>
-                                <span className="text-[12px] font-semibold text-[#4A4A4A] truncate">{opt.label}</span>
-                                <span className="text-[11px] font-bold tabular-nums ml-auto flex-shrink-0" style={{ color }}>{voters.length}</span>
-                              </div>
-                              <div className="flex flex-wrap gap-1 ml-7">
-                                {voters.map(v => (
-                                  <motion.button key={v.id} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-                                    onClick={() => setFicheStudentId(v.id)}
-                                    className="flex items-center gap-1 h-6 px-2 rounded-full text-[11px] font-medium cursor-pointer transition-colors hover:brightness-95"
-                                    style={{ background: bg, border: `1px solid ${color}30`, color: "#4A4A4A" }}>
-                                    <span className="text-xs">{v.avatar}</span>
-                                    <span>{v.name.split(" ")[0]}</span>
-                                  </motion.button>
-                                ))}
-                              </div>
-                            </div>
-                          );
-                        })
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Carte cognitive — QCM thinking style (M1 Positioning only) */}
-              {isM1Positioning && module1Data?.optionDistribution && module1Data.questions?.[currentQIndex]?.options && (() => {
-                const dist = module1Data.optionDistribution as Record<string, number>;
-                const totalVotes = Object.values(dist).reduce((sum, v) => sum + v, 0);
-                if (totalVotes < 3) return null;
-                const cogOptions = module1Data.questions[currentQIndex].options!.map(o => ({
-                  key: o.key,
-                  label: o.label,
-                  count: dist[o.key] || 0,
-                }));
-                return (
-                  <>
-                    <div style={{ borderTop: "1px solid #EFE4D8" }} />
-                    <CognitiveMap options={cogOptions} total={totalVotes} />
-                  </>
-                );
-              })()}
+              {/* Vote columns + Carte cognitive now rendered inside AIAssistantPanel */}
             </div>
           </div>
         </div>
@@ -2402,51 +2358,72 @@ function CockpitContent({
             {/* LEFT: Action buttons — responsive: hide labels on small screens */}
             {session.status !== "waiting" && session.status !== "done" && (
               <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 overflow-x-auto">
-                {/* Groupe 1: Aider */}
-                <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
-                  <button onClick={() => openBroadcastWith("Indice : ", "Envoyer un indice", "💡")}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
-                    style={{ background: "rgba(255,240,230,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#8B4513" }}>
-                    💡 <span className="hidden sm:inline">Indice</span>
-                  </button>
-                  <button onClick={handleNudgeAllStuck} disabled={notRespondedStudents.length === 0}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
-                    style={{ background: "rgba(235,242,255,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#3B5998" }}>
-                    🚀 <span className="hidden sm:inline">Relancer{notRespondedStudents.length > 0 ? ` (${notRespondedStudents.length})` : ""}</span>
-                    <span className="sm:hidden">{notRespondedStudents.length > 0 ? notRespondedStudents.length : ""}</span>
-                  </button>
+                {/* Stimulation */}
+                <div className="flex flex-col items-center gap-0.5">
+                  <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] hidden sm:block">Stimulation</span>
+                  <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
+                    <button onClick={() => openBroadcastWith("Indice : ", "Envoyer un indice", "💡")}
+                      className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
+                      style={{ background: "rgba(255,240,230,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#8B4513" }}>
+                      💡 <span className="hidden sm:inline">Indice</span>
+                    </button>
+                    <button onClick={handleNudgeAllStuck} disabled={notRespondedStudents.length === 0}
+                      className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                      style={{ background: "rgba(235,242,255,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#3B5998" }}>
+                      🚀 <span className="hidden sm:inline">Relancer{notRespondedStudents.length > 0 ? ` (${notRespondedStudents.length})` : ""}</span>
+                      <span className="sm:hidden">{notRespondedStudents.length > 0 ? notRespondedStudents.length : ""}</span>
+                    </button>
+                    <button onClick={() => openBroadcastWith("Exemple : ", "Proposer un exemple", "📝")}
+                      className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
+                      style={{ background: "rgba(255,252,245,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#8B6914" }}>
+                      📝 <span className="hidden sm:inline">Exemple</span>
+                    </button>
+                  </div>
                 </div>
-                {/* Separateur */}
                 <div className="w-px h-6 hidden sm:block" style={{ background: "rgba(255,255,255,0.4)" }} />
-                {/* Groupe 2: Discuter */}
-                <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
-                  <button onClick={() => openBroadcastWith("Question pour la classe : ", "Lancer une discussion", "💬")}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
-                    style={{ background: "rgba(232,245,242,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#1B5E50" }}>
-                    💬 <span className="hidden sm:inline">Discussion</span>
-                  </button>
-                  <button onClick={() => setShowDebate(true)} disabled={visibleResponses.length < 1}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
-                    style={{ background: "rgba(240,236,248,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#5B3A8E" }}>
-                    🎭 <span className="hidden sm:inline">Debat</span>
-                  </button>
+                {/* Interaction */}
+                <div className="flex flex-col items-center gap-0.5">
+                  <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] hidden sm:block">Interaction</span>
+                  <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
+                    <button onClick={() => openBroadcastWith("Question pour la classe : ", "Lancer une discussion", "💬")}
+                      className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
+                      style={{ background: "rgba(232,245,242,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#1B5E50" }}>
+                      💬 <span className="hidden sm:inline">Discussion</span>
+                    </button>
+                    <button onClick={() => setShowDebate(true)} disabled={visibleResponses.length < 1}
+                      className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                      style={{ background: "rgba(240,236,248,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#5B3A8E" }}>
+                      🎭 <span className="hidden sm:inline">Debat</span>
+                    </button>
+                    <button onClick={() => openBroadcastWith("Sondage rapide : ", "Lancer un sondage", "🗳️")}
+                      className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
+                      style={{ background: "rgba(245,240,255,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#6B3FA0" }}>
+                      🗳️ <span className="hidden sm:inline">Sondage</span>
+                    </button>
+                  </div>
                 </div>
-                {/* Separateur */}
                 <div className="w-px h-6 hidden sm:block" style={{ background: "rgba(255,255,255,0.4)" }} />
-                {/* Groupe 3: Voter */}
-                <button onClick={() => { if (visibleResponses.length >= 2) setShowCompare(true); }} disabled={visibleResponses.length < 2}
-                  className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
-                  style={{ background: "rgba(255,248,230,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#8B6914" }}>
-                  ⚖️ <span className="hidden sm:inline">Comparer</span>
-                </button>
-                {/* Separateur */}
-                <div className="w-px h-6 hidden sm:block" style={{ background: "rgba(255,255,255,0.4)" }} />
-                {/* Groupe 4: Analytics */}
-                <button onClick={() => setShowWordCloud(true)} disabled={visibleResponses.length < 3}
-                  className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
-                  style={{ background: "rgba(240,248,255,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#2563EB" }}>
-                  ☁️ <span className="hidden sm:inline">Nuage</span>
-                </button>
+                {/* Analyse */}
+                <div className="flex flex-col items-center gap-0.5">
+                  <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] hidden sm:block">Analyse</span>
+                  <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
+                    <button onClick={() => { if (visibleResponses.length >= 2) setShowCompare(true); }} disabled={visibleResponses.length < 2}
+                      className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                      style={{ background: "rgba(255,248,230,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#8B6914" }}>
+                      ⚖️ <span className="hidden sm:inline">Comparer</span>
+                    </button>
+                    <button onClick={() => setShowWordCloud(true)} disabled={visibleResponses.length < 3}
+                      className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                      style={{ background: "rgba(240,248,255,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#2563EB" }}>
+                      ☁️ <span className="hidden sm:inline">Nuage</span>
+                    </button>
+                    <button onClick={() => openBroadcastWith("Synthese : ", "Synthese collective", "📋")} disabled={visibleResponses.length < 2}
+                      className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                      style={{ background: "rgba(245,255,250,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#1B5E50" }}>
+                      📋 <span className="hidden sm:inline">Synthese</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
             <div className="flex-1" />

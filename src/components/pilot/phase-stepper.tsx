@@ -11,9 +11,16 @@ interface PhaseStepperProps {
   activeModuleId: string | null;
   completedModules: string[];
   onPhaseClick?: (phaseId: string) => void;
+  phaseTimings?: Record<string, { elapsed: number; estimated: number }>;
 }
 
 type PhaseStatus = "completed" | "active" | "upcoming";
+
+function formatTiming(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
 
 export function PhaseStepper({
   phases,
@@ -21,6 +28,7 @@ export function PhaseStepper({
   activeModuleId,
   completedModules,
   onPhaseClick,
+  phaseTimings,
 }: PhaseStepperProps) {
   // Filter phases: only show those with at least 1 non-disabled module
   const visiblePhases = useMemo(
@@ -98,9 +106,9 @@ export function PhaseStepper({
                     className="relative flex items-center justify-center rounded-full w-6 h-6 md:w-[42px] md:h-[42px]"
                     style={{
                       background: phase.color,
-                      boxShadow: `0 0 0 3px white, 0 0 20px ${phase.color}35`,
+                      boxShadow: `0 0 0 3px white, 0 0 24px ${phase.color}50`,
                     }}
-                    animate={{ scale: [1, 1.04, 1] }}
+                    animate={{ scale: [1, 1.06, 1] }}
                     transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
                   >
                     <svg
@@ -156,16 +164,24 @@ export function PhaseStepper({
                   </div>
                 )}
 
-                {/* Label — desktop only */}
-                <span
-                  className="hidden md:block text-[11px] leading-tight max-w-[90px] text-center truncate transition-colors"
-                  style={{
-                    color: status === "active" ? phase.color : "#B0A99E",
-                    fontWeight: status === "active" ? 600 : 400,
-                  }}
-                >
-                  {phase.label}
-                </span>
+                {/* Label + timing — desktop only */}
+                <div className="hidden md:flex flex-col items-center gap-0.5 max-w-[90px]">
+                  <span
+                    className="leading-tight text-center truncate transition-colors"
+                    style={{
+                      color: status === "active" ? phase.color : "#B0A99E",
+                      fontWeight: status === "active" ? 700 : 400,
+                      fontSize: status === "active" ? 12 : 11,
+                    }}
+                  >
+                    {phase.label}
+                  </span>
+                  {phaseTimings?.[phase.id] && (
+                    <span className="text-[9px] tabular-nums font-medium" style={{ color: "#B0A99E" }}>
+                      {formatTiming(phaseTimings[phase.id].elapsed)} / {formatTiming(phaseTimings[phase.id].estimated)}
+                    </span>
+                  )}
+                </div>
               </button>
 
               {/* ── Line segment + chevron to next phase ── */}

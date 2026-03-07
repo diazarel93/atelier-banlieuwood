@@ -3,12 +3,14 @@
 import { useState, useMemo, memo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { StudentState } from "@/components/pilot/pulse-ring";
-import { MiniClassroomGrid } from "@/components/pilot/mini-classroom-grid";
+import { SpatialClassroomGrid } from "@/components/pilot/spatial-classroom-grid";
+import { ClassCognitiveState } from "@/components/pilot/class-cognitive-state";
 import { CognitiveMap } from "@/components/pilot/cognitive-map";
 
 // ═══════════════════════════════════════════════════════════════
-// CLASS DASHBOARD PANEL — Left sidebar: engagement donut, hands,
-// mini classroom map, cognitive bars (glassmorphism cards)
+// CLASS DASHBOARD PANEL — Left sidebar: engagement donut, progress,
+// hands raised cards, spatial classroom, cognitive bars
+// Premium pédagogique — richer, more actionable
 // ═══════════════════════════════════════════════════════════════
 
 interface ClassDashboardPanelProps {
@@ -51,6 +53,13 @@ function GlassCard({ children, className = "" }: { children: React.ReactNode; cl
   );
 }
 
+const STATE_COLOR: Record<StudentState, string> = {
+  responded: "#4CAF50",
+  active: "#F2C94C",
+  stuck: "#EB5757",
+  disconnected: "#C4BDB2",
+};
+
 function ClassDashboardPanelInner({
   session,
   studentStates,
@@ -72,7 +81,8 @@ function ClassDashboardPanelInner({
     const total = respondedN + thinkingN + stuckN + offN;
     const engagementPct = total > 0 ? Math.round(((respondedN + thinkingN) / total) * 100) : 0;
     const online = respondedN + thinkingN + stuckN;
-    return { respondedN, thinkingN, stuckN, offN, total, engagementPct, online };
+    const responsePct = online > 0 ? Math.round((respondedN / online) * 100) : 0;
+    return { respondedN, thinkingN, stuckN, offN, total, engagementPct, online, responsePct };
   }, [studentStates]);
 
   // Suggestion logic
@@ -86,7 +96,7 @@ function ClassDashboardPanelInner({
     return null;
   }, [stats]);
 
-  // Hands raised
+  // Hands raised (sorted oldest first = most urgent)
   const hands = useMemo(() =>
     (session.students || [])
       .filter(s => s.hand_raised_at && s.is_active && !s.kicked)
@@ -94,11 +104,20 @@ function ClassDashboardPanelInner({
     [session.students]
   );
 
+  // Stuck students with avatar info
+  const stuckWithAvatars = useMemo(() =>
+    stuckStudents.map(s => {
+      const raw = session.students?.find(st => st.id === s.id);
+      return { ...s, avatar: raw?.avatar || "👤", display_name: raw?.display_name || s.name };
+    }),
+    [stuckStudents, session.students]
+  );
+
   // Donut SVG data
   const donutSegments = useMemo(() => {
     const { respondedN, thinkingN, stuckN, offN, total } = stats;
     if (total === 0) return [];
-    const circumference = 2 * Math.PI * 40; // r=40 for 100px donut
+    const circumference = 2 * Math.PI * 40;
     const segments = [
       { pct: (respondedN / total) * 100, color: "#4CAF50" },
       { pct: (thinkingN / total) * 100, color: "#F2C94C" },
@@ -115,19 +134,17 @@ function ClassDashboardPanelInner({
     });
   }, [stats]);
 
-  const circumference = 2 * Math.PI * 40;
-
   return (
     <div className="flex flex-col h-full">
       {/* ── Section title ── */}
       <div className="px-4 pt-4 pb-1 flex-shrink-0">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-[#B0A99E]">Cockpit de classe</span>
+        <span className="text-[14px] font-bold text-[#2C2C2C]">Cockpit de classe</span>
       </div>
 
       {/* ── Scrollable content ── */}
       <div className="flex-1 overflow-y-auto min-h-0 px-3 pb-3 space-y-2.5">
 
-        {/* ── DONUT — enlarged 100px with legend ── */}
+        {/* ── DONUT + LEGEND ── */}
         <GlassCard>
           <div className="flex items-center gap-4">
             {/* SVG Donut — 100px */}
@@ -193,6 +210,33 @@ function ClassDashboardPanelInner({
             </div>
           </div>
 
+          {/* Response progress bar */}
+          {stats.online > 0 && (
+            <div className="mt-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] font-semibold text-[#7A7A7A]">Progression reponses</span>
+                <span className="text-[11px] font-bold tabular-nums" style={{ color: stats.responsePct >= 80 ? "#4CAF50" : stats.responsePct >= 50 ? "#F2C94C" : "#B0A99E" }}>
+                  {stats.respondedN}/{stats.online}
+                </span>
+              </div>
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: "#EFE8DD" }}>
+                <motion.div
+                  className="h-full rounded-full"
+                  initial={false}
+                  animate={{ width: `${stats.responsePct}%` }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  style={{
+                    background: stats.responsePct >= 80
+                      ? "linear-gradient(90deg, #4CAF50, #66BB6A)"
+                      : stats.responsePct >= 50
+                        ? "linear-gradient(90deg, #F2C94C, #FFD54F)"
+                        : "linear-gradient(90deg, #C4BDB2, #D5CFC6)",
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
           {/* Suggestion banner */}
           {suggestion && (
             <div className="flex items-center gap-2 px-2.5 py-2 mt-2.5 rounded-[10px]" style={{ background: suggestion.bg, border: `1px solid ${suggestion.color}20` }}>
@@ -202,40 +246,78 @@ function ClassDashboardPanelInner({
           )}
         </GlassCard>
 
-        {/* ── MAINS LEVEES ── */}
+        {/* ── CLASS COGNITIVE STATE — one-liner ── */}
+        <ClassCognitiveState
+          studentStates={studentStates}
+          optionDistribution={cognitiveOptions
+            ? Object.fromEntries(cognitiveOptions.map(o => [o.key, o.count]))
+            : undefined}
+          optionLabels={cognitiveOptions
+            ? Object.fromEntries(cognitiveOptions.map(o => [o.key, o.label]))
+            : undefined}
+        />
+
+        {/* ── MAINS LEVEES — individual cards with avatar, duration, chevron ── */}
         {hands.length > 0 && (
           <GlassCard className="!p-0 overflow-hidden">
-            <div className="flex items-center justify-between px-3 py-2">
-              <span className="text-[11px] font-bold text-[#E88D2A] uppercase tracking-wider">
-                ✋ Mains levees ({hands.length})
+            <div className="flex items-center justify-between px-3.5 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}>
+              <span className="text-[12px] font-bold text-[#E88D2A] flex items-center gap-1.5">
+                <span className="text-sm">✋</span> Mains levees ({hands.length})
               </span>
             </div>
-            <div className="px-2.5 pb-2.5 space-y-0.5">
-              {hands.map((s, idx) => (
-                <div key={s.id} className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-white/60 transition-colors">
-                  <span className="text-[10px] font-bold text-[#E88D2A] w-4 text-center tabular-nums">{idx + 1}</span>
-                  <button onClick={() => setFicheStudentId(s.id)} className="text-[12px] font-semibold text-[#2C2C2C] truncate flex-1 text-left cursor-pointer hover:underline">
-                    {s.display_name}
-                  </button>
+            <div className="px-2 pb-2 space-y-1">
+              {hands.map((s) => {
+                const raisedMs = s.hand_raised_at ? Date.now() - new Date(s.hand_raised_at).getTime() : 0;
+                const raisedMin = Math.floor(raisedMs / 60000);
+                const durationLabel = raisedMin >= 1 ? `${raisedMin}min` : "<1min";
+                const st = studentStates.find(ss => ss.id === s.id);
+                return (
                   <button
-                    onClick={() => lowerHand.mutate(s.id)}
-                    disabled={lowerHand.isPending}
-                    title="Baisser la main"
-                    className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] text-[#B0A99E] hover:text-[#4CAF50] hover:bg-[#F0FAF4] cursor-pointer transition-colors disabled:opacity-40"
+                    key={s.id}
+                    onClick={() => setFicheStudentId(s.id)}
+                    className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl cursor-pointer transition-all hover:bg-[#FFF8F0] group"
+                    style={{ background: "rgba(255,248,240,0.4)", border: "1px solid rgba(232,141,42,0.1)" }}
                   >
-                    ✓
+                    {/* Avatar circle with state color ring */}
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0"
+                      style={{
+                        background: "rgba(255,255,255,0.8)",
+                        boxShadow: `0 0 0 2px ${STATE_COLOR[st?.state || "active"]}`,
+                      }}
+                    >
+                      {s.avatar}
+                    </div>
+                    {/* Name + duration */}
+                    <div className="flex-1 min-w-0 text-left">
+                      <p className="text-[12px] font-semibold text-[#2C2C2C] truncate">{s.display_name}</p>
+                      <p className="text-[10px] text-[#B0A99E]">✋ depuis {durationLabel}</p>
+                    </div>
+                    {/* Lower hand button */}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); lowerHand.mutate(s.id); }}
+                      disabled={lowerHand.isPending}
+                      title="Baisser la main"
+                      className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] text-[#B0A99E] hover:text-[#4CAF50] hover:bg-[#F0FAF4] cursor-pointer transition-colors disabled:opacity-40 flex-shrink-0 opacity-0 group-hover:opacity-100"
+                    >
+                      ✓
+                    </button>
+                    {/* Chevron */}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4BDB2" strokeWidth="2" strokeLinecap="round" className="flex-shrink-0">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
                   </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </GlassCard>
         )}
 
-        {/* ── PLAN DE CLASSE (mini, collapsible) ── */}
+        {/* ── PLAN DE CLASSE (collapsible) ── */}
         <GlassCard className="!p-0 overflow-hidden">
           <button
             onClick={() => setMapExpanded(v => !v)}
-            className="w-full flex items-center justify-between px-3 py-2.5 cursor-pointer hover:bg-white/40 transition-colors"
+            className="w-full flex items-center justify-between px-3.5 py-2.5 cursor-pointer hover:bg-white/40 transition-colors"
           >
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#B0A99E]">
               Plan de classe
@@ -257,7 +339,7 @@ function ClassDashboardPanelInner({
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <MiniClassroomGrid
+                <SpatialClassroomGrid
                   studentStates={studentStates.map(s => {
                     const raw = session.students?.find(st => st.id === s.id);
                     return {
@@ -275,26 +357,64 @@ function ClassDashboardPanelInner({
           </AnimatePresence>
         </GlassCard>
 
+        {/* ── ELEVES EN DIFFICULTÉ — individual clickable cards ── */}
+        {stuckWithAvatars.length > 0 && (
+          <GlassCard className="!p-0 overflow-hidden">
+            <div className="flex items-center justify-between px-3.5 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}>
+              <span className="text-[12px] font-bold text-[#C62828] flex items-center gap-1.5">
+                <span className="text-sm">⚠️</span> En difficulte ({stuckWithAvatars.length})
+              </span>
+            </div>
+            <div className="px-2 pb-2 space-y-1">
+              {stuckWithAvatars.slice(0, 6).map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => setFicheStudentId(s.id)}
+                  className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl cursor-pointer transition-all hover:bg-[#FFF5F5] group"
+                  style={{ background: "rgba(255,235,238,0.3)", border: "1px solid rgba(235,87,87,0.08)" }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0"
+                    style={{ background: "rgba(255,255,255,0.8)", boxShadow: "0 0 0 2px #EB5757" }}
+                  >
+                    {s.avatar}
+                  </div>
+                  <div className="flex-1 min-w-0 text-left">
+                    <p className="text-[12px] font-semibold text-[#2C2C2C] truncate">{s.display_name}</p>
+                    <p className="text-[10px] text-[#C62828]">Bloque</p>
+                  </div>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4BDB2" strokeWidth="2" strokeLinecap="round" className="flex-shrink-0">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+              ))}
+              {stuckWithAvatars.length > 6 && (
+                <p className="text-[10px] text-[#C62828] text-center py-1">+{stuckWithAvatars.length - 6} autres</p>
+              )}
+            </div>
+          </GlassCard>
+        )}
+
         {/* ── COGNITIVE MAP — horizontal bars (M1 Positioning only) ── */}
         {cognitiveOptions && cognitiveTotal && cognitiveTotal >= 3 && (
           <GlassCard className="!p-0 overflow-hidden">
-            <div className="px-3 py-2">
+            <div className="px-3.5 py-2.5">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#B0A99E]">
                 Consistance cognitive
               </span>
             </div>
-            <div className="px-2 pb-2">
+            <div className="px-2.5 pb-2.5">
               <CognitiveMap options={cognitiveOptions} total={cognitiveTotal} />
             </div>
           </GlassCard>
         )}
       </div>
 
-      {/* ── Stuck alert — bottom pinned ── */}
+      {/* ── Stuck action — bottom pinned ── */}
       {stuckStudents.length > 0 && (
         <div className="px-3 py-2 flex-shrink-0">
           <button onClick={handleNudgeAllStuck}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-[12px] font-semibold cursor-pointer transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-[12px] font-semibold cursor-pointer transition-all hover:shadow-sm active:scale-[0.98]"
             style={{ background: "rgba(235,87,87,0.1)", border: "1px solid rgba(235,87,87,0.2)", color: "#C62828" }}>
             🚀 Relancer {stuckStudents.length} bloque{stuckStudents.length > 1 ? "s" : ""}
           </button>

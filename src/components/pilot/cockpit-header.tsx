@@ -26,6 +26,7 @@ interface CockpitHeaderProps {
   onScreen: () => void;
   onOpenModules: () => void;
   onPhaseClick?: (phaseId: string) => void;
+  phaseTimings?: Record<string, { elapsed: number; estimated: number }>;
   // Session state (for inline banner)
   sessionStatus: string;
   respondedCount: number;
@@ -55,6 +56,7 @@ export function CockpitHeader({
   onScreen,
   onOpenModules,
   onPhaseClick,
+  phaseTimings,
   sessionStatus,
   respondedCount,
   totalStudents,
@@ -101,6 +103,7 @@ export function CockpitHeader({
             activeModuleId={activeModuleId}
             completedModules={completedModules}
             onPhaseClick={onPhaseClick}
+            phaseTimings={phaseTimings}
           />
         </div>
       </div>

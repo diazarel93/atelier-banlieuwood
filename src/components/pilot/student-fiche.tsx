@@ -35,6 +35,8 @@ interface StudentFicheProps {
   onNudge: (studentId: string, text: string) => void;
   onWarn: (studentId: string) => void;
   onBroadcast?: () => void;
+  onPrivateHint?: (studentId: string, text: string) => void;
+  onViewProgression?: (studentId: string) => void;
   // Response card action mutations
   toggleHide: { mutate: (args: { responseId: string; is_hidden: boolean }) => void; isPending: boolean };
   toggleVoteOption: { mutate: (args: { responseId: string; is_vote_option: boolean }) => void; isPending: boolean };
@@ -56,6 +58,8 @@ export function StudentFiche({
   onNudge,
   onWarn,
   onBroadcast,
+  onPrivateHint,
+  onViewProgression,
   toggleHide,
   toggleVoteOption,
   commentResponse,
@@ -68,11 +72,18 @@ export function StudentFiche({
 }: StudentFicheProps) {
   const [nudgeText, setNudgeText] = useState("");
   const [showNudgeInput, setShowNudgeInput] = useState(false);
+  const [showHintInput, setShowHintInput] = useState(false);
+  const [hintText, setHintText] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const hintInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (showNudgeInput) inputRef.current?.focus();
   }, [showNudgeInput]);
+
+  useEffect(() => {
+    if (showHintInput) hintInputRef.current?.focus();
+  }, [showHintInput]);
 
   const stateInfo = STATE_LABEL[state] || STATE_LABEL.active;
   const warnings = student.warnings ?? 0;
@@ -83,6 +94,14 @@ export function StudentFiche({
     onNudge(student.id, msg);
     setNudgeText("");
     setShowNudgeInput(false);
+  }
+
+  function handleSendHint() {
+    const msg = hintText.trim();
+    if (!msg || !onPrivateHint) return;
+    onPrivateHint(student.id, msg);
+    setHintText("");
+    setShowHintInput(false);
   }
 
   return (
@@ -211,6 +230,28 @@ export function StudentFiche({
           </div>
         )}
 
+        {/* Private hint input */}
+        {showHintInput && onPrivateHint && (
+          <div className="flex gap-1.5">
+            <input
+              ref={hintInputRef}
+              value={hintText}
+              onChange={(e) => setHintText(e.target.value.slice(0, 300))}
+              onKeyDown={(e) => { if (e.key === "Enter") handleSendHint(); if (e.key === "Escape") setShowHintInput(false); }}
+              placeholder="Indice prive pour cet eleve..."
+              className="flex-1 bg-bw-bg border border-white/10 rounded-lg px-3 py-2 text-sm text-bw-text placeholder:text-bw-muted/50 outline-none focus:border-[#F5A45B]/40 transition-colors"
+            />
+            <button
+              onClick={handleSendHint}
+              disabled={!hintText.trim()}
+              className="px-3 py-2 rounded-lg text-sm font-medium text-white disabled:opacity-30 cursor-pointer hover:brightness-110 transition-all"
+              style={{ background: "#F5A45B" }}
+            >
+              Envoyer
+            </button>
+          </div>
+        )}
+
         {/* Action buttons */}
         <div className="flex gap-1.5">
           <button
@@ -222,6 +263,17 @@ export function StudentFiche({
             <span className="text-sm">💬</span>
             {showNudgeInput ? "Annuler" : "Relancer"}
           </button>
+          {onPrivateHint && (
+            <button
+              onClick={() => { setShowHintInput(!showHintInput); setShowNudgeInput(false); }}
+              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all ${
+                showHintInput ? "text-[#F5A45B] bg-[#F5A45B]/10" : "text-bw-text hover:bg-black/[0.05]"
+              }`}
+            >
+              <span className="text-sm">💡</span>
+              {showHintInput ? "Annuler" : "Indice prive"}
+            </button>
+          )}
           {onBroadcast && (
             <button
               onClick={onBroadcast}
@@ -239,6 +291,17 @@ export function StudentFiche({
             {warnings > 0 ? `Avertir (${warnings}/3)` : "Avertir"}
           </button>
         </div>
+
+        {/* View progression link */}
+        {onViewProgression && (
+          <button
+            onClick={() => onViewProgression(student.id)}
+            className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-[#3B5998] hover:bg-[#3B5998]/5 cursor-pointer transition-all"
+          >
+            <span className="text-sm">📈</span>
+            Voir la progression complete
+          </button>
+        )}
       </div>
     </motion.div>
   );

@@ -1,11 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, memo, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { computeCognitiveState, type CognitiveStateResult } from "@/components/pilot/class-cognitive-state";
 
 // ═══════════════════════════════════════════════════════════════
-// AI ASSISTANT — Real-time suggestions for teachers
-// Glassmorphism cards with larger action items
+// AI ASSISTANT — 4-bloc restructured panel
+// Bloc 1: Alerts (hands + stuck)
+// Bloc 2: Analyse IA (cognitive state + live stats)
+// Bloc 3: Suggestions pédagogiques (grouped)
+// Bloc 4: Qui a voté quoi (QCM vote columns)
 // ═══════════════════════════════════════════════════════════════
 
 interface SessionContext {
@@ -16,6 +20,7 @@ interface SessionContext {
   stuckNames?: string[];
   handsRaised: number;
   handsNames?: string[];
+  handsRaisedAt?: (string | null)[]; // timestamps for duration
   elapsedSeconds: number;
   currentModule: number;
   currentSeance: number;
@@ -24,11 +29,20 @@ interface SessionContext {
   optionDistribution?: Record<string, number>;
 }
 
+// QCM vote data passed from page.tsx
+interface QCMVoteData {
+  options: { key: string; label: string }[];
+  votesByOption: Record<string, { avatar: string; name: string; id: string }[]>;
+  totalVotes: number;
+  totalStudents: number;
+}
+
 interface AISuggestion {
   id: string;
   type: "tip" | "alert" | "insight" | "action";
   message: string;
   priority: "low" | "medium" | "high";
+  group?: "stimulation" | "interaction" | "analyse";
   actionLabel?: string;
   onAction?: () => void;
 }
@@ -52,12 +66,21 @@ const ACTION_COLORS: Record<string, string> = {
   "classe-partagee": "#E040FB",
   "slow-responses": "#6B8CFF",
   "low-participation": "#6B8CFF",
+  "send-example": "#8B6914",
+  "launch-debate": "#5B3A8E",
+  "launch-poll": "#1B5E50",
+};
+
+const GROUP_LABELS: Record<string, { label: string; icon: string }> = {
+  stimulation: { label: "Stimulation", icon: "💡" },
+  interaction: { label: "Interaction", icon: "💬" },
+  analyse: { label: "Analyse", icon: "📊" },
 };
 
 function generateSuggestions(ctx: SessionContext): AISuggestion[] {
   const suggestions: AISuggestion[] = [];
 
-  // Stuck students alert — with names
+  // Stuck students — stimulation group
   if (ctx.stuckCount > 0 && ctx.status === "responding") {
     const names = ctx.stuckNames?.slice(0, 3);
     const nameStr = names?.length
@@ -70,69 +93,48 @@ function generateSuggestions(ctx: SessionContext): AISuggestion[] {
         ? `${nameStr} semble bloque. Donnez un exemple ou reformulez.`
         : `${nameStr} semblent bloques. Envisagez un indice ou une reformulation.`,
       priority: ctx.stuckCount >= 3 ? "high" : "medium",
+      group: "stimulation",
       actionLabel: "Envoyer un indice",
     });
   }
 
-  // Hands raised — with names
-  if (ctx.handsRaised > 0) {
-    const names = ctx.handsNames?.slice(0, 3);
-    const nameStr = names?.length
-      ? names.join(", ") + (ctx.handsRaised > 3 ? ` +${ctx.handsRaised - 3}` : "")
-      : `${ctx.handsRaised} eleve${ctx.handsRaised > 1 ? "s" : ""}`;
-    suggestions.push({
-      id: "hands-raised",
-      type: "alert",
-      message: ctx.handsRaised === 1
-        ? `${nameStr} a leve la main. Besoin d'aide !`
-        : `${nameStr} ont leve la main. Plusieurs ont besoin d'aide !`,
-      priority: "high",
-    });
-  }
-
-  // Slow response rate
+  // Slow response → stimulation
   if (ctx.status === "responding" && ctx.elapsedSeconds > 120 && ctx.responsesCount < ctx.totalStudents * 0.5) {
     suggestions.push({
       id: "slow-responses",
       type: "insight",
-      message: "Moins de la moitie des eleves ont repondu apres 2 minutes. La question est peut-etre trop difficile.",
+      message: "Moins de la moitie ont repondu apres 2 min. Proposez un exemple concret.",
       priority: "medium",
+      group: "stimulation",
       actionLabel: "Reformuler",
     });
   }
 
-  // Great engagement
-  if (ctx.status === "responding" && ctx.responsesCount >= ctx.totalStudents * 0.8 && ctx.elapsedSeconds < 90) {
+  // Send example — stimulation (new)
+  if (ctx.status === "responding" && ctx.responsesCount > 0 && ctx.responsesCount < ctx.totalStudents * 0.5 && ctx.elapsedSeconds > 60) {
     suggestions.push({
-      id: "good-pace",
+      id: "send-example",
       type: "tip",
-      message: "Excellent rythme ! Les eleves sont tres engages sur cette question.",
+      message: "Proposer un exemple concret pour debloquer les hesitants.",
       priority: "low",
+      group: "stimulation",
+      actionLabel: "Exemple",
     });
   }
 
-  // All responded
+  // All responded → interaction
   if (ctx.status === "responding" && ctx.responsesCount === ctx.totalStudents && ctx.totalStudents > 0) {
     suggestions.push({
       id: "all-responded",
       type: "action",
       message: "Tous les eleves ont repondu ! Lancez le vote.",
       priority: "high",
+      group: "interaction",
       actionLabel: "Lancer le vote",
     });
   }
 
-  // Long session
-  if (ctx.elapsedSeconds > 600) {
-    suggestions.push({
-      id: "long-session",
-      type: "tip",
-      message: "Session en cours depuis plus de 10 minutes. Pensez a varier le rythme (vote rapide, pause, discussion orale).",
-      priority: "low",
-    });
-  }
-
-  // Classe partagee — QCM votes split ~50/50 → suggest debate
+  // Classe partagee → interaction (debate)
   if (ctx.optionDistribution) {
     const counts = Object.entries(ctx.optionDistribution).sort((a, b) => b[1] - a[1]);
     const totalVotes = counts.reduce((sum, [, v]) => sum + v, 0);
@@ -145,22 +147,46 @@ function generateSuggestions(ctx: SessionContext): AISuggestion[] {
         suggestions.push({
           id: "classe-partagee",
           type: "insight",
-          message: `Classe partagee entre ${topKey.toUpperCase()} (${Math.round(topPct)}%) et ${secondKey.toUpperCase()} (${Math.round(secondPct)}%) ! Parfait pour lancer un debat.`,
+          message: `Classe partagee entre ${topKey.toUpperCase()} (${Math.round(topPct)}%) et ${secondKey.toUpperCase()} (${Math.round(secondPct)}%). Parfait pour un debat !`,
           priority: "high",
+          group: "interaction",
           actionLabel: "Lancer un debat",
         });
       }
     }
   }
 
-  // Low participation
+  // Low participation → interaction
   if (ctx.status === "responding" && ctx.totalStudents > 5 && ctx.responsesCount < 2 && ctx.elapsedSeconds > 60) {
     suggestions.push({
       id: "low-participation",
       type: "insight",
-      message: "Tres peu de reponses. Essayez de lire la question a voix haute ou de donner un exemple.",
+      message: "Tres peu de reponses. Lisez la question a voix haute ou donnez un exemple.",
       priority: "medium",
+      group: "interaction",
       actionLabel: "Message classe",
+    });
+  }
+
+  // Great engagement → analyse
+  if (ctx.status === "responding" && ctx.responsesCount >= ctx.totalStudents * 0.8 && ctx.elapsedSeconds < 90) {
+    suggestions.push({
+      id: "good-pace",
+      type: "tip",
+      message: "Excellent rythme ! Les eleves sont tres engages.",
+      priority: "low",
+      group: "analyse",
+    });
+  }
+
+  // Long session → analyse
+  if (ctx.elapsedSeconds > 600) {
+    suggestions.push({
+      id: "long-session",
+      type: "tip",
+      message: "Plus de 10 minutes. Variez le rythme (vote, pause, discussion orale).",
+      priority: "low",
+      group: "analyse",
     });
   }
 
@@ -170,6 +196,9 @@ function generateSuggestions(ctx: SessionContext): AISuggestion[] {
   });
 }
 
+const VOTE_COLORS: Record<string, string> = { a: "#7EA7F5", b: "#F3A765", c: "#6EC6B0", d: "#E78BB4" };
+const VOTE_BG: Record<string, string> = { a: "#EEF3FF", b: "#FFF3E8", c: "#E9F8F4", d: "#FDECF4" };
+
 function AIAssistantPanelInner({
   context,
   onSendHint,
@@ -177,6 +206,8 @@ function AIAssistantPanelInner({
   onLaunchVote,
   onBroadcast,
   onDebate,
+  qcmVoteData,
+  onStudentClick,
 }: {
   context: SessionContext;
   onSendHint?: () => void;
@@ -184,8 +215,9 @@ function AIAssistantPanelInner({
   onLaunchVote?: () => void;
   onBroadcast?: () => void;
   onDebate?: () => void;
+  qcmVoteData?: QCMVoteData;
+  onStudentClick?: (id: string) => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [suggestions, setSuggestions] = useState<AISuggestion[]>([]);
 
@@ -205,201 +237,237 @@ function AIAssistantPanelInner({
   }, []);
 
   const activeSuggestions = suggestions.filter((s) => !dismissed.has(s.id));
-  const hasHighPriority = activeSuggestions.some((s) => s.priority === "high");
 
-  // Separate action suggestions from insight/tip
-  const actionSuggestions = activeSuggestions.filter(s => s.actionLabel);
-  const insightSuggestions = activeSuggestions.filter(s => !s.actionLabel);
+  // Group suggestions
+  const grouped = useMemo(() => {
+    const groups: Record<string, AISuggestion[]> = { stimulation: [], interaction: [], analyse: [] };
+    for (const s of activeSuggestions) {
+      const g = s.group || "analyse";
+      if (!groups[g]) groups[g] = [];
+      groups[g].push(s);
+    }
+    return groups;
+  }, [activeSuggestions]);
+
+  // Cognitive state for analysis bloc
+  const cognitiveState = useMemo<CognitiveStateResult | null>(
+    () => computeCognitiveState(
+      Array.from({ length: context.totalStudents }, (_, i) => {
+        // Approximate state distribution from context numbers
+        if (i < context.responsesCount) return { id: String(i), state: "responded" as const };
+        if (i < context.responsesCount + context.stuckCount) return { id: String(i), state: "stuck" as const };
+        return { id: String(i), state: "active" as const };
+      }),
+      context.optionDistribution,
+    ),
+    [context.totalStudents, context.responsesCount, context.stuckCount, context.optionDistribution],
+  );
+
+  // Hands sorted by duration (longest first)
+  const sortedHands = useMemo(() => {
+    if (!context.handsNames || context.handsNames.length === 0) return [];
+    return context.handsNames.map((name, i) => {
+      const ts = context.handsRaisedAt?.[i];
+      const raisedMs = ts ? Date.now() - new Date(ts).getTime() : 0;
+      const raisedMin = Math.floor(raisedMs / 60000);
+      return { name, duration: raisedMin >= 1 ? `depuis ${raisedMin}min` : "a l'instant", ms: raisedMs };
+    }).sort((a, b) => b.ms - a.ms);
+  }, [context.handsNames, context.handsRaisedAt]);
+
+  function handleSuggestionAction(suggestion: AISuggestion) {
+    if (suggestion.id === "stuck-alert" && onSendHint) onSendHint();
+    else if (suggestion.id === "slow-responses" && onReformulate) onReformulate();
+    else if (suggestion.id === "send-example" && onBroadcast) onBroadcast();
+    else if (suggestion.id === "all-responded" && onLaunchVote) onLaunchVote();
+    else if (suggestion.id === "low-participation" && onBroadcast) onBroadcast();
+    else if (suggestion.id === "classe-partagee" && onDebate) onDebate();
+    dismiss(suggestion.id);
+  }
 
   return (
     <div className="space-y-3">
-      {/* ── Context line — dynamic status ── */}
-      {(context.handsRaised > 0 || context.stuckCount > 0) && (
+      {/* ═══ BLOC 1: ALERTES — always on top ═══ */}
+      {(sortedHands.length > 0 || context.stuckCount > 0) && (
         <div
-          className="rounded-xl px-3.5 py-2.5 text-[12px] font-medium leading-relaxed"
-          style={{
-            background: "rgba(255,244,232,0.6)",
-            border: "1px solid rgba(255,255,255,0.4)",
-            color: "#8B4513",
-          }}
+          className="rounded-xl overflow-hidden"
+          style={{ background: "rgba(255,244,232,0.6)", border: "1px solid rgba(232,168,87,0.15)" }}
         >
-          {context.handsNames && context.handsNames.length > 0
-            ? `${context.handsNames.slice(0, 2).join(" et ")}${context.handsRaised > 2 ? ` +${context.handsRaised - 2}` : ""} ${context.handsRaised === 1 ? "a" : "ont"} leve la main`
-            : context.stuckNames && context.stuckNames.length > 0
-              ? `${context.stuckNames.slice(0, 2).join(" et ")}${context.stuckCount > 2 ? ` +${context.stuckCount - 2}` : ""} ${context.stuckCount === 1 ? "semble" : "semblent"} bloque${context.stuckCount > 1 ? "s" : ""}`
-              : null
-          }
-        </div>
-      )}
-
-      {/* ── Action cards — larger with icon + title + description ── */}
-      {actionSuggestions.length > 0 && (
-        <div className="space-y-2">
-          {actionSuggestions.map((suggestion, i) => {
-            const color = ACTION_COLORS[suggestion.id] || "#6B8CFF";
-            return (
-              <motion.button
-                key={suggestion.id}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                onClick={() => {
-                  if (suggestion.id === "stuck-alert" && onSendHint) onSendHint();
-                  else if (suggestion.id === "slow-responses" && onReformulate) onReformulate();
-                  else if (suggestion.id === "all-responded" && onLaunchVote) onLaunchVote();
-                  else if (suggestion.id === "low-participation" && onBroadcast) onBroadcast();
-                  else if (suggestion.id === "classe-partagee" && onDebate) onDebate();
-                  dismiss(suggestion.id);
-                }}
-                className="w-full rounded-xl p-3.5 text-left cursor-pointer transition-all hover:shadow-md group"
-                style={{
-                  background: "rgba(255,255,255,0.7)",
-                  border: `1.5px solid ${color}30`,
-                  boxShadow: "0 1px 4px rgba(61,43,16,0.04)",
-                }}
-              >
-                <div className="flex items-start gap-3">
-                  <span
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0"
-                    style={{ background: `${color}15` }}
-                  >
-                    {SUGGESTION_ICONS[suggestion.type]}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-0.5">
-                      <span className="text-[13px] font-bold" style={{ color }}>
-                        {suggestion.actionLabel}
-                      </span>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" className="flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity">
-                        <path d="M9 18l6-6-6-6" />
-                      </svg>
-                    </div>
-                    <p className="text-[12px] text-[#7A7A7A] leading-relaxed line-clamp-2">
-                      {suggestion.message}
-                    </p>
-                  </div>
-                </div>
-              </motion.button>
-            );
-          })}
-        </div>
-      )}
-
-      {/* ── Insight / tip cards — collapsible ── */}
-      <div
-        className="rounded-xl overflow-hidden"
-        style={{
-          background: "rgba(255,255,255,0.5)",
-          border: "1px solid rgba(255,255,255,0.4)",
-        }}
-      >
-        {/* Header */}
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="w-full flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-white/40 transition-colors"
-        >
-          <div className="flex items-center gap-2.5">
-            <motion.span
-              animate={hasHighPriority ? { scale: [1, 1.2, 1] } : {}}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-              className="text-base"
-            >
-              🤖
-            </motion.span>
-            <span className="text-[13px] font-semibold text-[#2C2C2C]">Suggestions IA</span>
-            {activeSuggestions.length > 0 && (
-              <span className="w-5 h-5 rounded-full text-white text-[11px] font-bold flex items-center justify-center tabular-nums" style={{ background: "linear-gradient(135deg, #6B8CFF, #8B5CF6)" }}>
-                {activeSuggestions.length}
-              </span>
+          <div className="px-3.5 py-2.5 flex items-center gap-2" style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}>
+            <span className="text-sm">🔔</span>
+            <span className="text-[12px] font-bold text-[#8B4513] uppercase tracking-wider">Alertes</span>
+          </div>
+          <div className="px-3.5 py-2 space-y-1.5">
+            {/* Hands raised with duration */}
+            {sortedHands.map((h, i) => (
+              <div key={i} className="flex items-center gap-2 text-[12px]">
+                <span className="text-sm flex-shrink-0">✋</span>
+                <span className="font-semibold text-[#8B4513]">{h.name}</span>
+                <span className="text-[10px] text-[#B0A99E]">{h.duration}</span>
+              </div>
+            ))}
+            {/* Stuck names (not already shown in suggestions) */}
+            {context.stuckNames && context.stuckNames.length > 0 && sortedHands.length === 0 && (
+              <div className="flex items-center gap-2 text-[12px]">
+                <span className="text-sm flex-shrink-0">⚠️</span>
+                <span className="font-semibold text-[#C62828]">
+                  {context.stuckNames.slice(0, 3).join(", ")}
+                  {context.stuckCount > 3 ? ` +${context.stuckCount - 3}` : ""}
+                  {" "}bloque{context.stuckCount > 1 ? "s" : ""}
+                </span>
+              </div>
             )}
           </div>
-          <svg
-            width="14" height="14" viewBox="0 0 24 24"
-            fill="none" stroke="#7A7A7A" strokeWidth="2"
-            className={`transition-transform ${expanded ? "rotate-180" : ""}`}
-          >
-            <path d="M6 9l6 6 6-6" />
-          </svg>
-        </button>
+        </div>
+      )}
 
-        {/* Content */}
-        <AnimatePresence>
-          {expanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden"
-            >
-              <div className="px-4 pb-4 space-y-2.5" style={{ borderTop: "1px solid rgba(255,255,255,0.5)" }}>
-                <div className="pt-3" />
-                {insightSuggestions.length === 0 && actionSuggestions.length === 0 ? (
-                  <p className="text-[13px] text-[#B0A99E] text-center py-4">
-                    Tout roule ! Pas de suggestion pour le moment.
-                  </p>
-                ) : insightSuggestions.length === 0 ? (
-                  <p className="text-[12px] text-[#B0A99E] text-center py-2">
-                    Actions disponibles ci-dessus.
-                  </p>
-                ) : (
-                  insightSuggestions.map((suggestion, i) => {
-                    const styles = PRIORITY_STYLES[suggestion.priority] || PRIORITY_STYLES.low;
-                    return (
-                      <motion.div
-                        key={suggestion.id}
-                        initial={{ opacity: 0, x: -8 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 8 }}
-                        transition={{ delay: i * 0.05 }}
-                        className="rounded-xl p-3.5"
-                        style={{ background: styles.bg, border: `1px solid ${styles.border}` }}
-                      >
-                        <div className="flex items-start gap-2.5">
-                          <span className="text-base flex-shrink-0 mt-0.5">
-                            {SUGGESTION_ICONS[suggestion.type]}
-                          </span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[13px] text-[#4A4A4A] leading-relaxed">
-                              {suggestion.message}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => dismiss(suggestion.id)}
-                            className="text-[#B0A99E] hover:text-[#7A7A7A] text-xs cursor-pointer flex-shrink-0"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      </motion.div>
-                    );
-                  })
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* ── AI Insight box — pastel blue analysis ── */}
-      {context.status === "responding" && context.responsesCount > 0 && context.totalStudents > 3 && (
+      {/* ═══ BLOC 2: ANALYSE IA ═══ */}
+      {context.status === "responding" && context.totalStudents > 0 && (
         <div
           className="rounded-xl p-3.5"
-          style={{
-            background: "rgba(235,242,255,0.6)",
-            border: "1px solid rgba(107,140,255,0.15)",
-          }}
+          style={{ background: "rgba(235,242,255,0.6)", border: "1px solid rgba(107,140,255,0.15)" }}
         >
           <div className="flex items-center gap-2 mb-2">
             <span className="text-sm">✨</span>
             <span className="text-[12px] font-bold text-[#3B5998]">Analyse en direct</span>
           </div>
-          <p className="text-[12px] text-[#4A6FA5] leading-relaxed">
-            {Math.round((context.responsesCount / context.totalStudents) * 100)}% des eleves ont repondu
-            {context.stuckCount > 0 ? ` — ${context.stuckCount} en difficulte.` : "."}
-            {context.elapsedSeconds > 180 ? " Rythme lent, pensez a relancer." : ""}
-            {context.responsesCount >= context.totalStudents * 0.8 && context.elapsedSeconds < 120 ? " Bonne dynamique !" : ""}
-          </p>
+          <div className="space-y-1.5">
+            {/* Cognitive state phrase */}
+            {cognitiveState && (
+              <p className="text-[12px] font-semibold leading-relaxed" style={{ color: "#4A6FA5" }}>
+                {cognitiveState.icon} {cognitiveState.text}
+              </p>
+            )}
+            {/* Response rate */}
+            <p className="text-[12px] text-[#4A6FA5] leading-relaxed">
+              {Math.round((context.responsesCount / context.totalStudents) * 100)}% des eleves ont repondu
+              {context.stuckCount > 0 ? ` — ${context.stuckCount} en difficulte.` : "."}
+              {context.elapsedSeconds > 180 ? " Rythme lent, pensez a relancer." : ""}
+              {context.responsesCount >= context.totalStudents * 0.8 && context.elapsedSeconds < 120 ? " Bonne dynamique !" : ""}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ BLOC 3: SUGGESTIONS PÉDAGOGIQUES — grouped ═══ */}
+      {activeSuggestions.length > 0 && (
+        <div className="space-y-2">
+          {(["stimulation", "interaction", "analyse"] as const).map((groupKey) => {
+            const items = grouped[groupKey];
+            if (!items || items.length === 0) return null;
+            const groupInfo = GROUP_LABELS[groupKey];
+            return (
+              <div key={groupKey}>
+                <div className="flex items-center gap-1.5 mb-1.5 px-0.5">
+                  <span className="text-[10px]">{groupInfo.icon}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#B0A99E]">{groupInfo.label}</span>
+                </div>
+                <div className="space-y-1.5">
+                  {items.map((suggestion, i) => {
+                    const color = ACTION_COLORS[suggestion.id] || PRIORITY_STYLES[suggestion.priority]?.accent || "#6B8CFF";
+                    return suggestion.actionLabel ? (
+                      <motion.button
+                        key={suggestion.id}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.03 }}
+                        onClick={() => handleSuggestionAction(suggestion)}
+                        className="w-full rounded-xl p-3 text-left cursor-pointer transition-all hover:shadow-md group"
+                        style={{
+                          background: "rgba(255,255,255,0.7)",
+                          border: `1.5px solid ${color}30`,
+                          boxShadow: "0 1px 4px rgba(61,43,16,0.04)",
+                        }}
+                      >
+                        <div className="flex items-start gap-2.5">
+                          <span className="w-8 h-8 rounded-xl flex items-center justify-center text-sm flex-shrink-0" style={{ background: `${color}15` }}>
+                            {SUGGESTION_ICONS[suggestion.type]}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-0.5">
+                              <span className="text-[12px] font-bold" style={{ color }}>{suggestion.actionLabel}</span>
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" className="flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity">
+                                <path d="M9 18l6-6-6-6" />
+                              </svg>
+                            </div>
+                            <p className="text-[11px] text-[#7A7A7A] leading-relaxed line-clamp-2">{suggestion.message}</p>
+                          </div>
+                        </div>
+                      </motion.button>
+                    ) : (
+                      <motion.div
+                        key={suggestion.id}
+                        initial={{ opacity: 0, x: -6 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.03 }}
+                        className="rounded-xl p-3"
+                        style={{ background: PRIORITY_STYLES[suggestion.priority]?.bg, border: `1px solid ${PRIORITY_STYLES[suggestion.priority]?.border}` }}
+                      >
+                        <div className="flex items-start gap-2">
+                          <span className="text-sm flex-shrink-0 mt-0.5">{SUGGESTION_ICONS[suggestion.type]}</span>
+                          <p className="flex-1 text-[12px] text-[#4A4A4A] leading-relaxed">{suggestion.message}</p>
+                          <button onClick={() => dismiss(suggestion.id)} className="text-[#B0A99E] hover:text-[#7A7A7A] text-xs cursor-pointer flex-shrink-0">✕</button>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ═══ BLOC 4: QUI A VOTÉ QUOI (QCM only) ═══ */}
+      {qcmVoteData && qcmVoteData.options.length > 0 && (
+        <div className="rounded-xl overflow-hidden" style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.4)" }}>
+          <div className="px-4 py-2.5 flex items-center justify-between" style={{ borderBottom: "1px solid rgba(255,255,255,0.5)" }}>
+            <span className="text-[13px] font-semibold text-[#2C2C2C]">Qui a vote quoi</span>
+            <span className="text-[13px] font-bold tabular-nums" style={{ color: qcmVoteData.totalVotes > 0 ? "#4CAF50" : "#B0A99E" }}>
+              {qcmVoteData.totalVotes}/{qcmVoteData.totalStudents}
+            </span>
+          </div>
+          <div className="max-h-[320px] overflow-y-auto px-3 py-2.5 space-y-2.5">
+            {qcmVoteData.totalVotes === 0 ? (
+              <div className="py-3 text-center">
+                <div className="flex items-center justify-center gap-1 mb-2">
+                  {[0, 1, 2].map(i => (
+                    <motion.span key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: "#F2C94C" }}
+                      animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
+                      transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.3 }} />
+                  ))}
+                </div>
+                <p className="text-[12px] text-[#B0A99E]">En attente des votes...</p>
+              </div>
+            ) : (
+              qcmVoteData.options.map(opt => {
+                const voters = qcmVoteData.votesByOption[opt.key] || [];
+                if (voters.length === 0) return null;
+                const color = VOTE_COLORS[opt.key] || "#7A7A7A";
+                const bg = VOTE_BG[opt.key] || "#F7F3EA";
+                return (
+                  <div key={opt.key}>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0"
+                        style={{ background: color }}>{opt.key.toUpperCase()}</span>
+                      <span className="text-[12px] font-semibold text-[#4A4A4A] truncate">{opt.label}</span>
+                      <span className="text-[11px] font-bold tabular-nums ml-auto flex-shrink-0" style={{ color }}>{voters.length}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1 ml-7">
+                      {voters.map(v => (
+                        <motion.button key={v.id} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                          onClick={() => onStudentClick?.(v.id)}
+                          className="flex items-center gap-1 h-6 px-2 rounded-full text-[11px] font-medium cursor-pointer transition-colors hover:brightness-95"
+                          style={{ background: bg, border: `1px solid ${color}30`, color: "#4A4A4A" }}>
+                          <span className="text-xs">{v.avatar}</span>
+                          <span>{v.name.split(" ")[0]}</span>
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
       )}
 
