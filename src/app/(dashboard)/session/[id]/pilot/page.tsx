@@ -2469,7 +2469,7 @@ function CockpitContent({
                     <button onClick={() => setShowWordCloud(true)} disabled={visibleResponses.length < 3}
                       className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
                       style={{ background: "rgba(240,248,255,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#2563EB" }}>
-                      ☁️ <span className="hidden sm:inline">Nuage</span>
+                      💡 <span className="hidden sm:inline">Idees</span>
                     </button>
                     <button onClick={() => openBroadcastWith("Synthese : ", "Synthese collective", "📋")} disabled={visibleResponses.length < 2}
                       className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
