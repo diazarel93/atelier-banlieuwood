@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireFacilitator, safeJson, broadcastSessionUpdate } from "@/lib/api-utils";
 import { patchSessionSchema, formatZodError } from "@/lib/schemas";
+import { logSessionEvent } from "@/lib/event-logger";
 
 // GET — session detail (facilitator only)
 export async function GET(
@@ -46,6 +47,11 @@ export async function PATCH(
 
   const updates: Record<string, unknown> = { ...validated.data };
 
+  // Record when question was opened (for response_time_ms computation)
+  if (updates.status === "responding") {
+    updates.question_opened_at = new Date().toISOString();
+  }
+
   // Trim title
   if (updates.title) {
     updates.title = String(updates.title).trim();
@@ -87,6 +93,27 @@ export async function PATCH(
 
   // Broadcast session update to all connected clients (bypasses RLS)
   broadcastSessionUpdate(id);
+
+  // ── Log session events (fire-and-forget) ──
+  if (updates.status) {
+    logSessionEvent({ sessionId: id, eventType: "status_change", payload: { to: updates.status } });
+  }
+  if (updates.status === "responding") {
+    logSessionEvent({
+      sessionId: id,
+      eventType: "question_launched",
+      payload: {
+        module: data.current_module,
+        seance: data.current_seance,
+        situationIndex: data.current_situation_index,
+      },
+    });
+  }
+  // Auto-trigger O-I-E computation when session is done
+  if (updates.status === "done") {
+    fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/sessions/${id}/oie-profile`, { method: "POST" })
+      .then(() => {}, () => {});
+  }
 
   return NextResponse.json(data);
 }

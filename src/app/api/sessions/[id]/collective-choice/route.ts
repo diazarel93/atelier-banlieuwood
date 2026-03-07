@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireFacilitator, isValidUUID, safeJson } from "@/lib/api-utils";
+import { logSessionEvent } from "@/lib/event-logger";
 
 // GET — fetch all collective choices for a session (facilitator only)
 export async function GET(
@@ -72,6 +73,14 @@ export async function POST(
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  // Log collective choice event (fire-and-forget)
+  logSessionEvent({
+    sessionId,
+    eventType: "collective_choice",
+    situationId,
+    payload: { category: cleanCategory, sourceResponseId: sourceResponseId || null },
+  });
 
   return NextResponse.json(data);
 }

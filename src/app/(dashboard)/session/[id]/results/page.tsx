@@ -16,6 +16,9 @@ import FilmPosterExport from "@/components/film-poster-export";
 import { SessionComparison } from "@/components/session-comparison";
 import { FestivalPalmares } from "@/components/festival-palmares";
 import type { PosterChoice, PosterStudent } from "@/components/film-poster";
+import { OIERadar, OIERadarMini } from "@/components/pilot/oie-radar";
+import type { OIEScores } from "@/lib/oie-profile";
+import { SessionReplay } from "@/components/pilot/session-replay";
 
 interface ExportData {
   markdown: string;
@@ -141,6 +144,9 @@ export default function ResultsPage() {
   const [bibleLoading, setBibleLoading] = useState(false);
   const [bibleProvider, setBibleProvider] = useState<string | null>(null);
 
+  // Replay state
+  const [showReplay, setShowReplay] = useState(false);
+
   // Fiche level tab
   const [ficheTab, setFicheTab] = useState<"primaire" | "college" | "lycee">("college");
 
@@ -208,6 +214,33 @@ export default function ResultsPage() {
       return res.json();
     },
     enabled: !checkingAuth,
+  });
+
+  // O-I-E creative profiles
+  const { data: oieData } = useQuery<{ scores: Record<string, OIEScores> }>({
+    queryKey: ["oie-profile", sessionId],
+    queryFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/oie-profile`);
+      if (!res.ok) return { scores: {} };
+      return res.json();
+    },
+    enabled: !checkingAuth,
+  });
+
+  // Replay data (only fetched when opened)
+  const { data: replayData } = useQuery<{
+    events: { id: string; event_type: string; student_id: string | null; situation_id: string | null; payload: Record<string, unknown>; occurred_at: string; offsetMs: number; seq: number }[];
+    totalDurationMs: number;
+    students: { id: string; display_name: string; avatar: string }[];
+    responses: { id: string; student_id: string; situation_id: string; text: string; response_time_ms: number | null; ai_score: number | null; is_highlighted: boolean; submitted_at: string }[];
+  }>({
+    queryKey: ["replay", sessionId],
+    queryFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/replay`);
+      if (!res.ok) return { events: [], totalDurationMs: 0, students: [], responses: [] };
+      return res.json();
+    },
+    enabled: showReplay && !checkingAuth,
   });
 
   // Fetch session detail (for template/genre)
@@ -299,6 +332,7 @@ export default function ResultsPage() {
     const sectionMap: Record<string, string> = {
       histoire: "section-histoire",
       bilan: "section-bilan-educatif",
+      profils: "section-profils-creatifs",
       "bilan-ia": "section-bilan-ia",
       fiche: "section-fiche-cours",
       bible: "section-bible-film",
@@ -331,7 +365,7 @@ export default function ResultsPage() {
 
   // Track active section for sticky nav highlight
   useEffect(() => {
-    const ids = ["section-histoire", "section-bilan-educatif", "section-bilan-ia", "section-fiche-cours", "section-bible-film", "section-festival"];
+    const ids = ["section-histoire", "section-bilan-educatif", "section-profils-creatifs", "section-bilan-ia", "section-fiche-cours", "section-bible-film", "section-festival"];
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -551,6 +585,7 @@ export default function ResultsPage() {
             {[
               { id: "section-histoire", label: "Histoire", icon: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" },
               { id: "section-bilan-educatif", label: "Bilan educatif", icon: "M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01 9 11.01" },
+              { id: "section-profils-creatifs", label: "Profils créatifs", icon: "M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z" },
               { id: "section-bilan-ia", label: "Bilan IA", icon: "M12 2a10 10 0 110 20 10 10 0 010-20zM12 6v6l4 2" },
               { id: "section-fiche-cours", label: "Fiche de cours", icon: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6" },
               { id: "section-bible-film", label: "Bible du Film", icon: "M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 006.5 22H20V2H6.5A2.5 2.5 0 004 4.5v15z" },
@@ -590,7 +625,31 @@ export default function ResultsPage() {
           <p className="text-bw-muted">
             {exportData.studentsCount} joueur{exportData.studentsCount > 1 ? "s" : ""} &mdash; {exportData.choicesCount} choix collectif{exportData.choicesCount > 1 ? "s" : ""}
           </p>
+          {/* Replay button */}
+          <button
+            onClick={() => setShowReplay(!showReplay)}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium bg-black/[0.04] border border-black/[0.06] hover:bg-black/[0.08] cursor-pointer transition-all"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polygon points="5,3 19,12 5,21"/></svg>
+            {showReplay ? "Fermer le replay" : "Revoir la séance"}
+          </button>
         </motion.div>
+
+        {/* Session Replay */}
+        {showReplay && replayData && replayData.events.length > 0 && (
+          <SessionReplay
+            events={replayData.events}
+            totalDurationMs={replayData.totalDurationMs}
+            students={replayData.students}
+            responses={replayData.responses}
+            onClose={() => setShowReplay(false)}
+          />
+        )}
+        {showReplay && replayData && replayData.events.length === 0 && (
+          <div className="text-center py-6">
+            <p className="text-sm text-bw-muted">Aucun événement enregistré pour cette séance.</p>
+          </div>
+        )}
 
         {/* Collective choices visual */}
         {exportData.choicesCount > 0 ? (
@@ -713,6 +772,112 @@ export default function ResultsPage() {
             </div>
           </div>
         )}
+
+        {/* ── Profils Créatifs O-I-E ── */}
+        {oieData && Object.keys(oieData.scores).length > 0 && (() => {
+          const entries = Object.entries(oieData.scores);
+          const avgO = Math.round(entries.reduce((s, [, v]) => s + v.O, 0) / entries.length);
+          const avgI = Math.round(entries.reduce((s, [, v]) => s + v.I, 0) / entries.length);
+          const avgE = Math.round(entries.reduce((s, [, v]) => s + v.E, 0) / entries.length);
+          let classDom: "O" | "I" | "E" = "O";
+          if (avgI >= avgO && avgI >= avgE) classDom = "I";
+          else if (avgE >= avgO && avgE >= avgI) classDom = "E";
+          const classAvg: OIEScores = { O: avgO, I: avgI, E: avgE, dominant: classDom, responseCount: entries.reduce((s, [, v]) => s + v.responseCount, 0), isReliable: true };
+
+          const countO = entries.filter(([, v]) => v.dominant === "O").length;
+          const countI = entries.filter(([, v]) => v.dominant === "I").length;
+          const countE = entries.filter(([, v]) => v.dominant === "E").length;
+
+          const dominantLabels: Record<string, string> = { O: "Observateurs", I: "Imaginatifs", E: "Expressifs" };
+          const dominantColors: Record<string, string> = { O: "#8B5CF6", I: "#06B6D4", E: "#F59E0B" };
+
+          // Match students with feedback data for names
+          const studentNames: Record<string, { name: string; avatar: string }> = {};
+          if (feedback?.students) {
+            for (const s of feedback.students) studentNames[s.id] = { name: s.name, avatar: s.avatar };
+          }
+
+          return (
+            <div className="space-y-6">
+              <div>
+                <h2 id="section-profils-creatifs" className="font-cinema text-xl tracking-wide uppercase text-bw-ink scroll-mt-16">Profils créatifs</h2>
+                <div className="w-12 h-0.5 mt-1 bg-gradient-to-r from-[#8B5CF6] to-[#06B6D4] rounded-full" />
+              </div>
+
+              {/* Class average radar + distribution */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Profil moyen de la classe</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex justify-center">
+                    <OIERadar scores={classAvg} size={180} showLabel={false} />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Distribution</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {(["O", "I", "E"] as const).map((axis) => {
+                      const count = axis === "O" ? countO : axis === "I" ? countI : countE;
+                      const pct = entries.length > 0 ? Math.round((count / entries.length) * 100) : 0;
+                      return (
+                        <div key={axis} className="space-y-1">
+                          <div className="flex justify-between text-xs">
+                            <span className="font-medium" style={{ color: dominantColors[axis] }}>{dominantLabels[axis]}</span>
+                            <span className="text-bw-muted">{count} ({pct}%)</span>
+                          </div>
+                          <div className="h-2 rounded-full bg-black/[0.04] overflow-hidden">
+                            <motion.div
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: dominantColors[axis] }}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${pct}%` }}
+                              transition={{ duration: 0.8, delay: 0.2 }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <p className="text-[11px] text-bw-muted mt-2">
+                      {countI > countO && countI > countE && "La classe est très imaginative"}
+                      {countO > countI && countO > countE && "La classe est très analytique"}
+                      {countE > countO && countE > countI && "La classe est très expressive"}
+                      {countO === countI && countO === countE && "Profil de classe équilibré"}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Mini radars per student */}
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Profils individuels</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                    {entries.map(([studentId, scores]) => {
+                      const info = studentNames[studentId];
+                      return (
+                        <div key={studentId} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-black/[0.02] transition-colors">
+                          <OIERadarMini scores={scores} size={56} />
+                          <span className="text-[10px] font-medium text-bw-text truncate max-w-[80px]">
+                            {info?.avatar} {info?.name || "Élève"}
+                          </span>
+                          <span className="text-[9px] font-semibold" style={{ color: dominantColors[scores.dominant] }}>
+                            {dominantLabels[scores.dominant]?.slice(0, -1)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })()}
 
         {/* Educational Feedback */}
         {feedback && (

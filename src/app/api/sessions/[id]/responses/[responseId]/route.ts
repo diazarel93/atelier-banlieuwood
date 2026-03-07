@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { safeJson } from "@/lib/api-utils";
+import { logSessionEvent } from "@/lib/event-logger";
 
 // PATCH — update response flags (is_hidden, is_vote_option) — facilitator only
 export async function PATCH(
@@ -120,6 +121,15 @@ export async function PATCH(
       { error: "Réponse introuvable dans cette session" },
       { status: 404 }
     );
+  }
+
+  // Log highlight event (fire-and-forget)
+  if (typeof body.is_highlighted === "boolean" && body.is_highlighted) {
+    logSessionEvent({
+      sessionId,
+      eventType: "highlight",
+      payload: { responseId },
+    });
   }
 
   return NextResponse.json({ ok: true });

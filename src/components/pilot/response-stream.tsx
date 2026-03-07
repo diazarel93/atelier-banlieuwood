@@ -106,7 +106,7 @@ export function ResponseStream({
           <>
             {selected.map(renderCard)}
             {rest.length > 0 && (
-              <div className="border-t border-white/5 my-2" />
+              <div className="border-t border-[#DDD7EC] my-2" />
             )}
           </>
         )}

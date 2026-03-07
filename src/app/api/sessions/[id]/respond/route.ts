@@ -4,6 +4,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { safeJson, broadcastSessionUpdate } from "@/lib/api-utils";
 import { respondSchema, formatZodError } from "@/lib/schemas";
 import { getSeanceMax, MODULE_SEANCE_SITUATIONS } from "@/lib/constants";
+import { logSessionEvent } from "@/lib/event-logger";
 // Module 1 uses real situation IDs from the situations table (module=1)
 
 const MAX_RESPONSE_LENGTH = 500;
@@ -70,7 +71,7 @@ export async function POST(
   // Check session status + timer
   const { data: session } = await admin
     .from("sessions")
-    .select("status, mode, current_module, current_seance, current_situation_index, timer_ends_at")
+    .select("status, mode, current_module, current_seance, current_situation_index, timer_ends_at, question_opened_at")
     .eq("id", sessionId)
     .is("deleted_at", null)
     .single();
@@ -123,6 +124,27 @@ export async function POST(
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  // Store response_time_ms if question_opened_at is available
+  let responseTimeMs: number | null = null;
+  if (session.question_opened_at && data) {
+    const ms = Date.now() - new Date(session.question_opened_at).getTime();
+    if (ms > 1000 && ms < 600000) {
+      responseTimeMs = ms;
+      await admin.from("responses").update({ response_time_ms: ms }).eq("id", data.id);
+    }
+  }
+
+  // Log response event (fire-and-forget)
+  if (data) {
+    logSessionEvent({
+      sessionId,
+      eventType: "response_received",
+      studentId,
+      situationId,
+      payload: { responseTimeMs, textLength: cleanText.length },
+    });
   }
 
   // Update student last_seen

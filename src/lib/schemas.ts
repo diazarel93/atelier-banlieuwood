@@ -30,6 +30,8 @@ export const createSessionSchema = z.object({
     .max(600)
     .optional()
     .nullable(),
+  scheduled_at: z.string().optional().nullable(),
+  class_label: z.string().max(60).optional().nullable(),
 });
 
 export type CreateSessionInput = z.infer<typeof createSessionSchema>;

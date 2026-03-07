@@ -1131,6 +1131,43 @@ html, body {
   @page { margin: 1.5cm; }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   THEME LAVANDE — Pre-cockpit Design System v2
+   Surfaces lavande, bords doux, mêmes CTAs orange.
+   Appliqué via .theme-lavande wrapper (route group cockpit-v2).
+   ═══════════════════════════════════════════════════════════════ */
+
+.theme-lavande {
+  /* ── Surfaces ── */
+  --color-bw-bg:            #F5F3FA;
+  --color-bw-surface-dim:   #EDE9F7;
+  --color-bw-elevated:      #F8F5FF;
+  --color-bw-border:        #DDD7EC;
+  --color-bw-border-subtle: rgba(107,70,193,0.06);
+
+  /* ── shadcn overrides ── */
+  --background:  #F5F3FA;
+  --secondary:   #EDE9F7;
+  --muted:       #EDE9F7;
+  --border:      #DDD7EC;
+  --sidebar:     #F8F5FF;
+  --sidebar-border: #DDD7EC;
+  --sidebar-accent: #EDE9F7;
+  --accent:      #F0ECFB;
+
+  /* ── 4 Axes pédagogiques ── */
+  --color-axis-comprehension: #6366F1; /* indigo  */
+  --color-axis-creativite:    #8B5CF6; /* violet  */
+  --color-axis-expression:    #EC4899; /* pink    */
+  --color-axis-engagement:    #F59E0B; /* amber   */
+
+  /* ── Shadows lavande ── */
+  --shadow-bw-sm:  0 1px 3px rgba(107,70,193,0.06), 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-bw-md:  0 4px 6px rgba(107,70,193,0.06), 0 2px 4px rgba(0,0,0,0.03);
+  --shadow-bw-lg:  0 10px 15px rgba(107,70,193,0.07), 0 4px 6px rgba(0,0,0,0.03);
+  --shadow-bw-glow-violet: 0 2px 12px rgba(107,70,193,0.12), 0 1px 4px rgba(0,0,0,0.04);
+}
+
 /* Reduced motion — respect user preferences */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

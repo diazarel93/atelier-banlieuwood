@@ -148,7 +148,7 @@ export function PilotTopBar({
 
           {/* Projection */}
           <button onClick={onOpenScreen}
-            className="hidden md:inline-flex px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-black/[0.06] hover:border-white/20 hover:bg-black/[0.05] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-bw-heading transition-colors duration-200"
+            className="hidden md:inline-flex px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-black/[0.06] hover:border-[#DDD7EC] hover:bg-black/[0.05] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-bw-heading transition-colors duration-200"
             title="Ouvrir l'ecran de projection">
             Ecran ↗
           </button>
@@ -156,7 +156,7 @@ export function PilotTopBar({
           {/* Mobile context panel */}
           {onOpenMobileContext && moduleView === "cockpit" && activeModuleLabel && (
             <button onClick={onOpenMobileContext}
-              className="lg:hidden px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-black/[0.06] hover:border-white/20 hover:bg-black/[0.05] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-bw-heading transition-colors duration-200"
+              className="lg:hidden px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-black/[0.06] hover:border-[#DDD7EC] hover:bg-black/[0.05] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-bw-heading transition-colors duration-200"
               title="Panneau contexte">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
@@ -169,7 +169,7 @@ export function PilotTopBar({
           <div className="relative">
             <button
               onClick={() => setKebabOpen(!kebabOpen)}
-              className="hidden md:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-black/[0.06] hover:border-white/20 hover:bg-black/[0.05] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-bw-heading transition-colors duration-200"
+              className="hidden md:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-black/[0.06] hover:border-[#DDD7EC] hover:bg-black/[0.05] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-bw-heading transition-colors duration-200"
               title="Plus d'options"
             >
               ⋯

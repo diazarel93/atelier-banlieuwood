@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DarkLayout } from "@/components/dark-layout";
+import { CockpitLayoutV2 } from "@/components/v2/cockpit-layout";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 interface Props {
@@ -27,5 +27,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default function PilotLayout({ children }: Props) {
-  return <DarkLayout>{children}</DarkLayout>;
+  return <CockpitLayoutV2>{children}</CockpitLayoutV2>;
 }

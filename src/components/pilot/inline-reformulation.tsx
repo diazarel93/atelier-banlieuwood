@@ -48,7 +48,7 @@ export function InlineReformulation({
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={3}
-          className="bg-bw-surface border-white/10 text-bw-heading placeholder:text-bw-muted focus:border-bw-primary resize-none"
+          className="bg-bw-surface border-[#DDD7EC] text-bw-heading placeholder:text-bw-muted focus:border-bw-primary resize-none"
           placeholder="Reformule ici..."
           autoFocus
         />
@@ -58,7 +58,7 @@ export function InlineReformulation({
             variant="secondary"
             size="sm"
             onClick={onCancel}
-            className="flex-1 bg-bw-surface text-bw-muted border-white/10"
+            className="flex-1 bg-bw-surface text-bw-muted border-[#DDD7EC]"
           >
             Annuler
           </Button>

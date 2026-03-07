@@ -168,6 +168,7 @@ function CockpitContent({
   teams,
   onOpenModules,
   onOpenScreen,
+  oieScores,
 }: {
   session: Session;
   situationData: Record<string, unknown> | null;
@@ -204,6 +205,7 @@ function CockpitContent({
   teams: { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[];
   onOpenModules?: () => void;
   onOpenScreen?: () => void;
+  oieScores?: Record<string, import("@/lib/oie-profile").OIEScores>;
 }) {
   const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
   const [centerTab, setCenterTab] = useState<"responses" | "classmap">("responses");
@@ -1221,6 +1223,7 @@ function CockpitContent({
                     nudgeStudent={nudgeStudent}
                     warnStudent={warnStudent}
                     studentWarnings={studentWarnings}
+                    oieScores={oieScores?.[ficheStudentId] ?? null}
                   />
                 );
               })()}
@@ -2975,6 +2978,18 @@ export default function PilotPage() {
     enabled: !checkingAuth && !!session && hasActiveModule && (session?.current_module === 3 || session?.current_module === 4),
   });
 
+  // O-I-E creative profile scores (refreshes every 30s)
+  const { data: oieData } = useQuery<{ scores: Record<string, import("@/lib/oie-profile").OIEScores> }>({
+    queryKey: ["pilot-oie", sessionId],
+    queryFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/oie-profile?debug=true`);
+      if (!res.ok) return { scores: {} };
+      return res.json();
+    },
+    refetchInterval: 30_000,
+    enabled: !checkingAuth && !!session,
+  });
+
   // Mutations
   const updateSession = useMutation({
     mutationFn: async (updates: Record<string, unknown>) => {
@@ -3494,6 +3509,7 @@ export default function PilotPage() {
             teams={teams || []}
             onOpenModules={() => setMobileSidebarOpen(true)}
             onOpenScreen={() => window.open(`/session/${sessionId}/screen`, "_blank")}
+            oieScores={oieData?.scores}
           />
           </ErrorBoundary>
         ) : (

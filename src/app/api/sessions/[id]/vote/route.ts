@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { safeJson } from "@/lib/api-utils";
 import { voteSchema, formatZodError } from "@/lib/schemas";
+import { logSessionEvent } from "@/lib/event-logger";
 
 // POST — student submits a vote
 export async function POST(
@@ -96,6 +97,15 @@ export async function POST(
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  // Log vote event (fire-and-forget)
+  logSessionEvent({
+    sessionId,
+    eventType: "vote_cast",
+    studentId,
+    situationId,
+    payload: { chosenResponseId },
+  });
 
   return NextResponse.json(data);
 }

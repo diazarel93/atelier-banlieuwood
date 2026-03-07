@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { title, level, template, description, question_timer, thematique } = validated.data;
+  const { title, level, template, description, question_timer, thematique, scheduled_at, class_label } = validated.data;
   const cleanTitle = title.slice(0, 60);
   const cleanTemplate = template || null;
 
@@ -158,6 +158,8 @@ export async function POST(req: NextRequest) {
       ...(cleanDescription && { description: cleanDescription }),
       ...(cleanTimer && { question_timer: cleanTimer }),
       ...(thematique && { thematique }),
+      ...(scheduled_at && { scheduled_at }),
+      ...(class_label && { class_label }),
     })
     .select()
     .single();

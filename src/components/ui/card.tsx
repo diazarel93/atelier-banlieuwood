@@ -8,18 +8,18 @@ const cardVariants = cva(
   {
     variants: {
       variant: {
-        // Default -- solid surface with specular highlight
+        // Default -- solid surface with warm shadow
         default:
-          "bg-bw-surface border border-white/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_1px_1px_rgba(0,0,0,0.12),0_2px_2px_rgba(0,0,0,0.12),0_4px_4px_rgba(0,0,0,0.12),0_8px_8px_rgba(0,0,0,0.12)] hover:border-white/[0.12]",
+          "bg-bw-surface border border-bw-border shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)] hover:border-bw-border-strong",
         // Glass -- glassmorphism card (specular in .glass-card CSS class)
         glass:
           "glass-card",
-        // Elevated -- brighter surface with specular highlight
+        // Elevated -- brighter surface with deeper shadow
         elevated:
-          "bg-bw-elevated border border-white/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_1px_2px_rgba(0,0,0,0.07),0_2px_4px_rgba(0,0,0,0.07),0_4px_8px_rgba(0,0,0,0.07),0_8px_16px_rgba(0,0,0,0.07)] hover:border-white/[0.12]",
+          "bg-bw-elevated border border-bw-border shadow-[0_2px_4px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] hover:border-bw-border-strong",
         // Ghost -- no bg, no border
         ghost:
-          "bg-transparent border border-transparent hover:bg-bw-surface/50 hover:border-white/[0.06]",
+          "bg-transparent border border-transparent hover:bg-bw-surface/50 hover:border-bw-border-subtle",
       },
     },
     defaultVariants: {
@@ -104,7 +104,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-footer"
       className={cn(
-        "flex items-center pt-4 border-t border-white/[0.06] [.border-t]:pt-5",
+        "flex items-center pt-4 border-t border-bw-border-subtle [.border-t]:pt-5",
         className
       )}
       {...props}
