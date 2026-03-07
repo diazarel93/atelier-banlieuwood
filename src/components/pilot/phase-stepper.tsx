@@ -62,21 +62,13 @@ export function PhaseStepper({
     return "upcoming";
   };
 
-  // Gradient stops
-  const gradientLine = useMemo(() => {
-    if (visiblePhases.length < 2) return visiblePhases[0]?.color || "#D9CFC0";
-    return visiblePhases
-      .map((p, i) => `${p.color} ${(i / (visiblePhases.length - 1)) * 100}%`)
-      .join(", ");
-  }, [visiblePhases]);
-
-  if (visiblePhases.length === 0) return null;
-
   // Compute where active phase is for line styling
   const activeIdx = useMemo(() => {
     if (!activePhaseId) return -1;
     return visiblePhases.findIndex((p) => p.id === activePhaseId);
   }, [activePhaseId, visiblePhases]);
+
+  if (visiblePhases.length === 0) return null;
 
   return (
     <div className="relative flex items-center w-full">
