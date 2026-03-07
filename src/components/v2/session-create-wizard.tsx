@@ -6,7 +6,6 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
 import { DatePicker } from "./date-picker";
-import { MODULES, PHASES } from "@/lib/modules-data";
 
 interface WizardData {
   title: string;

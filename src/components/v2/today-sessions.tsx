@@ -74,7 +74,7 @@ export function TodaySessions({
       {/* Today */}
       <GlassCardV2 className="p-4">
         <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-2">
-          Aujourd'hui
+          Aujourd&apos;hui
         </h3>
         {todaySessions.length > 0 ? (
           <div className="divide-y divide-[var(--color-bw-border-subtle)]">

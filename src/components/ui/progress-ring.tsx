@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useId, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
 /* ═══════════════════════════════════════════════════════════════
@@ -80,7 +80,7 @@ export function ProgressRing({
     return () => clearTimeout(timer)
   }, [targetOffset, prefersReduced])
 
-  const gradientId = useRef(`ring-grad-${Math.random().toString(36).slice(2, 7)}`).current
+  const gradientId = useId()
   const canShowLabel = (size === "lg" || size === "xl") && label
 
   return (

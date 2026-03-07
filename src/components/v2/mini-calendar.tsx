@@ -49,7 +49,7 @@ export function MiniCalendar({
     return set;
   }, [sessionDates]);
 
-  const days = useMemo(() => {
+  const days = (() => {
     const firstDay = new Date(year, monthIdx, 1);
     // Monday = 0 in our grid
     const startDay = (firstDay.getDay() + 6) % 7;
@@ -63,7 +63,7 @@ export function MiniCalendar({
       cells.push(new Date(year, monthIdx, d));
     }
     return cells;
-  }, [year, monthIdx]);
+  })();
 
   return (
     <GlassCardV2 className={cn("p-4", className)}>

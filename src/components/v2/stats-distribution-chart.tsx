@@ -32,7 +32,14 @@ export function StatsDistributionChart({
   const strokeWidth = 20;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  let accumulated = 0;
+
+  // Pre-compute rotations to avoid mutating during render
+  const segmentRotations: number[] = [];
+  let acc = 0;
+  for (const seg of segments) {
+    segmentRotations.push((acc / 100) * 360);
+    acc += seg.pct;
+  }
 
   return (
     <GlassCardV2 className={cn("p-5", className)}>
@@ -44,11 +51,9 @@ export function StatsDistributionChart({
         {/* Donut */}
         <div className="relative shrink-0" style={{ width: size, height: size }}>
           <svg width={size} height={size} className="-rotate-90">
-            {segments.map((seg) => {
+            {segments.map((seg, i) => {
               const dashLength = (seg.pct / 100) * circumference;
-              const offset = circumference - dashLength;
-              const rotation = (accumulated / 100) * 360;
-              accumulated += seg.pct;
+              const rotation = segmentRotations[i];
 
               return (
                 <circle
