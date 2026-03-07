@@ -23,12 +23,13 @@ export async function GET(req: NextRequest) {
   // Fetch facilitator's sessions
   let sessionsQuery = supabase
     .from("sessions")
-    .select("id, title, class_label, status")
+    .select("id, title, status")
     .eq("facilitator_id", user.id);
 
-  if (classLabel) {
-    sessionsQuery = sessionsQuery.eq("class_label", classLabel);
-  }
+  // class_label filter (column may not exist yet if migration not run)
+  // if (classLabel) {
+  //   sessionsQuery = sessionsQuery.eq("class_label", classLabel);
+  // }
 
   const { data: sessions, error: sessErr } = await sessionsQuery;
   if (sessErr) {
@@ -100,11 +101,11 @@ export async function GET(req: NextRequest) {
 
   const classAverage = aggregateAxes(studentsList.map((s) => s.scores));
 
-  // Unique class labels for the selector
+  // Unique class labels for the selector (class_label may not exist yet)
   const classLabels = [
     ...new Set(
       (sessions || [])
-        .map((s) => s.class_label)
+        .map((s) => (s as Record<string, unknown>).class_label as string | null)
         .filter((l): l is string => l !== null && l !== undefined)
     ),
   ];
@@ -117,7 +118,7 @@ export async function GET(req: NextRequest) {
     sessions: (sessions || []).map((s) => ({
       id: s.id,
       title: s.title,
-      classLabel: s.class_label,
+      classLabel: (s as Record<string, unknown>).class_label || null,
     })),
   });
 }

@@ -19,7 +19,7 @@ export async function GET() {
   // Fetch all sessions for this facilitator
   const { data: sessions, error } = await supabase
     .from("sessions")
-    .select("id, title, status, level, template, created_at, scheduled_at, class_label, students(id)")
+    .select("id, title, status, level, template, created_at, students(id)")
     .eq("facilitator_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -34,14 +34,14 @@ export async function GET() {
   tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowStr = tomorrow.toISOString().slice(0, 10);
 
-  // Sessions for today and tomorrow
+  // Sessions for today and tomorrow (use scheduled_at if available, fallback to created_at)
   const todaySessions = allSessions.filter((s) => {
-    const d = s.scheduled_at || s.created_at;
+    const d = (s as Record<string, unknown>).scheduled_at as string || s.created_at;
     return d && d.slice(0, 10) === todayStr;
   });
 
   const tomorrowSessions = allSessions.filter((s) => {
-    const d = s.scheduled_at || s.created_at;
+    const d = (s as Record<string, unknown>).scheduled_at as string || s.created_at;
     return d && d.slice(0, 10) === tomorrowStr;
   });
 
@@ -63,7 +63,7 @@ export async function GET() {
   const sessionDates = [
     ...new Set(
       allSessions
-        .map((s) => (s.scheduled_at || s.created_at)?.slice(0, 10))
+        .map((s) => ((s as Record<string, unknown>).scheduled_at as string || s.created_at)?.slice(0, 10))
         .filter(Boolean)
     ),
   ];
@@ -89,7 +89,7 @@ function summarize(s: Record<string, unknown>) {
     level: s.level,
     template: s.template,
     scheduledAt: s.scheduled_at || s.created_at,
-    classLabel: s.class_label,
+    classLabel: s.class_label || null,
     studentCount: ((s.students as { id: string }[]) || []).length,
   };
 }
