@@ -252,6 +252,7 @@ function CockpitContent({
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState(0);
   const [respondingOpenedAt, setRespondingOpenedAt] = useState<number | null>(null);
+  const [sessionStartedAt] = useState<number>(() => Date.now()); // session timer starts when pilot opens
   const [cardSearch, setCardSearch] = useState("");
   const [broadcastHistory, setBroadcastHistory] = useState<{ text: string; sentAt: Date }[]>([]);
   const [timerMode, setTimerMode] = useState(false);
@@ -963,6 +964,7 @@ function CockpitContent({
         moduleColor={moduleColor}
         questionCounter={(totalQuestions ?? 0) > 0 ? `Q${currentQIndex + 1}/${totalQuestions}` : null}
         respondingOpenedAt={respondingOpenedAt}
+        sessionStartedAt={sessionStartedAt}
         activeStudentCount={activeStudents.length}
         autoAdvance={autoAdvance}
         onToggleAuto={() => {

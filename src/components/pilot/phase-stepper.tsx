@@ -64,62 +64,44 @@ export function PhaseStepper({
 
   if (visiblePhases.length === 0) return null;
 
+  // Compute where active phase is for line styling
+  const activeIdx = useMemo(() => {
+    if (!activePhaseId) return -1;
+    return visiblePhases.findIndex((p) => p.id === activePhaseId);
+  }, [activePhaseId, visiblePhases]);
+
   return (
     <div className="relative flex items-center w-full">
-      {/* Background gradient line — desktop */}
-      <div
-        className="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-[3px] rounded-full hidden md:block"
-        style={{
-          background: `linear-gradient(to right, ${gradientLine})`,
-          opacity: 0.35,
-        }}
-      />
-      {/* Background gradient line — mobile */}
-      <div
-        className="absolute left-2 right-2 top-1/2 -translate-y-1/2 h-[2px] rounded-full md:hidden"
-        style={{
-          background: `linear-gradient(to right, ${gradientLine})`,
-          opacity: 0.3,
-        }}
-      />
+      {/* ── Gradient line segments between circles ── */}
+      {/* We draw individual segments between each pair of phases */}
+      {/* Completed/active = solid, upcoming = dashed */}
 
       {/* Phase circles + labels */}
       <div className="relative z-10 flex items-center justify-between w-full">
         {visiblePhases.map((phase, idx) => {
           const status = getStatus(phase);
-          return (
-            <div key={phase.id} className="flex items-center">
-              {/* Separator chevron (desktop only) */}
-              {idx > 0 && (
-                <span className="text-[10px] text-[#D9CFC0] mx-1 hidden md:inline select-none">
-                  ›
-                </span>
-              )}
+          const nextPhase = visiblePhases[idx + 1];
+          // Line between this circle and the next
+          const lineCompleted = idx < activeIdx;
+          const lineActive = idx === activeIdx;
 
+          return (
+            <div key={phase.id} className="flex items-center flex-1 last:flex-initial">
               <button
                 onClick={() => onPhaseClick?.(phase.id)}
-                className="flex flex-col items-center gap-1 cursor-pointer group"
+                className="flex flex-col items-center gap-1.5 cursor-pointer group flex-shrink-0"
                 title={phase.label}
               >
                 {/* Circle */}
                 {status === "active" ? (
                   <motion.div
-                    className="relative flex items-center justify-center rounded-full border-[3px] border-white w-5 h-5 md:w-9 md:h-9"
+                    className="relative flex items-center justify-center rounded-full w-6 h-6 md:w-[42px] md:h-[42px]"
                     style={{
                       background: phase.color,
-                      boxShadow: `0 0 16px ${phase.color}30`,
+                      boxShadow: `0 0 0 3px white, 0 0 20px ${phase.color}35`,
                     }}
-                    animate={{ scale: [1, 1.05, 1] }}
-                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                  >
-                    <span className="text-white text-[10px] md:text-[13px] font-bold leading-none">
-                      {phase.emoji}
-                    </span>
-                  </motion.div>
-                ) : status === "completed" ? (
-                  <div
-                    className="flex items-center justify-center rounded-full border-2 border-white w-5 h-5 md:w-9 md:h-9"
-                    style={{ background: phase.color }}
+                    animate={{ scale: [1, 1.04, 1] }}
+                    transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -127,25 +109,56 @@ export function PhaseStepper({
                       stroke="white"
                       strokeWidth="3"
                       strokeLinecap="round"
-                      className="w-2.5 h-2.5 md:w-4 md:h-4"
+                      className="w-3 h-3 md:w-[18px] md:h-[18px]"
+                    >
+                      <path d="M5 12l5 5L20 7" />
+                    </svg>
+                  </motion.div>
+                ) : status === "completed" ? (
+                  <div
+                    className="flex items-center justify-center rounded-full w-6 h-6 md:w-[42px] md:h-[42px]"
+                    style={{
+                      background: phase.color,
+                      boxShadow: "0 0 0 3px white",
+                    }}
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      className="w-3 h-3 md:w-[18px] md:h-[18px]"
                     >
                       <path d="M5 12l5 5L20 7" />
                     </svg>
                   </div>
                 ) : (
                   <div
-                    className="flex items-center justify-center rounded-full border-2 w-5 h-5 md:w-9 md:h-9 opacity-60"
-                    style={{ borderColor: "#D9CFC0", background: "transparent" }}
+                    className="flex items-center justify-center rounded-full w-6 h-6 md:w-[42px] md:h-[42px]"
+                    style={{
+                      border: "2px solid #D9CFC0",
+                      background: "rgba(255,255,255,0.5)",
+                      boxShadow: "0 0 0 2px white",
+                      opacity: 0.7,
+                    }}
                   >
-                    <span className="text-[10px] md:text-[13px] opacity-50 leading-none">
-                      {phase.emoji}
-                    </span>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#D9CFC0"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      className="w-3 h-3 md:w-[18px] md:h-[18px]"
+                    >
+                      <path d="M5 12l5 5L20 7" />
+                    </svg>
                   </div>
                 )}
 
                 {/* Label — desktop only */}
                 <span
-                  className="hidden md:block text-[11px] leading-tight max-w-[80px] text-center truncate transition-colors"
+                  className="hidden md:block text-[11px] leading-tight max-w-[90px] text-center truncate transition-colors"
                   style={{
                     color: status === "active" ? phase.color : "#B0A99E",
                     fontWeight: status === "active" ? 600 : 400,
@@ -154,6 +167,43 @@ export function PhaseStepper({
                   {phase.label}
                 </span>
               </button>
+
+              {/* ── Line segment + chevron to next phase ── */}
+              {nextPhase && (
+                <div className="flex items-center flex-1 mx-1 md:mx-0 self-start md:mt-[19px] mt-[10px]">
+                  {/* Desktop line */}
+                  <div
+                    className="flex-1 h-[3px] hidden md:block"
+                    style={
+                      lineCompleted || lineActive
+                        ? {
+                            background: `linear-gradient(to right, ${phase.color}, ${nextPhase.color})`,
+                            opacity: 0.55,
+                            borderRadius: 2,
+                          }
+                        : {
+                            backgroundImage: `repeating-linear-gradient(to right, #D3CAB8 0, #D3CAB8 6px, transparent 6px, transparent 12px)`,
+                            opacity: 0.45,
+                            height: 2,
+                          }
+                    }
+                  />
+                  {/* Mobile line */}
+                  <div
+                    className="flex-1 h-[2px] rounded-full md:hidden"
+                    style={{
+                      background: lineCompleted || lineActive
+                        ? `linear-gradient(to right, ${phase.color}, ${nextPhase.color})`
+                        : "#E0D8CC",
+                      opacity: lineCompleted || lineActive ? 0.5 : 0.3,
+                    }}
+                  />
+                  {/* Chevron separator — desktop only */}
+                  <span className="text-[11px] text-[#D0C8BB] mx-1.5 hidden md:inline select-none flex-shrink-0 -mt-px">
+                    ›
+                  </span>
+                </div>
+              )}
             </div>
           );
         })}
