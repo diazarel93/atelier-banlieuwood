@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "simulate-session": "npx tsx scripts/simulate-session.ts"
   },
   "dependencies": {
     "@dicebear/collection": "^9.4.0",
