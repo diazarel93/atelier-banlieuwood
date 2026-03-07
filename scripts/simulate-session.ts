@@ -331,7 +331,31 @@ async function main() {
     console.log("");
   }
 
-  // 5. End session
+  // 5. Generate OIE scores per student
+  const oieRows = students.map((stu) => {
+    const o = 30 + Math.floor(Math.random() * 60); // 30-89
+    const i = 30 + Math.floor(Math.random() * 60);
+    const e = 30 + Math.floor(Math.random() * 60);
+    const dominant = o >= i && o >= e ? "O" : i >= e ? "I" : "E";
+    return {
+      session_id: session.id,
+      student_id: stu.id,
+      observation: o,
+      imagination: i,
+      expression: e,
+      dominant,
+      response_count: NUM_SITUATIONS,
+    };
+  });
+
+  const { error: oieErr } = await db.from("session_oie_scores").insert(oieRows);
+  if (oieErr) {
+    console.error("  Failed to insert OIE scores:", oieErr.message);
+  } else {
+    console.log(`  ${oieRows.length} scores O-I-E générés`);
+  }
+
+  // 6. End session
   await db
     .from("sessions")
     .update({ status: "done" })

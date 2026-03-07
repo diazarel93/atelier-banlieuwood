@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
   // Fetch OIE scores
   const { data: oieScores } = await supabase
     .from("session_oie_scores")
-    .select("student_id, o_score, i_score, e_score, response_count")
+    .select("student_id, observation, imagination, expression, response_count")
     .in("session_id", sessionIds);
 
   // Fetch student names
@@ -69,9 +69,9 @@ export async function GET(req: NextRequest) {
   for (const row of oieScores || []) {
     const axes = oieToAxes(
       {
-        O: row.o_score ?? 0,
-        I: row.i_score ?? 0,
-        E: row.e_score ?? 0,
+        O: row.observation ?? 0,
+        I: row.imagination ?? 0,
+        E: row.expression ?? 0,
         dominant: "O",
         responseCount: row.response_count ?? 0,
         isReliable: true,
