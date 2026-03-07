@@ -42,7 +42,8 @@ export async function updateSession(request: NextRequest) {
   // Protected routes: dashboard and session management
   const isProtected =
     pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/session");
+    pathname.startsWith("/session") ||
+    pathname.startsWith("/v2");
 
   // Auth routes: login, reset-password
   const isAuthRoute =
