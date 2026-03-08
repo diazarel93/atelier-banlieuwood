@@ -6,6 +6,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
 import { DatePicker } from "./date-picker";
+import { toast } from "sonner";
 
 interface WizardData {
   title: string;
@@ -71,6 +72,7 @@ export function SessionCreateWizard() {
       });
       if (!res.ok) throw new Error("Erreur création");
       const session = await res.json();
+      toast.success("Séance créée !");
       router.push(`/v2/seances/${session.id}/prepare`);
     } catch {
       setSaving(false);

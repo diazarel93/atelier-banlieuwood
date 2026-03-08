@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
+import { StatusBadge, type SessionStatus } from "./status-badge";
 import { getSessionState } from "@/lib/session-state";
 import type { SessionSummary } from "@/hooks/use-dashboard-v2";
 
@@ -12,6 +13,14 @@ interface TodaySessionsProps {
   className?: string;
 }
 
+const STATUS_BAR_COLORS: Record<string, string> = {
+  draft: "#9CA3AF",
+  waiting: "#FBBF24",
+  responding: "#10B981",
+  paused: "#F59E0B",
+  done: "#10B981",
+};
+
 function SessionRow({ session }: { session: SessionSummary }) {
   const ss = getSessionState(session.status);
   const time = new Date(session.scheduledAt).toLocaleTimeString("fr-FR", {
@@ -19,8 +28,16 @@ function SessionRow({ session }: { session: SessionSummary }) {
     minute: "2-digit",
   });
 
+  const barColor = STATUS_BAR_COLORS[session.status] || STATUS_BAR_COLORS.draft;
+
   return (
-    <div className="flex items-center gap-3 py-2.5">
+    <div className="relative flex items-center gap-3 py-2.5 pl-3">
+      {/* Left status bar 2px */}
+      <div
+        className="absolute left-0 top-1 bottom-1 w-[2px] rounded-full"
+        style={{ backgroundColor: barColor }}
+      />
+
       {/* Time */}
       <span className="text-xs font-medium text-bw-muted tabular-nums w-10 shrink-0">
         {time}
@@ -31,10 +48,13 @@ function SessionRow({ session }: { session: SessionSummary }) {
         <p className="text-sm font-semibold text-bw-heading truncate">
           {session.title}
         </p>
-        <p className="text-xs text-bw-muted">
-          {session.classLabel || session.level} — {session.studentCount} élève
-          {session.studentCount !== 1 ? "s" : ""}
-        </p>
+        <div className="flex items-center gap-2 mt-0.5">
+          <span className="text-xs text-bw-muted">
+            {session.classLabel || session.level} — {session.studentCount} élève
+            {session.studentCount !== 1 ? "s" : ""}
+          </span>
+          <StatusBadge status={session.status as SessionStatus} size="sm" />
+        </div>
       </div>
 
       {/* Action */}

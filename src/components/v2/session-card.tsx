@@ -2,8 +2,11 @@
 
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
-
-type SessionStatus = "draft" | "waiting" | "responding" | "paused" | "done";
+import {
+  StatusBadge,
+  STATUS_BG_TINT,
+  type SessionStatus,
+} from "./status-badge";
 
 interface SessionCardV2Props {
   title: string;
@@ -19,15 +22,12 @@ interface SessionCardV2Props {
   className?: string;
 }
 
-const STATUS_CONFIG: Record<
-  SessionStatus,
-  { label: string; dotClass: string }
-> = {
-  draft: { label: "Brouillon", dotClass: "bg-gray-400" },
-  waiting: { label: "En attente", dotClass: "bg-amber-400 animate-pulse" },
-  responding: { label: "En cours", dotClass: "bg-emerald-500 animate-pulse" },
-  paused: { label: "En pause", dotClass: "bg-amber-500" },
-  done: { label: "Terminée", dotClass: "bg-gray-400" },
+const STATUS_BAR_STYLE: Record<SessionStatus, React.CSSProperties> = {
+  draft: { backgroundColor: "#9CA3AF" },
+  waiting: { backgroundColor: "#FBBF24" },
+  responding: { background: "linear-gradient(to bottom, #10B981, #4ECDC4)" },
+  paused: { backgroundColor: "#F59E0B" },
+  done: { backgroundColor: "#10B981" },
 };
 
 function formatTime(dateStr: string) {
@@ -48,73 +48,89 @@ export function SessionCardV2({
   actions,
   className,
 }: SessionCardV2Props) {
-  const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.draft;
+  const bgTint = STATUS_BG_TINT[status] || "";
 
   return (
     <GlassCardV2
       hover={!!onClick}
       className={cn(
-        "p-4 cursor-default",
+        "relative overflow-hidden cursor-default",
         onClick && "cursor-pointer",
+        bgTint,
         className
       )}
       onClick={onClick}
     >
-      {/* Top row: module badge + status */}
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          {moduleLabel && (
-            <span
-              className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold text-white"
-              style={{ backgroundColor: moduleColor || "#8B5CF6" }}
-            >
-              {moduleLabel}
-            </span>
-          )}
-          {classLabel && (
-            <span className="text-xs text-bw-muted font-medium">
-              {classLabel}
+      {/* Left status bar 3px */}
+      <div
+        className="absolute left-0 top-0 bottom-0 w-[3px]"
+        style={STATUS_BAR_STYLE[status] || STATUS_BAR_STYLE.draft}
+      />
+
+      {/* Top module gradient band 3px */}
+      {moduleColor && (
+        <div
+          className="absolute top-0 left-[3px] right-0 h-[3px]"
+          style={{
+            background: `linear-gradient(to right, ${moduleColor}, ${moduleColor}99)`,
+          }}
+        />
+      )}
+
+      <div className="p-4 pl-5">
+        {/* Top row: module badge + status */}
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            {moduleLabel && (
+              <span
+                className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold text-white"
+                style={{ backgroundColor: moduleColor || "#8B5CF6" }}
+              >
+                {moduleLabel}
+              </span>
+            )}
+            {classLabel && (
+              <span className="text-xs text-bw-muted font-medium">
+                {classLabel}
+              </span>
+            )}
+          </div>
+          <StatusBadge status={status} />
+        </div>
+
+        {/* Title */}
+        <h3 className="text-sm font-semibold text-bw-heading leading-snug mb-1 line-clamp-1">
+          {title}
+        </h3>
+
+        {/* Meta row */}
+        <div className="flex items-center gap-3 text-xs text-bw-muted">
+          {scheduledAt && <span>{formatTime(scheduledAt)}</span>}
+          {typeof studentCount === "number" && (
+            <span>
+              {studentCount} élève{studentCount !== 1 ? "s" : ""}
             </span>
           )}
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className={cn("h-2 w-2 rounded-full", cfg.dotClass)} />
-          <span className="text-[11px] text-bw-muted font-medium">
-            {cfg.label}
-          </span>
-        </div>
-      </div>
 
-      {/* Title */}
-      <h3 className="text-sm font-semibold text-bw-heading leading-snug mb-1 line-clamp-1">
-        {title}
-      </h3>
+        {/* Progress bar — gradient opacity */}
+        {typeof progress === "number" && progress > 0 && (
+          <div className="mt-3 h-1 w-full rounded-full bg-[var(--color-bw-surface-dim)] overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${Math.min(100, progress)}%`,
+                background: `linear-gradient(to right, ${moduleColor || "var(--color-bw-primary)"}, ${moduleColor || "var(--color-bw-primary)"}80)`,
+              }}
+            />
+          </div>
+        )}
 
-      {/* Meta row */}
-      <div className="flex items-center gap-3 text-xs text-bw-muted">
-        {scheduledAt && <span>{formatTime(scheduledAt)}</span>}
-        {typeof studentCount === "number" && (
-          <span>{studentCount} élève{studentCount !== 1 ? "s" : ""}</span>
+        {/* Actions slot */}
+        {actions && (
+          <div className="mt-3 flex items-center gap-2">{actions}</div>
         )}
       </div>
-
-      {/* Progress bar */}
-      {typeof progress === "number" && progress > 0 && (
-        <div className="mt-3 h-1 w-full rounded-full bg-[var(--color-bw-surface-dim)] overflow-hidden">
-          <div
-            className="h-full rounded-full transition-all duration-500"
-            style={{
-              width: `${Math.min(100, progress)}%`,
-              backgroundColor: moduleColor || "var(--color-bw-primary)",
-            }}
-          />
-        </div>
-      )}
-
-      {/* Actions slot */}
-      {actions && (
-        <div className="mt-3 flex items-center gap-2">{actions}</div>
-      )}
     </GlassCardV2>
   );
 }

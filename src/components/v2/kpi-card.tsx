@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
+import { useCountUp } from "@/hooks/use-count-up";
 
 interface KpiCardProps {
   label: string;
@@ -20,8 +21,12 @@ export function KpiCard({
   color,
   className,
 }: KpiCardProps) {
+  const numericValue = typeof value === "number" ? value : 0;
+  const animated = useCountUp(numericValue, 700);
+  const displayValue = typeof value === "number" ? animated : value;
+
   return (
-    <GlassCardV2 className={cn("p-5", className)}>
+    <GlassCardV2 className={cn("relative overflow-hidden p-5", className)}>
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1">
           <span className="text-xs font-medium text-bw-muted uppercase tracking-wide">
@@ -31,14 +36,14 @@ export function KpiCard({
             className="text-2xl font-bold tabular-nums text-bw-heading"
             style={color ? { color } : undefined}
           >
-            {value}
+            {displayValue}
           </span>
         </div>
         {icon && (
           <div
             className="flex h-10 w-10 items-center justify-center rounded-xl"
             style={{
-              backgroundColor: color ? `${color}14` : "var(--color-bw-surface-dim)",
+              backgroundColor: color ? `${color}1A` : "var(--color-bw-surface-dim)",
               color: color || "var(--color-bw-muted)",
             }}
           >
@@ -61,6 +66,16 @@ export function KpiCard({
             <span className="text-bw-muted">{trend.label}</span>
           )}
         </div>
+      )}
+
+      {/* Bottom accent gradient 2px */}
+      {color && (
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[2px]"
+          style={{
+            background: `linear-gradient(to right, ${color}, ${color}00)`,
+          }}
+        />
       )}
     </GlassCardV2>
   );

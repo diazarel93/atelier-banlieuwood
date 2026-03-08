@@ -1,12 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "motion/react";
 import { useDashboardSummary } from "@/hooks/use-dashboard-v2";
 import { TodaySessions } from "@/components/v2/today-sessions";
 import { QuickStats } from "@/components/v2/quick-stats";
 import { MiniCalendar } from "@/components/v2/mini-calendar";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 import { PHASES } from "@/lib/modules-data";
+
+function getGreeting(): string {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return "Bonjour";
+  if (h >= 12 && h < 18) return "Bon après-midi";
+  return "Bonsoir";
+}
 
 export default function DashboardV2Page() {
   const { data, isLoading, isError } = useDashboardSummary();
@@ -20,13 +28,20 @@ export default function DashboardV2Page() {
 
   const isFirstUse = data && data.stats.totalSessions === 0;
 
+  const todayCount = data?.todaySessions?.length || 0;
+  const subtitle = todayCount > 0
+    ? `${todayCount} séance${todayCount > 1 ? "s" : ""} aujourd'hui`
+    : "Aucune séance prévue";
+
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
       {/* Welcome header */}
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-bw-heading">Bienvenue</h1>
+        <h1 className="text-xl font-bold text-bw-heading">
+          <span className="text-gradient-cinema">{getGreeting()}</span>
+        </h1>
         <p className="text-sm text-bw-muted mt-0.5">
-          Votre espace de pilotage pédagogique
+          {isLoading ? "Chargement..." : subtitle}
         </p>
       </div>
 
@@ -66,14 +81,22 @@ export default function DashboardV2Page() {
               </h3>
               <div className="flex flex-col gap-3">
                 {mainPhases.map((phase) => {
-                  // Compute completed count from done sessions
                   const doneModuleCount = 0; // TODO: wire from actual completed_modules data
                   const total = phase.moduleIds.length;
                   const pct = total > 0 ? Math.round((doneModuleCount / total) * 100) : 0;
 
                   return (
                     <div key={phase.id} className="flex items-center gap-3">
-                      <span className="text-lg">{phase.emoji}</span>
+                      {/* Emoji in colored circle */}
+                      <div
+                        className="flex h-8 w-8 items-center justify-center rounded-full shrink-0 text-sm"
+                        style={{
+                          background: `linear-gradient(135deg, ${phase.color}33, ${phase.color}14)`,
+                          border: `1px solid ${phase.color}40`,
+                        }}
+                      >
+                        {phase.emoji}
+                      </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-bw-heading truncate">
                           {phase.label}
@@ -83,13 +106,13 @@ export default function DashboardV2Page() {
                             className="h-full rounded-full transition-all duration-500"
                             style={{
                               width: `${pct}%`,
-                              backgroundColor: phase.color,
+                              background: `linear-gradient(to right, ${phase.color}, ${phase.color}80)`,
                             }}
                           />
                         </div>
                       </div>
-                      <span className="text-xs text-bw-muted tabular-nums">
-                        {doneModuleCount}/{total}
+                      <span className="text-xs text-bw-muted tabular-nums whitespace-nowrap">
+                        {doneModuleCount}/{total} · {pct}%
                       </span>
                     </div>
                   );
@@ -104,55 +127,170 @@ export default function DashboardV2Page() {
 }
 
 function FirstUseState() {
+  const steps = [
+    { num: 1, label: "Créez une séance", color: "#FF6B35" },
+    { num: 2, label: "Préparez le contenu", color: "#D4A843" },
+    { num: 3, label: "Lancez avec vos élèves", color: "#8B5CF6" },
+  ];
+
   return (
-    <GlassCardV2 className="p-8 flex flex-col items-center text-center max-w-lg mx-auto">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-bw-primary/10 mb-4">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-          <path d="M8 6l18 10-18 10V6z" fill="var(--color-bw-primary)" />
-        </svg>
-      </div>
-      <h2 className="text-lg font-bold text-bw-heading mb-2">
-        Prêt à lancer votre première séance ?
-      </h2>
-      <p className="text-sm text-bw-muted mb-6 leading-relaxed">
-        Créez une séance pour commencer à piloter des ateliers d'écriture
-        cinématographique avec vos élèves.
-      </p>
-      <div className="flex items-center gap-3">
-        <Link
-          href="/v2/seances/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-bw-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <GlassCardV2 className="p-8 flex flex-col items-center text-center max-w-lg mx-auto">
+        {/* Clap SVG illustration */}
+        <motion.div
+          className="mb-6"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
         >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Clap base */}
+            <rect x="12" y="38" width="56" height="30" rx="4" fill="#F3F4F6" stroke="#9CA3AF" strokeWidth="1.5" />
+            {/* Clap top (hinged) */}
+            <path d="M12 38L22 18H58L68 38" fill="#FF6B35" fillOpacity="0.15" stroke="#FF6B35" strokeWidth="1.5" strokeLinejoin="round" />
+            {/* Diagonal stripes on top */}
+            <line x1="30" y1="22" x2="26" y2="36" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="40" y1="20" x2="36" y2="36" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="50" y1="22" x2="46" y2="36" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
+            {/* Text lines on base */}
+            <line x1="22" y1="48" x2="48" y2="48" stroke="#D4A843" strokeWidth="2" strokeLinecap="round" />
+            <line x1="22" y1="54" x2="40" y2="54" stroke="#D4A843" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+            <line x1="22" y1="60" x2="34" y2="60" stroke="#D4A843" strokeWidth="2" strokeLinecap="round" opacity="0.3" />
+            {/* Sparkles */}
+            <circle cx="16" cy="14" r="2" fill="#FF6B35" opacity="0.6" />
+            <circle cx="64" cy="12" r="1.5" fill="#D4A843" opacity="0.5" />
+            <circle cx="72" cy="24" r="2" fill="#8B5CF6" opacity="0.4" />
           </svg>
-          Créer ma première séance
-        </Link>
-        <Link
-          href="/v2/bibliotheque"
-          className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2.5 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+        </motion.div>
+
+        <motion.h2
+          className="text-lg font-bold text-bw-heading mb-2"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
         >
-          Explorer les modules
-        </Link>
-      </div>
-    </GlassCardV2>
+          Prêt à lancer votre première séance ?
+        </motion.h2>
+        <motion.p
+          className="text-sm text-bw-muted mb-6 leading-relaxed"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.25 }}
+        >
+          Créez une séance pour commencer à piloter des ateliers d&apos;écriture
+          cinématographique avec vos élèves.
+        </motion.p>
+
+        <motion.div
+          className="flex items-center gap-3 mb-8"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
+        >
+          <Link
+            href="/v2/seances/new"
+            className="inline-flex items-center gap-2 rounded-lg bg-bw-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+            Créer ma première séance
+          </Link>
+          <Link
+            href="/v2/bibliotheque"
+            className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2.5 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+          >
+            Explorer les modules
+          </Link>
+        </motion.div>
+
+        {/* 3 steps with staggered animation */}
+        <div className="flex items-start gap-6">
+          {steps.map((step, i) => (
+            <motion.div
+              key={step.num}
+              className="flex flex-col items-center gap-2 flex-1"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.4 + i * 0.1 }}
+            >
+              <div
+                className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white"
+                style={{ backgroundColor: step.color }}
+              >
+                {step.num}
+              </div>
+              <span className="text-xs text-bw-muted leading-tight text-center">
+                {step.label}
+              </span>
+            </motion.div>
+          ))}
+        </div>
+      </GlassCardV2>
+    </motion.div>
   );
 }
 
 function ErrorState() {
+  const isOnline = typeof navigator !== "undefined" ? navigator.onLine : true;
+
   return (
-    <GlassCardV2 className="p-8 text-center max-w-md mx-auto">
-      <p className="text-sm text-bw-muted mb-4">
-        Impossible de charger le tableau de bord. Vérifiez votre connexion.
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+    <GlassCardV2 className="p-8 flex flex-col items-center text-center max-w-md mx-auto">
+      {/* Alert triangle SVG */}
+      <div className="mb-4">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <path
+            d="M24 6L4 42h40L24 6z"
+            fill="#FEF3C7"
+            stroke="#F59E0B"
+            strokeWidth="2"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M24 20v10"
+            stroke="#F59E0B"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          />
+          <circle cx="24" cy="35" r="1.5" fill="#F59E0B" />
+        </svg>
+      </div>
+      <p className="text-sm font-medium text-bw-heading mb-1">
+        {isOnline
+          ? "Erreur serveur"
+          : "Pas de connexion internet"}
       </p>
-      <button
-        type="button"
-        onClick={() => window.location.reload()}
-        className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
-      >
-        Réessayer
-      </button>
+      <p className="text-sm text-bw-muted mb-4">
+        {isOnline
+          ? "Impossible de charger le tableau de bord. Réessayez dans un instant."
+          : "Vérifiez votre connexion et réessayez."}
+      </p>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="rounded-lg bg-bw-primary px-4 py-2 text-sm font-medium text-white hover:bg-bw-primary-500 transition-colors"
+        >
+          Réessayer
+        </button>
+        <a
+          href="mailto:support@banlieuwood.fr"
+          className="text-xs text-bw-muted hover:text-bw-heading transition-colors"
+        >
+          Besoin d&apos;aide ?
+        </a>
+      </div>
     </GlassCardV2>
+    </motion.div>
   );
 }
 
