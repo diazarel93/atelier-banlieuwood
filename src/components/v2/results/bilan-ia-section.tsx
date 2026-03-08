@@ -130,7 +130,7 @@ export function BilanIaSection({
           {/* Key moments */}
           {bilan.keyMoments.length > 0 && (
             <GlassCardV2 className="p-5">
-              <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
+              <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
                 Moments clés
               </p>
               <div className="space-y-2">
@@ -158,7 +158,7 @@ export function BilanIaSection({
 
           {/* Engagement */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-2">
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-2">
               Engagement
             </p>
             <p className="text-sm text-bw-heading mb-3">
@@ -184,7 +184,7 @@ export function BilanIaSection({
 
           {/* Recommendations */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
               Recommandations pédagogiques
             </p>
             <ol className="space-y-2 list-decimal list-inside">

@@ -12,7 +12,7 @@ export function ParticipationTable({ students }: ParticipationTableProps) {
 
   return (
     <GlassCardV2 className="p-5">
-      <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
+      <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
         Participation des élèves
       </p>
       <div className="space-y-2">

@@ -74,7 +74,7 @@ export function FicheCoursSection({
 
           {/* Objectives */}
           <GlassCardV2 className="p-5 space-y-2">
-            <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide">
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">
               Objectifs
             </p>
             {fiche.objectives.map((obj, i) => (
@@ -96,7 +96,7 @@ export function FicheCoursSection({
           {/* Competencies accordion */}
           <GlassCardV2 className="overflow-hidden">
             <div className="px-5 pt-5 pb-2">
-              <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide">
+              <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">
                 Compétences du socle commun
               </p>
             </div>
@@ -146,7 +146,7 @@ export function FicheCoursSection({
 
           {/* Animation tips */}
           <GlassCardV2 className="p-5 space-y-3">
-            <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide">
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">
               Conseils d&apos;animation
             </p>
             {fiche.animationTips.map((tip, i) => (
@@ -166,7 +166,7 @@ export function FicheCoursSection({
 
           {/* Relaunch tips */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
               Relancer les élèves
             </p>
             <ul className="space-y-2">
@@ -183,7 +183,7 @@ export function FicheCoursSection({
 
           {/* Level adaptation tabs */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
               Adaptation par niveau
             </p>
             <div className="flex gap-1 mb-3">
@@ -212,7 +212,7 @@ export function FicheCoursSection({
 
           {/* Evaluation criteria */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
               Critères d&apos;évaluation
             </p>
             <ul className="space-y-2">

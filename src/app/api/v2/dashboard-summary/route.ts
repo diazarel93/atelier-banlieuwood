@@ -1,12 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { detectAtRiskStudents, type StudentForRisk } from "@/lib/at-risk-detection";
 
 /**
  * GET /api/v2/dashboard-summary
  * Light aggregation for the V2 dashboard hub.
  * Returns: today's sessions, quick stats, session dates for calendar.
+ * Optional: ?classLabel=X to filter by class.
  */
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const classLabelFilter = req.nextUrl.searchParams.get("classLabel");
   const supabase = await createServerSupabase();
   const {
     data: { user },
@@ -27,7 +30,21 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const allSessions = sessions || [];
+  // Collect all unique class labels before filtering
+  const classLabels = [
+    ...new Set(
+      (sessions || [])
+        .map((s) => (s as Record<string, unknown>).class_label as string | null)
+        .filter(Boolean)
+    ),
+  ].sort() as string[];
+
+  // Apply class label filter if provided
+  const allSessions = classLabelFilter
+    ? (sessions || []).filter(
+        (s) => (s as Record<string, unknown>).class_label === classLabelFilter
+      )
+    : sessions || [];
   const now = new Date();
   const todayStr = now.toISOString().slice(0, 10);
   const tomorrow = new Date(now);
@@ -77,6 +94,69 @@ export async function GET() {
     ),
   ];
 
+  // At-risk detection: fetch OIE scores for students in done sessions
+  let atRiskStudents: ReturnType<typeof detectAtRiskStudents> = [];
+  const doneSessionIds = allSessions
+    .filter((s) => s.status === "done")
+    .map((s) => s.id);
+
+  if (doneSessionIds.length > 0) {
+    const { data: students } = await supabase
+      .from("students")
+      .select("id, display_name, avatar, profile_id, session_id, created_at")
+      .in("session_id", doneSessionIds);
+
+    const studentIds = (students || []).map((s) => s.id);
+
+    if (studentIds.length > 0) {
+      const { data: scores } = await supabase
+        .from("session_oie_scores")
+        .select("student_id, session_id, o_score, i_score, e_score, response_count, created_at")
+        .in("student_id", studentIds)
+        .order("created_at", { ascending: true });
+
+      // Build per-profile risk data
+      const profileMap = new Map<string, StudentForRisk>();
+      for (const student of students || []) {
+        const pid = student.profile_id || student.id;
+        const studentScores = (scores || []).filter(
+          (sc) => sc.student_id === student.id
+        );
+
+        if (studentScores.length === 0) continue;
+
+        const latest = studentScores[studentScores.length - 1];
+        const previous = studentScores.length > 1 ? studentScores[studentScores.length - 2] : null;
+
+        const existing = profileMap.get(pid);
+        if (!existing || student.created_at > existing.lastActiveAt) {
+          profileMap.set(pid, {
+            profileId: pid,
+            displayName: student.display_name,
+            avatar: student.avatar,
+            scores: {
+              comprehension: Math.round(latest.o_score),
+              creativite: Math.round(latest.i_score),
+              expression: Math.round(latest.e_score),
+              engagement: Math.min(100, Math.round((latest.response_count / 20) * 100)),
+            },
+            lastActiveAt: student.created_at,
+            previousScores: previous
+              ? {
+                  comprehension: Math.round(previous.o_score),
+                  creativite: Math.round(previous.i_score),
+                  expression: Math.round(previous.e_score),
+                  engagement: Math.min(100, Math.round((previous.response_count / 20) * 100)),
+                }
+              : null,
+          });
+        }
+      }
+
+      atRiskStudents = detectAtRiskStudents([...profileMap.values()]).slice(0, 5);
+    }
+  }
+
   return NextResponse.json({
     todaySessions: todaySessions.map(summarize),
     tomorrowSessions: tomorrowSessions.map(summarize),
@@ -88,6 +168,8 @@ export async function GET() {
     },
     sessionDates,
     completedModuleIds,
+    classLabels,
+    atRiskStudents,
   });
 }
 

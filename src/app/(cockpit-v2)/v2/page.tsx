@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { useDashboardSummary } from "@/hooks/use-dashboard-v2";
@@ -7,6 +8,7 @@ import { TodaySessions } from "@/components/v2/today-sessions";
 import { QuickStats } from "@/components/v2/quick-stats";
 import { MiniCalendar } from "@/components/v2/mini-calendar";
 import { GlassCardV2 } from "@/components/v2/glass-card";
+import { AtRiskWidget } from "@/components/v2/at-risk-widget";
 import { PHASES } from "@/lib/modules-data";
 
 function getGreeting(): string {
@@ -17,7 +19,8 @@ function getGreeting(): string {
 }
 
 export default function DashboardV2Page() {
-  const { data, isLoading, isError } = useDashboardSummary();
+  const [classLabel, setClassLabel] = useState<string | null>(null);
+  const { data, isLoading, isError } = useDashboardSummary(classLabel);
 
   const sessionDates = (data?.sessionDates || []).map((d) => new Date(d));
 
@@ -37,13 +40,29 @@ export default function DashboardV2Page() {
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
       {/* Welcome header */}
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-bw-heading">
-          <span className="text-gradient-cinema">{getGreeting()}</span>
-        </h1>
-        <p className="text-sm text-bw-muted mt-0.5">
-          {isLoading ? "Chargement..." : subtitle}
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-xl font-bold text-bw-heading">
+            <span className="text-gradient-cinema">{getGreeting()}</span>
+          </h1>
+          <p className="text-sm text-bw-muted mt-0.5">
+            {isLoading ? "Chargement..." : subtitle}
+          </p>
+        </div>
+        {data && data.classLabels.length > 0 && (
+          <select
+            value={classLabel ?? ""}
+            onChange={(e) => setClassLabel(e.target.value || null)}
+            className="rounded-lg border border-[var(--color-bw-border)] bg-white px-3 py-1.5 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+          >
+            <option value="">Toutes les classes</option>
+            {data.classLabels.map((cl) => (
+              <option key={cl} value={cl}>
+                {cl}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       {isLoading ? (
@@ -67,17 +86,20 @@ export default function DashboardV2Page() {
             <QuickStats stats={data.stats} />
 
             <div className="flex-1">
-              <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
+              <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
                 Agenda
               </h3>
               <MiniCalendar sessionDates={sessionDates} />
             </div>
           </div>
 
-          {/* Right column — Modules progression */}
-          <div className="lg:col-span-3">
+          {/* Right column — Modules progression + at-risk */}
+          <div className="lg:col-span-3 flex flex-col gap-4">
+            {data.atRiskStudents && data.atRiskStudents.length > 0 && (
+              <AtRiskWidget students={data.atRiskStudents} />
+            )}
             <GlassCardV2 className="p-4">
-              <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
+              <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
                 Modules
               </h3>
               <div className="flex flex-col gap-3">
@@ -298,21 +320,59 @@ function ErrorState() {
 function DashboardSkeleton() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* Left — Today sessions skeleton */}
       <div className="lg:col-span-4 flex flex-col gap-4">
         {[1, 2].map((i) => (
-          <div key={i} className="h-40 rounded-2xl bg-white shimmer" />
+          <div key={i} className="rounded-2xl bg-white p-4">
+            <div className="h-3 w-24 rounded bg-gray-100 shimmer mb-3" />
+            <div className="flex flex-col gap-3">
+              {[1, 2].map((j) => (
+                <div key={j} className="flex items-center gap-3">
+                  <div className="h-2 w-0.5 rounded-full bg-gray-100 shimmer" />
+                  <div className="flex-1">
+                    <div className="h-3.5 w-32 rounded bg-gray-100 shimmer mb-1.5" />
+                    <div className="h-2.5 w-20 rounded bg-gray-50 shimmer" />
+                  </div>
+                  <div className="h-5 w-16 rounded-full bg-gray-50 shimmer" />
+                </div>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
+      {/* Center — KPIs + calendar */}
       <div className="lg:col-span-5 flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-24 rounded-2xl bg-white shimmer" />
+            <div key={i} className="rounded-2xl bg-white p-5">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="h-2.5 w-16 rounded bg-gray-100 shimmer mb-2" />
+                  <div className="h-6 w-10 rounded bg-gray-100 shimmer" />
+                </div>
+                <div className="h-10 w-10 rounded-xl bg-gray-50 shimmer" />
+              </div>
+            </div>
           ))}
         </div>
         <div className="h-64 rounded-2xl bg-white shimmer" />
       </div>
+      {/* Right — Modules */}
       <div className="lg:col-span-3">
-        <div className="h-72 rounded-2xl bg-white shimmer" />
+        <div className="rounded-2xl bg-white p-4">
+          <div className="h-3 w-20 rounded bg-gray-100 shimmer mb-4" />
+          <div className="flex flex-col gap-3">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-full bg-gray-50 shimmer shrink-0" />
+                <div className="flex-1">
+                  <div className="h-3 w-24 rounded bg-gray-100 shimmer mb-1.5" />
+                  <div className="h-1.5 w-full rounded-full bg-gray-50 shimmer" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

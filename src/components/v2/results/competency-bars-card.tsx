@@ -68,7 +68,7 @@ export function CompetencyBarsCard({ feedback }: CompetencyBarsCardProps) {
 
       {/* Competency bars */}
       <GlassCardV2 className="p-5 space-y-3">
-        <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide">
+        <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">
           Compétences narratives
         </p>
         {feedback.competencies.map((comp) => (

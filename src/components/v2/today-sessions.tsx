@@ -31,7 +31,7 @@ function SessionRow({ session }: { session: SessionSummary }) {
   const barColor = STATUS_BAR_COLORS[session.status] || STATUS_BAR_COLORS.draft;
 
   return (
-    <div className="relative flex items-center gap-3 py-2.5 pl-3">
+    <div className="relative flex items-center gap-3 py-2.5 pl-3 rounded-lg hover:bg-[var(--color-bw-surface-dim)] transition-colors">
       {/* Left status bar 2px */}
       <div
         className="absolute left-0 top-1 bottom-1 w-[2px] rounded-full"
@@ -94,7 +94,7 @@ export function TodaySessions({
     <div className={cn("flex flex-col gap-4", className)}>
       {/* Today */}
       <GlassCardV2 className="p-4">
-        <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-2">
+        <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-2">
           Aujourd&apos;hui
         </h3>
         {todaySessions.length > 0 ? (
@@ -113,7 +113,7 @@ export function TodaySessions({
       {/* Tomorrow */}
       {tomorrowSessions.length > 0 && (
         <GlassCardV2 className="p-4">
-          <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-2">
+          <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-2">
             Demain
           </h3>
           <div className="divide-y divide-[var(--color-bw-border-subtle)]">

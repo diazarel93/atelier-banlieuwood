@@ -106,6 +106,24 @@ export function useSessionDetail(id: string) {
     onError: (err: Error) => toast.error(err.message),
   });
 
+  const duplicateSession = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/sessions/${id}/duplicate`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Erreur" }));
+        throw new Error(err.error || "Erreur lors de la duplication");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success("Séance dupliquée avec succès");
+      queryClient.invalidateQueries({ queryKey: ["v2", "sessions"] });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
   return {
     session,
     isLoading: query.isLoading,
@@ -121,5 +139,6 @@ export function useSessionDetail(id: string) {
     hasDemoStudents,
     activateDemo,
     deactivateDemo,
+    duplicateSession,
   };
 }

@@ -43,7 +43,7 @@ export function StatsDistributionChart({
 
   return (
     <GlassCardV2 className={cn("p-5", className)}>
-      <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-4">
+      <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-4">
         Distribution des compétences
       </h3>
 

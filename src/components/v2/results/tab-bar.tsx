@@ -29,7 +29,7 @@ const TABS: { key: ResultsTab; label: string; icon: string }[] = [
 
 export function TabBar({ active, onChange }: TabBarProps) {
   return (
-    <div className="flex items-center gap-1 border-b border-[var(--color-bw-border)]">
+    <div className="sticky top-14 z-30 bg-white/85 backdrop-blur-xl flex items-center gap-1 border-b border-[var(--color-bw-border)]">
       {TABS.map((tab) => {
         const isActive = active === tab.key;
         return (

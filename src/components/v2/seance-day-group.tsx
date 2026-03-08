@@ -30,7 +30,7 @@ export function SeanceDayGroup({
 }: SeanceDayGroupProps) {
   return (
     <div className={cn("flex flex-col gap-2", className)}>
-      <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide px-1">
+      <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide px-1">
         {label}
       </h3>
       <div className="flex flex-col gap-2">

@@ -22,7 +22,7 @@ export async function POST(
   // Fetch source session
   const { data: source, error: fetchError } = await supabase
     .from("sessions")
-    .select("title, level, template, facilitator_id, org_id")
+    .select("title, level, template, facilitator_id, org_id, thematique, class_label, description, question_timer")
     .eq("id", sourceId)
     .single();
 
@@ -45,6 +45,10 @@ export async function POST(
       title: `${source.title} (copie)`,
       level: source.level,
       template: source.template,
+      thematique: source.thematique,
+      class_label: source.class_label,
+      description: source.description,
+      question_timer: source.question_timer,
       join_code: joinCode,
     })
     .select()

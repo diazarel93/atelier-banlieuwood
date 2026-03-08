@@ -127,11 +127,12 @@ function sleep(ms: number) {
 async function main() {
   console.log("\n🎬 SIMULATION DE SÉANCE\n");
 
-  // 0. Find facilitator (your account)
+  // 0. Find facilitator (use email arg or default to rchansarel)
+  const targetEmail = process.argv[2] || "rchansarel@gmail.com";
   const { data: facilitators } = await db
     .from("facilitators")
     .select("id, org_id")
-    .limit(1)
+    .eq("email", targetEmail)
     .single();
 
   if (!facilitators) {

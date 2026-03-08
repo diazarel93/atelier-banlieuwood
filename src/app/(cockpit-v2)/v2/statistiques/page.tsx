@@ -3,11 +3,15 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { toast } from "sonner";
 import { StatsKpiRow } from "@/components/v2/stats-kpi-row";
 import { StatsDistributionChart } from "@/components/v2/stats-distribution-chart";
 import { StudentDotsTable } from "@/components/v2/student-dots-table";
 import { SessionSelector } from "@/components/v2/session-selector";
+import { QuestionAnalyticsTable } from "@/components/v2/question-analytics-table";
 import { GlassCardV2 } from "@/components/v2/glass-card";
+import { EmptyState } from "@/components/v2/empty-state";
+import { useQuestionAnalytics } from "@/hooks/use-question-analytics";
 import type { AxesScores } from "@/lib/axes-mapping";
 
 interface StatsData {
@@ -48,6 +52,8 @@ export default function StatistiquesPage() {
     staleTime: 30_000,
   });
 
+  const { data: qaData } = useQuestionAnalytics(sessionId, classLabel);
+
   const hasStudents = data && data.students.length > 0;
 
   function handleExportCsv() {
@@ -68,6 +74,7 @@ export default function StatistiquesPage() {
     a.download = `statistiques-banlieuwood.csv`;
     a.click();
     URL.revokeObjectURL(url);
+    toast.success("Export CSV téléchargé");
   }
 
   return (
@@ -135,25 +142,17 @@ export default function StatistiquesPage() {
           </button>
         </GlassCardV2>
       ) : data && !hasStudents ? (
-        <GlassCardV2 className="p-8 flex flex-col items-center text-center max-w-lg mx-auto">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-axis-creativite)]/10 mb-4">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <path d="M14 4v20M4 14h20" stroke="var(--color-axis-creativite)" strokeWidth="2.5" strokeLinecap="round" />
+        <EmptyState
+          icon={
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M3 15V8M7 15V5M11 15V9M15 15V3M19 15V7" />
+              <line x1="1" y1="19" x2="23" y2="19" />
             </svg>
-          </div>
-          <h2 className="text-lg font-bold text-bw-heading mb-2">
-            Pas encore de données
-          </h2>
-          <p className="text-sm text-bw-muted mb-6 leading-relaxed">
-            Les statistiques apparaîtront après qu'au moins une séance ait été terminée avec des élèves.
-          </p>
-          <Link
-            href="/v2/seances"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-bw-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors"
-          >
-            Voir mes séances
-          </Link>
-        </GlassCardV2>
+          }
+          title="Pas encore de données"
+          description="Les statistiques apparaîtront après qu'au moins une séance ait été terminée avec des élèves."
+          action={{ label: "Voir mes séances", href: "/v2/seances" }}
+        />
       ) : data ? (
         <div className="flex flex-col gap-6">
           {/* KPI rings */}
@@ -180,6 +179,16 @@ export default function StatistiquesPage() {
               }))}
             />
           </div>
+
+          {/* Question analytics */}
+          {qaData && qaData.questions.length > 0 && (
+            <div>
+              <h2 className="text-sm font-semibold text-bw-heading mb-3">
+                Analyse par question
+              </h2>
+              <QuestionAnalyticsTable questions={qaData.questions} />
+            </div>
+          )}
         </div>
       ) : null}
     </div>

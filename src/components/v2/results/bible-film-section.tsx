@@ -63,7 +63,7 @@ export function BibleFilmSection({
 
           {/* Synopsis */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-2">
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-2">
               Synopsis
             </p>
             <p className="text-sm text-bw-heading leading-relaxed">
@@ -74,7 +74,7 @@ export function BibleFilmSection({
           {/* Characters */}
           {bible.characters && bible.characters.length > 0 && (
             <GlassCardV2 className="p-5">
-              <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
+              <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
                 Personnages
               </p>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -105,7 +105,7 @@ export function BibleFilmSection({
 
           {/* World */}
           <GlassCardV2 className="p-5 space-y-2">
-            <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide">
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">
               Univers
             </p>
             <div>
@@ -138,7 +138,7 @@ export function BibleFilmSection({
 
           {/* Conflict */}
           <GlassCardV2 className="p-5 border-l-4 border-l-red-400 space-y-2">
-            <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide">
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">
               Conflit central
             </p>
             <p className="text-sm text-bw-heading">{bible.conflict.central}</p>
@@ -157,7 +157,7 @@ export function BibleFilmSection({
 
           {/* 3-Act Structure */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
               Structure en 3 actes
             </p>
             <div className="space-y-3">
@@ -186,7 +186,7 @@ export function BibleFilmSection({
           {/* Style & Themes */}
           <div className="grid gap-4 sm:grid-cols-2">
             <GlassCardV2 className="p-5 space-y-2">
-              <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide">
+              <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">
                 Style
               </p>
               <div>
@@ -228,7 +228,7 @@ export function BibleFilmSection({
               )}
             </GlassCardV2>
             <GlassCardV2 className="p-5">
-              <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-2">
+              <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-2">
                 Thèmes
               </p>
               <div className="flex flex-wrap gap-1.5">

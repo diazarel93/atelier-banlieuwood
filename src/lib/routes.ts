@@ -12,4 +12,6 @@ export const ROUTES = {
   statistiques: "/v2/statistiques",
   bibliotheque: "/v2/bibliotheque",
   ficheCours: "/v2/fiche-cours",
+  eleves: "/v2/eleves",
+  eleveDetail: (id: string) => `/v2/eleves/${id}`,
 } as const;

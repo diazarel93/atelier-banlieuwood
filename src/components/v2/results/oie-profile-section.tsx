@@ -62,7 +62,7 @@ export function OieProfileSection({ scores, feedback }: OieProfileSectionProps) 
       {/* Class average + Distribution */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <GlassCardV2 className="p-5">
-          <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
+          <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
             Profil moyen de la classe
           </p>
           <div className="flex justify-center">
@@ -71,7 +71,7 @@ export function OieProfileSection({ scores, feedback }: OieProfileSectionProps) 
         </GlassCardV2>
 
         <GlassCardV2 className="p-5 space-y-3">
-          <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-1">
+          <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-1">
             Distribution
           </p>
           {(["O", "I", "E"] as const).map((axis) => {
@@ -116,7 +116,7 @@ export function OieProfileSection({ scores, feedback }: OieProfileSectionProps) 
 
       {/* Individual mini radars */}
       <GlassCardV2 className="p-5">
-        <p className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
+        <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
           Profils individuels
         </p>
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">

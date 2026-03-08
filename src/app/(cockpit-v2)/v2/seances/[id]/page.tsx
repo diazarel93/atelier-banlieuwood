@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 import { BreadcrumbV2 } from "@/components/v2/breadcrumb";
@@ -19,6 +19,7 @@ import { ProjectionOverlay } from "@/components/v2/session-detail/projection-ove
 
 export default function SessionDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const id = params.id as string;
   const [projectionMode, setProjectionMode] = useState(false);
   const [checklistDismissed, setChecklistDismissed] = useState(false);
@@ -38,6 +39,7 @@ export default function SessionDetailPage() {
     hasDemoStudents,
     activateDemo,
     deactivateDemo,
+    duplicateSession,
   } = useSessionDetail(id);
 
   // Loading skeleton
@@ -118,6 +120,12 @@ export default function SessionDetailPage() {
           sessionId={session.id}
           sessionState={sessionState}
           onProjection={() => setProjectionMode(true)}
+          onDuplicate={() =>
+            duplicateSession.mutateAsync().then((newSession) =>
+              router.push(`/v2/seances/${newSession.id}`)
+            )
+          }
+          isDuplicating={duplicateSession.isPending}
         />
 
         {/* Two-column layout */}
