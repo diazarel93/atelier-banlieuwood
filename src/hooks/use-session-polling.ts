@@ -190,7 +190,7 @@ export interface Module8Data {
   // Role choice
   studentRank?: number | null;
   isMyTurn?: boolean;
-  availableRoles?: { key: string; label: string; description: string; emoji: string; color: string }[];
+  availableRoles?: { key: string; label: string; description: string; emoji: string; color: string; count: number }[];
   takenRoles?: { roleKey: string; studentId: string; isVeto: boolean; roleLabel: string }[];
   ranking?: { studentId: string; displayName: string; participation: number; creativity: number; engagement: number; total: number; rank: number; hasChosen: boolean }[] | null;
   pointsComputed?: boolean;

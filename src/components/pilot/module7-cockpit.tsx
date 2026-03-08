@@ -68,8 +68,8 @@ function ComparaisonView({ module7 }: { module7: Module7Data }) {
           const countA = counts?.[comp.planA.type] || 0;
           const countB = counts?.[comp.planB.type] || 0;
           const total = countA + countB;
-          const pctA = total > 0 ? Math.round((countA / total) * 100) : 50;
-          const pctB = total > 0 ? Math.round((countB / total) * 100) : 50;
+          const pctA = total > 0 ? Math.round((countA / total) * 100) : 0;
+          const pctB = total > 0 ? Math.round((countB / total) * 100) : 0;
           const colorA = PLAN_COLORS[comp.planA.type] || "#7EA7F5";
           const colorB = PLAN_COLORS[comp.planB.type] || "#F3A765";
 
@@ -85,8 +85,10 @@ function ComparaisonView({ module7 }: { module7: Module7Data }) {
                 {/* Plan A */}
                 <div className="flex-1 text-center">
                   <p className="text-xs font-semibold text-bw-heading">{comp.planA.type.replaceAll("-", " ")}</p>
-                  <p className="text-[40px] font-extrabold tabular-nums" style={{ color: colorA }}>{pctA}%</p>
-                  <p className="text-[10px] text-bw-muted">{countA} vote{countA > 1 ? "s" : ""}</p>
+                  <p className="text-[40px] font-extrabold tabular-nums" style={{ color: total > 0 ? colorA : "#CBD5E1" }}>
+                    {total > 0 ? `${pctA}%` : "—"}
+                  </p>
+                  {total > 0 && <p className="text-[10px] text-bw-muted">{countA} vote{countA > 1 ? "s" : ""}</p>}
                 </div>
                 {/* VS divider */}
                 <div className="flex flex-col items-center gap-1">
@@ -95,8 +97,10 @@ function ComparaisonView({ module7 }: { module7: Module7Data }) {
                 {/* Plan B */}
                 <div className="flex-1 text-center">
                   <p className="text-xs font-semibold text-bw-heading">{comp.planB.type.replaceAll("-", " ")}</p>
-                  <p className="text-[40px] font-extrabold tabular-nums" style={{ color: colorB }}>{pctB}%</p>
-                  <p className="text-[10px] text-bw-muted">{countB} vote{countB > 1 ? "s" : ""}</p>
+                  <p className="text-[40px] font-extrabold tabular-nums" style={{ color: total > 0 ? colorB : "#CBD5E1" }}>
+                    {total > 0 ? `${pctB}%` : "—"}
+                  </p>
+                  {total > 0 && <p className="text-[10px] text-bw-muted">{countB} vote{countB > 1 ? "s" : ""}</p>}
                 </div>
               </div>
               {/* Combined bar */}
@@ -132,7 +136,7 @@ function ComparaisonView({ module7 }: { module7: Module7Data }) {
 // ── Position 3: Decoupage ──
 function DecoupageView({ module7, connectedCount }: { module7: Module7Data; connectedCount: number }) {
   const keyScenes = module7.keyScenes || [];
-  const decoupages = module7.studentDecoupages || [];
+  const decoupages = module7.allDecoupages || module7.studentDecoupages || [];
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">

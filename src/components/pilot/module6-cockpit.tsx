@@ -130,29 +130,61 @@ function ScenesView({ module6 }: { module6: Module6Data }) {
 
 // ── Position 3: Mission assignment ──
 function MissionView({ module6, connectedCount }: { module6: Module6Data; connectedCount: number }) {
+  const missions = module6.missions || [];
   const missionTypes = module6.missionTypes || [];
+  const assignedCount = missions.length;
+
+  // Count per role
+  const roleCounts: Record<string, number> = {};
+  for (const m of missions) {
+    roleCounts[m.role] = (roleCounts[m.role] || 0) + 1;
+  }
+
   return (
     <div className="space-y-4">
-      <h3 className="text-base font-bold text-bw-heading">Missions assignees</h3>
-      <p className="text-xs text-bw-muted">
-        Chaque eleve recoit un role creatif et une scene a enrichir.
-      </p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+      <div className="flex items-center justify-between">
+        <h3 className="text-base font-bold text-bw-heading">Missions assignees</h3>
+        <span className="text-sm font-medium tabular-nums text-bw-teal">{assignedCount}/{connectedCount}</span>
+      </div>
+
+      {/* Role distribution */}
+      <div className="flex flex-wrap gap-1.5">
         {missionTypes.map((mt) => (
-          <div
+          <span
             key={mt.key}
-            className="p-3 rounded-[18px] bg-bw-surface border border-black/[0.06] text-center"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs border border-black/[0.06] bg-bw-surface"
           >
-            <span className="text-2xl">{mt.emoji}</span>
-            <p className="text-xs font-semibold text-bw-heading mt-1">{mt.label}</p>
-            <p className="text-[10px] text-bw-muted mt-0.5 line-clamp-2">{mt.description}</p>
-          </div>
+            {mt.emoji} {mt.label}
+            <span className="text-[10px] font-bold tabular-nums text-bw-muted">{roleCounts[mt.key] || 0}</span>
+          </span>
         ))}
       </div>
-      <div className="flex items-center gap-2 text-sm text-bw-muted">
-        <div className="led led-writing" style={{ background: "#6EC6B0", boxShadow: "0 0 8px rgba(110,198,176,0.4)" }} />
-        <span>{connectedCount} eleve{connectedCount > 1 ? "s" : ""} connecte{connectedCount > 1 ? "s" : ""}</span>
-      </div>
+
+      {/* Mission list */}
+      {missions.length > 0 ? (
+        <div className="space-y-1.5 max-h-[350px] overflow-y-auto">
+          {missions.map((m) => (
+            <div
+              key={m.id}
+              className={`flex items-center gap-2 p-2 rounded-xl border transition-colors ${
+                m.status === "done" || m.content
+                  ? "bg-emerald-50 border-emerald-200"
+                  : "bg-bw-surface border-black/[0.06]"
+              }`}
+            >
+              <span className="text-sm flex-1 truncate text-bw-heading">{m.sceneTitle}</span>
+              <span className="text-xs text-bw-muted">{m.role}</span>
+              <span className={`text-xs font-medium ${m.status === "done" || m.content ? "text-emerald-600" : "text-amber-500"}`}>
+                {m.status === "done" || m.content ? "Soumis" : "En cours"}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-sm text-bw-muted text-center py-4">
+          En attente de l'assignation des missions.
+        </p>
+      )}
     </div>
   );
 }

@@ -208,6 +208,9 @@ function RoleChoiceView({ module8, sessionId, connectedCount }: { module8: Modul
                 style={{ background: `${role.color}15`, color: role.color }}
               >
                 {role.emoji} {role.label}
+                {role.count > 0 && (
+                  <span className="text-[10px] font-bold tabular-nums opacity-60">×{role.count}</span>
+                )}
               </span>
             ))}
           </div>
@@ -255,11 +258,44 @@ function TeamRecapView({ module8 }: { module8: Module8Data }) {
 }
 
 // ── Position 5: Talent card ──
-function TalentCardView({ module8 }: { module8: Module8Data }) {
+function TalentCardView({ module8, sessionId }: { module8: Module8Data; sessionId: string }) {
+  const queryClient = useQueryClient();
   const card = module8.talentCard;
+
+  const generateTalentCards = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/equipe-compute`, {
+        method: "PUT",
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Erreur");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success("Cartes talent generees !");
+      queryClient.invalidateQueries({ queryKey: ["session-state"] });
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Erreur");
+    },
+  });
+
   return (
     <div className="space-y-4">
-      <h3 className="text-base font-bold text-bw-heading">Cartes Talent</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-base font-bold text-bw-heading">Cartes Talent</h3>
+        {!card && (
+          <button
+            onClick={() => generateTalentCards.mutate()}
+            disabled={generateTalentCards.isPending}
+            className="px-3 py-1.5 text-xs bg-teal-500/20 hover:bg-teal-500/40 text-teal-600 rounded-lg transition-colors border border-teal-500/30"
+          >
+            {generateTalentCards.isPending ? "Generation..." : "Generer les cartes"}
+          </button>
+        )}
+      </div>
       <p className="text-xs text-bw-muted">
         Chaque eleve decouvre sa carte talent personnalisee sur son ecran.
       </p>
@@ -317,7 +353,7 @@ export function Module8Cockpit({ sessionId, module8, connectedCount }: Module8Co
       case "team-recap":
         return <TeamRecapView module8={module8} />;
       case "talent-card":
-        return <TalentCardView module8={module8} />;
+        return <TalentCardView module8={module8} sessionId={sessionId} />;
       default:
         return <p className="text-sm text-bw-muted">Type inconnu : {module8.type}</p>;
     }

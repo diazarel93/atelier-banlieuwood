@@ -1056,6 +1056,20 @@ function CockpitContent({
     if (showM10Special && module10Data?.allSubmissions) return module10Data.allSubmissions.length;
     if (showM2ECChecklist) return module5Data?.submittedCount || 0;
     if (showM2ECSceneBuilder || showM2ECComparison) return scenesData?.count || 0;
+    // M6: count done missions
+    if (isM6Any && module6Data?.missions) return module6Data.missions.filter((m: { status: string; content?: string }) => m.status === "done" || m.content).length;
+    // M7: count submitted decoupages or comparisons
+    if (isM7Any && module7Data?.type === "comparaison" && module7Data?.comparisonResults) {
+      const counts = Object.values(module7Data.comparisonResults);
+      if (counts.length > 0) {
+        const first = counts[0] as Record<string, number>;
+        return Object.values(first).reduce((sum, v) => sum + v, 0);
+      }
+    }
+    if (isM7Any && module7Data?.allDecoupages) return module7Data.allDecoupages.length;
+    // M8: count based on type
+    if (isM8Any && module8Data?.type === "quiz" && module8Data?.hasAnswered !== undefined) return module8Data.hasAnswered ? 1 : 0;
+    if (isM8Any && module8Data?.type === "role-choice") return module8Data?.takenRoles?.length || 0;
     return responses.length;
   })();
 

@@ -126,6 +126,7 @@ export async function handleModule7(
     const keyScenes = sorted.slice(0, 3);
 
     let studentDecoupages: Record<string, unknown>[] = [];
+    let allDecoupages: Record<string, unknown>[] = [];
     if (studentId) {
       const { data: decoupages } = await admin
         .from("module7_decoupages")
@@ -133,6 +134,13 @@ export async function handleModule7(
         .eq("session_id", sessionId)
         .eq("student_id", studentId);
       studentDecoupages = decoupages || [];
+    } else {
+      // Facilitator: all decoupages for progress tracking
+      const { data: decoupages } = await admin
+        .from("module7_decoupages")
+        .select("scene_id, student_id, plans")
+        .eq("session_id", sessionId);
+      allDecoupages = decoupages || [];
     }
 
     module7Data = {
@@ -147,6 +155,12 @@ export async function handleModule7(
       })),
       studentDecoupages: studentDecoupages.map((d) => ({
         sceneId: d.scene_id,
+        plans: d.plans,
+      })),
+      // Facilitator: all decoupages for counting submissions per scene
+      allDecoupages: allDecoupages.map((d) => ({
+        sceneId: d.scene_id,
+        studentId: d.student_id,
         plans: d.plans,
       })),
       planTypes: PLANS_FONDAMENTAUX.map((p) => ({ key: p.key, label: p.label })),

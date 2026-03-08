@@ -44,6 +44,19 @@ const TABLE_INVALIDATION_MAP: Record<string, (sessionId: string) => string[][]> 
     ["pilot-teams", sid],
     ["session-state", sid],
   ],
+  // M6 — Le Scénario
+  module6_scenes: (sid) => [["session-state", sid]],
+  module6_missions: (sid) => [["session-state", sid]],
+  module6_scenario: (sid) => [["session-state", sid]],
+  // M7 — La Mise en scène
+  module7_comparisons: (sid) => [["session-state", sid]],
+  module7_decoupages: (sid) => [["session-state", sid]],
+  module7_storyboard: (sid) => [["session-state", sid]],
+  // M8 — L'Équipe
+  module8_quiz: (sid) => [["session-state", sid]],
+  module8_roles: (sid) => [["session-state", sid]],
+  module8_points: (sid) => [["session-state", sid]],
+  module8_talent_cards: (sid) => [["session-state", sid]],
 };
 
 /**

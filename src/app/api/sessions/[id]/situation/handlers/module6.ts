@@ -174,6 +174,17 @@ export async function handleModule6(
           }
         : null,
       missionTypes: MISSION_TYPES,
+      // Facilitator: all missions for overview
+      missions: !studentId
+        ? (allMissions || []).map((m: Record<string, unknown>) => ({
+            id: m.id,
+            studentId: m.student_id,
+            role: m.role,
+            content: m.content,
+            status: m.status,
+            sceneTitle: (m.module6_scenes as Record<string, unknown>)?.title || "",
+          }))
+        : undefined,
     };
   } else if (position === 4) {
     // Écriture
@@ -191,6 +202,17 @@ export async function handleModule6(
             status: studentMission.status,
           }
         : null,
+      // Facilitator: all missions for progress tracking
+      missions: !studentId
+        ? (allMissions || []).map((m: Record<string, unknown>) => ({
+            id: m.id,
+            studentId: m.student_id,
+            role: m.role,
+            content: m.content,
+            status: m.status,
+            sceneTitle: (m.module6_scenes as Record<string, unknown>)?.title || "",
+          }))
+        : undefined,
     };
   } else if (position === 5) {
     // Assemblage
