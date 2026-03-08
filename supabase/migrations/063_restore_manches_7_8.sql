@@ -14,17 +14,15 @@ ALTER TABLE module12_winners DROP CONSTRAINT IF EXISTS module12_winners_manche_c
 ALTER TABLE module12_winners ADD CONSTRAINT module12_winners_manche_check CHECK (manche BETWEEN 1 AND 8);
 
 -- Restore situation seeds for positions 7-8
-INSERT INTO situations (module, seance, position, is_qcm, category, restitution_label,
-  prompt_6_9, prompt_10_13, prompt_14_18, vote_options)
+INSERT INTO situations (module, seance, position, category, restitution_label,
+  prompt_6_9, prompt_10_13, prompt_14_18)
 VALUES
-(12, 1, 7, 0, 'collectif', 'La Relation',
+(12, 1, 7, 'collectif', 'La Relation',
   'Vote pour la relation clé !',
   'Quelle relation est au cœur de l''histoire ?',
-  'Quel lien entre personnages constituera le moteur émotionnel du récit ?',
-  NULL),
-(12, 1, 8, 0, 'collectif', 'Le Moment Fort',
+  'Quel lien entre personnages constituera le moteur émotionnel du récit ?'),
+(12, 1, 8, 'collectif', 'Le Moment Fort',
   'Vote pour le moment fort !',
   'Quel sera le moment le plus intense du film ?',
-  'Quel climax ou retournement marquera le point culminant de la narration ?',
-  NULL)
+  'Quel climax ou retournement marquera le point culminant de la narration ?')
 ON CONFLICT DO NOTHING;
