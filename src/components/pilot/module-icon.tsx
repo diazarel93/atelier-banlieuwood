@@ -110,6 +110,20 @@ export function ModuleIcon({ iconKey, size = 32 }: ModuleIconProps) {
           <path d="M23 7l-7 5 7 5V7z" /><rect x="1" y="5" width="15" height="14" rx="2" />
         </svg>
       );
+    case "mic":
+      return (
+        <svg {...props}>
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+          <line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" />
+        </svg>
+      );
+    case "sparkle":
+      return (
+        <svg {...props}>
+          <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z" />
+        </svg>
+      );
     default:
       return (
         <svg {...props}>

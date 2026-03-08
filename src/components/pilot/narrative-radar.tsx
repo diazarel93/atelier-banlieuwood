@@ -56,12 +56,12 @@ export function computeNarrativeScores(
     imagination: ["imagination", "expression"],
     collectif: ["construction", "expression"],
     scenario: ["construction", "expression"],
-    production: ["construction", "observation"],
+    "mise-en-scene": ["construction", "observation"],
     cinema: ["observation", "construction"],
     story: ["imagination", "emotion"],
     empathy: ["emotion", "expression"],
     cinedebat: ["observation", "expression"],
-    plateau: ["expression", "construction"],
+    equipe: ["expression", "construction"],
     postprod: ["construction", "observation"],
   };
 
@@ -119,12 +119,12 @@ function getPhaseModuleIds(phaseId: string): string[] {
     imagination: ["m10a", "m10b"],
     collectif: ["m12a"],
     scenario: ["m6"],
-    production: ["m7"],
+    "mise-en-scene": ["m7"],
     cinema: ["m2a", "m2b", "m2c", "m2d"],
     story: ["m2-perso", "m3", "m4", "m5"],
     empathy: ["m2-perso"],
     cinedebat: ["m11a", "m11b", "m11c", "m11d"],
-    plateau: ["m8"],
+    equipe: ["m8"],
     postprod: ["m9"],
   };
   return map[phaseId] || [];

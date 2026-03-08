@@ -48,8 +48,9 @@ const CINEMA_REFS = [
 
 /* Phase icon — typographic initial in gradient container (replaces emojis) */
 const PHASE_ICONS: Record<string, string> = {
-  idea: "I", emotion: "É", cinema: "C", story: "H",
-  scenario: "S", production: "P", plateau: "T", postprod: "M",
+  idea: "I", emotion: "É", imagination: "✨", collectif: "V",
+  scenario: "S", "mise-en-scene": "M", cinema: "C", story: "H",
+  empathy: "E", cinedebat: "D", equipe: "É", postprod: "P",
 };
 
 interface SessionData {

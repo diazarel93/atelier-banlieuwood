@@ -39,6 +39,14 @@ const MODULE_ACTIVITIES: Record<string, ActivityInfo> = {
   // Module 10
   m10a: { type: "image", emoji: "✨", label: "Et si...", detail: "À partir d'une image, les élèves imaginent un scénario « Et si... ? ». Écriture libre, banque d'idées, QCM créatif.", tags: ["Image", "Écriture", "Imagination"] },
   m10b: { type: "game", emoji: "🎤", label: "Pitch en 30s", detail: "Créer un personnage, définir son objectif et obstacle, puis pitcher l'histoire chrono en main. Confrontation des pitchs.", tags: ["Personnage", "Pitch", "Chrono"] },
+  // Module 12 — Construction Collective
+  m12a: { type: "game", emoji: "🗳️", label: "Vote collectif", detail: "8 manches de vote pour construire le film de la classe : ton, situation, personnages, objectif, obstacle, scène, relation, moment fort. Chaque manche propose 3 cartes.", tags: ["Vote", "Collectif", "8 manches"] },
+  // Module 6 — Le Scénario
+  m6: { type: "notebook", emoji: "✏️", label: "Écriture collaborative", detail: "Frise narrative, scènes IA, missions d'écriture par rôle (dialoguiste, descripteur, chorégraphe, émotionnel), assemblage du scénario final.", tags: ["Scénario", "IA", "Missions"] },
+  // Module 7 — La Mise en scène
+  m7: { type: "image", emoji: "🎥", label: "Langage visuel", detail: "4 plans fondamentaux (large, moyen, gros plan, réaction). Quiz de comparaison visuelle, mini-découpage des scènes clés, storyboard.", tags: ["Plans", "Cadrage", "Storyboard"] },
+  // Module 8 — L'Équipe
+  m8: { type: "game", emoji: "🎭", label: "Formation d'équipe", detail: "Quiz des métiers du cinéma, débrief collectif, choix des rôles par ordre de mérite (classement invisible), carte talent personnalisée.", tags: ["Métiers", "Rôles", "Talent"] },
   // Module 11 — Ciné-Débat
   m11a: { type: "debate", emoji: "🎬", label: "L'Art de Raconter", detail: "Citations, affiches, scènes : découvrez comment les grands réalisateurs racontent. Analyse et débat.", tags: ["Citations", "Affiches", "Débat"] },
   m11b: { type: "debate", emoji: "😢", label: "Émotions à l'Écran", detail: "Pourquoi cette scène fait pleurer ? Décryptage des outils du cinéma : musique, silence, jeu d'acteur.", tags: ["Émotion", "Analyse", "Débat"] },
@@ -163,6 +171,10 @@ const MODULE_COVERS: Record<string, { url: string; credit: string }> = {
   m3: { url: "https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=600&h=300&fit=crop", credit: "Aiony Haust" },
   m4: { url: "https://images.unsplash.com/photo-1533488765986-dfa2a9939acd?w=600&h=300&fit=crop", credit: "Jakob Owens" },
   m5: { url: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&h=300&fit=crop", credit: "Krists Luhaers" },
+  m12a: { url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=300&fit=crop", credit: "Chang Duong" },
+  m6: { url: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=300&fit=crop", credit: "Aaron Burden" },
+  m7: { url: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600&h=300&fit=crop", credit: "Jakob Owens" },
+  m8: { url: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&h=300&fit=crop", credit: "Jason Goodman" },
 };
 
 // ────────────────────────────────────────────
