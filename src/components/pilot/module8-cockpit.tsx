@@ -128,7 +128,7 @@ function RoleChoiceView({ module8, sessionId, connectedCount }: { module8: Modul
 
   const computePoints = useMutation({
     mutationFn: async () => {
-      const res = await fetch(`/api/sessions/${sessionId}/compute-points`, {
+      const res = await fetch(`/api/sessions/${sessionId}/equipe-compute`, {
         method: "POST",
       });
       if (!res.ok) {
@@ -255,44 +255,51 @@ function TeamRecapView({ module8 }: { module8: Module8Data }) {
 }
 
 // ── Position 5: Talent card ──
-function TalentCardView({ module8, connectedCount }: { module8: Module8Data; connectedCount: number }) {
-  const team = module8.team || [];
+function TalentCardView({ module8 }: { module8: Module8Data }) {
+  const card = module8.talentCard;
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-base font-bold text-bw-heading">Cartes Talent</h3>
-        <span className="text-sm text-bw-muted">{team.length} cartes</span>
-      </div>
+      <h3 className="text-base font-bold text-bw-heading">Cartes Talent</h3>
       <p className="text-xs text-bw-muted">
-        Chaque eleve decouvre sa carte talent personnalisee.
+        Chaque eleve decouvre sa carte talent personnalisee sur son ecran.
       </p>
-      {team.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {team.map((member) => (
-            <motion.div
-              key={member.studentId}
-              initial={{ opacity: 0, rotateY: -10 }}
-              animate={{ opacity: 1, rotateY: 0 }}
-              className="p-3 rounded-[18px] border-2 bg-gradient-to-b from-white to-bw-surface"
-              style={{ borderColor: member.roleColor }}
+      {card ? (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="p-4 rounded-[18px] border-2 bg-gradient-to-b from-white to-bw-surface max-w-xs mx-auto"
+          style={{ borderColor: card.talentCategoryColor }}
+        >
+          <div className="text-center">
+            <InitialAvatar name={card.displayName} size={48} />
+            <p className="text-sm font-bold text-bw-heading mt-2">{card.displayName}</p>
+            <span
+              className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold text-white"
+              style={{ background: card.talentCategoryColor }}
             >
-              <div className="text-center">
-                <InitialAvatar name={member.displayName} size={36} />
-                <p className="text-xs font-bold text-bw-heading mt-1 truncate">{member.displayName}</p>
-                <span
-                  className="inline-block mt-1 px-1.5 py-0.5 rounded text-[9px] font-bold text-white"
-                  style={{ background: member.roleColor }}
-                >
-                  {member.roleEmoji} {member.roleLabel}
-                </span>
+              {card.roleEmoji} {card.roleLabel}
+            </span>
+            <p className="text-xs text-bw-muted mt-2">{card.talentCategoryLabel}</p>
+            {card.strengths.length > 0 && (
+              <div className="flex flex-wrap justify-center gap-1 mt-2">
+                {card.strengths.map((s, i) => (
+                  <span key={i} className="px-2 py-0.5 rounded-full text-[10px] bg-bw-primary/10 text-bw-primary font-medium">
+                    {s}
+                  </span>
+                ))}
               </div>
-            </motion.div>
-          ))}
-        </div>
+            )}
+          </div>
+        </motion.div>
       ) : (
-        <p className="text-sm text-bw-muted text-center py-4">
-          Les cartes talent seront generees apres la constitution de l'equipe.
-        </p>
+        <div className="flex flex-col items-center gap-3 py-8">
+          <div className="w-16 h-16 rounded-2xl bg-bw-primary/5 flex items-center justify-center">
+            <span className="text-3xl">🎴</span>
+          </div>
+          <p className="text-sm text-bw-muted text-center">
+            Les cartes talent sont visibles sur l'ecran de chaque eleve.
+          </p>
+        </div>
       )}
     </div>
   );
@@ -310,7 +317,7 @@ export function Module8Cockpit({ sessionId, module8, connectedCount }: Module8Co
       case "team-recap":
         return <TeamRecapView module8={module8} />;
       case "talent-card":
-        return <TalentCardView module8={module8} connectedCount={connectedCount} />;
+        return <TalentCardView module8={module8} />;
       default:
         return <p className="text-sm text-bw-muted">Type inconnu : {module8.type}</p>;
     }

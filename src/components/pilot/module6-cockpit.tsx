@@ -17,7 +17,6 @@ const ACT_LABELS: Record<string, string> = {
 };
 
 interface Module6CockpitProps {
-  sessionId: string;
   module6: Module6Data;
   connectedCount: number;
 }
@@ -71,7 +70,7 @@ function FriseView({ module6 }: { module6: Module6Data }) {
 }
 
 // ── Position 2: Scenes V0 ──
-function ScenesView({ module6, connectedCount }: { module6: Module6Data; connectedCount: number }) {
+function ScenesView({ module6 }: { module6: Module6Data }) {
   const scenes = module6.scenes || [];
   const readyCount = scenes.filter((s) => s.status === "done" || s.content).length;
   return (
@@ -254,13 +253,13 @@ function AssemblageView({ module6 }: { module6: Module6Data }) {
   );
 }
 
-export function Module6Cockpit({ sessionId, module6, connectedCount }: Module6CockpitProps) {
+export function Module6Cockpit({ module6, connectedCount }: Module6CockpitProps) {
   const content = useMemo(() => {
     switch (module6.type) {
       case "frise":
         return <FriseView module6={module6} />;
       case "scenes-v0":
-        return <ScenesView module6={module6} connectedCount={connectedCount} />;
+        return <ScenesView module6={module6} />;
       case "mission":
         return <MissionView module6={module6} connectedCount={connectedCount} />;
       case "ecriture":

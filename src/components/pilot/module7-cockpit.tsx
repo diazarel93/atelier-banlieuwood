@@ -12,7 +12,6 @@ const PLAN_COLORS: Record<string, string> = {
 };
 
 interface Module7CockpitProps {
-  sessionId: string;
   module7: Module7Data;
   connectedCount: number;
 }
@@ -54,7 +53,7 @@ function PlansView({ module7 }: { module7: Module7Data }) {
 }
 
 // ── Position 2: Comparaison ──
-function ComparaisonView({ module7, connectedCount }: { module7: Module7Data; connectedCount: number }) {
+function ComparaisonView({ module7 }: { module7: Module7Data }) {
   const results = module7.comparisonResults;
   const comparisons = module7.comparisons || [];
   return (
@@ -85,7 +84,7 @@ function ComparaisonView({ module7, connectedCount }: { module7: Module7Data; co
               <div className="flex items-center gap-3">
                 {/* Plan A */}
                 <div className="flex-1 text-center">
-                  <p className="text-xs font-semibold text-bw-heading">{comp.planA.type.replace("-", " ")}</p>
+                  <p className="text-xs font-semibold text-bw-heading">{comp.planA.type.replaceAll("-", " ")}</p>
                   <p className="text-[40px] font-extrabold tabular-nums" style={{ color: colorA }}>{pctA}%</p>
                   <p className="text-[10px] text-bw-muted">{countA} vote{countA > 1 ? "s" : ""}</p>
                 </div>
@@ -95,7 +94,7 @@ function ComparaisonView({ module7, connectedCount }: { module7: Module7Data; co
                 </div>
                 {/* Plan B */}
                 <div className="flex-1 text-center">
-                  <p className="text-xs font-semibold text-bw-heading">{comp.planB.type.replace("-", " ")}</p>
+                  <p className="text-xs font-semibold text-bw-heading">{comp.planB.type.replaceAll("-", " ")}</p>
                   <p className="text-[40px] font-extrabold tabular-nums" style={{ color: colorB }}>{pctB}%</p>
                   <p className="text-[10px] text-bw-muted">{countB} vote{countB > 1 ? "s" : ""}</p>
                 </div>
@@ -231,13 +230,13 @@ function StoryboardView({ module7 }: { module7: Module7Data }) {
   );
 }
 
-export function Module7Cockpit({ sessionId, module7, connectedCount }: Module7CockpitProps) {
+export function Module7Cockpit({ module7, connectedCount }: Module7CockpitProps) {
   const content = useMemo(() => {
     switch (module7.type) {
       case "plans":
         return <PlansView module7={module7} />;
       case "comparaison":
-        return <ComparaisonView module7={module7} connectedCount={connectedCount} />;
+        return <ComparaisonView module7={module7} />;
       case "decoupage":
         return <DecoupageView module7={module7} connectedCount={connectedCount} />;
       case "storyboard":

@@ -1806,7 +1806,6 @@ function CockpitContent({
           {/* ── MODULE 6: Le Scénario cockpit ── */}
           {isM6Any && module6Data && (
             <Module6Cockpit
-              sessionId={session.id}
               module6={module6Data}
               connectedCount={activeStudents.length}
             />
@@ -1815,7 +1814,6 @@ function CockpitContent({
           {/* ── MODULE 7: La Mise en scène cockpit ── */}
           {isM7Any && module7Data && (
             <Module7Cockpit
-              sessionId={session.id}
               module7={module7Data}
               connectedCount={activeStudents.length}
             />
