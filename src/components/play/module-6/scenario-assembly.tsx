@@ -8,9 +8,9 @@ interface ScenarioAssemblyProps {
 }
 
 const ACT_COLORS: Record<string, string> = {
-  setup: "border-l-blue-400",
-  confrontation: "border-l-orange-400",
-  resolution: "border-l-emerald-400",
+  setup: "border-l-bw-violet",
+  confrontation: "border-l-bw-amber",
+  resolution: "border-l-bw-teal",
 };
 
 export function ScenarioAssembly({ module6 }: ScenarioAssemblyProps) {
@@ -19,7 +19,11 @@ export function ScenarioAssembly({ module6 }: ScenarioAssemblyProps) {
   const scenario = module6.scenario;
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4"
+    >
       <div className="text-center">
         <h2 className="text-2xl font-bold text-white">Le Scénario</h2>
         <p className="text-sm text-white/50 mt-1">
@@ -31,9 +35,9 @@ export function ScenarioAssembly({ module6 }: ScenarioAssemblyProps) {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="w-full p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center"
+          className="w-full p-4 rounded-xl bg-bw-teal/10 border border-bw-teal/20 text-center"
         >
-          <span className="text-emerald-400 font-semibold">Scénario validé par le facilitateur</span>
+          <span className="text-bw-teal font-semibold">Scénario validé par le facilitateur</span>
         </motion.div>
       )}
 
@@ -48,7 +52,7 @@ export function ScenarioAssembly({ module6 }: ScenarioAssemblyProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className={`p-4 rounded-xl bg-white/5 border border-white/10 border-l-4 ${
+              className={`p-4 rounded-xl bg-white/5 border border-white/[0.06] border-l-4 ${
                 ACT_COLORS[scene.act] || "border-l-white/20"
               }`}
             >
@@ -65,7 +69,7 @@ export function ScenarioAssembly({ module6 }: ScenarioAssemblyProps) {
 
               {/* Scene content */}
               {scene.content && (
-                <div className="p-2 rounded bg-white/5 mb-2">
+                <div className="p-2 rounded-lg bg-white/5 mb-2">
                   <p className="text-xs text-white/70 whitespace-pre-wrap">{scene.content}</p>
                 </div>
               )}
@@ -76,9 +80,9 @@ export function ScenarioAssembly({ module6 }: ScenarioAssemblyProps) {
                   {sceneMissions.map((m) => (
                     <div
                       key={m.id}
-                      className={`p-2 rounded text-xs ${
+                      className={`p-2 rounded-lg text-xs ${
                         m.status === "done"
-                          ? "bg-teal-500/10 border border-teal-500/20 text-teal-300"
+                          ? "bg-bw-teal/10 border border-bw-teal/20 text-bw-teal"
                           : "bg-white/5 border border-white/5 text-white/30"
                       }`}
                     >
@@ -96,6 +100,6 @@ export function ScenarioAssembly({ module6 }: ScenarioAssemblyProps) {
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 }

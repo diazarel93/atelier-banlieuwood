@@ -13,7 +13,11 @@ export function DebriefView({ module8 }: DebriefViewProps) {
   const fiches = module8.fiches || [];
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4"
+    >
       <div className="text-center">
         <h2 className="text-xl font-bold text-white">Corrections</h2>
         <p className="text-sm text-white/50 mt-1">Les vraies réponses sur les métiers du cinéma</p>
@@ -32,7 +36,7 @@ export function DebriefView({ module8 }: DebriefViewProps) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="p-4 rounded-xl bg-white/5 border border-white/10"
+              className="p-4 rounded-xl bg-white/5 border border-white/[0.06]"
             >
               {/* Métier header */}
               <div className="flex items-center gap-2 mb-2">
@@ -46,7 +50,7 @@ export function DebriefView({ module8 }: DebriefViewProps) {
               </p>
 
               {/* Reality */}
-              <p className="text-sm text-emerald-300">
+              <p className="text-sm text-bw-teal">
                 {c.reality}
               </p>
 
@@ -55,7 +59,7 @@ export function DebriefView({ module8 }: DebriefViewProps) {
                 <div className="mt-3 flex items-center gap-2">
                   <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-emerald-500 rounded-full transition-all"
+                      className="h-full bg-bw-teal rounded-full transition-all"
                       style={{ width: `${correctPct}%` }}
                     />
                   </div>
@@ -77,8 +81,8 @@ export function DebriefView({ module8 }: DebriefViewProps) {
             {fiches.map((f) => (
               <div
                 key={f.key}
-                className="p-3 rounded-xl border border-white/10 bg-white/5"
-                style={{ borderLeftColor: f.color, borderLeftWidth: 3 }}
+                className="p-3 rounded-xl border border-white/[0.06] bg-white/5 border-l-4"
+                style={{ borderLeftColor: f.color }}
               >
                 <div className="flex items-center gap-1.5 mb-1">
                   <span className="text-sm">{f.emoji}</span>
@@ -92,6 +96,6 @@ export function DebriefView({ module8 }: DebriefViewProps) {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

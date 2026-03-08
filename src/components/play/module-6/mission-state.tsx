@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
+import { SuccessCheck } from "@/components/play/success-check";
 import type { Module6Data } from "@/hooks/use-session-polling";
 
 interface MissionStateProps {
@@ -32,8 +34,9 @@ export function MissionState({ module6, sessionId, studentId, isWriting = false 
         }),
       });
       if (res.ok) setSubmitted(true);
+      else toast.error("Erreur lors de l'envoi");
     } catch {
-      // ignore
+      toast.error("Erreur de connexion");
     } finally {
       setSubmitting(false);
     }
@@ -48,8 +51,16 @@ export function MissionState({ module6, sessionId, studentId, isWriting = false 
     );
   }
 
+  if (submitted && isWriting) {
+    return <SuccessCheck />;
+  }
+
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4"
+    >
       <div className="text-center">
         <h2 className="text-2xl font-bold text-white">
           {isWriting ? "Écris ta contribution" : "Ta Mission"}
@@ -60,14 +71,14 @@ export function MissionState({ module6, sessionId, studentId, isWriting = false 
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10 w-full"
+        className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/[0.06] w-full"
       >
         <span className="text-3xl">{mission.roleEmoji}</span>
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <p className="text-sm font-bold text-white">{mission.roleLabel}</p>
             {mission.isScribe && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-300 font-medium">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-bw-amber/20 border border-bw-amber/30 text-bw-amber font-medium">
                 Scribe
               </span>
             )}
@@ -78,15 +89,15 @@ export function MissionState({ module6, sessionId, studentId, isWriting = false 
 
       {/* Scribe instruction */}
       {mission.isScribe && (
-        <div className="w-full p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
-          <p className="text-xs text-amber-300 text-center">
+        <div className="w-full p-2 rounded-xl bg-bw-amber/10 border border-bw-amber/20">
+          <p className="text-xs text-bw-amber text-center">
             Tu es le scribe de cette scène — c&apos;est toi qui saisiras le texte final du groupe.
           </p>
         </div>
       )}
 
       {/* Scene context */}
-      <div className="w-full p-3 rounded-lg bg-white/5 border border-white/10">
+      <div className="w-full p-3 rounded-xl bg-white/5 border border-white/[0.06]">
         <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Scène</p>
         <p className="text-sm font-semibold text-white">{mission.sceneTitle}</p>
         {mission.sceneDescription && (
@@ -102,24 +113,21 @@ export function MissionState({ module6, sessionId, studentId, isWriting = false 
             onChange={(e) => setContent(e.target.value)}
             disabled={submitted}
             placeholder="Écris ici ta contribution..."
-            className="w-full h-40 p-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 resize-none focus:outline-none focus:border-teal-400/50"
+            className="w-full h-40 rounded-xl bg-bw-elevated border border-white/[0.06] p-3 text-sm text-bw-text placeholder:text-bw-muted resize-none focus:outline-none focus:border-bw-teal transition-colors"
           />
           <div className="flex justify-between items-center mt-2">
             <span className="text-xs text-white/30">{content.length} caractères</span>
-            {!submitted ? (
-              <button
-                onClick={handleSubmit}
-                disabled={submitting || !content.trim()}
-                className="px-4 py-2 rounded-lg bg-teal-500 text-white text-sm font-medium hover:bg-teal-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                {submitting ? "Envoi..." : "Envoyer"}
-              </button>
-            ) : (
-              <span className="text-sm text-emerald-400">Envoyé !</span>
-            )}
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={handleSubmit}
+              disabled={submitting || !content.trim()}
+              className="btn-glow px-6 py-2.5 rounded-xl text-sm font-semibold bg-bw-teal text-white disabled:opacity-40 cursor-pointer"
+            >
+              {submitting ? "Envoi..." : "Envoyer"}
+            </motion.button>
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

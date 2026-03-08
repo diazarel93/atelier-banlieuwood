@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 import type { Module8Data } from "@/hooks/use-session-polling";
 
 interface RolePickerProps {
@@ -34,8 +35,9 @@ export function RolePicker({ module8, sessionId, studentId }: RolePickerProps) {
         }),
       });
       if (res.ok) setChosen(roleKey);
+      else toast.error("Erreur lors du choix");
     } catch {
-      // ignore
+      toast.error("Erreur de connexion");
     } finally {
       setSubmitting(false);
     }
@@ -44,19 +46,23 @@ export function RolePicker({ module8, sessionId, studentId }: RolePickerProps) {
   const hasChosen = !!chosen;
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4"
+    >
       <div className="text-center">
         <h2 className="text-2xl font-bold text-white">Choix du Rôle</h2>
         {isMyTurn && !hasChosen ? (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-sm text-yellow-400 mt-1 font-semibold"
+            className="text-sm text-bw-amber mt-1 font-semibold"
           >
             C&apos;est ton tour ! Choisis ton rôle.
           </motion.p>
         ) : hasChosen ? (
-          <p className="text-sm text-emerald-400 mt-1">Rôle choisi !</p>
+          <p className="text-sm text-bw-teal mt-1">Rôle choisi !</p>
         ) : (
           <p className="text-sm text-white/50 mt-1">En attente de ton tour...</p>
         )}
@@ -64,7 +70,7 @@ export function RolePicker({ module8, sessionId, studentId }: RolePickerProps) {
 
       {!module8.pointsComputed && (
         <div className="text-center py-6">
-          <div className="w-10 h-10 border-2 border-white/20 border-t-teal-400 rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-10 h-10 border-2 border-white/20 border-t-bw-teal rounded-full animate-spin mx-auto mb-3" />
           <p className="text-sm text-white/50">Le facilitateur calcule les scores...</p>
         </div>
       )}
@@ -79,14 +85,15 @@ export function RolePicker({ module8, sessionId, studentId }: RolePickerProps) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => handleChoose(role.key)}
               disabled={!isMyTurn || submitting || hasChosen}
               className={`w-full p-4 rounded-xl text-left transition-all ${
                 chosen === role.key
-                  ? "bg-teal-500/20 border-2 border-teal-400"
+                  ? "bg-bw-teal/20 border-2 border-bw-teal"
                   : isMyTurn && !hasChosen
-                  ? "bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer"
-                  : "bg-white/5 border border-white/10 opacity-60"
+                  ? "bg-white/5 border border-white/[0.06] hover:bg-white/10 hover:border-white/20 cursor-pointer"
+                  : "bg-white/5 border border-white/[0.06] opacity-60"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -108,20 +115,20 @@ export function RolePicker({ module8, sessionId, studentId }: RolePickerProps) {
           {takenRoles.map((role) => (
             <div
               key={role.roleKey}
-              className="flex items-center gap-2 p-2 rounded-lg bg-white/5 text-xs"
+              className="flex items-center gap-2 p-2 rounded-xl bg-white/5 text-xs"
             >
-              <span className="text-emerald-400 font-semibold">{role.roleLabel}</span>
+              <span className="text-bw-teal font-semibold">{role.roleLabel}</span>
               <span className="text-white/30">—</span>
               <span className="text-white/50">
                 {role.studentId === studentId ? "Toi !" : "Attribué"}
               </span>
               {role.isVeto && (
-                <span className="ml-auto text-yellow-400 text-xs">Veto BW</span>
+                <span className="ml-auto text-bw-amber text-xs">Veto BW</span>
               )}
             </div>
           ))}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

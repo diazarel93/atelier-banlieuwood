@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 import type { Module7Data } from "@/hooks/use-session-polling";
 
 // Map comparison keys + sides to their illustration URLs
@@ -62,7 +63,7 @@ export function ComparisonQuiz({ module7, sessionId, studentId }: ComparisonQuiz
       });
       setShowExplanation(true);
     } catch {
-      // ignore
+      toast.error("Erreur de connexion");
     } finally {
       setSubmitting(false);
     }
@@ -78,7 +79,11 @@ export function ComparisonQuiz({ module7, sessionId, studentId }: ComparisonQuiz
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4"
+    >
       {/* Progress */}
       <div className="flex gap-2">
         {comparisons.map((_, i) => (
@@ -86,9 +91,9 @@ export function ComparisonQuiz({ module7, sessionId, studentId }: ComparisonQuiz
             key={i}
             className={`w-3 h-3 rounded-full ${
               i < currentIndex || answered.has(comparisons[i].key)
-                ? "bg-emerald-400"
+                ? "bg-bw-teal"
                 : i === currentIndex
-                ? "bg-yellow-400 animate-pulse"
+                ? "bg-bw-amber animate-pulse"
                 : "bg-white/20"
             }`}
           />
@@ -113,8 +118,8 @@ export function ComparisonQuiz({ module7, sessionId, studentId }: ComparisonQuiz
             disabled={submitting || isAnswered || showExplanation}
             className={`rounded-xl text-left transition-all overflow-hidden ${
               selectedPlan === plan.type
-                ? "bg-teal-500/20 border-2 border-teal-400"
-                : "bg-white/5 border border-white/10 hover:bg-white/10"
+                ? "bg-bw-teal/20 border-2 border-bw-teal"
+                : "bg-white/5 border border-white/[0.06] hover:bg-white/10"
             } ${(submitting || isAnswered) ? "opacity-60" : ""}`}
           >
             {/* Comparison illustration */}
@@ -150,7 +155,7 @@ export function ComparisonQuiz({ module7, sessionId, studentId }: ComparisonQuiz
             value={reasoning}
             onChange={(e) => setReasoning(e.target.value)}
             placeholder="Pourquoi ce choix ? (optionnel)"
-            className="w-full h-20 p-3 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder-white/30 resize-none focus:outline-none focus:border-teal-400/50"
+            className="w-full h-20 rounded-xl bg-bw-elevated border border-white/[0.06] p-3 text-xs text-bw-text placeholder:text-bw-muted resize-none focus:outline-none focus:border-bw-teal transition-colors"
           />
         </div>
       )}
@@ -160,19 +165,20 @@ export function ComparisonQuiz({ module7, sessionId, studentId }: ComparisonQuiz
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full p-4 rounded-xl bg-amber-500/10 border border-amber-500/20"
+          className="w-full p-4 rounded-xl bg-bw-amber/10 border border-bw-amber/20"
         >
-          <p className="text-sm text-amber-300">{current.explanation}</p>
+          <p className="text-sm text-bw-amber">{current.explanation}</p>
           {currentIndex < comparisons.length - 1 && (
-            <button
+            <motion.button
+              whileTap={{ scale: 0.95 }}
               onClick={handleNext}
-              className="mt-3 px-4 py-2 rounded-lg bg-teal-500 text-white text-sm font-medium hover:bg-teal-600 transition-colors"
+              className="btn-glow mt-3 px-6 py-2.5 rounded-xl bg-bw-teal text-white text-sm font-semibold cursor-pointer"
             >
               Suivant
-            </button>
+            </motion.button>
           )}
         </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }

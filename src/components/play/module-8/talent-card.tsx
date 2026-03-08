@@ -13,14 +13,18 @@ export function TalentCard({ module8 }: TalentCardProps) {
   if (!card) {
     return (
       <div className="flex flex-col items-center gap-4 text-center py-12">
-        <div className="w-10 h-10 border-2 border-white/20 border-t-teal-400 rounded-full animate-spin" />
+        <div className="w-10 h-10 border-2 border-white/20 border-t-bw-teal rounded-full animate-spin" />
         <p className="text-sm text-white/50">Génération de ta carte talent en cours...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-sm mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center gap-6 w-full max-w-sm mx-auto px-4"
+    >
       <motion.div
         initial={{ opacity: 0, scale: 0.8, rotateY: -20 }}
         animate={{ opacity: 1, scale: 1, rotateY: 0 }}
@@ -31,7 +35,7 @@ export function TalentCard({ module8 }: TalentCardProps) {
           border: `2px solid ${card.talentCategoryColor}40`,
         }}
       >
-        {/* Header gradient */}
+        {/* Header gradient — dynamic color from data */}
         <div
           className="h-2"
           style={{ background: `linear-gradient(90deg, ${card.talentCategoryColor}, ${card.talentCategoryColor}80)` }}
@@ -54,7 +58,7 @@ export function TalentCard({ module8 }: TalentCardProps) {
             </div>
           </div>
 
-          {/* Category badge */}
+          {/* Category badge — dynamic color from data */}
           <div
             className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
             style={{
@@ -101,6 +105,6 @@ export function TalentCard({ module8 }: TalentCardProps) {
           )}
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }

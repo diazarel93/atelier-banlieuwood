@@ -11,7 +11,11 @@ export function FriseNarrative({ module6 }: FriseNarrativeProps) {
   const steps = module6.friseSteps || [];
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4"
+    >
       <div className="text-center">
         <h2 className="text-2xl font-bold text-white">La Frise Narrative</h2>
         <p className="text-sm text-white/50 mt-1">
@@ -33,14 +37,14 @@ export function FriseNarrative({ module6 }: FriseNarrativeProps) {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                   step.winnerText
-                    ? "bg-emerald-500 text-white"
+                    ? "bg-bw-teal text-white"
                     : "bg-white/10 text-white/40"
                 }`}
               >
                 {i + 1}
               </div>
               {i < steps.length - 1 && (
-                <div className="w-0.5 h-8 bg-white/10 mt-1" />
+                <div className="w-0.5 h-8 bg-white/[0.06] mt-1" />
               )}
             </div>
 
@@ -53,15 +57,15 @@ export function FriseNarrative({ module6 }: FriseNarrativeProps) {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: i * 0.15 + 0.3 }}
-                  className="mt-2 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20"
+                  className="mt-2 p-3 rounded-xl bg-bw-teal/10 border border-bw-teal/20"
                 >
-                  <p className="text-sm text-emerald-300">{step.winnerText}</p>
+                  <p className="text-sm text-bw-teal">{step.winnerText}</p>
                 </motion.div>
               )}
             </div>
           </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }

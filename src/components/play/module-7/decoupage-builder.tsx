@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
+import { SuccessCheck } from "@/components/play/success-check";
 import type { Module7Data } from "@/hooks/use-session-polling";
 
 interface DecoupageBuilderProps {
@@ -72,23 +74,31 @@ export function DecoupageBuilder({ module7, sessionId, studentId }: DecoupageBui
       });
       setSubmitted(true);
     } catch {
-      // ignore
+      toast.error("Erreur de connexion");
     } finally {
       setSubmitting(false);
     }
   };
 
+  if (submitted) {
+    return <SuccessCheck />;
+  }
+
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4"
+    >
       {/* Scene selector tabs */}
       <div className="flex gap-2 w-full">
         {keyScenes.map((s, i) => (
           <button
             key={s.id}
             onClick={() => setCurrentSceneIdx(i)}
-            className={`flex-1 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+            className={`flex-1 px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
               i === currentSceneIdx
-                ? "bg-teal-500 text-white"
+                ? "bg-bw-teal text-white"
                 : "bg-white/5 text-white/50 hover:bg-white/10"
             }`}
           >
@@ -98,7 +108,7 @@ export function DecoupageBuilder({ module7, sessionId, studentId }: DecoupageBui
       </div>
 
       {/* Scene context */}
-      <div className="w-full p-3 rounded-lg bg-white/5 border border-white/10">
+      <div className="w-full p-3 rounded-xl bg-white/5 border border-white/[0.06]">
         <p className="text-sm font-semibold text-white">{scene.title}</p>
         <p className="text-xs text-white/50 mt-1">{scene.description}</p>
       </div>
@@ -115,7 +125,7 @@ export function DecoupageBuilder({ module7, sessionId, studentId }: DecoupageBui
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
-            className="p-3 rounded-xl bg-white/5 border border-white/10"
+            className="p-3 rounded-xl bg-white/5 border border-white/[0.06]"
           >
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-mono text-white/40">Plan {slot.position}</span>
@@ -123,7 +133,7 @@ export function DecoupageBuilder({ module7, sessionId, studentId }: DecoupageBui
                 value={slot.planType}
                 onChange={(e) => updateSlot(i, "planType", e.target.value)}
                 disabled={submitted}
-                className="flex-1 px-2 py-1 rounded bg-white/10 text-white text-xs border-none focus:outline-none focus:ring-1 focus:ring-teal-400"
+                className="flex-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-2 py-1 text-xs text-bw-text focus:outline-none focus:border-bw-teal transition-colors"
               >
                 <option value="">Choisis un type...</option>
                 {planTypes.map((p) => (
@@ -138,14 +148,14 @@ export function DecoupageBuilder({ module7, sessionId, studentId }: DecoupageBui
               onChange={(e) => updateSlot(i, "description", e.target.value)}
               disabled={submitted}
               placeholder="Que montre ce plan ?"
-              className="w-full px-2 py-1 rounded bg-white/5 text-white text-xs placeholder-white/30 border-none focus:outline-none mb-1"
+              className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-xs text-bw-text placeholder:text-bw-muted focus:outline-none focus:border-bw-teal transition-colors mb-1"
             />
             <input
               value={slot.intention}
               onChange={(e) => updateSlot(i, "intention", e.target.value)}
               disabled={submitted}
               placeholder="Pourquoi ce plan ici ?"
-              className="w-full px-2 py-1 rounded bg-white/5 text-white text-xs placeholder-white/30 border-none focus:outline-none"
+              className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-xs text-bw-text placeholder:text-bw-muted focus:outline-none focus:border-bw-teal transition-colors"
             />
           </motion.div>
         ))}
@@ -153,18 +163,15 @@ export function DecoupageBuilder({ module7, sessionId, studentId }: DecoupageBui
 
       {/* Submit */}
       <div className="w-full flex justify-center">
-        {!submitted ? (
-          <button
-            onClick={handleSubmit}
-            disabled={submitting || slots.some((s) => !s.planType)}
-            className="px-6 py-2 rounded-lg bg-teal-500 text-white text-sm font-medium hover:bg-teal-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          >
-            {submitting ? "Envoi..." : "Valider mon découpage"}
-          </button>
-        ) : (
-          <span className="text-sm text-emerald-400">Découpage envoyé !</span>
-        )}
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={handleSubmit}
+          disabled={submitting || slots.some((s) => !s.planType)}
+          className="btn-glow px-6 py-2.5 rounded-xl text-sm font-semibold bg-bw-teal text-white disabled:opacity-40 cursor-pointer"
+        >
+          {submitting ? "Envoi..." : "Valider mon découpage"}
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 }

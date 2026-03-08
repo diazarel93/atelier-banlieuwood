@@ -8,9 +8,9 @@ interface SceneCardListProps {
 }
 
 const ACT_LABELS: Record<string, { label: string; color: string }> = {
-  setup: { label: "Situation initiale", color: "text-blue-400 bg-blue-500/10 border-blue-500/20" },
-  confrontation: { label: "Confrontation", color: "text-orange-400 bg-orange-500/10 border-orange-500/20" },
-  resolution: { label: "Résolution", color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" },
+  setup: { label: "Situation initiale", color: "text-bw-violet bg-bw-violet/10 border-bw-violet/20" },
+  confrontation: { label: "Confrontation", color: "text-bw-amber bg-bw-amber/10 border-bw-amber/20" },
+  resolution: { label: "Résolution", color: "text-bw-teal bg-bw-teal/10 border-bw-teal/20" },
 };
 
 export function SceneCardList({ module6 }: SceneCardListProps) {
@@ -19,14 +19,18 @@ export function SceneCardList({ module6 }: SceneCardListProps) {
   if (!module6.scenesReady) {
     return (
       <div className="flex flex-col items-center gap-4 text-center py-12">
-        <div className="w-10 h-10 border-2 border-white/20 border-t-teal-400 rounded-full animate-spin" />
+        <div className="w-10 h-10 border-2 border-white/20 border-t-bw-teal rounded-full animate-spin" />
         <p className="text-sm text-white/50">Les scènes sont en cours de génération...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4"
+    >
       <div className="text-center">
         <h2 className="text-2xl font-bold text-white">Les Scènes</h2>
         <p className="text-sm text-white/50 mt-1">
@@ -36,8 +40,8 @@ export function SceneCardList({ module6 }: SceneCardListProps) {
 
       {/* Adrian: l'intervenant lit les scènes à voix haute avant les missions */}
       {module6.lectureCollective && (
-        <div className="w-full p-3 rounded-lg bg-violet-500/10 border border-violet-500/20 text-center">
-          <p className="text-sm text-violet-300 font-medium">
+        <div className="w-full p-3 rounded-xl bg-bw-violet/10 border border-bw-violet/20 text-center">
+          <p className="text-sm text-bw-violet font-medium">
             L&apos;intervenant va lire chaque scène à voix haute.
           </p>
           <p className="text-xs text-white/40 mt-1">Écoute bien, tu recevras ta mission juste après.</p>
@@ -53,7 +57,7 @@ export function SceneCardList({ module6 }: SceneCardListProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="p-4 rounded-xl bg-white/5 border border-white/10"
+              className="p-4 rounded-xl bg-white/5 border border-white/[0.06]"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-mono text-white/40">#{scene.sceneNumber}</span>
@@ -61,7 +65,7 @@ export function SceneCardList({ module6 }: SceneCardListProps) {
                   {act.label}
                 </span>
                 {scene.status === "complete" && (
-                  <span className="text-xs text-emerald-400 ml-auto">Complète</span>
+                  <span className="text-xs text-bw-teal ml-auto">Complète</span>
                 )}
               </div>
               <h3 className="text-sm font-semibold text-white">{scene.title}</h3>
@@ -73,6 +77,6 @@ export function SceneCardList({ module6 }: SceneCardListProps) {
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 }

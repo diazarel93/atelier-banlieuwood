@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { toast } from "sonner";
 import type { Module8Data } from "@/hooks/use-session-polling";
 
 interface MetierQuizProps {
@@ -54,7 +55,7 @@ export function MetierQuiz({ module8, sessionId, studentId }: MetierQuizProps) {
       // Start sequential reveal animation
       setRevealedIndex(0);
     } catch {
-      // ignore
+      toast.error("Erreur de connexion");
     } finally {
       setSubmitting(false);
     }
@@ -68,7 +69,11 @@ export function MetierQuiz({ module8, sessionId, studentId }: MetierQuizProps) {
   }
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4"
+    >
       <div className="text-center">
         <h2 className="text-xl font-bold text-white">Les Métiers du Cinéma</h2>
         <p className="text-sm text-white/50 mt-1">
@@ -95,11 +100,11 @@ export function MetierQuiz({ module8, sessionId, studentId }: MetierQuizProps) {
               className={`relative p-4 rounded-xl text-center transition-all cursor-pointer border ${
                 isRevealed
                   ? isSelected
-                    ? "bg-emerald-500/10 border-emerald-500/30"
-                    : "bg-white/5 border-white/10"
+                    ? "bg-bw-teal/10 border-bw-teal/30"
+                    : "bg-white/5 border-white/[0.06]"
                   : isSelected
-                  ? "bg-teal-500/20 border-teal-400 ring-1 ring-teal-400/30"
-                  : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"
+                  ? "bg-bw-teal/20 border-bw-teal ring-1 ring-bw-teal/30"
+                  : "bg-white/5 border-white/[0.06] hover:bg-white/10 hover:border-white/20"
               } ${submitted && i > revealedIndex ? "opacity-40" : ""}`}
             >
               <span className="text-2xl block mb-1">{q.metierEmoji}</span>
@@ -122,7 +127,7 @@ export function MetierQuiz({ module8, sessionId, studentId }: MetierQuizProps) {
                     {isSelected && (
                       <p className="text-xs text-white/40 line-through mb-1">{q.commonBelief}</p>
                     )}
-                    <p className="text-xs text-emerald-300 leading-relaxed">{q.reality}</p>
+                    <p className="text-xs text-bw-teal leading-relaxed">{q.reality}</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -132,7 +137,7 @@ export function MetierQuiz({ module8, sessionId, studentId }: MetierQuizProps) {
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute top-2 right-2 w-5 h-5 rounded-full bg-teal-400 flex items-center justify-center"
+                  className="absolute top-2 right-2 w-5 h-5 rounded-full bg-bw-teal flex items-center justify-center"
                 >
                   <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -152,20 +157,22 @@ export function MetierQuiz({ module8, sessionId, studentId }: MetierQuizProps) {
               ? "Sélectionne au moins 1 métier"
               : `${selected.size} métier${selected.size > 1 ? "s" : ""} sélectionné${selected.size > 1 ? "s" : ""}`}
           </p>
-          <button
+          <motion.button
+            whileTap={{ scale: 0.95 }}
             onClick={handleSubmit}
             disabled={submitting || selected.size === 0}
-            className="w-full py-3 rounded-xl bg-teal-500/20 border border-teal-500/30 text-teal-400 font-bold text-sm hover:bg-teal-500/30 disabled:opacity-40 transition-colors cursor-pointer"
+            className="btn-glow-teal w-full py-3 rounded-xl bg-bw-teal/20 border border-bw-teal/30 text-bw-teal font-bold text-sm disabled:opacity-40 cursor-pointer"
           >
             {submitting ? "Envoi..." : "Valider mes choix"}
-          </button>
+          </motion.button>
         </div>
       ) : revealedIndex < quiz.length - 1 ? (
         <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          whileTap={{ scale: 0.95 }}
           onClick={handleRevealNext}
-          className="px-6 py-2 rounded-xl bg-white/5 border border-white/10 text-white/60 text-sm hover:bg-white/10 cursor-pointer transition-colors"
+          className="px-6 py-2.5 rounded-xl bg-white/5 border border-white/[0.06] text-white/60 text-sm hover:bg-white/10 cursor-pointer transition-colors"
         >
           Suivant ({revealedIndex + 1}/{quiz.length})
         </motion.button>
@@ -173,11 +180,11 @@ export function MetierQuiz({ module8, sessionId, studentId }: MetierQuizProps) {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-sm text-emerald-400 font-medium text-center"
+          className="text-sm text-bw-teal font-medium text-center"
         >
           Maintenant tu connais les métiers du cinéma !
         </motion.p>
       )}
-    </div>
+    </motion.div>
   );
 }
