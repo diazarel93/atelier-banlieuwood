@@ -183,6 +183,12 @@ export default function Home() {
               Rejoindre
             </Link>
             <Link
+              href="/projet"
+              className="text-[13px] text-[#8b8b8e] hover:text-bw-heading px-3 py-1.5 rounded-md hover:bg-white/[0.04] transition-all duration-150 hidden sm:block"
+            >
+              Le Projet
+            </Link>
+            <Link
               href="/studio"
               className="text-[13px] text-[#8b8b8e] hover:text-bw-heading px-3 py-1.5 rounded-md hover:bg-white/[0.04] transition-all duration-150 hidden sm:block"
             >
@@ -1011,6 +1017,7 @@ export default function Home() {
                 links: [
                   { l: "Jouer seul", h: "/free" },
                   { l: "Fiche cours", h: "/fiche-cours" },
+                  { l: "Le Projet", h: "/projet" },
                   { l: "A propos", h: "/about" },
                   { l: "Contact", h: "/contact" },
                 ],
