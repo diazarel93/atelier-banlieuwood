@@ -50,6 +50,16 @@ const NAV_ITEMS: NavItem[] = [
       </svg>
     ),
   },
+  {
+    href: "/v2/fiche-cours",
+    label: "Fiche de cours",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M4 2h7l4 4v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+        <path d="M11 2v4h4M6 10h6M6 13h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
+  },
 ];
 
 export function AppShellV2({ children }: { children: React.ReactNode }) {

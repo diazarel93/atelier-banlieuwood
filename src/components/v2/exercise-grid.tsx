@@ -7,9 +7,10 @@ import type { ExerciseEntry } from "@/lib/exercise-catalog";
 interface ExerciseGridProps {
   exercises: ExerciseEntry[];
   className?: string;
+  onExerciseClick?: (exercise: ExerciseEntry) => void;
 }
 
-export function ExerciseGrid({ exercises, className }: ExerciseGridProps) {
+export function ExerciseGrid({ exercises, className, onExerciseClick }: ExerciseGridProps) {
   if (exercises.length === 0) {
     return (
       <div className="flex items-center justify-center py-16 text-center">
@@ -28,7 +29,7 @@ export function ExerciseGrid({ exercises, className }: ExerciseGridProps) {
       )}
     >
       {exercises.map((ex) => (
-        <ExerciseCard key={ex.id} exercise={ex} />
+        <ExerciseCard key={ex.id} exercise={ex} onClick={onExerciseClick ? () => onExerciseClick(ex) : undefined} />
       ))}
     </div>
   );

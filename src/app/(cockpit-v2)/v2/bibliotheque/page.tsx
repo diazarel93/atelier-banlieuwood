@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import {
   buildExerciseCatalog,
   getCatalogPhases,
+  type ExerciseEntry,
 } from "@/lib/exercise-catalog";
+import { getModuleGuide } from "@/lib/guide-data";
 import { ExerciseFilters } from "@/components/v2/exercise-filters";
 import { ExerciseGrid } from "@/components/v2/exercise-grid";
+import { ModuleGuideModal } from "@/components/v2/module-guide-modal";
 
 function parseDurationMinutes(d: string): number {
   const match = d.match(/(\d+)/);
@@ -18,6 +21,11 @@ export default function BibliothequePage() {
   const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [selectedExercise, setSelectedExercise] = useState<ExerciseEntry | null>(null);
+
+  const handleExerciseClick = useCallback((ex: ExerciseEntry) => {
+    setSelectedExercise(ex);
+  }, []);
 
   const catalog = useMemo(() => buildExerciseCatalog(), []);
   const phases = useMemo(() => getCatalogPhases(), []);
@@ -136,9 +144,17 @@ export default function BibliothequePage() {
 
         {/* Grid */}
         <div className="lg:col-span-9">
-          <ExerciseGrid exercises={filtered} />
+          <ExerciseGrid exercises={filtered} onExerciseClick={handleExerciseClick} />
         </div>
       </div>
+      {/* Module guide modal */}
+      {selectedExercise && (
+        <ModuleGuideModal
+          exercise={selectedExercise}
+          guide={getModuleGuide(selectedExercise.id) ?? null}
+          onClose={() => setSelectedExercise(null)}
+        />
+      )}
     </div>
   );
 }

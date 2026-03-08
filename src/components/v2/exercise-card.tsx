@@ -7,11 +7,12 @@ import type { ExerciseEntry } from "@/lib/exercise-catalog";
 interface ExerciseCardProps {
   exercise: ExerciseEntry;
   className?: string;
+  onClick?: () => void;
 }
 
-export function ExerciseCard({ exercise, className }: ExerciseCardProps) {
+export function ExerciseCard({ exercise, className, onClick }: ExerciseCardProps) {
   return (
-    <GlassCardV2 hover className={cn("p-4 flex flex-col", className)}>
+    <GlassCardV2 hover className={cn("p-4 flex flex-col", onClick && "cursor-pointer", className)} onClick={onClick}>
       {/* Color accent bar */}
       <div
         className="h-1.5 w-12 rounded-full mb-3"
