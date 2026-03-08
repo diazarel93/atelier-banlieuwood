@@ -167,11 +167,11 @@ export default function StatistiquesPage() {
 
           {/* Podium — top 3 most active students */}
           {podium && (
-            <GlassCardV2 className="p-4">
-              <h2 className="text-sm font-semibold text-bw-heading mb-3">
-                Podium — élèves les plus actifs
+            <GlassCardV2 className="p-5">
+              <h2 className="section-title">
+                Podium
               </h2>
-              <ol className="space-y-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {podium.map((s, i) => {
                   const medal = ["🥇", "🥈", "🥉"][i];
                   const responses =
@@ -180,25 +180,32 @@ export default function StatistiquesPage() {
                       s.scores.creativite +
                       s.scores.expression +
                       s.scores.engagement;
+                  const ringColor = [
+                    "ring-amber-200 bg-amber-50/50",
+                    "ring-gray-200 bg-gray-50/50",
+                    "ring-orange-200 bg-orange-50/40",
+                  ][i];
                   return (
-                    <li
+                    <div
                       key={s.id}
-                      className="flex items-center gap-3 text-sm"
+                      className={`flex items-center gap-3 rounded-xl px-4 py-3 ring-1 ring-inset ${ringColor} transition-colors duration-150`}
                     >
-                      <span className="text-lg">{medal}</span>
-                      {s.avatar && (
-                        <span className="text-lg">{s.avatar}</span>
-                      )}
-                      <span className="font-medium text-bw-heading">
-                        {s.displayName}
+                      <span className="text-xl shrink-0">{medal}</span>
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-base shrink-0 shadow-sm">
+                        {s.avatar || "👤"}
                       </span>
-                      <span className="text-bw-muted ml-auto tabular-nums">
-                        {responses} réponse{responses !== 1 ? "s" : ""}
-                      </span>
-                    </li>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-heading-xs text-bw-heading truncate">
+                          {s.displayName}
+                        </p>
+                        <p className="text-body-xs text-bw-muted tabular-nums">
+                          {responses} réponse{responses !== 1 ? "s" : ""}
+                        </p>
+                      </div>
+                    </div>
                   );
                 })}
-              </ol>
+              </div>
             </GlassCardV2>
           )}
 

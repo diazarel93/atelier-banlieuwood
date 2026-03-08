@@ -20,17 +20,33 @@ interface StudentClassTableProps {
   className?: string;
 }
 
-function getActivityBadge(lastActiveAt: string) {
-  const now = Date.now();
-  const last = new Date(lastActiveAt).getTime();
-  const diffDays = (now - last) / (1000 * 60 * 60 * 24);
+type ActivityTier = "active" | "recent" | "inactive";
 
-  if (diffDays < 7)
-    return { label: "Actif", dot: "bg-green-500", text: "text-green-700" };
-  if (diffDays < 30)
-    return { label: "Récent", dot: "bg-orange-400", text: "text-orange-600" };
-  return { label: "Inactif", dot: "bg-gray-300", text: "text-gray-400" };
+function getActivityBadge(lastActiveAt: string): {
+  label: string;
+  tier: ActivityTier;
+} {
+  const diffDays =
+    (Date.now() - new Date(lastActiveAt).getTime()) / (1000 * 60 * 60 * 24);
+  if (diffDays < 7) return { label: "Actif", tier: "active" };
+  if (diffDays < 30) return { label: "Récent", tier: "recent" };
+  return { label: "Inactif", tier: "inactive" };
 }
+
+const BADGE_STYLES: Record<ActivityTier, string> = {
+  active:
+    "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20",
+  recent:
+    "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20",
+  inactive:
+    "bg-gray-50 text-gray-500 ring-1 ring-inset ring-gray-500/10",
+};
+
+const DOT_STYLES: Record<ActivityTier, string> = {
+  active: "bg-emerald-500",
+  recent: "bg-amber-400",
+  inactive: "bg-gray-300",
+};
 
 function formatShortDate(iso: string) {
   return new Date(iso).toLocaleDateString("fr-FR", {
@@ -43,7 +59,6 @@ export function StudentClassTable({
   students,
   className,
 }: StudentClassTableProps) {
-  // Group by classLabel, sorted by name within each group
   const groups = useMemo(() => {
     const map = new Map<string, Student[]>();
     for (const s of students) {
@@ -52,11 +67,9 @@ export function StudentClassTable({
       arr.push(s);
       map.set(key, arr);
     }
-    // Sort students within each group
     for (const arr of map.values()) {
       arr.sort((a, b) => a.displayName.localeCompare(b.displayName, "fr"));
     }
-    // Sort groups: real classes first (alpha), "Sans classe" last
     const entries = [...map.entries()].sort((a, b) => {
       if (a[0] === "Sans classe") return 1;
       if (b[0] === "Sans classe") return -1;
@@ -81,20 +94,21 @@ export function StudentClassTable({
       {groups.map(([groupLabel, groupStudents]) => {
         const isCollapsed = collapsed.has(groupLabel);
         return (
-          <GlassCardV2 key={groupLabel} className="overflow-hidden mb-4">
-            {/* Group header */}
+          <GlassCardV2 key={groupLabel} className="overflow-hidden mb-5">
+            {/* ── Group header ── */}
             <button
               type="button"
               onClick={() => toggleGroup(groupLabel)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-[var(--color-bw-surface-dim)] hover:bg-[var(--color-bw-border-subtle)] transition-colors cursor-pointer"
+              className="w-full flex items-center justify-between px-5 py-3.5 bg-[var(--color-bw-surface-dim)]/60 hover:bg-[var(--color-bw-surface-dim)] transition-colors duration-150 cursor-pointer"
             >
-              <span className="text-sm font-semibold text-bw-heading">
-                {groupLabel}{" "}
-                <span className="font-normal text-bw-muted">
-                  — {groupStudents.length} élève
-                  {groupStudents.length !== 1 ? "s" : ""}
+              <div className="flex items-center gap-3">
+                <span className="text-heading-xs text-bw-heading">
+                  {groupLabel}
                 </span>
-              </span>
+                <span className="inline-flex items-center rounded-full bg-[var(--color-bw-border)] px-2 py-0.5 text-[11px] font-medium text-bw-muted tabular-nums">
+                  {groupStudents.length}
+                </span>
+              </div>
               <svg
                 width="16"
                 height="16"
@@ -103,75 +117,80 @@ export function StudentClassTable({
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
-                className={`text-bw-muted transition-transform ${isCollapsed ? "" : "rotate-180"}`}
+                strokeLinejoin="round"
+                className={`text-bw-muted transition-transform duration-200 ${isCollapsed ? "-rotate-90" : ""}`}
               >
                 <path d="M4 6l4 4 4-4" />
               </svg>
             </button>
 
-            {/* Table body */}
+            {/* ── Table ── */}
             {!isCollapsed && (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-[var(--color-bw-border)]">
-                      <th className="px-4 py-2.5 text-left font-medium text-bw-muted text-xs uppercase tracking-wide">
+                      <th className="px-5 py-3 text-left text-body-xs font-semibold text-bw-muted uppercase tracking-wider">
                         Élève
                       </th>
-                      <th className="px-3 py-2.5 text-center font-medium text-bw-muted text-xs uppercase tracking-wide">
+                      <th className="px-3 py-3 text-center text-body-xs font-semibold text-bw-muted uppercase tracking-wider w-20">
                         Séances
                       </th>
-                      <th className="px-3 py-2.5 text-center font-medium text-bw-muted text-xs uppercase tracking-wide">
+                      <th className="px-3 py-3 text-center text-body-xs font-semibold text-bw-muted uppercase tracking-wider w-24">
                         Réponses
                       </th>
-                      <th className="px-3 py-2.5 text-center font-medium text-bw-muted text-xs uppercase tracking-wide hidden sm:table-cell">
-                        Dernière activité
+                      <th className="px-3 py-3 text-center text-body-xs font-semibold text-bw-muted uppercase tracking-wider hidden sm:table-cell w-32">
+                        Activité
                       </th>
-                      <th className="px-3 py-2.5 text-center font-medium text-bw-muted text-xs uppercase tracking-wide">
+                      <th className="px-3 py-3 text-center text-body-xs font-semibold text-bw-muted uppercase tracking-wider w-24">
                         Statut
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {groupStudents.map((student) => {
+                    {groupStudents.map((student, idx) => {
                       const badge = getActivityBadge(student.lastActiveAt);
+                      const isEven = idx % 2 === 1;
                       return (
                         <tr
                           key={student.profileId}
-                          className="border-b border-[var(--color-bw-border-subtle)] last:border-0 hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+                          className={`
+                            border-b border-[var(--color-bw-border-subtle)] last:border-0
+                            transition-colors duration-100
+                            hover:bg-bw-primary/[0.03]
+                            ${isEven ? "bg-[var(--color-bw-surface-dim)]/30" : ""}
+                          `}
                         >
-                          <td className="px-4 py-2.5">
+                          <td className="px-5 py-3">
                             <Link
                               href={ROUTES.eleveDetail(student.profileId)}
-                              className="flex items-center gap-2 hover:underline"
+                              className="group flex items-center gap-2.5"
                             >
-                              {student.avatar && (
-                                <span className="text-lg">
-                                  {student.avatar}
-                                </span>
-                              )}
-                              <span className="font-medium text-bw-heading truncate max-w-[160px]">
+                              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-bw-surface-dim)] text-base shrink-0">
+                                {student.avatar || "👤"}
+                              </span>
+                              <span className="font-medium text-bw-heading truncate max-w-[180px] group-hover:text-bw-primary transition-colors duration-150">
                                 {student.displayName}
                               </span>
                             </Link>
                           </td>
-                          <td className="px-3 py-2.5 text-center text-bw-muted tabular-nums">
+                          <td className="px-3 py-3 text-center text-bw-text tabular-nums font-medium">
                             {student.sessionCount}
                           </td>
-                          <td className="px-3 py-2.5 text-center text-bw-muted tabular-nums">
+                          <td className="px-3 py-3 text-center text-bw-text tabular-nums font-medium">
                             {student.totalResponses}
                           </td>
-                          <td className="px-3 py-2.5 text-center text-bw-muted text-xs hidden sm:table-cell">
+                          <td className="px-3 py-3 text-center text-bw-muted text-body-xs hidden sm:table-cell">
                             {formatShortDate(student.lastActiveAt)}
                           </td>
-                          <td className="px-3 py-2.5">
-                            <div className="flex items-center justify-center gap-1.5">
+                          <td className="px-3 py-3">
+                            <div className="flex items-center justify-center">
                               <span
-                                className={`inline-block h-2 w-2 rounded-full ${badge.dot}`}
-                              />
-                              <span
-                                className={`text-xs font-medium ${badge.text}`}
+                                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${BADGE_STYLES[badge.tier]}`}
                               >
+                                <span
+                                  className={`h-1.5 w-1.5 rounded-full ${DOT_STYLES[badge.tier]}`}
+                                />
                                 {badge.label}
                               </span>
                             </div>
