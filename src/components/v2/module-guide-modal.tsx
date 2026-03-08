@@ -134,6 +134,63 @@ export function ModuleGuideModal({
             </GlassCardV2>
           ) : (
             <>
+              {/* Déroulé — timeline stepper (most useful, shown first) */}
+              {guide.phases.length > 0 && (
+                <GlassCardV2 className="p-5">
+                  <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-4">
+                    Déroulé — {guide.phases.length} étapes
+                  </p>
+                  <div className="relative">
+                    {/* Vertical line */}
+                    <div className="absolute left-[18px] top-3 bottom-3 w-px bg-[var(--color-bw-border)]" />
+
+                    <div className="space-y-4">
+                      {guide.phases.map((phase, i) => (
+                        <div key={i} className="flex items-start gap-4 relative">
+                          {/* Step number circle */}
+                          <div
+                            className="relative z-10 w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-white"
+                            style={{
+                              backgroundColor: `${exercise.color}15`,
+                              color: exercise.color,
+                              border: `2px solid ${exercise.color}40`,
+                            }}
+                          >
+                            {i + 1}
+                          </div>
+
+                          <div className="flex-1 min-w-0 pb-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-sm font-semibold text-bw-heading">
+                                {phase.name}
+                              </span>
+                              <span className="text-[10px] font-mono text-purple-600 bg-purple-50 border border-purple-200 rounded-md px-1.5 py-0.5">
+                                {phase.timing}
+                              </span>
+                            </div>
+                            <p className="text-xs text-bw-muted leading-relaxed">
+                              {phase.instruction}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </GlassCardV2>
+              )}
+
+              {/* Intro à dire */}
+              <GlassCardV2 className="p-5">
+                <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
+                  Introduction à dire
+                </p>
+                <div className="rounded-xl bg-[var(--color-bw-surface-dim)] p-4">
+                  <p className="text-sm text-bw-heading italic leading-relaxed">
+                    &ldquo;{guide.introADire}&rdquo;
+                  </p>
+                </div>
+              </GlassCardV2>
+
               {/* Socle commun + objectif */}
               <GlassCardV2 className="p-5">
                 <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
@@ -183,44 +240,6 @@ export function ModuleGuideModal({
                   ))}
                 </ul>
               </GlassCardV2>
-
-              {/* Intro à dire */}
-              <GlassCardV2 className="p-5">
-                <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-                  Introduction à dire
-                </p>
-                <div className="rounded-xl bg-[var(--color-bw-surface-dim)] p-4">
-                  <p className="text-sm text-bw-heading italic leading-relaxed">
-                    &ldquo;{guide.introADire}&rdquo;
-                  </p>
-                </div>
-              </GlassCardV2>
-
-              {/* Phases / déroulé */}
-              {guide.phases.length > 0 && (
-                <GlassCardV2 className="p-5">
-                  <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-                    Déroulé
-                  </p>
-                  <div className="space-y-3">
-                    {guide.phases.map((phase, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <span className="text-xs font-mono text-purple-600 border border-purple-200 rounded-md px-1.5 py-0.5 shrink-0 mt-0.5">
-                          {phase.timing}
-                        </span>
-                        <div>
-                          <span className="text-sm font-medium text-bw-heading">
-                            {phase.name}
-                          </span>
-                          <p className="text-xs text-bw-muted mt-0.5">
-                            {phase.instruction}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </GlassCardV2>
-              )}
 
               {/* Relancer + Challenger */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
