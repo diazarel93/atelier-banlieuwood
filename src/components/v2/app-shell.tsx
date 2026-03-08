@@ -90,20 +90,20 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       </a>
 
       {/* Top navigation bar */}
-      <header className="sticky top-0 z-40 w-full border-b border-[var(--color-bw-border)] bg-white/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-xl border-b border-[var(--color-bw-border)]">
         <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-6 px-4 sm:px-6">
           {/* Logo */}
-          <Link href="/v2" className="flex items-center gap-2 shrink-0">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-bw-primary text-white text-xs font-bold">
+          <Link href="/v2" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-bw-primary text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">
               BW
             </div>
-            <span className="text-sm font-bold text-bw-heading hidden sm:inline">
+            <span className="text-heading-xs text-bw-heading hidden sm:inline">
               Banlieuwood
             </span>
           </Link>
 
           {/* Desktop nav links */}
-          <nav aria-label="Navigation principale" className="hidden md:flex items-center gap-1">
+          <nav aria-label="Navigation principale" className="hidden md:flex items-center gap-0.5 h-14">
             {NAV_ITEMS.map((item) => {
               const isActive =
                 item.href === "/v2"
@@ -117,16 +117,23 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                   aria-current={isActive ? "page" : undefined}
                   aria-label={item.label}
                   className={cn(
-                    "flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                    "relative flex items-center gap-1.5 px-3 h-14 text-sm font-medium transition-colors",
                     isActive
-                      ? "bg-[var(--color-bw-surface-dim)] text-bw-heading"
-                      : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                      ? "text-bw-heading"
+                      : "text-bw-muted hover:text-bw-heading"
                   )}
                 >
-                  <span className={cn(isActive ? "text-bw-primary" : "text-bw-muted")} aria-hidden="true">
+                  <span className={cn(
+                    "transition-colors",
+                    isActive ? "text-bw-primary" : "text-bw-muted group-hover:text-bw-heading"
+                  )} aria-hidden="true">
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
+                  {/* Active indicator — bottom bar */}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-bw-primary" />
+                  )}
                 </Link>
               );
             })}
@@ -141,7 +148,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             <Link
               href="/v2/seances/new"
               aria-label="Créer une nouvelle séance"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-bw-primary px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-bw-primary-500 btn-glow"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 hover:shadow-md active:scale-[0.97] transition-all duration-150"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                 <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -155,7 +162,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
               aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
               aria-expanded={mobileOpen}
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+              className="md:hidden p-2 rounded-lg text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] active:scale-95 transition-all duration-150"
             >
               {mobileOpen ? (
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -171,9 +178,14 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Mobile menu dropdown */}
-        {mobileOpen && (
-          <nav aria-label="Navigation mobile" className="md:hidden border-t border-[var(--color-bw-border)] bg-white px-4 pb-3 pt-2">
-            <div className="flex flex-col gap-1">
+        <div
+          className={cn(
+            "md:hidden overflow-hidden transition-all duration-200 ease-out",
+            mobileOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
+          )}
+        >
+          <nav aria-label="Navigation mobile" className="border-t border-[var(--color-bw-border)] bg-white px-4 pb-3 pt-2">
+            <div className="flex flex-col gap-0.5">
               {NAV_ITEMS.map((item) => {
                 const isActive =
                   item.href === "/v2"
@@ -187,9 +199,9 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                     onClick={() => setMobileOpen(false)}
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      "flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                      "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-[var(--color-bw-surface-dim)] text-bw-heading"
+                        ? "bg-bw-primary/5 text-bw-heading"
                         : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
                     )}
                   >
@@ -197,12 +209,15 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                       {item.icon}
                     </span>
                     {item.label}
+                    {isActive && (
+                      <span className="ml-auto h-1.5 w-1.5 rounded-full bg-bw-primary" />
+                    )}
                   </Link>
                 );
               })}
             </div>
           </nav>
-        )}
+        </div>
       </header>
 
       {/* Content */}

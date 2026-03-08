@@ -11,41 +11,36 @@ interface StatusBadgeProps {
 
 const STATUS_CONFIG: Record<
   SessionStatus,
-  { label: string; bg: string; text: string; dot: string; pulse: boolean }
+  { label: string; style: string; dot: string; pulse: boolean }
 > = {
   draft: {
     label: "Brouillon",
-    bg: "bg-gray-100",
-    text: "text-gray-600",
-    dot: "bg-gray-400",
+    style: "bg-[var(--color-bw-surface-dim)] text-bw-muted ring-1 ring-inset ring-[var(--color-bw-border)]",
+    dot: "bg-[var(--color-bw-placeholder)]",
     pulse: false,
   },
   waiting: {
     label: "En attente",
-    bg: "bg-amber-50",
-    text: "text-amber-700",
-    dot: "bg-amber-400",
+    style: "bg-bw-amber-100 text-bw-amber-500 ring-1 ring-inset ring-bw-amber/20",
+    dot: "bg-bw-amber",
     pulse: true,
   },
   responding: {
     label: "En cours",
-    bg: "bg-emerald-50",
-    text: "text-emerald-700",
-    dot: "bg-emerald-500",
+    style: "bg-bw-teal-50 text-bw-teal-600 ring-1 ring-inset ring-bw-teal/20",
+    dot: "bg-bw-teal",
     pulse: true,
   },
   paused: {
     label: "En pause",
-    bg: "bg-amber-50",
-    text: "text-amber-700",
-    dot: "bg-amber-500",
+    style: "bg-bw-amber-100 text-bw-amber-500 ring-1 ring-inset ring-bw-amber/20",
+    dot: "bg-bw-amber-500",
     pulse: false,
   },
   done: {
     label: "Terminée",
-    bg: "bg-emerald-50",
-    text: "text-emerald-700",
-    dot: "bg-emerald-500",
+    style: "bg-bw-green-100 text-bw-green ring-1 ring-inset ring-bw-green/20",
+    dot: "bg-bw-green",
     pulse: false,
   },
 };
@@ -57,8 +52,7 @@ export function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full font-medium",
-        cfg.bg,
-        cfg.text,
+        cfg.style,
         size === "sm" ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-0.5 text-[11px]"
       )}
     >
@@ -78,8 +72,8 @@ export function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
 /** Status bar color (hex) for left-border accents */
 export const STATUS_BAR_COLORS: Record<SessionStatus, string> = {
   draft: "#9CA3AF",
-  waiting: "#FBBF24",
-  responding: "linear-gradient(to bottom, #10B981, #4ECDC4)",
+  waiting: "#F59E0B",
+  responding: "#4ECDC4",
   paused: "#F59E0B",
   done: "#10B981",
 };
@@ -87,8 +81,8 @@ export const STATUS_BAR_COLORS: Record<SessionStatus, string> = {
 /** Status background tint class for cards */
 export const STATUS_BG_TINT: Record<SessionStatus, string> = {
   draft: "",
-  waiting: "bg-amber-50/30",
-  responding: "bg-emerald-50/30",
+  waiting: "bg-bw-amber-100/20",
+  responding: "bg-bw-teal-50/30",
   paused: "",
   done: "",
 };

@@ -21,7 +21,7 @@ const cardVariants = {
 
 export function QuickStats({ stats, className }: QuickStatsProps) {
   return (
-    <div className={cn("grid grid-cols-2 gap-3", className)}>
+    <div className={cn("grid grid-cols-2 gap-4", className)}>
       <motion.div custom={0} variants={cardVariants} initial="hidden" animate="visible">
         <KpiCard
           label="Séances animées"

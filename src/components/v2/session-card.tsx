@@ -22,12 +22,12 @@ interface SessionCardV2Props {
   className?: string;
 }
 
-const STATUS_BAR_STYLE: Record<SessionStatus, React.CSSProperties> = {
-  draft: { backgroundColor: "#9CA3AF" },
-  waiting: { backgroundColor: "#FBBF24" },
-  responding: { background: "linear-gradient(to bottom, #10B981, #4ECDC4)" },
-  paused: { backgroundColor: "#F59E0B" },
-  done: { backgroundColor: "#10B981" },
+const STATUS_BAR_COLORS: Record<SessionStatus, string> = {
+  draft: "#9CA3AF",
+  waiting: "#F59E0B",
+  responding: "#4ECDC4",
+  paused: "#F59E0B",
+  done: "#10B981",
 };
 
 function formatTime(dateStr: string) {
@@ -61,21 +61,11 @@ export function SessionCardV2({
       )}
       onClick={onClick}
     >
-      {/* Left status bar 3px */}
+      {/* Left status bar — 4px for visual weight */}
       <div
-        className="absolute left-0 top-0 bottom-0 w-[3px]"
-        style={STATUS_BAR_STYLE[status] || STATUS_BAR_STYLE.draft}
+        className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full"
+        style={{ backgroundColor: STATUS_BAR_COLORS[status] || STATUS_BAR_COLORS.draft }}
       />
-
-      {/* Top module gradient band 3px */}
-      {moduleColor && (
-        <div
-          className="absolute top-0 left-[3px] right-0 h-[3px]"
-          style={{
-            background: `linear-gradient(to right, ${moduleColor}, ${moduleColor}99)`,
-          }}
-        />
-      )}
 
       <div className="p-4 pl-5">
         {/* Top row: module badge + status */}
@@ -90,7 +80,7 @@ export function SessionCardV2({
               </span>
             )}
             {classLabel && (
-              <span className="text-xs text-bw-muted font-medium">
+              <span className="text-body-xs text-bw-muted font-medium">
                 {classLabel}
               </span>
             )}
@@ -99,13 +89,15 @@ export function SessionCardV2({
         </div>
 
         {/* Title */}
-        <h3 className="text-sm font-semibold text-bw-heading leading-snug mb-1 line-clamp-1">
+        <h3 className="text-heading-xs text-bw-heading leading-snug mb-1.5 line-clamp-1">
           {title}
         </h3>
 
         {/* Meta row */}
-        <div className="flex items-center gap-3 text-xs text-bw-muted">
-          {scheduledAt && <span>{formatTime(scheduledAt)}</span>}
+        <div className="flex items-center gap-3 text-body-xs text-bw-muted">
+          {scheduledAt && (
+            <span className="tabular-nums">{formatTime(scheduledAt)}</span>
+          )}
           {typeof studentCount === "number" && (
             <span>
               {studentCount} élève{studentCount !== 1 ? "s" : ""}
@@ -113,14 +105,14 @@ export function SessionCardV2({
           )}
         </div>
 
-        {/* Progress bar — gradient opacity */}
+        {/* Progress bar */}
         {typeof progress === "number" && progress > 0 && (
           <div className="mt-3 h-1 w-full rounded-full bg-[var(--color-bw-surface-dim)] overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${Math.min(100, progress)}%`,
-                background: `linear-gradient(to right, ${moduleColor || "var(--color-bw-primary)"}, ${moduleColor || "var(--color-bw-primary)"}80)`,
+                backgroundColor: moduleColor || "var(--color-bw-primary)",
               }}
             />
           </div>

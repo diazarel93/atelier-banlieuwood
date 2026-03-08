@@ -86,7 +86,7 @@ export default function DashboardV2Page() {
             <QuickStats stats={data.stats} />
 
             <div className="flex-1">
-              <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
+              <h3 className="label-caps text-bw-muted mb-3">
                 Agenda
               </h3>
               <MiniCalendar sessionDates={sessionDates} />
@@ -99,7 +99,7 @@ export default function DashboardV2Page() {
               <AtRiskWidget students={data.atRiskStudents} />
             )}
             <GlassCardV2 className="p-4">
-              <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
+              <h3 className="label-caps text-bw-muted mb-3">
                 Modules
               </h3>
               <div className="flex flex-col gap-3">
@@ -323,17 +323,17 @@ function DashboardSkeleton() {
       {/* Left — Today sessions skeleton */}
       <div className="lg:col-span-4 flex flex-col gap-4">
         {[1, 2].map((i) => (
-          <div key={i} className="rounded-2xl bg-white p-4">
-            <div className="h-3 w-24 rounded bg-gray-100 shimmer mb-3" />
-            <div className="flex flex-col gap-3">
+          <div key={i} className="rounded-2xl bg-white border border-[var(--color-bw-border)] p-5">
+            <div className="h-2.5 w-20 rounded-full bg-[var(--color-bw-surface-dim)] shimmer mb-4" />
+            <div className="flex flex-col gap-4">
               {[1, 2].map((j) => (
                 <div key={j} className="flex items-center gap-3">
-                  <div className="h-2 w-0.5 rounded-full bg-gray-100 shimmer" />
+                  <div className="h-6 w-1 rounded-full bg-[var(--color-bw-surface-dim)] shimmer" />
                   <div className="flex-1">
-                    <div className="h-3.5 w-32 rounded bg-gray-100 shimmer mb-1.5" />
-                    <div className="h-2.5 w-20 rounded bg-gray-50 shimmer" />
+                    <div className="h-3.5 w-32 rounded-full bg-[var(--color-bw-surface-dim)] shimmer mb-2" />
+                    <div className="h-2.5 w-20 rounded-full bg-[var(--color-bw-surface-dim)]/60 shimmer" />
                   </div>
-                  <div className="h-5 w-16 rounded-full bg-gray-50 shimmer" />
+                  <div className="h-6 w-16 rounded-full bg-[var(--color-bw-surface-dim)]/60 shimmer" />
                 </div>
               ))}
             </div>
@@ -342,32 +342,32 @@ function DashboardSkeleton() {
       </div>
       {/* Center — KPIs + calendar */}
       <div className="lg:col-span-5 flex flex-col gap-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="rounded-2xl bg-white p-5">
+            <div key={i} className="rounded-2xl bg-white border border-[var(--color-bw-border)] p-5">
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="h-2.5 w-16 rounded bg-gray-100 shimmer mb-2" />
-                  <div className="h-6 w-10 rounded bg-gray-100 shimmer" />
+                  <div className="h-2.5 w-16 rounded-full bg-[var(--color-bw-surface-dim)] shimmer mb-3" />
+                  <div className="h-6 w-10 rounded-full bg-[var(--color-bw-surface-dim)] shimmer" />
                 </div>
-                <div className="h-10 w-10 rounded-xl bg-gray-50 shimmer" />
+                <div className="h-10 w-10 rounded-xl bg-[var(--color-bw-surface-dim)]/60 shimmer" />
               </div>
             </div>
           ))}
         </div>
-        <div className="h-64 rounded-2xl bg-white shimmer" />
+        <div className="h-64 rounded-2xl bg-white border border-[var(--color-bw-border)] shimmer" />
       </div>
       {/* Right — Modules */}
       <div className="lg:col-span-3">
-        <div className="rounded-2xl bg-white p-4">
-          <div className="h-3 w-20 rounded bg-gray-100 shimmer mb-4" />
-          <div className="flex flex-col gap-3">
+        <div className="rounded-2xl bg-white border border-[var(--color-bw-border)] p-5">
+          <div className="h-2.5 w-20 rounded-full bg-[var(--color-bw-surface-dim)] shimmer mb-5" />
+          <div className="flex flex-col gap-4">
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-gray-50 shimmer shrink-0" />
+                <div className="h-8 w-8 rounded-full bg-[var(--color-bw-surface-dim)]/60 shimmer shrink-0" />
                 <div className="flex-1">
-                  <div className="h-3 w-24 rounded bg-gray-100 shimmer mb-1.5" />
-                  <div className="h-1.5 w-full rounded-full bg-gray-50 shimmer" />
+                  <div className="h-3 w-24 rounded-full bg-[var(--color-bw-surface-dim)] shimmer mb-2" />
+                  <div className="h-1.5 w-full rounded-full bg-[var(--color-bw-surface-dim)]/60 shimmer" />
                 </div>
               </div>
             ))}
