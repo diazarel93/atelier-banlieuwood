@@ -17,14 +17,23 @@ interface AtRiskWidgetProps {
   students: AtRiskStudent[];
 }
 
+const SEVERITY_STYLES = {
+  alert: {
+    dot: "bg-[var(--color-bw-danger)]",
+    pill: "bg-[var(--color-bw-danger-100)] text-[var(--color-bw-danger)]",
+  },
+  warning: {
+    dot: "bg-[var(--color-bw-amber)]",
+    pill: "bg-[var(--color-bw-amber-100)] text-[var(--color-bw-amber-500)]",
+  },
+} as const;
+
 export function AtRiskWidget({ students }: AtRiskWidgetProps) {
   if (students.length === 0) {
     return (
-      <GlassCardV2 className="p-4">
-        <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-          Élèves à surveiller
-        </h3>
-        <div className="flex items-center gap-2 text-sm text-emerald-600">
+      <GlassCardV2 className="p-5">
+        <h3 className="label-caps mb-3">Élèves à surveiller</h3>
+        <div className="flex items-center gap-2 text-body-sm text-[var(--color-bw-green)]">
           <svg
             width="16"
             height="16"
@@ -44,42 +53,37 @@ export function AtRiskWidget({ students }: AtRiskWidgetProps) {
   }
 
   return (
-    <GlassCardV2 className="p-4">
-      <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-        Élèves à surveiller
-      </h3>
-      <div className="flex flex-col gap-2">
-        {students.slice(0, 5).map((student) => (
-          <Link
-            key={student.profileId}
-            href={ROUTES.eleveDetail(student.profileId)}
-            className="flex items-start gap-2 rounded-lg p-2 hover:bg-[var(--color-bw-surface-dim)] transition-colors"
-          >
-            <div className="flex items-center gap-2 min-w-0">
+    <GlassCardV2 className="p-5">
+      <h3 className="label-caps mb-3">Élèves à surveiller</h3>
+      <div className="flex flex-col gap-1">
+        {students.slice(0, 5).map((student) => {
+          const styles = SEVERITY_STYLES[student.severity];
+          return (
+            <Link
+              key={student.profileId}
+              href={ROUTES.eleveDetail(student.profileId)}
+              className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-bw-primary/[0.025] transition-colors duration-100"
+            >
               <div
                 className={cn(
-                  "mt-1 h-2 w-2 rounded-full shrink-0",
-                  student.severity === "alert"
-                    ? "bg-red-500"
-                    : "bg-amber-400"
+                  "mt-1.5 h-2 w-2 rounded-full shrink-0",
+                  styles.dot
                 )}
               />
               {student.avatar && (
                 <span className="text-sm shrink-0">{student.avatar}</span>
               )}
               <div className="min-w-0">
-                <p className="text-sm font-medium text-bw-heading truncate">
+                <p className="text-heading-xs text-bw-heading truncate">
                   {student.displayName}
                 </p>
-                <div className="flex flex-wrap gap-1 mt-0.5">
+                <div className="flex flex-wrap gap-1 mt-1">
                   {student.reasons.map((reason, i) => (
                     <span
                       key={i}
                       className={cn(
-                        "inline-block text-[10px] px-1.5 py-0.5 rounded-full",
-                        student.severity === "alert"
-                          ? "bg-red-50 text-red-600"
-                          : "bg-amber-50 text-amber-600"
+                        "inline-block text-[10px] font-medium px-2 py-0.5 rounded-full ring-1 ring-inset ring-current/10",
+                        styles.pill
                       )}
                     >
                       {reason}
@@ -87,9 +91,9 @@ export function AtRiskWidget({ students }: AtRiskWidgetProps) {
                   ))}
                 </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
       </div>
     </GlassCardV2>
   );

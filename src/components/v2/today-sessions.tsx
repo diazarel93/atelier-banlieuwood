@@ -32,7 +32,7 @@ function SessionRow({ session }: { session: SessionSummary }) {
 
   return (
     <div className="relative flex items-center gap-3 py-3 pl-4 rounded-xl hover:bg-bw-primary/[0.025] transition-colors duration-100">
-      {/* Left status bar — 3px for visibility */}
+      {/* Left status bar */}
       <div
         className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
         style={{ backgroundColor: barColor }}
@@ -45,11 +45,11 @@ function SessionRow({ session }: { session: SessionSummary }) {
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-bw-heading truncate">
+        <p className="text-heading-xs text-bw-heading truncate">
           {session.title}
         </p>
         <div className="flex items-center gap-2 mt-0.5">
-          <span className="text-xs text-bw-muted">
+          <span className="text-body-xs text-bw-muted">
             {session.classLabel || session.level} — {session.studentCount} élève
             {session.studentCount !== 1 ? "s" : ""}
           </span>
@@ -62,25 +62,41 @@ function SessionRow({ session }: { session: SessionSummary }) {
         <Link
           href={`/session/${session.id}/pilot`}
           prefetch={false}
-          className="shrink-0 rounded-lg bg-bw-primary px-3 py-1 text-xs font-semibold text-white hover:bg-bw-primary-500 transition-colors"
+          className="shrink-0 rounded-lg bg-bw-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-bw-primary-500 active:scale-95 transition-all duration-150"
         >
           {ss.ctaShort}
         </Link>
       ) : ss.canViewResults ? (
         <Link
           href={`/v2/seances/${session.id}/results`}
-          className="shrink-0 rounded-lg bg-[var(--color-bw-surface-dim)] px-3 py-1 text-xs font-medium text-bw-muted hover:text-bw-heading transition-colors"
+          className="shrink-0 rounded-lg bg-[var(--color-bw-surface-dim)] px-3 py-1.5 text-xs font-medium text-bw-muted hover:text-bw-heading transition-colors"
         >
           {ss.ctaShort}
         </Link>
       ) : (
         <Link
           href={`/v2/seances/${session.id}/prepare`}
-          className="shrink-0 rounded-lg border border-[var(--color-bw-border)] px-3 py-1 text-xs font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+          className="shrink-0 rounded-lg border border-[var(--color-bw-border)] px-3 py-1.5 text-xs font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
         >
           Préparer
         </Link>
       )}
+    </div>
+  );
+}
+
+function EmptyToday() {
+  return (
+    <div className="flex flex-col items-center text-center py-4">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-bw-surface-dim)] mb-3">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-bw-muted">
+          <circle cx="9" cy="9" r="7" />
+          <path d="M9 5v4l2.5 1.5" />
+        </svg>
+      </div>
+      <p className="text-body-sm text-bw-muted">
+        Journée libre — aucune séance prévue
+      </p>
     </div>
   );
 }
@@ -93,30 +109,28 @@ export function TodaySessions({
   return (
     <div className={cn("flex flex-col gap-4", className)}>
       {/* Today */}
-      <GlassCardV2 className="p-4">
-        <h3 className="label-caps text-bw-muted mb-3">
+      <GlassCardV2 className="p-5">
+        <h3 className="label-caps mb-3">
           Aujourd&apos;hui
         </h3>
         {todaySessions.length > 0 ? (
-          <div className="divide-y divide-[var(--color-bw-border-subtle)]">
+          <div className="flex flex-col gap-1">
             {todaySessions.map((s) => (
               <SessionRow key={s.id} session={s} />
             ))}
           </div>
         ) : (
-          <p className="text-sm text-bw-muted py-2">
-            Aucune séance prévue
-          </p>
+          <EmptyToday />
         )}
       </GlassCardV2>
 
       {/* Tomorrow */}
       {tomorrowSessions.length > 0 && (
-        <GlassCardV2 className="p-4">
-          <h3 className="label-caps text-bw-muted mb-3">
+        <GlassCardV2 className="p-5">
+          <h3 className="label-caps mb-3">
             Demain
           </h3>
-          <div className="divide-y divide-[var(--color-bw-border-subtle)]">
+          <div className="flex flex-col gap-1">
             {tomorrowSessions.map((s) => (
               <SessionRow key={s.id} session={s} />
             ))}
@@ -124,13 +138,13 @@ export function TodaySessions({
         </GlassCardV2>
       )}
 
-      {/* New session CTA */}
+      {/* New session CTA — solid, not dashed */}
       <Link
         href="/v2/seances/new"
-        className="flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[var(--color-bw-border)] py-3 text-sm font-medium text-bw-muted hover:border-bw-primary hover:text-bw-primary transition-colors"
+        className="group flex items-center justify-center gap-2 rounded-xl bg-bw-primary/[0.06] py-3.5 text-sm font-medium text-bw-primary hover:bg-bw-primary/[0.10] active:scale-[0.98] transition-all duration-150"
       >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="transition-transform duration-200 group-hover:rotate-90">
+          <path d="M7.5 2.5v10M2.5 7.5h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
         Nouvelle séance
       </Link>

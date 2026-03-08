@@ -137,7 +137,7 @@ export function MiniCalendar({
             >
               {date.getDate()}
               {hasSession && !isSelected && (
-                <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-bw-primary" />
+                <span className="absolute bottom-[3px] left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full bg-bw-primary ring-2 ring-bw-primary/20" />
               )}
             </button>
           );
