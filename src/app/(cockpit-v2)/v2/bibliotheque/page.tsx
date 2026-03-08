@@ -7,20 +7,13 @@ import {
   type ExerciseEntry,
 } from "@/lib/exercise-catalog";
 import { getModuleGuide } from "@/lib/guide-data";
-import { ExerciseFilters } from "@/components/v2/exercise-filters";
-import { ExerciseGrid } from "@/components/v2/exercise-grid";
+import { GlassCardV2 } from "@/components/v2/glass-card";
+import { ExerciseCard } from "@/components/v2/exercise-card";
 import { ModuleGuideModal } from "@/components/v2/module-guide-modal";
 
-function parseDurationMinutes(d: string): number {
-  const match = d.match(/(\d+)/);
-  return match ? parseInt(match[1], 10) : 15;
-}
-
 export default function BibliothequePage() {
-  const [selectedPhase, setSelectedPhase] = useState<string | null>(null);
-  const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
+  const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
   const [search, setSearch] = useState("");
-  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<ExerciseEntry | null>(null);
 
   const handleExerciseClick = useCallback((ex: ExerciseEntry) => {
@@ -30,41 +23,26 @@ export default function BibliothequePage() {
   const catalog = useMemo(() => buildExerciseCatalog(), []);
   const phases = useMemo(() => getCatalogPhases(), []);
 
-  const filtered = useMemo(() => {
-    let list = catalog;
-
-    if (selectedPhase) {
-      list = list.filter((ex) => ex.phase === selectedPhase);
-    }
-
-    if (selectedDuration) {
-      list = list.filter((ex) => {
-        const mins = parseDurationMinutes(ex.duration);
-        switch (selectedDuration) {
-          case "short":
-            return mins < 15;
-          case "medium":
-            return mins >= 15 && mins <= 25;
-          case "long":
-            return mins > 25;
-          default:
-            return true;
+  // Group exercises by phase
+  const grouped = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return phases
+      .map((phase) => {
+        let exercises = catalog.filter((ex) => ex.phase === phase.id);
+        if (q) {
+          exercises = exercises.filter(
+            (ex) =>
+              ex.title.toLowerCase().includes(q) ||
+              ex.description.toLowerCase().includes(q) ||
+              phase.label.toLowerCase().includes(q)
+          );
         }
-      });
-    }
+        return { phase, exercises };
+      })
+      .filter((g) => g.exercises.length > 0);
+  }, [catalog, phases, search]);
 
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter(
-        (ex) =>
-          ex.title.toLowerCase().includes(q) ||
-          ex.description.toLowerCase().includes(q) ||
-          ex.phaseLabel.toLowerCase().includes(q)
-      );
-    }
-
-    return list;
-  }, [catalog, selectedPhase, selectedDuration, search]);
+  const totalCount = grouped.reduce((s, g) => s + g.exercises.length, 0);
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
@@ -73,7 +51,7 @@ export default function BibliothequePage() {
         <div>
           <h1 className="text-xl font-bold text-bw-heading">Bibliothèque</h1>
           <p className="text-sm text-bw-muted mt-0.5">
-            {catalog.length} exercices disponibles
+            {totalCount} exercices disponibles
           </p>
         </div>
         <div className="relative">
@@ -97,56 +75,101 @@ export default function BibliothequePage() {
         </div>
       </div>
 
-      {/* Mobile filter toggle */}
-      <div className="lg:hidden mb-4">
-        <button
-          type="button"
-          onClick={() => setShowMobileFilters((v) => !v)}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-bw-border)] px-3 py-1.5 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M1.5 3.5h11M3.5 7h7M5.5 10.5h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-          Filtres
-          {(selectedPhase || selectedDuration) && (
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-bw-primary text-[10px] font-bold text-white">
-              {(selectedPhase ? 1 : 0) + (selectedDuration ? 1 : 0)}
-            </span>
-          )}
-        </button>
-        {showMobileFilters && (
-          <div className="mt-3">
-            <ExerciseFilters
-              phases={phases}
-              selectedPhase={selectedPhase}
-              onPhaseChange={setSelectedPhase}
-              selectedDuration={selectedDuration}
-              onDurationChange={setSelectedDuration}
-            />
+      {/* Phases grouped */}
+      <div className="space-y-4">
+        {grouped.length === 0 && (
+          <div className="flex items-center justify-center py-16">
+            <p className="text-sm text-bw-muted">
+              Aucun exercice ne correspond à la recherche
+            </p>
           </div>
         )}
+
+        {grouped.map(({ phase, exercises }) => {
+          const isExpanded = expandedPhase === phase.id;
+
+          return (
+            <div key={phase.id}>
+              {/* Phase header — clickable */}
+              <GlassCardV2
+                hover
+                className="cursor-pointer"
+                onClick={() =>
+                  setExpandedPhase(isExpanded ? null : phase.id)
+                }
+              >
+                <div className="flex items-center gap-4 p-5">
+                  {/* Color accent */}
+                  <div
+                    className="w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0"
+                    style={{
+                      background: `linear-gradient(135deg, ${phase.color}20, ${phase.color}08)`,
+                      border: `1px solid ${phase.color}25`,
+                    }}
+                  >
+                    {phase.emoji}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-base font-bold text-bw-heading">
+                      {phase.label}
+                    </h2>
+                    <p className="text-xs text-bw-muted mt-0.5">
+                      {exercises.length} exercice{exercises.length > 1 ? "s" : ""}
+                    </p>
+                  </div>
+
+                  {/* Mini previews of exercises */}
+                  <div className="hidden sm:flex items-center gap-1.5">
+                    {exercises.slice(0, 4).map((ex) => (
+                      <span
+                        key={ex.id}
+                        className="w-2 h-2 rounded-full"
+                        style={{ backgroundColor: ex.color }}
+                      />
+                    ))}
+                    {exercises.length > 4 && (
+                      <span className="text-[10px] text-bw-muted font-medium">
+                        +{exercises.length - 4}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Chevron */}
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    className={`shrink-0 text-bw-muted transition-transform duration-200 ${
+                      isExpanded ? "rotate-180" : ""
+                    }`}
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </div>
+              </GlassCardV2>
+
+              {/* Expanded exercises grid */}
+              {isExpanded && (
+                <div className="mt-3 ml-4 sm:ml-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 pb-2">
+                  {exercises.map((ex) => (
+                    <ExerciseCard
+                      key={ex.id}
+                      exercise={ex}
+                      onClick={() => handleExerciseClick(ex)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      {/* Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Sidebar filters — desktop */}
-        <div className="lg:col-span-3 hidden lg:block">
-          <div className="sticky top-20">
-            <ExerciseFilters
-              phases={phases}
-              selectedPhase={selectedPhase}
-              onPhaseChange={setSelectedPhase}
-              selectedDuration={selectedDuration}
-              onDurationChange={setSelectedDuration}
-            />
-          </div>
-        </div>
-
-        {/* Grid */}
-        <div className="lg:col-span-9">
-          <ExerciseGrid exercises={filtered} onExerciseClick={handleExerciseClick} />
-        </div>
-      </div>
       {/* Module guide modal */}
       {selectedExercise && (
         <ModuleGuideModal
