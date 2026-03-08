@@ -16,40 +16,34 @@ interface ResponseHistoryListProps {
 
 function scoreColor(score: number | null): string {
   if (score === null) return "text-bw-muted";
-  if (score < 2) return "text-red-500";
-  if (score < 3) return "text-amber-500";
-  return "text-emerald-500";
+  if (score < 2) return "text-[var(--color-bw-danger)]";
+  if (score < 3) return "text-[var(--color-bw-amber)]";
+  return "text-[var(--color-bw-green)]";
 }
 
 export function ResponseHistoryList({ responses }: ResponseHistoryListProps) {
-  if (responses.length === 0) {
-    return (
-      <GlassCardV2 className="p-4">
-        <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-          Réponses récentes
-        </h3>
-        <p className="text-sm text-bw-muted text-center py-6">
-          Aucune réponse enregistrée
-        </p>
-      </GlassCardV2>
-    );
-  }
-
   return (
-    <GlassCardV2 className="p-4">
-      <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-        Réponses récentes
-      </h3>
-      <div className="flex flex-col divide-y divide-[var(--color-bw-border-subtle)]">
-        {responses.map((r) => (
-          <div key={r.id} className="py-3 first:pt-0 last:pb-0">
-            <div className="flex items-start justify-between gap-3">
+    <GlassCardV2 className="p-5">
+      <h3 className="label-caps mb-3">Réponses récentes</h3>
+      {responses.length === 0 ? (
+        <div className="flex flex-col items-center py-6 text-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-bw-muted mb-2">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+          </svg>
+          <p className="text-body-xs text-bw-muted">
+            Les réponses apparaîtront après la première séance
+          </p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-1">
+          {responses.map((r) => (
+            <div key={r.id} className="flex items-start justify-between gap-3 rounded-xl p-2.5 hover:bg-bw-primary/[0.025] transition-colors duration-100">
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-bw-muted mb-1">
+                <p className="text-body-xs font-medium text-bw-muted mb-0.5">
                   {r.situationLabel}
                 </p>
                 {r.textResponse && (
-                  <p className="text-sm text-bw-heading line-clamp-2">
+                  <p className="text-sm text-bw-heading line-clamp-2 leading-snug">
                     {r.textResponse}
                   </p>
                 )}
@@ -62,7 +56,7 @@ export function ResponseHistoryList({ responses }: ResponseHistoryListProps) {
                     {r.aiScore.toFixed(1)}
                   </span>
                 )}
-                <span className="text-xs text-bw-muted">
+                <span className="text-body-xs text-bw-muted">
                   {new Date(r.createdAt).toLocaleDateString("fr-FR", {
                     day: "numeric",
                     month: "short",
@@ -70,9 +64,9 @@ export function ResponseHistoryList({ responses }: ResponseHistoryListProps) {
                 </span>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </GlassCardV2>
   );
 }

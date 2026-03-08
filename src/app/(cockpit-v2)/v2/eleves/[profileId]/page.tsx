@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { BreadcrumbV2 } from "@/components/v2/breadcrumb";
 import { GlassCardV2 } from "@/components/v2/glass-card";
-import { StatRing } from "@/components/v2/stat-ring";
 import { ProfileHero } from "@/components/v2/student-profile/profile-hero";
 import { ScoreEvolutionChart } from "@/components/v2/student-profile/score-evolution-chart";
 import { ResponseHistoryList } from "@/components/v2/student-profile/response-history-list";
@@ -15,7 +14,6 @@ import {
   useCreateNote,
   useDeleteNote,
 } from "@/hooks/use-student-profiles";
-import { AXES } from "@/lib/axes-mapping";
 
 export default function EleveDetailPage() {
   const params = useParams();
@@ -27,7 +25,7 @@ export default function EleveDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
         <BreadcrumbV2
           items={[
             { label: "Élèves", href: "/v2/eleves" },
@@ -35,14 +33,13 @@ export default function EleveDetailPage() {
           ]}
         />
         <div className="space-y-4 mt-4">
-          <div className="h-24 rounded-2xl bg-white shimmer" />
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-8 space-y-4">
+          <div className="h-20 rounded-2xl bg-white shimmer" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2 space-y-4">
               <div className="h-48 rounded-2xl bg-white shimmer" />
-              <div className="h-64 rounded-2xl bg-white shimmer" />
+              <div className="h-56 rounded-2xl bg-white shimmer" />
             </div>
-            <div className="lg:col-span-4 space-y-4">
-              <div className="h-40 rounded-2xl bg-white shimmer" />
+            <div className="space-y-4">
               <div className="h-32 rounded-2xl bg-white shimmer" />
               <div className="h-48 rounded-2xl bg-white shimmer" />
             </div>
@@ -54,7 +51,7 @@ export default function EleveDetailPage() {
 
   if (isError || !profile) {
     return (
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
         <BreadcrumbV2
           items={[
             { label: "Élèves", href: "/v2/eleves" },
@@ -67,7 +64,7 @@ export default function EleveDetailPage() {
           </p>
           <Link
             href="/v2/eleves"
-            className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
           >
             Retour aux élèves
           </Link>
@@ -76,8 +73,12 @@ export default function EleveDetailPage() {
     );
   }
 
+  const hasData =
+    profile.sessionHistory.length > 0 ||
+    profile.recentResponses.length > 0;
+
   return (
-    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
+    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
       <BreadcrumbV2
         items={[
           { label: "Élèves", href: "/v2/eleves" },
@@ -85,64 +86,91 @@ export default function EleveDetailPage() {
         ]}
       />
 
-      <div className="space-y-6 mt-4">
-        {/* Hero */}
+      <div className="space-y-5 mt-4">
+        {/* Hero — with inline score rings when there's data */}
         <ProfileHero
           displayName={profile.displayName}
           avatar={profile.avatar}
           sessionCount={profile.sessionCount}
           totalResponses={profile.totalResponses}
+          scores={profile.scores}
+          lastActiveAt={
+            profile.sessionHistory.length > 0
+              ? profile.sessionHistory[profile.sessionHistory.length - 1].date
+              : undefined
+          }
         />
 
-        {/* Two-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left — graphs and history */}
-          <div className="lg:col-span-8 space-y-6">
-            <ScoreEvolutionChart
-              sessions={profile.sessionHistory.map((sh) => ({
-                date: sh.date,
-                sessionTitle: sh.sessionTitle,
-                scores: sh.scores,
-              }))}
-            />
-            <ResponseHistoryList responses={profile.recentResponses} />
-          </div>
-
-          {/* Right — scores, badges, notes */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Current scores */}
-            <GlassCardV2 className="p-4">
-              <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-                Scores actuels
-              </h3>
-              <div className="grid grid-cols-2 gap-3">
-                {AXES.map((axis) => (
-                  <StatRing
-                    key={axis.key}
-                    value={profile.scores[axis.key]}
-                    label={axis.label}
-                    color={axis.color}
-                    size={72}
-                    strokeWidth={5}
-                  />
-                ))}
+        {!hasData ? (
+          /* ── Empty state — single card when no data at all ── */
+          <GlassCardV2 className="p-8">
+            <div className="flex flex-col items-center text-center max-w-sm mx-auto">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-bw-surface-dim)] mb-4">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-bw-muted">
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+                </svg>
               </div>
-            </GlassCardV2>
+              <h3 className="text-heading-xs text-bw-heading mb-1">
+                Profil en attente
+              </h3>
+              <p className="text-body-sm text-bw-muted mb-4">
+                Les scores, réponses et badges de {profile.displayName} apparaîtront
+                après sa première participation à une séance.
+              </p>
+              <Link
+                href="/v2/seances/new"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-4 py-2 text-sm font-semibold text-white hover:bg-bw-primary-500 active:scale-[0.97] transition-all"
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+                Lancer une séance
+              </Link>
+            </div>
 
-            {/* Achievements */}
-            <AchievementGrid achievements={profile.achievements} />
+            {/* Notes still available even when no data */}
+            <div className="mt-6 pt-5 border-t border-[var(--color-bw-border-subtle)]">
+              <NotesPanel
+                notes={profile.notes}
+                onAdd={(noteType, content) =>
+                  createNote.mutate({ noteType, content })
+                }
+                onDelete={(noteId) => deleteNote.mutate(noteId)}
+                isAdding={createNote.isPending}
+              />
+            </div>
+          </GlassCardV2>
+        ) : (
+          /* ── Two-column layout when there is data ── */
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {/* Left — graphs and history */}
+            <div className="lg:col-span-2 space-y-5">
+              <ScoreEvolutionChart
+                sessions={profile.sessionHistory.map((sh) => ({
+                  date: sh.date,
+                  sessionTitle: sh.sessionTitle,
+                  scores: sh.scores,
+                }))}
+              />
+              <ResponseHistoryList responses={profile.recentResponses} />
+            </div>
 
-            {/* Teacher notes */}
-            <NotesPanel
-              notes={profile.notes}
-              onAdd={(noteType, content) =>
-                createNote.mutate({ noteType, content })
-              }
-              onDelete={(noteId) => deleteNote.mutate(noteId)}
-              isAdding={createNote.isPending}
-            />
+            {/* Right — badges + notes */}
+            <div className="space-y-5">
+              <AchievementGrid achievements={profile.achievements} />
+              <NotesPanel
+                notes={profile.notes}
+                onAdd={(noteType, content) =>
+                  createNote.mutate({ noteType, content })
+                }
+                onDelete={(noteId) => deleteNote.mutate(noteId)}
+                isAdding={createNote.isPending}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

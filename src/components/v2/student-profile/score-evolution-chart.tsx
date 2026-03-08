@@ -16,13 +16,16 @@ interface ScoreEvolutionChartProps {
 export function ScoreEvolutionChart({ sessions }: ScoreEvolutionChartProps) {
   if (sessions.length === 0) {
     return (
-      <GlassCardV2 className="p-4">
-        <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-          Évolution des scores
-        </h3>
-        <p className="text-sm text-bw-muted text-center py-6">
-          Pas encore de données
-        </p>
+      <GlassCardV2 className="p-5">
+        <h3 className="label-caps mb-3">Évolution des scores</h3>
+        <div className="flex flex-col items-center py-6 text-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-bw-muted mb-2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+          </svg>
+          <p className="text-body-xs text-bw-muted">
+            L&apos;évolution sera visible après plusieurs séances
+          </p>
+        </div>
       </GlassCardV2>
     );
   }
@@ -36,24 +39,12 @@ export function ScoreEvolutionChart({ sessions }: ScoreEvolutionChartProps) {
   const n = sessions.length;
   const xStep = n > 1 ? chartW / (n - 1) : chartW / 2;
 
-  function toPath(key: keyof AxesScores): string {
-    return sessions
-      .map((s, i) => {
-        const x = padding.left + (n > 1 ? i * xStep : chartW / 2);
-        const y = padding.top + chartH - (s.scores[key] / 100) * chartH;
-        return `${i === 0 ? "M" : "L"}${x},${y}`;
-      })
-      .join(" ");
-  }
-
   // Y-axis gridlines
   const yTicks = [0, 25, 50, 75, 100];
 
   return (
-    <GlassCardV2 className="p-4">
-      <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-        Évolution des scores
-      </h3>
+    <GlassCardV2 className="p-5">
+      <h3 className="label-caps mb-3">Évolution des scores</h3>
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="w-full"
@@ -144,7 +135,7 @@ export function ScoreEvolutionChart({ sessions }: ScoreEvolutionChartProps) {
               y={height - 6}
               textAnchor="middle"
               className="fill-bw-muted"
-              fontSize="9"
+              fontSize="10"
             >
               {label}
             </text>
@@ -160,7 +151,7 @@ export function ScoreEvolutionChart({ sessions }: ScoreEvolutionChartProps) {
               className="h-2 w-2 rounded-full"
               style={{ backgroundColor: axis.color }}
             />
-            <span className="text-xs text-bw-muted">{axis.label}</span>
+            <span className="text-body-xs text-bw-muted">{axis.label}</span>
           </div>
         ))}
       </div>

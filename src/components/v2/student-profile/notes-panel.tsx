@@ -18,10 +18,10 @@ interface NotesPanelProps {
 }
 
 const NOTE_TYPES = [
-  { value: "observation", label: "Observation", color: "#6366F1" },
-  { value: "strength", label: "Point fort", color: "#10B981" },
-  { value: "concern", label: "Préoccupation", color: "#EF4444" },
-  { value: "goal", label: "Objectif", color: "#F59E0B" },
+  { value: "observation", label: "Observation", color: "var(--color-bw-violet)" },
+  { value: "strength", label: "Point fort", color: "var(--color-bw-green)" },
+  { value: "concern", label: "Préoccupation", color: "var(--color-bw-danger)" },
+  { value: "goal", label: "Objectif", color: "var(--color-bw-amber)" },
 ] as const;
 
 function noteTypeInfo(type: string) {
@@ -40,10 +40,8 @@ export function NotesPanel({ notes, onAdd, onDelete, isAdding }: NotesPanelProps
   }
 
   return (
-    <GlassCardV2 className="p-4">
-      <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-        Notes
-      </h3>
+    <GlassCardV2 className="p-5">
+      <h3 className="label-caps mb-3">Notes</h3>
 
       {/* Add form */}
       <form onSubmit={handleSubmit} className="mb-4">
@@ -51,7 +49,7 @@ export function NotesPanel({ notes, onAdd, onDelete, isAdding }: NotesPanelProps
           <select
             value={noteType}
             onChange={(e) => setNoteType(e.target.value)}
-            className="rounded-lg border border-[var(--color-bw-border)] bg-white px-2 py-1.5 text-xs text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+            className="rounded-lg border border-[var(--color-bw-border)] bg-white px-2.5 py-1.5 text-body-xs font-medium text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
           >
             {NOTE_TYPES.map((t) => (
               <option key={t.value} value={t.value}>
@@ -66,12 +64,12 @@ export function NotesPanel({ notes, onAdd, onDelete, isAdding }: NotesPanelProps
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Ajouter une note..."
-            className="flex-1 rounded-lg border border-[var(--color-bw-border)] bg-white px-3 py-1.5 text-sm text-bw-heading placeholder:text-bw-muted focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+            className="flex-1 h-9 rounded-lg border border-[var(--color-bw-border)] bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
           />
           <button
             type="submit"
             disabled={!content.trim() || isAdding}
-            className="rounded-lg bg-bw-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-bw-primary-500 transition-colors disabled:opacity-50 cursor-pointer"
+            className="rounded-lg bg-bw-primary px-3.5 py-1.5 text-body-xs font-semibold text-white hover:bg-bw-primary-500 active:scale-[0.97] transition-all disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
           >
             {isAdding ? "..." : "Ajouter"}
           </button>
@@ -80,9 +78,15 @@ export function NotesPanel({ notes, onAdd, onDelete, isAdding }: NotesPanelProps
 
       {/* Notes list */}
       {notes.length === 0 ? (
-        <p className="text-sm text-bw-muted text-center py-2">
-          Aucune note
-        </p>
+        <div className="flex flex-col items-center py-4 text-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-bw-muted mb-2">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+          </svg>
+          <p className="text-body-xs text-bw-muted">Aucune note pour le moment</p>
+        </div>
       ) : (
         <div className="flex flex-col gap-2">
           {notes.map((note) => {
@@ -90,16 +94,16 @@ export function NotesPanel({ notes, onAdd, onDelete, isAdding }: NotesPanelProps
             return (
               <div
                 key={note.id}
-                className="flex items-start gap-2 rounded-lg border border-[var(--color-bw-border-subtle)] p-2.5"
+                className="flex items-start gap-2.5 rounded-xl p-2.5 hover:bg-bw-primary/[0.025] transition-colors duration-100"
               >
                 <div
-                  className="mt-0.5 h-2 w-2 rounded-full shrink-0"
+                  className="mt-1.5 h-2 w-2 rounded-full shrink-0"
                   style={{ backgroundColor: info.color }}
                   title={info.label}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-bw-heading">{note.content}</p>
-                  <p className="text-[10px] text-bw-muted mt-0.5">
+                  <p className="text-sm text-bw-heading leading-snug">{note.content}</p>
+                  <p className="text-body-xs text-bw-muted mt-0.5">
                     {info.label} &middot;{" "}
                     {new Date(note.created_at).toLocaleDateString("fr-FR", {
                       day: "numeric",
@@ -110,7 +114,7 @@ export function NotesPanel({ notes, onAdd, onDelete, isAdding }: NotesPanelProps
                 <button
                   type="button"
                   onClick={() => onDelete(note.id)}
-                  className="text-bw-muted hover:text-red-500 transition-colors shrink-0 cursor-pointer"
+                  className="text-bw-muted hover:text-[var(--color-bw-danger)] transition-colors shrink-0 cursor-pointer p-1 rounded-md hover:bg-[var(--color-bw-danger-100)]"
                   title="Supprimer"
                 >
                   <svg
