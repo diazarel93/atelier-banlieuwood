@@ -59,9 +59,9 @@ export function buildExerciseCatalog(): ExerciseEntry[] {
 /**
  * Get all unique phases from the catalog for filtering.
  */
-export function getCatalogPhases(): { id: string; label: string; color: string; emoji: string }[] {
+export function getCatalogPhases(): { id: string; label: string; description: string; color: string; emoji: string }[] {
   const seen = new Set<string>();
-  const result: { id: string; label: string; color: string; emoji: string }[] = [];
+  const result: { id: string; label: string; description: string; color: string; emoji: string }[] = [];
 
   for (const phase of PHASES) {
     if (!seen.has(phase.id)) {
@@ -69,6 +69,7 @@ export function getCatalogPhases(): { id: string; label: string; color: string; 
       result.push({
         id: phase.id,
         label: phase.label,
+        description: phase.description,
         color: phase.color,
         emoji: phase.emoji,
       });
