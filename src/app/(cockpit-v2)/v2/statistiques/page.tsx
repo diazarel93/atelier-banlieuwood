@@ -8,6 +8,7 @@ import { StatsDistributionChart } from "@/components/v2/stats-distribution-chart
 import { SessionSelector } from "@/components/v2/session-selector";
 import { QuestionAnalyticsTable } from "@/components/v2/question-analytics-table";
 import { GlassCardV2 } from "@/components/v2/glass-card";
+import { Avatar } from "@/components/v2/avatar";
 import { EmptyState } from "@/components/v2/empty-state";
 import { useQuestionAnalytics } from "@/hooks/use-question-analytics";
 import type { AxesScores } from "@/lib/axes-mapping";
@@ -168,9 +169,7 @@ export default function StatistiquesPage() {
           {/* Podium — top 3 most active students */}
           {podium && (
             <GlassCardV2 className="p-5">
-              <h2 className="section-title">
-                Podium
-              </h2>
+              <h2 className="label-caps mb-4">Podium</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {podium.map((s, i) => {
                   const medal = ["🥇", "🥈", "🥉"][i];
@@ -191,9 +190,7 @@ export default function StatistiquesPage() {
                       className={`flex items-center gap-3 rounded-xl px-4 py-3 ring-1 ring-inset ${ringColor} transition-colors duration-150`}
                     >
                       <span className="text-xl shrink-0">{medal}</span>
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-base shrink-0 shadow-sm">
-                        {s.avatar || "👤"}
-                      </span>
+                      <Avatar name={s.displayName} emoji={s.avatar} />
                       <div className="min-w-0 flex-1">
                         <p className="text-heading-xs text-bw-heading truncate">
                           {s.displayName}
@@ -212,9 +209,7 @@ export default function StatistiquesPage() {
           {/* Question analytics */}
           {qaData && qaData.questions.length > 0 && (
             <div>
-              <h2 className="text-sm font-semibold text-bw-heading mb-3">
-                Analyse par question
-              </h2>
+              <h2 className="label-caps mb-3">Analyse par question</h2>
               <QuestionAnalyticsTable questions={qaData.questions} />
             </div>
           )}

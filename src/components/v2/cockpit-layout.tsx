@@ -8,9 +8,9 @@ export function CockpitLayoutV2({ children }: { children: React.ReactNode }) {
     <div
       className="theme-lavande min-h-dvh text-bw-heading"
       style={{
-        backgroundColor: "#F0EBF5",
+        backgroundColor: "#EEEAF6",
         background:
-          "linear-gradient(145deg, #F0EBF5 0%, #EDE8F3 35%, #F0EBF5 100%)",
+          "linear-gradient(145deg, #EEEAF6 0%, #E9E4F2 35%, #EEEAF6 100%)",
       }}
     >
       {/* Ambient glow spots — lavande tint */}

@@ -24,7 +24,7 @@ export function StatsKpiRow({ scores, className }: StatsKpiRowProps) {
           />
           <StatRing
             value={scores[axis.key]}
-            label={axis.label}
+            label=""
             color={axis.color}
             size={72}
             strokeWidth={5}
@@ -33,7 +33,7 @@ export function StatsKpiRow({ scores, className }: StatsKpiRowProps) {
             className="text-body-xs font-semibold uppercase tracking-wider"
             style={{ color: axis.color }}
           >
-            {axis.shortLabel}
+            {axis.label}
           </span>
         </div>
       ))}

@@ -23,7 +23,7 @@ export function ExerciseCard({ exercise, className, onClick }: ExerciseCardProps
       <div className="flex items-center gap-1.5 mb-2">
         <span className="text-sm">{exercise.phaseEmoji}</span>
         <span
-          className="text-[10px] font-semibold uppercase tracking-wide"
+          className="text-body-xs font-semibold uppercase tracking-wide"
           style={{ color: exercise.phaseColor }}
         >
           {exercise.phaseLabel}
@@ -58,7 +58,7 @@ export function ExerciseCard({ exercise, className, onClick }: ExerciseCardProps
           {exercise.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-[var(--color-bw-surface-dim)] px-2 py-0.5 text-[10px] font-medium text-bw-muted"
+              className="rounded-full bg-[var(--color-bw-surface-dim)] px-2 py-0.5 text-body-xs font-medium text-bw-muted"
             >
               {tag}
             </span>

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { GlassCardV2 } from "./glass-card";
+import { Avatar } from "./avatar";
 import { ROUTES } from "@/lib/routes";
 
 interface Student {
@@ -166,9 +167,7 @@ export function StudentClassTable({
                               href={ROUTES.eleveDetail(student.profileId)}
                               className="group flex items-center gap-2.5"
                             >
-                              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-bw-surface-dim)] text-base shrink-0">
-                                {student.avatar || "👤"}
-                              </span>
+                              <Avatar name={student.displayName} emoji={student.avatar} />
                               <span className="font-medium text-bw-heading truncate max-w-[180px] group-hover:text-bw-primary transition-colors duration-150">
                                 {student.displayName}
                               </span>

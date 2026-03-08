@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { MiniCalendar } from "./mini-calendar";
 import { GlassCardV2 } from "./glass-card";
@@ -51,7 +50,7 @@ export function SeanceCalendarSidebar({
                     />
                   </div>
                 </div>
-                <span className="text-[10px] text-bw-muted tabular-nums">
+                <span className="text-body-xs text-bw-muted tabular-nums">
                   {done}/{total}
                 </span>
               </div>
@@ -62,17 +61,6 @@ export function SeanceCalendarSidebar({
 
       {/* Mini calendar */}
       <MiniCalendar sessionDates={sessionDates} />
-
-      {/* New session CTA */}
-      <Link
-        href="/v2/seances/new"
-        className="flex items-center justify-center gap-2 rounded-xl bg-bw-primary py-2.5 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
-      >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-        Nouvelle séance
-      </Link>
     </div>
   );
 }

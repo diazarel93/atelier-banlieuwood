@@ -15,7 +15,7 @@ interface MiniCalendarProps {
   className?: string;
 }
 
-const DAYS = ["L", "M", "M", "J", "V", "S", "D"];
+const DAYS = ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"];
 const MONTHS = [
   "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
   "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre",
@@ -101,7 +101,7 @@ export function MiniCalendar({
         {DAYS.map((d, i) => (
           <div
             key={i}
-            className="text-center text-[10px] font-medium text-bw-muted"
+            className="text-center text-body-xs font-medium text-bw-muted"
           >
             {d}
           </div>

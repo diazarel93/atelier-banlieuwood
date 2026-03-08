@@ -94,7 +94,7 @@ export function ModuleGuideModal({
             <div className="flex items-center gap-2 mb-1">
               <span className="text-sm" aria-hidden="true">{exercise.phaseEmoji}</span>
               <span
-                className="text-[10px] font-semibold uppercase tracking-wide"
+                className="text-body-xs font-semibold uppercase tracking-wide"
                 style={{ color: exercise.phaseColor }}
               >
                 {exercise.phaseLabel}
@@ -154,7 +154,7 @@ export function ModuleGuideModal({
                 {exercise.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-[var(--color-bw-surface-dim)] px-2 py-0.5 text-[10px] font-medium text-bw-muted"
+                    className="rounded-full bg-[var(--color-bw-surface-dim)] px-2 py-0.5 text-body-xs font-medium text-bw-muted"
                   >
                     {tag}
                   </span>
@@ -206,7 +206,7 @@ export function ModuleGuideModal({
                               <span className="text-sm font-semibold text-bw-heading">
                                 {phase.name}
                               </span>
-                              <span className="text-[10px] font-mono text-purple-600 bg-purple-50 border border-purple-200 rounded-md px-1.5 py-0.5">
+                              <span className="text-body-xs font-mono text-[var(--color-bw-violet)] bg-[var(--color-bw-violet-100)] border border-[var(--color-bw-violet)]/20 rounded-md px-1.5 py-0.5">
                                 {phase.timing}
                               </span>
                             </div>
@@ -274,7 +274,7 @@ export function ModuleGuideModal({
                       key={i}
                       className="flex items-start gap-2 text-sm text-bw-heading"
                     >
-                      <span className="text-emerald-500 mt-0.5 shrink-0">
+                      <span className="text-[var(--color-bw-green)] mt-0.5 shrink-0">
                         &#10003;
                       </span>
                       {comp}
@@ -285,8 +285,8 @@ export function ModuleGuideModal({
 
               {/* Relancer + Challenger */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <GlassCardV2 className="p-4 border-l-4 border-l-emerald-400">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">
+                <GlassCardV2 className="p-4 border-l-4 border-l-[var(--color-bw-teal)]">
+                  <span className="text-body-xs font-bold uppercase tracking-wider text-[var(--color-bw-teal-600)]">
                     Relancer
                   </span>
                   <ul className="mt-2 space-y-1.5">
@@ -301,8 +301,8 @@ export function ModuleGuideModal({
                   </ul>
                 </GlassCardV2>
 
-                <GlassCardV2 className="p-4 border-l-4 border-l-purple-400">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600">
+                <GlassCardV2 className="p-4 border-l-4 border-l-[var(--color-bw-violet)]">
+                  <span className="text-body-xs font-bold uppercase tracking-wider text-[var(--color-bw-violet-600)]">
                     Challenger
                   </span>
                   <ul className="mt-2 space-y-1.5">

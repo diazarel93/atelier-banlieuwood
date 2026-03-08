@@ -69,7 +69,7 @@ function ModuleRow({
                   return (
                     <span
                       key={code}
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                      className="text-body-xs font-bold px-2 py-0.5 rounded-full"
                       style={{ backgroundColor: c.bg, color: c.text }}
                     >
                       {code}
@@ -84,7 +84,7 @@ function ModuleRow({
                 {guide.phases.map((phase, i) => (
                   <span
                     key={i}
-                    className="text-[10px] text-bw-muted bg-[var(--color-bw-surface-dim)] rounded-md px-1.5 py-0.5"
+                    className="text-body-xs text-bw-muted bg-[var(--color-bw-surface-dim)] rounded-md px-1.5 py-0.5"
                   >
                     {phase.name}
                   </span>
@@ -97,12 +97,12 @@ function ModuleRow({
           {guide && guide.competences.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
               {guide.competences.slice(0, 3).map((comp, i) => (
-                <span key={i} className="text-[10px] text-emerald-600 flex items-center gap-1">
+                <span key={i} className="text-body-xs text-[var(--color-bw-green)] flex items-center gap-1">
                   <span>&#10003;</span> {comp}
                 </span>
               ))}
               {guide.competences.length > 3 && (
-                <span className="text-[10px] text-bw-muted">
+                <span className="text-body-xs text-bw-muted">
                   +{guide.competences.length - 3} compétences
                 </span>
               )}
@@ -202,7 +202,7 @@ export default function BibliothequePage() {
               return (
                 <span
                   key={code}
-                  className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                  className="text-body-xs font-bold px-2 py-0.5 rounded-full"
                   style={{ backgroundColor: c.bg, color: c.text }}
                 >
                   {code}
@@ -223,7 +223,7 @@ export default function BibliothequePage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold" aria-hidden="true">1</span>
+                <span className="w-10 h-10 rounded-xl bg-[var(--color-bw-violet-100)] text-[var(--color-bw-violet)] flex items-center justify-center text-sm font-bold" aria-hidden="true">1</span>
                 <h3 className="text-sm font-semibold text-bw-heading">Approche par le cinéma</h3>
               </div>
               <p className="text-xs text-bw-muted leading-relaxed">
@@ -233,7 +233,7 @@ export default function BibliothequePage() {
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-bold" aria-hidden="true">2</span>
+                <span className="w-10 h-10 rounded-xl bg-[var(--color-bw-teal-100)] text-[var(--color-bw-teal-600)] flex items-center justify-center text-sm font-bold" aria-hidden="true">2</span>
                 <h3 className="text-sm font-semibold text-bw-heading">Progression structurée</h3>
               </div>
               <p className="text-xs text-bw-muted leading-relaxed">
@@ -243,7 +243,7 @@ export default function BibliothequePage() {
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-sm font-bold" aria-hidden="true">3</span>
+                <span className="w-10 h-10 rounded-xl bg-bw-primary/10 text-bw-primary flex items-center justify-center text-sm font-bold" aria-hidden="true">3</span>
                 <h3 className="text-sm font-semibold text-bw-heading">Alignement institutionnel</h3>
               </div>
               <p className="text-xs text-bw-muted leading-relaxed">

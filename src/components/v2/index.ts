@@ -3,6 +3,7 @@ export { AppShellV2 } from "./app-shell";
 export { GlassCardV2 } from "./glass-card";
 export { BreadcrumbV2 } from "./breadcrumb";
 export { StatRing } from "./stat-ring";
+export { Avatar } from "./avatar";
 export { KpiCard } from "./kpi-card";
 export { MiniCalendar } from "./mini-calendar";
 export { StudentClassTable } from "./student-class-table";

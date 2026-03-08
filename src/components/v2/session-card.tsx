@@ -67,13 +67,13 @@ export function SessionCardV2({
         style={{ backgroundColor: STATUS_BAR_COLORS[status] || STATUS_BAR_COLORS.draft }}
       />
 
-      <div className="p-4 pl-5">
+      <div className="p-3.5 pl-4.5">
         {/* Top row: module badge + status */}
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-2">
             {moduleLabel && (
               <span
-                className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold text-white"
+                className="inline-flex items-center rounded-md px-2 py-0.5 text-body-xs font-semibold text-white"
                 style={{ backgroundColor: moduleColor || "#8B5CF6" }}
               >
                 {moduleLabel}
@@ -85,18 +85,23 @@ export function SessionCardV2({
               </span>
             )}
           </div>
-          <StatusBadge status={status} />
+          <StatusBadge status={status} size="sm" />
         </div>
 
         {/* Title */}
-        <h3 className="text-heading-xs text-bw-heading leading-snug mb-1.5 line-clamp-1">
+        <h3 className="text-heading-xs text-bw-heading leading-snug mb-1 line-clamp-1">
           {title}
         </h3>
 
         {/* Meta row */}
         <div className="flex items-center gap-3 text-body-xs text-bw-muted">
           {scheduledAt && (
-            <span className="tabular-nums">{formatTime(scheduledAt)}</span>
+            <span className="flex items-center gap-1 tabular-nums">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+              </svg>
+              {formatTime(scheduledAt)}
+            </span>
           )}
           {typeof studentCount === "number" && (
             <span>

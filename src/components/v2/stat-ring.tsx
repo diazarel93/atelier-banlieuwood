@@ -57,9 +57,11 @@ export function StatRing({
           {Math.round(value)}%
         </span>
       </div>
-      <span className="text-xs font-medium text-bw-muted truncate max-w-full">
-        {label}
-      </span>
+      {label && (
+        <span className="text-xs font-medium text-bw-muted truncate max-w-full">
+          {label}
+        </span>
+      )}
     </div>
   );
 }

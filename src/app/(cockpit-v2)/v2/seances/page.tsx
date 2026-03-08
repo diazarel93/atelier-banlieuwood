@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SeanceTabs, type SeanceTab } from "@/components/v2/seance-tabs";
 import { SeanceDayGroup } from "@/components/v2/seance-day-group";
 import { SeanceCalendarSidebar } from "@/components/v2/seance-calendar-sidebar";
+import { getModuleById } from "@/lib/modules-data";
 import Link from "next/link";
 
 interface Session {
@@ -235,14 +236,19 @@ export default function SeancesPage() {
                 <SeanceDayGroup
                   key={label}
                   label={label}
-                  sessions={items.map((s) => ({
-                    id: s.id,
-                    title: s.title,
-                    classLabel: s.class_label,
-                    status: s.status as "draft" | "waiting" | "responding" | "paused" | "done",
-                    studentCount: s.studentCount,
-                    scheduledAt: s.scheduled_at,
-                  }))}
+                  sessions={items.map((s) => {
+                    const mod = s.template ? getModuleById(s.template) : undefined;
+                    return {
+                      id: s.id,
+                      title: s.title,
+                      classLabel: s.class_label,
+                      moduleLabel: mod?.title,
+                      moduleColor: mod?.color,
+                      status: s.status as "draft" | "waiting" | "responding" | "paused" | "done",
+                      studentCount: s.studentCount,
+                      scheduledAt: s.scheduled_at,
+                    };
+                  })}
                   onSessionClick={(id) => router.push(`/v2/seances/${id}`)}
                 />
               ))}

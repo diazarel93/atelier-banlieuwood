@@ -76,7 +76,7 @@ export function StatsDistributionChart({
             <span className="text-lg font-bold text-bw-heading tabular-nums">
               {studentCount}
             </span>
-            <span className="text-[10px] text-bw-muted">élèves</span>
+            <span className="text-body-xs text-bw-muted">élèves</span>
           </div>
         </div>
 
