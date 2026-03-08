@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { toast } from "sonner";
 import { StatsKpiRow } from "@/components/v2/stats-kpi-row";
 import { StatsDistributionChart } from "@/components/v2/stats-distribution-chart";
-import { StudentDotsTable } from "@/components/v2/student-dots-table";
 import { SessionSelector } from "@/components/v2/session-selector";
 import { QuestionAnalyticsTable } from "@/components/v2/question-analytics-table";
 import { GlassCardV2 } from "@/components/v2/glass-card";
@@ -14,14 +12,17 @@ import { EmptyState } from "@/components/v2/empty-state";
 import { useQuestionAnalytics } from "@/hooks/use-question-analytics";
 import type { AxesScores } from "@/lib/axes-mapping";
 
+interface StatsStudent {
+  id: string;
+  displayName: string;
+  avatar: string | null;
+  scores: AxesScores;
+  totalResponses?: number;
+}
+
 interface StatsData {
   classAverage: AxesScores;
-  students: {
-    id: string;
-    displayName: string;
-    avatar: string | null;
-    scores: AxesScores;
-  }[];
+  students: StatsStudent[];
   sessionCount: number;
   classLabels: string[];
   sessions: { id: string; title: string; classLabel: string | null }[];
@@ -56,26 +57,26 @@ export default function StatistiquesPage() {
 
   const hasStudents = data && data.students.length > 0;
 
-  function handleExportCsv() {
-    if (!data) return;
-    const header = ["Élève", "Compréhension", "Créativité", "Expression", "Engagement"];
-    const rows = data.students.map((s) => [
-      s.displayName,
-      s.scores.comprehension,
-      s.scores.creativite,
-      s.scores.expression,
-      s.scores.engagement,
-    ]);
-    const csv = [header, ...rows].map((r) => r.join(";")).join("\n");
-    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `statistiques-banlieuwood.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("Export CSV téléchargé");
-  }
+  // Podium: top 3 students by totalResponses (fallback to sum of scores)
+  const podium = useMemo(() => {
+    if (!data || data.students.length <= 3) return null;
+    const sorted = [...data.students].sort((a, b) => {
+      const aResp =
+        a.totalResponses ??
+        a.scores.comprehension +
+          a.scores.creativite +
+          a.scores.expression +
+          a.scores.engagement;
+      const bResp =
+        b.totalResponses ??
+        b.scores.comprehension +
+          b.scores.creativite +
+          b.scores.expression +
+          b.scores.engagement;
+      return bResp - aResp;
+    });
+    return sorted.slice(0, 3);
+  }, [data]);
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
@@ -84,7 +85,7 @@ export default function StatistiquesPage() {
         <div>
           <h1 className="text-xl font-bold text-bw-heading">Statistiques</h1>
           <p className="text-sm text-bw-muted mt-0.5">
-            Vue d'ensemble des compétences par axe
+            Vue d&apos;ensemble des compétences par axe
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
@@ -97,15 +98,6 @@ export default function StatistiquesPage() {
               onClassChange={setClassLabel}
               onSessionChange={setSessionId}
             />
-          )}
-          {hasStudents && (
-            <button
-              type="button"
-              onClick={handleExportCsv}
-              className="rounded-lg border border-[var(--color-bw-border)] px-3 py-1.5 text-xs font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
-            >
-              Exporter CSV
-            </button>
           )}
           {sessionId && (
             <Link
@@ -144,7 +136,15 @@ export default function StatistiquesPage() {
       ) : data && !hasStudents ? (
         <EmptyState
           icon={
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               <path d="M3 15V8M7 15V5M11 15V9M15 15V3M19 15V7" />
               <line x1="1" y1="19" x2="23" y2="19" />
             </svg>
@@ -165,20 +165,42 @@ export default function StatistiquesPage() {
             studentCount={data.students.length}
           />
 
-          {/* Student dots table */}
-          <div>
-            <h2 className="text-sm font-semibold text-bw-heading mb-3">
-              Détail par élève
-            </h2>
-            <StudentDotsTable
-              students={data.students.map((s) => ({
-                id: s.id,
-                displayName: s.displayName,
-                avatar: s.avatar || undefined,
-                scores: s.scores,
-              }))}
-            />
-          </div>
+          {/* Podium — top 3 most active students */}
+          {podium && (
+            <GlassCardV2 className="p-4">
+              <h2 className="text-sm font-semibold text-bw-heading mb-3">
+                Podium — élèves les plus actifs
+              </h2>
+              <ol className="space-y-2">
+                {podium.map((s, i) => {
+                  const medal = ["🥇", "🥈", "🥉"][i];
+                  const responses =
+                    s.totalResponses ??
+                    s.scores.comprehension +
+                      s.scores.creativite +
+                      s.scores.expression +
+                      s.scores.engagement;
+                  return (
+                    <li
+                      key={s.id}
+                      className="flex items-center gap-3 text-sm"
+                    >
+                      <span className="text-lg">{medal}</span>
+                      {s.avatar && (
+                        <span className="text-lg">{s.avatar}</span>
+                      )}
+                      <span className="font-medium text-bw-heading">
+                        {s.displayName}
+                      </span>
+                      <span className="text-bw-muted ml-auto tabular-nums">
+                        {responses} réponse{responses !== 1 ? "s" : ""}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ol>
+            </GlassCardV2>
+          )}
 
           {/* Question analytics */}
           {qaData && qaData.questions.length > 0 && (

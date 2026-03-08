@@ -5,7 +5,7 @@ export { BreadcrumbV2 } from "./breadcrumb";
 export { StatRing } from "./stat-ring";
 export { KpiCard } from "./kpi-card";
 export { MiniCalendar } from "./mini-calendar";
-export { StudentDotsTable } from "./student-dots-table";
+export { StudentClassTable } from "./student-class-table";
 export { ModuleStepperV2 } from "./module-stepper";
 export { SessionCardV2 } from "./session-card";
 

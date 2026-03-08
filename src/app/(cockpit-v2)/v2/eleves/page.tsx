@@ -3,10 +3,18 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { BreadcrumbV2 } from "@/components/v2/breadcrumb";
-import { StudentProfileTable } from "@/components/v2/student-profile-table";
+import { StudentClassTable } from "@/components/v2/student-class-table";
 import { EmptyState } from "@/components/v2/empty-state";
 import { useStudentProfiles } from "@/hooks/use-student-profiles";
 import { useDashboardSummary } from "@/hooks/use-dashboard-v2";
+
+function getActivityStatus(lastActiveAt: string) {
+  const diffDays =
+    (Date.now() - new Date(lastActiveAt).getTime()) / (1000 * 60 * 60 * 24);
+  if (diffDays < 7) return "Actif";
+  if (diffDays < 30) return "Récent";
+  return "Inactif";
+}
 
 export default function ElevesPage() {
   const [classLabel, setClassLabel] = useState<string | null>(null);
@@ -28,21 +36,19 @@ export default function ElevesPage() {
     if (filtered.length === 0) return;
     const header = [
       "Élève",
+      "Classe",
       "Séances",
+      "Réponses",
       "Dernière activité",
-      "Compréhension",
-      "Créativité",
-      "Expression",
-      "Engagement",
+      "Statut",
     ];
     const rows = filtered.map((p) => [
       p.displayName,
+      p.classLabel || "Sans classe",
       p.sessionCount,
+      p.totalResponses,
       new Date(p.lastActiveAt).toLocaleDateString("fr-FR"),
-      p.scores.comprehension,
-      p.scores.creativite,
-      p.scores.expression,
-      p.scores.engagement,
+      getActivityStatus(p.lastActiveAt),
     ]);
     const csv = [header, ...rows].map((r) => r.join(";")).join("\n");
     const blob = new Blob(["\uFEFF" + csv], {
@@ -154,16 +160,7 @@ export default function ElevesPage() {
           action={{ label: "Créer une séance", href: "/v2/seances/new" }}
         />
       ) : (
-        <StudentProfileTable
-          students={filtered.map((p) => ({
-            profileId: p.profileId,
-            displayName: p.displayName,
-            avatar: p.avatar,
-            sessionCount: p.sessionCount,
-            lastActiveAt: p.lastActiveAt,
-            scores: p.scores,
-          }))}
-        />
+        <StudentClassTable students={filtered} />
       )}
     </div>
   );

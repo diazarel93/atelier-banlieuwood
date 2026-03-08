@@ -10,10 +10,10 @@ export interface StudentProfileSummary {
   profileId: string;
   displayName: string;
   avatar: string | null;
+  classLabel: string | null;
   sessionCount: number;
   lastActiveAt: string;
   totalResponses: number;
-  scores: AxesScores;
 }
 
 // ── Detail types ──
