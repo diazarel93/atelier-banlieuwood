@@ -1359,7 +1359,7 @@ html, body {
   .text-bw-text { color: #333 !important; }
 
   /* Full width, no padding constraints */
-  .max-w-\\[1440px\\] { max-width: 100% !important; }
+  [class*="max-w-"] { max-width: 100% !important; }
 
   /* Remove shimmer / animations */
   .shimmer, .animate-spin, .animate-pulse { animation: none !important; }
