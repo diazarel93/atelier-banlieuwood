@@ -5,10 +5,14 @@ import { FestivalPalmares } from "@/components/festival-palmares";
 import { SessionComparison } from "@/components/session-comparison";
 import { SessionReplay } from "@/components/pilot/session-replay";
 import { GlassCardV2 } from "@/components/v2/glass-card";
+import { SessionInsightsCard } from "./session-insights-card";
+import { PedagogicalTipsCard } from "./pedagogical-tips-card";
+import { NotableResponsesCard, type NotableResponses } from "./notable-responses-card";
+import { SessionTimeline } from "./session-timeline";
 import { CollectiveStoryCards } from "./collective-story-cards";
 import { BudgetBarsCard } from "./budget-bars-card";
 import { PitchListCard } from "./pitch-list-card";
-import type { ExportData, M10Pitch, ReplayData } from "@/hooks/use-results-data";
+import type { ExportData, M10Pitch, ReplayData, BilanData } from "@/hooks/use-results-data";
 import type { PosterChoice, PosterStudent } from "@/components/film-poster";
 
 interface TabSyntheseProps {
@@ -21,6 +25,9 @@ interface TabSyntheseProps {
   showReplay: boolean;
   setShowReplay: (v: boolean) => void;
   replayData: ReplayData | null;
+  bilan: BilanData | null;
+  onSwitchToIaTab: () => void;
+  notableResponses: NotableResponses | null;
 }
 
 export function TabSynthese({
@@ -33,11 +40,34 @@ export function TabSynthese({
   showReplay,
   setShowReplay,
   replayData,
+  bilan,
+  onSwitchToIaTab,
+  notableResponses,
 }: TabSyntheseProps) {
   const lines = exportData.markdown.split("\n");
 
   return (
     <div className="space-y-8">
+      {/* AI Insights */}
+      <SessionInsightsCard bilan={bilan} onViewFull={onSwitchToIaTab} />
+      {bilan && (
+        <PedagogicalTipsCard
+          recommendations={bilan.pedagogicalRecommendations}
+          keyMoments={bilan.keyMoments}
+        />
+      )}
+
+      {/* Notable responses */}
+      <NotableResponsesCard data={notableResponses} />
+
+      {/* Session timeline */}
+      {replayData && replayData.events.length > 0 && (
+        <SessionTimeline
+          events={replayData.events}
+          totalDurationMs={replayData.totalDurationMs}
+        />
+      )}
+
       {/* Replay toggle */}
       <div className="flex justify-center">
         <button

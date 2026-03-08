@@ -166,7 +166,7 @@ export function useResultsData(sessionId: string) {
     },
   });
 
-  // ── Replay (lazy, controlled by caller) ──
+  // ── Replay (eager for timeline, toggle for full player) ──
   const [showReplay, setShowReplay] = useState(false);
   const replayQuery = useQuery<ReplayData>({
     queryKey: ["replay", sessionId],
@@ -175,7 +175,6 @@ export function useResultsData(sessionId: string) {
       if (!res.ok) return { events: [], totalDurationMs: 0, students: [], responses: [] };
       return res.json();
     },
-    enabled: showReplay,
   });
 
   // ── Lazy AI content ──

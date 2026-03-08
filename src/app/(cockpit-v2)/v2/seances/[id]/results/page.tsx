@@ -11,6 +11,7 @@ import { TabSynthese } from "@/components/v2/results/tab-synthese";
 import { TabCompetences } from "@/components/v2/results/tab-competences";
 import { TabOutilsIa } from "@/components/v2/results/tab-outils-ia";
 import { useResultsData } from "@/hooks/use-results-data";
+import { useNotableResponses } from "@/hooks/use-notable-responses";
 
 export default function ResultsPageV2() {
   const params = useParams();
@@ -22,6 +23,7 @@ export default function ResultsPageV2() {
   const [activeTab, setActiveTab] = useState<ResultsTab>(initialTab);
 
   const data = useResultsData(sessionId);
+  const { data: notableResponses } = useNotableResponses(sessionId);
 
   // ── Loading ──
   if (data.isLoading) {
@@ -119,6 +121,9 @@ export default function ResultsPageV2() {
             showReplay={data.showReplay}
             setShowReplay={data.setShowReplay}
             replayData={data.replayData}
+            bilan={data.bilan}
+            onSwitchToIaTab={() => handleTabChange("outils-ia")}
+            notableResponses={notableResponses ?? null}
           />
         )}
 
