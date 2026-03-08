@@ -1,151 +1,158 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
   <defs>
     <linearGradient id="duskSky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#2c1810"/>
-      <stop offset="40%" stop-color="#4a2520"/>
-      <stop offset="70%" stop-color="#6b3a28"/>
-      <stop offset="100%" stop-color="#8a5535"/>
+      <stop offset="0%" stop-color="#1a1530"/>
+      <stop offset="25%" stop-color="#3a2545"/>
+      <stop offset="50%" stop-color="#6a4050"/>
+      <stop offset="75%" stop-color="#c47a55"/>
+      <stop offset="100%" stop-color="#e8a060"/>
     </linearGradient>
-    <linearGradient id="mud" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#5a4a38"/>
-      <stop offset="100%" stop-color="#4a3a28"/>
+    <linearGradient id="grassGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a4028"/>
+      <stop offset="100%" stop-color="#1e3020"/>
     </linearGradient>
+    <radialGradient id="sunsetGlow" cx="0.5" cy="0.85" r="0.5">
+      <stop offset="0%" stop-color="#FF6B35" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#FF6B35" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="floodGlow" cx="0.5" cy="1" r="0.8">
+      <stop offset="0%" stop-color="#FFE4A0" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#FFE4A0" stop-opacity="0"/>
+    </radialGradient>
   </defs>
 
   <!-- Dusk sky -->
   <rect width="800" height="600" fill="url(#duskSky)"/>
 
-  <!-- Sun setting (very low) -->
-  <circle cx="400" cy="210" r="25" fill="#FF6B35" opacity="0.5"/>
-  <circle cx="400" cy="210" r="40" fill="#FF6B35" opacity="0.15"/>
+  <!-- Sun glow at horizon -->
+  <ellipse cx="400" cy="290" rx="300" ry="80" fill="url(#sunsetGlow)"/>
 
-  <!-- LEFT BUILDING — HLM tower -->
-  <rect x="-20" y="50" width="200" height="550" fill="#1a1a25"/>
-  <rect x="-10" y="60" width="180" height="540" fill="#222230"/>
-  <!-- Windows grid -->
-  <g fill="#0a0a15">
-    <rect x="10" y="80" width="25" height="30" rx="1"/>
-    <rect x="50" y="80" width="25" height="30" rx="1"/>
-    <rect x="90" y="80" width="25" height="30" rx="1"/>
-    <rect x="130" y="80" width="25" height="30" rx="1"/>
+  <!-- Thin clouds -->
+  <ellipse cx="200" cy="80" rx="80" ry="8" fill="#4a3555" opacity="0.4"/>
+  <ellipse cx="550" cy="60" rx="60" ry="6" fill="#4a3555" opacity="0.3"/>
+  <ellipse cx="650" cy="120" rx="50" ry="5" fill="#5a4060" opacity="0.25"/>
 
-    <rect x="10" y="130" width="25" height="30" rx="1"/>
-    <rect x="50" y="130" width="25" height="30" rx="1"/>
-    <rect x="90" y="130" width="25" height="30" rx="1"/>
-    <rect x="130" y="130" width="25" height="30" rx="1"/>
+  <!-- School building silhouette (background) -->
+  <rect x="0" y="180" width="250" height="120" fill="#1a1520"/>
+  <rect x="10" y="170" width="230" height="130" fill="#151218"/>
+  <!-- School windows (dark, school is closed) -->
+  <rect x="25" y="195" width="20" height="25" fill="#0a0a15" rx="1"/>
+  <rect x="55" y="195" width="20" height="25" fill="#0a0a15" rx="1"/>
+  <rect x="85" y="195" width="20" height="25" fill="#0a0a15" rx="1"/>
+  <rect x="115" y="195" width="20" height="25" fill="#0a0a15" rx="1"/>
+  <rect x="145" y="195" width="20" height="25" fill="#0a0a15" rx="1"/>
+  <rect x="175" y="195" width="20" height="25" fill="#0a0a15" rx="1"/>
+  <rect x="205" y="195" width="20" height="25" fill="#0a0a15" rx="1"/>
+  <!-- One window with janitor light -->
+  <rect x="85" y="195" width="20" height="25" fill="#2a2518" rx="1"/>
+  <!-- School entrance -->
+  <rect x="100" y="255" width="40" height="45" fill="#0d0a15" rx="2"/>
+  <!-- School name -->
+  <text x="120" y="185" text-anchor="middle" font-size="6" fill="#3a3040" font-family="sans-serif">COLLEGE J. PREVERT</text>
 
-    <rect x="10" y="180" width="25" height="30" rx="1"/>
-    <rect x="50" y="180" width="25" height="30" rx="1"/>
-    <rect x="90" y="180" width="25" height="30" rx="1"/>
-    <rect x="130" y="180" width="25" height="30" rx="1"/>
+  <!-- Gym building (right side) -->
+  <rect x="600" y="200" width="200" height="100" fill="#1a1520"/>
+  <rect x="610" y="195" width="180" height="105" fill="#151218"/>
+  <!-- Gym high windows -->
+  <rect x="630" y="210" width="30" height="12" fill="#0a0a15" rx="1"/>
+  <rect x="675" y="210" width="30" height="12" fill="#0a0a15" rx="1"/>
+  <rect x="720" y="210" width="30" height="12" fill="#0a0a15" rx="1"/>
+  <rect x="765" y="210" width="30" height="12" fill="#0a0a15" rx="1"/>
 
-    <rect x="10" y="230" width="25" height="30" rx="1"/>
-    <rect x="50" y="230" width="25" height="30" rx="1"/>
-    <rect x="90" y="230" width="25" height="30" rx="1"/>
-    <rect x="130" y="230" width="25" height="30" rx="1"/>
-  </g>
-  <!-- Lit windows -->
-  <rect x="50" y="130" width="25" height="30" fill="#FFE4A0" opacity="0.15" rx="1"/>
-  <rect x="130" y="230" width="25" height="30" fill="#87CEEB" opacity="0.1" rx="1"/>
-  <rect x="10" y="180" width="25" height="30" fill="#FFE4A0" opacity="0.1" rx="1"/>
+  <!-- Trees lining the field -->
+  <ellipse cx="50" cy="265" rx="35" ry="25" fill="#1a2818" opacity="0.8"/>
+  <ellipse cx="120" cy="270" rx="30" ry="22" fill="#1a2818" opacity="0.7"/>
+  <ellipse cx="680" cy="268" rx="28" ry="20" fill="#1a2818" opacity="0.75"/>
+  <ellipse cx="750" cy="272" rx="32" ry="24" fill="#1a2818" opacity="0.7"/>
+  <!-- Tree trunks -->
+  <rect x="48" y="285" width="4" height="15" fill="#1a1510" opacity="0.6"/>
+  <rect x="118" y="287" width="4" height="13" fill="#1a1510" opacity="0.6"/>
+  <rect x="748" y="290" width="4" height="10" fill="#1a1510" opacity="0.6"/>
 
-  <!-- RIGHT BUILDING — lower, wider -->
-  <rect x="620" y="120" width="200" height="480" fill="#1a1a25"/>
-  <rect x="630" y="130" width="180" height="470" fill="#222230"/>
-  <g fill="#0a0a15">
-    <rect x="650" y="150" width="25" height="30" rx="1"/>
-    <rect x="690" y="150" width="25" height="30" rx="1"/>
-    <rect x="730" y="150" width="25" height="30" rx="1"/>
-    <rect x="770" y="150" width="25" height="30" rx="1"/>
+  <!-- THE SPORTS FIELD — grass -->
+  <rect x="0" y="300" width="800" height="300" fill="url(#grassGrad)"/>
 
-    <rect x="650" y="200" width="25" height="30" rx="1"/>
-    <rect x="690" y="200" width="25" height="30" rx="1"/>
-    <rect x="730" y="200" width="25" height="30" rx="1"/>
-    <rect x="770" y="200" width="25" height="30" rx="1"/>
+  <!-- Field markings (white lines) -->
+  <!-- Sidelines -->
+  <rect x="100" y="310" width="600" height="2" fill="#FFF" opacity="0.15"/>
+  <rect x="100" y="310" width="2" height="250" fill="#FFF" opacity="0.12"/>
+  <rect x="698" y="310" width="2" height="250" fill="#FFF" opacity="0.12"/>
+  <!-- Center line -->
+  <rect x="398" y="310" width="2" height="250" fill="#FFF" opacity="0.1"/>
+  <!-- Center circle -->
+  <ellipse cx="400" cy="435" rx="50" ry="35" fill="none" stroke="#FFF" stroke-width="2" opacity="0.1"/>
+  <!-- Penalty areas -->
+  <rect x="100" y="385" width="100" height="100" fill="none" stroke="#FFF" stroke-width="1.5" opacity="0.1"/>
+  <rect x="600" y="385" width="100" height="100" fill="none" stroke="#FFF" stroke-width="1.5" opacity="0.1"/>
 
-    <rect x="650" y="250" width="25" height="30" rx="1"/>
-    <rect x="690" y="250" width="25" height="30" rx="1"/>
-    <rect x="730" y="250" width="25" height="30" rx="1"/>
-    <rect x="770" y="250" width="25" height="30" rx="1"/>
-  </g>
-  <rect x="690" y="200" width="25" height="30" fill="#FFE4A0" opacity="0.12" rx="1"/>
-  <rect x="770" y="250" width="25" height="30" fill="#FFE4A0" opacity="0.08" rx="1"/>
-
-  <!-- TERRAIN VAGUE — muddy ground between buildings -->
-  <rect x="0" y="320" width="800" height="280" fill="url(#mud)"/>
-
-  <!-- Mud puddles -->
-  <ellipse cx="350" cy="400" rx="50" ry="8" fill="#3a2a18" opacity="0.6"/>
-  <ellipse cx="350" cy="400" rx="40" ry="5" fill="#4a3828" opacity="0.4"/>
-  <ellipse cx="550" cy="450" rx="35" ry="6" fill="#3a2a18" opacity="0.5"/>
-  <ellipse cx="250" cy="480" rx="45" ry="7" fill="#3a2a18" opacity="0.4"/>
-  <!-- Reflection in puddle -->
-  <rect x="330" y="396" width="15" height="6" fill="#FF6B35" opacity="0.06" rx="1"/>
-
-  <!-- FOOTPRINTS in the mud — trail going from left building toward right -->
-  <g fill="#3a2a1a" opacity="0.5">
-    <!-- Left foot, right foot alternating -->
-    <ellipse cx="230" cy="360" rx="5" ry="8" transform="rotate(-15 230 360)"/>
-    <ellipse cx="248" cy="370" rx="5" ry="8" transform="rotate(10 248 370)"/>
-    <ellipse cx="270" cy="365" rx="5" ry="8" transform="rotate(-10 270 365)"/>
-    <ellipse cx="295" cy="378" rx="5" ry="8" transform="rotate(15 295 378)"/>
-    <ellipse cx="320" cy="372" rx="5" ry="8" transform="rotate(-5 320 372)"/>
-    <ellipse cx="348" cy="385" rx="5" ry="8" transform="rotate(10 348 385)"/>
-    <ellipse cx="375" cy="380" rx="5" ry="8" transform="rotate(-8 375 380)"/>
-    <ellipse cx="405" cy="392" rx="5" ry="8" transform="rotate(12 405 392)"/>
-    <ellipse cx="435" cy="388" rx="5" ry="8" transform="rotate(-5 435 388)"/>
-    <ellipse cx="465" cy="398" rx="5" ry="8" transform="rotate(8 465 398)"/>
-    <ellipse cx="495" cy="395" rx="5" ry="8" transform="rotate(-10 495 395)"/>
-    <ellipse cx="525" cy="405" rx="5" ry="8" transform="rotate(5 525 405)"/>
-    <ellipse cx="555" cy="400" rx="5" ry="8" transform="rotate(-12 555 400)"/>
-    <ellipse cx="580" cy="410" rx="5" ry="8" transform="rotate(8 580 410)"/>
+  <!-- GOAL POSTS — left -->
+  <line x1="100" y1="405" x2="100" y2="465" stroke="#DDD" stroke-width="3" opacity="0.4"/>
+  <line x1="100" y1="405" x2="75" y2="410" stroke="#DDD" stroke-width="2.5" opacity="0.3"/>
+  <line x1="100" y1="465" x2="75" y2="460" stroke="#DDD" stroke-width="2.5" opacity="0.3"/>
+  <line x1="75" y1="410" x2="75" y2="460" stroke="#DDD" stroke-width="2" opacity="0.25"/>
+  <!-- Crossbar -->
+  <line x1="100" y1="405" x2="100" y2="405" stroke="#DDD" stroke-width="3" opacity="0.4"/>
+  <!-- Net suggestion -->
+  <g stroke="#DDD" stroke-width="0.3" opacity="0.1">
+    <line x1="80" y1="415" x2="80" y2="455"/>
+    <line x1="85" y1="412" x2="85" y2="458"/>
+    <line x1="90" y1="410" x2="90" y2="462"/>
+    <line x1="95" y1="407" x2="95" y2="464"/>
+    <line x1="78" y1="425" x2="98" y2="420"/>
+    <line x1="78" y1="440" x2="98" y2="435"/>
+    <line x1="78" y1="450" x2="98" y2="448"/>
   </g>
 
-  <!-- Abandoned objects on terrain -->
-  <!-- Old tire -->
-  <ellipse cx="450" cy="440" rx="18" ry="12" fill="none" stroke="#333" stroke-width="5"/>
-  <ellipse cx="450" cy="440" rx="8" ry="5" fill="#4a3a28"/>
+  <!-- GOAL POSTS — right (distant) -->
+  <line x1="700" y1="415" x2="700" y2="455" stroke="#DDD" stroke-width="2.5" opacity="0.3"/>
+  <line x1="700" y1="415" x2="720" y2="418" stroke="#DDD" stroke-width="2" opacity="0.2"/>
+  <line x1="700" y1="455" x2="720" y2="452" stroke="#DDD" stroke-width="2" opacity="0.2"/>
+  <line x1="720" y1="418" x2="720" y2="452" stroke="#DDD" stroke-width="1.5" opacity="0.15"/>
 
-  <!-- Broken bottle -->
-  <rect x="300" cy="460" width="4" height="12" fill="#88AA88" opacity="0.3"/>
-  <polygon points="296,472 308,472 304,460 300,460" fill="#88AA88" opacity="0.2"/>
+  <!-- Floodlight poles (not lit, dusk) -->
+  <rect x="98" y="240" width="4" height="70" fill="#555" opacity="0.5"/>
+  <rect x="97" y="238" width="6" height="8" fill="#666" opacity="0.4"/>
+  <rect x="698" y="240" width="4" height="70" fill="#555" opacity="0.5"/>
+  <rect x="697" y="238" width="6" height="8" fill="#666" opacity="0.4"/>
 
-  <!-- Rusty shopping cart (on its side) -->
-  <rect x="500" y="435" width="35" height="20" fill="none" stroke="#666" stroke-width="1.5" rx="2" transform="rotate(15 517 445)"/>
-  <circle cx="505" cy="458" r="4" fill="none" stroke="#555" stroke-width="1.5"/>
-  <circle cx="530" cy="462" r="4" fill="none" stroke="#555" stroke-width="1.5"/>
+  <!-- THE ABANDONED BALL — key narrative detail -->
+  <!-- Ball shadow -->
+  <ellipse cx="382" cy="448" rx="18" ry="4" fill="#0a1510" opacity="0.4"/>
+  <!-- Ball (soccer/football) -->
+  <circle cx="380" cy="438" r="12" fill="#E8E8E0"/>
+  <!-- Ball pentagon pattern -->
+  <path d="M380 428 L374 432 L376 439 L384 439 L386 432 Z" fill="#333" opacity="0.3"/>
+  <path d="M370 436 L368 442 L374 445 L377 440 Z" fill="#333" opacity="0.25"/>
+  <path d="M390 436 L392 442 L386 445 L383 440 Z" fill="#333" opacity="0.25"/>
+  <path d="M375 446 L380 449 L385 446" fill="none" stroke="#333" stroke-width="0.8" opacity="0.2"/>
+  <!-- Grass blades around ball -->
+  <path d="M365 445 Q363 438 365 432" stroke="#3a5a30" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M395 444 Q397 437 395 430" stroke="#3a5a30" stroke-width="1" fill="none" opacity="0.35"/>
+  <path d="M375 450 Q373 443 376 436" stroke="#3a5a30" stroke-width="0.8" fill="none" opacity="0.3"/>
 
-  <!-- Weeds / wild grass -->
-  <g stroke="#4a6a30" stroke-width="1.5" fill="none" stroke-linecap="round">
-    <path d="M200 335 Q195 310 200 290"/>
-    <path d="M205 335 Q210 315 205 300"/>
-    <path d="M195 335 Q188 318 192 305"/>
-    <path d="M560 345 Q555 320 560 305"/>
-    <path d="M565 345 Q570 325 565 310"/>
-    <path d="M380 350 Q375 330 380 318"/>
-    <path d="M385 350 Q390 335 386 322"/>
-  </g>
+  <!-- Worn patches on grass (near goals) -->
+  <ellipse cx="120" cy="435" rx="25" ry="12" fill="#3a3828" opacity="0.4"/>
+  <ellipse cx="680" cy="435" rx="20" ry="10" fill="#3a3828" opacity="0.3"/>
+  <ellipse cx="400" cy="435" rx="15" ry="8" fill="#3a3828" opacity="0.2"/>
 
-  <!-- Fence remains (broken chain link) -->
-  <line x1="180" y1="310" x2="180" y2="380" stroke="#555" stroke-width="2"/>
-  <line x1="180" y1="315" x2="195" y2="320" stroke="#555" stroke-width="1" stroke-dasharray="3,3"/>
-  <line x1="195" y1="310" x2="195" y2="355" stroke="#555" stroke-width="2"/>
-  <!-- Broken part hanging -->
-  <path d="M195 355 Q200 360 198 370" stroke="#555" stroke-width="1.5" fill="none"/>
+  <!-- Water bottle left on sideline -->
+  <rect x="550" y="305" width="5" height="15" fill="#87CEEB" opacity="0.3" rx="1"/>
+  <rect x="549" y="303" width="7" height="4" fill="#87CEEB" opacity="0.2" rx="1"/>
 
-  <!-- Graffiti on left building wall base -->
-  <text x="100" y="330" font-family="sans-serif" font-weight="bold" font-size="18" fill="#EF4444" opacity="0.2">LIBRE</text>
+  <!-- Sweatshirt left on bench area -->
+  <path d="M165 308 Q175 302 185 308 Q180 312 175 315 Q170 312 165 308" fill="#C0392B" opacity="0.2"/>
 
-  <!-- Bird on wire between buildings -->
-  <line x1="170" y1="135" x2="635" y2="155" stroke="#333" stroke-width="1"/>
-  <ellipse cx="400" cy="144" rx="5" ry="3" fill="#222"/>
+  <!-- First star appearing -->
+  <circle cx="200" cy="40" r="1.2" fill="white" opacity="0.5"/>
+  <circle cx="600" cy="30" r="1" fill="white" opacity="0.4"/>
+  <circle cx="400" cy="25" r="0.8" fill="white" opacity="0.3"/>
 
-  <!-- Distant crane silhouette -->
-  <line x1="400" y1="50" x2="400" y2="200" stroke="#1a1a25" stroke-width="2" opacity="0.4"/>
-  <line x1="350" y1="60" x2="450" y2="60" stroke="#1a1a25" stroke-width="2" opacity="0.4"/>
-  <line x1="400" y1="60" x2="420" y2="200" stroke="#1a1a25" stroke-width="1" opacity="0.3"/>
+  <!-- Bird silhouettes (going home) -->
+  <path d="M300 100 Q305 95 310 100" fill="none" stroke="#1a1520" stroke-width="1.5" opacity="0.4"/>
+  <path d="M320 95 Q325 90 330 95" fill="none" stroke="#1a1520" stroke-width="1.2" opacity="0.35"/>
+  <path d="M290 108 Q294 104 298 108" fill="none" stroke="#1a1520" stroke-width="1" opacity="0.3"/>
 
-  <!-- Satellite dish on right building -->
-  <circle cx="640" cy="145" r="8" fill="none" stroke="#444" stroke-width="1.5"/>
-  <line x1="640" y1="145" x2="640" y2="135" stroke="#444" stroke-width="1.5"/>
+  <!-- Subtle mist at field edges -->
+  <ellipse cx="400" cy="560" rx="400" ry="30" fill="#2a4028" opacity="0.2"/>
 </svg>

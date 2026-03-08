@@ -14,7 +14,7 @@ export async function POST(
   const { id: sessionId } = await params;
   const parsed = await safeJson(req);
   if ("error" in parsed) return parsed.error;
-  const { studentId, objectif, obstacle, pitchText, chronoSeconds } = parsed.data;
+  const { studentId, objectif, obstacle, objectifReason, pitchText, chronoSeconds } = parsed.data;
 
   if (!studentId || !objectif || !obstacle) {
     return NextResponse.json(
@@ -78,6 +78,7 @@ export async function POST(
     student_id: studentId,
     objectif: objectif.trim(),
     obstacle: obstacle.trim(),
+    objectif_reason: objectifReason && typeof objectifReason === "string" ? objectifReason.trim() : null,
     chrono_seconds: chronoSeconds != null ? Number(chronoSeconds) : null,
   };
   // Only overwrite pitch_text if explicitly provided (don't erase existing pitch at objectif step)

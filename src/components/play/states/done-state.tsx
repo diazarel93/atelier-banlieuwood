@@ -20,7 +20,7 @@ export interface DoneStateProps {
   stats?: { responses: number; retained: number; bestStreak: number };
   xp?: number;
   characterCard?: {
-    personnage: { prenom: string; age: string; trait: string; avatar: AvatarOptions };
+    personnage: { prenom: string; trait: string; avatar: AvatarOptions };
     objectif?: string;
     obstacle?: string;
     pitchText?: string;
@@ -98,7 +98,7 @@ export function DoneState({ sessionId, stats, xp, characterCard }: DoneStateProp
             <p className="text-xl sm:text-2xl font-bold text-bw-gold">
               <CountUp target={stats.retained} />
             </p>
-            <p className="text-xs text-bw-muted mt-0.5">Retenues</p>
+            <p className="text-xs text-bw-muted mt-0.5">Idées retenues</p>
           </div>
           <div className="glass-card p-3">
             <p className="text-xl sm:text-2xl font-bold text-bw-teal">

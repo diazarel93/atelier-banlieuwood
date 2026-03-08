@@ -54,7 +54,7 @@ export function PitchAssemblyState({
   // Find human-readable labels for objectif and obstacle
   const OBJECTIF_LABELS: Record<string, string> = {
     sauver: "Sauver quelqu'un", prouver: "Prouver quelque chose", fuir: "S'échapper",
-    trouver: "Trouver la vérité", gagner: "Gagner un défi", proteger: "Protéger un secret",
+    trouver: "Trouver la vérité", gagner: "Relever un défi", proteger: "Protéger un secret",
     changer: "Changer sa vie", venger: "Réparer une injustice",
   };
   const OBSTACLE_LABELS: Record<string, string> = {
@@ -131,15 +131,26 @@ export function PitchAssemblyState({
           </motion.span>
         </div>
       </div>
+      {/* Adrian: structure à trous, pas de textarea libre */}
       <p className="text-xs text-bw-muted text-center leading-relaxed">
-        Raconte l&apos;histoire de <strong className="text-bw-text">{perso?.prenom || "ton personnage"}</strong> en 3-5 phrases.
-        Un jour, que se passe-t-il ? Comment l&apos;obstacle complique tout ? Qu&apos;est-ce qui est en jeu ?
+        Complète la structure pour raconter l&apos;histoire de <strong className="text-bw-text">{perso?.prenom || "ton personnage"}</strong>.
       </p>
-      <textarea value={pitchText} onChange={(e) => setPitchText(e.target.value)} rows={6} maxLength={600}
-        placeholder={`Un jour, ${perso?.prenom || "mon personnage"} décide de...`}
-        className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] p-3 text-sm text-bw-text placeholder:text-bw-muted resize-none focus:outline-none focus:ring-2 focus:ring-bw-amber/40" />
+      <div className="w-full space-y-3">
+        <div className="p-3 rounded-xl bg-bw-elevated border border-white/[0.06]">
+          <p className="text-xs text-bw-muted mb-1">C&apos;est l&apos;histoire de <strong className="text-bw-amber">{perso?.prenom || "..."}</strong>{perso?.trait ? `, ${perso.trait},` : ""} qui veut <strong className="text-bw-amber">{objectifLabel}</strong>.</p>
+        </div>
+        <div className="p-3 rounded-xl bg-bw-elevated border border-white/[0.06]">
+          <p className="text-xs text-bw-muted mb-1">Mais <strong className="text-bw-danger">{obstacleLabel}</strong>.</p>
+        </div>
+        <div className="p-3 rounded-xl bg-bw-elevated border border-bw-amber/20">
+          <p className="text-xs text-bw-muted mb-1.5">Raconte la suite : un jour, que se passe-t-il ?</p>
+          <textarea value={pitchText} onChange={(e) => setPitchText(e.target.value)} rows={5} maxLength={600}
+            placeholder={`Un jour, ${perso?.prenom || "mon personnage"} décide de... mais alors...`}
+            className="w-full rounded-lg bg-transparent text-sm text-bw-text placeholder:text-bw-muted resize-none focus:outline-none" />
+        </div>
+      </div>
       <div className="flex items-center gap-2 w-full">
-        {["example", "starter", "reformulate"].map((type) => (
+        {module10.helpEnabled && ["example", "starter", "reformulate"].map((type) => (
           <button key={type} onClick={() => handleHelp(type)} disabled={helpLoading || helpCount >= 3}
             className="px-2 py-1 text-xs rounded-lg bg-bw-elevated border border-white/[0.06] text-bw-muted hover:text-bw-amber hover:border-bw-amber/30 disabled:opacity-30 transition-colors cursor-pointer">
             {type === "example" ? "💡" : type === "starter" ? "✏️" : "🔄"}

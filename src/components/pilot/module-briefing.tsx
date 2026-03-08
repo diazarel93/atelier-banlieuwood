@@ -38,7 +38,7 @@ const MODULE_ACTIVITIES: Record<string, ActivityInfo> = {
   m5: { type: "qa", emoji: "💎", label: "Sens et thème", detail: "5 questions pour prendre du recul : le pitch en une phrase, l'émotion du spectateur, le vrai message, la scène clé, le titre du film.", tags: ["Thème", "Pitch", "Titre"] },
   // Module 10
   m10a: { type: "image", emoji: "✨", label: "Et si...", detail: "À partir d'une image, les élèves imaginent un scénario « Et si... ? ». Écriture libre, banque d'idées, QCM créatif.", tags: ["Image", "Écriture", "Imagination"] },
-  m10b: { type: "game", emoji: "🎤", label: "Pitch en 60s", detail: "Créer un personnage, définir son objectif et obstacle, puis pitcher l'histoire chrono en main. Confrontation des pitchs.", tags: ["Personnage", "Pitch", "Chrono"] },
+  m10b: { type: "game", emoji: "🎤", label: "Pitch en 30s", detail: "Créer un personnage, définir son objectif et obstacle, puis pitcher l'histoire chrono en main. Confrontation des pitchs.", tags: ["Personnage", "Pitch", "Chrono"] },
   // Module 11 — Ciné-Débat
   m11a: { type: "debate", emoji: "🎬", label: "L'Art de Raconter", detail: "Citations, affiches, scènes : découvrez comment les grands réalisateurs racontent. Analyse et débat.", tags: ["Citations", "Affiches", "Débat"] },
   m11b: { type: "debate", emoji: "😢", label: "Émotions à l'Écran", detail: "Pourquoi cette scène fait pleurer ? Décryptage des outils du cinéma : musique, silence, jeu d'acteur.", tags: ["Émotion", "Analyse", "Débat"] },

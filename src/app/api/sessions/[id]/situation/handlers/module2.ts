@@ -117,7 +117,7 @@ export async function handleModule2EC(req: NextRequest, session: Record<string, 
       const { data: emotionSit } = await admin
         .from("situations")
         .select("id")
-        .eq("module", 8)
+        .eq("module", 2)
         .eq("seance", 2)
         .eq("position", 1)
         .single();

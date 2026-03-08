@@ -69,6 +69,20 @@ export async function POST(
 
   const admin = createAdminClient();
 
+  // Adrian: "L'aide ne doit pas être automatique. Elle doit être activée par l'intervenant."
+  const { data: session } = await admin
+    .from("sessions")
+    .select("help_enabled")
+    .eq("id", sessionId)
+    .single();
+
+  if (!session?.help_enabled) {
+    return NextResponse.json(
+      { error: "L'aide n'est pas encore activée par l'intervenant" },
+      { status: 403 }
+    );
+  }
+
   // Check help limit
   const { count } = await admin
     .from("module10_help_requests")

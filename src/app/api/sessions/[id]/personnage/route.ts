@@ -14,7 +14,7 @@ export async function POST(
   const { id: sessionId } = await params;
   const parsed = await safeJson(req);
   if ("error" in parsed) return parsed.error;
-  const { studentId, prenom, age, traitDominant, force, faiblesse, avatarData } = parsed.data;
+  const { studentId, prenom, traitDominant, force, faiblesse, avatarData } = parsed.data;
 
   if (!studentId || !prenom) {
     return NextResponse.json(
@@ -77,7 +77,6 @@ export async function POST(
         session_id: sessionId,
         student_id: studentId,
         prenom: prenom.trim(),
-        age: age || null,
         trait_dominant: traitDominant || null,
         force: force || null,
         faiblesse: faiblesse || null,

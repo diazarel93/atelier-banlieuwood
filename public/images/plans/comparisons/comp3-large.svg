@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <defs>
+    <linearGradient id="c3l-wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F0E8D8"/>
+      <stop offset="100%" stop-color="#E0D5C0"/>
+    </linearGradient>
+    <clipPath id="c3l-frame">
+      <rect x="16" y="16" width="568" height="340" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <rect width="600" height="400" rx="12" fill="#1a1a2e"/>
+
+  <g clip-path="url(#c3l-frame)">
+    <!-- Classroom wall -->
+    <rect x="16" y="16" width="568" height="340" fill="url(#c3l-wall)"/>
+
+    <!-- Blackboard -->
+    <rect x="180" y="30" width="240" height="100" rx="4" fill="#2D4A2D"/>
+    <rect x="185" y="35" width="230" height="90" rx="2" fill="#3D5A3D"/>
+    <!-- Chalk text on board -->
+    <text x="230" y="75" font-family="system-ui, sans-serif" font-size="11" fill="#E8DDD0" opacity="0.7">Resultats du concours</text>
+    <line x1="220" y1="85" x2="380" y2="85" stroke="#E8DDD0" stroke-width="0.8" opacity="0.4"/>
+
+    <!-- Floor -->
+    <rect x="16" y="200" width="568" height="156" fill="#C4B599" opacity="0.5"/>
+
+    <!-- Teacher standing at front -->
+    <circle cx="300" cy="140" r="8" fill="#D4A574"/>
+    <rect x="292" y="148" width="16" height="28" rx="3" fill="#6B4E37"/>
+    <rect x="292" y="176" width="7" height="20" rx="2" fill="#4A5568"/>
+    <rect x="301" y="176" width="7" height="20" rx="2" fill="#4A5568"/>
+    <!-- Paper in hand -->
+    <rect x="310" y="150" width="12" height="16" rx="1" fill="white" transform="rotate(-10 316 158)"/>
+
+    <!-- Row 1 of students (closer, larger) -->
+    <!-- Student stressed (biting nails) -->
+    <circle cx="100" cy="230" r="7" fill="#D4A574"/>
+    <rect x="93" y="237" width="14" height="22" rx="3" fill="#EF4444"/>
+    <path d="M107 237 L115 225" stroke="#D4A574" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Student confident (arms back) -->
+    <circle cx="200" cy="235" r="7" fill="#C68642"/>
+    <rect x="193" y="242" width="14" height="22" rx="3" fill="#3B82F6"/>
+
+    <!-- Student anxious (head in hands) -->
+    <circle cx="300" cy="232" r="7" fill="#D4A574"/>
+    <rect x="293" y="239" width="14" height="22" rx="3" fill="#8B5CF6"/>
+    <path d="M293 239 L285 232" stroke="#D4A574" stroke-width="4" stroke-linecap="round"/>
+    <path d="M307 239 L315 232" stroke="#D4A574" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Student looking calm -->
+    <circle cx="400" cy="234" r="7" fill="#E8C4A0"/>
+    <rect x="393" y="241" width="14" height="22" rx="3" fill="#10B981"/>
+
+    <!-- Student stressed (fidgeting) -->
+    <circle cx="500" cy="233" r="7" fill="#C68642"/>
+    <rect x="493" y="240" width="14" height="22" rx="3" fill="#F59E0B"/>
+
+    <!-- Row 2 (further back, smaller) -->
+    <circle cx="80" cy="270" r="5" fill="#D4A574"/>
+    <rect x="76" y="275" width="8" height="16" rx="2" fill="#EC4899"/>
+
+    <circle cx="160" cy="272" r="5" fill="#C68642"/>
+    <rect x="156" y="277" width="8" height="16" rx="2" fill="#14B8A6"/>
+
+    <circle cx="240" cy="271" r="5" fill="#D4A574"/>
+    <rect x="236" y="276" width="8" height="16" rx="2" fill="#6366F1"/>
+
+    <circle cx="360" cy="272" r="5" fill="#E8C4A0"/>
+    <rect x="356" y="277" width="8" height="16" rx="2" fill="#F97316"/>
+
+    <circle cx="440" cy="270" r="5" fill="#C68642"/>
+    <rect x="436" y="275" width="8" height="16" rx="2" fill="#EF4444"/>
+
+    <circle cx="520" cy="271" r="5" fill="#D4A574"/>
+    <rect x="516" y="276" width="8" height="16" rx="2" fill="#3B82F6"/>
+
+    <!-- Row 3 (very back, tiny) -->
+    <circle cx="120" cy="300" r="4" fill="#D4A574"/>
+    <rect x="117" y="304" width="6" height="12" rx="2" fill="#10B981"/>
+    <circle cx="200" cy="302" r="4" fill="#C68642"/>
+    <rect x="197" y="306" width="6" height="12" rx="2" fill="#8B5CF6"/>
+    <circle cx="340" cy="301" r="4" fill="#D4A574"/>
+    <rect x="337" y="305" width="6" height="12" rx="2" fill="#F59E0B"/>
+    <circle cx="420" cy="302" r="4" fill="#E8C4A0"/>
+    <rect x="417" y="306" width="6" height="12" rx="2" fill="#EC4899"/>
+    <circle cx="480" cy="300" r="4" fill="#C68642"/>
+    <rect x="477" y="304" width="6" height="12" rx="2" fill="#14B8A6"/>
+
+    <!-- Desks (horizontal lines) -->
+    <line x1="50" y1="265" x2="550" y2="265" stroke="#8B7355" stroke-width="2" opacity="0.3"/>
+    <line x1="40" y1="295" x2="560" y2="295" stroke="#8B7355" stroke-width="2" opacity="0.3"/>
+    <line x1="70" y1="320" x2="530" y2="320" stroke="#8B7355" stroke-width="1.5" opacity="0.2"/>
+  </g>
+
+  <!-- Frame -->
+  <rect x="16" y="16" width="568" height="340" rx="10" fill="none" stroke="white" stroke-width="1.5" opacity="0.25"/>
+
+  <!-- Label -->
+  <rect x="130" y="366" width="340" height="26" rx="6" fill="white" opacity="0.08"/>
+  <text x="300" y="384" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="white" opacity="0.6">PLAN LARGE — Toute la classe attend</text>
+</svg>

@@ -18,6 +18,7 @@ export function ObjectifObstacleState({
 }: ObjectifObstacleStateProps) {
   const [objectif, setObjectif] = useState(module10.objectif || "");
   const [obstacle, setObstacle] = useState(module10.obstacle || "");
+  const [objectifReason, setObjectifReason] = useState(module10.objectifReason || "");
   const [customObjectif, setCustomObjectif] = useState("");
   const [showCustom, setShowCustom] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -26,7 +27,7 @@ export function ObjectifObstacleState({
   const OBJECTIFS = [
     { key: "sauver", label: "Sauver quelqu'un" }, { key: "prouver", label: "Prouver quelque chose" },
     { key: "fuir", label: "S'échapper" }, { key: "trouver", label: "Trouver la vérité" },
-    { key: "gagner", label: "Gagner un défi" }, { key: "proteger", label: "Protéger un secret" },
+    { key: "gagner", label: "Relever un défi" }, { key: "proteger", label: "Protéger un secret" },
     { key: "changer", label: "Changer sa vie" }, { key: "venger", label: "Réparer une injustice" },
   ];
   const OBSTACLES = [
@@ -51,14 +52,16 @@ export function ObjectifObstacleState({
     ? `custom:${customObjectif.trim()}`
     : objectif;
 
+  const canSubmit = !!effectiveObjectif && !!obstacle && objectifReason.trim().length >= 5;
+
   async function handleSubmit() {
-    if (!effectiveObjectif || !obstacle) return;
+    if (!canSubmit) return;
     setSubmitting(true);
     try {
       await fetch(`/api/sessions/${sessionId}/pitch`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, objectif: effectiveObjectif, obstacle }),
+        body: JSON.stringify({ studentId, objectif: effectiveObjectif, obstacle, objectifReason: objectifReason.trim() }),
       });
       setSuccess(true);
       setTimeout(() => onDone({ objectif: effectiveObjectif, obstacle }), 600);
@@ -94,10 +97,25 @@ export function ObjectifObstacleState({
               <input
                 value={customObjectif}
                 onChange={(e) => setCustomObjectif(e.target.value)}
-                placeholder="Mon personnage veut... parce que..."
+                placeholder="Mon personnage veut..."
                 maxLength={200}
                 className="w-full mt-2 rounded-xl bg-bw-elevated border border-bw-amber/30 px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors"
                 autoFocus
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {effectiveObjectif && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+              className="mt-2">
+              <p className="text-xs text-bw-amber mb-1">Parce que...</p>
+              <input
+                value={objectifReason}
+                onChange={(e) => setObjectifReason(e.target.value)}
+                placeholder={`Pourquoi ${module10.personnage?.prenom || "ton personnage"} veut ça ?`}
+                maxLength={200}
+                className="w-full rounded-xl bg-bw-elevated border border-bw-amber/20 px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors"
               />
             </motion.div>
           )}
@@ -114,9 +132,9 @@ export function ObjectifObstacleState({
           ))}
         </div>
       </div>
-      <button onClick={handleSubmit} disabled={submitting || !effectiveObjectif || !obstacle}
+      <button onClick={handleSubmit} disabled={submitting || !canSubmit}
         className="w-full py-3 rounded-xl bg-bw-amber text-white font-medium text-sm disabled:opacity-40 transition-opacity cursor-pointer hover:brightness-110">
-        {submitting ? "Envoi..." : "Valider"}
+        {submitting ? "Envoi..." : !effectiveObjectif ? "Choisis un objectif" : !obstacle ? "Choisis un obstacle" : objectifReason.trim().length < 5 ? "Complète le \"parce que...\"" : "Valider"}
       </button>
     </motion.div>
   );

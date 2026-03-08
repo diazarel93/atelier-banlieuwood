@@ -5,6 +5,9 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import {
   handleModule1,
   handleModule2EC,
+  handleModule6,
+  handleModule7,
+  handleModule8,
   handleModule10,
   handleModule11,
   handleModule12,
@@ -46,6 +49,21 @@ export async function GET(
   // ── MODULE 2: Émotion Cachée ──
   if (session.current_module === 2) {
     return handleModule2EC(req, session, sessionId, admin);
+  }
+
+  // ── MODULE 6: Le Scénario (dbModule=5) ──
+  if (session.current_module === 5) {
+    return handleModule6(req, session, sessionId, admin);
+  }
+
+  // ── MODULE 7: La Mise en scène (dbModule=7) ──
+  if (session.current_module === 7) {
+    return handleModule7(req, session, sessionId, admin);
+  }
+
+  // ── MODULE 8: L'Équipe (dbModule=8) ──
+  if (session.current_module === 8) {
+    return handleModule8(req, session, sessionId, admin);
   }
 
   // ── MODULE 10: Et si... + Pitch ──

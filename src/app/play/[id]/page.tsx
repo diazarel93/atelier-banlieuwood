@@ -49,6 +49,19 @@ import { ChronoTestState } from "@/components/play/module-10/chrono-test-state";
 import { PitchConfrontationState } from "@/components/play/module-10/pitch-confrontation-state";
 import { CineDebatState } from "@/components/play/module-11/cine-debat-state";
 import { MancheVoteState } from "@/components/play/module-12/manche-vote-state";
+import { FriseNarrative } from "@/components/play/module-6/frise-narrative";
+import { SceneCardList } from "@/components/play/module-6/scene-card";
+import { MissionState } from "@/components/play/module-6/mission-state";
+import { ScenarioAssembly } from "@/components/play/module-6/scenario-assembly";
+import { PlanTypesGallery } from "@/components/play/module-7/plan-types-gallery";
+import { ComparisonQuiz } from "@/components/play/module-7/comparison-quiz";
+import { DecoupageBuilder } from "@/components/play/module-7/decoupage-builder";
+import { StoryboardView } from "@/components/play/module-7/storyboard-view";
+import { MetierQuiz } from "@/components/play/module-8/metier-quiz";
+import { DebriefView } from "@/components/play/module-8/debrief-view";
+import { RolePicker } from "@/components/play/module-8/role-picker";
+import { TalentCard } from "@/components/play/module-8/talent-card";
+import { TeamRecap } from "@/components/play/module-8/team-recap";
 import { TeamChat } from "@/components/play/team-chat";
 import { PowerUpsBar } from "@/components/play/power-ups-bar";
 import { CelebrationOverlay } from "@/components/celebrations";
@@ -65,7 +78,7 @@ export default function PlayPage() {
   const [sceneDone, setSceneDone] = useState(false);
   const [etsiDone, setEtsiDone] = useState(false);
   const [characterCard, setCharacterCard] = useState<{
-    personnage: { prenom: string; age: string; trait: string; avatar: AvatarOptions };
+    personnage: { prenom: string; trait: string; avatar: AvatarOptions };
     objectif?: string;
     obstacle?: string;
     pitchText?: string;
@@ -230,7 +243,7 @@ export default function PlayPage() {
     if (characterCard || !m10Data?.personnage || !m10Data?.submitted) return;
     if (currentModule !== 10 || data?.session?.currentSeance !== 2) return;
     let rl: 0 | 1 | 2 | 3 = 0;
-    const persoData = { prenom: m10Data.personnage.prenom, age: m10Data.personnage.age, trait: m10Data.personnage.trait, avatar: m10Data.personnage.avatar as unknown as AvatarOptions };
+    const persoData = { prenom: m10Data.personnage.prenom, trait: m10Data.personnage.trait, avatar: m10Data.personnage.avatar as unknown as AvatarOptions };
     const rebuilt: Parameters<typeof setCharacterCard>[0] = { personnage: persoData, revealLevel: rl };
     if (m10Data.objectif) { rebuilt.objectif = m10Data.objectif; rebuilt.obstacle = m10Data.obstacle ?? undefined; rl = 1; }
     if (m10Data.pitchText) { rebuilt.pitchText = m10Data.pitchText; rl = 2; }
@@ -617,7 +630,7 @@ export default function PlayPage() {
 
         if (m10.type === "avatar") {
           if (characterCard) return <CharacterCard {...characterCard} responsesCount={responsesCount} connectedCount={connectedCount} />;
-          if (m10.submitted && m10.personnage) return <CharacterCard personnage={{ prenom: m10.personnage.prenom, age: m10.personnage.age, trait: m10.personnage.trait, avatar: m10.personnage.avatar as unknown as AvatarOptions }} revealLevel={0} responsesCount={responsesCount} connectedCount={connectedCount} />;
+          if (m10.submitted && m10.personnage) return <CharacterCard personnage={{ prenom: m10.personnage.prenom, trait: m10.personnage.trait, avatar: m10.personnage.avatar as unknown as AvatarOptions }} revealLevel={0} responsesCount={responsesCount} connectedCount={connectedCount} />;
           if (m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
           return <AvatarBuilderState key="m10-avatar" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(data) => { setCharacterCard({ personnage: data, revealLevel: 0 }); play("cardReveal"); }} />;
         }
@@ -666,6 +679,35 @@ export default function PlayPage() {
           submitting={submitting}
         />
       );
+    }
+
+    // ── MODULE 6: Le Scénario (dbModule=5) ──
+    if (session.currentModule === 5 && data.module6 && session.status === "responding") {
+      const m6 = data.module6;
+      if (m6.type === "frise") return <FriseNarrative key="m6-frise" module6={m6} />;
+      if (m6.type === "scenes-v0") return <SceneCardList key="m6-scenes" module6={m6} />;
+      if (m6.type === "mission") return <MissionState key="m6-mission" module6={m6} sessionId={sessionId} studentId={studentId!} />;
+      if (m6.type === "ecriture") return <MissionState key="m6-ecriture" module6={m6} sessionId={sessionId} studentId={studentId!} isWriting />;
+      if (m6.type === "assemblage") return <ScenarioAssembly key="m6-assembly" module6={m6} />;
+    }
+
+    // ── MODULE 7: La Mise en scène (dbModule=7) ──
+    if (session.currentModule === 7 && data.module7 && session.status === "responding") {
+      const m7 = data.module7;
+      if (m7.type === "plans") return <PlanTypesGallery key="m7-plans" module7={m7} />;
+      if (m7.type === "comparaison") return <ComparisonQuiz key="m7-comp" module7={m7} sessionId={sessionId} studentId={studentId!} />;
+      if (m7.type === "decoupage") return <DecoupageBuilder key="m7-decoupage" module7={m7} sessionId={sessionId} studentId={studentId!} />;
+      if (m7.type === "storyboard") return <StoryboardView key="m7-storyboard" module7={m7} />;
+    }
+
+    // ── MODULE 8: L'Équipe (dbModule=8) ──
+    if (session.currentModule === 8 && data.module8 && session.status === "responding") {
+      const m8 = data.module8;
+      if (m8.type === "quiz") return <MetierQuiz key="m8-quiz" module8={m8} sessionId={sessionId} studentId={studentId!} />;
+      if (m8.type === "debrief") return <DebriefView key="m8-debrief" module8={m8} />;
+      if (m8.type === "role-choice") return <RolePicker key="m8-roles" module8={m8} sessionId={sessionId} studentId={studentId!} />;
+      if (m8.type === "team-recap") return <TeamRecap key="m8-recap" module8={m8} />;
+      if (m8.type === "talent-card") return <TalentCard key="m8-talent" module8={m8} />;
     }
 
     // ── MODULE 12: Construction Collective — manche vote ──

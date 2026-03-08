@@ -181,7 +181,10 @@ export const MODULE_SEANCE_SITUATIONS: Record<number, Record<number, number>> = 
   9: { 1: 8, 2: 5, 3: 8, 4: 8 },  // Old cinema (was Module 2): Le Cinéma (8), Les Choix/budget (5), Les Imprévus (8), Le Plan (8)
   10: { 1: 7, 2: 5 },             // Et si... (1), Ton QCM (2), Personnage QCM (3), Déclencheur QCM (4), Durée QCM (5), Fin QCM (6), Idea-bank (7)
   11: { 1: 6, 2: 6, 3: 6, 4: 6 }, // Ciné-Débat: L'Art de Raconter (6), Émotions (6), Héros (6), Coulisses (6)
-  12: { 1: 6 }, // Construction Collective: 6 manches de vote
+  12: { 1: 8 }, // Construction Collective: 8 manches de vote
+  5: { 1: 5 },  // Le Scénario: Frise (1), Scènes V0 (2), Mission (3), Écriture (4), Assemblage (5)
+  7: { 1: 4 },  // Mise en scène: Plans (1), Comparaison (2), Découpage (3), Storyboard (4)
+  8: { 1: 5 },  // L'Équipe: Quiz (1), Débrief (2), Choix de rôle (3), Récap (4), Carte talent (5)
 };
 
 /** Helper: get max situations for a module + séance combo */

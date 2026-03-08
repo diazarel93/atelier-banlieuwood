@@ -19,6 +19,8 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
     .eq("session_id", sessionId)
     .eq("is_active", true);
 
+  const helpEnabled = (session.help_enabled as boolean) || false;
+
   const sessionBase = {
     id: session.id,
     status: session.status,
@@ -35,6 +37,7 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
     broadcastMessage: (session.broadcast_message as string) || null,
     broadcastAt: (session.broadcast_at as string) || null,
     revealPhase: (session.reveal_phase as string) ?? null,
+    helpEnabled,
   };
 
   const baseResponse = {
@@ -110,6 +113,7 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
           images: ETSI_IMAGES, // All 10 images for selection
           etsiText,
           helpUsed,
+          helpEnabled,
           submitted,
           submittedCount: etsiCount || 0,
           allSubmissions,
@@ -179,7 +183,6 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
         if (data) {
           personnage = {
             prenom: data.prenom,
-            age: data.age,
             trait: data.trait_dominant,
             avatar: data.avatar_data,
           };
@@ -205,7 +208,7 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           allSubmissions = allPerso.map((p: any) => ({
             studentName: p.students?.display_name || "?",
-            text: `${p.prenom}${p.age ? `, ${p.age}` : ""}${p.trait_dominant ? ` — ${p.trait_dominant}` : ""}`,
+            text: `${p.prenom}${p.trait_dominant ? ` — ${p.trait_dominant}` : ""}`,
             studentId: p.student_id,
             avatar: p.avatar_data,
           }));
@@ -230,19 +233,21 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
     // pos 1 = Objectif + obstacle (special component)
     if (currentIndex === 1) {
       let objectif: string | null = null;
+      let objectifReason: string | null = null;
       let obstacle: string | null = null;
       let submitted = false;
 
       if (studentId) {
         const { data: pitch } = await admin
           .from("module10_pitchs")
-          .select("objectif, obstacle")
+          .select("objectif, objectif_reason, obstacle")
           .eq("session_id", sessionId)
           .eq("student_id", studentId)
           .maybeSingle();
 
         if (pitch) {
           objectif = pitch.objectif;
+          objectifReason = pitch.objectif_reason || null;
           obstacle = pitch.obstacle;
           submitted = true;
         }
@@ -296,6 +301,7 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
           type: "objectif" as const,
           personnage,
           objectif,
+          objectifReason,
           obstacle,
           submitted,
           submittedCount,
@@ -396,6 +402,7 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
           obstacle,
           pitchText,
           etsiText,
+          helpEnabled,
           submitted,
           submittedCount: pitchCount || 0,
           allSubmissions,

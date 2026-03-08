@@ -18,6 +18,9 @@ export function PitchConfrontationState({
   const [answers, setAnswers] = useState({ who: "", wants: "", obstacle: "" });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  // Auto-audit: after comprehension questions, student reviews their own pitch
+  const [auditDone, setAuditDone] = useState(false);
+  const [audit, setAudit] = useState({ clear: false, engaging: false, concise: false });
 
   if (!confrontation) {
     return (
@@ -99,19 +102,19 @@ export function PitchConfrontationState({
             className="w-full space-y-3 mt-2">
             <p className="text-xs text-bw-muted text-center">Réponds à ces 3 questions après avoir écouté les pitchs :</p>
             <div>
-              <label className="text-xs text-bw-muted uppercase tracking-wider">1. Qui est le personnage ?</label>
+              <label className="text-xs text-bw-muted uppercase tracking-wider">1. Qui est ton personnage ?</label>
               <input value={answers.who} onChange={(e) => setAnswers((a) => ({ ...a, who: e.target.value }))}
                 maxLength={100} placeholder="Décris le personnage principal..."
                 className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors" />
             </div>
             <div>
-              <label className="text-xs text-bw-muted uppercase tracking-wider">2. Que veut-il/elle ?</label>
+              <label className="text-xs text-bw-muted uppercase tracking-wider">2. Qu&apos;est-ce qu&apos;il veut ?</label>
               <input value={answers.wants} onChange={(e) => setAnswers((a) => ({ ...a, wants: e.target.value }))}
                 maxLength={100} placeholder="Son objectif..."
                 className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors" />
             </div>
             <div>
-              <label className="text-xs text-bw-muted uppercase tracking-wider">3. Qu&apos;est-ce qui l&apos;en empêche ?</label>
+              <label className="text-xs text-bw-muted uppercase tracking-wider">3. Qu&apos;est-ce qui l&apos;empêche ?</label>
               <input value={answers.obstacle} onChange={(e) => setAnswers((a) => ({ ...a, obstacle: e.target.value }))}
                 maxLength={100} placeholder="L'obstacle principal..."
                 className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors" />
@@ -120,6 +123,36 @@ export function PitchConfrontationState({
               disabled={submitting || !answers.who.trim() || !answers.wants.trim() || !answers.obstacle.trim()}
               className="w-full py-3 rounded-xl bg-bw-amber text-white font-medium text-sm disabled:opacity-40 transition-opacity cursor-pointer hover:brightness-110">
               {submitting ? "Envoi..." : "Envoyer mes réponses"}
+            </button>
+          </motion.div>
+        ) : !auditDone ? (
+          <motion.div key="audit" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            className="w-full space-y-3 mt-2">
+            <p className="text-xs text-bw-amber font-medium text-center">Auto-audit — Repense à ton propre pitch :</p>
+            {module10.pitchText && (
+              <div className="p-3 rounded-xl bg-bw-elevated border border-white/[0.06] text-xs text-bw-muted italic max-h-24 overflow-y-auto">
+                {module10.pitchText}
+              </div>
+            )}
+            {[
+              { key: "clear" as const, q: "Mon personnage, son objectif et son obstacle sont clairs ?" },
+              { key: "engaging" as const, q: "Mon pitch donne envie d'en savoir plus ?" },
+              { key: "concise" as const, q: "Mon pitch tient en 30 secondes à l'oral ?" },
+            ].map((item) => (
+              <motion.button key={item.key} whileTap={{ scale: 0.97 }}
+                onClick={() => setAudit((a) => ({ ...a, [item.key]: !a[item.key] }))}
+                className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors cursor-pointer text-left ${
+                  audit[item.key]
+                    ? "bg-bw-green/10 border-bw-green/30 text-bw-green"
+                    : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:border-bw-amber/20"
+                }`}>
+                <span className="text-lg">{audit[item.key] ? "✅" : "⬜"}</span>
+                <span className="text-xs">{item.q}</span>
+              </motion.button>
+            ))}
+            <button onClick={() => setAuditDone(true)}
+              className="w-full py-3 rounded-xl bg-bw-amber text-white font-medium text-sm cursor-pointer hover:brightness-110 transition-opacity">
+              Terminer l&apos;auto-audit
             </button>
           </motion.div>
         ) : (

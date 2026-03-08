@@ -9,7 +9,7 @@ import { SceneBackground } from "./scene-backgrounds";
 import { FilmStrip } from "./film-strip";
 
 export interface CharacterCardProps {
-  personnage: { prenom: string; age: string; trait: string; avatar: AvatarOptions };
+  personnage: { prenom: string; trait: string; avatar: AvatarOptions };
   objectif?: string | null;
   obstacle?: string | null;
   pitchText?: string | null;
@@ -140,9 +140,6 @@ export function CharacterCard({
         <div className="flex items-center justify-between">
           <div>
             <h3 className={`${s.heading} font-bold text-bw-heading leading-tight`}>{personnage.prenom}</h3>
-            {personnage.age && (
-              <span className={`${s.text} text-bw-muted`}>{personnage.age} ans</span>
-            )}
           </div>
           {personnage.trait && (
             <span

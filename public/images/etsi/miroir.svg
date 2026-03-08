@@ -1,184 +1,182 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
   <defs>
     <linearGradient id="bathroomWall" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1a1a25"/>
-      <stop offset="100%" stop-color="#141420"/>
+      <stop offset="0%" stop-color="#1e1e2a"/>
+      <stop offset="100%" stop-color="#161622"/>
     </linearGradient>
-    <radialGradient id="flickerLight" cx="0.5" cy="0" r="0.8">
-      <stop offset="0%" stop-color="#FFE4A0" stop-opacity="0.2"/>
-      <stop offset="50%" stop-color="#FFE4A0" stop-opacity="0.05"/>
-      <stop offset="100%" stop-color="#FFE4A0" stop-opacity="0"/>
+    <radialGradient id="neonBuzz" cx="0.5" cy="0" r="0.7">
+      <stop offset="0%" stop-color="#E0E8F0" stop-opacity="0.2"/>
+      <stop offset="50%" stop-color="#C0D0E0" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#C0D0E0" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="mirrorGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#2a2a3a"/>
-      <stop offset="100%" stop-color="#1e1e2e"/>
+      <stop offset="0%" stop-color="#3a3a50"/>
+      <stop offset="50%" stop-color="#2e2e42"/>
+      <stop offset="100%" stop-color="#282840"/>
     </linearGradient>
+    <radialGradient id="fogCenter" cx="0.5" cy="0.4" r="0.5">
+      <stop offset="0%" stop-color="#8a8aa0" stop-opacity="0.5"/>
+      <stop offset="40%" stop-color="#6a6a80" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#4a4a60" stop-opacity="0"/>
+    </radialGradient>
     <clipPath id="mirrorClip">
-      <rect x="230" y="80" width="340" height="280" rx="5"/>
+      <rect x="230" y="60" width="340" height="300" rx="5"/>
     </clipPath>
   </defs>
 
-  <!-- Bathroom wall -->
+  <!-- Bathroom wall — school tile -->
   <rect width="800" height="600" fill="url(#bathroomWall)"/>
 
-  <!-- Tile grid pattern -->
-  <g stroke="#222230" stroke-width="0.5" opacity="0.5">
+  <!-- Tile grid (small school bathroom tiles) -->
+  <g stroke="#252535" stroke-width="0.4" opacity="0.6">
+    <line x1="0" y1="50" x2="800" y2="50"/>
     <line x1="0" y1="100" x2="800" y2="100"/>
+    <line x1="0" y1="150" x2="800" y2="150"/>
     <line x1="0" y1="200" x2="800" y2="200"/>
+    <line x1="0" y1="250" x2="800" y2="250"/>
     <line x1="0" y1="300" x2="800" y2="300"/>
+    <line x1="0" y1="350" x2="800" y2="350"/>
     <line x1="0" y1="400" x2="800" y2="400"/>
+    <line x1="0" y1="450" x2="800" y2="450"/>
     <line x1="0" y1="500" x2="800" y2="500"/>
+    <line x1="0" y1="550" x2="800" y2="550"/>
+    <line x1="50" y1="0" x2="50" y2="600"/>
     <line x1="100" y1="0" x2="100" y2="600"/>
+    <line x1="150" y1="0" x2="150" y2="600"/>
     <line x1="200" y1="0" x2="200" y2="600"/>
+    <line x1="250" y1="0" x2="250" y2="600"/>
     <line x1="300" y1="0" x2="300" y2="600"/>
+    <line x1="350" y1="0" x2="350" y2="600"/>
     <line x1="400" y1="0" x2="400" y2="600"/>
+    <line x1="450" y1="0" x2="450" y2="600"/>
     <line x1="500" y1="0" x2="500" y2="600"/>
+    <line x1="550" y1="0" x2="550" y2="600"/>
     <line x1="600" y1="0" x2="600" y2="600"/>
+    <line x1="650" y1="0" x2="650" y2="600"/>
     <line x1="700" y1="0" x2="700" y2="600"/>
+    <line x1="750" y1="0" x2="750" y2="600"/>
   </g>
 
-  <!-- Flickering overhead light -->
-  <rect x="370" y="10" width="60" height="8" fill="#444" rx="2"/>
-  <rect x="375" y="18" width="50" height="3" fill="#FFE4A0" opacity="0.5"/>
-  <ellipse cx="400" cy="200" rx="250" ry="180" fill="url(#flickerLight)"/>
+  <!-- Fluorescent light -->
+  <rect x="320" y="10" width="160" height="8" fill="#444" rx="2"/>
+  <rect x="325" y="18" width="150" height="3" fill="#E0E8F0" opacity="0.45"/>
+  <ellipse cx="400" cy="180" rx="280" ry="160" fill="url(#neonBuzz)"/>
 
-  <!-- MIRROR FRAME -->
-  <rect x="225" y="75" width="350" height="290" fill="#555" rx="6"/>
-  <rect x="228" y="78" width="344" height="284" fill="#444" rx="5"/>
+  <!-- MIRROR FRAME (school-standard, rectangular) -->
+  <rect x="225" y="55" width="350" height="310" fill="#6a6a7a" rx="4"/>
+  <rect x="228" y="58" width="344" height="304" fill="#555568" rx="3"/>
 
-  <!-- Mirror surface (before cracks) -->
-  <rect x="230" y="80" width="340" height="280" fill="url(#mirrorGrad)" rx="4"/>
+  <!-- Mirror surface -->
+  <rect x="230" y="60" width="340" height="300" fill="url(#mirrorGrad)" rx="2"/>
 
-  <!-- REFLECTED CONTENT (clipped to mirror) -->
+  <!-- FOGGED/CONDENSATION layer over mirror -->
   <g clip-path="url(#mirrorClip)">
-    <!-- Reflected wall -->
-    <rect x="230" y="80" width="340" height="280" fill="#1e1e2e"/>
+    <!-- Steam fog effect -->
+    <rect x="230" y="60" width="340" height="300" fill="url(#fogCenter)"/>
 
-    <!-- Reflected figure — fragmented across mirror shards -->
-    <!-- Fragment 1: left eye + part of forehead (upper left shard) -->
-    <circle cx="370" cy="180" r="5" fill="#8B7355" opacity="0.4"/>
-    <circle cx="370" cy="180" r="2.5" fill="#1a1510" opacity="0.5"/>
-    <!-- Eyebrow -->
-    <path d="M360 172 Q370 168 378 172" fill="none" stroke="#1a1510" stroke-width="1.5" opacity="0.4"/>
+    <!-- Condensation droplets scattered -->
+    <g fill="#5a5a70" opacity="0.25">
+      <circle cx="260" cy="120" r="1.5"/>
+      <circle cx="280" cy="90" r="1"/>
+      <circle cx="310" cy="140" r="1.2"/>
+      <circle cx="340" cy="85" r="0.8"/>
+      <circle cx="450" cy="110" r="1.3"/>
+      <circle cx="480" cy="150" r="1"/>
+      <circle cx="520" cy="90" r="1.1"/>
+      <circle cx="540" cy="135" r="0.9"/>
+      <circle cx="270" cy="200" r="1"/>
+      <circle cx="500" cy="220" r="1.2"/>
+      <circle cx="380" cy="310" r="1"/>
+      <circle cx="420" cy="280" r="0.8"/>
+      <circle cx="300" cy="270" r="1.1"/>
+      <circle cx="530" cy="290" r="0.9"/>
+    </g>
+    <!-- Water drip trails (finger + condensation) -->
+    <path d="M310 180 L311 210 L310 240" fill="none" stroke="#5a5a70" stroke-width="1.5" opacity="0.2"/>
+    <path d="M490 160 L491 195 L490 225" fill="none" stroke="#5a5a70" stroke-width="1.2" opacity="0.15"/>
 
-    <!-- Fragment 2: right eye + cheek (upper right shard, slightly offset) -->
-    <circle cx="435" cy="185" r="5" fill="#8B7355" opacity="0.35"/>
-    <circle cx="435" cy="185" r="2.5" fill="#1a1510" opacity="0.45"/>
-    <path d="M427 177 Q435 173 443 177" fill="none" stroke="#1a1510" stroke-width="1.5" opacity="0.35"/>
+    <!-- THE MESSAGE written with finger in the fog -->
+    <!-- Letters are clearer where fog was wiped away, revealing darker mirror underneath -->
+    <text x="310" y="195" font-family="sans-serif" font-size="32" fill="#2a2a40" opacity="0.6" letter-spacing="2">C EST</text>
+    <text x="310" y="240" font-family="sans-serif" font-size="32" fill="#2a2a40" opacity="0.55" letter-spacing="2">PAS</text>
+    <!-- Third word is half-smeared/unreadable -->
+    <text x="310" y="285" font-family="sans-serif" font-size="32" fill="#2a2a40" opacity="0.35" letter-spacing="2">FIN</text>
+    <!-- Smear over the last word (someone tried to erase it) -->
+    <ellipse cx="370" cy="278" rx="60" ry="18" fill="#5a5a70" opacity="0.3"/>
+    <ellipse cx="380" cy="275" rx="45" ry="15" fill="#5a5a70" opacity="0.2"/>
 
-    <!-- Fragment 3: mouth area (lower center, shifted down) -->
-    <path d="M385 225 Q400 232 415 225" fill="none" stroke="#8B7355" stroke-width="2" opacity="0.3"/>
+    <!-- Finger streaks from writing -->
+    <path d="M305 172 L308 178" stroke="#3a3a50" stroke-width="2" opacity="0.15" stroke-linecap="round"/>
+    <path d="M392 232 L395 245" stroke="#3a3a50" stroke-width="2" opacity="0.12" stroke-linecap="round"/>
 
-    <!-- Fragment 4: nose bridge (center) -->
-    <path d="M398 190 L396 210 Q400 215 404 210 L402 190" fill="#8B7355" opacity="0.3"/>
-
-    <!-- Fragment 5: chin/jaw (bottom) -->
-    <path d="M375 240 Q400 260 425 240" fill="#8B7355" opacity="0.2"/>
-
-    <!-- Fragment 6: hair (top, scattered) -->
-    <ellipse cx="400" cy="155" rx="35" ry="15" fill="#111118" opacity="0.4"/>
-    <ellipse cx="385" cy="160" rx="20" ry="12" fill="#111118" opacity="0.3"/>
-
-    <!-- Fragment 7: shoulder hint (lower corners) -->
-    <path d="M350 280 Q380 265 400 270 Q420 265 450 280 L460 360 L340 360 Z" fill="#2a2535" opacity="0.25"/>
-
-    <!-- Hand reaching toward mirror (reflected) -->
-    <path d="M390 290 Q395 280 400 275 Q405 280 410 290" fill="#8B7355" opacity="0.3"/>
-    <ellipse cx="400" cy="272" rx="12" ry="8" fill="#8B7355" opacity="0.25"/>
+    <!-- Vague reflected silhouette of the viewer (behind the fog) -->
+    <ellipse cx="400" cy="150" rx="25" ry="20" fill="#262640" opacity="0.15"/>
+    <path d="M370 170 Q385 165 400 168 Q415 165 430 170 L435 250 L365 250 Z" fill="#262640" opacity="0.1"/>
   </g>
 
-  <!-- CRACK LINES — the broken mirror -->
-  <g stroke="white" stroke-width="1.2" opacity="0.15" fill="none">
-    <!-- Central impact point -->
-    <!-- Radiating cracks from impact -->
-    <line x1="390" y1="200" x2="280" y2="100"/>
-    <line x1="390" y1="200" x2="240" y2="180"/>
-    <line x1="390" y1="200" x2="260" y2="280"/>
-    <line x1="390" y1="200" x2="310" y2="340"/>
-    <line x1="390" y1="200" x2="420" y2="90"/>
-    <line x1="390" y1="200" x2="520" y2="120"/>
-    <line x1="390" y1="200" x2="560" y2="200"/>
-    <line x1="390" y1="200" x2="540" y2="300"/>
-    <line x1="390" y1="200" x2="470" y2="350"/>
-    <line x1="390" y1="200" x2="350" y2="100"/>
-    <line x1="390" y1="200" x2="430" y2="320"/>
-  </g>
-  <!-- Secondary cracks (thinner, branching) -->
-  <g stroke="white" stroke-width="0.6" opacity="0.1" fill="none">
-    <line x1="335" y1="150" x2="280" y2="130"/>
-    <line x1="340" y1="240" x2="290" y2="260"/>
-    <line x1="455" y1="150" x2="500" y2="130"/>
-    <line x1="475" y1="250" x2="530" y2="270"/>
-    <line x1="420" y1="120" x2="450" y2="90"/>
-    <line x1="310" y1="340" x2="280" y2="355"/>
-    <line x1="470" y1="350" x2="500" y2="355"/>
-  </g>
-
-  <!-- Impact point (spider web center) -->
-  <circle cx="390" cy="200" r="8" fill="none" stroke="white" stroke-width="1" opacity="0.12"/>
-  <circle cx="390" cy="200" r="3" fill="white" opacity="0.08"/>
-
-  <!-- Shard edge highlights (light catching broken edges) -->
-  <g stroke="white" stroke-width="0.8" opacity="0.08">
-    <line x1="390" y1="200" x2="350" y2="100" stroke-width="2"/>
-    <line x1="390" y1="200" x2="520" y2="120" stroke-width="1.5"/>
-    <line x1="390" y1="200" x2="560" y2="200" stroke-width="1.5"/>
-  </g>
+  <!-- Mirror edge reflections -->
+  <line x1="232" y1="62" x2="232" y2="358" stroke="#7a7a8a" stroke-width="0.5" opacity="0.2"/>
+  <line x1="232" y1="62" x2="568" y2="62" stroke="#7a7a8a" stroke-width="0.5" opacity="0.15"/>
 
   <!-- SINK below mirror -->
-  <ellipse cx="400" cy="400" rx="100" ry="20" fill="#2a2a3a"/>
-  <ellipse cx="400" cy="400" rx="95" ry="17" fill="#222230"/>
+  <ellipse cx="400" cy="400" rx="90" ry="18" fill="#3a3a4a"/>
+  <ellipse cx="400" cy="400" rx="85" ry="15" fill="#2a2a3a"/>
   <!-- Sink basin -->
-  <ellipse cx="400" cy="405" rx="70" ry="12" fill="#1a1a28"/>
+  <ellipse cx="400" cy="404" rx="60" ry="10" fill="#1e1e2e"/>
   <!-- Faucet -->
-  <rect x="395" y="370" width="10" height="20" fill="#666" rx="2"/>
-  <path d="M395 370 Q400 365 405 370" fill="#777" stroke="#777" stroke-width="1"/>
+  <rect x="396" y="372" width="8" height="18" fill="#777" rx="2"/>
+  <path d="M396 372 Q400 367 404 372" fill="#888"/>
   <!-- Faucet spout -->
-  <path d="M405 375 Q420 375 420 385" fill="none" stroke="#666" stroke-width="4" stroke-linecap="round"/>
-  <!-- Dripping water -->
-  <ellipse cx="420" cy="395" rx="2" ry="3" fill="#4488AA" opacity="0.3"/>
-  <ellipse cx="418" cy="400" rx="1.5" ry="2" fill="#4488AA" opacity="0.2"/>
+  <path d="M404 377 Q418 377 418 387" fill="none" stroke="#777" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Drip -->
+  <ellipse cx="418" cy="396" rx="1.5" ry="2.5" fill="#5588AA" opacity="0.3"/>
 
   <!-- Sink pedestal -->
-  <rect x="380" y="415" width="40" height="80" fill="#2a2a3a"/>
-  <rect x="375" y="490" width="50" height="5" fill="#333340"/>
+  <rect x="382" y="415" width="36" height="75" fill="#2a2a3a"/>
+  <rect x="377" y="488" width="46" height="5" fill="#333345"/>
 
-  <!-- FALLEN MIRROR SHARD on sink edge -->
-  <polygon points="360,395 375,390 370,400" fill="#3a3a4a" stroke="white" stroke-width="0.5" opacity="0.3"/>
+  <!-- Push-button faucet handles (school style) -->
+  <circle cx="384" cy="380" r="5" fill="#777"/>
+  <circle cx="416" cy="380" r="5" fill="#777"/>
 
-  <!-- Glass shards on floor -->
-  <polygon points="320,520 328,515 325,525" fill="#3a3a4a" opacity="0.25"/>
-  <polygon points="470,530 480,525 477,535" fill="#3a3a4a" opacity="0.2"/>
-  <polygon points="350,540 358,535 360,545 352,543" fill="#3a3a4a" opacity="0.2"/>
-  <!-- Light catching shard edges -->
-  <line x1="320" y1="520" x2="328" y2="515" stroke="white" stroke-width="0.5" opacity="0.1"/>
-  <line x1="470" y1="530" x2="480" y2="525" stroke="white" stroke-width="0.5" opacity="0.1"/>
+  <!-- Soap dispenser on wall -->
+  <rect x="135" y="280" width="22" height="40" fill="#555" rx="3"/>
+  <rect x="140" y="270" width="12" height="15" fill="#666" rx="2"/>
+  <!-- Soap drip on wall -->
+  <path d="M146 320 Q148 330 146 340" fill="none" stroke="#8ab8a8" stroke-width="2" opacity="0.15"/>
 
-  <!-- Toothbrush cup -->
-  <rect x="460" y="385" width="12" height="18" fill="#555" rx="2"/>
-  <line x1="465" y1="385" x2="464" y2="370" stroke="#22C55E" stroke-width="2" stroke-linecap="round"/>
+  <!-- Paper towel dispenser on wall -->
+  <rect x="640" y="260" width="50" height="60" fill="#555" rx="3"/>
+  <rect x="645" y="265" width="40" height="50" fill="#4a4a5a" rx="2"/>
+  <!-- Paper sticking out -->
+  <rect x="658" y="315" width="15" height="20" fill="#FEFCE8" opacity="0.15" rx="1"/>
 
-  <!-- Soap dispenser -->
-  <rect x="320" y="382" width="15" height="22" fill="#666" rx="3"/>
-  <rect x="325" y="375" width="5" height="10" fill="#777" rx="1"/>
+  <!-- Stall divider visible on right -->
+  <rect x="740" y="100" width="60" height="400" fill="#2a2a3a"/>
+  <rect x="740" y="100" width="4" height="400" fill="#333345"/>
 
-  <!-- Water stain on wall -->
-  <path d="M580 300 Q585 330 582 360 Q580 380 583 400" fill="none" stroke="#222230" stroke-width="3" opacity="0.4"/>
-
-  <!-- Towel hook on wall -->
-  <circle cx="650" cy="250" r="4" fill="#555"/>
-  <!-- Towel hanging -->
-  <rect x="635" y="254" width="30" height="60" fill="#2a3540" rx="2"/>
-  <rect x="635" y="254" width="30" height="4" fill="#354555"/>
+  <!-- Stall divider on left -->
+  <rect x="0" y="100" width="60" height="400" fill="#2a2a3a"/>
+  <rect x="56" y="100" width="4" height="400" fill="#333345"/>
 
   <!-- Floor -->
-  <rect x="0" y="495" width="800" height="105" fill="#161620"/>
+  <rect x="0" y="495" width="800" height="105" fill="#181824"/>
   <!-- Floor tiles -->
   <line x1="0" y1="550" x2="800" y2="550" stroke="#1e1e2a" stroke-width="0.5"/>
   <line x1="200" y1="495" x2="200" y2="600" stroke="#1e1e2a" stroke-width="0.5"/>
   <line x1="400" y1="495" x2="400" y2="600" stroke="#1e1e2a" stroke-width="0.5"/>
   <line x1="600" y1="495" x2="600" y2="600" stroke="#1e1e2a" stroke-width="0.5"/>
 
-  <!-- Wet floor around sink -->
-  <ellipse cx="400" cy="510" rx="60" ry="8" fill="#1a1a30" opacity="0.4"/>
+  <!-- Wet floor near sink -->
+  <ellipse cx="400" cy="510" rx="55" ry="7" fill="#1a1a30" opacity="0.3"/>
+
+  <!-- Crumpled paper towel on floor -->
+  <path d="M320 520 Q325 515 330 520 Q328 525 320 520" fill="#FEFCE8" opacity="0.1"/>
+  <path d="M520 530 Q526 524 532 530 Q530 535 520 530" fill="#FEFCE8" opacity="0.08"/>
+
+  <!-- "WC" graffiti scratched on stall -->
+  <text x="750" y="300" font-family="sans-serif" font-size="10" fill="#3a3a4a" opacity="0.2">3B</text>
+
+  <!-- Slight vignette -->
+  <rect x="0" y="0" width="800" height="600" fill="none" stroke="#0a0a15" stroke-width="60" stroke-opacity="0.3"/>
 </svg>

@@ -142,7 +142,7 @@ export const CINEMA_TIPS: CinemaTip[] = [
   { module: 10, seance: 1, text: "« Et si... » sont les deux mots les plus puissants du cinéma. Tout commence là.", type: "rule" },
   { module: 10, seance: 1, text: "Matrix est né de la question : « Et si le monde réel était une simulation ? »", type: "anecdote" },
   { module: 10, seance: 1, text: "Attack on Titan : « Et si l'humanité vivait enfermée derrière des murs ? » Une idée simple, un chef-d'œuvre.", type: "anecdote" },
-  { module: 10, seance: 2, text: "Un pitch de 60 secondes doit donner envie d'en savoir plus — pas tout raconter.", type: "technique" },
+  { module: 10, seance: 2, text: "Un pitch de 30 secondes doit donner envie d'en savoir plus — pas tout raconter.", type: "technique" },
   { module: 10, seance: 2, text: "Walt Disney a pitché Blanche-Neige en jouant tous les personnages devant ses employés.", type: "anecdote" },
   { module: 10, seance: 2, text: "Rappel séance 1 : Tu as imaginé des « Et si... ». Maintenant, transforme tes idées en pitch.", type: "rappel" },
 
@@ -218,7 +218,7 @@ export const CINEMA_TIPS: CinemaTip[] = [
   { module: 9, text: "Derrière chaque film, y'a une équipe. Et aujourd'hui, l'équipe c'est vous.", type: "motivation" },
   { module: 9, text: "Même avec peu de moyens, on peut faire quelque chose de grand.", type: "motivation" },
   { module: 10, text: "Ton imagination n'a aucune limite. Laisse-la exploser.", type: "motivation" },
-  { module: 10, text: "60 secondes pour convaincre. C'est court mais c'est largement suffisant si ton idée est forte.", type: "motivation" },
+  { module: 10, text: "30 secondes pour convaincre. C'est court mais c'est largement suffisant si ton idée est forte.", type: "motivation" },
 
   // --- Réalisateurs ---
   { module: 0, text: "Spike Lee a financé son premier film avec sa carte de crédit. Il avait 29 ans.", type: "réalisateur" },

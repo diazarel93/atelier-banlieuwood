@@ -1,11 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { SuccessCheck } from "@/components/play/success-check";
 import { ETSI_IMAGES } from "@/lib/module10-data";
 import type { Module10Data } from "@/hooks/use-session-polling";
+
+const CINEMA_EXAMPLES = [
+  { film: "Matrix", etsi: "Et si le monde réel était une simulation ?" },
+  { film: "L'Attaque des Titans", etsi: "Et si l'humanité vivait enfermée derrière des murs ?" },
+  { film: "Interstellar", etsi: "Et si on devait quitter la Terre pour sauver l'humanité ?" },
+  { film: "Coco", etsi: "Et si on pouvait visiter le monde des morts ?" },
+];
 
 export interface EtsiWriterStateProps {
   module10: Module10Data;
@@ -17,11 +24,24 @@ export interface EtsiWriterStateProps {
 export function EtsiWriterState({
   module10, sessionId, studentId, onDone,
 }: EtsiWriterStateProps) {
-  const [phase, setPhase] = useState<"select3" | "narrow1" | "write">(
-    module10.etsiText ? "write" : "select3"
+  const [phase, setPhase] = useState<"intro" | "select3" | "narrow1" | "write">(
+    module10.etsiText ? "write" : "intro"
   );
   const [selected, setSelected] = useState<string[]>([]);
   const [finalId, setFinalId] = useState<string | null>(module10.image?.id || null);
+
+  // Shuffle images per student for diversity (seeded by studentId)
+  const shuffledImages = useMemo(() => {
+    const arr = [...ETSI_IMAGES];
+    let seed = 0;
+    for (let i = 0; i < studentId.length; i++) seed = ((seed << 5) - seed + studentId.charCodeAt(i)) | 0;
+    for (let i = arr.length - 1; i > 0; i--) {
+      seed = (seed * 1664525 + 1013904223) | 0;
+      const j = ((seed >>> 0) % (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, [studentId]);
   const [text, setText] = useState(module10.etsiText || "");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -78,13 +98,42 @@ export function EtsiWriterState({
       </span>
 
       <AnimatePresence mode="wait">
+        {/* ── Phase 0: Cinema examples intro ── */}
+        {phase === "intro" && (
+          <motion.div key="intro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -20 }}
+            className="w-full space-y-4">
+            <p className="text-sm text-bw-muted text-center">
+              Les plus grands films commencent par <strong className="text-bw-teal">&laquo; Et si... &raquo;</strong>
+            </p>
+            <div className="space-y-2">
+              {CINEMA_EXAMPLES.map((ex, i) => (
+                <motion.div key={ex.film}
+                  initial={{ opacity: 0, x: -15 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.2 }}
+                  className="p-3 rounded-xl bg-bw-elevated border border-white/[0.06]">
+                  <p className="text-xs text-bw-teal font-medium">{ex.film}</p>
+                  <p className="text-sm text-bw-text italic">{ex.etsi}</p>
+                </motion.div>
+              ))}
+            </div>
+            <p className="text-xs text-bw-muted text-center">
+              À ton tour ! Choisis une image et imagine ton propre &laquo; Et si... &raquo;
+            </p>
+            <motion.button whileTap={{ scale: 0.95 }} onClick={() => setPhase("select3")}
+              className="w-full py-3 rounded-xl bg-bw-teal text-white font-medium text-sm cursor-pointer hover:brightness-110">
+              C&apos;est parti !
+            </motion.button>
+          </motion.div>
+        )}
+
         {/* ── Phase 1: Select 3 images from 10 ── */}
         {phase === "select3" && (
           <motion.div key="select3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -20 }}
             className="w-full space-y-3">
             <p className="text-sm text-bw-muted text-center">Choisis <strong className="text-bw-text">3 images</strong> qui t&apos;inspirent</p>
             <div className="grid grid-cols-2 gap-2">
-              {ETSI_IMAGES.map((img) => {
+              {shuffledImages.map((img) => {
                 const isChosen = selected.includes(img.id);
                 return (
                   <motion.button key={img.id} whileTap={{ scale: 0.95 }}
@@ -173,17 +222,21 @@ export function EtsiWriterState({
               maxLength={500}
               className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] p-3 text-sm text-bw-text placeholder:text-bw-muted resize-none focus:border-bw-teal focus:outline-none transition-colors"
             />
-            <div className="flex items-center gap-2 w-full">
-              <div className="flex gap-1">
-                {["example", "starter", "reformulate"].map((type) => (
-                  <button key={type} onClick={() => handleHelp(type)} disabled={helpLoading || helpCount >= 3}
-                    className="px-2 py-1 text-xs rounded-lg bg-bw-elevated border border-white/[0.06] text-bw-muted hover:text-bw-teal hover:border-bw-teal/30 disabled:opacity-30 transition-colors cursor-pointer">
-                    {type === "example" ? "💡 Exemple" : type === "starter" ? "✏️ Amorce" : "🔄 Reformuler"}
-                  </button>
-                ))}
+            {module10.helpEnabled ? (
+              <div className="flex items-center gap-2 w-full">
+                <div className="flex gap-1">
+                  {["example", "starter", "reformulate"].map((type) => (
+                    <button key={type} onClick={() => handleHelp(type)} disabled={helpLoading || helpCount >= 3}
+                      className="px-2 py-1 text-xs rounded-lg bg-bw-elevated border border-white/[0.06] text-bw-muted hover:text-bw-teal hover:border-bw-teal/30 disabled:opacity-30 transition-colors cursor-pointer">
+                      {type === "example" ? "💡 Exemple" : type === "starter" ? "✏️ Amorce" : "🔄 Reformuler"}
+                    </button>
+                  ))}
+                </div>
+                {helpCount > 0 && <span className="text-xs text-bw-muted">{3 - helpCount} aide(s) restante(s)</span>}
               </div>
-              {helpCount > 0 && <span className="text-xs text-bw-muted">{3 - helpCount} aide(s) restante(s)</span>}
-            </div>
+            ) : (
+              <p className="text-xs text-bw-muted/50 italic">L&apos;aide sera activée par l&apos;intervenant si besoin</p>
+            )}
             <AnimatePresence>
               {helpHint && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}

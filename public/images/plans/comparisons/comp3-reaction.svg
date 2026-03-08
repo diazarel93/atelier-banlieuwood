@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <defs>
+    <radialGradient id="c3r-bg" cx="0.5" cy="0.4" r="0.7">
+      <stop offset="0%" stop-color="#3D3550"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </radialGradient>
+    <radialGradient id="c3r-face" cx="0.45" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#E8C4A0"/>
+      <stop offset="100%" stop-color="#D4A574"/>
+    </radialGradient>
+    <radialGradient id="c3r-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="c3r-frame">
+      <rect x="16" y="16" width="568" height="340" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <rect width="600" height="400" rx="12" fill="#1a1a2e"/>
+
+  <g clip-path="url(#c3r-frame)">
+    <!-- Dark blurred background -->
+    <rect x="16" y="16" width="568" height="340" fill="url(#c3r-bg)"/>
+
+    <!-- Subtle warm glow (realization/joy) -->
+    <ellipse cx="300" cy="180" rx="200" ry="180" fill="url(#c3r-glow)"/>
+
+    <!-- Face - the winner, realization dawning -->
+    <ellipse cx="300" cy="175" rx="118" ry="140" fill="url(#c3r-face)"/>
+
+    <!-- Hair -->
+    <path d="M182 140 Q182 50 300 35 Q418 50 418 140" fill="#5D3A1A"/>
+    <path d="M182 140 Q175 110 185 80" fill="#5D3A1A"/>
+    <path d="M418 140 Q425 110 415 80" fill="#5D3A1A"/>
+    <!-- A few strands -->
+    <path d="M220 70 Q260 55 290 60" stroke="#6B4A2A" stroke-width="1.5" fill="none"/>
+
+    <!-- Eyebrows - rising with surprise/joy -->
+    <path d="M248 122 Q268 112 290 118" stroke="#5D3A1A" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M310 118 Q332 112 352 122" stroke="#5D3A1A" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- Eyes - widening with joy, glistening -->
+    <!-- Left eye -->
+    <ellipse cx="272" cy="152" rx="19" ry="17" fill="white"/>
+    <circle cx="275" cy="152" r="10" fill="#4A6741"/>
+    <circle cx="275" cy="152" r="6" fill="#1A0F0A"/>
+    <circle cx="280" cy="147" r="3.5" fill="white" opacity="0.9"/>
+    <circle cx="270" cy="156" r="2" fill="white" opacity="0.5"/>
+    <!-- Right eye -->
+    <ellipse cx="328" cy="152" rx="19" ry="17" fill="white"/>
+    <circle cx="325" cy="152" r="10" fill="#4A6741"/>
+    <circle cx="325" cy="152" r="6" fill="#1A0F0A"/>
+    <circle cx="330" cy="147" r="3.5" fill="white" opacity="0.9"/>
+    <circle cx="320" cy="156" r="2" fill="white" opacity="0.5"/>
+
+    <!-- Nose -->
+    <path d="M295 180 Q300 194 305 180" stroke="#C68642" stroke-width="1.5" fill="none"/>
+
+    <!-- Mouth - slow smile appearing -->
+    <!-- Lips slightly parted, smile beginning -->
+    <path d="M275 215 Q288 228 300 230 Q312 228 325 215" stroke="#C4775C" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- Slight teeth showing -->
+    <path d="M282 218 Q300 226 318 218" fill="white" opacity="0.5"/>
+
+    <!-- Dimples forming -->
+    <path d="M265 218 Q262 222 264 226" stroke="#C68642" stroke-width="1" opacity="0.4" fill="none"/>
+    <path d="M335 218 Q338 222 336 226" stroke="#C68642" stroke-width="1" opacity="0.4" fill="none"/>
+
+    <!-- Glistening in eyes (emotion) -->
+    <circle cx="260" cy="160" r="1.5" fill="white" opacity="0.6"/>
+    <circle cx="340" cy="160" r="1.5" fill="white" opacity="0.6"/>
+
+    <!-- Warm blush of joy -->
+    <ellipse cx="255" cy="190" rx="18" ry="10" fill="#F0A0A0" opacity="0.25"/>
+    <ellipse cx="345" cy="190" rx="18" ry="10" fill="#F0A0A0" opacity="0.25"/>
+
+    <!-- Shoulders/collar hint at bottom -->
+    <path d="M200 340 Q220 310 260 300 L340 300 Q380 310 400 340" fill="#F59E0B" opacity="0.6"/>
+
+    <!-- Subtle sparkle/star effects (joy) -->
+    <g opacity="0.3">
+      <path d="M450 80 L453 90 L463 93 L453 96 L450 106 L447 96 L437 93 L447 90 Z" fill="white"/>
+      <path d="M150 100 L152 106 L158 108 L152 110 L150 116 L148 110 L142 108 L148 106 Z" fill="white"/>
+      <path d="M480 200 L482 206 L488 208 L482 210 L480 216 L478 210 L472 208 L478 206 Z" fill="white"/>
+    </g>
+  </g>
+
+  <!-- Frame -->
+  <rect x="16" y="16" width="568" height="340" rx="10" fill="none" stroke="white" stroke-width="1.5" opacity="0.25"/>
+
+  <!-- Label -->
+  <rect x="130" y="366" width="340" height="26" rx="6" fill="white" opacity="0.08"/>
+  <text x="300" y="384" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="white" opacity="0.6">PLAN REACTION — La realisation du gagnant</text>
+</svg>

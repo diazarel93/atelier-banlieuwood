@@ -62,7 +62,7 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
       return res.json();
     },
     onSuccess: () => {
-      toast.success("Gagnant valide !");
+      toast.success("Choix validé !");
       queryClient.invalidateQueries({ queryKey: ["session-cockpit", sessionId] });
     },
     onError: (err) => {
@@ -116,14 +116,14 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
       {/* Progress dots + manche info */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-white/50">Manche {module12.manche}/6</p>
+          <p className="text-sm text-white/50">Manche {module12.manche}/8</p>
           <h3 className="text-lg font-bold text-white">{module12.mancheLabel}</h3>
           {mancheConfig && (
             <p className="text-xs text-white/40 mt-1">{mancheConfig.description}</p>
           )}
         </div>
         <div className="flex gap-1.5">
-          {Array.from({ length: 6 }, (_, i) => {
+          {Array.from({ length: 8 }, (_, i) => {
             const m = i + 1;
             const won = module12.allWinners.some((w) => w.manche === m);
             const isCurrent = m === module12.manche;
@@ -144,7 +144,7 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
       <div className="flex items-center gap-4 text-sm text-white/60">
         <span>Votes : {totalVotes}/{connectedCount}</span>
         {module12.winner && (
-          <span className="text-emerald-400 font-semibold">Gagnant valide</span>
+          <span className="text-emerald-400 font-semibold">Choix retenu</span>
         )}
       </div>
 
@@ -207,7 +207,7 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
       {module12.allWinners.length > 0 && (
         <div className="mt-6 pt-4 border-t border-[#DDD7EC]">
           <p className="text-xs text-white/40 uppercase tracking-wider mb-3">
-            Choix de la classe ({module12.allWinners.length}/6)
+            Choix de la classe ({module12.allWinners.length}/8)
           </p>
           <div className="space-y-2">
             {module12.allWinners.map((w) => {

@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <radialGradient id="bg-reaction" cx="0.5" cy="0.5" r="0.7">
+      <stop offset="0%" stop-color="#2D2540"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </radialGradient>
+    <clipPath id="frame-r">
+      <rect x="20" y="20" width="760" height="320" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <!-- Frame background -->
+  <rect width="800" height="400" rx="16" fill="#1a1a2e"/>
+
+  <g clip-path="url(#frame-r)">
+    <!-- Dark background -->
+    <rect x="20" y="20" width="760" height="320" fill="url(#bg-reaction)"/>
+
+    <!-- Subtle classroom background -->
+    <rect x="20" y="20" width="760" height="100" fill="#3D3550" opacity="0.3"/>
+
+    <!-- Person in foreground (over the shoulder - seen from behind, left side) -->
+    <!-- Back of head/shoulder - dark silhouette -->
+    <path d="M20 340 L20 180 Q20 140 60 120 L160 100 Q200 95 220 110 L240 140 Q260 170 260 200 L260 340 Z" fill="#2D2540"/>
+    <!-- Hair on back of head -->
+    <ellipse cx="150" cy="130" rx="70" ry="55" fill="#1A0F0A"/>
+    <!-- Shoulder detail -->
+    <path d="M20 200 Q80 180 160 190 L260 220 L260 340 L20 340 Z" fill="#374151"/>
+    <!-- Collar hint -->
+    <path d="M140 190 L180 200 L160 210" stroke="#4B5563" stroke-width="2" fill="none"/>
+
+    <!-- Person reacting (right side, facing camera, the focus) -->
+    <!-- Body -->
+    <path d="M440 340 L440 210 Q440 180 470 170 L530 170 Q560 180 560 210 L560 340" fill="#F59E0B"/>
+    <!-- Neck -->
+    <rect x="485" y="148" width="28" height="24" rx="6" fill="#D4A574"/>
+    <!-- Head -->
+    <ellipse cx="500" cy="125" rx="55" ry="62" fill="#D4A574"/>
+    <!-- Hair -->
+    <path d="M445 110 Q445 55 500 45 Q555 55 555 110" fill="#5D3A1A"/>
+    <path d="M445 110 Q440 90 450 70" fill="#5D3A1A"/>
+
+    <!-- Expressive eyes - wide with surprise -->
+    <!-- Left eye -->
+    <ellipse cx="480" cy="120" rx="14" ry="16" fill="white"/>
+    <circle cx="482" cy="120" r="8" fill="#4A6741"/>
+    <circle cx="482" cy="120" r="5" fill="#1A0F0A"/>
+    <circle cx="486" cy="115" r="3" fill="white" opacity="0.7"/>
+    <!-- Right eye -->
+    <ellipse cx="520" cy="120" rx="14" ry="16" fill="white"/>
+    <circle cx="518" cy="120" r="8" fill="#4A6741"/>
+    <circle cx="518" cy="120" r="5" fill="#1A0F0A"/>
+    <circle cx="522" cy="115" r="3" fill="white" opacity="0.7"/>
+
+    <!-- Raised eyebrows (surprise) -->
+    <path d="M462 98 Q475 88 492 92" stroke="#5D3A1A" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M508 92 Q525 88 538 98" stroke="#5D3A1A" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- Open mouth (surprise/shock) -->
+    <ellipse cx="500" cy="150" rx="12" ry="10" fill="#C4775C"/>
+    <ellipse cx="500" cy="148" rx="8" ry="5" fill="#8B4040"/>
+
+    <!-- Hand coming up to mouth area -->
+    <path d="M560 210 Q580 180 560 155 Q555 150 545 155" stroke="#D4A574" stroke-width="14" stroke-linecap="round" fill="none"/>
+
+    <!-- Subtle blush -->
+    <ellipse cx="470" cy="135" rx="12" ry="8" fill="#E8A0A0" opacity="0.25"/>
+    <ellipse cx="530" cy="135" rx="12" ry="8" fill="#E8A0A0" opacity="0.25"/>
+
+    <!-- Visual guide arrow showing "focus here" -->
+    <path d="M650 60 Q620 80 580 100" stroke="white" stroke-width="1.5" opacity="0.2" stroke-dasharray="4 4" fill="none"/>
+    <text x="660" y="55" font-family="system-ui, sans-serif" font-size="10" fill="white" opacity="0.2">focus</text>
+  </g>
+
+  <!-- Viewfinder frame -->
+  <rect x="20" y="20" width="760" height="320" rx="12" fill="none" stroke="white" stroke-width="2" opacity="0.3"/>
+
+  <!-- Corner marks -->
+  <path d="M35 30 L35 40" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  <path d="M30 35 L40 35" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  <path d="M765 30 L765 40" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  <path d="M760 35 L770 35" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  <path d="M35 330 L35 320" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  <path d="M30 325 L40 325" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  <path d="M765 330 L765 320" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  <path d="M760 325 L770 325" stroke="white" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- Caption -->
+  <rect x="200" y="355" width="400" height="32" rx="8" fill="white" opacity="0.08"/>
+  <text x="400" y="376" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="white" opacity="0.7">PLAN REACTION — Comment reagit l'autre ?</text>
+</svg>

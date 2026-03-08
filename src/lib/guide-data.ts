@@ -890,7 +890,7 @@ const MODULE_GUIDES: ModuleGuide[] = [
       "Présenter à l'oral avec assurance et dans un temps limité",
     ],
     introADire:
-      "Vous avez une idée. Maintenant il faut la vendre. Dans le cinéma, on appelle ça un PITCH. En 60 secondes, tu dois donner envie à quelqu'un de financer ton film. Personnage, objectif, obstacle — c'est tout ce qu'il faut.",
+      "Vous avez une idée. Maintenant il faut la vendre. Dans le cinéma, on appelle ça un PITCH. En 30 secondes, tu dois donner envie à quelqu'un de financer ton film. Personnage, objectif, obstacle — c'est tout ce qu'il faut.",
     aQuoiEtreAttentif: [
       "Personnages trop stéréotypés — pousser vers l'originalité et les nuances",
       "Objectif trop vague ('être heureux') — exiger de la précision ('retrouver son frère')",
@@ -901,7 +901,7 @@ const MODULE_GUIDES: ModuleGuide[] = [
     commentRelancer: [
       "Ton personnage, il ressemble à qui ? Pas physiquement — dans sa manière d'être.",
       "L'obstacle, c'est ce qui rend l'histoire intéressante. Sans obstacle, pas de film.",
-      "60 secondes c'est court. Mais c'est suffisant si tu vas droit au but.",
+      "30 secondes c'est court. Mais c'est suffisant si tu vas droit au but.",
     ],
     commentChallenger: [
       "Si je suis producteur et que j'entends 100 pitchs par jour, pourquoi je retiens le tien ?",
@@ -919,7 +919,7 @@ const MODULE_GUIDES: ModuleGuide[] = [
       { name: "Avatar + personnage", timing: "5 min", instruction: "Création rapide. Prénom, trait dominant, avatar visuel. Ne pas trop s'attarder." },
       { name: "Objectif + obstacle", timing: "5 min", instruction: "Choix guidé. L'objectif donne la direction, l'obstacle donne le conflit." },
       { name: "Assemblage du pitch", timing: "10 min", instruction: "Combiner tous les éléments. Le pitch doit tenir en 2-3 phrases." },
-      { name: "Chrono 60s", timing: "5 min", instruction: "Chaque élève teste en privé. Le chrono force la concision." },
+      { name: "Chrono 30s", timing: "5 min", instruction: "Chaque élève teste en privé. Le chrono force la concision." },
       { name: "Confrontation", timing: "5 min", instruction: "Projeter 2 pitchs. Vote de la classe. Commenter les qualités de chacun." },
     ],
   },
@@ -1099,7 +1099,7 @@ const MODULE_GUIDES: ModuleGuide[] = [
       "Construire un projet narratif a partir de contributions individuelles",
     ],
     introADire:
-      "On va construire VOTRE film ensemble. Vos idees du module precedent ont ete melangees et anonymisees. A chaque manche, vous votez pour la carte qui vous inspire le plus. Le prof valide le gagnant. 8 manches = 8 briques du film.",
+      "On va construire VOTRE film ensemble. Vos idees du module precedent ont ete melangees et anonymisees. A chaque manche, vous votez pour la carte qui vous inspire le plus. Le prof valide le choix collectif. 8 manches = 8 briques du film.",
     aQuoiEtreAttentif: [
       "Les eleves qui cherchent a identifier les auteurs des cartes",
       "Les votes strategiques (voter contre plutot que pour)",
@@ -1116,16 +1116,138 @@ const MODULE_GUIDES: ModuleGuide[] = [
       "Lire les cartes a voix haute avant le vote",
       "Commenter brievement le resultat de chaque manche",
       "Construire la coherence au fil des manches",
-      "A la fin, relire tous les gagnants pour voir le film prendre forme",
+      "A la fin, relire toutes les cartes retenues pour voir le film prendre forme",
     ],
     duration: "~30 min",
     phases: [
       { name: "Intro", timing: "3 min", instruction: "Expliquer le principe : 8 manches, vote anonyme, le prof valide." },
       { name: "Manches 1-4", timing: "12 min", instruction: "Ton, Situation, Personnages, Objectif. Rythme soutenu, ~3 min/manche." },
       { name: "Manches 5-8", timing: "12 min", instruction: "Obstacle, Scene, Relation, Moment fort. Montrer comment le film se construit." },
-      { name: "Synthese", timing: "3 min", instruction: "Relire les 8 gagnants. Le film de la classe est ne !" },
+      { name: "Synthese", timing: "3 min", instruction: "Relire les 8 cartes retenues. Le film de la classe est ne !" },
     ],
   },
+  // ── MODULE 6 — LE SCÉNARIO ──
+  {
+    moduleId: "m6",
+    title: "Le Scénario",
+    objectifPedagogique:
+      "Transformer les choix collectifs du module précédent en scénario structuré. Lecture collective, attribution de missions d'écriture, assemblage final.",
+    socleCommun: ["D1", "D2", "D3"],
+    competences: [
+      "Structurer un récit en actes narratifs (situation initiale, confrontation, résolution)",
+      "Écrire de manière collaborative en respectant la cohérence narrative",
+      "Développer des dialogues, descriptions, actions ou émotions selon son rôle",
+    ],
+    introADire:
+      "On a les ingrédients du film. Maintenant on va écrire le scénario ! L'IA va générer les scènes à compléter. Chacun aura une mission selon son profil créatif. À vous de donner vie aux scènes.",
+    aQuoiEtreAttentif: [
+      "Lire les scènes V0 à voix haute — les élèves doivent entendre le film",
+      "Les missions doivent être claires — chaque élève sait exactement quoi écrire",
+      "Éviter que les scribes monopolisent — tout le groupe discute, le scribe saisit",
+    ],
+    commentRelancer: [
+      "Qu'est-ce que ton personnage dirait à ce moment-là ?",
+      "Ferme les yeux. Décris ce que tu vois dans cette scène.",
+    ],
+    commentChallenger: [
+      "C'est trop facile pour le héros. Ajoute un obstacle imprévu.",
+    ],
+    conseils: [
+      "Lire chaque scène V0 à voix haute avant d'assigner les missions",
+      "Donner 8-10 min d'écriture, pas plus — la pression temporelle aide",
+      "Assembler les contributions à voix haute pour vérifier la cohérence",
+    ],
+    duration: "~30 min",
+    phases: [
+      { name: "Frise narrative", timing: "3 min", instruction: "Montrer les 8 ingrédients et comment ils s'enchaînent." },
+      { name: "Scènes V0", timing: "5 min", instruction: "Lire les scènes générées. Les élèves écoutent." },
+      { name: "Missions", timing: "2 min", instruction: "Chaque élève reçoit sa mission. Expliquer les rôles." },
+      { name: "Écriture", timing: "10 min", instruction: "Les élèves écrivent. Circuler pour aider." },
+      { name: "Assemblage", timing: "10 min", instruction: "Lire toutes les contributions et assembler le scénario." },
+    ],
+  },
+
+  // ── MODULE 7 — LA MISE EN SCÈNE ──
+  {
+    moduleId: "m7",
+    title: "La Mise en scène",
+    objectifPedagogique:
+      "Apprendre le langage visuel du cinéma : les 4 types de plans fondamentaux. Comparer les cadrages et créer un mini-storyboard pour les scènes clés.",
+    socleCommun: ["D1", "D3", "D5"],
+    competences: [
+      "Distinguer et nommer les 4 types de plans fondamentaux",
+      "Analyser l'effet narratif d'un cadrage sur le spectateur",
+      "Concevoir un découpage technique simple pour une scène",
+    ],
+    introADire:
+      "Au cinéma, la caméra raconte autant que les mots. Un gros plan, c'est pas un plan large — ça dit pas la même chose. Aujourd'hui on apprend à VOIR comme un réalisateur, puis on découpe nos scènes.",
+    aQuoiEtreAttentif: [
+      "Ne pas noyer les élèves de vocabulaire technique — 4 plans suffisent",
+      "La comparaison est l'exercice clé — s'assurer que chacun argumente son choix",
+      "Le découpage peut intimider — rassurer que c'est un brouillon, pas un storyboard pro",
+    ],
+    commentRelancer: [
+      "Regarde la même scène en plan large, puis en gros plan. Qu'est-ce qui change ?",
+      "Quel plan utiliserais-tu pour montrer que le personnage a peur ?",
+    ],
+    commentChallenger: [
+      "Et si tu filmais toute la scène en un seul plan, sans couper ?",
+    ],
+    conseils: [
+      "Montrer les 4 plans sur un exemple concret avant le quiz",
+      "Pour la comparaison, projeter les images si possible",
+      "Le découpage est l'exercice principal — y consacrer le plus de temps",
+    ],
+    duration: "~25 min",
+    phases: [
+      { name: "Les 4 plans", timing: "5 min", instruction: "Présenter plan large, plan moyen, gros plan, plan réaction." },
+      { name: "Comparaison", timing: "8 min", instruction: "3 paires d'images. Chacun choisit et explique." },
+      { name: "Découpage", timing: "10 min", instruction: "Les élèves découpent 2-3 scènes clés du scénario." },
+      { name: "Storyboard", timing: "2 min", instruction: "Vue d'ensemble des plans choisis." },
+    ],
+  },
+
+  // ── MODULE 8 — L'ÉQUIPE ──
+  {
+    moduleId: "m8",
+    title: "L'Équipe",
+    objectifPedagogique:
+      "Former l'équipe de tournage. Quiz des métiers du cinéma, système de points invisible basé sur l'implication, choix des rôles dans l'ordre du classement.",
+    socleCommun: ["D2", "D3"],
+    competences: [
+      "Identifier les métiers du cinéma et leurs responsabilités",
+      "Comprendre le fonctionnement d'une équipe de production",
+      "Accepter un rôle et s'y investir dans l'intérêt du projet collectif",
+    ],
+    introADire:
+      "Un film, c'est pas un réalisateur tout seul. C'est une ÉQUIPE. Chacun a un rôle précis. Aujourd'hui, on forme l'équipe du film de la classe. D'abord un quiz pour découvrir les vrais métiers, puis chacun choisit son poste.",
+    aQuoiEtreAttentif: [
+      "Le classement est INVISIBLE — ne jamais révéler les scores aux élèves",
+      "Certains élèves voudront tous être réalisateur — rappeler que chaque rôle est essentiel",
+      "Le quiz sert à déconstruire les idées reçues, pas à évaluer",
+    ],
+    commentRelancer: [
+      "Tu connais un film où l'ingénieur du son a tout changé ?",
+      "Le script, c'est le gardien de la continuité. Sans lui, on se perd.",
+    ],
+    commentChallenger: [
+      "Et si on supprimait le rôle de réalisateur ? Le film serait fait comment ?",
+    ],
+    conseils: [
+      "Le quiz doit être ludique — pas un examen",
+      "Laisser le temps au débrief — c'est là que les élèves apprennent vraiment",
+      "Pour le choix de rôle : expliquer que l'ordre est basé sur l'implication tout au long de l'atelier",
+      "La carte talent est un cadeau — la présenter comme tel",
+    ],
+    duration: "~25 min",
+    phases: [
+      { name: "Quiz métiers", timing: "5 min", instruction: "Les élèves répondent au quiz. Pas de stress." },
+      { name: "Débrief", timing: "5 min", instruction: "Corriger les idées reçues. Montrer les fiches métier." },
+      { name: "Choix de rôle", timing: "10 min", instruction: "Chacun choisit dans l'ordre. Tous les rôles sont importants." },
+      { name: "Récap + Carte talent", timing: "5 min", instruction: "Vue d'équipe complète. Distribuer les cartes talent." },
+    ],
+  },
+
   // ── CINÉ-DÉBAT ──
   {
     moduleId: "m11a",
@@ -2410,11 +2532,11 @@ const MODULE10_S2_QUESTIONS: QuestionGuide[] = [
   {
     position: 4,
     category: "pitch",
-    label: "Test chrono — 60 secondes",
-    whatToExpect: "ÉTAPE ORAL — L'élève lit son pitch à voix haute en 60 secondes chrono. Force la concision et l'expression. Ce n'est PAS une réécriture — c'est un exercice de présentation. Le chrono tourne vraiment.",
-    commonPitfalls: "Stress paralysant — certains vont bloquer ou bâcler. Pitch trop long qui ne rentre pas en 60s (signe qu'il faut couper). Lecture monotone sans conviction.",
-    relancePhrase: "C'est un entraînement, pas un examen. Si tu dépasses 60s, c'est normal — ça veut dire qu'il faut couper un bout.",
-    challengePhrase: "Imagine que tu croises un producteur dans un ascenseur. Tu as 60 secondes pour le convaincre. Go.",
+    label: "Test chrono — 30 secondes",
+    whatToExpect: "ÉTAPE ORAL — L'élève lit son pitch à voix haute en 30 secondes chrono. Force la concision et l'expression. Ce n'est PAS une réécriture — c'est un exercice de présentation. Le chrono tourne vraiment.",
+    commonPitfalls: "Stress paralysant — certains vont bloquer ou bâcler. Pitch trop long qui ne rentre pas en 30s (signe qu'il faut couper). Lecture monotone sans conviction.",
+    relancePhrase: "C'est un entraînement, pas un examen. Si tu dépasses 30s, c'est normal — ça veut dire qu'il faut couper un bout.",
+    challengePhrase: "Imagine que tu croises un producteur dans un ascenseur. Tu as 30 secondes pour le convaincre. Go.",
   },
   {
     position: 5,
@@ -2472,14 +2594,14 @@ export function getQuestionGuide(
   position: number,
   module?: number
 ): QuestionGuide | undefined {
-  const key = module === 1 ? `1-${seance}` : module === 4 ? `4-1` : module === 9 ? `9-${seance}` : module === 10 ? `10-${seance}` : module === 12 ? `12-${seance}` : module === 2 ? `2-${seance}` : `3-${seance}`;
+  const key = `${module || 3}-${seance}`;
   const questions = QUESTION_GUIDES[key];
   if (!questions) return undefined;
   return questions.find((q) => q.position === position);
 }
 
 export function getQuestionGuides(seance: number, module?: number): QuestionGuide[] {
-  const key = module === 1 ? `1-${seance}` : module === 4 ? `4-1` : module === 9 ? `9-${seance}` : module === 10 ? `10-${seance}` : module === 12 ? `12-${seance}` : module === 2 ? `2-${seance}` : `3-${seance}`;
+  const key = `${module || 3}-${seance}`;
   return QUESTION_GUIDES[key] || [];
 }
 

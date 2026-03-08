@@ -1,6 +1,9 @@
 export { handleModule1 } from "./module1";
 export { handleModule2EC } from "./module2";
 export { handleStandardWithModule5 } from "./module5";
+export { handleModule6 } from "./module6";
+export { handleModule7 } from "./module7";
+export { handleModule8 } from "./module8";
 export { handleModule10 } from "./module10";
 export { handleModule11 } from "./module11";
 export { handleModule12 } from "./module12";

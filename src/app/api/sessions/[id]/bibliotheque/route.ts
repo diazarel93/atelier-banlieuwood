@@ -215,7 +215,6 @@ export async function GET(
     personnage: myPersonnageRes.data
       ? {
           prenom: myPersonnageRes.data.prenom,
-          age: myPersonnageRes.data.age,
           trait: myPersonnageRes.data.trait_dominant,
           avatar: myPersonnageRes.data.avatar_data,
         }

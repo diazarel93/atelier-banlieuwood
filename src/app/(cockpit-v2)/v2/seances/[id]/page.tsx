@@ -16,6 +16,7 @@ import { FacilitatorTipsCard } from "@/components/v2/session-detail/facilitator-
 import { CinemaReferencesCard } from "@/components/v2/session-detail/cinema-references-card";
 import { PreSessionChecklistV2 } from "@/components/v2/session-detail/pre-session-checklist-v2";
 import { ProjectionOverlay } from "@/components/v2/session-detail/projection-overlay";
+import { InterSessionCard } from "@/components/v2/session-detail/inter-session-card";
 
 export default function SessionDetailPage() {
   const params = useParams();
@@ -132,6 +133,11 @@ export default function SessionDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left column — pedagogical content */}
           <div className="lg:col-span-8 space-y-6">
+            {/* Inter-session actions (M6 scene generation, M8 points computation) */}
+            {session.current_module && (
+              <InterSessionCard sessionId={session.id} currentModule={session.current_module} />
+            )}
+
             {/* Pedagogical objectives */}
             {guide && <PedagogicalObjectivesCard guide={guide} />}
 

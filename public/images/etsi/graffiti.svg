@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="hallWall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a2a38"/>
+      <stop offset="100%" stop-color="#222230"/>
+    </linearGradient>
+    <linearGradient id="hallFloor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a3a4a"/>
+      <stop offset="100%" stop-color="#2d2d3d"/>
+    </linearGradient>
+    <radialGradient id="hallLight1" cx="0.25" cy="0" r="0.4">
+      <stop offset="0%" stop-color="#E0E8F0" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#E0E8F0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="hallLight2" cx="0.75" cy="0" r="0.4">
+      <stop offset="0%" stop-color="#E0E8F0" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#E0E8F0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lockerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2a4060"/>
+      <stop offset="50%" stop-color="#2e4468"/>
+      <stop offset="100%" stop-color="#2a4060"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Hallway walls -->
+  <rect width="800" height="600" fill="url(#hallWall)"/>
+
+  <!-- Ceiling -->
+  <rect x="0" y="0" width="800" height="50" fill="#232233"/>
+
+  <!-- Fluorescent lights -->
+  <rect x="160" y="45" width="100" height="5" fill="#444" rx="1"/>
+  <rect x="165" y="47" width="90" height="2" fill="#E0E8F0" opacity="0.4"/>
+  <ellipse cx="210" cy="180" rx="160" ry="120" fill="url(#hallLight1)"/>
+
+  <rect x="540" y="45" width="100" height="5" fill="#444" rx="1"/>
+  <rect x="545" y="47" width="90" height="2" fill="#E0E8F0" opacity="0.3"/>
+  <ellipse cx="590" cy="180" rx="160" ry="120" fill="url(#hallLight2)"/>
+
+  <!-- Floor -->
+  <rect x="0" y="440" width="800" height="160" fill="url(#hallFloor)"/>
+  <!-- Floor reflection streaks (polished lino) -->
+  <rect x="0" y="440" width="800" height="2" fill="#4a4a5a" opacity="0.3"/>
+  <line x1="100" y1="440" x2="100" y2="600" stroke="#333345" stroke-width="0.5"/>
+  <line x1="250" y1="440" x2="250" y2="600" stroke="#333345" stroke-width="0.5"/>
+  <line x1="400" y1="440" x2="400" y2="600" stroke="#333345" stroke-width="0.5"/>
+  <line x1="550" y1="440" x2="550" y2="600" stroke="#333345" stroke-width="0.5"/>
+  <line x1="700" y1="440" x2="700" y2="600" stroke="#333345" stroke-width="0.5"/>
+
+  <!-- LEFT WALL — LOCKERS -->
+  <g>
+    <!-- Locker row (6 lockers) -->
+    <rect x="30" y="120" width="55" height="310" fill="url(#lockerGrad)" rx="2"/>
+    <rect x="90" y="120" width="55" height="310" fill="url(#lockerGrad)" rx="2"/>
+    <rect x="150" y="120" width="55" height="310" fill="url(#lockerGrad)" rx="2"/>
+    <rect x="210" y="120" width="55" height="310" fill="url(#lockerGrad)" rx="2"/>
+    <rect x="270" y="120" width="55" height="310" fill="url(#lockerGrad)" rx="2"/>
+    <rect x="330" y="120" width="55" height="310" fill="url(#lockerGrad)" rx="2"/>
+
+    <!-- Locker divider lines -->
+    <line x1="87" y1="120" x2="87" y2="430" stroke="#1e3050" stroke-width="2"/>
+    <line x1="147" y1="120" x2="147" y2="430" stroke="#1e3050" stroke-width="2"/>
+    <line x1="207" y1="120" x2="207" y2="430" stroke="#1e3050" stroke-width="2"/>
+    <line x1="267" y1="120" x2="267" y2="430" stroke="#1e3050" stroke-width="2"/>
+    <line x1="327" y1="120" x2="327" y2="430" stroke="#1e3050" stroke-width="2"/>
+
+    <!-- Top/bottom halves -->
+    <line x1="30" y1="275" x2="385" y2="275" stroke="#1e3050" stroke-width="1.5"/>
+
+    <!-- Handles -->
+    <rect x="70" y="190" width="4" height="12" fill="#888" rx="1"/>
+    <rect x="130" y="190" width="4" height="12" fill="#888" rx="1"/>
+    <rect x="190" y="190" width="4" height="12" fill="#888" rx="1"/>
+    <rect x="250" y="190" width="4" height="12" fill="#888" rx="1"/>
+    <rect x="310" y="190" width="4" height="12" fill="#888" rx="1"/>
+    <rect x="370" y="190" width="4" height="12" fill="#888" rx="1"/>
+    <!-- Bottom handles -->
+    <rect x="70" y="350" width="4" height="12" fill="#888" rx="1"/>
+    <rect x="130" y="350" width="4" height="12" fill="#888" rx="1"/>
+    <rect x="190" y="350" width="4" height="12" fill="#888" rx="1"/>
+    <rect x="250" y="350" width="4" height="12" fill="#888" rx="1"/>
+    <rect x="310" y="350" width="4" height="12" fill="#888" rx="1"/>
+    <rect x="370" y="350" width="4" height="12" fill="#888" rx="1"/>
+
+    <!-- Vent slits on lockers -->
+    <g stroke="#1e3050" stroke-width="0.5" opacity="0.5">
+      <line x1="45" y1="135" x2="70" y2="135"/>
+      <line x1="45" y1="139" x2="70" y2="139"/>
+      <line x1="45" y1="143" x2="70" y2="143"/>
+      <line x1="105" y1="135" x2="130" y2="135"/>
+      <line x1="105" y1="139" x2="130" y2="139"/>
+      <line x1="105" y1="143" x2="130" y2="143"/>
+      <line x1="165" y1="135" x2="190" y2="135"/>
+      <line x1="165" y1="139" x2="190" y2="139"/>
+      <line x1="165" y1="143" x2="190" y2="143"/>
+    </g>
+
+    <!-- Sticker on one locker -->
+    <circle cx="240" cy="160" r="6" fill="#EF4444" opacity="0.15"/>
+    <!-- Another sticker -->
+    <rect x="340" y="155" width="10" height="10" fill="#22C55E" opacity="0.1" rx="1"/>
+
+    <!-- One locker slightly ajar -->
+    <rect x="150" y="120" width="4" height="155" fill="#1a2a40"/>
+    <line x1="154" y1="120" x2="154" y2="275" stroke="#0a1a30" stroke-width="1"/>
+  </g>
+
+  <!-- RIGHT WALL — the message wall -->
+  <!-- Wall paint (institutional beige upper, darker lower) -->
+  <rect x="420" y="55" width="380" height="385" fill="#2e2e3c"/>
+  <!-- Paint color divider (school walls always have this) -->
+  <line x1="420" y1="280" x2="800" y2="280" stroke="#353548" stroke-width="2"/>
+  <!-- Lower wall darker -->
+  <rect x="420" y="280" width="380" height="160" fill="#262634"/>
+
+  <!-- THE HALF-ERASED MESSAGE — key narrative detail -->
+  <!-- Original message (graffiti/marker) -->
+  <text x="470" y="200" font-family="sans-serif" font-weight="bold" font-size="38" fill="#C0392B" opacity="0.25" letter-spacing="3">ON SAIT</text>
+  <!-- Second line, partially scrubbed -->
+  <text x="470" y="250" font-family="sans-serif" font-weight="bold" font-size="38" fill="#C0392B" opacity="0.12" letter-spacing="3">CE QUE</text>
+  <!-- Third line almost completely erased, just ghost traces -->
+  <text x="470" y="300" font-family="sans-serif" font-weight="bold" font-size="38" fill="#C0392B" opacity="0.06" letter-spacing="3">TU AS F</text>
+
+  <!-- Scrub/cleaning marks over the message (someone tried to remove it) -->
+  <g>
+    <ellipse cx="580" cy="240" rx="80" ry="30" fill="#2e2e3c" opacity="0.5"/>
+    <ellipse cx="560" cy="260" rx="70" ry="25" fill="#2e2e3c" opacity="0.4"/>
+    <ellipse cx="590" cy="290" rx="90" ry="20" fill="#262634" opacity="0.6"/>
+    <!-- Scrub streak marks -->
+    <path d="M500 230 Q550 225 600 230 Q650 235 700 230" fill="none" stroke="#343448" stroke-width="3" opacity="0.3"/>
+    <path d="M500 250 Q540 245 600 250 Q660 255 700 248" fill="none" stroke="#343448" stroke-width="2.5" opacity="0.25"/>
+    <path d="M490 270 Q540 265 610 270 Q660 275 710 268" fill="none" stroke="#303042" stroke-width="2" opacity="0.2"/>
+  </g>
+
+  <!-- Small drawing next to message (a star, partially erased) -->
+  <polygon points="720,170 724,182 738,182 727,190 731,202 720,195 709,202 713,190 702,182 716,182" fill="none" stroke="#F59E0B" stroke-width="1.5" opacity="0.15"/>
+
+  <!-- Arrow drawn pointing to message -->
+  <path d="M455 160 L465 180" fill="none" stroke="#C0392B" stroke-width="1.5" opacity="0.12"/>
+  <polygon points="462,178 468,184 460,182" fill="#C0392B" opacity="0.1"/>
+
+  <!-- Fire extinguisher on wall -->
+  <rect x="420" y="320" width="20" height="35" fill="#C0392B" opacity="0.3" rx="3"/>
+  <rect x="426" y="312" width="8" height="10" fill="#666" rx="1"/>
+  <!-- Bracket -->
+  <rect x="418" y="315" width="24" height="3" fill="#555"/>
+  <rect x="418" y="355" width="24" height="3" fill="#555"/>
+
+  <!-- Classroom door (far end of hallway, perspective) -->
+  <rect x="740" y="80" width="60" height="360" fill="#3a3040" rx="2"/>
+  <rect x="745" y="85" width="50" height="350" fill="#302838"/>
+  <!-- Door window -->
+  <rect x="755" y="100" width="30" height="40" fill="#2a2a40" rx="1"/>
+  <!-- Door handle -->
+  <circle cx="780" cy="270" r="4" fill="#888" opacity="0.5"/>
+  <!-- Room number -->
+  <text x="770" y="94" font-size="8" fill="#555" font-family="sans-serif">B204</text>
+
+  <!-- Perspective lines — ceiling meets walls -->
+  <line x1="420" y1="55" x2="420" y2="440" stroke="#333345" stroke-width="1.5"/>
+
+  <!-- Bulletin board between lockers and door -->
+  <rect x="400" y="90" width="15" height="110" fill="#6B4226" rx="2"/>
+  <!-- Pinned notices -->
+  <rect x="402" y="95" width="11" height="8" fill="#FFE4A0" opacity="0.12" rx="0.5"/>
+  <rect x="402" y="108" width="11" height="8" fill="#87CEEB" opacity="0.1" rx="0.5"/>
+  <rect x="402" y="121" width="11" height="8" fill="#E8E8E0" opacity="0.08" rx="0.5"/>
+  <!-- Pins -->
+  <circle cx="407" cy="95" r="1" fill="#EF4444" opacity="0.3"/>
+  <circle cx="407" cy="108" r="1" fill="#22C55E" opacity="0.3"/>
+
+  <!-- Forgotten hoodie on floor near lockers -->
+  <path d="M100 435 Q115 425 130 435 Q125 445 115 448 Q105 445 100 435" fill="#333345"/>
+  <path d="M108 430 Q115 424 122 430" fill="#3a3a4a"/>
+
+  <!-- Paper on floor (dropped from locker?) -->
+  <rect x="250" y="450" width="15" height="20" fill="#FEFCE8" opacity="0.08" rx="1" transform="rotate(8 257 460)"/>
+
+  <!-- Shoe scuff marks on floor -->
+  <path d="M300 460 L330 458" stroke="#2a2a3a" stroke-width="2" opacity="0.2" stroke-linecap="round"/>
+  <path d="M500 470 L530 468" stroke="#2a2a3a" stroke-width="1.5" opacity="0.15" stroke-linecap="round"/>
+
+  <!-- Subtle vignette -->
+  <rect x="0" y="0" width="800" height="600" fill="none" stroke="#0a0a15" stroke-width="60" stroke-opacity="0.3"/>
+</svg>

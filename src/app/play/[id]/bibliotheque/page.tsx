@@ -45,7 +45,7 @@ interface BiblioData {
   classGallery: { situationId: string; responses: { id: string; text: string }[] }[];
   studentCount: number;
   etsiTexts: { imageId: string; text: string; helpUsed: boolean }[];
-  personnage: { prenom: string; age: string; trait: string; avatar: Record<string, string> } | null;
+  personnage: { prenom: string; trait: string; avatar: Record<string, string> } | null;
   pitch: { objectif: string; obstacle: string; text: string; chronoSeconds: number | null } | null;
   ideaBank: { id: string; text: string; category: string | null; votes: number; isMine: boolean }[];
   scenes: {
@@ -399,8 +399,7 @@ function ImaginationTab({ data }: { data: BiblioData }) {
               <div>
                 <p className="font-bold text-lg">{data.personnage.prenom}</p>
                 <p className="text-xs text-bw-muted">
-                  {data.personnage.age && `${data.personnage.age} ans`}
-                  {data.personnage.trait && ` — ${TRAITS.find((t) => t.key === data.personnage!.trait)?.label || data.personnage.trait}`}
+                  {data.personnage.trait && TRAITS.find((t) => t.key === data.personnage!.trait)?.label || data.personnage.trait}
                 </p>
               </div>
             </div>

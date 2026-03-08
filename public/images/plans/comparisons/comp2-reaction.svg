@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <defs>
+    <radialGradient id="c2r-bg" cx="0.5" cy="0.5" r="0.7">
+      <stop offset="0%" stop-color="#2D2540"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </radialGradient>
+    <radialGradient id="c2r-face" cx="0.45" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#E8C4A0"/>
+      <stop offset="100%" stop-color="#C68642"/>
+    </radialGradient>
+    <clipPath id="c2r-frame">
+      <rect x="16" y="16" width="568" height="340" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <rect width="600" height="400" rx="12" fill="#1a1a2e"/>
+
+  <g clip-path="url(#c2r-frame)">
+    <!-- Dark background -->
+    <rect x="16" y="16" width="568" height="340" fill="url(#c2r-bg)"/>
+
+    <!-- Blurred hint of outdoor/schoolyard -->
+    <rect x="16" y="16" width="568" height="120" fill="#87CEEB" opacity="0.1"/>
+
+    <!-- Face of the listener - center, emotional, hurt -->
+    <ellipse cx="320" cy="180" rx="115" ry="135" fill="url(#c2r-face)"/>
+
+    <!-- Hair -->
+    <path d="M205 145 Q205 55 320 40 Q435 55 435 145" fill="#1A0F0A"/>
+    <path d="M205 145 Q200 115 210 90" fill="#1A0F0A"/>
+
+    <!-- Eyebrows - pained, slightly furrowed -->
+    <path d="M265 130 Q280 124 300 130" stroke="#3D2B1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M340 130 Q360 124 375 130" stroke="#3D2B1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- Eyes - slightly narrowed, hurt look -->
+    <!-- Left eye -->
+    <ellipse cx="285" cy="158" rx="17" ry="13" fill="white"/>
+    <circle cx="288" cy="158" r="9" fill="#4A6741"/>
+    <circle cx="288" cy="158" r="5" fill="#1A0F0A"/>
+    <circle cx="292" cy="154" r="3" fill="white" opacity="0.7"/>
+    <!-- Right eye -->
+    <ellipse cx="355" cy="158" rx="17" ry="13" fill="white"/>
+    <circle cx="352" cy="158" r="9" fill="#4A6741"/>
+    <circle cx="352" cy="158" r="5" fill="#1A0F0A"/>
+    <circle cx="356" cy="154" r="3" fill="white" opacity="0.7"/>
+
+    <!-- Nose -->
+    <path d="M315 185 Q320 198 325 185" stroke="#B8956A" stroke-width="1.5" fill="none"/>
+
+    <!-- Mouth - tight, jaw clenched -->
+    <line x1="298" y1="220" x2="342" y2="220" stroke="#8B5E3C" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Slight downturn at corners -->
+    <path d="M298 220 Q296 224 293 225" stroke="#8B5E3C" stroke-width="1.5" fill="none"/>
+    <path d="M342 220 Q344 224 347 225" stroke="#8B5E3C" stroke-width="1.5" fill="none"/>
+
+    <!-- Jaw tension lines -->
+    <path d="M240 210 Q245 230 250 240" stroke="#B8956A" stroke-width="1" opacity="0.3" fill="none"/>
+    <path d="M400 210 Q395 230 390 240" stroke="#B8956A" stroke-width="1" opacity="0.3" fill="none"/>
+
+    <!-- Clenched fists at bottom edge of frame -->
+    <!-- Left fist -->
+    <circle cx="180" cy="340" r="18" fill="#C68642"/>
+    <path d="M165 330 Q175 325 180 328 Q185 325 195 330" stroke="#B8956A" stroke-width="1.5" fill="none"/>
+    <path d="M168 338 L192 338" stroke="#B8956A" stroke-width="1" opacity="0.4"/>
+    <path d="M170 345 L190 345" stroke="#B8956A" stroke-width="1" opacity="0.4"/>
+
+    <!-- Right fist -->
+    <circle cx="460" cy="345" r="18" fill="#C68642"/>
+    <path d="M445 335 Q455 330 460 333 Q465 330 475 335" stroke="#B8956A" stroke-width="1.5" fill="none"/>
+    <path d="M448 343 L472 343" stroke="#B8956A" stroke-width="1" opacity="0.4"/>
+    <path d="M450 350 L470 350" stroke="#B8956A" stroke-width="1" opacity="0.4"/>
+
+    <!-- Subtle red tint for anger -->
+    <rect x="16" y="16" width="568" height="340" fill="#EF4444" opacity="0.04"/>
+  </g>
+
+  <!-- Frame -->
+  <rect x="16" y="16" width="568" height="340" rx="10" fill="none" stroke="white" stroke-width="1.5" opacity="0.25"/>
+
+  <!-- Label -->
+  <rect x="130" y="366" width="340" height="26" rx="6" fill="white" opacity="0.08"/>
+  <text x="300" y="384" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="white" opacity="0.6">PLAN REACTION — Le visage de celui qui ecoute</text>
+</svg>

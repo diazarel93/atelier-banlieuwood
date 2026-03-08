@@ -36,9 +36,20 @@ export function ChronoTestState({
     }
   }, [running, elapsed]);
 
+  // Adrian: le chrono est bloquant — le bouton n'apparaît que si le pitch entre dans le temps
+  const tooLong = elapsed >= DURATION;
+
   async function handleStop() {
     setRunning(false);
     if (timerRef.current) clearInterval(timerRef.current);
+
+    if (elapsed >= DURATION) {
+      // Pitch too long — must retry
+      toast.error("Ton pitch dépasse 30 secondes — raccourcis-le et réessaie !");
+      setElapsed(0);
+      return;
+    }
+
     try {
       await fetch(`/api/sessions/${sessionId}/pitch`, {
         method: "PATCH",
@@ -128,7 +139,7 @@ export function ChronoTestState({
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
         className="text-xs text-bw-muted text-center">
-        {done ? "Chrono terminé ! Bien joué 🎤" : running ? "Lis ton pitch à voix haute !" : "Appuie sur START quand tu es prêt"}
+        {done ? "Chrono terminé ! Bien joué" : running ? "Parle calmement, comme si tu racontais ton idée à un adulte" : "Appuie sur START quand tu es prêt"}
       </motion.p>
       {/* Animated button swap */}
       <AnimatePresence mode="wait">
@@ -143,7 +154,7 @@ export function ChronoTestState({
             START
           </motion.button>
         )}
-        {running && (
+        {running && !tooLong && (
           <motion.button key="stop"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -153,6 +164,20 @@ export function ChronoTestState({
             className="px-8 py-3 rounded-xl bg-bw-green text-white font-bold text-sm cursor-pointer shadow-lg shadow-bw-green/20">
             J&apos;ai fini !
           </motion.button>
+        )}
+        {tooLong && !done && (
+          <motion.div key="retry"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center gap-2">
+            <p className="text-xs text-bw-danger text-center">Trop long ! Raccourcis ton pitch et réessaie.</p>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => { setElapsed(0); setRunning(false); }}
+              className="px-8 py-3 rounded-xl bg-bw-amber text-white font-bold text-sm cursor-pointer">
+              Réessayer
+            </motion.button>
+          </motion.div>
         )}
       </AnimatePresence>
     </motion.div>

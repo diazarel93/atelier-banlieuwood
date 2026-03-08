@@ -18,14 +18,13 @@ export interface AvatarBuilderStateProps {
   module10: Module10Data;
   sessionId: string;
   studentId: string;
-  onDone: (data: { prenom: string; age: string; trait: string; avatar: AvatarOptions }) => void;
+  onDone: (data: { prenom: string; trait: string; avatar: AvatarOptions }) => void;
 }
 
 export function AvatarBuilderState({
   module10, sessionId, studentId, onDone,
 }: AvatarBuilderStateProps) {
   const [prenom, setPrenom] = useState(module10.personnage?.prenom || "");
-  const [age, setAge] = useState(module10.personnage?.age || "");
   const [trait, setTrait] = useState(module10.personnage?.trait || "");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [force, setForce] = useState((module10.personnage as any)?.force as string || "");
@@ -138,10 +137,10 @@ export function AvatarBuilderState({
       await fetch(`/api/sessions/${sessionId}/personnage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, prenom: prenom.trim(), age, traitDominant: trait, force: force.trim() || null, faiblesse: faiblesse.trim() || null, avatarData: finalAvatar }),
+        body: JSON.stringify({ studentId, prenom: prenom.trim(), traitDominant: trait, force: force.trim() || null, faiblesse: faiblesse.trim() || null, avatarData: finalAvatar }),
       });
       setSuccess(true);
-      setTimeout(() => onDone({ prenom: prenom.trim(), age, trait, avatar: finalAvatar }), 600);
+      setTimeout(() => onDone({ prenom: prenom.trim(), trait, avatar: finalAvatar }), 600);
     } catch { toast.error("Erreur"); setSubmitting(false); }
   }
 
@@ -234,13 +233,9 @@ export function AvatarBuilderState({
         Personnage aléatoire
       </motion.button>
 
-      {/* Name + Age */}
-      <div className="flex gap-2 w-full">
-        <input value={prenom} onChange={(e) => setPrenom(e.target.value)} placeholder="Prénom" maxLength={30}
-          className="flex-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-teal focus:outline-none transition-colors" />
-        <input value={age} onChange={(e) => setAge(e.target.value)} placeholder="Âge" maxLength={20}
-          className="w-20 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-teal focus:outline-none transition-colors" />
-      </div>
+      {/* Name */}
+      <input value={prenom} onChange={(e) => setPrenom(e.target.value)} placeholder="Prénom du personnage" maxLength={30}
+        className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-teal focus:outline-none transition-colors" />
 
       {/* Tab bar */}
       <div className="w-full overflow-x-auto scrollbar-hide">

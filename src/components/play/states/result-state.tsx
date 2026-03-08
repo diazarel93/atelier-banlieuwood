@@ -143,8 +143,8 @@ export function ResultState({
                   className="text-sm font-bold text-bw-amber"
                 >
                   {(comboCount ?? 0) >= 2
-                    ? "Encore ton id\u00e9e retenue !"
-                    : "C'est ton id\u00e9e qui a \u00e9t\u00e9 retenue !"}
+                    ? "Encore ton idée choisie par le groupe !"
+                    : "Le groupe a choisi ton idée !"}
                 </motion.p>
               </motion.div>
             )}

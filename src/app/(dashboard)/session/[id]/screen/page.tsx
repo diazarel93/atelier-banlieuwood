@@ -1299,7 +1299,7 @@ export default function ScreenPage() {
             </motion.div>
           )}
 
-          {/* M10 — Chrono test (séance 2, pos 3) — Giant 60s timer */}
+          {/* M10 — Chrono test (séance 2, pos 3) — Giant 30s timer */}
           {(session.status === "waiting" || session.status === "responding") && isM10 && module10?.type === "chrono" && (
             <motion.div key="m10-chrono" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
@@ -1312,7 +1312,7 @@ export default function ScreenPage() {
                 <span className="text-5xl">⏱️</span>
               </motion.div>
               <h2 className="text-4xl font-bold">Test Chrono</h2>
-              <p className="text-2xl text-bw-amber font-medium">60 secondes pour pitcher votre histoire !</p>
+              <p className="text-2xl text-bw-amber font-medium">30 secondes pour pitcher votre histoire !</p>
               <p className="text-lg text-bw-muted">Lisez votre pitch à voix haute. Soyez concis, soyez convaincant.</p>
               <div className="flex items-center justify-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-bw-amber" />

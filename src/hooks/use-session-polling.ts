@@ -24,6 +24,8 @@ export interface Module1Data {
   confrontation?: { responseA: string; responseB: string } | null;
   // Notebook (séance 5)
   existingText?: string;
+  suggestions?: string[];
+  encouragement?: string;
   // Common
   totalSeances: number;
   currentSeance: number;
@@ -32,7 +34,7 @@ export interface Module1Data {
 export interface Module5Data {
   type: "checklist" | "scene-builder" | "comparison";
   // Checklist (séance 1 index 0)
-  checklist?: { selected_items: string[]; chosen_item: string | null } | null;
+  checklist?: { selected_items: string[]; chosen_item: string | null; scene_marquante?: string | null; deeper_reflection?: string | null } | null;
   topItems?: { key: string; count: number }[];
   submitted?: boolean;
   submittedCount?: number;
@@ -81,8 +83,9 @@ export interface Module10Data {
   ideaBankCount?: number;
   ideaBankItems?: { id: string; text: string; votes: number }[];
   // Pitch (seance 2)
-  personnage?: { prenom: string; age: string; trait: string; avatar: Record<string, string> } | null;
+  personnage?: { prenom: string; trait: string; avatar: Record<string, string> } | null;
   objectif?: string | null;
+  objectifReason?: string | null;
   obstacle?: string | null;
   pitchText?: string | null;
   chronoSeconds?: number | null;
@@ -90,6 +93,8 @@ export interface Module10Data {
   confrontation?: { pitchA: { text: string; prenom: string }; pitchB: { text: string; prenom: string } } | null;
   // Shared
   submittedCount?: number;
+  // Help gating — Adrian: "L'aide doit être activée par l'intervenant"
+  helpEnabled?: boolean;
   // Facilitator view: all student submissions for M10 special positions
   allSubmissions?: { studentName: string; text: string; studentId: string; avatar?: Record<string, unknown> }[];
 }
@@ -111,6 +116,99 @@ export interface Module11Data {
   sourceTitle: string | null;
   sourceYear: number | null;
   debatOptions: { key: string; label: string }[] | null;
+}
+
+export interface Module6Data {
+  type: "frise" | "scenes-v0" | "mission" | "ecriture" | "assemblage";
+  position: number;
+  // Frise
+  friseSteps?: { key: string; label: string; description: string; winnerManche: number; winnerText: string | null }[];
+  winners?: Record<number, string>;
+  // Scenes V0
+  scenes?: { id: string; sceneNumber: number; title: string; description: string; act: string; status: string; content: string }[];
+  scenesReady?: boolean;
+  lectureCollective?: boolean;
+  // Mission
+  mission?: {
+    id: string;
+    role: string;
+    roleLabel: string;
+    roleEmoji: string;
+    task: string;
+    sceneTitle: string;
+    sceneDescription?: string;
+    sceneContent?: string;
+    content?: string;
+    status: string;
+    isScribe?: boolean;
+  } | null;
+  missionTypes?: { key: string; label: string; description: string; emoji: string }[];
+  // Assemblage
+  missions?: { id: string; studentId: string; role: string; content: string; status: string; sceneTitle: string }[];
+  scenario?: { fullText: string; validated: boolean } | null;
+}
+
+export interface Module7Data {
+  type: "plans" | "comparaison" | "decoupage" | "storyboard";
+  position: number;
+  // Plans
+  plans?: { key: string; label: string; description: string; question: string; example: string; color: string; imageUrl?: string }[];
+  // Comparaison
+  comparisons?: {
+    key: string;
+    sceneDescription: string;
+    planA: { type: string; description: string };
+    planB: { type: string; description: string };
+    imageA?: string;
+    imageB?: string;
+    question: string;
+    explanation: string;
+  }[];
+  studentComparisons?: { comparisonKey: string; chosenPlan: string; reasoning: string }[];
+  comparisonResults?: Record<string, Record<string, number>> | null;
+  // Découpage
+  keyScenes?: { id: string; sceneNumber: number; title: string; description: string; template: unknown }[];
+  studentDecoupages?: { sceneId: string; plans: unknown }[];
+  planTypes?: { key: string; label: string }[];
+  // Storyboard
+  storyboard?: { scenes: unknown; validated: boolean } | null;
+  allDecoupages?: { sceneId: string; studentId: string; plans: unknown }[];
+  scenes?: { id: string; sceneNumber: number; title: string }[];
+}
+
+export interface Module8Data {
+  type: "quiz" | "debrief" | "role-choice" | "team-recap" | "talent-card";
+  position: number;
+  // Quiz — Adrian format: click roles you think you know, then reveal
+  quiz?: { metierKey: string; metierLabel: string; metierEmoji: string; commonBelief: string; reality: string }[];
+  studentAnswers?: { metierKey: string; correct: boolean }[];
+  hasAnswered?: boolean;
+  // Débrief
+  corrections?: { metierKey: string; metierLabel: string; metierEmoji: string; commonBelief: string; reality: string }[];
+  classResults?: Record<string, { correct: number; wrong: number }> | null;
+  fiches?: { key: string; label: string; description: string; skills: string[]; emoji: string; color: string }[];
+  // Role choice
+  studentRank?: number | null;
+  isMyTurn?: boolean;
+  availableRoles?: { key: string; label: string; description: string; emoji: string; color: string }[];
+  takenRoles?: { roleKey: string; studentId: string; isVeto: boolean; roleLabel: string }[];
+  ranking?: { studentId: string; displayName: string; participation: number; creativity: number; engagement: number; total: number; rank: number; hasChosen: boolean }[] | null;
+  pointsComputed?: boolean;
+  // Team recap
+  team?: { studentId: string; displayName: string; avatarSeed: string; roleKey: string; roleLabel: string; roleEmoji: string; roleColor: string; isVeto: boolean }[];
+  // Talent card
+  talentCard?: {
+    displayName: string;
+    avatarSeed: string;
+    roleKey: string;
+    roleLabel: string;
+    roleEmoji: string;
+    talentCategory: string;
+    talentCategoryLabel: string;
+    talentCategoryColor: string;
+    strengths: string[];
+    isVeto?: boolean;
+  } | null;
 }
 
 export interface Module12Data {
@@ -154,6 +252,9 @@ export interface SessionState {
   } | null;
   module1?: Module1Data;
   module5?: Module5Data;
+  module6?: Module6Data;
+  module7?: Module7Data;
+  module8?: Module8Data;
   module10?: Module10Data;
   module11?: Module11Data;
   module12?: Module12Data;

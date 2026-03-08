@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <defs>
+    <radialGradient id="c1g-bg" cx="0.5" cy="0.5" r="0.7">
+      <stop offset="0%" stop-color="#3D3550"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </radialGradient>
+    <radialGradient id="c1g-face" cx="0.45" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#E8C4A0"/>
+      <stop offset="100%" stop-color="#C68642"/>
+    </radialGradient>
+    <clipPath id="c1g-frame">
+      <rect x="16" y="16" width="568" height="340" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <rect width="600" height="400" rx="12" fill="#1a1a2e"/>
+
+  <g clip-path="url(#c1g-frame)">
+    <!-- Dark, out-of-focus background -->
+    <rect x="16" y="16" width="568" height="340" fill="url(#c1g-bg)"/>
+
+    <!-- Hint of locker behind - blurred -->
+    <rect x="200" y="16" width="200" height="356" fill="#5A7A9A" opacity="0.15"/>
+
+    <!-- Face - close up, reading message -->
+    <ellipse cx="300" cy="175" rx="120" ry="140" fill="url(#c1g-face)"/>
+
+    <!-- Hair -->
+    <path d="M180 140 Q180 50 300 35 Q420 50 420 140" fill="#1A0F0A"/>
+    <path d="M180 140 Q175 110 185 85" fill="#1A0F0A"/>
+    <path d="M420 140 Q425 110 415 85" fill="#1A0F0A"/>
+
+    <!-- Eyebrows - slightly furrowed, concentrating -->
+    <path d="M245 130 Q265 122 285 128" stroke="#3D2B1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M315 128 Q335 122 355 130" stroke="#3D2B1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- Eyes - widening as reading -->
+    <!-- Left eye -->
+    <ellipse cx="268" cy="158" rx="20" ry="17" fill="white"/>
+    <circle cx="272" cy="158" r="11" fill="#4A3728"/>
+    <circle cx="272" cy="158" r="6" fill="#1A0F0A"/>
+    <circle cx="276" cy="153" r="3.5" fill="white" opacity="0.8"/>
+    <!-- Right eye - slightly more open (surprise dawning) -->
+    <ellipse cx="332" cy="158" rx="20" ry="19" fill="white"/>
+    <circle cx="328" cy="158" r="11" fill="#4A3728"/>
+    <circle cx="328" cy="158" r="6" fill="#1A0F0A"/>
+    <circle cx="332" cy="153" r="3.5" fill="white" opacity="0.8"/>
+
+    <!-- Nose -->
+    <path d="M295 180 Q300 195 305 180" stroke="#B8956A" stroke-width="1.5" fill="none"/>
+
+    <!-- Mouth - slightly open, reading -->
+    <path d="M280 218 Q295 225 300 226 Q305 225 320 218" stroke="#C4775C" stroke-width="2.5" fill="none"/>
+    <ellipse cx="300" cy="222" rx="8" ry="4" fill="#C4775C" opacity="0.6"/>
+
+    <!-- Hand holding paper (bottom of frame) -->
+    <path d="M200 356 Q220 310 260 290 L290 280" stroke="#C68642" stroke-width="16" stroke-linecap="round" fill="none"/>
+    <!-- Paper edge visible -->
+    <path d="M250 300 L320 280 L340 310 L270 330 Z" fill="#FFF8E7" opacity="0.8"/>
+    <line x1="260" y1="305" x2="330" y2="288" stroke="#D4A574" stroke-width="0.8" opacity="0.6"/>
+    <line x1="262" y1="312" x2="325" y2="295" stroke="#D4A574" stroke-width="0.8" opacity="0.6"/>
+
+    <!-- Subtle emotion: slight blush -->
+    <ellipse cx="255" cy="195" rx="15" ry="8" fill="#E8A0A0" opacity="0.2"/>
+    <ellipse cx="345" cy="195" rx="15" ry="8" fill="#E8A0A0" opacity="0.2"/>
+  </g>
+
+  <!-- Frame -->
+  <rect x="16" y="16" width="568" height="340" rx="10" fill="none" stroke="white" stroke-width="1.5" opacity="0.25"/>
+
+  <!-- Label -->
+  <rect x="150" y="366" width="300" height="26" rx="6" fill="white" opacity="0.08"/>
+  <text x="300" y="384" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="white" opacity="0.6">GROS PLAN — Les yeux s'ecarquillent</text>
+</svg>

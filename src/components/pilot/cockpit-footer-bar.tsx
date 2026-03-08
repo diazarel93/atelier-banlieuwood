@@ -54,6 +54,7 @@ export interface CockpitFooterBarProps {
   focusMode: boolean;
   setFocusMode: (fn: (prev: boolean) => boolean) => void;
   sharingEnabled: boolean;
+  helpEnabled: boolean;
   muteSounds: boolean;
   setShowShortcuts: (v: boolean) => void;
   respondedCount: number;
@@ -107,6 +108,7 @@ export function CockpitFooterBar({
   focusMode,
   setFocusMode,
   sharingEnabled,
+  helpEnabled,
   muteSounds,
   setShowShortcuts,
   respondedCount,
@@ -323,6 +325,15 @@ export function CockpitFooterBar({
                 }`}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+              </button>
+              <button
+                onClick={() => updateSession.mutate({ help_enabled: !helpEnabled })}
+                title={helpEnabled ? "Aide élève activée" : "Aide élève désactivée"}
+                className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
+                  helpEnabled ? "bg-purple-500/15 text-purple-500 border-purple-500/30" : "text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border-[#E8DFD2]"
+                }`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
               </button>
               <button
                 onClick={() => updateSession.mutate({ mute_sounds: !muteSounds })}

@@ -16,61 +16,71 @@ export const ETSI_IMAGES: EtsiImage[] = [
     id: "etsi-banc",
     url: "/images/etsi/banc.svg",
     title: "Le banc vide",
-    description: "Un banc vide dans une cour d'école, un sac oublié dessus.",
+    description:
+      "Un banc vide dans la cour de l'école, un sac oublié dessus.",
   },
   {
     id: "etsi-fenetre",
     url: "/images/etsi/fenetre.svg",
     title: "La fenêtre",
-    description: "Quelqu'un regarde par la fenêtre d'un immeuble, la nuit.",
+    description:
+      "Une fenêtre de salle de classe, un avion en papier sur le rebord. Dehors, la cour est vide.",
   },
   {
     id: "etsi-escalier",
     url: "/images/etsi/escalier.svg",
     title: "L'escalier",
-    description: "Un escalier sombre dans un immeuble, une lumière au bout.",
+    description:
+      "L'escalier du collège, une lumière blafarde. Un cahier tombé sur une marche.",
   },
   {
     id: "etsi-terrain",
     url: "/images/etsi/terrain.svg",
-    title: "Le terrain vague",
-    description: "Un terrain vague entre deux immeubles, des traces de pas dans la boue.",
+    title: "Le terrain de sport",
+    description:
+      "Le terrain de sport du collège au crépuscule. Un ballon abandonné sur le gazon.",
   },
   {
     id: "etsi-bus",
     url: "/images/etsi/bus.svg",
     title: "L'arrêt de bus",
-    description: "Un arrêt de bus la nuit, deux personnes dos à dos.",
+    description:
+      "L'arrêt du bus scolaire le matin. Un sac par terre, mais pas d'élève.",
   },
   {
     id: "etsi-miroir",
     url: "/images/etsi/miroir.svg",
     title: "Le miroir",
-    description: "Un miroir brisé dans une salle de bain, un reflet fragmenté.",
+    description:
+      "Le miroir des toilettes du collège. Un message écrit dans la buée, à moitié lisible.",
   },
   {
     id: "etsi-cafe",
     url: "/images/etsi/cafe.svg",
-    title: "Le café",
-    description: "Un café presque vide, une tasse encore chaude sur une table abandonnée.",
+    title: "La cantine",
+    description:
+      "La cantine vide. Un plateau encore posé sur une table, les chaises repoussées.",
   },
   {
     id: "etsi-graffiti",
     url: "/images/etsi/graffiti.svg",
-    title: "Le graffiti",
-    description: "Un mur tagué avec un message à moitié effacé, des couleurs vives dans la grisaille.",
+    title: "Le couloir",
+    description:
+      "Un couloir du collège avec un message à moitié effacé sur le mur. Des casiers fermés.",
   },
   {
     id: "etsi-parking",
     url: "/images/etsi/parking.svg",
-    title: "Le parking",
-    description: "Un parking souterrain désert, une seule voiture garée sous un néon qui clignote.",
+    title: "La salle vide",
+    description:
+      "Un bureau dans une salle de classe vide. Un téléphone oublié, écran allumé.",
   },
   {
     id: "etsi-toit",
     url: "/images/etsi/toit.svg",
     title: "Le toit",
-    description: "Le toit d'un immeuble au coucher du soleil, la ville s'étend à perte de vue.",
+    description:
+      "Le haut de l'escalier du collège, une porte entrouverte. Le coucher de soleil visible.",
   },
 ];
 

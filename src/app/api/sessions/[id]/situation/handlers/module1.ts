@@ -349,6 +349,13 @@ export async function handleModule1(req: NextRequest, session: Record<string, un
         responsesCount,
         totalSeances: 5,
         currentSeance,
+        suggestions: [
+          "une dispute",
+          "un moment gênant",
+          "un moment drôle",
+          "une injustice",
+        ],
+        encouragement: "Les meilleurs films racontent souvent des choses qui existent vraiment.",
       },
       situation: null,
       hasResponded,

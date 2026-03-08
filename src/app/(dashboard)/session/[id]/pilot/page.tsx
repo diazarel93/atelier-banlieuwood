@@ -85,6 +85,7 @@ interface Session {
   timer_ends_at: string | null;
   completed_modules: string[];
   sharing_enabled: boolean;
+  help_enabled: boolean;
   mute_sounds: boolean;
   reveal_phase: number | null;
   students: Student[];
@@ -423,7 +424,7 @@ function CockpitContent({
     submittedCount?: number;
     ideaBankCount?: number;
     ideaBankItems?: { id: string; text: string; votes: number }[];
-    personnage?: { prenom: string; age: string; trait: string; avatar: Record<string, string> } | null;
+    personnage?: { prenom: string; trait: string; avatar: Record<string, string> } | null;
     objectif?: string | null;
     obstacle?: string | null;
     pitchText?: string | null;
@@ -467,7 +468,7 @@ function CockpitContent({
       case "avatar": return "Creation personnage";
       case "objectif": return "Objectif + Obstacle";
       case "pitch": return "Assemblage pitch";
-      case "chrono": return "Test chrono 60s";
+      case "chrono": return "Test chrono 30s";
       case "confrontation": return "Confrontation";
       default: return null;
     }
@@ -1562,7 +1563,7 @@ function CockpitContent({
                         : module10Data?.type === "avatar" ? "Création personnage"
                         : module10Data?.type === "objectif" ? "Objectif + Obstacle"
                         : module10Data?.type === "pitch" ? "Assemblage pitch"
-                        : module10Data?.type === "chrono" ? "Test chrono 60s"
+                        : module10Data?.type === "chrono" ? "Test chrono 30s"
                         : module10Data?.type === "confrontation" ? "Confrontation"
                         : ""}
                     </span>
@@ -1579,7 +1580,7 @@ function CockpitContent({
                       : module10Data?.type === "pitch"
                       ? "Les élèves écrivent un vrai récit (min 80 car.) à partir de leur personnage, objectif et obstacle. Pas de template — ils racontent l'histoire."
                       : module10Data?.type === "chrono"
-                      ? "Les élèves lisent leur pitch à voix haute en 60 secondes. Exercice d'oral et de concision."
+                      ? "Les élèves lisent leur pitch à voix haute en 30 secondes. Exercice d'oral et de concision."
                       : module10Data?.type === "confrontation"
                       ? "Deux pitchs sont projetés. La classe écoute et vote pour celui qui donne le plus envie de voir le film."
                       : ""}
@@ -2467,6 +2468,7 @@ function CockpitContent({
         focusMode={focusMode}
         setFocusMode={setFocusMode}
         sharingEnabled={session.sharing_enabled}
+        helpEnabled={session.help_enabled ?? false}
         muteSounds={session.mute_sounds}
         setShowShortcuts={setShowShortcuts}
         respondedCount={respondedCount}

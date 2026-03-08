@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <defs>
+    <linearGradient id="c2m-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#87CEEB"/>
+      <stop offset="100%" stop-color="#B8DCF0"/>
+    </linearGradient>
+    <linearGradient id="c2m-ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C4B599"/>
+      <stop offset="100%" stop-color="#A89880"/>
+    </linearGradient>
+    <filter id="c2m-blur">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+    <clipPath id="c2m-frame">
+      <rect x="16" y="16" width="568" height="340" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <rect width="600" height="400" rx="12" fill="#1a1a2e"/>
+
+  <g clip-path="url(#c2m-frame)">
+    <!-- Sky -->
+    <rect x="16" y="16" width="568" height="160" fill="url(#c2m-sky)"/>
+    <!-- Ground -->
+    <rect x="16" y="150" width="568" height="206" fill="url(#c2m-ground)"/>
+
+    <!-- Blurred background -->
+    <g filter="url(#c2m-blur)" opacity="0.3">
+      <rect x="50" y="50" width="140" height="120" fill="#8B7D6B"/>
+      <rect x="410" y="40" width="170" height="130" fill="#8B7D6B"/>
+      <circle cx="350" cy="100" r="35" fill="#6B8E6B"/>
+    </g>
+
+    <!-- Student 1 (left) - angry, leaning forward, gesturing -->
+    <!-- Body -->
+    <path d="M140 356 L140 200 Q140 170 160 160 L200 155 Q220 160 220 190 L220 356" fill="#EF4444"/>
+    <!-- Neck -->
+    <rect x="170" y="138" width="20" height="20" rx="4" fill="#D4A574"/>
+    <!-- Head - tilted forward aggressively -->
+    <ellipse cx="180" cy="115" rx="35" ry="40" fill="#D4A574" transform="rotate(5 180 115)"/>
+    <!-- Hair -->
+    <path d="M145 105 Q145 65 180 55 Q215 65 215 105" fill="#3D2B1F"/>
+    <!-- Angry eyes -->
+    <path d="M162 100 L175 106" stroke="#3D2B1F" stroke-width="2.5" fill="none"/>
+    <path d="M185 106 L198 100" stroke="#3D2B1F" stroke-width="2.5" fill="none"/>
+    <circle cx="170" cy="110" r="4" fill="#2D1B0E"/>
+    <circle cx="190" cy="110" r="4" fill="#2D1B0E"/>
+    <!-- Angry mouth -->
+    <path d="M168 128 Q180 132 192 128" stroke="#8B4040" stroke-width="2" fill="none"/>
+    <!-- Pointing arm -->
+    <path d="M220 190 L280 170 L310 160" stroke="#D4A574" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <!-- Other arm clenched -->
+    <path d="M140 200 L115 230" stroke="#D4A574" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <circle cx="112" cy="233" r="8" fill="#D4A574"/>
+    <!-- Legs -->
+    <rect x="150" y="310" width="14" height="46" rx="4" fill="#4A5568"/>
+    <rect x="195" y="310" width="14" height="46" rx="4" fill="#4A5568"/>
+
+    <!-- Student 2 (right) - defensive, arms crossed -->
+    <!-- Body -->
+    <path d="M380 356 L380 195 Q380 165 400 155 L440 150 Q460 155 460 185 L460 356" fill="#3B82F6"/>
+    <!-- Neck -->
+    <rect x="410" y="132" width="20" height="20" rx="4" fill="#C68642"/>
+    <!-- Head -->
+    <ellipse cx="420" cy="110" rx="35" ry="40" fill="#C68642"/>
+    <!-- Hair -->
+    <path d="M385 100 Q385 60 420 50 Q455 60 455 100" fill="#1A0F0A"/>
+    <!-- Hurt/defensive eyes -->
+    <ellipse cx="408" cy="108" rx="5" ry="4" fill="white"/>
+    <circle cx="408" cy="108" r="3" fill="#2D1B0E"/>
+    <ellipse cx="432" cy="108" rx="5" ry="4" fill="white"/>
+    <circle cx="432" cy="108" r="3" fill="#2D1B0E"/>
+    <!-- Tight-lipped mouth -->
+    <line x1="410" y1="125" x2="430" y2="125" stroke="#8B5E3C" stroke-width="2" stroke-linecap="round"/>
+    <!-- Crossed arms -->
+    <path d="M380 195 L420 220 L460 195" stroke="#C68642" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <path d="M460 195 L420 210 L380 195" stroke="#C68642" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <!-- Legs -->
+    <rect x="390" y="310" width="14" height="46" rx="4" fill="#4A5568"/>
+    <rect x="435" y="310" width="14" height="46" rx="4" fill="#4A5568"/>
+
+    <!-- Tension line between them (visual cue) -->
+    <line x1="250" y1="170" x2="370" y2="170" stroke="#EF4444" stroke-width="1" opacity="0.3" stroke-dasharray="6 4"/>
+  </g>
+
+  <!-- Frame -->
+  <rect x="16" y="16" width="568" height="340" rx="10" fill="none" stroke="white" stroke-width="1.5" opacity="0.25"/>
+
+  <!-- Label -->
+  <rect x="150" y="366" width="300" height="26" rx="6" fill="white" opacity="0.08"/>
+  <text x="300" y="384" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="white" opacity="0.6">PLAN MOYEN — Face a face, gestes visibles</text>
+</svg>

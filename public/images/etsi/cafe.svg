@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="cantineWall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a2a38"/>
+      <stop offset="100%" stop-color="#1e1e2c"/>
+    </linearGradient>
+    <linearGradient id="cantineFloor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a3a4a"/>
+      <stop offset="100%" stop-color="#2a2a3a"/>
+    </linearGradient>
+    <radialGradient id="ceilingLight1" cx="0.3" cy="0" r="0.5">
+      <stop offset="0%" stop-color="#FFE4A0" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#FFE4A0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ceilingLight2" cx="0.7" cy="0" r="0.5">
+      <stop offset="0%" stop-color="#FFE4A0" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#FFE4A0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="servingCounter" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#555568"/>
+      <stop offset="100%" stop-color="#444458"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Cantine walls -->
+  <rect width="800" height="600" fill="url(#cantineWall)"/>
+
+  <!-- Ceiling -->
+  <rect x="0" y="0" width="800" height="60" fill="#222232"/>
+  <!-- Ceiling panels -->
+  <line x1="200" y1="0" x2="200" y2="60" stroke="#282840" stroke-width="0.5"/>
+  <line x1="400" y1="0" x2="400" y2="60" stroke="#282840" stroke-width="0.5"/>
+  <line x1="600" y1="0" x2="600" y2="60" stroke="#282840" stroke-width="0.5"/>
+
+  <!-- Ceiling lights (2 fluorescent strips, one dimmer) -->
+  <rect x="180" y="55" width="120" height="6" fill="#444" rx="2"/>
+  <rect x="185" y="57" width="110" height="3" fill="#FFE4A0" opacity="0.35"/>
+  <ellipse cx="240" cy="200" rx="200" ry="130" fill="url(#ceilingLight1)"/>
+
+  <rect x="500" y="55" width="120" height="6" fill="#444" rx="2"/>
+  <rect x="505" y="57" width="110" height="3" fill="#FFE4A0" opacity="0.2"/>
+  <ellipse cx="560" cy="200" rx="200" ry="130" fill="url(#ceilingLight2)"/>
+
+  <!-- Back wall — serving counter area -->
+  <rect x="0" y="100" width="800" height="120" fill="url(#servingCounter)"/>
+  <!-- Serving window (glass shield) -->
+  <rect x="50" y="105" width="700" height="80" fill="#2a2a3a" rx="2"/>
+  <rect x="50" y="105" width="700" height="80" fill="none" stroke="#555" stroke-width="1.5"/>
+  <!-- Glass sneeze guard reflection -->
+  <line x1="100" y1="105" x2="80" y2="185" stroke="#4a4a5a" stroke-width="0.5" opacity="0.3"/>
+  <line x1="400" y1="105" x2="380" y2="185" stroke="#4a4a5a" stroke-width="0.5" opacity="0.3"/>
+  <!-- Serving trays/containers (empty, after lunch) -->
+  <rect x="80" y="140" width="80" height="15" fill="#3a3a48" rx="2"/>
+  <rect x="180" y="140" width="80" height="15" fill="#3a3a48" rx="2"/>
+  <rect x="280" y="140" width="80" height="15" fill="#3a3a48" rx="2"/>
+  <rect x="380" y="140" width="80" height="15" fill="#3a3a48" rx="2"/>
+  <!-- Counter front -->
+  <rect x="0" y="190" width="800" height="8" fill="#4a4a5a"/>
+  <!-- Tray slide rail -->
+  <line x1="50" y1="198" x2="750" y2="198" stroke="#666" stroke-width="3"/>
+
+  <!-- Menu board on wall -->
+  <rect x="600" y="70" width="150" height="90" fill="#1a3030" rx="2"/>
+  <rect x="605" y="75" width="140" height="80" fill="#1a3a2a"/>
+  <text x="675" y="100" text-anchor="middle" font-size="8" fill="#8a9a8a" font-family="sans-serif">MENU DU JOUR</text>
+  <line x1="620" y1="108" x2="730" y2="108" stroke="#5a6a5a" stroke-width="0.5"/>
+  <text x="675" y="120" text-anchor="middle" font-size="6" fill="#6a7a6a" font-family="sans-serif">Poulet roti</text>
+  <text x="675" y="132" text-anchor="middle" font-size="6" fill="#6a7a6a" font-family="sans-serif">Haricots verts</text>
+  <text x="675" y="144" text-anchor="middle" font-size="6" fill="#6a7a6a" font-family="sans-serif">Yaourt / Fruit</text>
+
+  <!-- Floor -->
+  <rect x="0" y="440" width="800" height="160" fill="url(#cantineFloor)"/>
+  <!-- Floor tiles -->
+  <g stroke="#333345" stroke-width="0.5">
+    <line x1="0" y1="500" x2="800" y2="500"/>
+    <line x1="0" y1="560" x2="800" y2="560"/>
+    <line x1="100" y1="440" x2="100" y2="600"/>
+    <line x1="200" y1="440" x2="200" y2="600"/>
+    <line x1="300" y1="440" x2="300" y2="600"/>
+    <line x1="400" y1="440" x2="400" y2="600"/>
+    <line x1="500" y1="440" x2="500" y2="600"/>
+    <line x1="600" y1="440" x2="600" y2="600"/>
+    <line x1="700" y1="440" x2="700" y2="600"/>
+  </g>
+
+  <!-- TABLE ROWS (long cafeteria tables) -->
+  <!-- Back row (smaller, perspective) -->
+  <rect x="80" y="230" width="640" height="6" fill="#5A3720" rx="1"/>
+  <rect x="80" y="228" width="640" height="3" fill="#6B4226" rx="1"/>
+  <!-- Legs -->
+  <rect x="85" y="236" width="4" height="22" fill="#444"/>
+  <rect x="350" y="236" width="4" height="22" fill="#444"/>
+  <rect x="715" y="236" width="4" height="22" fill="#444"/>
+  <!-- Attached benches -->
+  <rect x="80" y="250" width="640" height="4" fill="#4a4a5a" rx="1"/>
+  <rect x="80" y="220" width="640" height="4" fill="#4a4a5a" rx="1"/>
+
+  <!-- Middle row -->
+  <rect x="60" y="310" width="680" height="8" fill="#5A3720" rx="1"/>
+  <rect x="60" y="307" width="680" height="4" fill="#6B4226" rx="1"/>
+  <rect x="65" y="318" width="4" height="28" fill="#444"/>
+  <rect x="390" y="318" width="4" height="28" fill="#444"/>
+  <rect x="735" y="318" width="4" height="28" fill="#444"/>
+  <!-- Attached benches -->
+  <rect x="60" y="338" width="680" height="5" fill="#4a4a5a" rx="1"/>
+  <rect x="60" y="296" width="680" height="5" fill="#4a4a5a" rx="1"/>
+
+  <!-- Front row (closest, largest) -->
+  <rect x="40" y="400" width="720" height="10" fill="#5A3720" rx="1"/>
+  <rect x="40" y="397" width="720" height="5" fill="#6B4226" rx="1"/>
+  <rect x="45" y="410" width="5" height="32" fill="#444"/>
+  <rect x="395" y="410" width="5" height="32" fill="#444"/>
+  <rect x="750" y="410" width="5" height="32" fill="#444"/>
+  <!-- Attached benches pushed back -->
+  <rect x="40" y="440" width="720" height="6" fill="#4a4a5a" rx="1"/>
+  <!-- Front bench pushed askew (someone left quickly) -->
+  <rect x="40" y="383" width="320" height="5" fill="#4a4a5a" rx="1"/>
+  <rect x="380" y="380" width="380" height="5" fill="#4a4a5a" rx="1" transform="rotate(-2 570 382)"/>
+
+  <!-- THE ABANDONED TRAY on middle table — key narrative detail -->
+  <!-- Tray -->
+  <rect x="280" y="295" width="60" height="40" fill="#7a5a4a" rx="2"/>
+  <rect x="283" y="298" width="54" height="34" fill="#8a6a58" rx="1"/>
+  <!-- Plate on tray (half-eaten) -->
+  <circle cx="305" cy="310" r="12" fill="#FEFCE8" opacity="0.3"/>
+  <circle cx="305" cy="310" r="10" fill="#F5F0E0" opacity="0.2"/>
+  <!-- Food remains -->
+  <ellipse cx="302" cy="308" rx="4" ry="3" fill="#8a7a5a" opacity="0.2"/>
+  <!-- Glass (still has water) -->
+  <rect x="325" y="300" width="8" height="14" fill="#87CEEB" opacity="0.15" rx="1"/>
+  <rect x="326" y="305" width="6" height="8" fill="#87CEEB" opacity="0.1" rx="1"/>
+  <!-- Bread piece -->
+  <ellipse cx="335" cy="322" rx="5" ry="3" fill="#D4A843" opacity="0.2"/>
+  <!-- Fork -->
+  <rect x="290" y="318" width="2" height="18" fill="#AAA" opacity="0.3" rx="0.5" transform="rotate(15 291 327)"/>
+  <!-- Napkin crumpled -->
+  <path d="M315 325 Q320 320 325 325 Q322 328 315 325" fill="#E8E8E0" opacity="0.15"/>
+
+  <!-- Tray shadow -->
+  <ellipse cx="310" cy="340" rx="35" ry="3" fill="#1a1a2c" opacity="0.3"/>
+
+  <!-- Stacked chairs in corner (end of day cleanup) -->
+  <!-- Chair stack 1 -->
+  <g transform="translate(680,350)">
+    <rect x="0" y="0" width="30" height="3" fill="#2563EB" opacity="0.3" rx="1"/>
+    <rect x="0" y="-15" width="30" height="3" fill="#2563EB" opacity="0.25" rx="1"/>
+    <rect x="0" y="-30" width="30" height="3" fill="#2563EB" opacity="0.2" rx="1"/>
+    <rect x="0" y="-45" width="30" height="3" fill="#2563EB" opacity="0.15" rx="1"/>
+    <line x1="2" y1="3" x2="0" y2="35" stroke="#555" stroke-width="2"/>
+    <line x1="28" y1="3" x2="30" y2="35" stroke="#555" stroke-width="2"/>
+    <line x1="2" y1="-45" x2="2" y2="-60" stroke="#555" stroke-width="1.5"/>
+    <line x1="28" y1="-45" x2="28" y2="-60" stroke="#555" stroke-width="1.5"/>
+  </g>
+
+  <!-- Clock on wall -->
+  <circle cx="400" cy="85" r="18" fill="#2a2a3a" stroke="#555" stroke-width="2"/>
+  <circle cx="400" cy="85" r="15" fill="#222232"/>
+  <line x1="400" y1="85" x2="400" y2="74" stroke="#888" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="400" y1="85" x2="408" y2="82" stroke="#888" stroke-width="0.8" stroke-linecap="round"/>
+  <circle cx="400" cy="85" r="1.5" fill="#888"/>
+
+  <!-- Spill on floor -->
+  <ellipse cx="350" cy="470" rx="20" ry="5" fill="#5a5a68" opacity="0.2"/>
+
+  <!-- Crumb trail on floor -->
+  <circle cx="300" cy="460" r="1" fill="#D4A843" opacity="0.15"/>
+  <circle cx="310" cy="465" r="0.8" fill="#D4A843" opacity="0.12"/>
+  <circle cx="322" cy="458" r="0.6" fill="#D4A843" opacity="0.1"/>
+
+  <!-- Window on far wall (afternoon light) -->
+  <rect x="0" y="65" width="40" height="50" fill="#c47a8a" opacity="0.15" rx="1"/>
+  <rect x="760" y="65" width="40" height="50" fill="#c47a8a" opacity="0.12" rx="1"/>
+
+  <!-- Vignette -->
+  <rect x="0" y="0" width="800" height="600" fill="none" stroke="#0e0e18" stroke-width="60" stroke-opacity="0.3"/>
+</svg>

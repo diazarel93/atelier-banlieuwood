@@ -131,7 +131,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: "kingmaker",
     category: "vote",
     name: "Faiseur de Roi",
-    description: "Voter pour la reponse gagnante",
+    description: "Voter pour la carte retenue par le groupe",
     icon: "👑",
     tiers: [
       { tier: "bronze", threshold: 5, label: "Bronze" },
@@ -202,8 +202,8 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: "improvisateur",
     category: "expression",
-    name: "Improvisateur",
-    description: "Reponses rapides (< 30s)",
+    name: "Réactif",
+    description: "Répondre à chaque question sans hésiter",
     icon: "⚡",
     tiers: [
       { tier: "bronze", threshold: 5, label: "Bronze" },
@@ -358,8 +358,8 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: "perfectionniste",
     category: "special",
-    name: "Perfectionniste",
-    description: "Score IA max (5/5) sur une reponse",
+    name: "Persévérant",
+    description: "Recommencer ou améliorer une réponse",
     icon: "💎",
     tiers: [
       { tier: "bronze", threshold: 1, label: "Bronze" },
@@ -386,8 +386,8 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: "speed_runner",
     category: "special",
-    name: "Speed Runner",
-    description: "Finir un module en moins de 10 min",
+    name: "Assidu",
+    description: "Participer à tous les exercices d'un module",
     icon: "⏱️",
     tiers: [
       { tier: "bronze", threshold: 1, label: "Bronze" },
@@ -395,14 +395,14 @@ export const ACHIEVEMENTS: AchievementDef[] = [
       { tier: "gold", threshold: 10, label: "Or" },
     ],
     rewardType: "title",
-    rewardValue: "Eclair",
+    rewardValue: "Impliqué",
   },
   {
     id: "combo_master",
     category: "special",
-    name: "Combo Master",
-    description: "Combo de 5+ reponses correctes",
-    icon: "🎮",
+    name: "Série en cours",
+    description: "Répondre à 5+ questions d'affilée sans lâcher",
+    icon: "🔥",
     tiers: [
       { tier: "bronze", threshold: 1, label: "Bronze" },
       { tier: "silver", threshold: 5, label: "Argent" },

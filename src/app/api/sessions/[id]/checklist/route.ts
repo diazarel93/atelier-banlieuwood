@@ -17,7 +17,7 @@ export async function POST(
   const { id: sessionId } = await params;
   const parsed = await safeJson(req);
   if ("error" in parsed) return parsed.error;
-  const { studentId, selectedItems, chosenItem } = parsed.data;
+  const { studentId, selectedItems, chosenItem, sceneMarquante, deeperReflection } = parsed.data;
 
   if (!studentId || !Array.isArray(selectedItems)) {
     return NextResponse.json(
@@ -100,6 +100,8 @@ export async function POST(
         student_id: studentId,
         selected_items: selectedItems,
         chosen_item: chosenItem || null,
+        scene_marquante: sceneMarquante && typeof sceneMarquante === "string" ? sceneMarquante.trim() : null,
+        deeper_reflection: deeperReflection && typeof deeperReflection === "string" ? deeperReflection.trim() : null,
       },
       { onConflict: "session_id,student_id" }
     )

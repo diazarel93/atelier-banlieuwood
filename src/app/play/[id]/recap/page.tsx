@@ -377,7 +377,7 @@ function PitchRecap({ pitch }: { pitch: MyPitch }) {
           <p className="text-xs text-bw-muted uppercase tracking-wider mb-1">Chrono oral</p>
           <p className="text-2xl font-bold tabular-nums text-bw-heading">{pitch.chronoSeconds}s</p>
           <p className="text-xs text-bw-muted mt-1">
-            {pitch.chronoSeconds <= 60 ? "Dans le temps !" : "Un peu long, mais l'essentiel est dit."}
+            {pitch.chronoSeconds <= 30 ? "Dans le temps !" : "Un peu long, mais l'essentiel est dit."}
           </p>
         </div>
       )}

@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────
 // MODULE 12 — Construction Collective
-// 6 manches de votes anonymes pour construire le film de la classe
+// 8 manches de votes anonymes pour construire le film de la classe
 // ──────────────────────────────────────────────────────────
 
 // ── Types ─────────────────────────────────────────────────
@@ -34,6 +34,8 @@ export const MANCHES: MancheConfig[] = [
   { key: "objectif",    label: "L'Objectif",        maxCards: 4, description: "Quel objectif pour le héros ?" },
   { key: "obstacle",    label: "L'Obstacle",        maxCards: 4, description: "Quel obstacle principal ?" },
   { key: "scene",       label: "La Première Scène", maxCards: 4, description: "Comment commence le film ?" },
+  { key: "relation",    label: "La Relation",       maxCards: 4, description: "Quelle relation est au cœur de l'histoire ?" },
+  { key: "moment_fort", label: "Le Moment Fort",    maxCards: 4, description: "Quel sera le moment le plus intense du film ?" },
 ];
 
 export function getMancheConfig(manche: number): MancheConfig | undefined {
@@ -63,13 +65,19 @@ export const BANLIEUWOOD_TEMPLATES: BanlieuTemplate[] = [
   // 6 — La Première Scène
   { manche: 6, text: "Plan fixe sur une porte qui s'ouvre lentement. On entend une voix." },
   { manche: 6, text: "Travelling sur un couloir de collège vide. Une alarme sonne au loin." },
+  // 7 — La Relation
+  { manche: 7, text: "Deux amis d'enfance que tout sépare depuis la rentrée" },
+  { manche: 7, text: "Un grand frère qui veut protéger mais qui étouffe" },
+  // 8 — Le Moment Fort
+  { manche: 8, text: "Le moment où le héros dit enfin la vérité devant tout le monde" },
+  { manche: 8, text: "Une confrontation silencieuse — un regard qui dit tout" },
 ];
 
 // ── M10 Data Extraction ───────────────────────────────────
 
 interface M10Data {
   etsiResponses: { id: string; student_id: string; etsi_text: string }[];
-  personnages: { id: string; student_id: string; prenom: string; age: string | null; trait_dominant: string | null }[];
+  personnages: { id: string; student_id: string; prenom: string; trait_dominant: string | null }[];
   pitchs: { id: string; student_id: string; objectif: string; obstacle: string; pitch_text: string }[];
   // QCM responses come from the standard responses table for M10 S1 P2
   qcmResponses?: { student_id: string; text: string }[];
@@ -101,7 +109,7 @@ export function extractCandidates(manche: number, m10: M10Data): Candidate[] {
       return m10.personnages
         .filter((p) => p.prenom)
         .map((p) => ({
-          text: `${p.prenom}${p.age ? `, ${p.age}` : ""}${p.trait_dominant ? ` — ${p.trait_dominant}` : ""}`,
+          text: `${p.prenom}${p.trait_dominant ? ` — ${p.trait_dominant}` : ""}`,
           studentId: p.student_id,
         }));
 
@@ -128,6 +136,27 @@ export function extractCandidates(manche: number, m10: M10Data): Candidate[] {
           const firstSentence = p.pitch_text.split(/[.!?]/)[0]?.trim() || p.pitch_text.slice(0, 100);
           return { text: firstSentence.slice(0, 120), studentId: p.student_id };
         });
+
+    case 7: // La Relation — from personnages (cross-references: pairs of characters)
+      // Use pitch_text to extract relationship dynamics, fallback to personnage pairs
+      return m10.pitchs
+        .filter((p) => p.pitch_text && p.pitch_text.length > 20)
+        .map((p) => {
+          // Extract a relationship-oriented sentence from the pitch
+          const sentences = p.pitch_text.split(/[.!?]/).filter((s) => s.trim().length > 10);
+          const relSentence = sentences.find((s) =>
+            /ami|frère|sœur|famille|rival|ennemi|confiance|trahis|protég|lien|relation|ensemble/i.test(s)
+          ) || sentences[1] || sentences[0];
+          return { text: (relSentence?.trim() || p.pitch_text).slice(0, 120), studentId: p.student_id };
+        });
+
+    case 8: // Le Moment Fort — from etsi_text (most dramatic "et si" scenarios)
+      return m10.etsiResponses
+        .filter((r) => r.etsi_text && r.etsi_text.length > 15)
+        .map((r) => ({
+          text: r.etsi_text.slice(0, 120),
+          studentId: r.student_id,
+        }));
 
     default:
       return [];
