@@ -32,7 +32,12 @@ export function ProjectionOverlay({
   onClose,
 }: ProjectionOverlayProps) {
   return (
-    <div className="fixed inset-0 z-50 bg-[#0a0c14] text-white flex flex-col items-center justify-center">
+    <div
+      className="fixed inset-0 z-50 bg-[#0a0c14] text-white flex flex-col items-center justify-center"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mode projection"
+    >
       <button
         onClick={onClose}
         className="absolute top-4 right-4 text-sm text-white/50 hover:text-white px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"

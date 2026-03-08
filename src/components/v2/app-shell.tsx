@@ -81,7 +81,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           </Link>
 
           {/* Nav links */}
-          <nav className="flex items-center gap-1">
+          <nav aria-label="Navigation principale" className="flex items-center gap-1">
             {NAV_ITEMS.map((item) => {
               const isActive =
                 item.href === "/v2"
@@ -92,6 +92,8 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={isActive ? "page" : undefined}
+                  aria-label={item.label}
                   className={cn(
                     "flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     isActive
@@ -99,7 +101,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                       : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
                   )}
                 >
-                  <span className={cn(isActive ? "text-bw-primary" : "text-bw-muted")}>
+                  <span className={cn(isActive ? "text-bw-primary" : "text-bw-muted")} aria-hidden="true">
                     {item.icon}
                   </span>
                   <span className="hidden md:inline">{item.label}</span>
@@ -115,9 +117,10 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <Link
               href="/v2/seances/new"
+              aria-label="Créer une nouvelle séance"
               className="inline-flex items-center gap-1.5 rounded-lg bg-bw-primary px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-bw-primary-500 btn-glow"
             >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                 <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
               <span className="hidden sm:inline">Nouvelle séance</span>

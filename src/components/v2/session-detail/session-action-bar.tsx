@@ -29,6 +29,7 @@ export function SessionActionBar({
             stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
+            aria-hidden="true"
           >
             <polygon points="5 3 19 12 5 21 5 3" />
           </svg>
@@ -48,6 +49,7 @@ export function SessionActionBar({
           stroke="currentColor"
           strokeWidth="2"
           strokeLinecap="round"
+          aria-hidden="true"
         >
           <rect x="2" y="3" width="20" height="14" rx="2" />
           <path d="M8 21h8M12 17v4" />
@@ -68,6 +70,7 @@ export function SessionActionBar({
             stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
+            aria-hidden="true"
           >
             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
             <polyline points="14 2 14 8 20 8" />

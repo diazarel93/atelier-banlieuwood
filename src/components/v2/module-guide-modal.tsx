@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 import type { ModuleGuide } from "@/lib/guide-data";
 import type { ExerciseEntry } from "@/lib/exercise-catalog";
@@ -22,6 +22,8 @@ export function ModuleGuideModal({
   guide,
   onClose,
 }: ModuleGuideModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+
   // Close on Escape
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
@@ -31,20 +33,50 @@ export function ModuleGuideModal({
     return () => document.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
-  // Prevent body scroll
+  // Prevent body scroll + focus trap
   useEffect(() => {
     document.body.style.overflow = "hidden";
+    const prev = document.activeElement as HTMLElement | null;
+    modalRef.current?.focus();
     return () => {
       document.body.style.overflow = "";
+      prev?.focus();
     };
   }, []);
 
+  // Trap focus inside modal
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key !== "Tab" || !modalRef.current) return;
+    const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center">
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="module-guide-title"
+      ref={modalRef}
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/30 backdrop-blur-sm"
         onClick={onClose}
+        aria-label="Fermer la modale"
       />
 
       {/* Modal */}
@@ -53,7 +85,7 @@ export function ModuleGuideModal({
         <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-[var(--color-bw-border)] px-6 py-4 flex items-start justify-between rounded-t-2xl">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-sm">{exercise.phaseEmoji}</span>
+              <span className="text-sm" aria-hidden="true">{exercise.phaseEmoji}</span>
               <span
                 className="text-[10px] font-semibold uppercase tracking-wide"
                 style={{ color: exercise.phaseColor }}
@@ -61,7 +93,7 @@ export function ModuleGuideModal({
                 {exercise.phaseLabel}
               </span>
             </div>
-            <h2 className="text-lg font-bold text-bw-heading leading-snug">
+            <h2 id="module-guide-title" className="text-lg font-bold text-bw-heading leading-snug">
               {exercise.title}
             </h2>
             {exercise.subtitle && (
@@ -72,6 +104,7 @@ export function ModuleGuideModal({
           </div>
           <button
             onClick={onClose}
+            aria-label="Fermer"
             className="shrink-0 ml-4 p-2 rounded-lg text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors cursor-pointer"
           >
             <svg
@@ -82,6 +115,7 @@ export function ModuleGuideModal({
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
+              aria-hidden="true"
             >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
@@ -100,6 +134,7 @@ export function ModuleGuideModal({
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
+                aria-hidden="true"
               >
                 <circle cx="12" cy="12" r="10" />
                 <path d="M12 6v6l4 2" />

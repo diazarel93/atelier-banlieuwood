@@ -61,6 +61,7 @@ export function StudentListCard({
               stroke="#FF6B35"
               strokeWidth="2"
               strokeLinecap="round"
+              aria-hidden="true"
             >
               <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
               <circle cx="9" cy="7" r="4" />
@@ -77,9 +78,9 @@ export function StudentListCard({
             onClick={() => activateDemo.mutate()}
           >
             {activateDemo.isPending ? (
-              <span className="inline-block w-3.5 h-3.5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+              <span className="inline-block w-3.5 h-3.5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" aria-label="Chargement" />
             ) : (
-              <span>🎮</span>
+              <span aria-hidden="true">🎮</span>
             )}
             Tester en mode démo
           </button>
@@ -147,7 +148,7 @@ export function StudentListCard({
             disabled={activateDemo.isPending}
             onClick={() => activateDemo.mutate()}
           >
-            🎮{" "}
+            <span aria-hidden="true">🎮</span>{" "}
             {activateDemo.isPending
               ? "Ajout..."
               : "Ajouter des élèves virtuels"}

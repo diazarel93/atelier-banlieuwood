@@ -38,10 +38,26 @@ export function GlassCardV2({
   variant,
   hover,
   children,
+  onClick,
   ...props
 }: GlassCardV2Props) {
+  const isClickable = !!onClick;
   return (
-    <div className={cn(glassCardVariants({ variant, hover }), className)} {...props}>
+    <div
+      className={cn(glassCardVariants({ variant, hover }), className)}
+      onClick={onClick}
+      {...(isClickable && {
+        role: "button",
+        tabIndex: 0,
+        onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onClick?.(e as unknown as React.MouseEvent<HTMLDivElement>);
+          }
+        },
+      })}
+      {...props}
+    >
       {children}
     </div>
   );

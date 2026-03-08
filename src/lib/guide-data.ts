@@ -1126,6 +1126,175 @@ const MODULE_GUIDES: ModuleGuide[] = [
       { name: "Synthese", timing: "3 min", instruction: "Relire les 8 gagnants. Le film de la classe est ne !" },
     ],
   },
+  // ── CINÉ-DÉBAT ──
+  {
+    moduleId: "m11a",
+    title: "L'Art de Raconter",
+    objectifPedagogique:
+      "Comprendre les fondamentaux de la narration cinématographique : comment un film raconte une histoire par l'image, le son, le montage et la mise en scène. Développer l'esprit critique face aux choix artistiques.",
+    socleCommun: ["D1", "D3", "D5"],
+    competences: [
+      "Identifier les éléments narratifs d'un extrait de film (personnages, conflit, enjeu)",
+      "Analyser les choix de mise en scène et leur impact sur le spectateur",
+      "Argumenter ses préférences esthétiques en s'appuyant sur des exemples concrets",
+      "Comparer différentes approches narratives (linéaire, flashback, ellipse)",
+    ],
+    introADire:
+      "Aujourd'hui on va regarder des extraits de films et comprendre COMMENT ils racontent une histoire. Pas juste ce qui se passe, mais comment le réalisateur nous fait ressentir les choses. On va débattre ensemble — il n'y a pas de bonne réponse, juste des regards différents.",
+    aQuoiEtreAttentif: [
+      "Élèves qui résument l'histoire au lieu d'analyser la forme — recentrer sur le 'comment'",
+      "Élèves intimidés par le cinéma 'classique' — valoriser tous les goûts, du blockbuster au film d'auteur",
+      "Le débat peut devenir émotionnel — cadrer sans censurer les réactions",
+    ],
+    commentRelancer: [
+      "Tu as vu comment la caméra bouge dans cette scène ? Ça te fait ressentir quoi ?",
+      "Si tu devais refaire cette scène autrement, tu changerais quoi ?",
+      "Ferme les yeux et réécoute — qu'est-ce que le son raconte tout seul ?",
+    ],
+    commentChallenger: [
+      "Ce choix de mise en scène, c'est un coup de génie ou une facilité ? Argumente.",
+      "Si on enlevait la musique, est-ce que la scène fonctionnerait toujours ?",
+    ],
+    conseils: [
+      "Projeter les extraits en grand avec un bon son — l'immersion compte",
+      "Faire un premier visionnage 'brut' puis un second où on décortique",
+      "Noter les réactions spontanées au tableau avant de structurer le débat",
+      "Varier les genres : pas que du drame, aussi de la comédie et de l'animation",
+    ],
+    duration: "~25 min",
+    phases: [
+      { name: "Visionnage", timing: "5 min", instruction: "Projeter l'extrait sans consigne. Laisser les élèves réagir." },
+      { name: "Premières impressions", timing: "5 min", instruction: "Tour de table rapide : une émotion, un mot, une image qui reste." },
+      { name: "Analyse guidée", timing: "8 min", instruction: "Questions ciblées sur la mise en scène, le son, le cadrage. Les élèves répondent sur leurs écrans." },
+      { name: "Débat", timing: "7 min", instruction: "Confronter les analyses. Le prof projette des réponses contrastées." },
+    ],
+  },
+  {
+    moduleId: "m11b",
+    title: "La Conscience",
+    objectifPedagogique:
+      "Explorer les mécanismes de l'émotion au cinéma : pourquoi une scène fait rire, pleurer, frissonner. Développer la conscience des techniques de manipulation émotionnelle dans les médias.",
+    socleCommun: ["D1", "D3", "D5"],
+    competences: [
+      "Identifier les techniques de construction émotionnelle (musique, silence, rythme, jeu d'acteur)",
+      "Exprimer et analyser ses propres réactions émotionnelles face à un extrait",
+      "Distinguer émotion authentique et manipulation émotionnelle",
+      "Développer un regard critique sur les médias audiovisuels",
+    ],
+    introADire:
+      "Est-ce que vous avez déjà pleuré devant un film ? Ou eu super peur ? Aujourd'hui on va comprendre POURQUOI. Les réalisateurs ont des outils très précis pour nous faire ressentir des choses. On va les décrypter ensemble.",
+    aQuoiEtreAttentif: [
+      "Élèves qui ont honte de montrer leurs émotions — normaliser : les pros du cinéma VEULENT vous faire réagir",
+      "Risque de moquerie si quelqu'un dit avoir pleuré — poser le cadre de bienveillance au départ",
+      "Ne pas réduire l'émotion à de la 'manipulation' — c'est aussi de l'art",
+    ],
+    commentRelancer: [
+      "À quel moment exactement tu as senti quelque chose ? Qu'est-ce qui se passait à l'écran ?",
+      "La musique, elle raconte quoi dans cette scène ?",
+      "Si le personnage ne disait rien, tu comprendrais quand même ce qu'il ressent ?",
+    ],
+    commentChallenger: [
+      "C'est de l'émotion sincère ou de la manipulation ? Où est la limite ?",
+      "Est-ce qu'une publicité utilise les mêmes techniques qu'un film ? C'est pareil ou pas ?",
+    ],
+    conseils: [
+      "Choisir des extraits avec des émotions variées (joie, peur, tristesse, colère)",
+      "Faire un 'avant/après' : montrer la scène avec et sans musique",
+      "Relier aux réseaux sociaux : les mêmes techniques sont utilisées dans les vidéos courtes",
+      "Terminer sur une note positive — l'émotion au cinéma c'est un super-pouvoir, pas un piège",
+    ],
+    duration: "~25 min",
+    phases: [
+      { name: "Extrait émotionnel", timing: "5 min", instruction: "Projeter un extrait à forte charge émotionnelle. Observer les réactions." },
+      { name: "Réactions à chaud", timing: "5 min", instruction: "Les élèves écrivent ce qu'ils ont ressenti. Pas d'analyse, juste l'émotion brute." },
+      { name: "Décryptage", timing: "8 min", instruction: "Revisionner en décortiquant : musique, cadrage, rythme, jeu d'acteur." },
+      { name: "Débat éthique", timing: "7 min", instruction: "Émotion vs manipulation : où est la frontière ? Lien avec les médias du quotidien." },
+    ],
+  },
+  {
+    moduleId: "m11c",
+    title: "Héros & Anti-Héros",
+    objectifPedagogique:
+      "Questionner les figures de héros et d'antagonistes dans le cinéma. Développer la nuance morale et la capacité à comprendre des points de vue différents du sien.",
+    socleCommun: ["D1", "D3", "D5"],
+    competences: [
+      "Distinguer héros classique, anti-héros et antagoniste complexe",
+      "Analyser les motivations d'un personnage au-delà du bien/mal",
+      "Argumenter pour ou contre un personnage en s'appuyant sur le film",
+      "Développer l'empathie en comprenant des perspectives opposées",
+    ],
+    introADire:
+      "C'est quoi un héros ? Quelqu'un de courageux ? Quelqu'un de parfait ? Et un méchant, c'est toujours vraiment méchant ? Aujourd'hui on va voir que c'est beaucoup plus compliqué que ça. Préparez-vous à changer d'avis.",
+    aQuoiEtreAttentif: [
+      "Vision manichéenne (gentil/méchant) — pousser vers la nuance sans imposer",
+      "Identification trop forte à un personnage — rappeler que c'est de la fiction",
+      "Débats passionnés possibles — canaliser l'énergie vers l'argumentation",
+    ],
+    commentRelancer: [
+      "Pourquoi ce personnage fait ce qu'il fait ? C'est quoi sa raison profonde ?",
+      "Tu te mettrais à sa place, tu ferais pareil ? Pourquoi ?",
+      "Est-ce qu'il y a un moment où le 'méchant' avait raison ?",
+    ],
+    commentChallenger: [
+      "Le sacrifice du héros, c'est du courage ou de la folie ? Défends ta position.",
+      "Si le film était raconté du point de vue du 'méchant', ça changerait quoi ?",
+    ],
+    conseils: [
+      "Choisir des films avec des antagonistes complexes (pas des méchants caricaturaux)",
+      "Proposer un exercice de 'retournement' : défendre le personnage qu'on déteste",
+      "Relier aux histoires réelles : les 'héros' du quotidien, ça ressemble à quoi ?",
+      "Insister sur l'écoute : on peut ne pas être d'accord ET respecter l'argument de l'autre",
+    ],
+    duration: "~25 min",
+    phases: [
+      { name: "Extraits contrastés", timing: "6 min", instruction: "Montrer un héros classique puis un anti-héros. Laisser réagir." },
+      { name: "Positionnement", timing: "5 min", instruction: "Les élèves votent : héros ou anti-héros, lequel est le plus intéressant ? Justifier." },
+      { name: "L'antagoniste", timing: "7 min", instruction: "Montrer un méchant complexe. Les élèves analysent ses motivations." },
+      { name: "Débat final", timing: "7 min", instruction: "Le méchant avait-il raison ? Confronter les points de vue, forcer la nuance." },
+    ],
+  },
+  {
+    moduleId: "m11d",
+    title: "Les Coulisses",
+    objectifPedagogique:
+      "Découvrir les métiers et les étapes de fabrication d'un film. Comprendre les contraintes techniques, budgétaires et humaines. Réfléchir à l'impact de l'IA et des nouvelles technologies sur le cinéma.",
+    socleCommun: ["D1", "D3", "D5"],
+    competences: [
+      "Identifier les principaux métiers du cinéma et leurs rôles",
+      "Comprendre les étapes de production d'un film (pré-prod, tournage, post-prod)",
+      "Analyser l'impact des contraintes (budget, temps, technologie) sur le résultat final",
+      "Débattre de manière argumentée sur l'IA et l'avenir de la création",
+    ],
+    introADire:
+      "Derrière chaque film il y a des dizaines, des centaines de personnes. Aujourd'hui on va ouvrir le capot et regarder comment ça marche vraiment. Et on va parler d'un truc qui change tout : l'intelligence artificielle. Est-ce que demain, une IA pourrait faire un film ?",
+    aQuoiEtreAttentif: [
+      "Élèves qui pensent que 'tout est fait par ordinateur' — montrer le travail humain",
+      "Fascination ou peur de l'IA — garder un débat nuancé, pas techno-enthousiaste ni technophobe",
+      "Le budget peut sembler abstrait — utiliser des comparaisons concrètes",
+    ],
+    commentRelancer: [
+      "D'après toi, le métier le plus important sur un tournage c'est lequel ? Pourquoi ?",
+      "Si tu avais un budget illimité, qu'est-ce que tu ajouterais à ton film ?",
+      "L'IA peut écrire un scénario — mais est-ce que ce serait un BON scénario ?",
+    ],
+    commentChallenger: [
+      "Un film tourné au téléphone, ça peut être aussi bien qu'un film à 100 millions ?",
+      "Si l'IA fait tout le travail technique, le réalisateur, il sert encore à quoi ?",
+    ],
+    conseils: [
+      "Montrer des making-of courts et percutants (pas trop techniques)",
+      "Comparer un film à gros budget et un film indépendant — le budget fait-il la qualité ?",
+      "Faire un mini-quiz interactif sur les métiers du cinéma",
+      "Le débat IA est le point culminant — bien le cadrer avec des exemples concrets (deepfakes, films IA)",
+    ],
+    duration: "~25 min",
+    phases: [
+      { name: "Making-of", timing: "5 min", instruction: "Montrer un extrait de making-of. Les élèves identifient les métiers visibles." },
+      { name: "Quiz métiers", timing: "5 min", instruction: "Questions interactives sur les métiers du cinéma. Réponses sur écran." },
+      { name: "Budget challenge", timing: "7 min", instruction: "Comparer deux films (gros/petit budget). Lequel est le meilleur ? Pourquoi ?" },
+      { name: "Débat IA", timing: "8 min", instruction: "L'IA va-t-elle remplacer les créateurs ? Les élèves argumentent et votent." },
+    ],
+  },
 ];
 
 // ——————————————————————————————————————————————————————

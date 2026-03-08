@@ -71,6 +71,7 @@ export function PreSessionChecklistV2({
     return (
       <button
         onClick={() => setMinimized(false)}
+        aria-label="Ouvrir la check-list pré-séance"
         className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg cursor-pointer transition-colors ${
           allChecked
             ? "bg-emerald-500 text-white"
@@ -99,6 +100,7 @@ export function PreSessionChecklistV2({
           <div className="flex items-center gap-1">
             <button
               onClick={() => setMinimized(true)}
+              aria-label="Minimiser la check-list"
               className="p-1.5 rounded-lg text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-all cursor-pointer"
             >
               <svg
@@ -109,12 +111,14 @@ export function PreSessionChecklistV2({
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
+                aria-hidden="true"
               >
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
             </button>
             <button
               onClick={onDismiss}
+              aria-label="Fermer la check-list"
               className="p-1.5 rounded-lg text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-all cursor-pointer"
             >
               <svg
@@ -125,6 +129,7 @@ export function PreSessionChecklistV2({
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
+                aria-hidden="true"
               >
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />

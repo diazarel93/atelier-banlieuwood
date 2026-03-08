@@ -47,7 +47,7 @@ function ModuleRow({
             </h3>
             <div className="flex items-center gap-2 text-[11px] text-bw-muted">
               <span className="flex items-center gap-1">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
                 </svg>
                 {exercise.duration}
@@ -115,7 +115,7 @@ function ModuleRow({
         </div>
 
         {/* Arrow */}
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="shrink-0 text-bw-muted mt-1">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="shrink-0 text-bw-muted mt-1" aria-hidden="true">
           <polyline points="9 18 15 12 9 6" />
         </svg>
       </div>
@@ -218,12 +218,54 @@ export default function BibliothequePage() {
         </div>
       </div>
 
+      {/* Methodology section */}
+      <section aria-label="Méthodologie pédagogique" className="mb-8">
+        <GlassCardV2 variant="flat" className="p-6">
+          <h2 className="text-sm font-bold text-bw-heading uppercase tracking-wide mb-4">
+            Notre méthodologie
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold" aria-hidden="true">1</span>
+                <h3 className="text-sm font-semibold text-bw-heading">Approche par le cinéma</h3>
+              </div>
+              <p className="text-xs text-bw-muted leading-relaxed">
+                Le cinéma comme vecteur d&apos;apprentissage : chaque module utilise la narration,
+                l&apos;image et la création pour ancrer les compétences dans une pratique concrète et motivante.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-bold" aria-hidden="true">2</span>
+                <h3 className="text-sm font-semibold text-bw-heading">Progression structurée</h3>
+              </div>
+              <p className="text-xs text-bw-muted leading-relaxed">
+                Un parcours en phases progressives : de l&apos;écriture créative au débat critique,
+                chaque phase s&apos;appuie sur les acquis précédents pour développer des compétences transversales.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-sm font-bold" aria-hidden="true">3</span>
+                <h3 className="text-sm font-semibold text-bw-heading">Alignement institutionnel</h3>
+              </div>
+              <p className="text-xs text-bw-muted leading-relaxed">
+                Chaque module est adossé au Socle Commun (D1 Langages, D3 Citoyenneté, D5 Culture) :
+                compétences visées, objectifs pédagogiques et étapes de déroulé sont documentés et traçables.
+              </p>
+            </div>
+          </div>
+        </GlassCardV2>
+      </section>
+
       {/* Search */}
       <div className="mb-6">
         <div className="relative max-w-sm">
           <svg
             className="absolute left-3 top-1/2 -translate-y-1/2 text-bw-muted"
             width="14" height="14" viewBox="0 0 14 14" fill="none"
+            aria-hidden="true"
           >
             <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.5" />
             <path d="M10 10l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -231,6 +273,7 @@ export default function BibliothequePage() {
           <input
             type="text"
             placeholder="Rechercher un module..."
+            aria-label="Rechercher un module"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="h-9 w-full rounded-lg border border-[var(--color-bw-border)] bg-white pl-9 pr-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
@@ -272,6 +315,8 @@ export default function BibliothequePage() {
                 hover={!isExpanded}
                 className="cursor-pointer"
                 onClick={() => setExpandedPhase(isExpanded ? null : phase.id)}
+                aria-expanded={isExpanded}
+                aria-label={`Phase ${phase.label} — ${exercises.length} module${exercises.length > 1 ? "s" : ""}`}
               >
                 <div className="p-5">
                   <div className="flex items-center gap-4">
@@ -321,6 +366,7 @@ export default function BibliothequePage() {
                         width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" strokeWidth="2" strokeLinecap="round"
                         className={`text-bw-muted transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+                        aria-hidden="true"
                       >
                         <polyline points="6 9 12 15 18 9" />
                       </svg>
