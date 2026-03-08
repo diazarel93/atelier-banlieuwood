@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
   // Get all students from those sessions
   const { data: students, error: studError } = await supabase
     .from("students")
-    .select("id, display_name, avatar, profile_id, session_id, is_active, created_at")
+    .select("id, display_name, avatar, profile_id, session_id, is_active, joined_at")
     .in("session_id", sessionIds);
 
   if (studError) {
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
   // Get scores for those sessions
   const { data: scores } = await supabase
     .from("session_oie_scores")
-    .select("student_id, o_score, i_score, e_score, response_count")
+    .select("student_id, observation, imagination, expression, response_count")
     .in("session_id", sessionIds);
 
   // Group by profile_id (or student id if no profile)
@@ -76,6 +76,7 @@ export async function GET(req: NextRequest) {
   for (const student of students || []) {
     const profileId = student.profile_id || student.id;
     const existing = profileMap.get(profileId);
+    const joinedAt = student.joined_at || new Date().toISOString();
 
     const studentScores = (scores || []).filter(
       (sc) => sc.student_id === student.id
@@ -87,18 +88,18 @@ export async function GET(req: NextRequest) {
 
     if (existing) {
       existing.sessionCount += 1;
-      if (student.created_at > existing.lastActiveAt) {
-        existing.lastActiveAt = student.created_at;
+      if (joinedAt > existing.lastActiveAt) {
+        existing.lastActiveAt = joinedAt;
         existing.displayName = student.display_name;
         existing.avatar = student.avatar;
       }
       existing.totalResponses += totalResponses;
       for (const sc of studentScores) {
-        existing.oScores.push(sc.o_score);
-        existing.iScores.push(sc.i_score);
-        existing.eScores.push(sc.e_score);
+        existing.oScores.push(sc.observation ?? 0);
+        existing.iScores.push(sc.imagination ?? 0);
+        existing.eScores.push(sc.expression ?? 0);
         existing.engagementScores.push(
-          Math.min(100, Math.round((sc.response_count / 20) * 100))
+          Math.min(100, Math.round(((sc.response_count || 0) / 20) * 100))
         );
       }
     } else {
@@ -107,13 +108,13 @@ export async function GET(req: NextRequest) {
         displayName: student.display_name,
         avatar: student.avatar,
         sessionCount: 1,
-        lastActiveAt: student.created_at,
+        lastActiveAt: joinedAt,
         totalResponses,
-        oScores: studentScores.map((sc) => sc.o_score),
-        iScores: studentScores.map((sc) => sc.i_score),
-        eScores: studentScores.map((sc) => sc.e_score),
+        oScores: studentScores.map((sc) => sc.observation ?? 0),
+        iScores: studentScores.map((sc) => sc.imagination ?? 0),
+        eScores: studentScores.map((sc) => sc.expression ?? 0),
         engagementScores: studentScores.map((sc) =>
-          Math.min(100, Math.round((sc.response_count / 20) * 100))
+          Math.min(100, Math.round(((sc.response_count || 0) / 20) * 100))
         ),
       });
     }

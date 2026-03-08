@@ -47,8 +47,8 @@ export async function POST(
   const { data: note, error } = await supabase
     .from("student_notes")
     .insert({
-      student_profile_id: profileId,
-      teacher_id: user.id,
+      profile_id: profileId,
+      facilitator_id: user.id,
       note_type: noteType,
       content,
       session_id: sessionId || null,
@@ -87,8 +87,8 @@ export async function DELETE(
     .from("student_notes")
     .delete()
     .eq("id", noteId)
-    .eq("student_profile_id", profileId)
-    .eq("teacher_id", user.id);
+    .eq("profile_id", profileId)
+    .eq("facilitator_id", user.id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

@@ -103,7 +103,7 @@ export async function GET(req: NextRequest) {
   if (doneSessionIds.length > 0) {
     const { data: students } = await supabase
       .from("students")
-      .select("id, display_name, avatar, profile_id, session_id, created_at")
+      .select("id, display_name, avatar, profile_id, session_id, joined_at")
       .in("session_id", doneSessionIds);
 
     const studentIds = (students || []).map((s) => s.id);
@@ -111,14 +111,15 @@ export async function GET(req: NextRequest) {
     if (studentIds.length > 0) {
       const { data: scores } = await supabase
         .from("session_oie_scores")
-        .select("student_id, session_id, o_score, i_score, e_score, response_count, created_at")
+        .select("student_id, session_id, observation, imagination, expression, response_count, computed_at")
         .in("student_id", studentIds)
-        .order("created_at", { ascending: true });
+        .order("computed_at", { ascending: true });
 
       // Build per-profile risk data
       const profileMap = new Map<string, StudentForRisk>();
       for (const student of students || []) {
         const pid = student.profile_id || student.id;
+        const joinedAt = student.joined_at || new Date().toISOString();
         const studentScores = (scores || []).filter(
           (sc) => sc.student_id === student.id
         );
@@ -129,24 +130,24 @@ export async function GET(req: NextRequest) {
         const previous = studentScores.length > 1 ? studentScores[studentScores.length - 2] : null;
 
         const existing = profileMap.get(pid);
-        if (!existing || student.created_at > existing.lastActiveAt) {
+        if (!existing || joinedAt > existing.lastActiveAt) {
           profileMap.set(pid, {
             profileId: pid,
             displayName: student.display_name,
             avatar: student.avatar,
             scores: {
-              comprehension: Math.round(latest.o_score),
-              creativite: Math.round(latest.i_score),
-              expression: Math.round(latest.e_score),
-              engagement: Math.min(100, Math.round((latest.response_count / 20) * 100)),
+              comprehension: Math.round(latest.observation ?? 0),
+              creativite: Math.round(latest.imagination ?? 0),
+              expression: Math.round(latest.expression ?? 0),
+              engagement: Math.min(100, Math.round(((latest.response_count || 0) / 20) * 100)),
             },
-            lastActiveAt: student.created_at,
+            lastActiveAt: joinedAt,
             previousScores: previous
               ? {
-                  comprehension: Math.round(previous.o_score),
-                  creativite: Math.round(previous.i_score),
-                  expression: Math.round(previous.e_score),
-                  engagement: Math.min(100, Math.round((previous.response_count / 20) * 100)),
+                  comprehension: Math.round(previous.observation ?? 0),
+                  creativite: Math.round(previous.imagination ?? 0),
+                  expression: Math.round(previous.expression ?? 0),
+                  engagement: Math.min(100, Math.round(((previous.response_count || 0) / 20) * 100)),
                 }
               : null,
           });
