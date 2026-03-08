@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 
 const QRCodeSVG = dynamic(
@@ -31,6 +32,14 @@ export function ProjectionOverlay({
   activeStudents,
   onClose,
 }: ProjectionOverlayProps) {
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [onClose]);
+
   return (
     <div
       className="fixed inset-0 z-50 bg-[#0a0c14] text-white flex flex-col items-center justify-center"

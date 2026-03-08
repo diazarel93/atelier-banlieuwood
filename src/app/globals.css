@@ -1182,3 +1182,41 @@ html, body {
     display: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   PRINT STYLES — results & fiche de cours
+   ═══════════════════════════════════════════════════════════════ */
+@media print {
+  /* Hide non-essential UI */
+  header, nav, .btn-glow, button, a[href="/v2/seances"],
+  [aria-label="Navigation principale"],
+  [aria-label="Navigation mobile"] {
+    display: none !important;
+  }
+
+  /* Reset backgrounds for print */
+  body, .theme-lavande {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Glass cards → simple bordered boxes */
+  [class*="glass-card"], [class*="GlassCard"] {
+    background: white !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: 1px solid #e5e7eb !important;
+    break-inside: avoid;
+  }
+
+  /* Ensure text is readable */
+  .text-bw-heading { color: #111 !important; }
+  .text-bw-muted { color: #555 !important; }
+  .text-bw-text { color: #333 !important; }
+
+  /* Full width, no padding constraints */
+  .max-w-\\[1440px\\] { max-width: 100% !important; }
+
+  /* Remove shimmer / animations */
+  .shimmer, .animate-spin, .animate-pulse { animation: none !important; }
+}

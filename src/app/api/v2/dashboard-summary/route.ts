@@ -19,7 +19,7 @@ export async function GET() {
   // Fetch all sessions for this facilitator
   const { data: sessions, error } = await supabase
     .from("sessions")
-    .select("id, title, status, level, template, created_at, students(id)")
+    .select("id, title, status, level, template, created_at, scheduled_at, class_label, completed_modules, students(id)")
     .eq("facilitator_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -59,6 +59,15 @@ export async function GET() {
     activeStatuses.includes(s.status)
   ).length;
 
+  // Aggregate completed module IDs across all sessions
+  const completedModuleIds = [
+    ...new Set(
+      allSessions.flatMap(
+        (s) => ((s as Record<string, unknown>).completed_modules as string[]) || []
+      )
+    ),
+  ];
+
   // Dates that have sessions (for calendar dots)
   const sessionDates = [
     ...new Set(
@@ -78,6 +87,7 @@ export async function GET() {
       totalStudents,
     },
     sessionDates,
+    completedModuleIds,
   });
 }
 

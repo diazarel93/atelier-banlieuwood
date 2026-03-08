@@ -1,15 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
+import { motion } from "motion/react";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 import type { ModuleGuide } from "@/lib/guide-data";
 import type { ExerciseEntry } from "@/lib/exercise-catalog";
-
-const SOCLE_COLORS: Record<string, { bg: string; text: string }> = {
-  D1: { bg: "#3B82F620", text: "#3B82F6" },
-  D3: { bg: "#10B98120", text: "#10B981" },
-  D5: { bg: "#8B5CF620", text: "#8B5CF6" },
-};
+import { SOCLE_COLORS } from "@/lib/socle-colors";
 
 interface ModuleGuideModalProps {
   exercise: ExerciseEntry;
@@ -73,14 +70,24 @@ export function ModuleGuideModal({
       onKeyDown={handleKeyDown}
     >
       {/* Backdrop */}
-      <div
+      <motion.div
         className="absolute inset-0 bg-black/30 backdrop-blur-sm"
         onClick={onClose}
         aria-label="Fermer la modale"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
       />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto mt-12 mb-8 mx-4 bg-white rounded-2xl border border-[var(--color-bw-border)] shadow-2xl">
+      <motion.div
+        className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto mt-12 mb-8 mx-4 bg-white rounded-2xl border border-[var(--color-bw-border)] shadow-2xl"
+        initial={{ opacity: 0, y: 24, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 24, scale: 0.96 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+      >
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-[var(--color-bw-border)] px-6 py-4 flex items-start justify-between rounded-t-2xl">
           <div className="flex-1 min-w-0">
@@ -350,8 +357,22 @@ export function ModuleGuideModal({
               )}
             </>
           )}
+
+          {/* CTA */}
+          <div className="pt-2">
+            <Link
+              href="/v2/seances/new"
+              onClick={onClose}
+              className="flex items-center justify-center gap-2 w-full rounded-xl bg-bw-primary py-3 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              Créer une séance avec ce module
+            </Link>
+          </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

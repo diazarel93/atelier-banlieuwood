@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
 import { DatePicker } from "./date-picker";
@@ -75,6 +76,7 @@ export function SessionCreateWizard() {
       toast.success("Séance créée !");
       router.push(`/v2/seances/${session.id}/prepare`);
     } catch {
+      toast.error("Erreur lors de la création de la séance");
       setSaving(false);
     }
   }
@@ -115,10 +117,18 @@ export function SessionCreateWizard() {
         ))}
       </div>
 
-      <GlassCardV2 className="p-6">
+      <GlassCardV2 className="p-6 overflow-hidden">
+        <AnimatePresence mode="wait">
         {/* Step 0: Basic info */}
         {step === 0 && (
-          <div className="flex flex-col gap-4">
+          <motion.div
+            key="step-0"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col gap-4"
+          >
             <h2 className="text-lg font-bold text-bw-heading">
               Créer une séance
             </h2>
@@ -131,6 +141,7 @@ export function SessionCreateWizard() {
                 value={data.title}
                 onChange={(e) => update({ title: e.target.value })}
                 placeholder="Ex: Séance 3 - Imagination"
+                enterKeyHint="next"
                 className="h-10 rounded-lg border border-[var(--color-bw-border)] bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
                 autoFocus
               />
@@ -144,6 +155,7 @@ export function SessionCreateWizard() {
                 value={data.classLabel}
                 onChange={(e) => update({ classLabel: e.target.value })}
                 placeholder="Ex: 4ème B"
+                enterKeyHint="next"
                 className="h-10 rounded-lg border border-[var(--color-bw-border)] bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
               />
             </div>
@@ -174,12 +186,19 @@ export function SessionCreateWizard() {
               value={data.scheduledAt}
               onChange={(v) => update({ scheduledAt: v })}
             />
-          </div>
+          </motion.div>
         )}
 
         {/* Step 1: Options */}
         {step === 1 && (
-          <div className="flex flex-col gap-4">
+          <motion.div
+            key="step-1"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col gap-4"
+          >
             <h2 className="text-lg font-bold text-bw-heading">
               Options
             </h2>
@@ -214,15 +233,23 @@ export function SessionCreateWizard() {
                 value={data.thematique}
                 onChange={(e) => update({ thematique: e.target.value })}
                 placeholder="Ex: Le quartier, Les rêves..."
+                enterKeyHint="next"
                 className="h-10 rounded-lg border border-[var(--color-bw-border)] bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
               />
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Step 2: Confirm */}
         {step === 2 && (
-          <div className="flex flex-col gap-4">
+          <motion.div
+            key="step-2"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col gap-4"
+          >
             <h2 className="text-lg font-bold text-bw-heading">
               Récapitulatif
             </h2>
@@ -247,8 +274,9 @@ export function SessionCreateWizard() {
               />
               {data.thematique && <Row label="Thématique" value={data.thematique} />}
             </div>
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
 
         {/* Navigation */}
         <div className="flex items-center justify-between mt-6 pt-4 border-t border-[var(--color-bw-border-subtle)]">

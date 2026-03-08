@@ -27,6 +27,7 @@ export default function DashboardV2Page() {
   );
 
   const isFirstUse = data && data.stats.totalSessions === 0;
+  const completedModuleIds = data?.completedModuleIds || [];
 
   const todayCount = data?.todaySessions?.length || 0;
   const subtitle = todayCount > 0
@@ -65,12 +66,12 @@ export default function DashboardV2Page() {
           <div className="lg:col-span-5 flex flex-col gap-4">
             <QuickStats stats={data.stats} />
 
-            <GlassCardV2 className="p-4 flex-1">
+            <div className="flex-1">
               <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-3">
                 Agenda
               </h3>
               <MiniCalendar sessionDates={sessionDates} />
-            </GlassCardV2>
+            </div>
           </div>
 
           {/* Right column — Modules progression */}
@@ -81,7 +82,7 @@ export default function DashboardV2Page() {
               </h3>
               <div className="flex flex-col gap-3">
                 {mainPhases.map((phase) => {
-                  const doneModuleCount = 0; // TODO: wire from actual completed_modules data
+                  const doneModuleCount = phase.moduleIds.filter((id) => completedModuleIds.includes(id)).length;
                   const total = phase.moduleIds.length;
                   const pct = total > 0 ? Math.round((doneModuleCount / total) * 100) : 0;
 

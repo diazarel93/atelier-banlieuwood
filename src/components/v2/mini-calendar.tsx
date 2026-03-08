@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
 
@@ -37,7 +37,9 @@ export function MiniCalendar({
   className,
 }: MiniCalendarProps) {
   const now = new Date();
-  const month = monthProp || now;
+  const [monthOffset, setMonthOffset] = useState(0);
+  const baseMonth = monthProp || now;
+  const month = new Date(baseMonth.getFullYear(), baseMonth.getMonth() + monthOffset, 1);
   const year = month.getFullYear();
   const monthIdx = month.getMonth();
 
@@ -67,11 +69,31 @@ export function MiniCalendar({
 
   return (
     <GlassCardV2 className={cn("p-4", className)}>
-      {/* Header */}
-      <div className="mb-3 text-center">
+      {/* Header with navigation */}
+      <div className="mb-3 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => setMonthOffset((o) => o - 1)}
+          aria-label="Mois précédent"
+          className="p-1 rounded-md text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
         <span className="text-sm font-semibold text-bw-heading">
           {MONTHS[monthIdx]} {year}
         </span>
+        <button
+          type="button"
+          onClick={() => setMonthOffset((o) => o + 1)}
+          aria-label="Mois suivant"
+          className="p-1 rounded-md text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
       </div>
 
       {/* Day headers */}

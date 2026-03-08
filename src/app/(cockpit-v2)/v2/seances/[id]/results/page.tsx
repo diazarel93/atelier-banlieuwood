@@ -26,7 +26,7 @@ export default function ResultsPageV2() {
   // ── Loading ──
   if (data.isLoading) {
     return (
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
         <BreadcrumbV2
           items={[
             { label: "Séances", href: "/v2/seances" },
@@ -45,7 +45,7 @@ export default function ResultsPageV2() {
   // ── Error ──
   if (data.isError || !data.exportData) {
     return (
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
         <BreadcrumbV2
           items={[
             { label: "Séances", href: "/v2/seances" },
@@ -76,7 +76,7 @@ export default function ResultsPageV2() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
+    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
       {/* Breadcrumb */}
       <BreadcrumbV2
         items={[

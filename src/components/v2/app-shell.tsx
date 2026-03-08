@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -64,9 +65,18 @@ const NAV_ITEMS: NavItem[] = [
 
 export function AppShellV2({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Skip to content — accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:rounded-lg focus:bg-bw-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+      >
+        Aller au contenu principal
+      </a>
+
       {/* Top navigation bar */}
       <header className="sticky top-0 z-40 w-full border-b border-[var(--color-bw-border)] bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-6 px-4 sm:px-6">
@@ -80,8 +90,8 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
 
-          {/* Nav links */}
-          <nav aria-label="Navigation principale" className="flex items-center gap-1">
+          {/* Desktop nav links */}
+          <nav aria-label="Navigation principale" className="hidden md:flex items-center gap-1">
             {NAV_ITEMS.map((item) => {
               const isActive =
                 item.href === "/v2"
@@ -104,7 +114,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                   <span className={cn(isActive ? "text-bw-primary" : "text-bw-muted")} aria-hidden="true">
                     {item.icon}
                   </span>
-                  <span className="hidden md:inline">{item.label}</span>
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
@@ -125,12 +135,65 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
               </svg>
               <span className="hidden sm:inline">Nouvelle séance</span>
             </Link>
+
+            {/* Hamburger button — mobile only */}
+            <button
+              type="button"
+              aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
+              aria-expanded={mobileOpen}
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden p-2 rounded-lg text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+            >
+              {mobileOpen ? (
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Mobile menu dropdown */}
+        {mobileOpen && (
+          <nav aria-label="Navigation mobile" className="md:hidden border-t border-[var(--color-bw-border)] bg-white px-4 pb-3 pt-2">
+            <div className="flex flex-col gap-1">
+              {NAV_ITEMS.map((item) => {
+                const isActive =
+                  item.href === "/v2"
+                    ? pathname === "/v2"
+                    : pathname.startsWith(item.href);
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    aria-current={isActive ? "page" : undefined}
+                    className={cn(
+                      "flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                      isActive
+                        ? "bg-[var(--color-bw-surface-dim)] text-bw-heading"
+                        : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                    )}
+                  >
+                    <span className={cn(isActive ? "text-bw-primary" : "text-bw-muted")} aria-hidden="true">
+                      {item.icon}
+                    </span>
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </nav>
+        )}
       </header>
 
       {/* Content */}
-      <div className="flex-1">{children}</div>
+      <main id="main-content" className="flex-1">{children}</main>
     </div>
   );
 }

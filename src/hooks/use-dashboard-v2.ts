@@ -25,6 +25,7 @@ interface DashboardSummary {
   tomorrowSessions: SessionSummary[];
   stats: DashboardStats;
   sessionDates: string[];
+  completedModuleIds: string[];
 }
 
 async function fetchDashboardSummary(): Promise<DashboardSummary> {

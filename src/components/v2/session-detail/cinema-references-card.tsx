@@ -90,6 +90,17 @@ export function CinemaReferencesCard() {
                 src={`${TMDB_IMG}/w342${film.poster}`}
                 alt={film.title}
                 loading="lazy"
+                onError={(e) => {
+                  const img = e.currentTarget;
+                  img.style.display = "none";
+                  const parent = img.parentElement;
+                  if (parent && !parent.querySelector(".poster-fallback")) {
+                    const fallback = document.createElement("div");
+                    fallback.className = "poster-fallback absolute inset-0 flex items-center justify-center bg-gray-100 text-2xl";
+                    fallback.textContent = "🎬";
+                    parent.appendChild(fallback);
+                  }
+                }}
                 className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
               />
               <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent" />

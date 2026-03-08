@@ -4,11 +4,7 @@ import { useState } from "react";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 import type { FicheData } from "@/hooks/use-results-data";
 
-const SOCLE_COLORS: Record<string, string> = {
-  D1: "#3B82F6",
-  D3: "#10B981",
-  D5: "#8B5CF6",
-};
+import { SOCLE_COLORS } from "@/lib/socle-colors";
 
 interface FicheCoursSectionProps {
   fiche: FicheData | null;
@@ -86,8 +82,8 @@ export function FicheCoursSection({
                 <span
                   className="text-xs font-bold px-2 py-0.5 rounded-full shrink-0 mt-0.5"
                   style={{
-                    backgroundColor: `${SOCLE_COLORS[obj.socleCommun] || "#666"}20`,
-                    color: SOCLE_COLORS[obj.socleCommun] || "#666",
+                    backgroundColor: (SOCLE_COLORS[obj.socleCommun] || { bg: "#66666620", text: "#666" }).bg,
+                    color: (SOCLE_COLORS[obj.socleCommun] || { bg: "#66666620", text: "#666" }).text,
                   }}
                 >
                   {obj.socleCommun}

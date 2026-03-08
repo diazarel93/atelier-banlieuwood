@@ -25,7 +25,7 @@ interface BreadcrumbV2Props {
  */
 export function BreadcrumbV2({ items }: BreadcrumbV2Props) {
   return (
-    <nav className="flex items-center gap-1.5 text-xs text-bw-muted">
+    <nav aria-label="Fil d'Ariane" className="flex items-center gap-1.5 text-xs text-bw-muted">
       {items.map((item, i) => {
         const isLast = i === items.length - 1;
         return (

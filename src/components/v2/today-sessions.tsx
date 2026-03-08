@@ -61,6 +61,7 @@ function SessionRow({ session }: { session: SessionSummary }) {
       {ss.canPilot ? (
         <Link
           href={`/session/${session.id}/pilot`}
+          prefetch={false}
           className="shrink-0 rounded-lg bg-bw-primary px-3 py-1 text-xs font-semibold text-white hover:bg-bw-primary-500 transition-colors"
         >
           {ss.ctaShort}

@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
+import { StatusBadge, type SessionStatus } from "./status-badge";
 
 interface SessionPrepSidebarProps {
   title: string;
@@ -61,7 +62,7 @@ export function SessionPrepSidebar({
         )}
         <div className="flex items-center justify-between">
           <span className="text-bw-muted">Statut</span>
-          <span className="font-medium capitalize text-bw-heading">{status}</span>
+          <StatusBadge status={status as SessionStatus} size="sm" />
         </div>
       </div>
     </GlassCardV2>

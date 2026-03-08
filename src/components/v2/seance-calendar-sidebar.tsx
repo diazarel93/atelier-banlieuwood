@@ -8,11 +8,13 @@ import { PHASES } from "@/lib/modules-data";
 
 interface SeanceCalendarSidebarProps {
   sessionDates?: Date[];
+  completedModuleIds?: string[];
   className?: string;
 }
 
 export function SeanceCalendarSidebar({
   sessionDates = [],
+  completedModuleIds = [],
   className,
 }: SeanceCalendarSidebarProps) {
   // Main parcours phases for progression display
@@ -28,28 +30,33 @@ export function SeanceCalendarSidebar({
           Progression modules
         </h3>
         <div className="flex flex-col gap-2.5">
-          {mainPhases.map((phase) => (
-            <div key={phase.id} className="flex items-center gap-2">
-              <span className="text-sm">{phase.emoji}</span>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-bw-heading truncate">
-                  {phase.label}
-                </p>
-                <div className="mt-0.5 h-1 w-full rounded-full bg-[var(--color-bw-surface-dim)] overflow-hidden">
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: "0%",
-                      backgroundColor: phase.color,
-                    }}
-                  />
+          {mainPhases.map((phase) => {
+            const done = phase.moduleIds.filter((id) => completedModuleIds.includes(id)).length;
+            const total = phase.moduleIds.length;
+            const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+            return (
+              <div key={phase.id} className="flex items-center gap-2">
+                <span className="text-sm">{phase.emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium text-bw-heading truncate">
+                    {phase.label}
+                  </p>
+                  <div className="mt-0.5 h-1 w-full rounded-full bg-[var(--color-bw-surface-dim)] overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${pct}%`,
+                        backgroundColor: phase.color,
+                      }}
+                    />
+                  </div>
                 </div>
+                <span className="text-[10px] text-bw-muted tabular-nums">
+                  {done}/{total}
+                </span>
               </div>
-              <span className="text-[10px] text-bw-muted tabular-nums">
-                0/{phase.moduleIds.length}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </GlassCardV2>
 

@@ -50,6 +50,26 @@ export default function StatistiquesPage() {
 
   const hasStudents = data && data.students.length > 0;
 
+  function handleExportCsv() {
+    if (!data) return;
+    const header = ["Élève", "Compréhension", "Créativité", "Expression", "Engagement"];
+    const rows = data.students.map((s) => [
+      s.displayName,
+      s.scores.comprehension,
+      s.scores.creativite,
+      s.scores.expression,
+      s.scores.engagement,
+    ]);
+    const csv = [header, ...rows].map((r) => r.join(";")).join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `statistiques-banlieuwood.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
       {/* Header */}
@@ -70,6 +90,15 @@ export default function StatistiquesPage() {
               onClassChange={setClassLabel}
               onSessionChange={setSessionId}
             />
+          )}
+          {hasStudents && (
+            <button
+              type="button"
+              onClick={handleExportCsv}
+              className="rounded-lg border border-[var(--color-bw-border)] px-3 py-1.5 text-xs font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+            >
+              Exporter CSV
+            </button>
           )}
           {sessionId && (
             <Link

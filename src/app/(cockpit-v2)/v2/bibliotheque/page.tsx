@@ -11,11 +11,7 @@ import { GlassCardV2 } from "@/components/v2/glass-card";
 import { ModuleGuideModal } from "@/components/v2/module-guide-modal";
 import type { ModuleGuide } from "@/lib/guide-data";
 
-const SOCLE_COLORS: Record<string, { bg: string; text: string }> = {
-  D1: { bg: "#3B82F620", text: "#3B82F6" },
-  D3: { bg: "#10B98120", text: "#10B981" },
-  D5: { bg: "#8B5CF620", text: "#8B5CF6" },
-};
+import { SOCLE_COLORS } from "@/lib/socle-colors";
 
 function ModuleRow({
   exercise,
@@ -313,12 +309,14 @@ export default function BibliothequePage() {
               <GlassCardV2
                 variant={isExpanded ? "elevated" : "default"}
                 hover={!isExpanded}
-                className="cursor-pointer"
-                onClick={() => setExpandedPhase(isExpanded ? null : phase.id)}
-                aria-expanded={isExpanded}
-                aria-label={`Phase ${phase.label} — ${exercises.length} module${exercises.length > 1 ? "s" : ""}`}
               >
-                <div className="p-5">
+                <button
+                  type="button"
+                  onClick={() => setExpandedPhase(isExpanded ? null : phase.id)}
+                  aria-expanded={isExpanded}
+                  aria-label={`Phase ${phase.label} — ${exercises.length} module${exercises.length > 1 ? "s" : ""}`}
+                  className="w-full text-left p-5 cursor-pointer"
+                >
                   <div className="flex items-center gap-4">
                     {/* Phase icon */}
                     <div
@@ -377,7 +375,7 @@ export default function BibliothequePage() {
                   <p className="text-xs text-bw-muted mt-2 ml-16 max-w-2xl leading-relaxed">
                     {phase.description}
                   </p>
-                </div>
+                </button>
               </GlassCardV2>
 
               {/* Expanded: module details */}

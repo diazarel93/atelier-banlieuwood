@@ -103,6 +103,7 @@ export default function SessionPreparePage() {
             {ss.canPilot && (
               <Link
                 href={`/session/${session.id}/pilot`}
+                prefetch={false}
                 className="flex items-center justify-center gap-2 rounded-xl bg-bw-primary py-3 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -134,6 +135,13 @@ export default function SessionPreparePage() {
           <ModuleSequenceEditor
             modules={mainModules}
             completedModuleIds={session.completed_modules || []}
+            currentModuleId={
+              MODULES.find(
+                (m) =>
+                  m.dbModule === session.current_module &&
+                  m.dbSeance === session.current_seance
+              )?.id
+            }
           />
         </div>
       </div>
