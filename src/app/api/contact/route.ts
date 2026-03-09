@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
 
 interface ContactPayload {
   name: string;
@@ -9,6 +10,13 @@ interface ContactPayload {
 
 const VALID_TYPES = ["general", "institution", "partenariat", "presse"];
 
+const TYPE_LABELS: Record<string, string> = {
+  general: "Question générale",
+  institution: "Institution / Établissement",
+  partenariat: "Partenariat",
+  presse: "Presse / Médias",
+};
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as ContactPayload;
@@ -17,7 +25,7 @@ export async function POST(request: Request) {
     const errors: string[] = [];
 
     if (!body.name || body.name.trim().length < 2) {
-      errors.push("Le nom doit contenir au moins 2 caracteres.");
+      errors.push("Le nom doit contenir au moins 2 caractères.");
     }
 
     if (!body.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
@@ -29,29 +37,65 @@ export async function POST(request: Request) {
     }
 
     if (!body.message || body.message.trim().length < 10) {
-      errors.push("Le message doit contenir au moins 10 caracteres.");
+      errors.push("Le message doit contenir au moins 10 caractères.");
     }
 
     if (errors.length > 0) {
       return NextResponse.json({ success: false, errors }, { status: 400 });
     }
 
-    // ── Log the message (will be replaced by email service later) ──
-    console.log("[CONTACT]", {
-      name: body.name.trim(),
-      email: body.email.trim(),
-      type: body.type,
-      message: body.message.trim(),
-      date: new Date().toISOString(),
-    });
+    const name = body.name.trim();
+    const email = body.email.trim();
+    const type = body.type;
+    const message = body.message.trim();
 
-    // TODO: Integrate Resend / Sendgrid here
-    // await sendEmail({ to: "contact@banlieuwood.fr", ... })
+    // ── Send email via Resend ──
+    if (process.env.RESEND_API_KEY) {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+
+      await resend.emails.send({
+        from: "Banlieuwood <noreply@banlieuwood.fr>",
+        to: ["contact@banlieuwood.fr"],
+        replyTo: email,
+        subject: `[Contact] ${TYPE_LABELS[type] || type} — ${name}`,
+        html: `
+          <div style="font-family: system-ui, sans-serif; max-width: 600px;">
+            <h2 style="color: #1a1a2e;">Nouveau message de contact</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px 12px; font-weight: 600; color: #666; width: 120px;">Nom</td>
+                <td style="padding: 8px 12px;">${name}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 12px; font-weight: 600; color: #666;">Email</td>
+                <td style="padding: 8px 12px;"><a href="mailto:${email}">${email}</a></td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 12px; font-weight: 600; color: #666;">Type</td>
+                <td style="padding: 8px 12px;">${TYPE_LABELS[type] || type}</td>
+              </tr>
+            </table>
+            <div style="margin-top: 16px; padding: 16px; background: #f5f3ef; border-radius: 8px;">
+              <p style="white-space: pre-wrap; margin: 0; color: #1a1a2e;">${message}</p>
+            </div>
+            <p style="margin-top: 24px; font-size: 12px; color: #999;">
+              Envoyé depuis le formulaire de contact Banlieuwood — ${new Date().toLocaleDateString("fr-FR")}
+            </p>
+          </div>
+        `,
+      });
+    } else {
+      // Fallback: log to console if no API key configured
+      console.log("[CONTACT] No RESEND_API_KEY set — logging only:", {
+        name, email, type, message, date: new Date().toISOString(),
+      });
+    }
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (err) {
+    console.error("[CONTACT] Error:", err);
     return NextResponse.json(
-      { success: false, errors: ["Erreur serveur. Reessayez plus tard."] },
+      { success: false, errors: ["Erreur serveur. Réessayez plus tard."] },
       { status: 500 },
     );
   }

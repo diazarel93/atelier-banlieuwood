@@ -6,6 +6,17 @@ import withBundleAnalyzer from "@next/bundle-analyzer";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  // Phase 7 — V2 route swap: redirect old routes to V2
+  // Note: /session/[id]/pilot and /session/[id]/screen are kept as-is (not redirected)
+  async redirects() {
+    return [
+      { source: "/dashboard", destination: "/v2", permanent: true },
+      { source: "/fiche-cours", destination: "/v2/fiche-cours", permanent: true },
+      { source: "/session/new", destination: "/v2/seances/new", permanent: true },
+      { source: "/session/:id/results", destination: "/v2/seances/:id/results", permanent: true },
+      { source: "/session/:id", destination: "/v2/seances/:id", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

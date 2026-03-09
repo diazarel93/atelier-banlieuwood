@@ -78,7 +78,7 @@ export default function LoginPage() {
     }
 
     if (isSignUp) toast.success("Compte cree !");
-    router.push("/dashboard");
+    router.push("/v2");
   }
 
   async function handleGoogleLogin() {

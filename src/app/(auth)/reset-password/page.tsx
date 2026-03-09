@@ -51,7 +51,7 @@ export default function ResetPasswordPage() {
     }
 
     toast.success("Mot de passe mis à jour !");
-    router.push("/dashboard");
+    router.push("/v2");
   }
 
   if (!ready) {

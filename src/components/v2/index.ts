@@ -38,5 +38,3 @@ export { SessionSelector } from "./session-selector";
 
 // Phase 6 — Cockpit
 export { CockpitLayoutV2 } from "./cockpit-layout";
-export { CockpitActionBar } from "./cockpit-action-bar";
-export { CockpitAssistantSidebar } from "./cockpit-assistant-sidebar";
