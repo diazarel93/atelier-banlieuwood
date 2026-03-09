@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 // GET /api/analytics — cross-session analytics for a facilitator
 export async function GET(req: NextRequest) {
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
   // Get response counts per session
   const { data: responses } = await supabase
     .from("responses")
-    .select("id, session_id, created_at")
+    .select("id, session_id, submitted_at")
     .in("session_id", sessionIds);
 
   // Get vote counts
@@ -102,9 +103,9 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ sessions: sessionMetrics, totals, trends });
 }
 
-// POST /api/analytics — track event
+// POST /api/analytics — track event (uses admin client to bypass RLS)
 export async function POST(req: NextRequest) {
-  const supabase = await createServerSupabase();
+  const admin = createAdminClient();
   const body = await req.json();
   const { eventType, sessionId, studentId, profileId, metadata } = body;
 
@@ -112,7 +113,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "eventType requis" }, { status: 400 });
   }
 
-  const { error } = await supabase.from("analytics_events").insert({
+  const { error } = await admin.from("analytics_events").insert({
     event_type: eventType,
     session_id: sessionId || null,
     student_id: studentId || null,
