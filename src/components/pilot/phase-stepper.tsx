@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import { motion } from "motion/react";
 import type { PhaseDef, ModuleDef } from "@/lib/modules-data";
 import { getModuleById } from "@/lib/modules-data";
 
@@ -22,6 +21,16 @@ function formatTiming(seconds: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
+/** Count completed modules within a phase */
+function getPhaseProgress(phase: PhaseDef, completedModules: string[]): { done: number; total: number } {
+  const enabledIds = phase.moduleIds.filter((id) => {
+    const mod = getModuleById(id);
+    return mod && !mod.disabled && !mod.comingSoon;
+  });
+  const done = enabledIds.filter((id) => completedModules.includes(id)).length;
+  return { done, total: enabledIds.length };
+}
+
 export function PhaseStepper({
   phases,
   modules,
@@ -30,7 +39,6 @@ export function PhaseStepper({
   onPhaseClick,
   phaseTimings,
 }: PhaseStepperProps) {
-  // Filter phases: only show those with at least 1 non-disabled module
   const visiblePhases = useMemo(
     () =>
       phases.filter((p) =>
@@ -42,14 +50,12 @@ export function PhaseStepper({
     [phases]
   );
 
-  // Determine active phase
   const activePhaseId = useMemo(() => {
     if (!activeModuleId) return null;
     const p = phases.find((ph) => ph.moduleIds.includes(activeModuleId));
     return p?.id || null;
   }, [activeModuleId, phases]);
 
-  // Phase status
   const getStatus = (phase: PhaseDef): PhaseStatus => {
     const enabledIds = phase.moduleIds.filter((id) => {
       const mod = getModuleById(id);
@@ -62,7 +68,6 @@ export function PhaseStepper({
     return "upcoming";
   };
 
-  // Compute where active phase is for line styling
   const activeIdx = useMemo(() => {
     if (!activePhaseId) return -1;
     return visiblePhases.findIndex((p) => p.id === activePhaseId);
@@ -72,131 +77,140 @@ export function PhaseStepper({
 
   return (
     <div className="relative flex items-center w-full">
-      {/* ── Gradient line segments between circles ── */}
-      {/* We draw individual segments between each pair of phases */}
-      {/* Completed/active = solid, upcoming = dashed */}
-
-      {/* Phase circles + labels */}
       <div className="relative z-10 flex items-center justify-between w-full">
         {visiblePhases.map((phase, idx) => {
           const status = getStatus(phase);
           const nextPhase = visiblePhases[idx + 1];
-          // Line between this circle and the next
           const lineCompleted = idx < activeIdx;
           const lineActive = idx === activeIdx;
+          const progress = getPhaseProgress(phase, completedModules);
 
           return (
             <div key={phase.id} className="flex items-center flex-1 last:flex-initial">
               <button
                 onClick={() => onPhaseClick?.(phase.id)}
-                className="flex flex-col items-center gap-1.5 cursor-pointer group flex-shrink-0"
-                title={phase.label}
+                className="flex flex-col items-center gap-1 cursor-pointer group flex-shrink-0"
+                title={`${phase.label} — ${phase.description}`}
               >
-                {/* Circle */}
+                {/* ── Act circle — cinema narrative style ── */}
                 {status === "active" ? (
-                  <motion.div
-                    className="relative flex items-center justify-center rounded-full w-6 h-6 md:w-[42px] md:h-[42px]"
+                  <div
+                    className="relative flex items-center justify-center rounded-full w-7 h-7 md:w-[44px] md:h-[44px] glow-breathe"
                     style={{
                       background: phase.color,
-                      boxShadow: `0 0 0 3px white, 0 0 24px ${phase.color}50`,
+                      boxShadow: `0 0 0 3px white, 0 0 20px ${phase.color}40`,
                     }}
-                    animate={{ scale: [1, 1.06, 1] }}
-                    transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      className="w-3 h-3 md:w-[18px] md:h-[18px]"
-                    >
-                      <path d="M5 12l5 5L20 7" />
-                    </svg>
-                  </motion.div>
+                    {/* Act number in Bebas Neue */}
+                    <span className="font-cinema text-white text-[10px] md:text-[15px] font-normal tracking-wider">
+                      {idx + 1}
+                    </span>
+                    {/* Pulse ring */}
+                    <span
+                      className="absolute inset-[-4px] rounded-full border-2 animate-ping pointer-events-none"
+                      style={{ borderColor: `${phase.color}30` }}
+                    />
+                  </div>
                 ) : status === "completed" ? (
                   <div
-                    className="flex items-center justify-center rounded-full w-6 h-6 md:w-[42px] md:h-[42px]"
-                    style={{
-                      background: phase.color,
-                      boxShadow: "0 0 0 3px white",
-                    }}
+                    className="flex items-center justify-center rounded-full w-7 h-7 md:w-[44px] md:h-[44px]"
+                    style={{ background: phase.color, boxShadow: "0 0 0 3px white" }}
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      className="w-3 h-3 md:w-[18px] md:h-[18px]"
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" className="w-3 h-3 md:w-[18px] md:h-[18px]">
                       <path d="M5 12l5 5L20 7" />
                     </svg>
                   </div>
                 ) : (
                   <div
-                    className="flex items-center justify-center rounded-full w-6 h-6 md:w-[42px] md:h-[42px]"
+                    className="flex items-center justify-center rounded-full w-7 h-7 md:w-[44px] md:h-[44px]"
                     style={{
-                      border: "2px solid #D9CFC0",
-                      background: "rgba(255,255,255,0.5)",
+                      border: "2px dashed #D9CFC0",
+                      background: "rgba(255,255,255,0.3)",
                       boxShadow: "0 0 0 2px white",
-                      opacity: 0.7,
+                      opacity: 0.5,
                     }}
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#D9CFC0"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      className="w-3 h-3 md:w-[18px] md:h-[18px]"
-                    >
-                      <path d="M5 12l5 5L20 7" />
-                    </svg>
+                    <span className="font-cinema text-[#C4BDB2] text-[10px] md:text-[14px] tracking-wider">
+                      {idx + 1}
+                    </span>
                   </div>
                 )}
 
-                {/* Label + timing — desktop only */}
-                <div className="hidden md:flex flex-col items-center gap-0.5 max-w-[90px]">
+                {/* ── Label + progress — desktop narrative ── */}
+                <div className="hidden md:flex flex-col items-center gap-0.5 max-w-[100px]">
+                  {/* Phase label — Bebas Neue cinema */}
                   <span
-                    className="leading-tight text-center truncate transition-colors"
+                    className="font-cinema uppercase text-center truncate transition-colors leading-tight"
                     style={{
-                      color: status === "active" ? phase.color : "#B0A99E",
+                      color: status === "active" ? phase.color : status === "completed" ? phase.color : "#C4BDB2",
+                      fontSize: 11,
+                      letterSpacing: "0.06em",
+                      opacity: status === "upcoming" ? 0.6 : 1,
                       fontWeight: status === "active" ? 700 : 400,
-                      fontSize: status === "active" ? 12 : 11,
                     }}
                   >
                     {phase.label}
                   </span>
+
+                  {/* Progress micro-bar + timing — completed artefacts count */}
+                  {status === "active" && progress.total > 1 && (
+                    <div className="flex items-center gap-1">
+                      <div className="flex gap-px">
+                        {Array.from({ length: progress.total }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="w-2 h-1 rounded-sm transition-colors"
+                            style={{
+                              background: i < progress.done ? phase.color : "#E0D8CC",
+                              opacity: i < progress.done ? 0.8 : 0.4,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {status === "completed" && (
+                    <span className="text-[9px] font-semibold text-bw-muted opacity-50">
+                      {progress.done}/{progress.total}
+                    </span>
+                  )}
+
                   {phaseTimings?.[phase.id] && (
-                    <span className="text-[9px] tabular-nums font-medium" style={{ color: "#B0A99E" }}>
-                      {formatTiming(phaseTimings[phase.id].elapsed)} / {formatTiming(phaseTimings[phase.id].estimated)}
+                    <span className="text-[9px] tabular-nums font-medium text-bw-muted opacity-60">
+                      {formatTiming(phaseTimings[phase.id].elapsed)}
                     </span>
                   )}
                 </div>
               </button>
 
-              {/* ── Line segment + chevron to next phase ── */}
+              {/* ── Line segment between acts ── */}
               {nextPhase && (
-                <div className="flex items-center flex-1 mx-1 md:mx-0 self-start md:mt-[19px] mt-[10px]">
-                  {/* Desktop line */}
-                  <div
-                    className="flex-1 h-[3px] hidden md:block"
-                    style={
-                      lineCompleted || lineActive
-                        ? {
-                            background: `linear-gradient(to right, ${phase.color}, ${nextPhase.color})`,
-                            opacity: 0.55,
-                            borderRadius: 2,
-                          }
-                        : {
-                            backgroundImage: `repeating-linear-gradient(to right, #D3CAB8 0, #D3CAB8 6px, transparent 6px, transparent 12px)`,
-                            opacity: 0.45,
-                            height: 2,
-                          }
-                    }
-                  />
-                  {/* Mobile line */}
+                <div className="flex items-center flex-1 mx-0.5 md:mx-0 self-start md:mt-[20px] mt-[12px]">
+                  {/* Desktop — completed: gradient, active: animated, upcoming: film-strip */}
+                  {lineCompleted ? (
+                    <div
+                      className="flex-1 h-[3px] hidden md:block rounded-sm"
+                      style={{
+                        background: `linear-gradient(to right, ${phase.color}, ${nextPhase.color})`,
+                        opacity: 0.55,
+                      }}
+                    />
+                  ) : lineActive ? (
+                    <div className="flex-1 h-[3px] hidden md:block rounded-sm overflow-hidden" style={{ background: "#E0D8CC" }}>
+                      <div
+                        className="h-full rounded-sm"
+                        style={{
+                          width: progress.total > 0 ? `${(progress.done / progress.total) * 100}%` : "0%",
+                          background: `linear-gradient(to right, ${phase.color}, ${nextPhase.color})`,
+                          transition: "width 500ms ease-out",
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex-1 hidden md:block film-strip-line" />
+                  )}
+                  {/* Mobile */}
                   <div
                     className="flex-1 h-[2px] rounded-full md:hidden"
                     style={{
@@ -206,10 +220,6 @@ export function PhaseStepper({
                       opacity: lineCompleted || lineActive ? 0.5 : 0.3,
                     }}
                   />
-                  {/* Chevron separator — desktop only */}
-                  <span className="text-[11px] text-[#D0C8BB] mx-1.5 hidden md:inline select-none flex-shrink-0 -mt-px">
-                    ›
-                  </span>
                 </div>
               )}
             </div>

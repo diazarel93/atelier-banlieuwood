@@ -132,15 +132,20 @@ export function ResponseStreamSection({
     <div className="space-y-2">
       {/* Prominent response counter + elapsed + action bar */}
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-sm text-bw-muted">Reponses</span>
-          <span className="text-[12px] font-bold tabular-nums px-1.5 py-0.5 rounded-full"
-            style={{
-              background: respondedCount >= activeStudents.length && activeStudents.length > 0 ? "rgba(76,175,80,0.1)" : "rgba(107,140,255,0.08)",
-              color: respondedCount >= activeStudents.length && activeStudents.length > 0 ? "#4CAF50" : "#3B5998",
-            }}>
-            {respondedCount}/{activeStudents.length}
+        <div className="flex items-center gap-3">
+          {/* Hero number — cinema style (Phase 1.1) */}
+          <span className="hero-number-sm text-bw-heading" style={{ fontSize: 28 }}>
+            {respondedCount}
           </span>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">Reponses</span>
+            <span className="text-[12px] font-semibold tabular-nums"
+              style={{
+                color: respondedCount >= activeStudents.length && activeStudents.length > 0 ? "#4CAF50" : "var(--color-bw-muted)",
+              }}>
+              sur {activeStudents.length}
+            </span>
+          </div>
           <ElapsedTimer startedAt={respondingOpenedAt} />
         </div>
         <div className="flex items-center gap-1">

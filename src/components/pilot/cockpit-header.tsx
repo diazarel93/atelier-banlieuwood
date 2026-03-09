@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import type { PhaseDef, ModuleDef } from "@/lib/modules-data";
 import { PhaseStepper } from "@/components/pilot/phase-stepper";
 import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
@@ -34,6 +35,51 @@ interface CockpitHeaderProps {
   voteCount: number;
   onTogglePauseFromBanner?: () => void;
   onViewResults?: () => void;
+  // Energy donut data (Issue 3)
+  stuckCount?: number;
+}
+
+/* ── Mini energy donut SVG (20x20) — Issue 3 ── */
+function EnergyDonut({ responded, active, stuck, total }: { responded: number; active: number; stuck: number; total: number }) {
+  if (total === 0) return null;
+  const r = 7;
+  const c = 2 * Math.PI * r;
+  const respondedPct = responded / total;
+  const activePct = active / total;
+  const stuckPct = stuck / total;
+
+  let offset = 0;
+  const segments = [
+    { pct: respondedPct, color: "#4CAF50" },
+    { pct: activePct, color: "#F2C94C" },
+    { pct: stuckPct, color: "#EB5757" },
+    { pct: 1 - respondedPct - activePct - stuckPct, color: "#D5CFC6" },
+  ];
+
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" className="-rotate-90 flex-shrink-0">
+      <circle cx="10" cy="10" r={r} fill="none" stroke="#EFE8DD" strokeWidth="3" />
+      {segments.map((seg, i) => {
+        if (seg.pct <= 0) return null;
+        const dash = seg.pct * c;
+        const gap = c - dash;
+        const el = (
+          <circle
+            key={i}
+            cx="10" cy="10" r={r}
+            fill="none"
+            stroke={seg.color}
+            strokeWidth="3"
+            strokeDasharray={`${dash} ${gap}`}
+            strokeDashoffset={-offset}
+            strokeLinecap="round"
+          />
+        );
+        offset += dash;
+        return el;
+      })}
+    </svg>
+  );
 }
 
 export function CockpitHeader({
@@ -63,26 +109,41 @@ export function CockpitHeader({
   voteCount,
   onTogglePauseFromBanner,
   onViewResults,
+  stuckCount = 0,
 }: CockpitHeaderProps) {
+  // Controls popover (Issue 1 — merge auto-advance + pause)
+  const [controlsOpen, setControlsOpen] = useState(false);
+  const controlsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!controlsOpen) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (controlsRef.current && !controlsRef.current.contains(e.target as Node)) {
+        setControlsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [controlsOpen]);
+
+  // Compute energy donut values from props
+  const stuckN = stuckCount;
+  const respondedN = respondedCount;
+  const activeN = Math.max(0, totalStudents - respondedN - stuckN);
+  const needsPulse = stuckN > 2;
+
   return (
     <header
-      className="flex-shrink-0 flex flex-col"
-      style={{
-        background: "rgba(255,255,255,0.85)",
-        backdropFilter: "blur(8px)",
-        WebkitBackdropFilter: "blur(8px)",
-        borderBottom: "1px solid #E8DFD2",
-        boxShadow: "0 2px 12px rgba(61,43,16,0.04)",
-      }}
+      className="flex-shrink-0 flex flex-col bg-white/85 backdrop-blur-[8px] border-b border-bw-border shadow-[0_2px_12px_rgba(61,43,16,0.04)]"
     >
-      {/* ── Row 1: Brand + Phase Stepper ── */}
+      {/* ── Row 1: Brand + Session timer + Phase Stepper ── */}
       <div className="flex items-center h-[72px] px-3 xl:px-5 gap-3">
-        {/* LEFT: Hamburger + Title */}
+        {/* LEFT: Hamburger + Title + session timer */}
         <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
           <button
             onClick={onOpenModules}
             title="Parcours des modules"
-            className="w-9 h-9 rounded-[10px] flex items-center justify-center text-bw-muted hover:text-bw-heading bg-white/80 border border-[#E8DFD2] cursor-pointer transition-colors flex-shrink-0 hover:shadow-sm"
+            className="w-9 h-9 rounded-[10px] flex items-center justify-center text-bw-muted hover:text-bw-heading bg-white/80 border border-bw-border cursor-pointer transition-colors flex-shrink-0 hover:shadow-sm"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <line x1="3" y1="6" x2="21" y2="6" />
@@ -90,9 +151,16 @@ export function CockpitHeader({
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <span className="text-[18px] font-semibold text-[#2C2C2C] tracking-tight">
-            cockpit
+          {/* Issue 5 — Bebas Neue cinema title */}
+          <span className="text-display-sm tracking-wider text-bw-heading" style={{ fontSize: 18 }}>
+            COCKPIT
           </span>
+          {/* Issue 1 — Session timer moved to Row 1, small muted */}
+          {sessionStartedAt && (
+            <span className="text-[11px] font-medium text-bw-muted tabular-nums flex-shrink-0 hidden sm:block ml-1">
+              <ElapsedTimer startedAt={sessionStartedAt} variant="plain" />
+            </span>
+          )}
         </div>
 
         {/* CENTER/RIGHT: Phase Stepper — takes remaining space */}
@@ -108,15 +176,11 @@ export function CockpitHeader({
         </div>
       </div>
 
-      {/* ── Row 2: Status bar ── */}
+      {/* ── Row 2: Status bar — max 5 items: module pill, question timer, energy donut, student count, controls ── */}
       <div
-        className="flex items-center h-11 px-3 xl:px-5 gap-2.5 xl:gap-3"
-        style={{
-          background: "rgba(245,239,230,0.45)",
-          borderTop: "1px solid rgba(232,223,210,0.5)",
-        }}
+        className="flex items-center h-11 px-3 xl:px-5 gap-2.5 xl:gap-3 bg-bw-surface-dim/45 border-t border-bw-border/50"
       >
-        {/* LEFT: Module pill + Session timer + Question timer + Students */}
+        {/* LEFT: Module pill + Question timer + Energy donut + Students */}
         <div className="flex items-center gap-2.5 min-w-0 flex-shrink-0">
           {/* Module badge — pill shape */}
           <span
@@ -130,13 +194,6 @@ export function CockpitHeader({
             {moduleLabel}
           </span>
 
-          {/* Session total elapsed timer */}
-          {sessionStartedAt && (
-            <span className="text-[13px] font-medium text-[#7D828A] tabular-nums flex-shrink-0 hidden sm:block">
-              <ElapsedTimer startedAt={sessionStartedAt} variant="plain" />
-            </span>
-          )}
-
           {/* Question elapsed timer — red pill */}
           {respondingOpenedAt && (
             <span className="flex-shrink-0 hidden sm:block">
@@ -144,45 +201,65 @@ export function CockpitHeader({
             </span>
           )}
 
+          {/* Issue 3 — Energy donut (20x20) with pulse when stuck > 2 */}
+          {totalStudents > 0 && (
+            <div className={needsPulse ? "animate-[pulse_2s_ease-in-out_infinite]" : ""}>
+              <EnergyDonut
+                responded={respondedN}
+                active={activeN}
+                stuck={stuckN}
+                total={totalStudents}
+              />
+            </div>
+          )}
+
           {/* Student count */}
-          <span className="text-[13px] font-medium text-[#7D828A] tabular-nums flex-shrink-0 hidden xl:block">
-            {activeStudentCount} eleve{activeStudentCount !== 1 ? "s" : ""}
+          <span className="text-[13px] font-medium text-bw-muted tabular-nums flex-shrink-0 hidden xl:block">
+            {activeStudentCount} élève{activeStudentCount !== 1 ? "s" : ""}
           </span>
         </div>
 
         {/* Spacer */}
         <div className="flex-1" />
 
-        {/* RIGHT: Controls */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {/* Auto-advance toggle */}
+        {/* RIGHT: Controls popover (Issue 1 — merge auto-advance + pause) */}
+        <div className="relative flex-shrink-0" ref={controlsRef}>
           <button
-            onClick={onToggleAuto}
-            className={`flex items-center gap-1.5 h-9 px-3 xl:px-4 rounded-full text-[13px] font-medium cursor-pointer transition-all ${
-              autoAdvance
-                ? "bg-bw-teal/15 text-bw-teal border border-bw-teal/30"
-                : "bg-white/80 text-[#4A4A4A] border border-[#E0D8CC]"
-            }`}
+            onClick={() => setControlsOpen(v => !v)}
+            className="btn-cockpit-sm bg-white/80 border border-bw-border text-bw-text hover:bg-bw-surface-dim gap-1.5"
           >
-            <div className={`w-5 h-3 rounded-full transition-all relative ${autoAdvance ? "bg-bw-teal" : "bg-black/10"}`}>
-              <div className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${autoAdvance ? "left-2" : "left-px"}`} />
-            </div>
-            <span className="hidden xl:inline">
-              Auto{autoAdvance && autoAdvanceCountdown > 0 ? ` ${autoAdvanceCountdown}s` : ""}
-            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            <span className="hidden xl:inline">Controls</span>
           </button>
 
-          {/* Pause — with dropdown chevron */}
-          <button
-            onClick={onPause}
-            className="h-9 px-3 xl:px-4 rounded-full bg-white/80 border border-[#E0D8CC] text-[13px] font-medium text-[#4A4A4A] hover:bg-[#F8F2E8] cursor-pointer transition-colors flex items-center gap-1.5"
-          >
-            <span className="text-[12px]">⏸</span>
-            <span className="hidden xl:inline">Pause</span>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="opacity-40 hidden xl:block">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
+          {/* Popover */}
+          {controlsOpen && (
+            <div className="absolute right-0 top-full mt-1 z-20 w-56 rounded-xl bg-white border border-bw-border shadow-bw-lg p-2 space-y-1">
+              {/* Auto-advance */}
+              <button
+                onClick={onToggleAuto}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
+              >
+                <div className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${autoAdvance ? "bg-bw-teal" : "bg-black/10"}`}>
+                  <div className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${autoAdvance ? "left-2" : "left-px"}`} />
+                </div>
+                <span className="text-bw-text">
+                  Auto{autoAdvance && autoAdvanceCountdown > 0 ? ` ${autoAdvanceCountdown}s` : ""}
+                </span>
+              </button>
+              {/* Pause */}
+              <button
+                onClick={() => { onPause(); setControlsOpen(false); }}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors text-bw-text"
+              >
+                <span className="text-[12px]">⏸</span>
+                Pause
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

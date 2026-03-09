@@ -31,10 +31,10 @@ export function WelcomePanel({
 
       {/* Session info — warm EdTech header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-        <h1 className="text-[22px] font-bold text-[#2C2C2C]">
+        <h1 className="text-[22px] font-bold text-bw-heading">
           {(sessionTitle || "Session").replace(/\s*[-—]\s*$/, "")}
         </h1>
-        <p className="text-[13px] text-[#7A7A7A] mt-1">{level}</p>
+        <p className="text-[13px] text-bw-text mt-1">{level}</p>
         <div className="h-0.5 w-16 mx-auto mt-4 rounded-full" style={{ background: "linear-gradient(90deg, #F5A45B, #57C4B6)" }} />
       </motion.div>
 
@@ -59,7 +59,7 @@ export function WelcomePanel({
               </motion.div>
             </div>
 
-            <p className="text-center text-[18px] font-semibold text-[#2C2C2C]">
+            <p className="text-center text-[18px] font-semibold text-bw-heading">
               Pret a commencer ? <span className="text-[#F5A45B]">C&apos;est parti !</span>
             </p>
 
@@ -82,14 +82,14 @@ export function WelcomePanel({
                   >
                     {step.num}
                   </div>
-                  <span className="text-[14px] text-[#4A4A4A]">{step.text}</span>
+                  <span className="text-[14px] text-bw-text">{step.text}</span>
                 </motion.div>
               ))}
             </div>
 
             {/* Join code display */}
             <div className="text-center pt-3">
-              <p className="text-[11px] uppercase tracking-widest text-[#B0A99E] mb-2.5">Code de la session</p>
+              <p className="text-[11px] uppercase tracking-widest text-bw-muted mb-2.5">Code de la session</p>
               <button onClick={onCopyCode} className="cursor-pointer group">
                 <div className="flex gap-2 justify-center">
                   {joinCode.split("").map((char, i) => (
@@ -98,14 +98,14 @@ export function WelcomePanel({
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 + i * 0.06 }}
-                      className="w-9 h-11 rounded-[10px] flex items-center justify-center text-[18px] font-bold font-mono text-[#2C2C2C] group-hover:border-[#6B8CFF]/40 transition-colors"
+                      className="w-9 h-11 rounded-[10px] flex items-center justify-center text-[18px] font-bold font-mono text-bw-heading group-hover:border-[#6B8CFF]/40 transition-colors"
                       style={{ background: "#F7F3EA", border: "1px solid #E8DFD2" }}
                     >
                       {char}
                     </motion.span>
                   ))}
                 </div>
-                <span className="text-[12px] text-[#B0A99E] mt-2.5 inline-block group-hover:text-[#6B8CFF] transition-colors">
+                <span className="text-[12px] text-bw-muted mt-2.5 inline-block group-hover:text-[#6B8CFF] transition-colors">
                   Cliquer pour copier
                 </span>
               </button>
@@ -150,7 +150,7 @@ export function WelcomePanel({
                 </motion.span>
               ))}
               {activeStudents.length > 24 && (
-                <span className="text-[12px] text-[#B0A99E] self-center">+{activeStudents.length - 24}</span>
+                <span className="text-[12px] text-bw-muted self-center">+{activeStudents.length - 24}</span>
               )}
             </div>
           </div>
@@ -170,8 +170,8 @@ export function WelcomePanel({
           </svg>
         </motion.div>
         <div>
-          <p className="text-[14px] text-[#2C2C2C] font-medium">Selectionnez un module dans le menu</p>
-          <p className="text-[12px] text-[#B0A99E] mt-1">Le menu est a gauche de votre ecran</p>
+          <p className="text-[14px] text-bw-heading font-medium">Selectionnez un module dans le menu</p>
+          <p className="text-[12px] text-bw-muted mt-1">Le menu est a gauche de votre ecran</p>
         </div>
       </div>
     </div>

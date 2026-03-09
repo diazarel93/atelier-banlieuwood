@@ -1091,7 +1091,7 @@ function CockpitContent({
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex-1 flex flex-col overflow-hidden film-grain">
       {/* ── COCKPIT HEADER — Phase stepper + status bar + controls ── */}
       <CockpitHeader
         sessionTitle={session.title || "Session"}
@@ -1132,6 +1132,7 @@ function CockpitContent({
         voteCount={voteData?.totalVotes || 0}
         onTogglePauseFromBanner={handlePauseToggle}
         onViewResults={() => router.push(`/session/${sessionId}/results`)}
+        stuckCount={stuckStudents.length}
       />
 
       {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}
@@ -1234,10 +1235,9 @@ function CockpitContent({
         )}
 
         {/* ── SPLIT-PANEL LAYOUT ── */}
-        <div className="flex-1 flex overflow-hidden min-h-0" style={{ background: "#F6F2EA" }}>
+        <div className="flex-1 flex overflow-hidden min-h-0" style={{ background: "#F6F2EA", backgroundImage: "radial-gradient(ellipse at 50% 20%, rgba(255,107,53,0.03), transparent 60%)" }}>
           {/* LEFT: Classe en direct — 300px panel, hidden below lg */}
-          <div data-onboarding="classmap" className="hidden md:flex w-[240px] lg:w-[300px] flex-shrink-0 flex-col m-2 mr-0 rounded-2xl shadow-sm overflow-hidden"
-            style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.4)" }}>
+          <div data-onboarding="classmap" className="hidden md:flex w-[240px] lg:w-[300px] flex-shrink-0 flex-col m-2 mr-0 rounded-2xl shadow-sm overflow-hidden glass-cockpit">
             <ClassDashboardPanel
               session={session}
               studentStates={studentStates}
@@ -1257,10 +1257,11 @@ function CockpitContent({
                 ? Object.values(module1Data.optionDistribution as Record<string, number>).reduce((sum, v) => sum + v, 0)
                 : undefined
               }
+              notRespondedStudents={notRespondedStudents}
             />
           </div>
           {/* CENTER: Question + Responses — glassmorphism */}
-          <div className="flex-1 overflow-y-auto min-h-0 m-2 rounded-2xl shadow-sm" style={{ background: "rgba(255,255,255,0.5)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.4)" }}>
+          <div className="flex-1 overflow-y-auto min-h-0 m-2 rounded-2xl shadow-sm glass-cockpit">
           {ficheStudentId ? (
             <div className="px-4 py-4">
               {(() => {
@@ -1320,8 +1321,8 @@ function CockpitContent({
           {/* ── TOOLBAR — response section header ── */}
           {session.status !== "done" && !focusMode && (
             <div data-onboarding="responses" className="flex items-center gap-2 pb-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.5)" }}>
-              {/* Toggle pill: Responses / Plan de classe — glassmorphism */}
-              <div className="flex rounded-xl p-0.5 flex-shrink-0" style={{ background: "rgba(255,255,255,0.4)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.3)" }} role="tablist" aria-label="Vue centrale">
+              {/* Toggle pill: Responses / Plan de classe — Issue 12: hidden on desktop (left panel has classmap) */}
+              <div className="flex md:hidden rounded-xl p-0.5 flex-shrink-0" style={{ background: "rgba(255,255,255,0.4)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.3)" }} role="tablist" aria-label="Vue centrale">
                 <button
                   onClick={() => setCenterTab("responses")}
                   role="tab"

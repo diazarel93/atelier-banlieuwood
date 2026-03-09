@@ -59,7 +59,7 @@ export function SelectionBar({
   return (
     <div className="flex items-center justify-between gap-3">
       <div className="flex items-center gap-3 text-[13px]">
-        {leftText && <span className="text-[#7A7A7A] font-medium tabular-nums">{leftText}</span>}
+        {leftText && <span className="text-bw-text font-medium tabular-nums">{leftText}</span>}
         {status === "responding" && selectedCount > 0 && (
           <span className="text-[#6B8CFF] font-bold tabular-nums">{selectedCount} select.</span>
         )}

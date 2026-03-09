@@ -4,6 +4,8 @@ import { useState, useMemo, memo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { StudentState } from "@/components/pilot/pulse-ring";
 import { SpatialClassroomGrid } from "@/components/pilot/spatial-classroom-grid";
+import { StudentConstellation } from "@/components/pilot/student-constellation";
+import { EmotionalRadar } from "@/components/pilot/emotional-radar";
 import { ClassCognitiveState } from "@/components/pilot/class-cognitive-state";
 import { CognitiveMap } from "@/components/pilot/cognitive-map";
 
@@ -35,6 +37,8 @@ interface ClassDashboardPanelProps {
   // CognitiveMap props (optional — only for M1 Positioning)
   cognitiveOptions?: { key: string; label: string; count: number }[];
   cognitiveTotal?: number;
+  // Issue 4 — Students who haven't responded yet
+  notRespondedStudents?: { id: string; display_name: string; avatar: string }[];
 }
 
 // ── Glassmorphism card wrapper ──
@@ -69,8 +73,10 @@ function ClassDashboardPanelInner({
   handleNudgeAllStuck,
   cognitiveOptions,
   cognitiveTotal,
+  notRespondedStudents = [],
 }: ClassDashboardPanelProps) {
   const [mapExpanded, setMapExpanded] = useState(true);
+  const [mapView, setMapView] = useState<"grid" | "constellation">("grid");
 
   // Compute engagement stats
   const stats = useMemo(() => {
@@ -113,6 +119,21 @@ function ClassDashboardPanelInner({
     [stuckStudents, session.students]
   );
 
+  // Emotional radar — derived from student states
+  const radarAxes = useMemo(() => {
+    const { respondedN, thinkingN, stuckN, online, total } = stats;
+    if (total === 0) return { comprehension: 0, creativite: 0, expression: 0, engagement: 0 };
+    // Engagement: non-disconnected ratio
+    const engagement = total > 0 ? Math.round((online / total) * 100) : 0;
+    // Comprehension: inverse of stuck among online
+    const comprehension = online > 0 ? Math.round(((online - stuckN) / online) * 100) : 0;
+    // Expression: responded ratio among online (have expressed something)
+    const expression = online > 0 ? Math.round((respondedN / online) * 100) : 0;
+    // Créativité: composite — active thinking + responded (diverse engagement)
+    const creativite = online > 0 ? Math.round(((respondedN + thinkingN * 0.5) / online) * 100) : 0;
+    return { comprehension, creativite: Math.min(100, creativite), expression, engagement };
+  }, [stats]);
+
   // Donut SVG data
   const donutSegments = useMemo(() => {
     const { respondedN, thinkingN, stuckN, offN, total } = stats;
@@ -138,7 +159,7 @@ function ClassDashboardPanelInner({
     <div className="flex flex-col h-full">
       {/* ── Section title ── */}
       <div className="px-4 pt-4 pb-1 flex-shrink-0">
-        <span className="text-[14px] font-bold text-[#2C2C2C]">Cockpit de classe</span>
+        <span className="text-[14px] font-bold text-bw-heading">Cockpit de classe</span>
       </div>
 
       {/* ── Scrollable content ── */}
@@ -194,7 +215,11 @@ function ClassDashboardPanelInner({
                   {stats.respondedN}/{stats.online}
                 </motion.span>
                 <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] mt-0.5">
-                  {stats.respondedN > 0 && stats.respondedN === stats.online ? "complet !" : "reponses"}
+                  {stats.respondedN > 0 && stats.respondedN === stats.online
+                    ? "complet !"
+                    : stats.online > 0 && stats.respondedN < stats.online * 0.5
+                      ? "en attente"
+                      : "reponses"}
                 </span>
               </div>
             </div>
@@ -209,7 +234,7 @@ function ClassDashboardPanelInner({
               ].map(item => (
                 <div key={item.label} className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: item.color }} />
-                  <span className="text-[12px] font-semibold text-[#4A4A4A] flex-1">{item.label}</span>
+                  <span className="text-[12px] font-semibold text-bw-text flex-1">{item.label}</span>
                   <motion.span
                     key={`${item.label}-${item.count}`}
                     initial={{ scale: 1.2 }}
@@ -228,7 +253,7 @@ function ClassDashboardPanelInner({
           {stats.online > 0 && (
             <div className="mt-3">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-semibold text-[#7A7A7A]">Progression reponses</span>
+                <span className="text-[10px] font-semibold text-bw-muted">Progression reponses</span>
                 <span className="text-[11px] font-bold tabular-nums" style={{ color: stats.responsePct >= 80 ? "#4CAF50" : stats.responsePct >= 50 ? "#F2C94C" : "#B0A99E" }}>
                   {stats.respondedN}/{stats.online}
                 </span>
@@ -259,6 +284,35 @@ function ClassDashboardPanelInner({
             </div>
           )}
         </GlassCard>
+
+        {/* ── EN ATTENTE — Issue 4: students who haven't responded, visible only during responding ── */}
+        {session.status === "responding" && notRespondedStudents.length > 0 && (
+          <GlassCard className="!p-0 overflow-hidden">
+            <div className="flex items-center justify-between px-3.5 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}>
+              <span className="text-[12px] font-bold text-bw-primary flex items-center gap-1.5">
+                <span className="text-sm">&#9203;</span> En attente ({notRespondedStudents.length})
+              </span>
+            </div>
+            <div className="px-2.5 pb-2.5 pt-1.5 flex flex-wrap gap-1.5">
+              {notRespondedStudents.slice(0, 8).map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => setFicheStudentId(s.id)}
+                  className="flex items-center gap-1.5 h-7 px-2.5 rounded-full text-[11px] font-medium cursor-pointer transition-all hover:bg-bw-primary-50 border border-bw-border"
+                  style={{ background: "rgba(255,248,240,0.6)" }}
+                >
+                  <span className="text-xs">{s.avatar}</span>
+                  <span className="text-bw-text truncate max-w-[64px]">{s.display_name}</span>
+                </button>
+              ))}
+              {notRespondedStudents.length > 8 && (
+                <span className="flex items-center h-7 px-2 text-[11px] font-semibold text-bw-muted">
+                  +{notRespondedStudents.length - 8}
+                </span>
+              )}
+            </div>
+          </GlassCard>
+        )}
 
         {/* ── CLASS COGNITIVE STATE — one-liner ── */}
         <ClassCognitiveState
@@ -304,7 +358,7 @@ function ClassDashboardPanelInner({
                     </div>
                     {/* Name + duration */}
                     <div className="flex-1 min-w-0 text-left">
-                      <p className="text-[12px] font-semibold text-[#2C2C2C] truncate">{s.display_name}</p>
+                      <p className="text-[12px] font-semibold text-bw-heading truncate">{s.display_name}</p>
                       <p className="text-[10px] text-[#B0A99E]">✋ depuis {durationLabel}</p>
                     </div>
                     {/* Lower hand button */}
@@ -327,23 +381,60 @@ function ClassDashboardPanelInner({
           </GlassCard>
         )}
 
-        {/* ── PLAN DE CLASSE (collapsible) ── */}
+        {/* ── EMOTIONAL RADAR — class pulse ── */}
+        {stats.online > 0 && (
+          <GlassCard>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-bw-muted">
+                Pouls de classe
+              </span>
+            </div>
+            <div className="flex justify-center">
+              <EmotionalRadar axes={radarAxes} size={140} />
+            </div>
+          </GlassCard>
+        )}
+
+        {/* ── PLAN DE CLASSE / CONSTELLATION (collapsible + toggle) ── */}
         <GlassCard className="!p-0 overflow-hidden">
-          <button
-            onClick={() => setMapExpanded(v => !v)}
-            className="w-full flex items-center justify-between px-3.5 py-2.5 cursor-pointer hover:bg-white/40 transition-colors"
-          >
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#B0A99E]">
-              Plan de classe
-            </span>
-            <svg
-              width="12" height="12" viewBox="0 0 24 24"
-              fill="none" stroke="#B0A99E" strokeWidth="2"
-              className={`transition-transform duration-200 ${mapExpanded ? "rotate-180" : ""}`}
+          <div className="flex items-center justify-between px-3.5 py-2.5">
+            <button
+              onClick={() => setMapExpanded(v => !v)}
+              className="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
             >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-bw-muted">
+                {mapView === "grid" ? "Plan de classe" : "Constellation"}
+              </span>
+              <svg
+                width="12" height="12" viewBox="0 0 24 24"
+                fill="none" stroke="#B0A99E" strokeWidth="2"
+                className={`transition-transform duration-200 ${mapExpanded ? "rotate-180" : ""}`}
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+            {/* View toggle */}
+            <div className="flex items-center gap-0.5 bg-black/[0.04] rounded-lg p-0.5">
+              <button
+                onClick={() => setMapView("grid")}
+                className={`px-2 py-1 text-[10px] font-semibold rounded-md cursor-pointer transition-all ${
+                  mapView === "grid" ? "bg-white text-bw-heading shadow-sm" : "text-bw-muted hover:text-bw-text"
+                }`}
+                title="Plan de classe"
+              >
+                ⊞
+              </button>
+              <button
+                onClick={() => setMapView("constellation")}
+                className={`px-2 py-1 text-[10px] font-semibold rounded-md cursor-pointer transition-all ${
+                  mapView === "constellation" ? "bg-white text-bw-heading shadow-sm" : "text-bw-muted hover:text-bw-text"
+                }`}
+                title="Constellation"
+              >
+                ✦
+              </button>
+            </div>
+          </div>
           <AnimatePresence>
             {mapExpanded && (
               <motion.div
@@ -353,19 +444,37 @@ function ClassDashboardPanelInner({
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <SpatialClassroomGrid
-                  studentStates={studentStates.map(s => {
-                    const raw = session.students?.find(st => st.id === s.id);
-                    return {
-                      id: s.id,
-                      state: s.state,
-                      display_name: raw?.display_name || s.display_name,
-                      avatar: raw?.avatar || s.avatar,
-                      hand_raised_at: raw?.hand_raised_at,
-                    };
-                  })}
-                  onStudentClick={(sid) => setFicheStudentId(sid)}
-                />
+                {mapView === "grid" ? (
+                  <SpatialClassroomGrid
+                    studentStates={studentStates.map(s => {
+                      const raw = session.students?.find(st => st.id === s.id);
+                      return {
+                        id: s.id,
+                        state: s.state,
+                        display_name: raw?.display_name || s.display_name,
+                        avatar: raw?.avatar || s.avatar,
+                        hand_raised_at: raw?.hand_raised_at,
+                      };
+                    })}
+                    onStudentClick={(sid) => setFicheStudentId(sid)}
+                  />
+                ) : (
+                  <div className="px-2 pb-2">
+                    <StudentConstellation
+                      studentStates={studentStates.map(s => {
+                        const raw = session.students?.find(st => st.id === s.id);
+                        return {
+                          id: s.id,
+                          state: s.state,
+                          display_name: raw?.display_name || s.display_name,
+                          avatar: raw?.avatar || s.avatar,
+                          hand_raised_at: raw?.hand_raised_at,
+                        };
+                      })}
+                      onStudentClick={(sid) => setFicheStudentId(sid)}
+                    />
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -394,7 +503,7 @@ function ClassDashboardPanelInner({
                     {s.avatar}
                   </div>
                   <div className="flex-1 min-w-0 text-left">
-                    <p className="text-[12px] font-semibold text-[#2C2C2C] truncate">{s.display_name}</p>
+                    <p className="text-[12px] font-semibold text-bw-heading truncate">{s.display_name}</p>
                     <p className="text-[10px] text-[#C62828]">Bloque</p>
                   </div>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4BDB2" strokeWidth="2" strokeLinecap="round" className="flex-shrink-0">

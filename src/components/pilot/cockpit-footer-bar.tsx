@@ -128,7 +128,7 @@ export function CockpitFooterBar({
             <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 overflow-x-auto">
               {/* Stimulation */}
               <div className="flex flex-col items-center gap-0.5">
-                <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] hidden sm:flex items-center gap-1">💡 Stimulation</span>
+                <span className="text-[8px] font-bold uppercase tracking-wider text-bw-muted hidden sm:flex items-center gap-1">💡 Stimulation</span>
                 <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
                   <button onClick={() => openBroadcastWith("Indice : ", "Envoyer un indice", "💡")}
                     className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
@@ -151,7 +151,7 @@ export function CockpitFooterBar({
               <div className="w-px h-6 hidden sm:block" style={{ background: "rgba(255,255,255,0.4)" }} />
               {/* Interaction */}
               <div className="flex flex-col items-center gap-0.5">
-                <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] hidden sm:flex items-center gap-1">💬 Interaction</span>
+                <span className="text-[8px] font-bold uppercase tracking-wider text-bw-muted hidden sm:flex items-center gap-1">💬 Interaction</span>
                 <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
                   <button onClick={() => openBroadcastWith("Question pour la classe : ", "Lancer une discussion", "💬")}
                     className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
@@ -173,7 +173,7 @@ export function CockpitFooterBar({
               <div className="w-px h-6 hidden sm:block" style={{ background: "rgba(255,255,255,0.4)" }} />
               {/* Analyse */}
               <div className="flex flex-col items-center gap-0.5">
-                <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] hidden sm:flex items-center gap-1">📊 Analyse</span>
+                <span className="text-[8px] font-bold uppercase tracking-wider text-bw-muted hidden sm:flex items-center gap-1">📊 Analyse</span>
                 <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}>
                   <button onClick={() => { if (visibleResponses.length >= 2) setShowCompare(true); }} disabled={visibleResponses.length < 2}
                     className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
@@ -204,7 +204,7 @@ export function CockpitFooterBar({
                 onClick={prevSituation}
                 disabled={updateSession.isPending}
                 title="Question précédente"
-                className="h-11 px-3.5 rounded-[12px] flex items-center justify-center text-[#4A4A4A] bg-white border border-[#E6DBCF] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0 text-[13px] font-medium gap-1.5"
+                className="h-11 px-3.5 rounded-[12px] flex items-center justify-center text-bw-text bg-white border border-[#E6DBCF] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0 text-[13px] font-medium gap-1.5"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 Precedente
@@ -312,7 +312,7 @@ export function CockpitFooterBar({
                 onClick={() => setFocusMode(f => !f)}
                 title={focusMode ? "Quitter le mode focus" : "Mode focus (F)"}
                 className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
-                  focusMode ? "bg-bw-violet/15 text-bw-violet border-bw-violet/30" : "text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border-[#E8DFD2]"
+                  focusMode ? "bg-bw-violet/15 text-bw-violet border-bw-violet/30" : "text-bw-text hover:text-bw-heading bg-white border-bw-border"
                 }`}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="10" /></svg>
@@ -321,7 +321,7 @@ export function CockpitFooterBar({
                 onClick={() => updateSession.mutate({ sharing_enabled: !sharingEnabled })}
                 title={sharingEnabled ? "Partage activé" : "Partage désactivé"}
                 className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
-                  sharingEnabled ? "bg-bw-teal/15 text-bw-teal border-bw-teal/30" : "text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border-[#E8DFD2]"
+                  sharingEnabled ? "bg-bw-teal/15 text-bw-teal border-bw-teal/30" : "text-bw-text hover:text-bw-heading bg-white border-bw-border"
                 }`}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
@@ -330,7 +330,7 @@ export function CockpitFooterBar({
                 onClick={() => updateSession.mutate({ help_enabled: !helpEnabled })}
                 title={helpEnabled ? "Aide élève activée" : "Aide élève désactivée"}
                 className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
-                  helpEnabled ? "bg-purple-500/15 text-purple-500 border-purple-500/30" : "text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border-[#E8DFD2]"
+                  helpEnabled ? "bg-purple-500/15 text-purple-500 border-purple-500/30" : "text-bw-text hover:text-bw-heading bg-white border-bw-border"
                 }`}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -339,7 +339,7 @@ export function CockpitFooterBar({
                 onClick={() => updateSession.mutate({ mute_sounds: !muteSounds })}
                 title={muteSounds ? "Sons désactivés" : "Sons activés"}
                 className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
-                  muteSounds ? "text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border-[#E8DFD2]" : "bg-bw-amber/15 text-bw-amber border-bw-amber/30"
+                  muteSounds ? "text-bw-text hover:text-bw-heading bg-white border-bw-border" : "bg-bw-amber/15 text-bw-amber border-bw-amber/30"
                 }`}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">{muteSounds ? <><path d="M11 5L6 9H2v6h4l5 4z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></> : <><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></>}</svg>
@@ -347,7 +347,7 @@ export function CockpitFooterBar({
               <button
                 onClick={() => setShowShortcuts(true)}
                 title="Raccourcis clavier (?)"
-                className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] transition-all cursor-pointer"
+                className="w-8 h-8 rounded-[10px] flex items-center justify-center text-bw-text hover:text-bw-heading bg-white border border-bw-border transition-all cursor-pointer"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg>
               </button>

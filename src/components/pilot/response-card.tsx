@@ -114,6 +114,13 @@ function ResponseCardInner({
   // "New" response: arrived less than 3 seconds ago
   const isNew = Date.now() - new Date(response.submitted_at).getTime() < 3000;
 
+  // Issue 6 — Cinema card hierarchy classes
+  const hierarchyClass = state === "winner"
+    ? "poster-card"
+    : response.is_highlighted
+      ? "cinema-accent"
+      : "";
+
   return (
     <motion.article
       aria-label={`Réponse de ${response.students?.display_name || "élève"}`}
@@ -124,7 +131,7 @@ function ResponseCardInner({
         y: 0,
         scale: 1,
         boxShadow: isNew
-          ? ["0 0 0 0px rgba(107,140,255,0.3)", "0 0 0 6px rgba(107,140,255,0)", "0 2px 8px rgba(61,43,16,0.04)"]
+          ? ["0 0 0 0px rgba(255,107,53,0.3)", "0 0 0 6px rgba(255,107,53,0)", "0 2px 8px rgba(61,43,16,0.04)"]
           : state === "winner"
             ? "0 4px 16px rgba(87,196,182,0.15)"
             : response.is_highlighted
@@ -141,7 +148,8 @@ function ResponseCardInner({
       style={{
         borderColor,
         x,
-        opacity: state === "hidden" ? 0.3 : undefined,
+        opacity: state === "hidden" ? 0.15 : undefined,
+        filter: state === "hidden" ? "grayscale(1)" : undefined,
         background: state === "winner"
           ? "rgba(240,250,248,0.75)"
           : response.is_highlighted
@@ -154,7 +162,7 @@ function ResponseCardInner({
       dragConstraints={{ left: 0, right: 0 }}
       dragElastic={0.3}
       onDragEnd={handleDragEnd}
-      className={`rounded-[14px] border p-4 transition-all duration-200
+      className={`rounded-[14px] border p-4 transition-all duration-200 card-paper-hover ${hierarchyClass}
       ${swiped === "left" ? "border-[#EB5757]/40" : swiped === "right" ? "border-[#6B8CFF]/40" : ""}
       ${response.reset_at ? "opacity-50" : ""}`}
     >
@@ -163,7 +171,7 @@ function ResponseCardInner({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2.5 mb-1.5">
             <span className="text-lg">{response.students?.avatar}</span>
-            <span className={`text-[14px] font-semibold ${state === "hidden" ? "line-through text-[#B0A99E]" : "text-[#2C2C2C]"}`}>
+            <span className={`text-[14px] font-semibold ${state === "hidden" ? "line-through text-[#B0A99E]" : "text-bw-heading"}`}>
               {response.students?.display_name}
             </span>
             <span className="text-[12px] text-[#B0A99E]">{relativeTime(response.submitted_at)}</span>
@@ -171,7 +179,7 @@ function ResponseCardInner({
               <span className="text-xs px-1.5 py-px rounded-full bg-bw-amber/15 text-bw-amber border border-bw-amber/20">relancé</span>
             )}
           </div>
-          <p className={`text-[14px] leading-relaxed ${state === "hidden" ? "line-through text-[#B0A99E]" : response.reset_at ? "line-through text-[#B0A99E]" : "text-[#4A4A4A]"}`}>
+          <p className={`text-[14px] leading-relaxed ${state === "hidden" ? "line-through text-[#B0A99E]" : response.reset_at ? "line-through text-[#B0A99E]" : "text-bw-text"}`}>
             {response.text}
           </p>
           {response.teacher_comment && (
@@ -222,7 +230,7 @@ function ResponseCardInner({
               onClick={onHide}
               disabled={isPending}
               aria-label={state === "hidden" ? "Montrer la réponse" : "Masquer la réponse"}
-              className="h-7 px-2.5 text-[12px] rounded-[9px] hover:bg-[#F7F3EA] hover:text-[#2C2C2C] cursor-pointer transition-all duration-200 text-[#B0A99E] border border-[#E8DFD2] font-medium focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none active:scale-95"
+              className="h-7 px-2.5 text-[12px] rounded-[9px] hover:bg-[#F7F3EA] hover:text-bw-heading cursor-pointer transition-all duration-200 text-[#B0A99E] border border-[#E8DFD2] font-medium focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none active:scale-95"
             >
               {state === "hidden" ? "Montrer" : "Masquer"}
             </button>

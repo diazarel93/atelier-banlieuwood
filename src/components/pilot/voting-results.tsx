@@ -23,7 +23,10 @@ export function VotingResults({
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Resultats du vote</span>
-        <span className="text-sm text-bw-muted">{voteData.totalVotes} vote{voteData.totalVotes > 1 ? "s" : ""}</span>
+        <div className="flex items-center gap-2">
+          <span className="hero-number-sm text-bw-heading" style={{ fontSize: 24 }}>{voteData.totalVotes}</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">vote{voteData.totalVotes > 1 ? "s" : ""}</span>
+        </div>
       </div>
       {voteData.results.map((vr, i) => {
         const pct = voteData.totalVotes > 0 ? Math.round((vr.count / voteData.totalVotes) * 100) : 0;
