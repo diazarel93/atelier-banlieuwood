@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { OIEScores } from "@/lib/oie-profile";
 import type { PosterChoice, PosterStudent } from "@/components/film-poster";
+import type { FilmData } from "@/app/api/sessions/[id]/film/route";
 import { CATEGORY_LABELS } from "@/lib/constants";
 
 // ── Types ──
@@ -173,6 +174,16 @@ export function useResultsData(sessionId: string) {
     queryFn: async () => {
       const res = await fetch(`/api/sessions/${sessionId}/replay`);
       if (!res.ok) return { events: [], totalDurationMs: 0, students: [], responses: [] };
+      return res.json();
+    },
+  });
+
+  // ── Film data ──
+  const filmQuery = useQuery<FilmData>({
+    queryKey: ["film", sessionId],
+    queryFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/film`);
+      if (!res.ok) throw new Error("Erreur");
       return res.json();
     },
   });
@@ -351,6 +362,7 @@ export function useResultsData(sessionId: string) {
     oieData: oieData(oieQuery),
     sessionDetail: sessionDetailQuery.data ?? null,
     posterData,
+    filmData: filmQuery.data ?? null,
 
     // Replay
     showReplay,

@@ -10,6 +10,7 @@ import { TabBar, type ResultsTab } from "@/components/v2/results/tab-bar";
 import { TabSynthese } from "@/components/v2/results/tab-synthese";
 import { TabCompetences } from "@/components/v2/results/tab-competences";
 import { TabOutilsIa } from "@/components/v2/results/tab-outils-ia";
+import { TabLeFilm } from "@/components/v2/results/tab-le-film";
 import { useResultsData } from "@/hooks/use-results-data";
 import { useNotableResponses } from "@/hooks/use-notable-responses";
 
@@ -149,6 +150,10 @@ export default function ResultsPageV2() {
             bibleProvider={data.bibleProvider}
             generateBible={data.generateBible}
           />
+        )}
+
+        {activeTab === "le-film" && (
+          <TabLeFilm filmData={data.filmData} />
         )}
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-export type ResultsTab = "synthese" | "competences" | "outils-ia";
+export type ResultsTab = "synthese" | "competences" | "outils-ia" | "le-film";
 
 interface TabBarProps {
   active: ResultsTab;
@@ -24,6 +24,11 @@ const TABS: { key: ResultsTab; label: string; icon: string }[] = [
     key: "outils-ia",
     label: "Outils IA",
     icon: "M12 2a10 10 0 110 20 10 10 0 010-20zM12 6v6l4 2",
+  },
+  {
+    key: "le-film",
+    label: "Le Film",
+    icon: "M7 4v16M17 4v16M3 8h4M17 8h4M3 12h18M3 16h4M17 16h4",
   },
 ];
 
