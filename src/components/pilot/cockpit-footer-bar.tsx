@@ -125,7 +125,7 @@ export function CockpitFooterBar({
         <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-6" style={{ height: 68, minHeight: 68 }}>
           {/* LEFT: Action buttons */}
           {sessionStatus !== "waiting" && sessionStatus !== "done" && (
-            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 overflow-x-auto scrollbar-hide">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0 overflow-x-auto scrollbar-hide">
               {/* Stimulation */}
               <div className="flex flex-col items-center gap-0.5">
                 <span className="text-[8px] font-bold uppercase tracking-wider text-bw-muted hidden sm:flex items-center gap-1">💡 Stimulation</span>
