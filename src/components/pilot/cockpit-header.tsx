@@ -37,6 +37,9 @@ interface CockpitHeaderProps {
   onViewResults?: () => void;
   // Energy donut data (Issue 3)
   stuckCount?: number;
+  // Dark mode toggle
+  isDarkMode?: boolean;
+  onToggleDark?: () => void;
 }
 
 /* ── Mini energy donut SVG (20x20) — Issue 3 ── */
@@ -110,6 +113,8 @@ export function CockpitHeader({
   onTogglePauseFromBanner,
   onViewResults,
   stuckCount = 0,
+  isDarkMode,
+  onToggleDark,
 }: CockpitHeaderProps) {
   // Controls popover (Issue 1 — merge auto-advance + pause)
   const [controlsOpen, setControlsOpen] = useState(false);
@@ -258,6 +263,32 @@ export function CockpitHeader({
                 <span className="text-[12px]">⏸</span>
                 Pause
               </button>
+              {/* Screen — open projector */}
+              <button
+                onClick={() => { onScreen(); setControlsOpen(false); }}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors text-bw-text"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                  <line x1="8" y1="21" x2="16" y2="21" />
+                  <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
+                Écran
+              </button>
+              {/* Dark mode toggle */}
+              {onToggleDark && (
+                <button
+                  onClick={onToggleDark}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
+                >
+                  <div className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${isDarkMode ? "bg-indigo-500" : "bg-black/10"}`}>
+                    <div className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${isDarkMode ? "left-2" : "left-px"}`} />
+                  </div>
+                  <span className="text-bw-text">
+                    {isDarkMode ? "🌙" : "🌙"} Nuit de Tournage
+                  </span>
+                </button>
+              )}
             </div>
           )}
         </div>
