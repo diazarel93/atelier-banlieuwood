@@ -7,6 +7,10 @@ interface RecentResponse {
   situationLabel: string;
   textResponse: string | null;
   aiScore: number | null;
+  teacherScore?: number | null;
+  teacherFlag?: string | null;
+  isHighlighted?: boolean;
+  responseTimeMs?: number | null;
   createdAt: string;
 }
 
@@ -19,6 +23,18 @@ function scoreColor(score: number | null): string {
   if (score < 2) return "text-[var(--color-bw-danger)]";
   if (score < 3) return "text-[var(--color-bw-amber)]";
   return "text-[var(--color-bw-green)]";
+}
+
+const FLAG_ICONS: Record<string, string> = {
+  star: "⭐",
+  flag: "🚩",
+  bookmark: "🔖",
+};
+
+function formatTime(ms: number): string {
+  const seconds = Math.round(ms / 1000);
+  if (seconds < 60) return `${seconds}s`;
+  return `${Math.floor(seconds / 60)}m${String(seconds % 60).padStart(2, "0")}`;
 }
 
 export function ResponseHistoryList({ responses }: ResponseHistoryListProps) {
@@ -39,9 +55,19 @@ export function ResponseHistoryList({ responses }: ResponseHistoryListProps) {
           {responses.map((r) => (
             <div key={r.id} className="flex items-start justify-between gap-3 rounded-xl p-2.5 hover:bg-bw-primary/[0.025] transition-colors duration-100">
               <div className="flex-1 min-w-0">
-                <p className="text-body-xs font-medium text-bw-muted mb-0.5">
-                  {r.situationLabel}
-                </p>
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <p className="text-body-xs font-medium text-bw-muted">
+                    {r.situationLabel}
+                  </p>
+                  {r.isHighlighted && (
+                    <span className="text-[10px]" title="Mis en avant par le prof">✨</span>
+                  )}
+                  {r.teacherFlag && (
+                    <span className="text-[10px]" title={r.teacherFlag}>
+                      {FLAG_ICONS[r.teacherFlag] || ""}
+                    </span>
+                  )}
+                </div>
                 {r.textResponse && (
                   <p className="text-sm text-bw-heading line-clamp-2 leading-snug">
                     {r.textResponse}
@@ -49,9 +75,26 @@ export function ResponseHistoryList({ responses }: ResponseHistoryListProps) {
                 )}
               </div>
               <div className="flex items-center gap-2 shrink-0">
+                {/* Response time */}
+                {r.responseTimeMs != null && r.responseTimeMs > 0 && (
+                  <span className="text-[11px] text-bw-muted tabular-nums" title="Temps de réponse">
+                    {formatTime(r.responseTimeMs)}
+                  </span>
+                )}
+                {/* Teacher score */}
+                {r.teacherScore != null && r.teacherScore > 0 && (
+                  <span
+                    className="text-[11px] font-semibold text-bw-primary tabular-nums"
+                    title="Note prof"
+                  >
+                    {r.teacherScore}/5
+                  </span>
+                )}
+                {/* AI score */}
                 {r.aiScore !== null && (
                   <span
                     className={`text-sm font-bold tabular-nums ${scoreColor(r.aiScore)}`}
+                    title="Score IA"
                   >
                     {r.aiScore.toFixed(1)}
                   </span>

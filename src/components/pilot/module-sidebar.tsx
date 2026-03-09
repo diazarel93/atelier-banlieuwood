@@ -111,7 +111,7 @@ function ModuleSidebarInner({
         >
           {/* Global progress */}
           <div className="flex flex-col items-center gap-0.5 pb-2 mb-1 w-full" style={{ borderBottom: "1px solid #EFE4D8" }}>
-            <span className="text-[10px] font-bold text-[#B0A99E] uppercase tracking-widest">Modules</span>
+            <span className="text-[10px] font-bold text-bw-muted uppercase tracking-widest">Modules</span>
             <span className="text-[13px] font-bold tabular-nums" style={{ color: globalDone === allMods.length && globalDone > 0 ? "#4CAF50" : "#2C2C2C" }}>
               {globalDone}/{allMods.length}
             </span>
@@ -200,7 +200,7 @@ function ModuleSidebarInner({
                       {phase.emoji}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-[16px] font-bold text-[#2C2C2C] leading-tight">{phase.label}</h3>
+                      <h3 className="text-[16px] font-bold text-bw-heading leading-tight">{phase.label}</h3>
                       <div className="flex items-center gap-2 mt-0.5">
                         <span className="text-[13px] tabular-nums font-medium" style={{ color: done === total && done > 0 ? "#4CAF50" : "#7A7A7A" }}>
                           {done}/{total} termine{done !== 1 ? "s" : ""}
@@ -277,14 +277,14 @@ function ModuleSidebarInner({
 
                           {/* Title — FULL, no truncation */}
                           <span className={`text-[14px] leading-snug flex-1 ${
-                            isActive ? "text-[#2C2C2C] font-semibold" : isDone ? "text-[#B0A99E]" : "text-[#5B5B5B] group-hover:text-[#2C2C2C]"
+                            isActive ? "text-bw-heading font-semibold" : isDone ? "text-bw-muted" : "text-bw-text group-hover:text-bw-heading"
                           }`}>
                             {mod.title}
                           </span>
 
                           {/* Duration badge (non-active) */}
                           {!isActive && (
-                            <span className="text-[12px] text-[#B0A99E] flex-shrink-0 tabular-nums">{mod.duration}</span>
+                            <span className="text-[12px] text-bw-muted flex-shrink-0 tabular-nums">{mod.duration}</span>
                           )}
                         </div>
 

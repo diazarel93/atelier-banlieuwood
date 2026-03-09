@@ -9,6 +9,7 @@ import { ScoreEvolutionChart } from "@/components/v2/student-profile/score-evolu
 import { ResponseHistoryList } from "@/components/v2/student-profile/response-history-list";
 import { AchievementGrid } from "@/components/v2/student-profile/achievement-grid";
 import { NotesPanel } from "@/components/v2/student-profile/notes-panel";
+import { PortfolioSection } from "@/components/v2/student-profile/portfolio-section";
 import {
   useStudentProfile,
   useCreateNote,
@@ -77,6 +78,12 @@ export default function EleveDetailPage() {
     profile.sessionHistory.length > 0 ||
     profile.recentResponses.length > 0;
 
+  const hasPortfolio =
+    profile.portfolio.personnage ||
+    profile.portfolio.pitch ||
+    profile.portfolio.talentCard ||
+    profile.portfolio.filmRole;
+
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
       <BreadcrumbV2
@@ -87,13 +94,18 @@ export default function EleveDetailPage() {
       />
 
       <div className="space-y-5 mt-4">
-        {/* Hero — with inline score rings when there's data */}
+        {/* Hero — with creative profile, tags, deltas */}
         <ProfileHero
           displayName={profile.displayName}
           avatar={profile.avatar}
           sessionCount={profile.sessionCount}
           totalResponses={profile.totalResponses}
           scores={profile.scores}
+          deltas={profile.deltas}
+          creativeProfile={profile.creativeProfile}
+          avgAiScore={profile.avgAiScore}
+          avgResponseTimeMs={profile.avgResponseTimeMs}
+          facilitatorTags={profile.facilitatorTags}
           lastActiveAt={
             profile.sessionHistory.length > 0
               ? profile.sessionHistory[profile.sessionHistory.length - 1].date
@@ -157,8 +169,11 @@ export default function EleveDetailPage() {
               <ResponseHistoryList responses={profile.recentResponses} />
             </div>
 
-            {/* Right — badges + notes */}
+            {/* Right — portfolio + badges + notes */}
             <div className="space-y-5">
+              {hasPortfolio && (
+                <PortfolioSection portfolio={profile.portfolio} />
+              )}
               <AchievementGrid achievements={profile.achievements} />
               <NotesPanel
                 notes={profile.notes}

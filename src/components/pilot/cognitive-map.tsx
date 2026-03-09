@@ -41,7 +41,7 @@ function CognitiveMapInner({ options, total }: CognitiveMapProps) {
       style={{ background: "rgba(255,255,255,0.7)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.5)" }}
     >
       <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.5)" }}>
-        <h4 className="text-[14px] font-bold text-[#2C2C2C]">Comment pense la classe</h4>
+        <h4 className="text-[14px] font-bold text-bw-heading">Comment pense la classe</h4>
       </div>
       <div className="px-4 py-3 space-y-2.5">
         {options.map((opt, i) => {
@@ -51,11 +51,11 @@ function CognitiveMapInner({ options, total }: CognitiveMapProps) {
           return (
             <div key={opt.key}>
               <div className="flex items-center justify-between mb-1">
-                <span className="flex items-center gap-1.5 text-[13px] font-semibold text-[#4A4A4A]">
+                <span className="flex items-center gap-1.5 text-[13px] font-semibold text-bw-text">
                   <span>{style.emoji}</span>
                   {style.label}
                 </span>
-                <span className="text-[13px] font-bold tabular-nums text-[#2C2C2C]">{pct}%</span>
+                <span className="text-[13px] font-bold tabular-nums text-bw-heading">{pct}%</span>
               </div>
               <div
                 className="h-2 rounded-full overflow-hidden"
@@ -71,7 +71,7 @@ function CognitiveMapInner({ options, total }: CognitiveMapProps) {
                   }}
                 />
               </div>
-              <p className="text-[11px] text-[#B0A99E] mt-0.5">{opt.count} eleve{opt.count > 1 ? "s" : ""}</p>
+              <p className="text-[11px] text-bw-muted mt-0.5">{opt.count} eleve{opt.count > 1 ? "s" : ""}</p>
             </div>
           );
         })}

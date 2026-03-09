@@ -90,6 +90,17 @@ export async function POST(
 
   // Aggregate cross-session for each student who has a profile
   for (const studentId of Object.keys(scores)) {
+    // Find the student's profile_id via the students table
+    const { data: studentRow } = await admin
+      .from("students")
+      .select("profile_id")
+      .eq("id", studentId)
+      .not("profile_id", "is", null)
+      .limit(1)
+      .maybeSingle();
+
+    if (!studentRow?.profile_id) continue;
+
     const { data: allScores } = await admin
       .from("session_oie_scores")
       .select("observation, imagination, expression, response_count")
@@ -107,7 +118,7 @@ export async function POST(
           oie_response_count: agg.responseCount,
           oie_computed_at: now,
         })
-        .eq("student_id", studentId);
+        .eq("id", studentRow.profile_id);
     }
   }
 

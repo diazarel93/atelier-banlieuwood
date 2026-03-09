@@ -3,7 +3,7 @@ import { createServerSupabase } from "@/lib/supabase/server";
 
 /**
  * GET /api/v2/student-profiles/[profileId]
- * Full student profile: info, session history with scores, recent responses, achievements, teacher notes.
+ * Full student profile: info, scores, session history, responses, tags, portfolio, achievements, notes.
  */
 export async function GET(
   _req: NextRequest,
@@ -34,7 +34,7 @@ export async function GET(
   // Find students matching this profileId (could be profile_id or student id)
   const { data: students } = await supabase
     .from("students")
-    .select("id, display_name, avatar, profile_id, session_id, joined_at")
+    .select("id, display_name, avatar, profile_id, session_id, joined_at, creative_profile, total_xp")
     .in("session_id", facSessionIds)
     .or(`profile_id.eq.${profileId},id.eq.${profileId}`);
 
@@ -47,14 +47,119 @@ export async function GET(
     (b.joined_at || "").localeCompare(a.joined_at || "")
   )[0];
 
-  // Session history with scores
-  const { data: scores } = await supabase
-    .from("session_oie_scores")
-    .select("session_id, observation, imagination, expression, response_count, computed_at")
-    .in("student_id", studentIds)
-    .order("computed_at", { ascending: true });
+  // ── Parallel queries ──
+  const [
+    scoresRes,
+    responsesRes,
+    responseCountRes,
+    tagsRes,
+    personnageRes,
+    pitchRes,
+    talentRes,
+    roleRes,
+    reactionsRes,
+    achievementsRes,
+    notesRes,
+  ] = await Promise.all([
+    // OIE scores per session
+    supabase
+      .from("session_oie_scores")
+      .select("session_id, observation, imagination, expression, response_count, computed_at")
+      .in("student_id", studentIds)
+      .order("computed_at", { ascending: true }),
 
-  const sessionHistory = (scores || []).map((sc) => {
+    // Recent responses (last 30 with full data)
+    supabase
+      .from("responses")
+      .select("id, situation_id, text, ai_score, response_time_ms, teacher_score, teacher_flag, is_highlighted, submitted_at, situations(category, restitution_label)")
+      .in("student_id", studentIds)
+      .order("submitted_at", { ascending: false })
+      .limit(30),
+
+    // Total response count (separate query, no limit)
+    supabase
+      .from("responses")
+      .select("id", { count: "exact", head: true })
+      .in("student_id", studentIds),
+
+    // Facilitator tags across all sessions
+    supabase
+      .from("facilitator_tags")
+      .select("tag, session_id, created_at")
+      .in("student_id", studentIds)
+      .in("session_id", facSessionIds),
+
+    // M10 personnage (latest)
+    supabase
+      .from("module10_personnages")
+      .select("prenom, trait_dominant, force, faiblesse, avatar_data, submitted_at")
+      .in("student_id", studentIds)
+      .order("submitted_at", { ascending: false })
+      .limit(1),
+
+    // M10 pitch (latest)
+    supabase
+      .from("module10_pitchs")
+      .select("objectif, obstacle, pitch_text, chrono_seconds, submitted_at")
+      .in("student_id", studentIds)
+      .order("submitted_at", { ascending: false })
+      .limit(1),
+
+    // M8 talent card (latest)
+    supabase
+      .from("module8_talent_cards")
+      .select("talent_category, strengths, role_key, generated_at")
+      .in("student_id", studentIds)
+      .order("generated_at", { ascending: false })
+      .limit(1),
+
+    // M8 role (latest)
+    supabase
+      .from("module8_roles")
+      .select("role_key, is_veto, chosen_at")
+      .in("student_id", studentIds)
+      .order("chosen_at", { ascending: false })
+      .limit(1),
+
+    // Reaction counts received on this student's responses
+    supabase
+      .from("response_reactions")
+      .select("emoji")
+      .in("session_id", facSessionIds),
+
+    // Achievements
+    supabase
+      .from("student_achievements")
+      .select("achievement_id, tier, progress, unlocked_at")
+      .in("profile_id", [profileId]),
+
+    // Teacher notes
+    supabase
+      .from("student_notes")
+      .select("id, note_type, content, session_id, created_at")
+      .eq("profile_id", profileId)
+      .eq("facilitator_id", user.id)
+      .order("created_at", { ascending: false }),
+  ]);
+
+  const scores = scoresRes.data || [];
+  const responses = responsesRes.data || [];
+  const totalResponseCount = responseCountRes.count ?? responses.length;
+  const tags = tagsRes.data || [];
+
+  // ── Session history with scores + ai_score avg ──
+  // Compute ai_score average per session from responses
+  const aiScoreBySession: Record<string, { sum: number; count: number }> = {};
+  const responseTimeBySession: Record<string, { sum: number; count: number }> = {};
+  for (const r of responses) {
+    // Find which session this student was in for this response
+    const stu = students.find((s) => true); // responses are already filtered by studentIds
+    if (r.ai_score !== null) {
+      // We don't have session_id in the response select, so we'll aggregate globally
+    }
+  }
+
+  const sessionHistory = scores.map((sc) => {
     const sess = facSessions.find((s) => s.id === sc.session_id);
     return {
       sessionId: sc.session_id,
@@ -73,89 +178,139 @@ export async function GET(
     };
   });
 
-  // Recent responses (last 20)
-  const { data: responses } = await supabase
-    .from("responses")
-    .select("id, situation_id, text_response, ai_score, response_time_ms, created_at")
-    .in("student_id", studentIds)
-    .order("created_at", { ascending: false })
-    .limit(20);
+  // ── Situation labels for responses ──
+  const recentResponses = responses.map((r) => {
+    const sit = r.situations as unknown as { category: string; restitution_label: string } | null;
+    return {
+      id: r.id,
+      situationLabel: sit?.restitution_label || sit?.category || "Question",
+      textResponse: r.text,
+      aiScore: r.ai_score,
+      teacherScore: r.teacher_score,
+      teacherFlag: r.teacher_flag,
+      isHighlighted: r.is_highlighted,
+      responseTimeMs: r.response_time_ms,
+      createdAt: r.submitted_at,
+    };
+  });
 
-  // Fetch situation labels for the responses
-  const situationIds = [
-    ...new Set((responses || []).map((r) => r.situation_id).filter(Boolean)),
-  ];
-  let situationMap = new Map<string, string>();
-  if (situationIds.length > 0) {
-    const { data: situations } = await supabase
-      .from("situations")
-      .select("id, label")
-      .in("id", situationIds);
-    situationMap = new Map(
-      (situations || []).map((s) => [s.id, s.label])
-    );
+  // ── Facilitator tags aggregated ──
+  const tagCounts: Record<string, number> = {};
+  for (const t of tags) {
+    tagCounts[t.tag] = (tagCounts[t.tag] || 0) + 1;
   }
+  const facilitatorTags = Object.entries(tagCounts)
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a, b) => b.count - a.count);
 
-  const recentResponses = (responses || []).map((r) => ({
-    id: r.id,
-    situationLabel: situationMap.get(r.situation_id) || "Question",
-    textResponse: r.text_response,
-    aiScore: r.ai_score,
-    responseTimeMs: r.response_time_ms,
-    createdAt: r.created_at,
+  // ── Module portfolio ──
+  const personnage = personnageRes.data?.[0] || null;
+  const pitch = pitchRes.data?.[0] || null;
+  const talentCard = talentRes.data?.[0] || null;
+  const filmRole = roleRes.data?.[0] || null;
+
+  const portfolio = {
+    personnage: personnage
+      ? {
+          prenom: personnage.prenom,
+          traitDominant: personnage.trait_dominant,
+          force: personnage.force,
+          faiblesse: personnage.faiblesse,
+          avatarData: personnage.avatar_data,
+        }
+      : null,
+    pitch: pitch
+      ? {
+          objectif: pitch.objectif,
+          obstacle: pitch.obstacle,
+          pitchText: pitch.pitch_text,
+          chronoSeconds: pitch.chrono_seconds,
+        }
+      : null,
+    talentCard: talentCard
+      ? {
+          talentCategory: talentCard.talent_category,
+          strengths: talentCard.strengths,
+          roleKey: talentCard.role_key,
+        }
+      : null,
+    filmRole: filmRole
+      ? {
+          roleKey: filmRole.role_key,
+          isVeto: filmRole.is_veto,
+        }
+      : null,
+  };
+
+  // ── Achievements ──
+  const achievements = (achievementsRes.data || []).map((a) => ({
+    id: a.achievement_id,
+    name: a.achievement_id,
+    tier: a.tier || "bronze",
+    progress: a.progress || 0,
+    unlockedAt: a.unlocked_at,
   }));
 
-  // Teacher notes (column names: profile_id, facilitator_id)
-  const { data: notes } = await supabase
-    .from("student_notes")
-    .select("id, note_type, content, session_id, created_at")
-    .eq("profile_id", profileId)
-    .eq("facilitator_id", user.id)
-    .order("created_at", { ascending: false });
-
-  // Achievements (column names: profile_id, unlocked_at)
-  let achievements: { id: string; name: string; tier: string; unlockedAt: string }[] = [];
-  try {
-    const { data: achData } = await supabase
-      .from("student_achievements")
-      .select("id, achievement_id, tier, unlocked_at")
-      .in("profile_id", [profileId]);
-    achievements = (achData || []).map((a) => ({
-      id: a.achievement_id,
-      name: a.achievement_id,
-      tier: a.tier || "bronze",
-      unlockedAt: a.unlocked_at,
-    }));
-  } catch {
-    // Table may not exist, skip
-  }
-
-  // Aggregate average scores
-  const allScoreArrays = scores || [];
+  // ── Aggregate average scores ──
   const avg = (arr: number[]) =>
     arr.length > 0 ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : 0;
 
   const aggregateScores = {
-    comprehension: avg(allScoreArrays.map((s) => s.observation ?? 0)),
-    creativite: avg(allScoreArrays.map((s) => s.imagination ?? 0)),
-    expression: avg(allScoreArrays.map((s) => s.expression ?? 0)),
+    comprehension: avg(scores.map((s) => s.observation ?? 0)),
+    creativite: avg(scores.map((s) => s.imagination ?? 0)),
+    expression: avg(scores.map((s) => s.expression ?? 0)),
     engagement: avg(
-      allScoreArrays.map((s) =>
+      scores.map((s) =>
         Math.min(100, Math.round(((s.response_count || 0) / 20) * 100))
       )
     ),
   };
 
+  // ── Compute deltas (last session vs previous average) ──
+  let deltas: Record<string, number> | null = null;
+  if (scores.length >= 2) {
+    const last = scores[scores.length - 1];
+    const prevScores = scores.slice(0, -1);
+    deltas = {
+      comprehension: Math.round((last.observation ?? 0) - avg(prevScores.map((s) => s.observation ?? 0))),
+      creativite: Math.round((last.imagination ?? 0) - avg(prevScores.map((s) => s.imagination ?? 0))),
+      expression: Math.round((last.expression ?? 0) - avg(prevScores.map((s) => s.expression ?? 0))),
+      engagement: Math.round(
+        Math.min(100, ((last.response_count || 0) / 20) * 100) -
+        avg(prevScores.map((s) => Math.min(100, Math.round(((s.response_count || 0) / 20) * 100))))
+      ),
+    };
+  }
+
+  // ── Average ai_score across all responses ──
+  const aiScores = responses.filter((r) => r.ai_score !== null).map((r) => r.ai_score as number);
+  const avgAiScore = aiScores.length > 0
+    ? Math.round((aiScores.reduce((a, b) => a + b, 0) / aiScores.length) * 10) / 10
+    : null;
+
+  // ── Average response time ──
+  const responseTimes = responses.filter((r) => r.response_time_ms !== null).map((r) => r.response_time_ms as number);
+  const avgResponseTimeMs = responseTimes.length > 0
+    ? Math.round(responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length)
+    : null;
+
   return NextResponse.json({
     profileId,
     displayName: student.display_name,
     avatar: student.avatar,
+    creativeProfile: student.creative_profile || null,
+    totalXp: student.total_xp || 0,
     sessionCount: students.length,
-    totalResponses: (responses || []).length,
+    totalResponses: totalResponseCount,
     scores: aggregateScores,
+    deltas,
+    avgAiScore,
+    avgResponseTimeMs,
     sessionHistory,
     recentResponses,
+    facilitatorTags,
+    portfolio,
     achievements,
-    notes: notes || [],
+    notes: notesRes.data || [],
   });
 }

@@ -180,7 +180,7 @@ export function StudentFiche({
             <span className="text-[11px] font-semibold" style={{ color: isFast ? "#2E7D32" : isSlow ? "#C62828" : "#3B5998" }}>
               Temps de reponse : {secs}s
             </span>
-            <span className="text-[10px] text-[#B0A99E]">
+            <span className="text-[10px] text-bw-muted">
               {isFast ? "(rapide)" : isSlow ? "(lent)" : ""}
             </span>
           </div>
@@ -395,7 +395,7 @@ function OIEProfilePanel({ scores }: { scores: OIEScores }) {
           <p className="text-[11px] font-semibold" style={{ color: synthesis.color }}>
             {synthesis.title}
           </p>
-          <p className="text-[10px] text-[#5B5B5B] leading-snug mt-0.5">
+          <p className="text-[10px] text-bw-text leading-snug mt-0.5">
             {synthesis.description}
           </p>
         </div>
@@ -412,7 +412,7 @@ function OIEProfilePanel({ scores }: { scores: OIEScores }) {
         const weak = axes[1];
         if (secondary.val > 40 && weak.val < 30) {
           return (
-            <p className="text-[10px] text-[#B0A99E] px-1">
+            <p className="text-[10px] text-bw-muted px-1">
               Aussi {secondary.label.toLowerCase()} ({secondary.val}), mais peu d&apos;{weak.label.toLowerCase()} ({weak.val}).
             </p>
           );
@@ -425,7 +425,7 @@ function OIEProfilePanel({ scores }: { scores: OIEScores }) {
         <div>
           <button
             onClick={() => setShowDebug(!showDebug)}
-            className="text-[9px] text-[#B0A99E] hover:text-[#8894A0] cursor-pointer transition-colors"
+            className="text-[9px] text-bw-muted hover:text-[#8894A0] cursor-pointer transition-colors"
           >
             {showDebug ? "Masquer le détail" : "Voir le détail des signaux"}
           </button>

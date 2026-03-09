@@ -31,6 +31,9 @@ interface RecentResponse {
   situationLabel: string;
   textResponse: string | null;
   aiScore: number | null;
+  teacherScore: number | null;
+  teacherFlag: string | null;
+  isHighlighted: boolean;
   responseTimeMs: number | null;
   createdAt: string;
 }
@@ -47,18 +50,56 @@ interface Achievement {
   id: string;
   name: string;
   tier: string;
+  progress: number;
   unlockedAt: string;
+}
+
+interface FacilitatorTag {
+  tag: string;
+  count: number;
+}
+
+interface Portfolio {
+  personnage: {
+    prenom: string;
+    traitDominant: string | null;
+    force: string | null;
+    faiblesse: string | null;
+    avatarData: Record<string, unknown>;
+  } | null;
+  pitch: {
+    objectif: string;
+    obstacle: string;
+    pitchText: string;
+    chronoSeconds: number | null;
+  } | null;
+  talentCard: {
+    talentCategory: string;
+    strengths: string[];
+    roleKey: string | null;
+  } | null;
+  filmRole: {
+    roleKey: string;
+    isVeto: boolean;
+  } | null;
 }
 
 export interface StudentProfileDetail {
   profileId: string;
   displayName: string;
   avatar: string | null;
+  creativeProfile: string | null;
+  totalXp: number;
   sessionCount: number;
   totalResponses: number;
   scores: AxesScores;
+  deltas: Record<string, number> | null;
+  avgAiScore: number | null;
+  avgResponseTimeMs: number | null;
   sessionHistory: SessionHistoryEntry[];
   recentResponses: RecentResponse[];
+  facilitatorTags: FacilitatorTag[];
+  portfolio: Portfolio;
   achievements: Achievement[];
   notes: TeacherNote[];
 }

@@ -266,6 +266,10 @@ function CockpitContent({
     timelineTracked.current.add(key);
     setTimelineEvents(prev => [...prev, createTimelineEvent(type, label, detail, severity)]);
   }, []);
+  const [isDarkMode, setIsDarkMode] = useState(() => typeof window !== 'undefined' && localStorage.getItem('cockpit-dark') === '1');
+  useEffect(() => {
+    localStorage.setItem('cockpit-dark', isDarkMode ? '1' : '0');
+  }, [isDarkMode]);
   const [autoAdvance, setAutoAdvance] = useState(false);
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState(0);
@@ -1091,7 +1095,7 @@ function CockpitContent({
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden film-grain">
+    <div className={`flex-1 flex flex-col overflow-hidden film-grain ${isDarkMode ? 'cockpit-dark' : ''}`}>
       {/* ── COCKPIT HEADER — Phase stepper + status bar + controls ── */}
       <CockpitHeader
         sessionTitle={session.title || "Session"}
@@ -1133,6 +1137,8 @@ function CockpitContent({
         onTogglePauseFromBanner={handlePauseToggle}
         onViewResults={() => router.push(`/session/${sessionId}/results`)}
         stuckCount={stuckStudents.length}
+        isDarkMode={isDarkMode}
+        onToggleDark={() => setIsDarkMode(v => !v)}
       />
 
       {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}

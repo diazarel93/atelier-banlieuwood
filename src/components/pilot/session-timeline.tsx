@@ -67,7 +67,7 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
     return (
       <div className="rounded-xl p-4 text-center" style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.4)" }}>
         <span className="text-lg">📼</span>
-        <p className="text-[12px] text-[#B0A99E] mt-1">La timeline se remplit pendant la seance</p>
+        <p className="text-[12px] text-bw-muted mt-1">La timeline se remplit pendant la seance</p>
       </div>
     );
   }
@@ -83,7 +83,7 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
       >
         <div className="flex items-center gap-2">
           <span className="text-sm">📼</span>
-          <span className="text-[12px] font-bold text-[#2C2C2C]">Timeline de seance</span>
+          <span className="text-[12px] font-bold text-bw-heading">Timeline de seance</span>
           <span className="text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full" style={{ background: "#EFE8DD", color: "#7A7A7A" }}>
             {events.length}
           </span>
@@ -134,7 +134,7 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
                     {/* Content */}
                     <div className="flex-1 min-w-0 pb-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold tabular-nums text-[#B0A99E]">
+                        <span className="text-[10px] font-bold tabular-nums text-bw-muted">
                           {formatTime(event.timestamp, sessionStartedAt)}
                         </span>
                         <span className="text-[11px] font-semibold truncate" style={{ color: style.color }}>
@@ -142,7 +142,7 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
                         </span>
                       </div>
                       {event.detail && (
-                        <p className="text-[10px] text-[#7A7A7A] mt-0.5 leading-snug">{event.detail}</p>
+                        <p className="text-[10px] text-bw-text mt-0.5 leading-snug">{event.detail}</p>
                       )}
                     </div>
                   </motion.div>
@@ -158,8 +158,8 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
         <div className="px-3 py-2">
           <div className="flex items-center gap-2">
             <span className="text-[10px]">{EVENT_STYLES[events[events.length - 1].type]?.icon}</span>
-            <span className="text-[11px] text-[#7A7A7A] truncate">{events[events.length - 1].label}</span>
-            <span className="text-[10px] text-[#B0A99E] ml-auto">
+            <span className="text-[11px] text-bw-text truncate">{events[events.length - 1].label}</span>
+            <span className="text-[10px] text-bw-muted ml-auto">
               {formatTime(events[events.length - 1].timestamp, sessionStartedAt)}
             </span>
           </div>

@@ -311,13 +311,13 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
     if (recentHistory.length > 0) {
       return (
         <div className="rounded-lg px-3 py-2" style={{ background: "rgba(0,0,0,0.02)", border: "1px solid rgba(0,0,0,0.04)" }}>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#B0A99E]">Alertes recentes</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">Alertes recentes</span>
           <div className="mt-1 space-y-0.5">
             {recentHistory.map((h, i) => {
               const ago = Math.floor((Date.now() - h.dismissedAt) / 60000);
               const timeLabel = ago >= 1 ? `il y a ${ago}min` : "a l'instant";
               return (
-                <div key={i} className="flex items-center gap-1.5 text-[10px] text-[#B0A99E]">
+                <div key={i} className="flex items-center gap-1.5 text-[10px] text-bw-muted">
                   <span className="flex-shrink-0">{h.icon}</span>
                   <span className="truncate">{h.title}</span>
                   <span className="ml-auto flex-shrink-0 tabular-nums">{timeLabel}</span>
@@ -510,7 +510,7 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
               const ago = Math.floor((Date.now() - h.dismissedAt) / 60000);
               const timeLabel = ago >= 1 ? `${ago}min` : "<1min";
               return (
-                <div key={i} className="flex items-center gap-1.5 text-[10px] text-[#B0A99E]">
+                <div key={i} className="flex items-center gap-1.5 text-[10px] text-bw-muted">
                   <span className="flex-shrink-0 opacity-60">{h.icon}</span>
                   <span className="truncate opacity-60">{h.title}</span>
                   <span className="ml-auto flex-shrink-0 tabular-nums opacity-40">{timeLabel}</span>
