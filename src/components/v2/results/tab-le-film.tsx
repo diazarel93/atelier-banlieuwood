@@ -19,9 +19,9 @@ const MANCHE_LABELS: Record<number, string> = {
   1: "Le Ton",
   2: "La Situation",
   3: "Les Personnages",
-  4: "L\u2019Objectif",
-  5: "L\u2019Obstacle",
-  6: "La Premi\u00e8re Sc\u00e8ne",
+  4: "L'Objectif",
+  5: "L'Obstacle",
+  6: "La Première Scène",
   7: "La Relation",
   8: "Le Moment Fort",
 };
@@ -149,9 +149,9 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
       await exportElementAsImage(exportRef.current, `${slug}-le-film.png`);
-      toast.success("Le Film t\u00e9l\u00e9charg\u00e9 !");
+      toast.success("Le Film téléchargé !");
     } catch {
-      toast.error("Erreur lors de l\u2019export");
+      toast.error("Erreur lors de l'export");
     } finally {
       setExporting(false);
     }
@@ -244,7 +244,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              T\u00e9l\u00e9charger le film
+              Télécharger le film
             </>
           )}
         </button>
@@ -362,7 +362,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                     margin: "0 0 20px",
                   }}
                 >
-                  pr\u00e9sente
+                  présente
                 </p>
 
                 {/* Genre badge */}
@@ -716,7 +716,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                 </div>
               )}
 
-              {/* ═══ Section 5: G\u00e9n\u00e9rique / Credits ═══ */}
+              {/* ═══ Section 5: Générique / Credits ═══ */}
               {students.length > 0 && (
                 <div>
                   <GoldDivider label="Avec" />
@@ -796,7 +796,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                       fontWeight: 600,
                     }}
                   >
-                    {"\u2726"} {stats.totalStudents} \u00e9l\u00e8ves
+                    {"\u2726"} {stats.totalStudents} élèves
                   </span>
                   <span
                     style={{
@@ -812,7 +812,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                       fontWeight: 600,
                     }}
                   >
-                    {"\u2726"} {stats.totalResponses} r\u00e9ponses
+                    {"\u2726"} {stats.totalResponses} réponses
                   </span>
                 </div>
               </div>
