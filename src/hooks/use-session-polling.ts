@@ -223,6 +223,34 @@ export interface Module12Data {
   poolReady: boolean;
 }
 
+export interface Module13Data {
+  position: number;
+  stepKey: string;
+  stepLabel: string;
+  stepEmoji: string;
+  stepDescription: string;
+  hasSubmitted: boolean;
+  submittedCount: number;
+  allResults: { position: number; type: string; data: unknown }[];
+  // Position 1 — Montage
+  scenes?: { manche: number; text: string }[];
+  studentOrder?: number[] | null;
+  // Position 2 — Musique
+  studentChoice?: { genre: string; mood: string; justification: string } | null;
+  allChoices?: { genre: string; mood: string; student_id: string }[];
+  // Position 3 — Titre
+  studentTitre?: string | null;
+  allTitres?: { titre: string; student_id: string }[];
+  // Position 4 — Affiche
+  studentAffiche?: { style: string; description: string; tagline: string } | null;
+  allAffiches?: { style: string; description: string; tagline: string; student_id: string }[];
+  // Position 5 — Trailer
+  availableMoments?: { manche: number; text: string }[];
+  studentTrailer?: { moments: unknown; voix_off: string } | null;
+  // Position 6-8 — Standard Q&A
+  useStandardQA?: boolean;
+}
+
 export interface SessionState {
   session: {
     id: string;
@@ -258,6 +286,7 @@ export interface SessionState {
   module10?: Module10Data;
   module11?: Module11Data;
   module12?: Module12Data;
+  module13?: Module13Data;
   hasResponded: boolean;
   hasVoted: boolean;
   voteOptions: { id: string; text: string }[];

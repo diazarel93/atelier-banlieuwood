@@ -25,6 +25,8 @@ export const CATEGORIES = [
   { key: "pitch", label: "Pitch", color: "#F59E0B" },
   // Module 12 — Construction Collective
   { key: "collectif", label: "Collectif", color: "#14B8A6" },
+  // Module 13 — Post-prod
+  { key: "postprod", label: "Post-prod", color: "#06B6D4" },
 ] as const;
 
 export const CATEGORY_COLORS: Record<string, string> = Object.fromEntries(
@@ -182,6 +184,7 @@ export const MODULE_SEANCE_SITUATIONS: Record<number, Record<number, number>> = 
   10: { 1: 7, 2: 5 },             // Et si... (1), Ton QCM (2), Personnage QCM (3), Déclencheur QCM (4), Durée QCM (5), Fin QCM (6), Idea-bank (7)
   11: { 1: 6, 2: 6, 3: 6, 4: 6 }, // Ciné-Débat: L'Art de Raconter (6), Émotions (6), Héros (6), Coulisses (6)
   12: { 1: 8 }, // Construction Collective: 8 manches de vote
+  13: { 1: 8 }, // Post-prod: 8 étapes de finalisation
   5: { 1: 5 },  // Le Scénario: Frise (1), Scènes V0 (2), Mission (3), Écriture (4), Assemblage (5)
   7: { 1: 4 },  // Mise en scène: Plans (1), Comparaison (2), Découpage (3), Storyboard (4)
   8: { 1: 5 },  // L'Équipe: Quiz (1), Débrief (2), Choix de rôle (3), Récap (4), Carte talent (5)

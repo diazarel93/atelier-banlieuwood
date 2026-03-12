@@ -11,6 +11,7 @@ import {
   handleModule10,
   handleModule11,
   handleModule12,
+  handleModule13,
   getStudentTeam,
 } from "./handlers";
 
@@ -79,6 +80,11 @@ export async function GET(
   // ── MODULE 12: Construction Collective ──
   if (session.current_module === 12) {
     return handleModule12(req, session, sessionId, admin);
+  }
+
+  // ── MODULE 13: La Post-prod ──
+  if (session.current_module === 13) {
+    return handleModule13(req, session, sessionId, admin);
   }
 
   // ── MODULE 3+ & 9: Situations normales ──

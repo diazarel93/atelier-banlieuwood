@@ -7,5 +7,6 @@ export { handleModule8 } from "./module8";
 export { handleModule10 } from "./module10";
 export { handleModule11 } from "./module11";
 export { handleModule12 } from "./module12";
+export { handleModule13 } from "./module13";
 export { getStudentTeam } from "./shared";
 export type { AdminClient, ModuleHandler } from "./types";

@@ -33,6 +33,7 @@ import { useSound } from "@/hooks/use-sound";
 // Extracted cockpit sections
 import { Module9BudgetOverview } from "@/components/pilot/module9-budget-overview";
 import { Module12Cockpit } from "@/components/pilot/module12-cockpit";
+import { Module13Cockpit } from "@/components/pilot/module13-cockpit";
 import { Module6Cockpit } from "@/components/pilot/module6-cockpit";
 import { Module7Cockpit } from "@/components/pilot/module7-cockpit";
 import { Module8Cockpit } from "@/components/pilot/module8-cockpit";
@@ -392,6 +393,7 @@ function CockpitContent({
     isM2ECChecklist, isM2ECSceneBuilder, isM2ECComparison,
     isM10Etsi, isM10Pitch, isM10Any, isM10SpecialPosition,
     isM2ECSpecial, isM2ECAny, isM12Any, isM12Manche,
+    isM13Any, isM13Postprod,
     isM6Any, isM7Any, isM8Any,
     isQAModule,
     maxSituations, canGoNext, canGoPrev, seance,
@@ -455,6 +457,9 @@ function CockpitContent({
     poolReady: boolean;
   } })?.module12;
 
+  // Module 13 data (La Post-prod)
+  const module13Data = (situationData as { module13?: import("@/hooks/use-session-polling").Module13Data })?.module13;
+
   // Module 6 data (Le Scénario)
   const module6Data = (situationData as { module6?: import("@/hooks/use-session-polling").Module6Data })?.module6;
   // Module 7 data (La Mise en scène)
@@ -470,7 +475,7 @@ function CockpitContent({
   const moduleColor = currentMod?.color || "#FF6B35";
   const currentModuleLessons = MODULES.filter((m) => m.dbModule === session.current_module);
   const moduleGuide = currentMod ? getModuleGuide(currentMod.id) : undefined;
-  const questionGuide = (session.current_module === 1 || session.current_module === 3 || session.current_module === 4 || session.current_module === 9 || (session.current_module === 2 && !isM2ECSpecial && !isM2ECComparison) || isM10Any || isM12Any)
+  const questionGuide = (session.current_module === 1 || session.current_module === 3 || session.current_module === 4 || session.current_module === 9 || (session.current_module === 2 && !isM2ECSpecial && !isM2ECComparison) || isM10Any || isM12Any || isM13Any)
     ? getQuestionGuide(session.current_seance || 1, (session.current_situation_index || 0) + 1, session.current_module)
     : undefined;
 
@@ -967,7 +972,8 @@ function CockpitContent({
   // Séance 1: pos 0 (etsi), pos 2 (idea-bank) are special; pos 1 (qcm) is standard
   // Séance 2: all positions are special
   const showM10Special = isM10Any && !(isM10Etsi && displayIndex === 1);
-  const showStandardQA = (isStandardQA || (isM2ECAny && !showM2ECSpecial && !showM2ECComparison) || (isM10Any && !showM10Special)) && !isM12Any && !isM6Any && !isM7Any && !isM8Any;
+  const showM13Standard = isM13Any && (session.current_situation_index || 0) >= 5;
+  const showStandardQA = (isStandardQA || (isM2ECAny && !showM2ECSpecial && !showM2ECComparison) || (isM10Any && !showM10Special) || showM13Standard) && !isM12Any && !(isM13Any && !showM13Standard) && !isM6Any && !isM7Any && !isM8Any;
 
   // ── Universal question text — used by the header question bar for ALL modules ──
   const universalQuestionText: string | null = (() => {
@@ -990,6 +996,7 @@ function CockpitContent({
       if (showM2ECSceneBuilder) return "Construction de scene";
       if (showM2ECComparison) return "Confrontation de scenes";
       if (isM12Any) return module12Data?.mancheLabel || `Manche ${module12Data?.manche || 1}`;
+      if (isM13Any && module13Data) return `${module13Data.stepEmoji} ${module13Data.stepLabel}`;
       if (isM6Any && module6Data) return getM6Label(module6Data.type);
       if (isM7Any && module7Data) return getM7Label(module7Data.type);
       if (isM8Any && module8Data) return getM8Label(module8Data.type);
@@ -1004,6 +1011,7 @@ function CockpitContent({
     if (showM2ECSceneBuilder) return "Construction de scene";
     if (showM2ECComparison) return "Confrontation de scenes";
     if (isM12Any) return module12Data?.mancheLabel || `Manche ${module12Data?.manche || 1}`;
+    if (isM13Any && module13Data) return `${module13Data.stepEmoji} ${module13Data.stepLabel}`;
     if (isM6Any && module6Data) return getM6Label(module6Data.type);
     if (isM7Any && module7Data) return getM7Label(module7Data.type);
     if (isM8Any && module8Data) return getM8Label(module8Data.type);
@@ -1027,6 +1035,7 @@ function CockpitContent({
     if (showM2ECSceneBuilder) return "Scene";
     if (showM2ECComparison) return "Confrontation";
     if (isM12Any) return "Construction";
+    if (isM13Any) return "Post-prod";
     if (isM6Any) return "Scenario";
     if (isM7Any) return "Mise en scene";
     if (isM8Any) return "Equipe";
@@ -1041,6 +1050,7 @@ function CockpitContent({
     if (isBudgetQuiz) return "Budgets";
     if (showM10Special) return isM10Etsi ? "Et si..." : "Pitch";
     if (isM12Any) return "Construction";
+    if (isM13Any) return "Post-prod";
     if (isM6Any) return "Scenario";
     if (isM7Any) return "Mise en scene";
     if (isM8Any) return "Equipe";
@@ -1824,6 +1834,15 @@ function CockpitContent({
             />
           )}
 
+          {/* ── MODULE 13: La Post-prod cockpit ── */}
+          {isM13Any && module13Data && (
+            <Module13Cockpit
+              sessionId={session.id}
+              module13={module13Data}
+              connectedCount={activeStudents.length}
+            />
+          )}
+
           {/* ── MODULE 6: Le Scénario cockpit ── */}
           {isM6Any && module6Data && (
             <Module6Cockpit
@@ -2239,7 +2258,7 @@ function CockpitContent({
 
           {/* ── RESPONSES LIST (Budget/other — simpler display with inline actions) ── */}
           {/* M1 Positioning: responses moved to right panel to avoid center scroll */}
-          {!isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !isM6Any && !isM7Any && !isM8Any && !isM1Positioning && session.status !== "done" && responses.length > 0 && (
+          {!isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !(isM13Any && !showM13Standard) && !isM6Any && !isM7Any && !isM8Any && !isM1Positioning && session.status !== "done" && responses.length > 0 && (
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-[14px] font-semibold text-[#7A7A7A]">Reponses</span>
@@ -2322,7 +2341,7 @@ function CockpitContent({
           )}
 
           {/* ── EMPTY STATE — lively waiting state with animated avatars ── */}
-          {session.status === "responding" && unifiedRespondedCount === 0 && responses.length === 0 && !isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !isM6Any && !isM7Any && !isM8Any && !isBudgetQuiz && !isM1Positioning && (
+          {session.status === "responding" && unifiedRespondedCount === 0 && responses.length === 0 && !isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !(isM13Any && !showM13Standard) && !isM6Any && !isM7Any && !isM8Any && !isBudgetQuiz && !isM1Positioning && (
             <div
               className="rounded-[16px] p-8 text-center space-y-5"
               style={{

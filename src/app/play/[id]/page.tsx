@@ -49,6 +49,7 @@ import { ChronoTestState } from "@/components/play/module-10/chrono-test-state";
 import { PitchConfrontationState } from "@/components/play/module-10/pitch-confrontation-state";
 import { CineDebatState } from "@/components/play/module-11/cine-debat-state";
 import { MancheVoteState } from "@/components/play/module-12/manche-vote-state";
+import { PostprodState } from "@/components/play/module-13/postprod-state";
 import { FriseNarrative } from "@/components/play/module-6/frise-narrative";
 import { SceneCardList } from "@/components/play/module-6/scene-card";
 import { MissionState } from "@/components/play/module-6/mission-state";
@@ -720,6 +721,21 @@ export default function PlayPage() {
           studentId={studentId!}
         />
       );
+    }
+
+    // ── MODULE 13: La Post-prod — positions 1-5 custom, 6-8 standard Q&A ──
+    if (session.currentModule === 13 && data.module13 && session.status === "responding") {
+      // Positions 6-8 use standard Q&A, fall through to SituationState
+      if (!data.module13.useStandardQA) {
+        return (
+          <PostprodState
+            key={`m13-${data.module13.position}`}
+            module13={data.module13}
+            sessionId={sessionId}
+            studentId={studentId!}
+          />
+        );
+      }
     }
 
     // Module 9 séance 2 — Budget game (other séances use regular Q&A)

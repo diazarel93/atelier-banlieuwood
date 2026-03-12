@@ -433,8 +433,6 @@ export const MODULES: ModuleDef[] = [
     iconKey: "clapperboard",
     duration: "50 min",
     questions: 8,
-    disabled: true,
-    comingSoon: true,
   },
 ];
 
