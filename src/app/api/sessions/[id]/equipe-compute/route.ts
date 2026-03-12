@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireFacilitator } from "@/lib/api-utils";
 import { rankStudents, generateTalentCard } from "@/lib/module-equipe-data";
 
 // POST — Facilitateur computes points & rankings for M8
@@ -8,19 +9,12 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
+
+  // Auth: only the facilitator who owns this session
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const admin = createAdminClient();
-
-  // Verify session exists
-  const { data: session, error: sessionError } = await admin
-    .from("sessions")
-    .select("id")
-    .eq("id", sessionId)
-    .is("deleted_at", null)
-    .single();
-
-  if (sessionError || !session) {
-    return NextResponse.json({ error: "Session introuvable" }, { status: 404 });
-  }
 
   // Get active students
   const { data: students } = await admin
@@ -166,12 +160,17 @@ export async function POST(
   });
 }
 
-// POST to /equipe-compute/talent-cards — generate talent cards after roles are assigned
+// PUT — generate talent cards after roles are assigned
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
+
+  // Auth: only the facilitator who owns this session
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const admin = createAdminClient();
 
   // Get all roles assigned

@@ -1,14 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, requireFacilitator } from "@/lib/api-utils";
 import { QUIZ_METIERS } from "@/lib/module-equipe-data";
 
-// GET — fetch scenario data for a session
+// GET — fetch scenario data for a session (facilitator only)
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
+
+  // Auth: only the facilitator who owns this session
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const admin = createAdminClient();
 
   const { data: scenes } = await admin
@@ -43,6 +48,20 @@ export async function POST(
 
   if (studentId && !isValidUUID(studentId)) {
     return NextResponse.json({ error: "studentId invalide" }, { status: 400 });
+  }
+
+  // Verify student belongs to this session
+  if (studentId) {
+    const { data: student } = await admin
+      .from("students")
+      .select("id")
+      .eq("id", studentId)
+      .eq("session_id", sessionId)
+      .single();
+
+    if (!student) {
+      return NextResponse.json({ error: "Élève non trouvé dans cette session" }, { status: 403 });
+    }
   }
 
   // ── M7: Comparison answer ──

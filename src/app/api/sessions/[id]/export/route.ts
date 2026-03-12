@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabase } from "@/lib/supabase/server";
+import { requireFacilitator } from "@/lib/api-utils";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 // GET — export the collective story as structured data
 export async function GET(
@@ -7,7 +8,12 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
-  const supabase = await createServerSupabase();
+
+  // Auth: only the facilitator who owns this session
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
+  const supabase = createAdminClient();
 
   // Get session
   const { data: session, error: sessionError } = await supabase

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { safeJson } from "@/lib/api-utils";
+import { requireFacilitator, safeJson } from "@/lib/api-utils";
 import { isValidEtsiImageId } from "@/lib/module10-data";
 
 // POST — student submits "Et si..." text for an image
@@ -97,7 +97,9 @@ export async function POST(
   return NextResponse.json(data);
 }
 
-// GET — get student's "Et si..." for current session
+// GET — get "Et si..." responses
+// With ?studentId → student's own responses (no auth needed, scoped by student+session)
+// Without ?studentId → all responses (facilitator only)
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -107,7 +109,7 @@ export async function GET(
   const admin = createAdminClient();
 
   if (studentId) {
-    // Get specific student's responses
+    // Get specific student's own responses — no facilitator auth needed
     const { data, error } = await admin
       .from("module10_etsi")
       .select("*")
@@ -119,7 +121,10 @@ export async function GET(
     return NextResponse.json({ responses: data || [] });
   }
 
-  // Get all responses for session (facilitator view)
+  // All responses — facilitator only
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const { data, error } = await admin
     .from("module10_etsi")
     .select("*, students(display_name, avatar)")

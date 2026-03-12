@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isValidUUID, safeJson } from "@/lib/api-utils";
+import { isValidUUID, requireFacilitator, safeJson } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-// GET — get vote results for a manche
+// GET — get vote results for a manche (facilitator only)
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
+
+  // Auth: only the facilitator who owns this session
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const mancheStr = req.nextUrl.searchParams.get("manche");
   const studentId = req.nextUrl.searchParams.get("studentId");
 
