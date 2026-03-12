@@ -4,7 +4,7 @@ import { useRef, useState, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import { createAvatar } from "@dicebear/core";
 import { avataaars } from "@dicebear/collection";
-import { exportElementAsImage } from "@/lib/export-image";
+import { exportElementAsImage, exportElementAsPdf } from "@/lib/export-image";
 import {
   TEMPLATE_LABELS,
   THEMATIQUE_LABELS,
@@ -135,22 +135,39 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
   const exportRef = useRef<HTMLDivElement>(null);
   const [exporting, setExporting] = useState(false);
 
+  const getSlug = useCallback(() => {
+    if (!filmData) return "film";
+    return filmData.session.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  }, [filmData]);
+
   const handleExport = useCallback(async () => {
     if (!exportRef.current || !filmData) return;
     setExporting(true);
     try {
-      const slug = filmData.session.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "");
-      await exportElementAsImage(exportRef.current, `${slug}-le-film.png`);
+      await exportElementAsImage(exportRef.current, `${getSlug()}-le-film.png`);
       toast.success("Le Film téléchargé !");
     } catch {
       toast.error("Erreur lors de l'export");
     } finally {
       setExporting(false);
     }
-  }, [filmData]);
+  }, [filmData, getSlug]);
+
+  const handleExportPdf = useCallback(async () => {
+    if (!exportRef.current || !filmData) return;
+    setExporting(true);
+    try {
+      await exportElementAsPdf(exportRef.current, `${getSlug()}-le-film.pdf`);
+      toast.success("PDF téléchargé !");
+    } catch {
+      toast.error("Erreur lors de l'export PDF");
+    } finally {
+      setExporting(false);
+    }
+  }, [filmData, getSlug]);
 
   const avatarSvgs = useMemo(() => {
     if (!filmData) return {};
@@ -188,8 +205,21 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
 
   return (
     <div className="space-y-6">
-      {/* Export button */}
-      <div className="flex justify-end">
+      {/* Export buttons */}
+      <div className="flex justify-end gap-2">
+        <button
+          onClick={handleExportPdf}
+          disabled={exporting}
+          className="inline-flex items-center gap-2 rounded-lg border border-[#D4A843]/30 bg-transparent px-4 py-2 text-sm font-medium text-[#D4A843] transition-opacity hover:bg-[#D4A843]/10 disabled:opacity-50"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+          </svg>
+          PDF
+        </button>
         <button
           onClick={handleExport}
           disabled={exporting}

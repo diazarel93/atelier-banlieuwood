@@ -11,6 +11,7 @@ import { GlassCardV2 } from "@/components/v2/glass-card";
 import { Avatar } from "@/components/v2/avatar";
 import { EmptyState } from "@/components/v2/empty-state";
 import { useQuestionAnalytics } from "@/hooks/use-question-analytics";
+import { ClassComparisonChart } from "@/components/v2/class-comparison-chart";
 import type { AxesScores } from "@/lib/axes-mapping";
 
 interface StatsStudent {
@@ -205,6 +206,9 @@ export default function StatistiquesPage() {
               </div>
             </GlassCardV2>
           )}
+
+          {/* Class comparison */}
+          <ClassComparisonChart />
 
           {/* Question analytics */}
           {qaData && qaData.questions.length > 0 && (

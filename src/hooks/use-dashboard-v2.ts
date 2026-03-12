@@ -31,6 +31,7 @@ interface AtRiskStudent {
 interface DashboardSummary {
   todaySessions: SessionSummary[];
   tomorrowSessions: SessionSummary[];
+  recentSessions: SessionSummary[];
   stats: DashboardStats;
   sessionDates: string[];
   completedModuleIds: string[];

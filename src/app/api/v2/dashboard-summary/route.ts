@@ -158,9 +158,13 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Recent sessions for the timeline (last 15, descending)
+  const recentSessions = allSessions.slice(0, 15).map(summarize);
+
   return NextResponse.json({
     todaySessions: todaySessions.map(summarize),
     tomorrowSessions: tomorrowSessions.map(summarize),
+    recentSessions,
     stats: {
       totalSessions,
       doneSessions,

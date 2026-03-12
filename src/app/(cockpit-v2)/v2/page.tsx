@@ -9,6 +9,7 @@ import { QuickStats } from "@/components/v2/quick-stats";
 import { MiniCalendar } from "@/components/v2/mini-calendar";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 import { AtRiskWidget } from "@/components/v2/at-risk-widget";
+import { FacilitatorTimeline } from "@/components/v2/facilitator-timeline";
 import { PHASES } from "@/lib/modules-data";
 
 function getGreeting(): string {
@@ -142,6 +143,20 @@ export default function DashboardV2Page() {
                 })}
               </div>
             </GlassCardV2>
+
+            {/* Facilitator session history timeline */}
+            {data.recentSessions && data.recentSessions.length > 0 && (
+              <FacilitatorTimeline
+                sessions={data.recentSessions.map((s) => ({
+                  id: s.id,
+                  title: s.title,
+                  status: s.status,
+                  classLabel: s.classLabel,
+                  studentCount: s.studentCount,
+                  date: s.scheduledAt,
+                }))}
+              />
+            )}
           </div>
         </div>
       ) : null}
