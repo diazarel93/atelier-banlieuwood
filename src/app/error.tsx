@@ -1,4 +1,7 @@
-"use client"
+"use client";
+
+import * as Sentry from "@sentry/nextjs";
+import { useEffect } from "react";
 
 export default function Error({
   error,
@@ -7,6 +10,10 @@ export default function Error({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
   return (
     <div className="bg-studio relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 text-center">
       {/* Ambient danger glow */}
