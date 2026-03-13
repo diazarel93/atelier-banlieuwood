@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { getModuleByDb } from "@/lib/modules-data";
+import { logAudit, type AuditAction } from "@/lib/audit-log";
 
 // ── Types ──
 
@@ -63,7 +64,7 @@ export type CollectiveChoice = import("@/components/pilot/choices-history").Coll
 
 // ── Hook ──
 
-export function usePilotSession(sessionId: string, checkingAuth: boolean) {
+export function usePilotSession(sessionId: string, checkingAuth: boolean, actorId: string = "system") {
   const queryClient = useQueryClient();
 
   // ── Queries ──
@@ -196,7 +197,15 @@ export function usePilotSession(sessionId: string, checkingAuth: boolean) {
       if (!res.ok) throw new Error("Erreur");
       return res.json();
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["pilot-session", sessionId] }),
+    onSuccess: (_data, updates) => {
+      queryClient.invalidateQueries({ queryKey: ["pilot-session", sessionId] });
+      // Auto-audit status transitions
+      const status = updates.status as string | undefined;
+      if (status === "paused") logAudit({ action: "session_pause", actor: actorId, sessionId });
+      else if (status === "responding" && session?.status === "paused") logAudit({ action: "session_resume", actor: actorId, sessionId });
+      else if (status === "voting") logAudit({ action: "vote_start", actor: actorId, sessionId });
+      else if (status === "done") logAudit({ action: "session_end", actor: actorId, sessionId });
+    },
     onError: () => toast.error("Erreur de mise à jour"),
   });
 
@@ -206,9 +215,10 @@ export function usePilotSession(sessionId: string, checkingAuth: boolean) {
       if (!res.ok) throw new Error("Erreur");
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (_data, studentId) => {
       queryClient.invalidateQueries({ queryKey: ["pilot-session", sessionId] });
       toast.success("Joueur retiré");
+      logAudit({ action: "student_remove", actor: actorId, sessionId, details: { studentId } });
     },
     onError: () => toast.error("Erreur"),
   });
@@ -322,13 +332,14 @@ export function usePilotSession(sessionId: string, checkingAuth: boolean) {
       if (!res.ok) throw new Error("Erreur");
       return res.json();
     },
-    onSuccess: (data: { warnings: number; kicked: boolean }) => {
+    onSuccess: (data: { warnings: number; kicked: boolean }, studentId) => {
       queryClient.invalidateQueries({ queryKey: ["pilot-session", sessionId] });
       if (data.kicked) {
         toast.error("Élève exclu (3 avertissements)");
       } else {
         toast("Avertissement envoyé (" + data.warnings + "/3)", { icon: "⚠️" });
       }
+      logAudit({ action: "student_warn", actor: actorId, sessionId, details: { studentId, warnings: data.warnings, kicked: data.kicked } });
     },
     onError: () => toast.error("Erreur"),
   });
@@ -393,10 +404,11 @@ export function usePilotSession(sessionId: string, checkingAuth: boolean) {
       if (!res.ok) throw new Error("Erreur");
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (_data, responseId) => {
       queryClient.invalidateQueries({ queryKey: ["pilot-responses", sessionId] });
       queryClient.invalidateQueries({ queryKey: ["pilot-session", sessionId] });
       toast.success("Question relancée pour cet élève");
+      logAudit({ action: "response_reset", actor: actorId, sessionId, details: { responseId } });
     },
     onError: () => toast.error("Erreur de relance"),
   });
@@ -411,10 +423,11 @@ export function usePilotSession(sessionId: string, checkingAuth: boolean) {
       if (!res.ok) throw new Error("Erreur");
       return res.json();
     },
-    onSuccess: (data: { resetCount: number }) => {
+    onSuccess: (data: { resetCount: number }, situationId) => {
       queryClient.invalidateQueries({ queryKey: ["pilot-responses", sessionId] });
       queryClient.invalidateQueries({ queryKey: ["pilot-session", sessionId] });
       toast.success(`Question relancée pour ${data.resetCount} élève${data.resetCount > 1 ? "s" : ""}`);
+      logAudit({ action: "response_reset_all", actor: actorId, sessionId, details: { situationId, resetCount: data.resetCount } });
     },
     onError: () => toast.error("Erreur de relance"),
   });

@@ -13,6 +13,7 @@ import { useConfirmAction } from "@/hooks/use-confirm-action";
 import { useUndoStack } from "@/hooks/use-undo-stack";
 import { useStuckDetection, countStuckLevels } from "@/hooks/use-stuck-detection";
 import { useOnlineStatus } from "@/hooks/use-online-status";
+import { logAudit } from "@/lib/audit-log";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CATEGORY_COLORS, PRODUCTION_CATEGORIES, getSeanceMax } from "@/lib/constants";
 import dynamic from "next/dynamic";
@@ -54,6 +55,7 @@ import { HelpButton } from "@/components/help-button";
 import { ConfirmModal } from "@/components/confirm-modal";
 
 // Extracted composite sections
+import { BulkResponseToolbar } from "@/components/pilot/bulk-response-toolbar";
 import { CockpitFooterBar } from "@/components/pilot/cockpit-footer-bar";
 import { CockpitModals } from "@/components/pilot/cockpit-modals";
 
@@ -181,6 +183,7 @@ function CockpitContent({
   const [allSituations, setAllSituations] = useState<{ position: number; category: string; restitutionLabel: string; prompt: string; nudgeText: string | null }[]>([]);
   const [responseFilter, setResponseFilter] = useState<"all" | "visible" | "highlighted">("all");
   const [responseSortMode, setResponseSortMode] = useState<"time" | "highlighted">("time");
+  const [selectedResponseIds, setSelectedResponseIds] = useState<Set<string>>(new Set());
 
   // ── New feature state ──
   const [showBroadcast, setShowBroadcast] = useState(false);
@@ -510,21 +513,39 @@ function CockpitContent({
     return map;
   }, [module10Data?.allSubmissions, budgetData?.budgets]);
 
+  // Progressive stuck detection (#9)
+  const respondedStudentIds = useMemo(() => {
+    const ids = new Set(responses.map((r) => r.student_id));
+    for (const id of moduleSubmittedIds) ids.add(id);
+    return ids;
+  }, [responses, moduleSubmittedIds]);
+
+  const activeStudentIds = useMemo(
+    () => new Set((session.students || []).filter((s) => s.is_active).map((s) => s.id)),
+    [session.students]
+  );
+
+  const stuckLevels = useStuckDetection({
+    respondedStudentIds,
+    activeStudentIds,
+    respondingOpenedAt: session.status === "responding" ? respondingOpenedAt : null,
+  });
+
   // Compute student states for pulse ring / grid
   const studentStates = useMemo((): { id: string; state: StudentState; display_name: string; avatar: string }[] => {
     if (!session.students) return [];
-    const now = Date.now();
     return session.students.map((s) => {
-      const hasResponded = responses.some((r) => r.student_id === s.id) || moduleSubmittedIds.has(s.id);
+      const hasResponded = respondedStudentIds.has(s.id);
       if (!s.is_active) return { id: s.id, state: "disconnected" as StudentState, display_name: s.display_name, avatar: s.avatar };
       if (hasResponded) return { id: s.id, state: "responded" as StudentState, display_name: s.display_name, avatar: s.avatar };
-      // Stuck: active, no response, > threshold since responding started
-      if (session.status === "responding" && respondingOpenedAt && (now - respondingOpenedAt) > STUCK_THRESHOLD_MS) {
+      // Progressive stuck levels: slow/stuck → show as "stuck" state
+      const level = stuckLevels.get(s.id);
+      if (level === "slow" || level === "stuck") {
         return { id: s.id, state: "stuck" as StudentState, display_name: s.display_name, avatar: s.avatar };
       }
       return { id: s.id, state: "active" as StudentState, display_name: s.display_name, avatar: s.avatar };
     });
-  }, [session.students, session.status, responses, respondingOpenedAt, moduleSubmittedIds]);
+  }, [session.students, respondedStudentIds, stuckLevels]);
 
   // Actually change the session (launches the question for students)
   function goToSituation(index: number) {
@@ -2610,6 +2631,23 @@ function CockpitContent({
         )}
       </AnimatePresence>
 
+      {/* ── BULK RESPONSE TOOLBAR ── */}
+      <BulkResponseToolbar
+        selectedCount={selectedResponseIds.size}
+        totalCount={responses.length}
+        onHideUnselected={() => {
+          const toHide = responses.filter((r) => !selectedResponseIds.has(r.id) && !r.is_hidden);
+          for (const r of toHide) toggleHide.mutate({ responseId: r.id, is_hidden: true });
+          setSelectedResponseIds(new Set());
+        }}
+        onAiEvaluate={() => {
+          aiEvaluate.mutate([...selectedResponseIds]);
+          setSelectedResponseIds(new Set());
+        }}
+        onDeselectAll={() => setSelectedResponseIds(new Set())}
+        isEvaluating={aiEvaluate.isPending}
+      />
+
       {/* ── MODALS ── */}
       <CockpitModals
         spotlightResponse={spotlightResponse}
@@ -2663,6 +2701,7 @@ export default function PilotPage() {
   const { status: connectionStatus } = useRealtimeInvalidation(sessionId);
   const isOnline = useOnlineStatus();
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [actorId, setActorId] = useState<string>("system");
   const [codeCopied, setCodeCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const [showStudents, setShowStudents] = useState(false);
@@ -2693,6 +2732,7 @@ export default function PilotPage() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push("/login"); return; }
+      setActorId(user.id);
       setCheckingAuth(false);
     }
     check();
@@ -2709,7 +2749,44 @@ export default function PilotPage() {
     highlightResponse, nudgeStudent, warnStudent,
     lowerHand, scoreResponse, aiEvaluate,
     resetResponse, resetAllResponses,
-  } = usePilotSession(sessionId, checkingAuth);
+  } = usePilotSession(sessionId, checkingAuth, actorId);
+
+  // Undo-aware wrappers for reversible mutations (#13)
+  const undoableToggleHide = useMemo(() => ({
+    ...toggleHide,
+    mutate: (args: { responseId: string; is_hidden: boolean }) => {
+      undoStack.push({
+        label: args.is_hidden ? "Réponse masquée" : "Réponse affichée",
+        undo: () => toggleHide.mutate({ responseId: args.responseId, is_hidden: !args.is_hidden }),
+        redo: () => toggleHide.mutate(args),
+      });
+      toggleHide.mutate(args);
+    },
+  }), [toggleHide, undoStack]);
+
+  const undoableHighlight = useMemo(() => ({
+    ...highlightResponse,
+    mutate: (args: { responseId: string; highlighted: boolean }) => {
+      undoStack.push({
+        label: args.highlighted ? "Réponse projetée" : "Projection retirée",
+        undo: () => highlightResponse.mutate({ responseId: args.responseId, highlighted: !args.highlighted }),
+        redo: () => highlightResponse.mutate(args),
+      });
+      highlightResponse.mutate(args);
+    },
+  }), [highlightResponse, undoStack]);
+
+  const undoableToggleVote = useMemo(() => ({
+    ...toggleVoteOption,
+    mutate: (args: { responseId: string; is_vote_option: boolean }) => {
+      undoStack.push({
+        label: args.is_vote_option ? "Option de vote ajoutée" : "Option de vote retirée",
+        undo: () => toggleVoteOption.mutate({ responseId: args.responseId, is_vote_option: !args.is_vote_option }),
+        redo: () => toggleVoteOption.mutate(args),
+      });
+      toggleVoteOption.mutate(args);
+    },
+  }), [toggleVoteOption, undoStack]);
 
   // State for comment popover
   const [commentingResponse, setCommentingResponse] = useState<string | null>(null);
@@ -2748,6 +2825,7 @@ export default function PilotPage() {
         current_situation_index: 0,
         status: "responding",
       });
+      logAudit({ action: "module_switch", actor: actorId, sessionId, details: { moduleId, dbModule: mod.dbModule, dbSeance: mod.dbSeance } });
     }
     if (isQuickLaunch) {
       setSelectedModuleId(moduleId);
@@ -2979,12 +3057,12 @@ export default function PilotPage() {
             collectiveChoices={collectiveChoices}
             onModuleComplete={handleModuleComplete}
             updateSession={updateSession}
-            toggleHide={toggleHide}
-            toggleVoteOption={toggleVoteOption}
+            toggleHide={undoableToggleHide}
+            toggleVoteOption={undoableToggleVote}
             validateChoice={validateChoice}
             removeStudent={removeStudent}
             commentResponse={commentResponse}
-            highlightResponse={highlightResponse}
+            highlightResponse={undoableHighlight}
             nudgeStudent={nudgeStudent}
             warnStudent={warnStudent}
             lowerHand={lowerHand}

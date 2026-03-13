@@ -87,7 +87,8 @@ export default function ScreenPage() {
       const all: { text: string }[] = await res.json();
       return all.map((r) => r.text).filter(Boolean);
     },
-    refetchInterval: 10_000,
+    refetchInterval: 5_000,
+    refetchOnWindowFocus: true,
     enabled: !!data?.session && data.session.status === "responding" && !!currentSituationId,
   });
 
@@ -107,7 +108,8 @@ export default function ScreenPage() {
         avatar: r.students?.avatar || "🎭",
       }));
     },
-    refetchInterval: 10_000,
+    refetchInterval: 5_000,
+    refetchOnWindowFocus: true,
     enabled: !!data?.session && data.session.status === "reviewing" && revealPhase != null && !!currentSituationId,
   });
 
@@ -121,7 +123,8 @@ export default function ScreenPage() {
       const json = await res.json();
       return json.reactions || {};
     },
-    refetchInterval: 8_000,
+    refetchInterval: 5_000,
+    refetchOnWindowFocus: true,
     enabled: !!data?.session && ["voting", "reviewing", "results"].includes(data.session.status) && !!currentSituationId,
   });
 
@@ -160,7 +163,8 @@ export default function ScreenPage() {
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: 10_000,
+    refetchInterval: 5_000,
+    refetchOnWindowFocus: true,
     enabled: !!data?.session && data.session.status !== "done",
   });
 

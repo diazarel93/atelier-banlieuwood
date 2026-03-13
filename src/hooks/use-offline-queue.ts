@@ -99,6 +99,15 @@ export function useOfflineQueue() {
           return { ok: false, data: { error: "rate_limited" } };
         }
 
+        // 409 Conflict — session advanced past this question
+        if (res.status === 409) {
+          const errData = await res.json().catch(() => null);
+          toast.info("La question a changé, ta réponse arrive sur la nouvelle question", {
+            duration: 4000,
+          });
+          return { ok: false, data: { ...errData, code: "SITUATION_ADVANCED" } };
+        }
+
         // Server error (not network) — don't queue, let caller handle
         const errData = await res.json().catch(() => null);
         return { ok: false, data: errData };

@@ -12,7 +12,7 @@ interface StuckDetectionInput {
   /** Student IDs that have already responded */
   respondedStudentIds: Set<string>;
   /** All active student IDs */
-  activeStudentIds: string[];
+  activeStudentIds: Set<string> | string[];
   /** Timestamp (ms) when responding status was opened, or null if not responding */
   respondingOpenedAt: number | null;
 }

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { useSessionPolling, SessionState } from "@/hooks/use-session-polling";
 import { useRealtimeInvalidation } from "@/hooks/use-realtime-invalidation";
+import { useQueryClient } from "@tanstack/react-query";
 import { useOfflineQueue } from "@/hooks/use-offline-queue";
 import { useOnlineStatus } from "@/hooks/use-online-status";
 import { useSound } from "@/hooks/use-sound";
@@ -117,6 +118,7 @@ export default function PlayPage() {
   const lastBroadcastAt = useRef<string | null>(null);
   const isOnline = useOnlineStatus();
   useRealtimeInvalidation(sessionId);
+  const queryClient = useQueryClient();
   const { submitWithQueue, pendingCount } = useOfflineQueue();
 
   const handleIntroComplete = useCallback(() => {
@@ -325,7 +327,13 @@ export default function PlayPage() {
       );
 
       if (!ok) {
-        toast.error((responseData as { error?: string })?.error || "Erreur lors de l'envoi");
+        const errInfo = responseData as { error?: string; code?: string } | null;
+        if (errInfo?.code === "SITUATION_ADVANCED") {
+          // Session moved on — refetch to show new question
+          queryClient.invalidateQueries({ queryKey: ["play-session"] });
+        } else {
+          toast.error(errInfo?.error || "Erreur lors de l'envoi");
+        }
       } else {
         play("send");
         haptic(10);

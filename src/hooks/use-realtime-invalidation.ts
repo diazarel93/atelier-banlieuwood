@@ -17,10 +17,13 @@ const TABLE_INVALIDATION_MAP: Record<string, (sessionId: string) => string[][]> 
     ["session-state", sid],
     ["pilot-session", sid],
     ["session", sid],
+    ["screen-reveal", sid],
   ],
   responses: (sid) => [
     ["session-state", sid],
     ["pilot-responses", sid],
+    ["screen-highlighted", sid],
+    ["screen-wordcloud", sid],
   ],
   votes: (sid) => [
     ["session-state", sid],
