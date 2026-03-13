@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireFacilitator } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { computeOIE, aggregateOIE, type OIEScores } from "@/lib/oie-profile";
+import { deriveTalentProfile } from "@/lib/talent-profiles";
 
 // GET — return O-I-E scores for all students in the session
 // ?debug=true returns signal breakdown per student (always recomputes)
@@ -108,6 +109,7 @@ export async function POST(
 
     if (allScores && allScores.length > 0) {
       const agg = aggregateOIE(allScores);
+      const creativeProfile = deriveTalentProfile(agg);
       await admin
         .from("student_profiles")
         .update({
@@ -117,6 +119,7 @@ export async function POST(
           oie_dominant: agg.dominant,
           oie_response_count: agg.responseCount,
           oie_computed_at: now,
+          creative_profile: creativeProfile,
         })
         .eq("id", studentRow.profile_id);
     }

@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { exportElementAsImage } from "@/lib/export-image";
 import { BrandLogo } from "@/components/brand-logo";
+import { resolveTalentProfile } from "@/lib/talent-profiles";
 
 interface BadgeData {
   displayName: string;
@@ -18,14 +19,6 @@ interface BadgeData {
   achievements: string[];
   date: string;
 }
-
-const PROFILE_LABELS: Record<string, { label: string; emoji: string }> = {
-  acteur: { label: "Acteur", emoji: "🎭" },
-  creatif: { label: "Créatif", emoji: "🎨" },
-  detective: { label: "Détective", emoji: "🔍" },
-  provocateur: { label: "Provocateur", emoji: "⚡" },
-  stratege: { label: "Stratège", emoji: "♟️" },
-};
 
 const LEVEL_LABELS: Record<string, string> = {
   primaire: "Primaire",
@@ -70,9 +63,7 @@ export default function BadgePage() {
     );
   }
 
-  const profile = data.creativeProfile
-    ? PROFILE_LABELS[data.creativeProfile]
-    : null;
+  const profile = resolveTalentProfile(data.creativeProfile);
 
   return (
     <div className="min-h-dvh bg-studio flex flex-col items-center justify-center px-4 py-8">

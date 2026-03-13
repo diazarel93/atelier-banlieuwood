@@ -134,16 +134,23 @@ export function assignMissions(
   const roles: string[] = MISSION_TYPES.map((m) => m.key);
   const missions: { studentId: string; sceneId: string; role: string; task: string; isScribe: boolean }[] = [];
 
-  // Profile → preferred role mapping (Adrian's 5 profiles)
+  // Profile → preferred role mapping
+  // Supports both legacy 5-profile keys and new 6 talent profile keys
   const profileToRole: Record<string, string> = {
+    // Legacy 5 profiles (M6)
     acteur: "dialogue",
     creatif: "description",
     detective: "coherence",
     provocateur: "tension",
     stratege: "structure",
-    // Legacy OIE fallbacks
-    observateur: "description",
+    // New 6 talent profiles (Cartographie des Talents)
+    imaginatif: "description",
+    observateur: "coherence",
     narrateur: "dialogue",
+    metteur_en_scene: "structure",
+    // "acteur" already mapped above
+    organisateur: "structure",
+    // Legacy OIE fallbacks
     emotif: "tension",
     audacieux: "coherence",
   };

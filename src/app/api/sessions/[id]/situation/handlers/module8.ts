@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isValidUUID } from "@/lib/api-utils";
 import { FICHES_METIER, QUIZ_METIERS, TALENT_CATEGORIES } from "@/lib/module-equipe-data";
+import { resolveTalentProfile } from "@/lib/talent-profiles";
 import { getStudentTeam } from "./shared";
 import type { AdminClient } from "./types";
 
@@ -105,6 +106,21 @@ export async function handleModule8(
       else classResults[a.metier_key].wrong++;
     }
 
+    // Get student list for quick-tag bar (facilitator only)
+    let studentList: { studentId: string; displayName: string }[] = [];
+    if (!studentId) {
+      const { data: activeStudents } = await admin
+        .from("students")
+        .select("id, display_name")
+        .eq("session_id", sessionId)
+        .eq("is_active", true)
+        .order("display_name");
+      studentList = (activeStudents || []).map((s: Record<string, unknown>) => ({
+        studentId: s.id as string,
+        displayName: s.display_name as string,
+      }));
+    }
+
     module8Data = {
       type: "debrief",
       position,
@@ -117,6 +133,7 @@ export async function handleModule8(
       })),
       classResults,
       fiches: FICHES_METIER,
+      studentList,
     };
   } else if (position === 3) {
     // Choix de rôle
@@ -240,6 +257,7 @@ export async function handleModule8(
     module8Data = {
       type: "team-recap",
       position,
+      formula: (session.formula as string) || "F2",
       team: (roles || []).map((r: Record<string, unknown>) => {
         const metier = FICHES_METIER.find((f) => f.key === r.role_key);
         const studentInfo = studentMap[r.student_id as string];
@@ -269,7 +287,7 @@ export async function handleModule8(
       if (card) {
         const { data: studentInfo } = await admin
           .from("students")
-          .select("display_name, avatar_seed")
+          .select("display_name, avatar_seed, profile_id")
           .eq("id", studentId)
           .single();
 
@@ -280,6 +298,18 @@ export async function handleModule8(
           .eq("session_id", sessionId)
           .eq("student_id", studentId)
           .maybeSingle();
+
+        // Fetch creative_profile from student_profiles if linked
+        let creativeProfileKey: string | null = null;
+        if (studentInfo?.profile_id) {
+          const { data: profileRow } = await admin
+            .from("student_profiles")
+            .select("creative_profile")
+            .eq("id", studentInfo.profile_id)
+            .maybeSingle();
+          creativeProfileKey = profileRow?.creative_profile || null;
+        }
+        const resolvedProfile = resolveTalentProfile(creativeProfileKey);
 
         const role = FICHES_METIER.find((f) => f.key === card.role_key);
         const cat = TALENT_CATEGORIES.find((c) => c.key === card.talent_category);
@@ -295,6 +325,9 @@ export async function handleModule8(
           talentCategoryColor: cat?.color || "#666",
           strengths: card.strengths || [],
           isVeto: roleData?.is_veto || false,
+          creativeProfile: resolvedProfile
+            ? { key: resolvedProfile.key, label: resolvedProfile.label, emoji: resolvedProfile.emoji, color: resolvedProfile.color }
+            : null,
         };
       }
     }

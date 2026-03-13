@@ -4,14 +4,7 @@ import { GlassCardV2 } from "../glass-card";
 import { Avatar } from "../avatar";
 import { StatRing } from "../stat-ring";
 import { AXES, type AxesScores } from "@/lib/axes-mapping";
-
-const CREATIVE_PROFILES: Record<string, { label: string; emoji: string; color: string }> = {
-  acteur: { label: "Acteur", emoji: "🎭", color: "#E54D2E" },
-  creatif: { label: "Créatif", emoji: "🎨", color: "#9B59B6" },
-  detective: { label: "Détective", emoji: "🔍", color: "#3498DB" },
-  provocateur: { label: "Provocateur", emoji: "⚡", color: "#F39C12" },
-  stratege: { label: "Stratège", emoji: "🧩", color: "#27AE60" },
-};
+import { resolveTalentProfile } from "@/lib/talent-profiles";
 
 const TAG_LABELS: Record<string, { label: string; emoji: string }> = {
   tres_creatif: { label: "Très créatif", emoji: "🎨" },
@@ -86,7 +79,7 @@ export function ProfileHero({
       scores.expression > 0 ||
       scores.engagement > 0);
 
-  const cp = creativeProfile ? CREATIVE_PROFILES[creativeProfile] : null;
+  const cp = resolveTalentProfile(creativeProfile);
   const positiveTags = (facilitatorTags || []).filter(
     (t) => !["perturbateur", "decrochage"].includes(t.tag)
   );

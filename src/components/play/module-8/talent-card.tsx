@@ -59,15 +59,29 @@ export function TalentCard({ module8 }: TalentCardProps) {
           </div>
 
           {/* Category badge — dynamic color from data */}
-          <div
-            className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
-            style={{
-              backgroundColor: card.talentCategoryColor + "20",
-              color: card.talentCategoryColor,
-              border: `1px solid ${card.talentCategoryColor}30`,
-            }}
-          >
-            {card.talentCategoryLabel}
+          <div className="flex flex-wrap items-center gap-2">
+            <div
+              className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+              style={{
+                backgroundColor: card.talentCategoryColor + "20",
+                color: card.talentCategoryColor,
+                border: `1px solid ${card.talentCategoryColor}30`,
+              }}
+            >
+              {card.talentCategoryLabel}
+            </div>
+            {card.creativeProfile && (
+              <div
+                className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold"
+                style={{
+                  backgroundColor: card.creativeProfile.color + "20",
+                  color: card.creativeProfile.color,
+                  border: `1px solid ${card.creativeProfile.color}30`,
+                }}
+              >
+                {card.creativeProfile.emoji} {card.creativeProfile.label}
+              </div>
+            )}
           </div>
 
           {/* Strengths */}

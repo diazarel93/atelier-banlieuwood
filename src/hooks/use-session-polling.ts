@@ -173,7 +173,10 @@ export interface Module7Data {
   studentDecoupages?: { sceneId: string; plans: unknown }[];
   planTypes?: { key: string; label: string }[];
   // Storyboard
-  storyboard?: { scenes: unknown; validated: boolean } | null;
+  storyboard?: {
+    scenes: { sceneId: string; title: string; plans: { position: number; planType: string; description: string; intention?: string; imageUrl?: string }[] }[];
+    validated: boolean;
+  } | null;
   allDecoupages?: { sceneId: string; studentId: string; plans: unknown }[];
   scenes?: { id: string; sceneNumber: number; title: string }[];
 }
@@ -189,6 +192,7 @@ export interface Module8Data {
   corrections?: { metierKey: string; metierLabel: string; metierEmoji: string; commonBelief: string; reality: string }[];
   classResults?: Record<string, { correct: number; wrong: number }> | null;
   fiches?: { key: string; label: string; description: string; skills: string[]; emoji: string; color: string }[];
+  studentList?: { studentId: string; displayName: string }[];
   // Role choice
   studentRank?: number | null;
   isMyTurn?: boolean;
@@ -198,6 +202,7 @@ export interface Module8Data {
   pointsComputed?: boolean;
   // Team recap
   team?: { studentId: string; displayName: string; avatarSeed: string; roleKey: string; roleLabel: string; roleEmoji: string; roleColor: string; isVeto: boolean }[];
+  formula?: "F2" | "F3";
   // Talent card
   talentCard?: {
     displayName: string;
@@ -210,6 +215,12 @@ export interface Module8Data {
     talentCategoryColor: string;
     strengths: string[];
     isVeto?: boolean;
+    creativeProfile?: {
+      key: string;
+      label: string;
+      emoji: string;
+      color: string;
+    } | null;
   } | null;
 }
 
