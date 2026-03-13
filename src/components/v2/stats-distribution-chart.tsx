@@ -50,7 +50,7 @@ export function StatsDistributionChart({
       <div className="flex items-center gap-6">
         {/* Donut */}
         <div className="relative shrink-0" style={{ width: size, height: size }}>
-          <svg width={size} height={size} className="-rotate-90">
+          <svg width={size} height={size} className="-rotate-90" role="img" aria-label="Distribution des compétences par axe">
             {segments.map((seg, i) => {
               const dashLength = (seg.pct / 100) * circumference;
               const rotation = segmentRotations[i];

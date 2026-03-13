@@ -59,6 +59,8 @@ export function ProgressionChart({ studentId }: ProgressionChartProps) {
         viewBox={`0 0 ${width} ${height}`}
         className="w-full"
         preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label="Progression des compétences par séance"
       >
         {/* Grid lines */}
         {yTicks.map((tick) => {

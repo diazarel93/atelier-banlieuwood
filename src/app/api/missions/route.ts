@@ -10,13 +10,14 @@ export async function GET(req: NextRequest) {
 
   const { data: missions, error } = await supabase
     .from("missions")
-    .select("*")
+    .select("id, title, description, xp_reward, available_until, created_at")
     .or(`available_until.is.null,available_until.gte.${now}`)
     .order("created_at", { ascending: false })
     .limit(20);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[missions GET]", error.message);
+    return NextResponse.json({ error: "Erreur lors du chargement des missions" }, { status: 500 });
   }
 
   // Get submissions if profileId provided
@@ -24,7 +25,7 @@ export async function GET(req: NextRequest) {
   if (profileId) {
     const { data } = await supabase
       .from("mission_submissions")
-      .select("*")
+      .select("id, mission_id, profile_id, content, xp_earned, submitted_at")
       .eq("profile_id", profileId);
     submissions = data || [];
   }
@@ -35,14 +36,22 @@ export async function GET(req: NextRequest) {
 // POST /api/missions — submit mission response
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabase();
-  const body = await req.json();
-  const { missionId, profileId, content } = body;
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Corps JSON invalide" }, { status: 400 });
+  }
+  const { missionId, profileId, content } = body as { missionId?: string; profileId?: string; content?: string };
 
   if (!missionId || !profileId || !content) {
     return NextResponse.json(
       { error: "missionId, profileId, et content requis" },
       { status: 400 },
     );
+  }
+  if (typeof content === "string" && content.length > 5000) {
+    return NextResponse.json({ error: "Contenu trop long (max 5000 caractères)" }, { status: 400 });
   }
 
   // Get mission for XP reward
@@ -52,7 +61,11 @@ export async function POST(req: NextRequest) {
     .eq("id", missionId)
     .single();
 
-  const xpEarned = Math.round((mission?.xp_reward || 50) * 0.5); // 50% of live XP
+  if (!mission) {
+    return NextResponse.json({ error: "Mission introuvable" }, { status: 404 });
+  }
+
+  const xpEarned = Math.round((mission.xp_reward || 50) * 0.5); // 50% of live XP
 
   const { data, error } = await supabase
     .from("mission_submissions")
@@ -70,7 +83,8 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[missions POST]", error.message);
+    return NextResponse.json({ error: "Erreur lors de la soumission" }, { status: 500 });
   }
 
   // Update profile XP

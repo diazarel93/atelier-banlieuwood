@@ -10,7 +10,8 @@ import { getAuthUser } from "@/lib/auth-helpers";
  * Optional: ?classLabel=X to filter by class.
  */
 export async function GET(req: NextRequest) {
-  const classLabelFilter = req.nextUrl.searchParams.get("classLabel");
+  const rawClassLabel = req.nextUrl.searchParams.get("classLabel");
+  const classLabelFilter = rawClassLabel && rawClassLabel.length <= 50 ? rawClassLabel : null;
   const supabase = await createServerSupabase();
   const {
     data: { user },
@@ -36,7 +37,8 @@ export async function GET(req: NextRequest) {
   const { data: sessions, error } = await query;
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[dashboard-summary]", error.message);
+    return NextResponse.json({ error: "Erreur lors du chargement du tableau de bord" }, { status: 500 });
   }
 
   // Collect all unique class labels before filtering

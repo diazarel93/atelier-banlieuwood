@@ -51,7 +51,7 @@ export default function StatistiquesPage() {
   const [classLabel, setClassLabel] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["v2", "stats", classLabel, sessionId],
     queryFn: () => fetchStats(classLabel, sessionId),
     staleTime: 30_000,
@@ -131,7 +131,7 @@ export default function StatistiquesPage() {
           </p>
           <button
             type="button"
-            onClick={() => window.location.reload()}
+            onClick={() => refetch()}
             className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
           >
             Réessayer

@@ -24,7 +24,7 @@ export default function ElevesPage() {
   const { data: dashData } = useDashboardSummary();
   const classLabels = dashData?.classLabels || [];
 
-  const { data, isLoading, isError } = useStudentProfiles(classLabel);
+  const { data, isLoading, isError, refetch } = useStudentProfiles(classLabel);
   const profiles = data?.profiles || [];
 
   const filtered = search
@@ -161,7 +161,7 @@ export default function ElevesPage() {
           description="Impossible de charger la liste des élèves."
           action={{
             label: "Réessayer",
-            onClick: () => window.location.reload(),
+            onClick: () => refetch(),
           }}
         />
       ) : profiles.length === 0 ? (

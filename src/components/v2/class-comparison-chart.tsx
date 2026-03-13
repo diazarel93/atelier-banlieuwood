@@ -71,6 +71,8 @@ export function ClassComparisonChart() {
           viewBox={`0 0 ${labelWidth + barWidth + 60} ${totalHeight}`}
           className="w-full"
           style={{ minWidth: 500 }}
+          role="img"
+          aria-label="Comparaison des scores entre classes"
         >
           {AXES.map((axis, ai) => {
             const yBase = ai * axisBlockHeight;

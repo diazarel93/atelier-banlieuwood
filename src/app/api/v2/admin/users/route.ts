@@ -23,7 +23,8 @@ export async function GET(req: NextRequest) {
   const { data, error } = await query;
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[admin/users GET]", error.message);
+    return NextResponse.json({ error: "Erreur lors du chargement des utilisateurs" }, { status: 500 });
   }
 
   return NextResponse.json({ users: data });
@@ -36,8 +37,9 @@ export async function PATCH(req: NextRequest) {
 
   const { userIds, status } = await req.json();
 
-  if (!Array.isArray(userIds) || !status) {
-    return NextResponse.json({ error: "userIds et status requis" }, { status: 400 });
+  const validStatuses = ["active", "pending", "blocked", "rejected"];
+  if (!Array.isArray(userIds) || userIds.length === 0 || !status || !validStatuses.includes(status)) {
+    return NextResponse.json({ error: "userIds (tableau non vide) et status valide requis" }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -54,7 +56,8 @@ export async function PATCH(req: NextRequest) {
     .in("id", userIds);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[admin/users PATCH]", error.message);
+    return NextResponse.json({ error: "Erreur lors de la mise à jour" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, count: userIds.length });

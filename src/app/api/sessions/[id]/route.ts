@@ -14,12 +14,12 @@ export async function GET(
 
   const { data, error } = await auth.supabase
     .from("sessions")
-    .select("*, students(*)")
+    .select("id, title, status, level, template, join_code, facilitator_id, created_at, scheduled_at, class_label, current_module, current_seance, current_situation_index, timer_ends_at, question_opened_at, broadcast_message, completed_modules, thematique, deleted_at, students(id, display_name, avatar, session_id, profile_id, joined_at)")
     .eq("id", id)
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 404 });
+    return NextResponse.json({ error: "Session introuvable" }, { status: 404 });
   }
 
   return NextResponse.json(data);
@@ -88,7 +88,8 @@ export async function PATCH(
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[sessions PATCH]", id, error.message);
+    return NextResponse.json({ error: "Erreur lors de la mise à jour de la session" }, { status: 500 });
   }
 
   // Broadcast session update to all connected clients (bypasses RLS)
@@ -112,7 +113,10 @@ export async function PATCH(
   // Auto-trigger O-I-E computation when session is done
   if (updates.status === "done") {
     fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/sessions/${id}/oie-profile`, { method: "POST" })
-      .then(() => {}, () => {});
+      .then((r) => {
+        if (!r.ok) console.error(`[OIE] Computation failed for session ${id}: HTTP ${r.status}`);
+      })
+      .catch((err) => console.error(`[OIE] Computation error for session ${id}:`, err.message));
   }
 
   return NextResponse.json(data);
@@ -134,7 +138,8 @@ export async function DELETE(
     .eq("id", id);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[sessions DELETE]", id, error.message);
+    return NextResponse.json({ error: "Erreur lors de la suppression" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

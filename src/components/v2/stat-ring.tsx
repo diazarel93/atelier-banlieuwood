@@ -26,7 +26,7 @@ export function StatRing({
   return (
     <div className={cn("flex flex-col items-center gap-1", className)}>
       <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} className="-rotate-90">
+        <svg width={size} height={size} className="-rotate-90" role="img" aria-label={`${label}: ${Math.round(value)}%`}>
           {/* Background track */}
           <circle
             cx={size / 2}

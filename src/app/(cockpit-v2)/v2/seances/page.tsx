@@ -53,7 +53,7 @@ export default function SeancesPage() {
   const [tab, setTab] = useState<SeanceTab>("upcoming");
   const [search, setSearch] = useState("");
 
-  const { data: sessions = [], isLoading, isError } = useQuery({
+  const { data: sessions = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["sessions"],
     queryFn: fetchSessions,
     refetchInterval: 15_000,
@@ -207,7 +207,7 @@ export default function SeancesPage() {
               </p>
               <button
                 type="button"
-                onClick={() => window.location.reload()}
+                onClick={() => refetch()}
                 className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
               >
                 Réessayer

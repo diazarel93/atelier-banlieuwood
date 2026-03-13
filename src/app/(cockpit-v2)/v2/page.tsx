@@ -23,7 +23,7 @@ function getGreeting(): string {
 
 export default function DashboardV2Page() {
   const [classLabel, setClassLabel] = useState<string | null>(null);
-  const { data, isLoading, isError } = useDashboardSummary(classLabel);
+  const { data, isLoading, isError, refetch } = useDashboardSummary(classLabel);
 
   const sessionDates = (data?.sessionDates || []).map((d) => new Date(d));
 
@@ -71,7 +71,7 @@ export default function DashboardV2Page() {
       {isLoading ? (
         <DashboardSkeleton />
       ) : isError ? (
-        <ErrorState />
+        <ErrorState onRetry={refetch} />
       ) : isFirstUse ? (
         <OnboardingWizard />
       ) : data ? (
@@ -275,7 +275,7 @@ function FirstUseState() {
   );
 }
 
-function ErrorState() {
+function ErrorState({ onRetry }: { onRetry: () => void }) {
   const isOnline = typeof navigator !== "undefined" ? navigator.onLine : true;
 
   return (
@@ -317,7 +317,7 @@ function ErrorState() {
       <div className="flex items-center gap-3">
         <button
           type="button"
-          onClick={() => window.location.reload()}
+          onClick={onRetry}
           className="rounded-lg bg-bw-primary px-4 py-2 text-sm font-medium text-white hover:bg-bw-primary-500 transition-colors"
         >
           Réessayer

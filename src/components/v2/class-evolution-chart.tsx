@@ -112,6 +112,8 @@ export function ClassEvolutionChart({ classLabel }: ClassEvolutionChartProps) {
         viewBox={`0 0 ${width} ${height}`}
         className="w-full"
         preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label={`Évolution des élèves — axe ${axis.shortLabel}`}
       >
         {/* Grid */}
         {yTicks.map((tick) => {

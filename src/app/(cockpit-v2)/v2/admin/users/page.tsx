@@ -113,7 +113,18 @@ export default function AdminUsersPage() {
       {/* Users table */}
       <GlassCardV2 className="overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-bw-muted text-sm">Chargement...</div>
+          <div className="divide-y divide-bw-border/50">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex items-center gap-4 px-4 py-3">
+                <div className="h-4 w-24 rounded bg-bw-surface shimmer" />
+                <div className="h-4 w-40 rounded bg-bw-surface shimmer" />
+                <div className="h-4 w-16 rounded bg-bw-surface shimmer" />
+                <div className="h-5 w-16 rounded-full bg-bw-surface shimmer" />
+                <div className="flex-1" />
+                <div className="h-7 w-16 rounded-lg bg-bw-surface shimmer" />
+              </div>
+            ))}
+          </div>
         ) : users.length === 0 ? (
           <div className="p-8 text-center text-bw-muted text-sm">Aucun utilisateur trouve</div>
         ) : (

@@ -12,11 +12,12 @@ export async function GET() {
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("invitations")
-    .select("*")
+    .select("id, email, role, type, status, institution, message, created_at, invited_by")
     .order("created_at", { ascending: false });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[admin/invitations GET]", error.message);
+    return NextResponse.json({ error: "Erreur lors du chargement des invitations" }, { status: 500 });
   }
 
   return NextResponse.json({ invitations: data });
@@ -35,8 +36,15 @@ export async function POST(req: NextRequest) {
 
   const { email, role, type = "invite", institution, message } = parsed.data;
 
+  const validRoles = ["client", "admin", "facilitator"];
   if (!email || !role) {
     return NextResponse.json({ error: "email et role requis" }, { status: 400 });
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ error: "Format d'email invalide" }, { status: 400 });
+  }
+  if (!validRoles.includes(role)) {
+    return NextResponse.json({ error: "Rôle invalide" }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -60,7 +68,8 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error("[admin/invitations POST invite]", error.message);
+      return NextResponse.json({ error: "Erreur lors de la création de l'invitation" }, { status: 500 });
     }
 
     // Send invitation email (fire-and-forget)
@@ -78,7 +87,7 @@ export async function POST(req: NextRequest) {
     .from("invitations")
     .insert({
       email,
-      role: role || "client",
+      role: validRoles.includes(role) ? role : "client",
       type: "request",
       institution,
       message,
@@ -87,7 +96,8 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[admin/invitations POST request]", error.message);
+    return NextResponse.json({ error: "Erreur lors de l'envoi de la demande" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, id: data.id });

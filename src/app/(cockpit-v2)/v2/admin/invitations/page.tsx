@@ -13,10 +13,10 @@ interface Invitation {
   role: string;
   type: string;
   status: string;
-  token: string;
   institution: string | null;
   message: string | null;
   created_at: string;
+  invited_by: string | null;
 }
 
 export default function AdminInvitationsPage() {
@@ -114,7 +114,17 @@ export default function AdminInvitationsPage() {
       {/* Invitations list */}
       <GlassCardV2 className="overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-bw-muted text-sm">Chargement...</div>
+          <div className="divide-y divide-bw-border/50">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex items-center gap-4 px-4 py-3">
+                <div className="h-4 w-40 rounded bg-bw-surface shimmer" />
+                <div className="h-4 w-16 rounded bg-bw-surface shimmer" />
+                <div className="h-5 w-20 rounded-full bg-bw-surface shimmer" />
+                <div className="h-5 w-16 rounded-full bg-bw-surface shimmer" />
+                <div className="h-4 w-20 rounded bg-bw-surface shimmer" />
+              </div>
+            ))}
+          </div>
         ) : invitations.length === 0 ? (
           <div className="p-8 text-center text-bw-muted text-sm">Aucune invitation</div>
         ) : (
