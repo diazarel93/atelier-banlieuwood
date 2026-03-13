@@ -7,6 +7,7 @@ import { CountUp } from "@/components/play/count-up";
 import { CharacterCard } from "@/components/module10/character-card";
 import { StoryboardViewer } from "@/components/module10/storyboard-viewer";
 import type { AvatarOptions } from "@/components/avatar-dicebear";
+import { ROUTES } from "@/lib/routes";
 import { getLevel } from "@/lib/xp";
 
 interface LeaderboardData {
@@ -245,19 +246,19 @@ export function DoneState({ sessionId, stats, xp, characterCard }: DoneStateProp
         className="flex flex-col gap-3 w-full max-w-xs"
       >
         <a
-          href={`/play/${sessionId}/recap`}
+          href={ROUTES.playRecap(sessionId)}
           className="btn-glow block w-full py-3.5 rounded-xl bg-gradient-to-r from-bw-gold to-bw-primary text-white font-semibold text-center text-sm cursor-pointer shadow-[0_4px_20px_rgba(212,168,67,0.25)]"
         >
           Voir le film de la classe
         </a>
         <a
-          href={`/play/${sessionId}/recap`}
+          href={ROUTES.playRecap(sessionId)}
           className="block w-full py-3 rounded-xl bg-bw-elevated border border-bw-gold/20 text-bw-gold font-medium text-center text-sm cursor-pointer hover:border-bw-gold/40 transition-colors"
         >
           Mes contributions
         </a>
         <a
-          href={`/play/${sessionId}/bibliotheque`}
+          href={ROUTES.playBibliotheque(sessionId)}
           className="flex items-center justify-center gap-2 w-full py-2.5 text-bw-muted text-xs hover:text-white/60 transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">

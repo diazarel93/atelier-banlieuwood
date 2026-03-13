@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { MiniCalendar } from "./mini-calendar";
 import { GlassCardV2 } from "./glass-card";
-import { PHASES } from "@/lib/modules-data";
+import { PHASES, MAIN_PHASE_IDS } from "@/lib/modules-data";
 
 interface SeanceCalendarSidebarProps {
   sessionDates?: Date[];
@@ -16,9 +16,9 @@ export function SeanceCalendarSidebar({
   completedModuleIds = [],
   className,
 }: SeanceCalendarSidebarProps) {
-  // Main parcours phases for progression display
+  // Main parcours phases for progression display (M1–M8)
   const mainPhases = PHASES.filter((p) =>
-    ["idea", "emotion", "imagination", "collectif", "scenario"].includes(p.id)
+    (MAIN_PHASE_IDS as readonly string[]).includes(p.id)
   );
 
   return (

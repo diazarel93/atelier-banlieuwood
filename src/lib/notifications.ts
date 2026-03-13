@@ -7,6 +7,8 @@
  *   - "at-risk"  : students flagged at risk
  */
 
+import { ROUTES } from "./routes";
+
 export interface NotificationItem {
   id: string;
   type: "prepare" | "results" | "at-risk";
@@ -50,7 +52,7 @@ export function computeNotifications(data: NotificationInput): NotificationItem[
       type: "prepare",
       title: "Séance à préparer",
       description: session.title,
-      href: `/v2/seances/${session.id}/prepare`,
+      href: ROUTES.seancePrepare(session.id),
       severity: "warning",
     });
   }
@@ -67,7 +69,7 @@ export function computeNotifications(data: NotificationInput): NotificationItem[
       type: "results",
       title: "Résultats disponibles",
       description: session.title,
-      href: `/v2/seances/${session.id}/results`,
+      href: ROUTES.seanceResults(session.id),
       severity: "info",
     });
   }
@@ -80,7 +82,7 @@ export function computeNotifications(data: NotificationInput): NotificationItem[
         type: "at-risk",
         title: "Élève à surveiller",
         description: `${student.displayName} — ${student.reasons[0]}`,
-        href: `/v2/eleves/${student.profileId}`,
+        href: ROUTES.eleveDetail(student.profileId),
         severity: student.severity === "alert" ? "alert" : "warning",
       });
     }

@@ -32,13 +32,13 @@ export interface PhaseDef {
 }
 
 export const MODULES: ModuleDef[] = [
-  // ── PHASE 1 : L'IDÉE — récolter les ingrédients du scénario ──
+  // ── M1 : LE REGARD — observer, interpréter, imaginer ──
   {
     id: "m1a",
     dbModule: 1,
     dbSeance: 1,
     title: "Positionnement",
-    subtitle: "L'Idée · 1a",
+    subtitle: "Le Regard · 1",
     description: "8 questions pour découvrir ton profil créatif : observation, narration, émotion, audace.",
     teacherNote: "Brise-glace rapide. Prépare le terrain pour les images.",
     color: "#8B5CF6",
@@ -52,7 +52,7 @@ export const MODULES: ModuleDef[] = [
     dbModule: 1,
     dbSeance: 2,
     title: "Image 1 — La rue",
-    subtitle: "L'Idée · 1b",
+    subtitle: "Le Regard · 2",
     description: "Une image, une question ouverte. Observer, interpréter, imaginer.",
     teacherNote: "Après les réponses, choisir 2 textes contrastés pour la confrontation.",
     color: "#8B5CF6",
@@ -66,7 +66,7 @@ export const MODULES: ModuleDef[] = [
     dbModule: 1,
     dbSeance: 3,
     title: "Image 2 — L'intérieur",
-    subtitle: "L'Idée · 1c",
+    subtitle: "Le Regard · 3",
     description: "Deuxième image, une question ouverte. Confrontation des regards.",
     teacherNote: "Même principe : récolter puis projeter 2 réponses contrastées.",
     color: "#8B5CF6",
@@ -80,7 +80,7 @@ export const MODULES: ModuleDef[] = [
     dbModule: 1,
     dbSeance: 4,
     title: "Image 3 — Le banc",
-    subtitle: "L'Idée · 1d",
+    subtitle: "Le Regard · 4",
     description: "Troisième image, question optionnelle. Fin de la phase images.",
     teacherNote: "Peut être fait rapidement ou sauté si le temps manque.",
     color: "#8B5CF6",
@@ -94,7 +94,7 @@ export const MODULES: ModuleDef[] = [
     dbModule: 1,
     dbSeance: 5,
     title: "Carnet d'idées",
-    subtitle: "L'Idée · 1e",
+    subtitle: "Le Regard · 5",
     description: "Page libre pour noter ses idées, images et fragments d'histoires.",
     teacherNote: "Moment calme. Les élèves écrivent librement.",
     color: "#8B5CF6",
@@ -103,7 +103,7 @@ export const MODULES: ModuleDef[] = [
     duration: "10 min",
     questions: 1,
   },
-  // ── MODULE 2 : ÉMOTION CACHÉE — 4 séances ──
+  // ── M2 : LA SCÈNE — émotion cachée, construction de scène ──
   {
     id: "u2a",
     dbModule: 2,
@@ -160,13 +160,13 @@ export const MODULES: ModuleDef[] = [
     duration: "15 min",
     questions: 2,
   },
-  // ── MODULE 10 : IMAGINATION — Et si... + Pitch ──
+  // ── M3 : ET SI... — la naissance de l'idée ──
   {
     id: "m10a",
     dbModule: 10,
     dbSeance: 1,
     title: "Et si...",
-    subtitle: "Imagination · 1",
+    subtitle: "Et si...",
     description: "Une image, une question : « Et si... ? ». Libérer l'imagination narrative.",
     teacherNote: "Les élèves partent d'une image pour écrire leur première idée de scénario.",
     color: "#06B6D4",
@@ -175,12 +175,13 @@ export const MODULES: ModuleDef[] = [
     duration: "25 min",
     questions: 3,
   },
+  // ── M4 : LE PITCH — transformer l'idée en proposition claire ──
   {
     id: "m10b",
     dbModule: 10,
     dbSeance: 2,
     title: "Pitch",
-    subtitle: "Imagination · 2",
+    subtitle: "Le Pitch",
     description: "Créer un personnage, définir son objectif, pitcher l'histoire en 30 secondes.",
     teacherNote: "Le pitch structure la pensée. Le chrono force la concision.",
     color: "#06B6D4",
@@ -189,7 +190,7 @@ export const MODULES: ModuleDef[] = [
     duration: "30 min",
     questions: 5,
   },
-  // ── MODULE 12 : CONSTRUCTION COLLECTIVE — 1 séance, 8 manches ──
+  // ── M5 : CONSTRUCTION COLLECTIVE — 1 séance, 8 manches ──
   {
     id: "m12a",
     dbModule: 12,
@@ -204,13 +205,13 @@ export const MODULES: ModuleDef[] = [
     duration: "30 min",
     questions: 8,
   },
-  // ── OLD MODULE 2 : CINÉMA (moved to M9) ──
+  // ── BONUS : LE CINÉMA — comprendre la production ──
   {
     id: "m2a",
     dbModule: 9,
     dbSeance: 1,
     title: "Le Cinéma",
-    subtitle: "L'Idée · 2a",
+    subtitle: "Le Cinéma · 1",
     description: "Comment on fait un film ? Les métiers, les coûts, les contraintes. Comprendre la prod.",
     teacherNote: "Objectif : comprendre ce que veut dire \"produire un film\" à leur échelle.",
     color: "#F59E0B",
@@ -224,7 +225,7 @@ export const MODULES: ModuleDef[] = [
     dbModule: 9,
     dbSeance: 2,
     title: "Les Choix",
-    subtitle: "L'Idée · 2b",
+    subtitle: "Le Cinéma · 2",
     description: "100 crédits d'énergie créative. Casting, lieux, image, son, montage — chaque choix compte.",
     teacherNote: "Le jeu de contraintes. Les élèves adorent négocier leurs choix.",
     color: "#F59E0B",
@@ -238,7 +239,7 @@ export const MODULES: ModuleDef[] = [
     dbModule: 9,
     dbSeance: 3,
     title: "Les Imprévus",
-    subtitle: "L'Idée · 2c",
+    subtitle: "Le Cinéma · 3",
     description: "Problèmes de tournage — acteur absent, pluie, batterie vide. S'adapter comme un vrai prod.",
     teacherNote: "Objectif : apprendre à résoudre des problèmes créatifs sous pression.",
     color: "#F59E0B",
@@ -252,7 +253,7 @@ export const MODULES: ModuleDef[] = [
     dbModule: 9,
     dbSeance: 4,
     title: "Le Plan",
-    subtitle: "L'Idée · 2d",
+    subtitle: "Le Cinéma · 4",
     description: "Organiser le tournage — planning, rôles, scènes clés, plan B. Devenir producteur.",
     teacherNote: "Objectif : synthétiser tout ce qu'ils ont appris et présenter leur plan.",
     color: "#F59E0B",
@@ -261,12 +262,13 @@ export const MODULES: ModuleDef[] = [
     duration: "20 min",
     questions: 8,
   },
+  // ── BONUS : L'HISTOIRE — personnages, conflits, structure narrative ──
   {
     id: "m2-perso",
     dbModule: 4,
     dbSeance: 1,
     title: "Vis ma vie",
-    subtitle: "L'Idée · 3",
+    subtitle: "L'Histoire · 1",
     description: "Mon univers — films, anime, jeux, héros, méchants, émotions. Trouver l'idée de SON film.",
     teacherNote: "On part de ce qu'ils aiment pour les amener vers leur propre histoire.",
     color: "#EC4899",
@@ -280,7 +282,7 @@ export const MODULES: ModuleDef[] = [
     dbModule: 3,
     dbSeance: 1,
     title: "Le Héros",
-    subtitle: "L'Idée · 4",
+    subtitle: "L'Histoire · 2",
     description: "Création du personnage principal — qui il est, son monde, ses liens, ce qu'il veut.",
     teacherNote: "Début de l'écriture. On construit les fondations du film.",
     color: "#4ECDC4",
@@ -294,7 +296,7 @@ export const MODULES: ModuleDef[] = [
     dbModule: 3,
     dbSeance: 2,
     title: "Le Conflit",
-    subtitle: "L'Idée · 5",
+    subtitle: "L'Histoire · 3",
     description: "L'histoire se complique — obstacles, dilemmes, le personnage face à l'adversité.",
     teacherNote: "Le coeur du récit. Les élèves découvrent la tension narrative.",
     color: "#FF6B35",
@@ -308,7 +310,7 @@ export const MODULES: ModuleDef[] = [
     dbModule: 3,
     dbSeance: 3,
     title: "Le Sens",
-    subtitle: "L'Idée · 6",
+    subtitle: "L'Histoire · 4",
     description: "Qu'est-ce que ce film raconte vraiment ? Le thème profond et le titre final.",
     teacherNote: "La prise de recul. L'élève découvre le vrai sujet de son film.",
     color: "#8B5CF6",
@@ -317,7 +319,7 @@ export const MODULES: ModuleDef[] = [
     duration: "45 min",
     questions: SEANCE_SITUATIONS[3] || 5,
   },
-  // ── MODULE 11 : CINÉ-DÉBAT — 4 séances ──
+  // ── BONUS : CINÉ-DÉBAT — 4 séances ──
   {
     id: "m11a",
     dbModule: 11,
@@ -374,7 +376,7 @@ export const MODULES: ModuleDef[] = [
     duration: "25 min",
     questions: 6,
   },
-  // ── PHASE 2 : LE SCÉNARIO ──
+  // ── M6 : LE SCÉNARIO ──
   {
     id: "m6",
     dbModule: 5,
@@ -389,7 +391,7 @@ export const MODULES: ModuleDef[] = [
     duration: "45 min",
     questions: 5,
   },
-  // ── PHASE 3 : LA MISE EN SCÈNE ──
+  // ── M7 : LA MISE EN SCÈNE ──
   {
     id: "m7",
     dbModule: 7,
@@ -404,7 +406,7 @@ export const MODULES: ModuleDef[] = [
     duration: "40 min",
     questions: 4,
   },
-  // ── PHASE 4 : L'ÉQUIPE ──
+  // ── M8 : L'ÉQUIPE ──
   {
     id: "m8",
     dbModule: 8,
@@ -419,7 +421,7 @@ export const MODULES: ModuleDef[] = [
     duration: "35 min",
     questions: 5,
   },
-  // ── PHASE 5 : POST-PRODUCTION ──
+  // ── BONUS : POST-PRODUCTION ──
   {
     id: "m9",
     dbModule: 13,
@@ -436,21 +438,27 @@ export const MODULES: ModuleDef[] = [
   },
 ];
 
+/** IDs of the 8 core programme phases (M1–M8) */
+export const MAIN_PHASE_IDS = [
+  "regard", "scene", "etsi", "pitch",
+  "collectif", "scenario", "mise-en-scene", "equipe",
+] as const;
+
 export const PHASES: PhaseDef[] = [
-  // ── Parcours principal ──
-  { id: "idea", label: "Positionnement", description: "Observer, interpréter, imaginer. Les élèves découvrent leur profil créatif à travers des images et des questions ouvertes.", color: "#8B5CF6", emoji: "💡", moduleIds: ["m1a", "m1b", "m1c", "m1d", "m1e"] },
-  { id: "emotion", label: "Émotion Cachée", description: "Explorer les émotions cachées derrière les images et les situations. Développer l'empathie et la sensibilité narrative.", color: "#EC4899", emoji: "💜", moduleIds: ["u2a", "u2b", "u2c", "u2d"] },
-  { id: "imagination", label: "Imagination", description: "Libérer la créativité avec des scénarios « Et si... » et construire un pitch percutant en 30 secondes.", color: "#06B6D4", emoji: "✨", moduleIds: ["m10a", "m10b"] },
+  // ── Parcours principal M1–M8 (conforme au programme pédagogique) ──
+  { id: "regard", label: "Le Regard", description: "Observer, interpréter, imaginer. Les élèves découvrent leur profil créatif à travers des images et des questions ouvertes.", color: "#8B5CF6", emoji: "👁️", moduleIds: ["m1a", "m1b", "m1c", "m1d", "m1e"] },
+  { id: "scene", label: "La Scène", description: "Explorer les émotions cachées derrière les images et les situations. Construire une scène avec le jeu Émotion Cachée.", color: "#EC4899", emoji: "🎬", moduleIds: ["u2a", "u2b", "u2c", "u2d"] },
+  { id: "etsi", label: "Et si...", description: "Libérer la créativité avec des scénarios « Et si... » à partir d'images. La naissance de l'idée.", color: "#06B6D4", emoji: "✨", moduleIds: ["m10a"] },
+  { id: "pitch", label: "Le Pitch", description: "Créer un personnage, définir son objectif, et pitcher son histoire en 30 secondes.", color: "#06B6D4", emoji: "🎤", moduleIds: ["m10b"] },
   { id: "collectif", label: "Construction Collective", description: "Voter en 8 manches pour construire le film de la classe à partir des idées de chacun.", color: "#14B8A6", emoji: "🗳️", moduleIds: ["m12a"] },
   { id: "scenario", label: "Le Scénario", description: "Transformer les choix collectifs en scénario structuré : frise narrative, scènes IA, missions d'écriture collaborative.", color: "#10B981", emoji: "✏️", moduleIds: ["m6"] },
   { id: "mise-en-scene", label: "La Mise en scène", description: "Apprendre le langage visuel : les 4 plans fondamentaux, comparer les cadrages, créer un mini-storyboard.", color: "#F59E0B", emoji: "🎥", moduleIds: ["m7"] },
-  // ── Bonus ──
+  { id: "equipe", label: "L'Équipe", description: "Former l'équipe de tournage : quiz des métiers, choix des rôles par mérite, cartes talents.", color: "#EF4444", emoji: "🎭", moduleIds: ["m8"] },
+  // ── Modules bonus (hors programme de base) ──
+  { id: "postprod", label: "La Post-prod", description: "Monter le film, ajouter la musique et les effets, finaliser le projet pour la projection.", color: "#06B6D4", emoji: "🎞️", moduleIds: ["m9"] },
   { id: "cinema", label: "Le Cinéma", description: "Comprendre le langage cinématographique : plans, angles, montage, son. Les outils pour raconter en images.", color: "#F59E0B", emoji: "🎬", moduleIds: ["m2a", "m2b", "m2c", "m2d"] },
   { id: "story", label: "L'Histoire", description: "Construire une histoire complète : personnages, conflits, structure narrative et parcours émotionnel.", color: "#4ECDC4", emoji: "📖", moduleIds: ["m2-perso", "m3", "m4", "m5"] },
-  { id: "empathy", label: "Vis ma vie", description: "Plonger dans la peau d'un personnage. Développer l'empathie par l'immersion narrative.", color: "#EC4899", emoji: "🎭", moduleIds: ["m2-perso"] },
   { id: "cinedebat", label: "Ciné-Débat", description: "Analyser des extraits de films, débattre des choix artistiques et développer l'esprit critique cinématographique.", color: "#E11D48", emoji: "📽️", moduleIds: ["m11a", "m11b", "m11c", "m11d"] },
-  { id: "equipe", label: "L'Équipe", description: "Former l'équipe de tournage : quiz des métiers, choix des rôles par mérite, cartes talents.", color: "#EF4444", emoji: "🎭", moduleIds: ["m8"] },
-  { id: "postprod", label: "La Post-prod", description: "Monter le film, ajouter la musique et les effets, finaliser le projet pour la projection.", color: "#06B6D4", emoji: "🎞️", moduleIds: ["m9"] },
 ];
 
 /** Find module by its ID */

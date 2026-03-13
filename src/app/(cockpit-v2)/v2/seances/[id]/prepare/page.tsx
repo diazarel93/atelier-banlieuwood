@@ -5,10 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { SessionPrepSidebar } from "@/components/v2/session-prep-sidebar";
 import { ModuleSequenceEditor } from "@/components/v2/module-sequence-editor";
+import { ROUTES } from "@/lib/routes";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 import { BreadcrumbV2 } from "@/components/v2/breadcrumb";
 import { getSessionState } from "@/lib/session-state";
-import { MODULES, PHASES } from "@/lib/modules-data";
+import { MODULES, PHASES, MAIN_PHASE_IDS } from "@/lib/modules-data";
 
 interface SessionDetail {
   id: string;
@@ -37,7 +38,7 @@ export default function SessionPreparePage() {
     },
   });
 
-  const baseCrumbs = [{ label: "Séances", href: "/v2/seances" }];
+  const baseCrumbs = [{ label: "Séances", href: ROUTES.seances }];
 
   if (isLoading) {
     return (
@@ -58,7 +59,7 @@ export default function SessionPreparePage() {
         <GlassCardV2 className="p-8 text-center mt-4">
           <p className="text-bw-muted text-sm mb-4">Session introuvable ou erreur de chargement</p>
           <Link
-            href="/v2/seances"
+            href={ROUTES.seances}
             className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
           >
             Retour aux séances
@@ -68,9 +69,8 @@ export default function SessionPreparePage() {
     );
   }
 
-  // Main parcours modules
-  const mainPhaseIds = ["idea", "emotion", "imagination", "collectif", "scenario"];
-  const mainModuleIds = PHASES.filter((p) => mainPhaseIds.includes(p.id))
+  // Main parcours modules (M1–M8)
+  const mainModuleIds = PHASES.filter((p) => (MAIN_PHASE_IDS as readonly string[]).includes(p.id))
     .flatMap((p) => p.moduleIds);
   const mainModules = mainModuleIds
     .map((id) => MODULES.find((m) => m.id === id))
@@ -81,8 +81,8 @@ export default function SessionPreparePage() {
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
       <BreadcrumbV2 items={[
-        { label: "Séances", href: "/v2/seances" },
-        { label: session.title, href: `/v2/seances/${session.id}` },
+        { label: "Séances", href: ROUTES.seances },
+        { label: session.title, href: ROUTES.seanceDetail(session.id) },
         { label: "Préparation" },
       ]} />
 
@@ -102,7 +102,7 @@ export default function SessionPreparePage() {
             {/* Primary CTA */}
             {ss.canPilot && (
               <Link
-                href={`/session/${session.id}/pilot`}
+                href={ROUTES.pilot(session.id)}
                 prefetch={false}
                 className="flex items-center justify-center gap-2 rounded-xl bg-bw-primary py-3 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
               >
@@ -114,7 +114,7 @@ export default function SessionPreparePage() {
             )}
             {ss.canViewResults && (
               <Link
-                href={`/v2/seances/${session.id}/results`}
+                href={ROUTES.seanceResults(session.id)}
                 className="flex items-center justify-center gap-2 rounded-xl border border-[var(--color-bw-border)] py-3 text-sm font-semibold text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
               >
                 {ss.ctaLabel}

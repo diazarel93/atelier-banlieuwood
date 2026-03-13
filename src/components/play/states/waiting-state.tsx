@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CINEMA_TIPS, type CinemaTip } from "@/lib/cinema-tips";
+import { ROUTES } from "@/lib/routes";
 import type { SessionState } from "@/hooks/use-session-polling";
 
 export interface WaitingStateProps {
@@ -130,7 +131,7 @@ export function WaitingState({ session, connectedCount }: WaitingStateProps) {
 
       {/* Library link */}
       <a
-        href={`/play/${session.id}/bibliotheque`}
+        href={ROUTES.playBibliotheque(session.id)}
         className="flex items-center gap-2 text-xs text-bw-muted hover:text-white/60 transition-colors mt-2"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">

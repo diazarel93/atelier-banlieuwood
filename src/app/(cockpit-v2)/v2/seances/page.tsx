@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { ROUTES } from "@/lib/routes";
 import { SeanceTabs, type SeanceTab } from "@/components/v2/seance-tabs";
 import { SeanceDayGroup } from "@/components/v2/seance-day-group";
 import { SeanceCalendarSidebar } from "@/components/v2/seance-calendar-sidebar";
@@ -181,7 +182,7 @@ export default function SeancesPage() {
             )}
           </div>
           <Link
-            href="/v2/seances/new"
+            href={ROUTES.seanceNew}
             className="inline-flex items-center gap-1.5 rounded-lg bg-bw-primary px-3 py-1.5 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -224,7 +225,7 @@ export default function SeancesPage() {
                 Aucune séance dans cette catégorie
               </p>
               <Link
-                href="/v2/seances/new"
+                href={ROUTES.seanceNew}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-bw-primary px-4 py-2 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors"
               >
                 Créer une séance
@@ -249,7 +250,7 @@ export default function SeancesPage() {
                       scheduledAt: s.scheduled_at,
                     };
                   })}
-                  onSessionClick={(id) => router.push(`/v2/seances/${id}`)}
+                  onSessionClick={(id) => router.push(ROUTES.seanceDetail(id))}
                 />
               ))}
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ROUTES } from "@/lib/routes";
 import type { SessionState } from "@/lib/session-state";
 
 interface SessionActionBarProps {
@@ -22,7 +23,7 @@ export function SessionActionBar({
     <div className="sticky top-14 z-30 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 bg-white/85 backdrop-blur-xl border-b border-[var(--color-bw-border)] flex flex-wrap items-center gap-3">
       {ss.canPilot && (
         <Link
-          href={`/session/${sessionId}/pilot`}
+          href={ROUTES.pilot(sessionId)}
           prefetch={false}
           className="inline-flex items-center gap-2 rounded-xl bg-bw-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
         >
@@ -64,7 +65,7 @@ export function SessionActionBar({
 
       {ss.canViewResults && (
         <Link
-          href={`/v2/seances/${sessionId}/results`}
+          href={ROUTES.seanceResults(sessionId)}
           className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-bw-border)] px-4 py-2.5 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
         >
           <svg
@@ -88,7 +89,7 @@ export function SessionActionBar({
 
       {ss.canPrepare && (
         <Link
-          href={`/v2/seances/${sessionId}/prepare`}
+          href={ROUTES.seancePrepare(sessionId)}
           className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-bw-border)] px-4 py-2.5 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
         >
           Préparer

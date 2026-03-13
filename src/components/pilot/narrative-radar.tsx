@@ -49,20 +49,20 @@ export function computeNarrativeScores(
   // Base scores from completed modules
   const completionRate = totalModules > 0 ? completedModules.length / totalModules : 0;
 
-  // Phase → competency mapping
+  // Phase → competency mapping (M1–M8 + bonus)
   const phaseCompetencies: Record<string, (keyof NarrativeScores)[]> = {
-    idea: ["observation", "imagination"],
-    emotion: ["emotion", "expression"],
-    imagination: ["imagination", "expression"],
+    regard: ["observation", "imagination"],
+    scene: ["emotion", "expression"],
+    etsi: ["imagination", "expression"],
+    pitch: ["imagination", "expression"],
     collectif: ["construction", "expression"],
     scenario: ["construction", "expression"],
     "mise-en-scene": ["construction", "observation"],
-    cinema: ["observation", "construction"],
-    story: ["imagination", "emotion"],
-    empathy: ["emotion", "expression"],
-    cinedebat: ["observation", "expression"],
     equipe: ["expression", "construction"],
     postprod: ["construction", "observation"],
+    cinema: ["observation", "construction"],
+    story: ["imagination", "emotion"],
+    cinedebat: ["observation", "expression"],
   };
 
   // Count how many completed modules contribute to each competency
@@ -114,18 +114,18 @@ export function computeNarrativeScores(
 // Helper to get module IDs for a phase (simplified mapping)
 function getPhaseModuleIds(phaseId: string): string[] {
   const map: Record<string, string[]> = {
-    idea: ["m1a", "m1b", "m1c", "m1d", "m1e"],
-    emotion: ["u2a", "u2b", "u2c", "u2d"],
-    imagination: ["m10a", "m10b"],
+    regard: ["m1a", "m1b", "m1c", "m1d", "m1e"],
+    scene: ["u2a", "u2b", "u2c", "u2d"],
+    etsi: ["m10a"],
+    pitch: ["m10b"],
     collectif: ["m12a"],
     scenario: ["m6"],
     "mise-en-scene": ["m7"],
-    cinema: ["m2a", "m2b", "m2c", "m2d"],
-    story: ["m2-perso", "m3", "m4", "m5"],
-    empathy: ["m2-perso"],
-    cinedebat: ["m11a", "m11b", "m11c", "m11d"],
     equipe: ["m8"],
     postprod: ["m9"],
+    cinema: ["m2a", "m2b", "m2c", "m2d"],
+    story: ["m2-perso", "m3", "m4", "m5"],
+    cinedebat: ["m11a", "m11b", "m11c", "m11d"],
   };
   return map[phaseId] || [];
 }

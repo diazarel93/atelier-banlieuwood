@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { GlassCardV2 } from "@/components/v2/glass-card";
+import { ROUTES } from "@/lib/routes";
 import type { ModuleGuide } from "@/lib/guide-data";
 import type { ExerciseEntry } from "@/lib/exercise-catalog";
 import { SOCLE_COLORS } from "@/lib/socle-colors";
@@ -361,7 +362,7 @@ export function ModuleGuideModal({
           {/* CTA */}
           <div className="pt-2">
             <Link
-              href="/v2/seances/new"
+              href={ROUTES.seanceNew}
               onClick={onClose}
               className="flex items-center justify-center gap-2 w-full rounded-xl bg-bw-primary py-3 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
             >

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 import { GlassCardV2 } from "./glass-card";
 import { DatePicker } from "./date-picker";
 import { toast } from "sonner";
@@ -74,7 +75,7 @@ export function SessionCreateWizard() {
       if (!res.ok) throw new Error("Erreur création");
       const session = await res.json();
       toast.success("Séance créée !");
-      router.push(`/v2/seances/${session.id}/prepare`);
+      router.push(ROUTES.seancePrepare(session.id));
     } catch {
       toast.error("Erreur lors de la création de la séance");
       setSaving(false);
@@ -290,7 +291,7 @@ export function SessionCreateWizard() {
             </button>
           ) : (
             <Link
-              href="/v2/seances"
+              href={ROUTES.seances}
               className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-muted hover:text-bw-heading transition-colors"
             >
               Annuler

@@ -5,6 +5,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { CATEGORY_COLORS } from "@/lib/constants";
+import { ROUTES } from "@/lib/routes";
 import { BrandLogo } from "@/components/brand-logo";
 
 interface StoryChoice {
@@ -144,7 +145,7 @@ export default function RecapPage() {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center bg-bw-bg gap-4 px-4">
         <p className="text-bw-muted">Recap introuvable</p>
-        <a href={`/play/${sessionId}`} className="text-bw-primary text-sm">Retour</a>
+        <a href={ROUTES.play(sessionId)} className="text-bw-primary text-sm">Retour</a>
       </div>
     );
   }
@@ -160,7 +161,7 @@ export default function RecapPage() {
       {/* Header */}
       <header className="sticky top-0 z-10 bg-bw-bg/90 backdrop-blur-md border-b border-white/[0.04]">
         <div className="px-4 py-3 flex items-center justify-between">
-          <a href={isSharedView ? "/" : `/play/${sessionId}`} className="text-bw-muted text-xs hover:text-white transition-colors">
+          <a href={isSharedView ? "/" : ROUTES.play(sessionId)} className="text-bw-muted text-xs hover:text-white transition-colors">
             &larr; {isSharedView ? "Accueil" : "Retour"}
           </a>
           <span className="font-cinema text-base tracking-[0.15em] uppercase">

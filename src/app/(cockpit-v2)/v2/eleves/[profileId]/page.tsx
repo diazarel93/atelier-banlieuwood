@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { ROUTES } from "@/lib/routes";
 import { BreadcrumbV2 } from "@/components/v2/breadcrumb";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 import { ProfileHero } from "@/components/v2/student-profile/profile-hero";
@@ -29,7 +30,7 @@ export default function EleveDetailPage() {
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
         <BreadcrumbV2
           items={[
-            { label: "Élèves", href: "/v2/eleves" },
+            { label: "Élèves", href: ROUTES.eleves },
             { label: "Chargement..." },
           ]}
         />
@@ -55,7 +56,7 @@ export default function EleveDetailPage() {
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
         <BreadcrumbV2
           items={[
-            { label: "Élèves", href: "/v2/eleves" },
+            { label: "Élèves", href: ROUTES.eleves },
             { label: "Erreur" },
           ]}
         />
@@ -64,7 +65,7 @@ export default function EleveDetailPage() {
             Élève introuvable ou erreur de chargement
           </p>
           <Link
-            href="/v2/eleves"
+            href={ROUTES.eleves}
             className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
           >
             Retour aux élèves
@@ -88,7 +89,7 @@ export default function EleveDetailPage() {
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
       <BreadcrumbV2
         items={[
-          { label: "Élèves", href: "/v2/eleves" },
+          { label: "Élèves", href: ROUTES.eleves },
           { label: profile.displayName },
         ]}
       />
@@ -132,7 +133,7 @@ export default function EleveDetailPage() {
                 après sa première participation à une séance.
               </p>
               <Link
-                href="/v2/seances/new"
+                href={ROUTES.seanceNew}
                 className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-4 py-2 text-sm font-semibold text-white hover:bg-bw-primary-500 active:scale-[0.97] transition-all"
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">

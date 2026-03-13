@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/routes";
 import { BrandLogo } from "@/components/brand-logo";
 
 export default function LoginPage() {
@@ -78,7 +79,7 @@ export default function LoginPage() {
     }
 
     if (isSignUp) toast.success("Compte cree !");
-    router.push("/v2");
+    router.push(ROUTES.dashboard);
   }
 
   async function handleGoogleLogin() {

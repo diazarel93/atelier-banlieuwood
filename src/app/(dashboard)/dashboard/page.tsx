@@ -12,6 +12,7 @@ import { OnboardingTour } from "@/components/onboarding-tour";
 import { HelpButton } from "@/components/help-button";
 import { DashboardAnalytics } from "@/components/dashboard-analytics";
 import { ConfirmModal } from "@/components/confirm-modal";
+import { ROUTES } from "@/lib/routes";
 import { PHASES, MODULES, getModuleByDb } from "@/lib/modules-data";
 
 /* ═══════════════════════════════════════════════════════════════
@@ -83,7 +84,7 @@ export default function DashboardPage() {
     async function load() {
       const supabase = createClient();
       const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (!authUser) { router.push("/login"); return; }
+      if (!authUser) { router.push(ROUTES.login); return; }
       setUser(authUser);
       try {
         const res = await fetch("/api/sessions");
@@ -216,7 +217,7 @@ export default function DashboardPage() {
                 Fiche
               </button>
               <button
-                onClick={() => router.push("/join")}
+                onClick={() => router.push(ROUTES.join)}
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-medium text-bw-teal bg-bw-teal/8 border border-bw-teal/15 cursor-pointer transition-all duration-200 hover:bg-bw-teal/15 hover:border-bw-teal/30"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

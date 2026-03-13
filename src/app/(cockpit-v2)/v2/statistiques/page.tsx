@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { ROUTES } from "@/lib/routes";
 import { StatsKpiRow } from "@/components/v2/stats-kpi-row";
 import { StatsDistributionChart } from "@/components/v2/stats-distribution-chart";
 import { SessionSelector } from "@/components/v2/session-selector";
@@ -103,7 +104,7 @@ export default function StatistiquesPage() {
           )}
           {sessionId && (
             <Link
-              href={`/v2/seances/${sessionId}/results`}
+              href={ROUTES.seanceResults(sessionId)}
               className="rounded-lg border border-[var(--color-bw-border)] px-3 py-1.5 text-xs font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
             >
               Voir les résultats
@@ -153,7 +154,7 @@ export default function StatistiquesPage() {
           }
           title="Pas encore de données"
           description="Les statistiques apparaîtront après qu'au moins une séance ait été terminée avec des élèves."
-          action={{ label: "Voir mes séances", href: "/v2/seances" }}
+          action={{ label: "Voir mes séances", href: ROUTES.seances }}
         />
       ) : data ? (
         <div className="flex flex-col gap-6">

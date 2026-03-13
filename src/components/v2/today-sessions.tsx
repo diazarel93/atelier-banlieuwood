@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 import { GlassCardV2 } from "./glass-card";
 import { StatusBadge, type SessionStatus } from "./status-badge";
 import { getSessionState } from "@/lib/session-state";
@@ -60,7 +61,7 @@ function SessionRow({ session }: { session: SessionSummary }) {
       {/* Action */}
       {ss.canPilot ? (
         <Link
-          href={`/session/${session.id}/pilot`}
+          href={ROUTES.pilot(session.id)}
           prefetch={false}
           className="shrink-0 rounded-lg bg-bw-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-bw-primary-500 active:scale-95 transition-all duration-150"
         >
@@ -68,14 +69,14 @@ function SessionRow({ session }: { session: SessionSummary }) {
         </Link>
       ) : ss.canViewResults ? (
         <Link
-          href={`/v2/seances/${session.id}/results`}
+          href={ROUTES.seanceResults(session.id)}
           className="shrink-0 rounded-lg bg-[var(--color-bw-surface-dim)] px-3 py-1.5 text-xs font-medium text-bw-muted hover:text-bw-heading transition-colors"
         >
           {ss.ctaShort}
         </Link>
       ) : (
         <Link
-          href={`/v2/seances/${session.id}/prepare`}
+          href={ROUTES.seancePrepare(session.id)}
           className="shrink-0 rounded-lg border border-[var(--color-bw-border)] px-3 py-1.5 text-xs font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
         >
           Préparer
@@ -140,7 +141,7 @@ export function TodaySessions({
 
       {/* New session CTA — solid, not dashed */}
       <Link
-        href="/v2/seances/new"
+        href={ROUTES.seanceNew}
         className="group flex items-center justify-center gap-2 rounded-xl bg-bw-primary/[0.06] py-3.5 text-sm font-medium text-bw-primary hover:bg-bw-primary/[0.10] active:scale-[0.98] transition-all duration-150"
       >
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="transition-transform duration-200 group-hover:rotate-90">

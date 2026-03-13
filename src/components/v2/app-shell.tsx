@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 import { NotificationBell } from "./notification-bell";
 
 interface NavItem {
@@ -14,7 +15,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    href: "/v2",
+    href: ROUTES.dashboard,
     label: "Dashboard",
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -26,7 +27,7 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    href: "/v2/seances",
+    href: ROUTES.seances,
     label: "Séances",
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -35,7 +36,7 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    href: "/v2/eleves",
+    href: ROUTES.eleves,
     label: "Élèves",
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -46,7 +47,7 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    href: "/v2/statistiques",
+    href: ROUTES.statistiques,
     label: "Statistiques",
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -55,7 +56,7 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    href: "/v2/bibliotheque",
+    href: ROUTES.bibliotheque,
     label: "Modules",
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -64,7 +65,7 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    href: "/v2/fiche-cours",
+    href: ROUTES.ficheCours,
     label: "Fiche de cours",
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -93,7 +94,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-xl border-b border-[var(--color-bw-border)]">
         <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-6 px-4 sm:px-6">
           {/* Logo */}
-          <Link href="/v2" className="flex items-center gap-2.5 shrink-0 group">
+          <Link href={ROUTES.dashboard} className="flex items-center gap-2.5 shrink-0 group">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-bw-primary text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">
               BW
             </div>
@@ -106,8 +107,8 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           <nav aria-label="Navigation principale" className="hidden md:flex items-center gap-0.5 h-14">
             {NAV_ITEMS.map((item) => {
               const isActive =
-                item.href === "/v2"
-                  ? pathname === "/v2"
+                item.href === ROUTES.dashboard
+                  ? pathname === ROUTES.dashboard
                   : pathname.startsWith(item.href);
 
               return (
@@ -146,7 +147,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <NotificationBell />
             <Link
-              href="/v2/seances/new"
+              href={ROUTES.seanceNew}
               aria-label="Créer une nouvelle séance"
               className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 hover:shadow-md active:scale-[0.97] transition-all duration-150"
             >
@@ -188,8 +189,8 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             <div className="flex flex-col gap-0.5">
               {NAV_ITEMS.map((item) => {
                 const isActive =
-                  item.href === "/v2"
-                    ? pathname === "/v2"
+                  item.href === ROUTES.dashboard
+                    ? pathname === ROUTES.dashboard
                     : pathname.startsWith(item.href);
 
                 return (

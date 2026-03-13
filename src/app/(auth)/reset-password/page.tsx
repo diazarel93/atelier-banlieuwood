@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/routes";
 import { BrandLogo } from "@/components/brand-logo";
 
 export default function ResetPasswordPage() {
@@ -51,7 +52,7 @@ export default function ResetPasswordPage() {
     }
 
     toast.success("Mot de passe mis à jour !");
-    router.push("/v2");
+    router.push(ROUTES.dashboard);
   }
 
   if (!ready) {

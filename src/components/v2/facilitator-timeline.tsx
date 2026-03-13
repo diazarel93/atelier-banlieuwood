@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ROUTES } from "@/lib/routes";
 import { GlassCardV2 } from "./glass-card";
 
 interface TimelineSession {
@@ -62,7 +63,7 @@ export function FacilitatorTimeline({ sessions }: FacilitatorTimelineProps) {
             return (
               <Link
                 key={session.id}
-                href={`/v2/seances/${session.id}`}
+                href={ROUTES.seanceDetail(session.id)}
                 className="flex items-start gap-3 group relative pl-5 py-1 rounded-lg hover:bg-[var(--color-bw-surface-dim)] transition-colors -ml-1 pr-2"
               >
                 {/* Dot */}
@@ -106,7 +107,7 @@ export function FacilitatorTimeline({ sessions }: FacilitatorTimelineProps) {
 
       {sessions.length > 10 && (
         <Link
-          href="/v2/seances"
+          href={ROUTES.seances}
           className="block text-center text-xs text-bw-muted hover:text-bw-primary mt-4 transition-colors"
         >
           Voir toutes les séances →

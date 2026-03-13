@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
+import { ROUTES } from "@/lib/routes";
 import { useDashboardSummary } from "@/hooks/use-dashboard-v2";
 import { TodaySessions } from "@/components/v2/today-sessions";
 import { QuickStats } from "@/components/v2/quick-stats";
@@ -10,7 +11,7 @@ import { MiniCalendar } from "@/components/v2/mini-calendar";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 import { AtRiskWidget } from "@/components/v2/at-risk-widget";
 import { FacilitatorTimeline } from "@/components/v2/facilitator-timeline";
-import { PHASES } from "@/lib/modules-data";
+import { PHASES, MAIN_PHASE_IDS } from "@/lib/modules-data";
 
 function getGreeting(): string {
   const h = new Date().getHours();
@@ -25,9 +26,9 @@ export default function DashboardV2Page() {
 
   const sessionDates = (data?.sessionDates || []).map((d) => new Date(d));
 
-  // Main phases for the progress sidebar
+  // Main phases for the progress sidebar (M1–M8)
   const mainPhases = PHASES.filter((p) =>
-    ["idea", "emotion", "imagination", "collectif", "scenario"].includes(p.id)
+    (MAIN_PHASE_IDS as readonly string[]).includes(p.id)
   );
 
   const isFirstUse = data && data.stats.totalSessions === 0;
@@ -230,7 +231,7 @@ function FirstUseState() {
           transition={{ duration: 0.3, delay: 0.3 }}
         >
           <Link
-            href="/v2/seances/new"
+            href={ROUTES.seanceNew}
             className="inline-flex items-center gap-2 rounded-lg bg-bw-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -239,7 +240,7 @@ function FirstUseState() {
             Créer ma première séance
           </Link>
           <Link
-            href="/v2/bibliotheque"
+            href={ROUTES.bibliotheque}
             className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2.5 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
           >
             Explorer les modules

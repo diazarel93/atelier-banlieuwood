@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { BreadcrumbV2 } from "@/components/v2/breadcrumb";
 import { StudentClassTable } from "@/components/v2/student-class-table";
 import { EmptyState } from "@/components/v2/empty-state";
+import { ROUTES } from "@/lib/routes";
 import { useStudentProfiles } from "@/hooks/use-student-profiles";
 import { useDashboardSummary } from "@/hooks/use-dashboard-v2";
 
@@ -182,7 +183,7 @@ export default function ElevesPage() {
           }
           title="Aucun élève"
           description="Les élèves apparaîtront ici après avoir rejoint une de vos séances."
-          action={{ label: "Créer une séance", href: "/v2/seances/new" }}
+          action={{ label: "Créer une séance", href: ROUTES.seanceNew }}
         />
       ) : (
         <StudentClassTable students={filtered} />

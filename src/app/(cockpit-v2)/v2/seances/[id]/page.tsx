@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { ROUTES } from "@/lib/routes";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 import { BreadcrumbV2 } from "@/components/v2/breadcrumb";
 import { useSessionDetail } from "@/hooks/use-session-detail";
@@ -47,7 +48,7 @@ export default function SessionDetailPage() {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
-        <BreadcrumbV2 items={[{ label: "Séances", href: "/v2/seances" }]} />
+        <BreadcrumbV2 items={[{ label: "Séances", href: ROUTES.seances }]} />
         <div className="space-y-4 mt-4">
           <div className="h-48 rounded-2xl bg-white shimmer" />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -69,13 +70,13 @@ export default function SessionDetailPage() {
   if (isError || !session || !sessionState) {
     return (
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
-        <BreadcrumbV2 items={[{ label: "Séances", href: "/v2/seances" }]} />
+        <BreadcrumbV2 items={[{ label: "Séances", href: ROUTES.seances }]} />
         <GlassCardV2 className="p-8 text-center mt-4">
           <p className="text-bw-muted text-sm mb-4">
             Session introuvable ou erreur de chargement
           </p>
           <Link
-            href="/v2/seances"
+            href={ROUTES.seances}
             className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
           >
             Retour aux séances
@@ -101,7 +102,7 @@ export default function SessionDetailPage() {
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
       <BreadcrumbV2
         items={[
-          { label: "Séances", href: "/v2/seances" },
+          { label: "Séances", href: ROUTES.seances },
           { label: session.title },
         ]}
       />
@@ -123,7 +124,7 @@ export default function SessionDetailPage() {
           onProjection={() => setProjectionMode(true)}
           onDuplicate={() =>
             duplicateSession.mutateAsync().then((newSession) =>
-              router.push(`/v2/seances/${newSession.id}`)
+              router.push(ROUTES.seanceDetail(newSession.id))
             )
           }
           isDuplicating={duplicateSession.isPending}
