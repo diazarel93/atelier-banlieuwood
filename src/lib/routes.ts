@@ -15,12 +15,12 @@ export const ROUTES = {
   eleves: "/v2/eleves",
   eleveDetail: (id: string) => `/v2/eleves/${id}`,
 
-  // Legacy (still active)
-  sessionDetail: (id: string) => `/session/${id}`,
-  sessionResults: (id: string) => `/session/${id}/results`,
-  sessionNew: "/session/new",
-  legacyDashboard: "/dashboard",
-  legacyFicheCours: "/fiche-cours",
+  // Legacy aliases → now point to V2 (301 redirects in next.config.ts)
+  sessionDetail: (id: string) => `/v2/seances/${id}`,
+  sessionResults: (id: string) => `/v2/seances/${id}/results`,
+  sessionNew: "/v2/seances/new",
+  legacyDashboard: "/v2",
+  legacyFicheCours: "/v2/fiche-cours",
 
   // Pilot & Screen (old routes, still active)
   pilot: (id: string) => `/session/${id}/pilot`,

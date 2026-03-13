@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
+import { ROUTES } from "@/lib/routes";
 
 export const metadata: Metadata = {
   title: "A propos",
@@ -296,13 +297,13 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
-              href="/join"
+              href={ROUTES.join}
               className="h-11 px-6 inline-flex items-center text-sm font-semibold rounded-xl bg-bw-primary text-white hover:bg-bw-primary-500 transition-colors duration-200 shadow-bw-glow-primary"
             >
               Rejoindre une partie
             </Link>
             <Link
-              href="/contact"
+              href={ROUTES.contact}
               className="h-11 px-6 inline-flex items-center text-sm font-medium rounded-xl text-bw-heading border border-bw-border hover:bg-bw-surface-dim transition-colors duration-200"
             >
               Nous contacter
@@ -318,7 +319,7 @@ export default function AboutPage() {
           <div className="flex gap-4">
             <Link href="/legal/privacy" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">Confidentialite</Link>
             <Link href="/legal/cgu" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">CGU</Link>
-            <Link href="/contact" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">Contact</Link>
+            <Link href={ROUTES.contact} className="text-xs text-bw-muted hover:text-bw-heading transition-colors">Contact</Link>
           </div>
         </div>
       </footer>

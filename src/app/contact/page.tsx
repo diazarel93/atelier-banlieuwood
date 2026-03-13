@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
+import { ROUTES } from "@/lib/routes";
 import { ContactForm } from "./contact-form";
 
 export const metadata: Metadata = {
@@ -131,7 +132,7 @@ export default function ContactPage() {
           <div className="flex gap-4">
             <Link href="/legal/privacy" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">Confidentialite</Link>
             <Link href="/legal/cgu" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">CGU</Link>
-            <Link href="/contact" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">Contact</Link>
+            <Link href={ROUTES.contact} className="text-xs text-bw-muted hover:text-bw-heading transition-colors">Contact</Link>
           </div>
         </div>
       </footer>

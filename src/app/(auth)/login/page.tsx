@@ -427,7 +427,7 @@ export default function LoginPage() {
           {!forgotMode && !isSignUp && (
             <div className="text-center pt-2">
               <Link
-                href="/request-access"
+                href={ROUTES.requestAccess}
                 className="text-xs text-bw-muted hover:text-bw-primary transition-colors"
               >
                 Etablissement ? Demander un acces

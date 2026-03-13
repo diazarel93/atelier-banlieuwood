@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { ROUTES } from "@/lib/routes";
 
 export default function StudentLoginPage() {
   const [email, setEmail] = useState("");
@@ -173,7 +174,7 @@ export default function StudentLoginPage() {
         )}
 
         <div className="text-center mt-6 space-y-2">
-          <Link href="/join" className="text-sm font-semibold block" style={{ color: "#FF6B35" }}>
+          <Link href={ROUTES.join} className="text-sm font-semibold block" style={{ color: "#FF6B35" }}>
             Rejoindre une session sans compte →
           </Link>
           <Link href="/" className="text-xs block" style={{ color: "#9CA3AF" }}>

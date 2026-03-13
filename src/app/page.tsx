@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { BrandMark, BrandLogo, BrandStyles } from "@/components/brand-logo";
+import { ROUTES } from "@/lib/routes";
 import {
   ClapperboardIllustration,
   FilmReelIllustration,
@@ -177,7 +178,7 @@ export default function Home() {
           </Link>
           <div className="flex items-center gap-1">
             <Link
-              href="/join"
+              href={ROUTES.join}
               className="text-[13px] text-[#8b8b8e] hover:text-bw-heading px-3 py-1.5 rounded-md hover:bg-white/[0.04] transition-all duration-150"
             >
               Rejoindre
@@ -201,13 +202,13 @@ export default function Home() {
               Le Festival
             </Link>
             <Link
-              href="/v2"
+              href={ROUTES.dashboard}
               className="text-[13px] text-[#8b8b8e] hover:text-bw-heading px-3 py-1.5 rounded-md hover:bg-white/[0.04] transition-all duration-150 hidden sm:block"
             >
               Mon espace
             </Link>
             <Link
-              href="/login"
+              href={ROUTES.login}
               className="ml-2 h-8 px-3.5 inline-flex items-center text-[13px] font-medium rounded-lg bg-[#ededef] text-[#0F1118] hover:bg-white transition-all duration-150"
             >
               Creer une partie
@@ -277,7 +278,7 @@ export default function Home() {
             className="flex items-center justify-center gap-3 pt-2"
           >
             <Link
-              href="/join"
+              href={ROUTES.join}
               className="h-11 px-5 inline-flex items-center gap-2 text-sm font-medium rounded-lg bg-[#ededef] text-[#0F1118] hover:bg-white transition-all duration-150 hover:-translate-y-px hover:shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
             >
               Rejoindre une partie
@@ -294,7 +295,7 @@ export default function Home() {
               </svg>
             </Link>
             <Link
-              href="/login"
+              href={ROUTES.login}
               className="h-11 px-5 inline-flex items-center text-sm font-medium rounded-lg text-bw-heading border border-white/[0.08] hover:border-white/[0.14] hover:bg-white/[0.04] transition-all duration-150"
             >
               Creer une partie
@@ -949,7 +950,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
               <Link
-                href="/join"
+                href={ROUTES.join}
                 className="h-12 px-6 inline-flex items-center gap-2 text-sm font-semibold rounded-xl bg-bw-primary text-white hover:bg-bw-primary-500 transition-all duration-200 hover:-translate-y-px shadow-bw-glow-primary"
               >
                 Rejoindre une partie
@@ -966,7 +967,7 @@ export default function Home() {
                 </svg>
               </Link>
               <Link
-                href="/login"
+                href={ROUTES.login}
                 className="h-12 px-6 inline-flex items-center text-sm font-medium rounded-xl text-bw-heading border border-white/[0.08] hover:border-white/[0.14] hover:bg-white/[0.04] transition-all duration-150"
               >
                 Creer une partie

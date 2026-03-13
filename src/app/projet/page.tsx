@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
+import { ROUTES } from "@/lib/routes";
 
 export const metadata: Metadata = {
   title: "Le Projet",
@@ -533,13 +534,13 @@ export default function ProjetPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
-              href="/contact"
+              href={ROUTES.contact}
               className="h-11 px-6 inline-flex items-center text-sm font-semibold rounded-xl bg-bw-primary text-white hover:bg-bw-primary-500 transition-colors duration-200 shadow-bw-glow-primary"
             >
               Nous contacter
             </Link>
             <Link
-              href="/about"
+              href={ROUTES.about}
               className="h-11 px-6 inline-flex items-center text-sm font-medium rounded-xl text-bw-heading border border-bw-border hover:bg-bw-surface-dim transition-colors duration-200"
             >
               A propos de l&apos;association
@@ -566,7 +567,7 @@ export default function ProjetPage() {
               CGU
             </Link>
             <Link
-              href="/contact"
+              href={ROUTES.contact}
               className="text-xs text-bw-muted hover:text-bw-heading transition-colors"
             >
               Contact

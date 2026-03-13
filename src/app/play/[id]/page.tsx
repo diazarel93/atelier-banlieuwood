@@ -13,6 +13,7 @@ import { useOnlineStatus } from "@/hooks/use-online-status";
 import { useSound } from "@/hooks/use-sound";
 import { CATEGORY_COLORS, SEANCE_SITUATIONS, MODULE_SEANCE_SITUATIONS, TOTAL_SITUATIONS, getSeanceMax } from "@/lib/constants";
 import { getCoachTip } from "@/lib/coach-tips";
+import { ROUTES } from "@/lib/routes";
 import { CountdownTimer } from "@/components/countdown-timer";
 import { CoachBubble } from "@/components/play/coach-bubble";
 import { BrandLogo } from "@/components/brand-logo";
@@ -817,7 +818,7 @@ export default function PlayPage() {
           </svg>
         </div>
         <p className="text-bw-muted text-center">Tu dois d&apos;abord rejoindre la partie</p>
-        <a href="/join" className="text-bw-primary font-medium cursor-pointer">Rejoindre</a>
+        <a href={ROUTES.join} className="text-bw-primary font-medium cursor-pointer">Rejoindre</a>
       </div>
     );
   }

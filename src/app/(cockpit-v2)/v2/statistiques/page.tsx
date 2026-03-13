@@ -13,6 +13,7 @@ import { Avatar } from "@/components/v2/avatar";
 import { EmptyState } from "@/components/v2/empty-state";
 import { useQuestionAnalytics } from "@/hooks/use-question-analytics";
 import { ClassComparisonChart } from "@/components/v2/class-comparison-chart";
+import { ClassEvolutionChart } from "@/components/v2/class-evolution-chart";
 import type { AxesScores } from "@/lib/axes-mapping";
 
 interface StatsStudent {
@@ -210,6 +211,9 @@ export default function StatistiquesPage() {
 
           {/* Class comparison */}
           <ClassComparisonChart />
+
+          {/* Multi-student evolution */}
+          <ClassEvolutionChart classLabel={classLabel} />
 
           {/* Question analytics */}
           {qaData && qaData.questions.length > 0 && (

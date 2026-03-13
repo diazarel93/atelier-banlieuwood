@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
+import { ROUTES } from "@/lib/routes";
 
 // ═══════════════════════════════════════════════════════════════
 // LE FESTIVAL — Community Gallery & Voting
@@ -168,7 +169,7 @@ export default function FestivalPage() {
               Joue des sessions et publie tes meilleures reponses ici.
             </p>
             <Link
-              href="/join"
+              href={ROUTES.join}
               className="inline-block mt-6 px-6 py-3 rounded-xl text-sm font-bold text-white"
               style={{ background: "#FF6B35" }}
             >

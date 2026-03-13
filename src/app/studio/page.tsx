@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
+import { ROUTES } from "@/lib/routes";
 import { getLevel, LEVEL_NAMES } from "@/lib/xp";
 import {
   ACHIEVEMENTS,
@@ -96,7 +97,7 @@ export default function StudioPage() {
           </Link>
           <div className="flex items-center gap-3">
             <Link
-              href="/join"
+              href={ROUTES.join}
               className="px-4 py-2 rounded-xl text-sm font-semibold text-white"
               style={{ background: "#FF6B35" }}
             >
@@ -277,7 +278,7 @@ function OverviewTab({ profile, achievements }: { profile: StudentProfile; achie
     >
       {/* Quick Actions */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        <QuickAction href="/join" icon="🎮" title="Rejoindre" subtitle="Une session en cours" color="#FF6B35" />
+        <QuickAction href={ROUTES.join} icon="🎮" title="Rejoindre" subtitle="Une session en cours" color="#FF6B35" />
         <QuickAction href="/studio/missions" icon="🎯" title="Mission Solo" subtitle="Gagne du XP" color="#8B5CF6" />
         <QuickAction href="/festival" icon="🏆" title="Festival" subtitle="Galerie & votes" color="#D4A843" />
       </div>
@@ -586,7 +587,7 @@ function PortfolioTab({ profileId }: { profileId: string }) {
             Joue des sessions et publie tes meilleures creations au Festival !
           </p>
           <Link
-            href="/join"
+            href={ROUTES.join}
             className="inline-block mt-4 px-6 py-3 rounded-xl text-sm font-bold text-white"
             style={{ background: "#FF6B35" }}
           >
@@ -764,7 +765,7 @@ function GuestStudio() {
         )}
 
         <div className="text-center mt-6">
-          <Link href="/join" className="text-sm font-semibold" style={{ color: "#FF6B35" }}>
+          <Link href={ROUTES.join} className="text-sm font-semibold" style={{ color: "#FF6B35" }}>
             Ou rejoins directement une session →
           </Link>
         </div>

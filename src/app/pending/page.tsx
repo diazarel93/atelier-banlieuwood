@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/routes";
 import { motion } from "motion/react";
 
 export default function PendingPage() {
@@ -11,7 +12,7 @@ export default function PendingPage() {
   async function handleLogout() {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push("/login");
+    router.push(ROUTES.login);
   }
 
   return (

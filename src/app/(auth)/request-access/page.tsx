@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BrandLogo } from "@/components/brand-logo";
 import Link from "next/link";
+import { ROUTES } from "@/lib/routes";
 
 export default function RequestAccessPage() {
   const [name, setName] = useState("");
@@ -59,7 +60,7 @@ export default function RequestAccessPage() {
           <p className="text-sm text-bw-muted">
             Nous avons bien recu votre demande d&apos;acces. Un administrateur l&apos;examinera dans les plus brefs delais.
           </p>
-          <Link href="/login" className="text-sm text-bw-primary hover:underline font-medium">
+          <Link href={ROUTES.login} className="text-sm text-bw-primary hover:underline font-medium">
             Retour a la connexion
           </Link>
         </motion.div>
@@ -153,7 +154,7 @@ export default function RequestAccessPage() {
         </div>
 
         <div className="text-center">
-          <Link href="/login" className="text-sm text-bw-muted hover:text-bw-heading">
+          <Link href={ROUTES.login} className="text-sm text-bw-muted hover:text-bw-heading">
             Deja un compte ? Se connecter
           </Link>
         </div>

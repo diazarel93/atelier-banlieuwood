@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRealtimeInvalidation } from "@/hooks/use-realtime-invalidation";
 import { getModuleByDb, getPhaseForModule } from "@/lib/modules-data";
 import { getModuleGuide } from "@/lib/guide-data";
-import { getSessionState } from "@/lib/session-state";
+import { getSessionState, getSessionUrls, type SessionUrls } from "@/lib/session-state";
 import { DEMO_STUDENT_NAMES } from "@/lib/demo-data";
 import { toast } from "sonner";
 
@@ -57,6 +57,7 @@ export function useSessionDetail(id: string) {
     : null;
   const guide = currentModule ? getModuleGuide(currentModule.id) ?? null : null;
   const sessionState = session ? getSessionState(session.status) : null;
+  const sessionUrls = session ? getSessionUrls(session.id, session.status) : null;
   const joinUrl =
     typeof window !== "undefined"
       ? `${window.location.origin}/join`
@@ -132,6 +133,7 @@ export function useSessionDetail(id: string) {
     currentPhase,
     guide,
     sessionState,
+    sessionUrls,
     joinUrl,
     activeStudents,
     demoStudents,
