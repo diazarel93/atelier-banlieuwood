@@ -18,7 +18,7 @@ export async function GET(
     .eq("session_id", sessionId)
     .order("team_number");
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[teams GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
 
   return NextResponse.json(teams || []);
 }
@@ -48,7 +48,7 @@ export async function POST(
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[teams POST]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
 
   return NextResponse.json(data, { status: 201 });
 }

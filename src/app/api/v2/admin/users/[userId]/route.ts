@@ -53,7 +53,8 @@ export async function PATCH(
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[admin users PATCH]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   // Send notification email (fire-and-forget)

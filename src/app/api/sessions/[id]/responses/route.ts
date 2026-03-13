@@ -36,7 +36,8 @@ export async function GET(
   const { data, error } = await query;
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[responses GET]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json(data);
@@ -95,7 +96,8 @@ export async function PATCH(
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[responses PATCH]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json(data);

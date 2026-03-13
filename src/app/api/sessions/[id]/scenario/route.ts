@@ -77,7 +77,7 @@ export async function POST(
       },
       { onConflict: "session_id,student_id,comparison_key" }
     );
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { console.error("[scenario comparison]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
     return NextResponse.json({ success: true });
   }
 
@@ -93,7 +93,7 @@ export async function POST(
       },
       { onConflict: "session_id,student_id,scene_id" }
     );
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { console.error("[scenario decoupage]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
     return NextResponse.json({ success: true });
   }
 
@@ -113,7 +113,7 @@ export async function POST(
       },
       { onConflict: "session_id,student_id,metier_key" }
     );
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { console.error("[scenario quiz-metier]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
     return NextResponse.json({ success: true, correct });
   }
 
@@ -139,7 +139,7 @@ export async function POST(
       student_id: studentId,
       role_key: roleKey,
     });
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { console.error("[scenario choose-role]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
     return NextResponse.json({ success: true });
   }
 
@@ -172,7 +172,7 @@ export async function PATCH(
     .eq("student_id", studentId)
     .eq("session_id", sessionId);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[scenario PATCH]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
 
   // Also update the scene content by appending the contribution
   const { data: mission } = await admin

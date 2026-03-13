@@ -30,7 +30,8 @@ export async function POST(
     .eq("session_id", sessionId);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[hand-raise]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, raised });

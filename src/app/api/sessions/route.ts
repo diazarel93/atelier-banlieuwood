@@ -34,7 +34,8 @@ export async function GET() {
   const { data, error } = await query;
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[sessions GET]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   // Compute per-session student status counts
@@ -175,7 +176,8 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[sessions POST]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json(data);

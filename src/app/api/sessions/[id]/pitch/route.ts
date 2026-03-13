@@ -102,7 +102,7 @@ export async function POST(
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[pitch POST]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json(data);
 }
 
@@ -123,7 +123,7 @@ export async function GET(
       .eq("student_id", studentId)
       .maybeSingle();
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { console.error("[pitch GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
     return NextResponse.json({ pitch: data });
   }
 
@@ -134,7 +134,7 @@ export async function GET(
     .eq("session_id", sessionId)
     .order("submitted_at", { ascending: true });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[pitch GET all]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json({ pitchs: data || [], count: data?.length || 0 });
 }
 
@@ -168,6 +168,6 @@ export async function PATCH(
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[pitch PATCH]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json(data);
 }

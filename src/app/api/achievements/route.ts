@@ -17,7 +17,8 @@ export async function GET(req: NextRequest) {
     .order("unlocked_at", { ascending: false });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[achievements GET]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   // Also get all definitions
@@ -60,7 +61,8 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[achievements POST]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json(data);

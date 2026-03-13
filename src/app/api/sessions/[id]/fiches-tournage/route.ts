@@ -18,7 +18,8 @@ export async function GET(
     .order("generated_at");
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[fiches-tournage GET]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json({
@@ -100,7 +101,8 @@ export async function POST(
     .upsert(fichesToUpsert, { onConflict: "session_id,role_key" });
 
   if (upsertError) {
-    return NextResponse.json({ error: upsertError.message }, { status: 500 });
+    console.error("[fiches-tournage POST]", upsertError.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json({

@@ -101,7 +101,7 @@ export async function POST(
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[personnage POST]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json(data);
 }
 
@@ -122,7 +122,7 @@ export async function GET(
       .eq("student_id", studentId)
       .maybeSingle();
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { console.error("[personnage GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
     return NextResponse.json({ personnage: data });
   }
 
@@ -133,6 +133,6 @@ export async function GET(
     .eq("session_id", sessionId)
     .order("submitted_at", { ascending: true });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[personnage GET all]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json({ personnages: data || [], count: data?.length || 0 });
 }

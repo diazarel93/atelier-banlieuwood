@@ -163,7 +163,7 @@ export default function PlayPage() {
     setStudentLoaded(true);
   }, [sessionId]);
 
-  const { data, isLoading, error } = useSessionPolling(sessionId, studentId);
+  const { data, isLoading, error, refetch } = useSessionPolling(sessionId, studentId);
   const { play } = useSound({ muted: data?.session?.muteSounds });
 
   const isFreeMode = data?.session?.mode === "free";
@@ -865,7 +865,7 @@ export default function PlayPage() {
           </div>
           <p className="text-bw-muted">Session introuvable ou expirée</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => refetch()}
             className="btn-glow px-4 py-2 bg-bw-primary text-white rounded-xl text-sm font-medium cursor-pointer"
           >
             Réessayer

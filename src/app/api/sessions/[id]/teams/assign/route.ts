@@ -22,7 +22,7 @@ export async function POST(
     .in("id", studentIds)
     .eq("session_id", sessionId);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[teams assign]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
 
   return NextResponse.json({ ok: true });
 }

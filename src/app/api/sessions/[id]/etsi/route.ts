@@ -97,7 +97,8 @@ export async function POST(
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[etsi POST]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json(data);
@@ -123,7 +124,7 @@ export async function GET(
       .eq("student_id", studentId)
       .order("submitted_at", { ascending: true });
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { console.error("[etsi GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
     return NextResponse.json({ responses: data || [] });
   }
 
@@ -137,6 +138,6 @@ export async function GET(
     .eq("session_id", sessionId)
     .order("submitted_at", { ascending: true });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[etsi GET all]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json({ responses: data || [], count: data?.length || 0 });
 }

@@ -47,7 +47,7 @@ import type { HighlightedResponse } from "@/components/screen/highlighted-panel"
 export default function ScreenPage() {
   const { id: sessionId } = useParams<{ id: string }>();
   useRealtimeInvalidation(sessionId);
-  const { data, error } = useSessionPolling(sessionId, null, { skipStudentCheck: true });
+  const { data, error, refetch } = useSessionPolling(sessionId, null, { skipStudentCheck: true });
 
   // Vote results for projection
   const { data: voteData } = useQuery<{ totalVotes: number; results: VoteResult[] }>({
@@ -219,7 +219,7 @@ export default function ScreenPage() {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center bg-bw-bg gap-4">
         <p className="text-bw-muted text-lg">Session introuvable ou expirée</p>
-        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-bw-primary text-white rounded-lg hover:opacity-90 transition">
+        <button onClick={() => refetch()} className="px-4 py-2 bg-bw-primary text-white rounded-lg hover:opacity-90 transition">
           Réessayer
         </button>
       </div>

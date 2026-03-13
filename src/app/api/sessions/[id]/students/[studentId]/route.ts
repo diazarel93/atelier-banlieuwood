@@ -25,7 +25,7 @@ export async function PATCH(
       .eq("id", studentId)
       .eq("session_id", sessionId);
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) { console.error("[studentId clear_hand]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
     return NextResponse.json({ hand_raised_at: null });
   }
 
@@ -51,7 +51,8 @@ export async function PATCH(
       .eq("session_id", sessionId);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error("[studentId warn]", error.message);
+      return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
     }
 
     return NextResponse.json({ warnings: newWarnings, kicked });
@@ -80,7 +81,8 @@ export async function DELETE(
     .eq("session_id", sessionId);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[studentId DELETE]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

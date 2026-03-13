@@ -111,7 +111,8 @@ export async function POST(
     );
 
   if (upsertError) {
-    return NextResponse.json({ error: upsertError.message }, { status: 500 });
+    console.error("[storyboard-assemble POST]", upsertError.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, scenes: assembledScenes });
@@ -131,7 +132,8 @@ export async function PATCH(
     .eq("session_id", sessionId);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[storyboard-assemble PATCH]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, validated: true });

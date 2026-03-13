@@ -61,7 +61,8 @@ export async function PATCH(
       .eq("session_id", sessionId);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error("[responseId reset]", error.message);
+      return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
     }
 
     return NextResponse.json({ ok: true, reset: true });

@@ -27,7 +27,8 @@ export async function GET(
     .eq("situation_id", situationId);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[votes GET]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   // Get all responses to match with votes

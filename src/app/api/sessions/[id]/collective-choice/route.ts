@@ -17,7 +17,7 @@ export async function GET(
     .eq("session_id", sessionId)
     .order("validated_at", { ascending: true });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[collective-choice GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json(data || []);
 }
 
@@ -71,7 +71,8 @@ export async function POST(
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[collective-choice POST]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   // Log collective choice event (fire-and-forget)

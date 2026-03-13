@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AppShellV2 } from "@/components/v2/app-shell";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 export const metadata: Metadata = {
   title: {
@@ -16,7 +17,9 @@ export default function CockpitV2Layout({
 }) {
   return (
     <div className="theme-lavande min-h-dvh bg-[var(--background)]">
-      <AppShellV2>{children}</AppShellV2>
+      <AppShellV2>
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </AppShellV2>
     </div>
   );
 }

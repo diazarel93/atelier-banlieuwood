@@ -29,13 +29,15 @@ export async function GET() {
       .single();
 
     if (createError) {
-      return NextResponse.json({ error: createError.message }, { status: 500 });
+      console.error("[student-profile GET create]", createError.message);
+      return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
     }
     return NextResponse.json(newProfile);
   }
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[student-profile GET]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json(profile);
@@ -68,7 +70,8 @@ export async function PATCH(req: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[student-profile PATCH]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json(data);

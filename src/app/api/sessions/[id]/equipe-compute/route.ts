@@ -192,7 +192,8 @@ export async function PATCH(
     );
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[equipe-compute PATCH]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 
   return NextResponse.json({ success: true, veto: true });

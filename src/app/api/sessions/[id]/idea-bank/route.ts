@@ -73,7 +73,7 @@ export async function POST(
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[idea-bank POST]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json(data);
 }
 
@@ -91,7 +91,7 @@ export async function GET(
     .eq("session_id", sessionId)
     .order("votes", { ascending: false });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[idea-bank GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json({ ideas: data || [], count: data?.length || 0 });
 }
 
@@ -142,7 +142,7 @@ export async function PATCH(
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) { console.error("[idea-bank PATCH]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   if (!data) {
     // Race condition: votes changed between read and write, retry once
     const { data: retry } = await admin
@@ -161,7 +161,7 @@ export async function PATCH(
         .eq("id", ideaId)
         .select()
         .single();
-      if (e2) return NextResponse.json({ error: e2.message }, { status: 500 });
+      if (e2) { console.error("[idea-bank PATCH retry]", e2.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
       return NextResponse.json(d2);
     }
     return NextResponse.json({ error: "Conflit de votes, réessaye" }, { status: 409 });
