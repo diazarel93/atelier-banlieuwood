@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import type { Module1Data } from "@/hooks/use-session-polling";
@@ -135,10 +136,9 @@ export function ImageQuestionState({
           </div>
           <div className="relative rounded-xl overflow-hidden border border-white/[0.06] bg-bw-elevated cursor-pointer"
             onClick={() => setImageFullscreen(true)}>
-            <div className="aspect-[4/3] w-full">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={module1.image.url} alt={module1.image.title}
-                className="w-full h-full object-cover" />
+            <div className="relative aspect-[4/3] w-full">
+              <Image src={module1.image.url} alt={module1.image.title}
+                fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
             </div>
             <div className="absolute inset-x-0 top-0 h-4 bg-gradient-to-b from-black/40 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-black/40 to-transparent" />
@@ -158,9 +158,8 @@ export function ImageQuestionState({
                 <path d="M18 6L6 18M6 6l12 12"/>
               </svg>
             </button>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={module1.image.url} alt={module1.image.title}
-              className="max-w-full max-h-full object-contain" />
+            <Image src={module1.image.url} alt={module1.image.title}
+              width={800} height={600} className="max-w-full max-h-full object-contain" sizes="100vw" />
           </motion.div>
         )}
       </AnimatePresence>

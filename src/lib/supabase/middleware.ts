@@ -71,5 +71,61 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // ── Role/status checks (cached in cookies, TTL 5min) ──
+  if (user && isProtected) {
+    const roleCookie = request.cookies.get("bw-role")?.value;
+    const statusCookie = request.cookies.get("bw-status")?.value;
+    const cacheTsCookie = request.cookies.get("bw-role-ts")?.value;
+    const cacheAge = cacheTsCookie ? Date.now() - Number(cacheTsCookie) : Infinity;
+    const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+    let role = roleCookie;
+    let status = statusCookie;
+
+    // Refresh cache if stale or missing
+    if (!role || !status || cacheAge > CACHE_TTL) {
+      const { data: facilitator } = await supabase
+        .from("facilitators")
+        .select("role, status")
+        .eq("id", user.id)
+        .single();
+
+      if (facilitator) {
+        role = facilitator.role;
+        status = facilitator.status;
+
+        // Cache in cookies
+        const cookieOpts = { path: "/", maxAge: 300, httpOnly: false } as const;
+        supabaseResponse.cookies.set("bw-role", role!, cookieOpts);
+        supabaseResponse.cookies.set("bw-status", status!, cookieOpts);
+        supabaseResponse.cookies.set("bw-role-ts", String(Date.now()), cookieOpts);
+      }
+    }
+
+    // Pending users → /pending
+    if (status === "pending" && pathname !== "/pending") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/pending";
+      return NextResponse.redirect(url);
+    }
+
+    // Blocked/deactivated users → /account-blocked
+    if (
+      (status === "rejected" || status === "deactivated") &&
+      pathname !== "/account-blocked"
+    ) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/account-blocked";
+      return NextResponse.redirect(url);
+    }
+
+    // Admin-only routes
+    if (pathname.startsWith("/v2/admin") && role !== "admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/v2";
+      return NextResponse.redirect(url);
+    }
+  }
+
   return supabaseResponse;
 }

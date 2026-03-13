@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import type { Module7Data } from "@/hooks/use-session-polling";
@@ -278,12 +279,15 @@ function StoryboardView({ module7, sessionId }: { module7: Module7Data; sessionI
                   return (
                     <div key={plan.position} className="text-center">
                       {plan.imageUrl ? (
-                        <img
-                          src={plan.imageUrl}
-                          alt={`${plan.planType} — ${plan.description}`}
-                          className="w-full aspect-video rounded-lg object-cover mb-1"
-                          loading="lazy"
-                        />
+                        <div className="relative w-full aspect-video mb-1">
+                          <Image
+                            src={plan.imageUrl}
+                            alt={`${plan.planType} — ${plan.description}`}
+                            fill
+                            className="rounded-lg object-cover"
+                            sizes="33vw"
+                          />
+                        </div>
                       ) : (
                         <div className="w-full aspect-video rounded-lg bg-black/[0.03] flex items-center justify-center mb-1">
                           <span className="text-bw-muted/30 text-lg">🎬</span>
@@ -330,12 +334,15 @@ function StoryboardView({ module7, sessionId }: { module7: Module7Data; sessionI
               className="p-3 rounded-[18px] border border-emerald-200 bg-emerald-50/30 text-center"
             >
               {scene.plans[0]?.imageUrl ? (
-                <img
-                  src={scene.plans[0].imageUrl}
-                  alt={scene.title}
-                  className="w-full aspect-video rounded-lg object-cover mb-2"
-                  loading="lazy"
-                />
+                <div className="relative w-full aspect-video mb-2">
+                  <Image
+                    src={scene.plans[0].imageUrl}
+                    alt={scene.title}
+                    fill
+                    className="rounded-lg object-cover"
+                    sizes="(max-width: 640px) 50vw, 33vw"
+                  />
+                </div>
               ) : (
                 <div className="w-full h-16 rounded-lg bg-emerald-100/50 flex items-center justify-center mb-2">
                   <span className="text-emerald-400 text-lg">✓</span>

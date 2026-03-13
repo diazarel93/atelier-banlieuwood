@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateScenesPrompt, assignMissions } from "@/lib/module-scenario-data";
+import { log } from "@/lib/logger";
 
 // POST — Facilitateur generates scenes from M12 winners via AI
 export async function POST(
@@ -74,7 +75,7 @@ export async function POST(
       scenes = parsed.scenes || [];
     }
   } catch (err) {
-    console.error("AI scene generation failed, using fallback:", err);
+    log.error("AI scene generation failed, using fallback", { route: "/api/sessions/[id]/scenario-generate", error: String(err) });
   }
 
   // Fallback: generate basic scenes if AI failed

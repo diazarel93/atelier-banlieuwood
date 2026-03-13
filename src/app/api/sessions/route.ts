@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { safeJson } from "@/lib/api-utils";
 import { createSessionSchema, formatZodError } from "@/lib/schemas";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { customAlphabet } from "nanoid";
 
 const nanoid = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 
-// GET — list facilitator's sessions
+// GET — list facilitator's sessions (admin sees all)
 export async function GET() {
   const supabase = await createServerSupabase();
   const {
@@ -17,11 +18,20 @@ export async function GET() {
     return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
   }
 
-  const { data, error } = await supabase
+  const authUser = await getAuthUser(supabase);
+  const isAdmin = authUser?.role === "admin";
+
+  let query = supabase
     .from("sessions")
     .select("*, students(id, is_active, last_seen_at)")
-    .eq("facilitator_id", user.id)
     .order("created_at", { ascending: false });
+
+  // Admin sees all sessions; others see only their own
+  if (!isAdmin) {
+    query = query.eq("facilitator_id", user.id);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

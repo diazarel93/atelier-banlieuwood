@@ -47,6 +47,13 @@ function makeChain(
   chain.single = vi
     .fn()
     .mockImplementation(() => Promise.resolve(resolveWith()));
+  // Support .then() for fire-and-forget patterns (e.g. logSessionEvent)
+  chain.then = vi
+    .fn()
+    .mockImplementation((onFulfilled?: () => void, onRejected?: () => void) => {
+      if (onFulfilled) onFulfilled();
+      return Promise.resolve();
+    });
   return chain;
 }
 

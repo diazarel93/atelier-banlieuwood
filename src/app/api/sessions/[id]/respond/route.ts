@@ -83,6 +83,32 @@ export async function POST(
     );
   }
 
+  // Race condition guard: verify the response's situation matches the current question.
+  // If the session has already advanced past this situation, reject with 409.
+  const { data: responseSituation } = await admin
+    .from("situations")
+    .select("position, module, seance")
+    .eq("id", situationId)
+    .single();
+
+  if (responseSituation) {
+    const sessionModule = session.current_module;
+    const sessionSeance = session.current_seance;
+    const sessionIdx = session.current_situation_index;
+
+    const isStale =
+      responseSituation.module !== sessionModule ||
+      responseSituation.seance !== sessionSeance ||
+      responseSituation.position !== sessionIdx;
+
+    if (isStale) {
+      return NextResponse.json(
+        { error: "La session a déjà avancé à une nouvelle question", code: "SITUATION_ADVANCED" },
+        { status: 409 }
+      );
+    }
+  }
+
   // Reject responses after timer has expired (server-side enforcement)
   if (session.timer_ends_at && new Date(session.timer_ends_at).getTime() < Date.now()) {
     return NextResponse.json(

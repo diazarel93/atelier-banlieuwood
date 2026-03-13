@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
@@ -9,9 +9,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
 import { BrandLogo } from "@/components/brand-logo";
+import Link from "next/link";
+
+type SignupRole = "intervenant" | "client";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const invitationToken = searchParams.get("token");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,6 +25,15 @@ export default function LoginPage() {
   const [name, setName] = useState("");
   const [forgotMode, setForgotMode] = useState(false);
   const [resetSent, setResetSent] = useState(false);
+  const [signupRole, setSignupRole] = useState<SignupRole>("intervenant");
+  const [institution, setInstitution] = useState("");
+
+  // Auto-switch to signup if invitation token present
+  useEffect(() => {
+    if (invitationToken) {
+      setIsSignUp(true);
+    }
+  }, [invitationToken]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,19 +82,41 @@ export default function LoginPage() {
     }
 
     // Always ensure facilitator profile exists (covers sign-up AND sign-in)
+    const setupBody: Record<string, string> = {
+      name: name || email.split("@")[0],
+    };
+    if (isSignUp) {
+      setupBody.role = signupRole;
+      if (signupRole === "client" && institution) {
+        setupBody.institution = institution;
+      }
+      if (invitationToken) {
+        setupBody.invitationToken = invitationToken;
+      }
+    }
+
     const res = await fetch("/api/auth/setup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name || email.split("@")[0] }),
+      body: JSON.stringify(setupBody),
     });
+
     if (!res.ok) {
       toast.error("Erreur lors de la creation du profil");
       setLoading(false);
       return;
     }
 
+    const data = await res.json();
+
     if (isSignUp) toast.success("Compte cree !");
-    router.push(ROUTES.dashboard);
+
+    // If pending → redirect to pending page
+    if (data.status === "pending") {
+      router.push("/pending");
+    } else {
+      router.push(ROUTES.dashboard);
+    }
   }
 
   async function handleGoogleLogin() {
@@ -170,10 +207,23 @@ export default function LoginPage() {
             {forgotMode
               ? "Reinitialiser le mot de passe"
               : isSignUp
-                ? "Creer un compte facilitateur"
+                ? "Creer un compte"
                 : "Connexion facilitateur"}
           </motion.p>
         </div>
+
+        {/* Invitation token banner */}
+        {invitationToken && isSignUp && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-xl bg-green-50 border border-green-200 p-3 text-center"
+          >
+            <p className="text-sm text-green-700 font-medium">
+              Invitation detectee — votre compte sera active immediatement
+            </p>
+          </motion.div>
+        )}
 
         {/* Form card */}
         <motion.div
@@ -219,11 +269,12 @@ export default function LoginPage() {
             <AnimatePresence mode="wait">
               {isSignUp && !forgotMode && (
                 <motion.div
-                  key="name-field"
+                  key="signup-fields"
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.25 }}
+                  className="space-y-4"
                 >
                   <Input
                     type="text"
@@ -231,8 +282,53 @@ export default function LoginPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    className=""
                   />
+
+                  {/* Role selection */}
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSignupRole("intervenant")}
+                      className={`flex-1 rounded-xl border px-3 py-2.5 text-sm font-medium transition-all cursor-pointer ${
+                        signupRole === "intervenant"
+                          ? "border-bw-primary bg-bw-primary/10 text-bw-primary"
+                          : "border-white/[0.08] text-bw-muted hover:border-white/[0.15]"
+                      }`}
+                    >
+                      Intervenant BW
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSignupRole("client")}
+                      className={`flex-1 rounded-xl border px-3 py-2.5 text-sm font-medium transition-all cursor-pointer ${
+                        signupRole === "client"
+                          ? "border-bw-primary bg-bw-primary/10 text-bw-primary"
+                          : "border-white/[0.08] text-bw-muted hover:border-white/[0.15]"
+                      }`}
+                    >
+                      Enseignant
+                    </button>
+                  </div>
+
+                  {/* Institution field for clients */}
+                  <AnimatePresence mode="wait">
+                    {signupRole === "client" && (
+                      <motion.div
+                        key="institution-field"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Input
+                          type="text"
+                          placeholder="Nom de l'etablissement"
+                          value={institution}
+                          onChange={(e) => setInstitution(e.target.value)}
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -243,7 +339,6 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className=""
             />
 
             <AnimatePresence mode="wait">
@@ -262,7 +357,6 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
-                    className=""
                   />
                 </motion.div>
               )}
@@ -327,6 +421,18 @@ export default function LoginPage() {
                 ? "Deja un compte ? Se connecter"
                 : "Pas encore de compte ? S'inscrire"}
             </Button>
+          )}
+
+          {/* Request access link */}
+          {!forgotMode && !isSignUp && (
+            <div className="text-center pt-2">
+              <Link
+                href="/request-access"
+                className="text-xs text-bw-muted hover:text-bw-primary transition-colors"
+              >
+                Etablissement ? Demander un acces
+              </Link>
+            </div>
           )}
         </motion.div>
       </motion.div>

@@ -1,11 +1,13 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Script from "next/script";
+import { hasAnalyticsConsent } from "@/lib/cookie-consent";
 
 /**
  * PostHog Analytics + Sentry Error Monitoring
- * Only loads in production when env vars are set.
- * Add <Analytics /> to your root layout.
+ * PostHog only loads when analytics consent is given (RGPD).
+ * Sentry remains unconditional (legitimate interest for error monitoring).
  */
 export function Analytics() {
   const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
@@ -13,10 +15,22 @@ export function Analytics() {
     process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://eu.i.posthog.com";
   const sentryDsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
 
+  const [analyticsAllowed, setAnalyticsAllowed] = useState(false);
+
+  useEffect(() => {
+    setAnalyticsAllowed(hasAnalyticsConsent());
+
+    // Re-check on cookie changes (consent banner updates cookie)
+    const interval = setInterval(() => {
+      setAnalyticsAllowed(hasAnalyticsConsent());
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
-      {/* PostHog — privacy-friendly analytics */}
-      {posthogKey && (
+      {/* PostHog — only loads with consent */}
+      {posthogKey && analyticsAllowed && (
         <Script
           id="posthog"
           strategy="afterInteractive"
@@ -35,7 +49,7 @@ export function Analytics() {
         />
       )}
 
-      {/* Sentry — error monitoring */}
+      {/* Sentry — unconditional (legitimate interest for error monitoring) */}
       {sentryDsn && (
         <Script
           id="sentry"

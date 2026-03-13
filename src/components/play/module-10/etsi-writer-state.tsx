@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { SuccessCheck } from "@/components/play/success-check";
@@ -146,8 +147,7 @@ export function EtsiWriterState({
                     className={`relative rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
                       isChosen ? "border-bw-teal ring-2 ring-bw-teal/30" : "border-white/[0.06] hover:border-white/20"
                     }`}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={img.url} alt={img.title} className="w-full aspect-[4/3] object-cover" />
+                    <Image src={img.url} alt={img.title} width={400} height={300} className="w-full aspect-[4/3] object-cover" sizes="50vw" />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2">
                       <p className="text-xs text-white font-medium">{img.title}</p>
                     </div>
@@ -185,8 +185,7 @@ export function EtsiWriterState({
                     className={`flex gap-3 items-center p-2 rounded-xl border-2 transition-all cursor-pointer text-left ${
                       isFinal ? "border-bw-teal bg-bw-teal/10" : "border-white/[0.06] hover:border-white/20"
                     }`}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={img.url} alt={img.title} className="w-20 h-14 rounded-lg object-cover flex-shrink-0" />
+                    <Image src={img.url} alt={img.title} width={80} height={56} className="w-20 h-14 rounded-lg object-cover flex-shrink-0" />
                     <div>
                       <p className="text-sm text-bw-text font-medium">{img.title}</p>
                       <p className="text-xs text-bw-muted">{img.description}</p>
@@ -245,8 +244,7 @@ export function EtsiWriterState({
             className="w-full space-y-4">
             {finalImage && (
               <div className="w-full rounded-xl overflow-hidden border border-white/[0.06]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={finalImage.url} alt={finalImage.title} className="w-full object-contain" />
+                <Image src={finalImage.url} alt={finalImage.title} width={600} height={400} className="w-full object-contain" sizes="(max-width: 768px) 100vw, 600px" />
                 <p className="text-xs text-bw-muted px-3 py-2">{finalImage.description}</p>
               </div>
             )}

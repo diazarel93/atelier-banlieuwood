@@ -17,6 +17,8 @@ export async function GET(req: NextRequest) {
   }
 
   const classLabelFilter = req.nextUrl.searchParams.get("classLabel");
+  const page = Math.max(1, parseInt(req.nextUrl.searchParams.get("page") || "1", 10));
+  const limit = Math.min(100, Math.max(1, parseInt(req.nextUrl.searchParams.get("limit") || "20", 10)));
 
   // Get all sessions for this facilitator
   let sessionsQuery = supabase
@@ -76,15 +78,21 @@ export async function GET(req: NextRequest) {
     }
   >();
 
+  // Pre-index scores by student_id (replaces O(n*m) filter loop)
+  const scoresByStudent = new Map<string, typeof scores>();
+  for (const sc of scores || []) {
+    const arr = scoresByStudent.get(sc.student_id);
+    if (arr) arr.push(sc);
+    else scoresByStudent.set(sc.student_id, [sc]);
+  }
+
   for (const student of students || []) {
     const profileId = student.profile_id || student.id;
     const existing = profileMap.get(profileId);
     const joinedAt = student.joined_at || new Date().toISOString();
     const studentClassLabel = sessionClassMap.get(student.session_id) ?? null;
 
-    const studentScores = (scores || []).filter(
-      (sc) => sc.student_id === student.id
-    );
+    const studentScores = scoresByStudent.get(student.id) || [];
     const totalResponses = studentScores.reduce(
       (sum, sc) => sum + (sc.response_count || 0),
       0
@@ -117,5 +125,18 @@ export async function GET(req: NextRequest) {
   // Sort by display name
   profiles.sort((a, b) => a.displayName.localeCompare(b.displayName, "fr"));
 
-  return NextResponse.json({ profiles });
+  // Paginate
+  const total = profiles.length;
+  const totalPages = Math.ceil(total / limit);
+  const start = (page - 1) * limit;
+  const paginatedProfiles = profiles.slice(start, start + limit);
+
+  return NextResponse.json({
+    profiles: paginatedProfiles,
+    // Backward-compatible: also include `data` alias for V2 consumers
+    data: paginatedProfiles,
+    total,
+    page,
+    totalPages,
+  });
 }

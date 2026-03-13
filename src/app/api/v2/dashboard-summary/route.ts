@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { detectAtRiskStudents, type StudentForRisk } from "@/lib/at-risk-detection";
+import { getAuthUser } from "@/lib/auth-helpers";
 
 /**
  * GET /api/v2/dashboard-summary
@@ -19,12 +20,20 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
 
-  // Fetch all sessions for this facilitator
-  const { data: sessions, error } = await supabase
+  const authUser = await getAuthUser(supabase);
+  const isAdmin = authUser?.role === "admin";
+
+  // Fetch sessions (admin sees all, others see own)
+  let query = supabase
     .from("sessions")
     .select("id, title, status, level, template, created_at, scheduled_at, class_label, completed_modules, students(id)")
-    .eq("facilitator_id", user.id)
     .order("created_at", { ascending: false });
+
+  if (!isAdmin) {
+    query = query.eq("facilitator_id", user.id);
+  }
+
+  const { data: sessions, error } = await query;
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -115,14 +124,19 @@ export async function GET(req: NextRequest) {
         .in("student_id", studentIds)
         .order("computed_at", { ascending: true });
 
-      // Build per-profile risk data
+      // Build per-profile risk data (pre-indexed Map replaces O(n*m) filter loop)
+      const scoresByStudent = new Map<string, typeof scores>();
+      for (const sc of scores || []) {
+        const arr = scoresByStudent.get(sc.student_id);
+        if (arr) arr.push(sc);
+        else scoresByStudent.set(sc.student_id, [sc]);
+      }
+
       const profileMap = new Map<string, StudentForRisk>();
       for (const student of students || []) {
         const pid = student.profile_id || student.id;
         const joinedAt = student.joined_at || new Date().toISOString();
-        const studentScores = (scores || []).filter(
-          (sc) => sc.student_id === student.id
-        );
+        const studentScores = scoresByStudent.get(student.id) || [];
 
         if (studentScores.length === 0) continue;
 

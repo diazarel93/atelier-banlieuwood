@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "motion/react";
 import type { Module7Data } from "@/hooks/use-session-polling";
 
@@ -59,12 +60,15 @@ export function StoryboardView({ module7 }: StoryboardViewProps) {
                       className="text-center"
                     >
                       {plan.imageUrl ? (
-                        <img
-                          src={plan.imageUrl}
-                          alt={`${plan.planType} — ${plan.description}`}
-                          className="w-full aspect-video rounded-lg object-cover mb-1.5"
-                          loading="lazy"
-                        />
+                        <div className="relative w-full aspect-video mb-1.5">
+                          <Image
+                            src={plan.imageUrl}
+                            alt={`${plan.planType} — ${plan.description}`}
+                            fill
+                            className="rounded-lg object-cover"
+                            sizes="(max-width: 640px) 50vw, 33vw"
+                          />
+                        </div>
                       ) : (
                         <div className="w-full aspect-video rounded-lg bg-white/5 flex items-center justify-center mb-1.5">
                           <span className="text-white/20 text-lg">🎬</span>

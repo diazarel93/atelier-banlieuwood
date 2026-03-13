@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { log } from "@/lib/logger";
 
 interface ContactPayload {
   name: string;
@@ -86,14 +87,14 @@ export async function POST(request: Request) {
       });
     } else {
       // Fallback: log to console if no API key configured
-      console.log("[CONTACT] No RESEND_API_KEY set — logging only:", {
-        name, email, type, message, date: new Date().toISOString(),
+      log.info("Contact form submitted (no RESEND_API_KEY)", {
+        route: "/api/contact", name, email, type,
       });
     }
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("[CONTACT] Error:", err);
+    log.error("Contact form error", { route: "/api/contact", error: String(err) });
     return NextResponse.json(
       { success: false, errors: ["Erreur serveur. Réessayez plus tard."] },
       { status: 500 },

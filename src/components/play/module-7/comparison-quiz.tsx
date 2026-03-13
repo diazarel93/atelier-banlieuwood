@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import type { Module7Data } from "@/hooks/use-session-polling";
@@ -125,11 +126,12 @@ export function ComparisonQuiz({ module7, sessionId, studentId }: ComparisonQuiz
             {/* Comparison illustration */}
             {image && (
               <div className="w-full border-b border-white/5">
-                <img
+                <Image
                   src={image}
                   alt={`Option ${side} : ${plan.type.replace("-", " ")} \u2014 ${current.sceneDescription}`}
+                  width={600}
+                  height={400}
                   className="w-full h-auto"
-                  loading="lazy"
                 />
               </div>
             )}

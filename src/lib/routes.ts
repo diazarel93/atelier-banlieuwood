@@ -24,7 +24,13 @@ export const ROUTES = {
   playBibliotheque: (id: string) => `/play/${id}/bibliotheque`,
   playRecap: (id: string) => `/play/${id}/recap`,
 
+  // Admin
+  admin: "/v2/admin",
+  adminUsers: "/v2/admin/users",
+  adminInvitations: "/v2/admin/invitations",
+
   // Auth
   login: "/login",
   join: "/join",
+  requestAccess: "/request-access",
 } as const;

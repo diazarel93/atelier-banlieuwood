@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/auth-helpers";
+import type { AuthUser } from "@/lib/auth";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -12,8 +14,46 @@ export function isValidUUID(value: string): boolean {
 }
 
 /**
+ * Require any authenticated, active user.
+ * Returns { supabase, user, authUser } on success, or a NextResponse error.
+ */
+export async function requireAuth() {
+  const supabase = await createServerSupabase();
+  const authUser = await getAuthUser(supabase);
+
+  if (!authUser) {
+    return { error: NextResponse.json({ error: "Non authentifié" }, { status: 401 }) };
+  }
+
+  if (authUser.status !== "active") {
+    return { error: NextResponse.json({ error: "Compte inactif" }, { status: 403 }) };
+  }
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  return { supabase, user: user!, authUser };
+}
+
+/**
+ * Require an admin user.
+ * Returns { supabase, user, authUser } on success, or a NextResponse error.
+ */
+export async function requireAdmin() {
+  const result = await requireAuth();
+  if ("error" in result) return result;
+
+  if (result.authUser.role !== "admin") {
+    return { error: NextResponse.json({ error: "Accès admin requis" }, { status: 403 }) };
+  }
+
+  return result;
+}
+
+/**
  * Require an authenticated facilitator who owns the given session.
- * Returns { supabase, user } on success, or a NextResponse error.
+ * Returns { supabase, user, authUser } on success, or a NextResponse error.
+ * Backward compatible: authUser is added but existing callers don't need it.
+ * Admins can access any session via updated RLS policy.
  */
 export async function requireFacilitator(sessionId: string) {
   const supabase = await createServerSupabase();
@@ -23,8 +63,8 @@ export async function requireFacilitator(sessionId: string) {
     return { error: NextResponse.json({ error: "Non authentifié" }, { status: 401 }) };
   }
 
-  // RLS already filters by facilitator_id = auth.uid(), so if we can't find
-  // the session, the user doesn't own it (or it doesn't exist).
+  // RLS already filters by facilitator_id = auth.uid() OR is_admin(),
+  // so if we can't find the session, the user doesn't own it (or it doesn't exist).
   const { data: session } = await supabase
     .from("sessions")
     .select("id")
@@ -35,7 +75,10 @@ export async function requireFacilitator(sessionId: string) {
     return { error: NextResponse.json({ error: "Session introuvable ou accès refusé" }, { status: 403 }) };
   }
 
-  return { supabase, user };
+  // Load authUser (optional — doesn't break if facilitator profile missing)
+  const authUser = await getAuthUser(supabase);
+
+  return { supabase, user, authUser };
 }
 
 /**

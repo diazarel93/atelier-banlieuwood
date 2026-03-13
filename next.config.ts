@@ -6,6 +6,13 @@ import withBundleAnalyzer from "@next/bundle-analyzer";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "image.tmdb.org" },
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "image.pollinations.ai" },
+    ],
+  },
   // Phase 7 — V2 route swap: redirect old routes to V2
   // Note: /session/[id]/pilot and /session/[id]/screen are kept as-is (not redirected)
   async redirects() {

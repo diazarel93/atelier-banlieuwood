@@ -14,5 +14,8 @@ export const config = {
     // Auth routes (redirect if already logged in)
     "/login",
     "/reset-password",
+    // Status pages (need auth check for role caching)
+    "/pending",
+    "/account-blocked",
   ],
 };

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireFacilitator, isValidUUID } from "@/lib/api-utils";
+import { log } from "@/lib/logger";
 
 /**
  * POST /api/sessions/[id]/postprod
@@ -91,7 +92,7 @@ export async function POST(
 
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("Module 13 submit error:", err);
+    log.error("Module 13 submit error", { route: "/api/sessions/[id]/postprod", error: String(err) });
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }

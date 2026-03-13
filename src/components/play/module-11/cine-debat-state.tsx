@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { useTypewriter } from "@/hooks/use-typewriter";
 import type { Module11Data } from "@/hooks/use-session-polling";
@@ -56,9 +57,11 @@ function CitationStimulus({ module11 }: { module11: Module11Data }) {
           className="flex items-center gap-3 px-4 py-3 rounded-xl bg-bw-elevated border border-white/[0.06]"
         >
           {module11.authorImageUrl && (
-            <img
+            <Image
               src={module11.authorImageUrl}
               alt={module11.author}
+              width={48}
+              height={48}
               className="w-12 h-12 rounded-full object-cover border-2"
               style={{ borderColor: THEME_COLORS[module11.theme] }}
             />
@@ -85,9 +88,11 @@ function CitationStimulus({ module11 }: { module11: Module11Data }) {
         >
           {module11.filmography.map((film, i) => (
             <div key={i} className="flex-shrink-0 w-16 text-center">
-              <img
+              <Image
                 src={`https://image.tmdb.org/t/p/w154${film.posterPath}`}
                 alt={film.title}
+                width={64}
+                height={96}
                 className="w-16 h-24 rounded-lg object-cover border border-white/[0.06]"
               />
               <p className="text-xs text-bw-muted mt-1 line-clamp-1">{film.title}</p>
@@ -145,9 +150,11 @@ function PosterStimulus({ module11 }: { module11: Module11Data }) {
           animate={{ opacity: 1, scale: 1 }}
           className="flex justify-center"
         >
-          <img
+          <Image
             src={module11.imageUrl}
             alt={module11.sourceTitle || "Affiche"}
+            width={300}
+            height={450}
             className="max-h-[280px] sm:max-h-[340px] rounded-xl border border-white/[0.08] shadow-lg object-contain"
           />
         </motion.div>

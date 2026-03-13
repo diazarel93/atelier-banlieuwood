@@ -53,9 +53,28 @@ export function SessionCreateWizard() {
   const update = (partial: Partial<WizardData>) =>
     setData((d) => ({ ...d, ...partial }));
 
+  // Validation (#20)
+  const titleError = data.title.trim().length > 0 && data.title.trim().length > 100
+    ? "100 caractères maximum"
+    : undefined;
+  const classLabelError = data.classLabel.length > 50
+    ? "50 caractères maximum"
+    : undefined;
+  const thematiqueError = data.thematique.length > 200
+    ? "200 caractères maximum"
+    : undefined;
+  const scheduledAtError = (() => {
+    if (!data.scheduledAt) return undefined;
+    const scheduled = new Date(data.scheduledAt).getTime();
+    const tolerance = Date.now() - 5 * 60 * 1000; // 5 min tolerance
+    if (scheduled < tolerance) return "La date ne peut pas être dans le passé";
+    return undefined;
+  })();
+  const hasErrors = !!titleError || !!classLabelError || !!thematiqueError || !!scheduledAtError;
+
   const canProceed = step === 0
-    ? data.title.trim().length > 0
-    : true;
+    ? data.title.trim().length > 0 && !hasErrors
+    : !hasErrors;
 
   async function handleCreate() {
     setSaving(true);
@@ -134,31 +153,43 @@ export function SessionCreateWizard() {
               Créer une séance
             </h2>
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-bw-muted">
+              <label htmlFor="wizard-title" className="text-xs font-medium text-bw-muted">
                 Titre de la séance
               </label>
               <input
+                id="wizard-title"
                 type="text"
                 value={data.title}
                 onChange={(e) => update({ title: e.target.value })}
                 placeholder="Ex: Séance 3 - Imagination"
                 enterKeyHint="next"
-                className="h-10 rounded-lg border border-[var(--color-bw-border)] bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
+                maxLength={100}
+                className={cn(
+                  "h-10 rounded-lg border bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
+                  titleError ? "border-red-400" : "border-[var(--color-bw-border)]"
+                )}
                 autoFocus
               />
+              {titleError && <span className="text-xs text-red-500">{titleError}</span>}
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-bw-muted">
+              <label htmlFor="wizard-class" className="text-xs font-medium text-bw-muted">
                 Classe
               </label>
               <input
+                id="wizard-class"
                 type="text"
                 value={data.classLabel}
                 onChange={(e) => update({ classLabel: e.target.value })}
                 placeholder="Ex: 4ème B"
                 enterKeyHint="next"
-                className="h-10 rounded-lg border border-[var(--color-bw-border)] bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
+                maxLength={50}
+                className={cn(
+                  "h-10 rounded-lg border bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
+                  classLabelError ? "border-red-400" : "border-[var(--color-bw-border)]"
+                )}
               />
+              {classLabelError && <span className="text-xs text-red-500">{classLabelError}</span>}
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-medium text-bw-muted">
@@ -182,11 +213,14 @@ export function SessionCreateWizard() {
                 ))}
               </div>
             </div>
-            <DatePicker
-              label="Date et heure"
-              value={data.scheduledAt}
-              onChange={(v) => update({ scheduledAt: v })}
-            />
+            <div className="flex flex-col gap-1.5">
+              <DatePicker
+                label="Date et heure"
+                value={data.scheduledAt}
+                onChange={(v) => update({ scheduledAt: v })}
+              />
+              {scheduledAtError && <span className="text-xs text-red-500">{scheduledAtError}</span>}
+            </div>
           </motion.div>
         )}
 
@@ -226,17 +260,23 @@ export function SessionCreateWizard() {
               </div>
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-bw-muted">
+              <label htmlFor="wizard-thematique" className="text-xs font-medium text-bw-muted">
                 Thématique libre
               </label>
               <input
+                id="wizard-thematique"
                 type="text"
                 value={data.thematique}
                 onChange={(e) => update({ thematique: e.target.value })}
                 placeholder="Ex: Le quartier, Les rêves..."
                 enterKeyHint="next"
-                className="h-10 rounded-lg border border-[var(--color-bw-border)] bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
+                maxLength={200}
+                className={cn(
+                  "h-10 rounded-lg border bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
+                  thematiqueError ? "border-red-400" : "border-[var(--color-bw-border)]"
+                )}
               />
+              {thematiqueError && <span className="text-xs text-red-500">{thematiqueError}</span>}
             </div>
           </motion.div>
         )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { motion } from "motion/react";
 import { generateStoryboardUrls } from "@/lib/pollinations";
 
@@ -87,11 +88,13 @@ export function StoryboardViewer({ prenom, trait, objectif, obstacle, pitchText 
               </div>
             )}
 
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={url}
               alt={`Panel ${i + 1}: ${PANEL_LABELS[i]}`}
-              className={`w-full h-full object-cover transition-opacity duration-500 ${loaded[i] ? "opacity-100" : "opacity-0"}`}
+              fill
+              unoptimized
+              sizes="50vw"
+              className={`object-cover transition-opacity duration-500 ${loaded[i] ? "opacity-100" : "opacity-0"}`}
               onLoad={() => setLoaded((p) => ({ ...p, [i]: true }))}
               onError={() => setErrors((p) => ({ ...p, [i]: true }))}
             />

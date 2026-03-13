@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 
 const TMDB_IMG = "https://image.tmdb.org/t/p";
@@ -85,23 +86,12 @@ export function CinemaReferencesCard() {
             className="group relative rounded-xl overflow-hidden border border-[var(--color-bw-border)] hover:border-[var(--color-bw-border)] hover:-translate-y-0.5 transition-all duration-300"
           >
             <div className="relative aspect-[2/3] overflow-hidden bg-gray-100">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={`${TMDB_IMG}/w342${film.poster}`}
                 alt={film.title}
-                loading="lazy"
-                onError={(e) => {
-                  const img = e.currentTarget;
-                  img.style.display = "none";
-                  const parent = img.parentElement;
-                  if (parent && !parent.querySelector(".poster-fallback")) {
-                    const fallback = document.createElement("div");
-                    fallback.className = "poster-fallback absolute inset-0 flex items-center justify-center bg-gray-100 text-2xl";
-                    fallback.textContent = "🎬";
-                    parent.appendChild(fallback);
-                  }
-                }}
-                className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                fill
+                sizes="(max-width: 640px) 50vw, 25vw"
+                className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
               />
               <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent" />
               <span className="absolute top-2 right-2 text-[10px] font-mono px-1.5 py-0.5 rounded bg-black/50 text-white/80">

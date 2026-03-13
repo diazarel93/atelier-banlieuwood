@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Image from "next/image";
 
 interface SafeImageProps {
   src: string | undefined | null;
@@ -8,13 +9,32 @@ interface SafeImageProps {
   fallbackEmoji?: string;
   className?: string;
   style?: React.CSSProperties;
+  width?: number;
+  height?: number;
+  fill?: boolean;
+  unoptimized?: boolean;
+  sizes?: string;
+  priority?: boolean;
 }
 
 /**
- * Image wrapper with fallback — displays a placeholder emoji/initials
+ * Image wrapper with fallback — displays a placeholder emoji
  * when the image fails to load (network error, TMDB down, etc.)
+ * Uses next/image for optimization. Set unoptimized=true for AI-generated URLs.
  */
-export function SafeImage({ src, alt, fallbackEmoji = "🎬", className = "", style }: SafeImageProps) {
+export function SafeImage({
+  src,
+  alt,
+  fallbackEmoji = "🎬",
+  className = "",
+  style,
+  width,
+  height,
+  fill,
+  unoptimized,
+  sizes,
+  priority,
+}: SafeImageProps) {
   const [failed, setFailed] = useState(!src);
 
   const handleError = useCallback(() => setFailed(true), []);
@@ -32,15 +52,24 @@ export function SafeImage({ src, alt, fallbackEmoji = "🎬", className = "", st
     );
   }
 
+  // For external URLs without configured remotePatterns, use unoptimized
+  const isExternal = src.startsWith("http");
+  const shouldUnoptimize = unoptimized ?? (isExternal && src.includes("pollinations.ai"));
+
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
+    <Image
       src={src}
       alt={alt}
       className={className}
       style={style}
       onError={handleError}
-      loading="lazy"
+      width={fill ? undefined : (width ?? 300)}
+      height={fill ? undefined : (height ?? 200)}
+      fill={fill}
+      unoptimized={shouldUnoptimize}
+      sizes={sizes}
+      priority={priority}
+      loading={priority ? undefined : "lazy"}
     />
   );
 }

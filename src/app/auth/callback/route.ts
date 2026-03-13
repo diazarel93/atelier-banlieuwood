@@ -6,7 +6,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/dashboard";
+  const next = searchParams.get("next") ?? "/v2";
 
   if (code) {
     const cookieStore = await cookies();
@@ -31,7 +31,6 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
-      // Ensure facilitator profile exists (same as /api/auth/setup)
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -39,36 +38,48 @@ export async function GET(request: NextRequest) {
       if (user) {
         const admin = createAdminClient();
 
-        // Get or create default org
-        let orgId: string;
-        const { data: existingOrg } = await admin
-          .from("organizations")
-          .select("id")
-          .eq("name", "Banlieuwood")
+        // Check if facilitator already exists — don't downgrade
+        const { data: existing } = await admin
+          .from("facilitators")
+          .select("id, status")
+          .eq("id", user.id)
           .single();
 
-        if (existingOrg) {
-          orgId = existingOrg.id;
-        } else {
-          const { data: newOrg } = await admin
+        if (!existing) {
+          // Get or create default org
+          let orgId: string;
+          const { data: existingOrg } = await admin
             .from("organizations")
-            .insert({ name: "Banlieuwood" })
             .select("id")
+            .eq("name", "Banlieuwood")
             .single();
-          orgId = newOrg?.id ?? "";
-        }
 
-        if (orgId) {
-          await admin.from("facilitators").upsert({
-            id: user.id,
-            org_id: orgId,
-            email: user.email!,
-            name:
-              user.user_metadata?.name ||
-              user.user_metadata?.full_name ||
-              user.email!.split("@")[0],
-          });
+          if (existingOrg) {
+            orgId = existingOrg.id;
+          } else {
+            const { data: newOrg } = await admin
+              .from("organizations")
+              .insert({ name: "Banlieuwood" })
+              .select("id")
+              .single();
+            orgId = newOrg?.id ?? "";
+          }
+
+          if (orgId) {
+            await admin.from("facilitators").insert({
+              id: user.id,
+              org_id: orgId,
+              email: user.email!,
+              name:
+                user.user_metadata?.name ||
+                user.user_metadata?.full_name ||
+                user.email!.split("@")[0],
+              role: "intervenant",
+              status: "pending",
+            });
+          }
         }
+        // If existing and active, don't touch — just redirect
       }
 
       return NextResponse.redirect(`${origin}${next}`);

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { oieToAxes, aggregateAxes, type AxesScores } from "@/lib/axes-mapping";
+import { getAuthUser } from "@/lib/auth-helpers";
+import { log } from "@/lib/logger";
 
 /**
  * GET /api/v2/stats?classLabel=X&sessionId=Y
@@ -16,15 +18,23 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
 
+  const authUser = await getAuthUser(supabase);
+  const isAdmin = authUser?.role === "admin";
+
   const url = new URL(req.url);
   const classLabel = url.searchParams.get("classLabel");
   const sessionId = url.searchParams.get("sessionId");
 
-  // Fetch facilitator's sessions
-  const { data: sessions, error: sessErr } = await supabase
+  // Fetch sessions (admin sees all)
+  let sessQuery = supabase
     .from("sessions")
-    .select("id, title, status")
-    .eq("facilitator_id", user.id);
+    .select("id, title, status");
+
+  if (!isAdmin) {
+    sessQuery = sessQuery.eq("facilitator_id", user.id);
+  }
+
+  const { data: sessions, error: sessErr } = await sessQuery;
   if (sessErr) {
     return NextResponse.json({ error: sessErr.message }, { status: 500 });
   }
@@ -46,10 +56,11 @@ export async function GET(req: NextRequest) {
   const { data: oieScores, error: oieErr } = await supabase
     .from("session_oie_scores")
     .select("student_id, observation, imagination, expression, response_count")
-    .in("session_id", sessionIds);
+    .in("session_id", sessionIds)
+    .limit(1000);
 
   if (oieErr) {
-    console.error("[stats] OIE scores query failed:", oieErr.message);
+    log.error("OIE scores query failed", { route: "/api/v2/stats", error: oieErr.message });
     return NextResponse.json({ error: `OIE query failed: ${oieErr.message}` }, { status: 500 });
   }
 

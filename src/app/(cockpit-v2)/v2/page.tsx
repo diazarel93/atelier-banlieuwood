@@ -11,6 +11,7 @@ import { MiniCalendar } from "@/components/v2/mini-calendar";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 import { AtRiskWidget } from "@/components/v2/at-risk-widget";
 import { FacilitatorTimeline } from "@/components/v2/facilitator-timeline";
+import { OnboardingWizard } from "@/components/v2/onboarding-wizard";
 import { PHASES, MAIN_PHASE_IDS } from "@/lib/modules-data";
 
 function getGreeting(): string {
@@ -72,7 +73,7 @@ export default function DashboardV2Page() {
       ) : isError ? (
         <ErrorState />
       ) : isFirstUse ? (
-        <FirstUseState />
+        <OnboardingWizard />
       ) : data ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left column — Today's sessions */}

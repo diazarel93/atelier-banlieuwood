@@ -96,10 +96,11 @@ export default function StudentLoginPage() {
             <form onSubmit={handleMagicLink} className="space-y-5">
               {/* Display Name */}
               <div>
-                <label className="text-sm font-semibold mb-1.5 block" style={{ color: "#1A1A2E" }}>
+                <label htmlFor="studio-displayName" className="text-sm font-semibold mb-1.5 block" style={{ color: "#1A1A2E" }}>
                   Ton prenom ou pseudo
                 </label>
                 <input
+                  id="studio-displayName"
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
@@ -121,6 +122,8 @@ export default function StudentLoginPage() {
                       type="button"
                       onClick={() => setAvatar(a)}
                       whileTap={{ scale: 0.85 }}
+                      aria-label={`Choisir l'avatar ${a}`}
+                      aria-pressed={avatar === a}
                       className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg cursor-pointer transition-all ${
                         avatar === a
                           ? "bg-orange-100 border-2 border-orange-400 scale-110"
@@ -135,10 +138,11 @@ export default function StudentLoginPage() {
 
               {/* Email */}
               <div>
-                <label className="text-sm font-semibold mb-1.5 block" style={{ color: "#1A1A2E" }}>
+                <label htmlFor="studio-email" className="text-sm font-semibold mb-1.5 block" style={{ color: "#1A1A2E" }}>
                   Ton email
                 </label>
                 <input
+                  id="studio-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -153,7 +157,7 @@ export default function StudentLoginPage() {
               </div>
 
               {error && (
-                <p className="text-sm text-red-500 font-medium">{error}</p>
+                <p className="text-sm text-red-500 font-medium" role="alert" aria-live="assertive">{error}</p>
               )}
 
               <button

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "motion/react";
 import type { Module7Data } from "@/hooks/use-session-polling";
 
@@ -62,11 +63,12 @@ export function PlanTypesGallery({ module7 }: PlanTypesGalleryProps) {
               {/* Plan illustration */}
               {imageUrl && (
                 <div className="w-full border-b border-white/5">
-                  <img
+                  <Image
                     src={imageUrl}
                     alt={altText}
+                    width={600}
+                    height={400}
                     className="w-full h-auto rounded-t-xl"
-                    loading="lazy"
                   />
                 </div>
               )}

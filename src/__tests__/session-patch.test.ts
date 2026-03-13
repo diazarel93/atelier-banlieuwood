@@ -57,6 +57,10 @@ vi.mock("@/lib/api-utils", async (importOriginal) => {
   };
 });
 
+vi.mock("@/lib/event-logger", () => ({
+  logSessionEvent: vi.fn(),
+}));
+
 const { PATCH } = await import("@/app/api/sessions/[id]/route");
 
 describe("PATCH /api/sessions/[id]", () => {
@@ -104,7 +108,7 @@ describe("PATCH /api/sessions/[id]", () => {
     const res = await PATCH(makeReq({ current_module: 0 }), { params });
     expect(res.status).toBe(400);
 
-    const res2 = await PATCH(makeReq({ current_module: 12 }), { params });
+    const res2 = await PATCH(makeReq({ current_module: 13 }), { params });
     expect(res2.status).toBe(400);
 
     const res3 = await PATCH(
@@ -114,12 +118,12 @@ describe("PATCH /api/sessions/[id]", () => {
     expect(res3.status).toBe(400);
   });
 
-  it("accepts valid module numbers 1-11", async () => {
+  it("accepts valid module numbers 1-12", async () => {
     const res = await PATCH(makeReq({ current_module: 1 }), { params });
     expect(res.status).not.toBe(400);
 
     const res2 = await PATCH(
-      makeReq({ current_module: 11 }),
+      makeReq({ current_module: 12 }),
       { params }
     );
     expect(res2.status).not.toBe(400);

@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import type { PhaseDef, ModuleDef } from "@/lib/modules-data";
 import { PhaseStepper } from "@/components/pilot/phase-stepper";
 import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
+import { LiveIndicator } from "@/components/ui/live-indicator";
+import type { ConnectionStatus } from "@/hooks/use-realtime-invalidation";
 
 interface CockpitHeaderProps {
   sessionTitle: string;
@@ -40,6 +42,12 @@ interface CockpitHeaderProps {
   // Dark mode toggle
   isDarkMode?: boolean;
   onToggleDark?: () => void;
+  // Connection status (#2)
+  connectionStatus?: ConnectionStatus;
+  // Timer presets (#7-8)
+  timerEndsAt?: string | null;
+  onSetTimer?: (seconds: number) => void;
+  onClearTimer?: () => void;
 }
 
 /* ── Mini energy donut SVG (20x20) — Issue 3 ── */
@@ -85,6 +93,44 @@ function EnergyDonut({ responded, active, stuck, total }: { responded: number; a
   );
 }
 
+/* ── Timer countdown display ── */
+function TimerCountdown({ endsAt }: { endsAt: string }) {
+  const [remaining, setRemaining] = useState(0);
+
+  useEffect(() => {
+    function update() {
+      const ms = new Date(endsAt).getTime() - Date.now();
+      setRemaining(Math.max(0, Math.ceil(ms / 1000)));
+    }
+    update();
+    const iv = setInterval(update, 1000);
+    return () => clearInterval(iv);
+  }, [endsAt]);
+
+  if (remaining <= 0) return null;
+
+  const minutes = Math.floor(remaining / 60);
+  const seconds = remaining % 60;
+  const display = minutes > 0
+    ? `${minutes}:${String(seconds).padStart(2, "0")}`
+    : `${seconds}s`;
+
+  // Color thresholds: green > 60s, orange > 30s, red < 30s, pulse < 10s
+  const color = remaining > 60 ? "#4CAF50" : remaining > 30 ? "#F59E0B" : "#EB5757";
+  const pulse = remaining <= 10;
+
+  return (
+    <span
+      className={`text-[13px] font-bold tabular-nums px-2 py-0.5 rounded-full flex-shrink-0 ${
+        pulse ? "animate-pulse" : ""
+      }`}
+      style={{ backgroundColor: `${color}18`, color }}
+    >
+      {display}
+    </span>
+  );
+}
+
 export function CockpitHeader({
   sessionTitle,
   phases,
@@ -115,6 +161,10 @@ export function CockpitHeader({
   stuckCount = 0,
   isDarkMode,
   onToggleDark,
+  connectionStatus,
+  timerEndsAt,
+  onSetTimer,
+  onClearTimer,
 }: CockpitHeaderProps) {
   // Controls popover (Issue 1 — merge auto-advance + pause)
   const [controlsOpen, setControlsOpen] = useState(false);
@@ -181,11 +231,11 @@ export function CockpitHeader({
         </div>
       </div>
 
-      {/* ── Row 2: Status bar — max 5 items: module pill, question timer, energy donut, student count, controls ── */}
+      {/* ── Row 2: Status bar — module pill, timer, energy donut, connection, student count, controls ── */}
       <div
         className="flex items-center h-11 px-3 xl:px-5 gap-2.5 xl:gap-3 bg-bw-surface-dim/45 border-t border-bw-border/50"
       >
-        {/* LEFT: Module pill + Question timer + Energy donut + Students */}
+        {/* LEFT: Module pill + Timers + Energy donut + Connection + Students */}
         <div className="flex items-center gap-2.5 min-w-0 flex-shrink-0">
           {/* Module badge — pill shape */}
           <span
@@ -199,8 +249,13 @@ export function CockpitHeader({
             {moduleLabel}
           </span>
 
+          {/* Timer countdown — visible when set (#7) */}
+          {timerEndsAt && (
+            <TimerCountdown endsAt={timerEndsAt} />
+          )}
+
           {/* Question elapsed timer — red pill */}
-          {respondingOpenedAt && (
+          {respondingOpenedAt && !timerEndsAt && (
             <span className="flex-shrink-0 hidden sm:block">
               <ElapsedTimer startedAt={respondingOpenedAt} variant="pill" />
             </span>
@@ -216,6 +271,15 @@ export function CockpitHeader({
                 total={totalStudents}
               />
             </div>
+          )}
+
+          {/* Connection status indicator (#2) */}
+          {connectionStatus && (
+            <LiveIndicator
+              status={connectionStatus}
+              showLabel={false}
+              className="flex-shrink-0 hidden sm:flex"
+            />
           )}
 
           {/* Student count */}
@@ -275,6 +339,44 @@ export function CockpitHeader({
                 </svg>
                 Écran
               </button>
+
+              {/* Timer presets (#7-8) */}
+              {onSetTimer && (
+                <>
+                  <div className="border-t border-bw-border/50 my-1" />
+                  <div className="px-3 py-1">
+                    <span className="text-[11px] font-semibold text-bw-muted uppercase tracking-wider">Timer</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1 px-3 pb-1">
+                    {[30, 60, 90].map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => { onSetTimer(s); setControlsOpen(false); }}
+                        className="px-2.5 py-1 rounded-lg text-xs font-medium bg-bw-surface-dim hover:bg-bw-primary/10 hover:text-bw-primary cursor-pointer transition-colors"
+                      >
+                        {s}s
+                      </button>
+                    ))}
+                    {timerEndsAt && (
+                      <>
+                        <button
+                          onClick={() => { onSetTimer(30); }}
+                          className="px-2.5 py-1 rounded-lg text-xs font-medium bg-bw-teal/10 text-bw-teal hover:bg-bw-teal/20 cursor-pointer transition-colors"
+                        >
+                          +30s
+                        </button>
+                        <button
+                          onClick={() => { onClearTimer?.(); setControlsOpen(false); }}
+                          className="px-2.5 py-1 rounded-lg text-xs font-medium bg-bw-danger/10 text-bw-danger hover:bg-bw-danger/20 cursor-pointer transition-colors"
+                        >
+                          Stop
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </>
+              )}
+
               {/* Dark mode toggle */}
               {onToggleDark && (
                 <button

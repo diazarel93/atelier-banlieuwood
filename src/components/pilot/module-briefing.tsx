@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { SOCLE_LABELS, type ModuleGuide } from "@/lib/guide-data";
@@ -245,10 +246,12 @@ export function ModuleBriefing({
           {/* Layer 1: Cover image (subtle, dimmed) */}
           {cover && (
             <div className="absolute inset-0 h-full">
-              <img
+              <Image
                 src={cover.url}
                 alt=""
-                className="w-full h-full object-cover opacity-25"
+                fill
+                className="object-cover opacity-25"
+                sizes="100vw"
               />
               <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${module.color}40 0%, #08090E 100%)` }} />
             </div>

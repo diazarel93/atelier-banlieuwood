@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
+
+export type ConnectionStatus = "connected" | "connecting" | "disconnected";
 
 /**
  * Map of Supabase table names → TanStack Query keys to invalidate.
@@ -76,14 +78,18 @@ const CHILD_TABLES = Object.keys(TABLE_INVALIDATION_MAP).filter((t) => t !== "se
  *    — sent by the PATCH API route, received by ALL clients (no RLS).
  *
  * Fallback: 30s polling via refetchInterval on each query.
+ *
+ * Returns `{ status }` — the current connection status.
  */
-export function useRealtimeInvalidation(sessionId: string) {
+export function useRealtimeInvalidation(sessionId: string): { status: ConnectionStatus } {
   const queryClient = useQueryClient();
   const channelRef = useRef<RealtimeChannel | null>(null);
+  const [status, setStatus] = useState<ConnectionStatus>("connecting");
 
   useEffect(() => {
     if (!sessionId) return;
 
+    setStatus("connecting");
     const supabase = createClient();
     const channel = supabase.channel(`session-${sessionId}`);
 
@@ -114,7 +120,17 @@ export function useRealtimeInvalidation(sessionId: string) {
       }
     });
 
-    channel.subscribe();
+    // Track subscription status
+    channel.subscribe((channelStatus) => {
+      if (channelStatus === "SUBSCRIBED") {
+        setStatus("connected");
+      } else if (channelStatus === "CLOSED" || channelStatus === "CHANNEL_ERROR") {
+        setStatus("disconnected");
+      } else if (channelStatus === "TIMED_OUT") {
+        setStatus("disconnected");
+      }
+    });
+
     channelRef.current = channel;
 
     return () => {
@@ -122,4 +138,6 @@ export function useRealtimeInvalidation(sessionId: string) {
       channelRef.current = null;
     };
   }, [sessionId, queryClient]);
+
+  return { status };
 }

@@ -185,7 +185,7 @@ function JoinForm() {
         >
           {/* Code input - individual boxes */}
           <div className="space-y-2">
-            <label className="text-sm text-bw-muted block text-center">
+            <label htmlFor="join-code-0" className="text-sm text-bw-muted block text-center">
               Code de la partie
             </label>
             <motion.div
@@ -196,6 +196,8 @@ function JoinForm() {
               {code.map((char, i) => (
                 <motion.input
                   key={i}
+                  id={`join-code-${i}`}
+                  aria-label={`Caractere ${i + 1} du code`}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.3 + i * 0.06 }}
@@ -223,6 +225,8 @@ function JoinForm() {
               <motion.p
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
+                role="alert"
+                aria-live="assertive"
                 className="text-xs text-bw-danger text-center mt-1"
               >
                 Code invalide, verifie et reessaie
@@ -232,10 +236,11 @@ function JoinForm() {
 
           {/* Name */}
           <div className="space-y-2">
-            <label className="text-sm text-bw-muted block text-center">
+            <label htmlFor="join-name" className="text-sm text-bw-muted block text-center">
               Ton prenom
             </label>
             <Input
+              id="join-name"
               ref={nameRef}
               type="text"
               placeholder="Entre ton prenom..."
