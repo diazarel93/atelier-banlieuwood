@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageShell } from "@/components/page-shell";
 import { DashboardHeader } from "@/components/dashboard-header";
+import { ROUTES } from "@/lib/routes";
 
 const LEVELS = [
   { value: "primaire", label: "Primaire", desc: "6-9 ans" },
@@ -35,7 +36,7 @@ export default function NewSessionPage() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        router.push("/login");
+        router.push(ROUTES.login);
         return;
       }
       setCheckingAuth(false);
@@ -74,7 +75,7 @@ export default function NewSessionPage() {
 
       const session = await res.json();
       toast.success("Partie créée !");
-      router.push(`/session/${session.id}`);
+      router.push(ROUTES.sessionDetail(session.id));
     } catch {
       toast.error("Erreur de connexion");
       setLoading(false);
@@ -95,7 +96,7 @@ export default function NewSessionPage() {
 
   return (
     <PageShell maxWidth="md">
-      <DashboardHeader backHref="/dashboard" backLabel="Retour" />
+      <DashboardHeader backHref={ROUTES.legacyDashboard} backLabel="Retour" />
         <div className="text-center space-y-3">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}

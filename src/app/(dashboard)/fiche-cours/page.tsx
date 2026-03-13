@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageShell } from "@/components/page-shell";
 import { DashboardHeader } from "@/components/dashboard-header";
+import { ROUTES } from "@/lib/routes";
 
 interface FicheData {
   title: string;
@@ -52,7 +53,7 @@ export default function FicheCoursPage() {
     async function check() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push("/login"); return; }
+      if (!user) { router.push(ROUTES.login); return; }
       setCheckingAuth(false);
     }
     check();
@@ -139,7 +140,7 @@ export default function FicheCoursPage() {
   return (
     <PageShell maxWidth="lg">
       <DashboardHeader
-        backHref="/dashboard"
+        backHref={ROUTES.legacyDashboard}
         backLabel="Dashboard"
         actions={
           fiche ? (

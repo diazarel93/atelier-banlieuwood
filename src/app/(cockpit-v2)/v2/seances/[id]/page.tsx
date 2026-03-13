@@ -18,6 +18,8 @@ import { CinemaReferencesCard } from "@/components/v2/session-detail/cinema-refe
 import { PreSessionChecklistV2 } from "@/components/v2/session-detail/pre-session-checklist-v2";
 import { ProjectionOverlay } from "@/components/v2/session-detail/projection-overlay";
 import { InterSessionCard } from "@/components/v2/session-detail/inter-session-card";
+import { LiveParticipationCard } from "@/components/v2/session-detail/live-participation-card";
+import { SessionAxesPreview } from "@/components/v2/session-detail/session-axes-preview";
 
 export default function SessionDetailPage() {
   const params = useParams();
@@ -137,6 +139,24 @@ export default function SessionDetailPage() {
             {/* Inter-session actions (M6 scene generation, M8 points computation) */}
             {session.current_module && (
               <InterSessionCard sessionId={session.id} currentModule={session.current_module} />
+            )}
+
+            {/* Live participation — visible only during live sessions */}
+            {sessionState.phase === "live" && (
+              <LiveParticipationCard
+                respondedCount={
+                  activeStudents.filter((s) =>
+                    // rough heuristic: students with recent activity
+                    s.is_active
+                  ).length
+                }
+                totalStudents={activeStudents.length}
+              />
+            )}
+
+            {/* Axes preview — visible when session is done or has scores */}
+            {(sessionState.phase === "done" || sessionState.phase === "paused") && (
+              <SessionAxesPreview sessionId={session.id} />
             )}
 
             {/* Pedagogical objectives */}

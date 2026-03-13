@@ -19,6 +19,7 @@ import type { PosterChoice, PosterStudent } from "@/components/film-poster";
 import { OIERadar, OIERadarMini } from "@/components/pilot/oie-radar";
 import type { OIEScores } from "@/lib/oie-profile";
 import { SessionReplay } from "@/components/pilot/session-replay";
+import { ROUTES } from "@/lib/routes";
 
 interface ExportData {
   markdown: string;
@@ -157,7 +158,7 @@ export default function ResultsPage() {
     async function check() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push("/login"); return; }
+      if (!user) { router.push(ROUTES.login); return; }
       setCheckingAuth(false);
     }
     check();

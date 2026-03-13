@@ -5,6 +5,8 @@
  * should call `getSessionState(status)` instead of computing booleans locally.
  */
 
+import { ROUTES } from "./routes";
+
 export type SessionPhase = "waiting" | "live" | "paused" | "done";
 
 export interface SessionState {
@@ -66,5 +68,36 @@ export function getSessionState(status: string): SessionState {
     canPilot: true,
     canViewResults: false,
     canPrepare: true,
+  };
+}
+
+/**
+ * Returns session state enriched with pre-computed URLs.
+ * Avoids duplicating URL logic across pages.
+ */
+export interface SessionUrls extends SessionState {
+  pilotUrl: string;
+  screenUrl: string;
+  prepareUrl: string;
+  resultsUrl: string;
+  detailUrl: string;
+  /** URL of the primary CTA based on status */
+  ctaUrl: string;
+}
+
+export function getSessionUrls(id: string, status: string): SessionUrls {
+  const state = getSessionState(status);
+  return {
+    ...state,
+    pilotUrl: ROUTES.pilot(id),
+    screenUrl: ROUTES.screen(id),
+    prepareUrl: ROUTES.seancePrepare(id),
+    resultsUrl: ROUTES.seanceResults(id),
+    detailUrl: ROUTES.seanceDetail(id),
+    ctaUrl: state.canViewResults
+      ? ROUTES.seanceResults(id)
+      : state.canPilot
+        ? ROUTES.pilot(id)
+        : ROUTES.seancePrepare(id),
   };
 }

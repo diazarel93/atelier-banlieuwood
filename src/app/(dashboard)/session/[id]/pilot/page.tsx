@@ -78,6 +78,7 @@ import { AIAssistantPanel } from "@/components/pilot/ai-assistant-panel";
 import { ComprehensionHeatmap } from "@/components/pilot/comprehension-heatmap";
 import { SessionStateBanner } from "@/components/pilot/session-state-banner";
 import { CenterStateBanner } from "@/components/pilot/center-state-banner";
+import { ROUTES } from "@/lib/routes";
 import { computeAttentionQueue } from "@/components/pilot/attention-priority";
 import { CockpitHeader } from "@/components/pilot/cockpit-header";
 import { SessionTimeline, createTimelineEvent, type TimelineEvent } from "@/components/pilot/session-timeline";
@@ -1121,7 +1122,7 @@ function CockpitContent({
         totalStudents={activeStudents.length}
         voteCount={voteData?.totalVotes || 0}
         onTogglePauseFromBanner={handlePauseToggle}
-        onViewResults={() => router.push(`/session/${sessionId}/results`)}
+        onViewResults={() => router.push(ROUTES.sessionResults(sessionId))}
         stuckCount={stuckStudents.length}
         isDarkMode={isDarkMode}
         onToggleDark={() => setIsDarkMode(v => !v)}
@@ -2161,7 +2162,7 @@ export default function PilotPage() {
     async function check() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push("/login"); return; }
+      if (!user) { router.push(ROUTES.login); return; }
       setActorId(user.id);
       setCheckingAuth(false);
     }
@@ -2388,7 +2389,7 @@ export default function PilotPage() {
       <div className="min-h-dvh flex items-center justify-center bg-bw-bg">
         <div className="text-center space-y-3">
           <p className="text-bw-muted">Session introuvable</p>
-          <button onClick={() => router.push("/dashboard")} className="text-bw-primary text-sm cursor-pointer">← Dashboard</button>
+          <button onClick={() => router.push(ROUTES.legacyDashboard)} className="text-bw-primary text-sm cursor-pointer">← Dashboard</button>
         </div>
       </div>
     );
@@ -2513,7 +2514,7 @@ export default function PilotPage() {
             onSelectStudent={(s) => { setSelectedStudentId(s.id); setShowStudents(false); }}
             teams={teams || []}
             onOpenModules={() => setMobileSidebarOpen(true)}
-            onOpenScreen={() => window.open(`/session/${sessionId}/screen`, "_blank")}
+            onOpenScreen={() => window.open(ROUTES.screen(sessionId), "_blank")}
             oieScores={oieScores}
           />
           </ErrorBoundary>

@@ -12,6 +12,7 @@ import { DEMO_STUDENT_NAMES } from "@/lib/demo-data";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
 import { CinemaQuoteBanner } from "@/components/cinema-illustrations";
+import { ROUTES } from "@/lib/routes";
 
 const QRCodeSVG = dynamic(
   () => import("qrcode.react").then(mod => ({ default: mod.QRCodeSVG })),
@@ -81,7 +82,7 @@ export default function SessionOverviewPage() {
     async function check() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push("/login"); return; }
+      if (!user) { router.push(ROUTES.login); return; }
       setCheckingAuth(false);
     }
     check();
@@ -149,7 +150,7 @@ export default function SessionOverviewPage() {
       <div className="min-h-dvh flex items-center justify-center">
         <div className="text-center space-y-3">
           <p className="text-bw-muted">Session introuvable</p>
-          <Button variant="link" onClick={() => router.push("/dashboard")}>
+          <Button variant="link" onClick={() => router.push(ROUTES.legacyDashboard)}>
             Retour au dashboard
           </Button>
         </div>
@@ -230,7 +231,7 @@ export default function SessionOverviewPage() {
     <PageShell maxWidth="xl">
       <DashboardHeader
         breadcrumb={[
-          { label: "Dashboard", href: "/dashboard" },
+          { label: "Dashboard", href: ROUTES.legacyDashboard },
           { label: session.title },
         ]}
         actions={
@@ -306,7 +307,7 @@ export default function SessionOverviewPage() {
             data-tour="step-3"
             whileTap={{ scale: 0.97 }}
             whileHover={{ y: -2 }}
-            onClick={() => router.push(`/session/${sessionId}/pilot`)}
+            onClick={() => router.push(ROUTES.pilot(sessionId))}
             className="relative flex items-center gap-4 p-5 rounded-xl overflow-hidden cursor-pointer group btn-glow"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-bw-primary to-bw-primary-500" />
@@ -345,7 +346,7 @@ export default function SessionOverviewPage() {
           <motion.button
             whileTap={{ scale: 0.97 }}
             whileHover={{ y: -2 }}
-            onClick={() => router.push(`/session/${sessionId}/results`)}
+            onClick={() => router.push(ROUTES.sessionResults(sessionId))}
             className="relative flex items-center gap-4 p-5 rounded-xl overflow-hidden cursor-pointer group border border-bw-teal/20 bg-gradient-to-br from-bw-teal/5 to-bw-teal/10 hover:border-bw-teal/40 transition-all"
           >
             <div className="w-12 h-12 rounded-xl bg-bw-teal/15 flex items-center justify-center text-bw-teal group-hover:bg-bw-teal/25 transition-colors">

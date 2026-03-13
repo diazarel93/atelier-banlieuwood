@@ -5,6 +5,7 @@ import { motion, useInView } from "motion/react";
 import { BrandLogo, BrandStyles } from "@/components/brand-logo";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 
 /* ═══════════════════════════════════════════════════════════════
    BANLIEUWOOD — Site Footer
@@ -28,26 +29,26 @@ const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: "Produit",
     links: [
-      { label: "Rejoindre", href: "/join" },
+      { label: "Rejoindre", href: ROUTES.join },
       { label: "Jouer seul", href: "/solo" },
-      { label: "Cr\u00e9er une partie", href: "/create" },
-      { label: "Dashboard", href: "/dashboard" },
+      { label: "Créer une partie", href: "/create" },
+      { label: "Dashboard", href: ROUTES.legacyDashboard },
     ],
   },
   {
     title: "Ressources",
     links: [
-      { label: "Fiche Cours", href: "/resources/fiche-cours" },
-      { label: "\u00c0 propos", href: "/about" },
-      { label: "Contact", href: "/contact" },
+      { label: "Fiche Cours", href: ROUTES.legacyFicheCours },
+      { label: "À propos", href: ROUTES.about },
+      { label: "Contact", href: ROUTES.contact },
     ],
   },
   {
-    title: "L\u00e9gal",
+    title: "Légal",
     links: [
-      { label: "CGU", href: "/legal/cgu" },
-      { label: "Confidentialit\u00e9", href: "/legal/privacy" },
-      { label: "Accessibilit\u00e9", href: "/legal/accessibility" },
+      { label: "CGU", href: ROUTES.legalCgu },
+      { label: "Confidentialité", href: ROUTES.legalPrivacy },
+      { label: "Accessibilité", href: ROUTES.legalAccessibility },
     ],
   },
 ];

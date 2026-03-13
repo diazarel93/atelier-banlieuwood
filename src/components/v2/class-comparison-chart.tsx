@@ -10,6 +10,7 @@ interface ClassData {
   studentCount: number;
   scoredStudentCount: number;
   sessionCount: number;
+  participationRate: number;
 }
 
 interface ComparisonData {
@@ -166,16 +167,31 @@ export function ClassComparisonChart() {
         </svg>
       </div>
 
-      {/* Legend */}
-      <div className="flex flex-wrap gap-3 mt-4">
+      {/* Legend + stats per class */}
+      <div className="space-y-2 mt-4">
         {data.classes.map((cls, ci) => (
-          <div key={cls.classLabel} className="flex items-center gap-1.5 text-xs text-bw-muted">
+          <div
+            key={cls.classLabel}
+            className="flex items-center gap-2 text-xs text-bw-muted"
+          >
             <div
-              className="w-3 h-3 rounded-sm"
-              style={{ backgroundColor: CLASS_COLORS[ci % CLASS_COLORS.length] }}
+              className="w-3 h-3 rounded-sm shrink-0"
+              style={{
+                backgroundColor: CLASS_COLORS[ci % CLASS_COLORS.length],
+              }}
             />
-            {cls.classLabel}
-            <span className="opacity-60">({cls.studentCount} él.)</span>
+            <span className="font-medium text-bw-heading">
+              {cls.classLabel}
+            </span>
+            <span className="opacity-60">
+              {cls.studentCount} él.
+            </span>
+            <span className="opacity-60">
+              {cls.sessionCount} séance{cls.sessionCount > 1 ? "s" : ""}
+            </span>
+            <span className="opacity-60">
+              {cls.participationRate}% participation
+            </span>
           </div>
         ))}
         <div className="flex items-center gap-1.5 text-xs text-bw-muted">

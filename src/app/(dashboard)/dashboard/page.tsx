@@ -208,7 +208,7 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center gap-2.5">
               <button
-                onClick={() => router.push("/fiche-cours")}
+                onClick={() => router.push(ROUTES.legacyFicheCours)}
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-medium text-bw-muted border border-white/[0.06] cursor-pointer transition-all duration-200 hover:text-white hover:bg-white/[0.05] hover:border-white/[0.1]"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -227,7 +227,7 @@ export default function DashboardPage() {
               </button>
               <button
                 data-tour="step-1"
-                onClick={() => router.push("/session/new")}
+                onClick={() => router.push(ROUTES.sessionNew)}
                 className="group inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-semibold text-white bg-gradient-to-r from-bw-primary to-[#E85D26] cursor-pointer transition-all duration-200 hover:shadow-[0_0_24px_rgba(255,107,53,0.25)]"
                 style={{ boxShadow: "0 0 12px rgba(255,107,53,0.12)" }}
               >
@@ -310,7 +310,7 @@ export default function DashboardPage() {
         {loading ? (
           <LoadingSkeletons />
         ) : sessions.length === 0 ? (
-          <EmptyState onAction={() => router.push("/session/new")} />
+          <EmptyState onAction={() => router.push(ROUTES.sessionNew)} />
         ) : (
           <div className="space-y-6">
             {/* Active sessions */}
@@ -321,7 +321,7 @@ export default function DashboardPage() {
                     key={session.id}
                     session={session}
                     index={i}
-                    onOpen={() => router.push(`/session/${session.id}`)}
+                    onOpen={() => router.push(ROUTES.sessionDetail(session.id))}
                     onDelete={() => handleDelete(session.id)}
                     onDuplicate={() => handleDuplicate(session.id)}
                   />
@@ -337,7 +337,7 @@ export default function DashboardPage() {
                     key={session.id}
                     session={session}
                     index={i}
-                    onOpen={() => router.push(`/session/${session.id}/results`)}
+                    onOpen={() => router.push(ROUTES.sessionResults(session.id))}
                     onDelete={() => handleDelete(session.id)}
                     onDuplicate={() => handleDuplicate(session.id)}
                   />
@@ -662,14 +662,14 @@ function SessionCard({
             {session.status === "done" && Date.now() - new Date(session.created_at).getTime() < 7 * 86400000 && (
               <div className="flex items-center gap-2.5 pt-1" onClick={(e) => e.stopPropagation()}>
                 <a
-                  href={`/session/${session.id}/results`}
+                  href={ROUTES.sessionResults(session.id)}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-bw-green bg-bw-green/8 border border-bw-green/20 hover:bg-bw-green/15 hover:border-bw-green/30 transition-all cursor-pointer"
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
                   Resultats
                 </a>
                 <a
-                  href={`/session/${session.id}/results?tab=fiche`}
+                  href={`${ROUTES.sessionResults(session.id)}?tab=fiche`}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-bw-violet bg-bw-violet/8 border border-bw-violet/20 hover:bg-bw-violet/15 hover:border-bw-violet/30 transition-all cursor-pointer"
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
@@ -894,7 +894,7 @@ function EmptyState({ onAction }: { onAction: () => void }) {
           Creer ma premiere partie
         </button>
         <a
-          href="/fiche-cours"
+          href={ROUTES.legacyFicheCours}
           className="text-xs text-bw-muted hover:text-bw-violet transition-colors"
         >
           Voir la fiche de cours &rarr;

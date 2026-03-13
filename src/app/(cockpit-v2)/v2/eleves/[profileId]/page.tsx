@@ -16,6 +16,7 @@ import {
   useCreateNote,
   useDeleteNote,
 } from "@/hooks/use-student-profiles";
+import { ProgressionChart } from "@/components/v2/student-profile/progression-chart";
 
 export default function EleveDetailPage() {
   const params = useParams();
@@ -113,6 +114,9 @@ export default function EleveDetailPage() {
               : undefined
           }
         />
+
+        {/* Standalone progression chart — self-fetches data */}
+        <ProgressionChart studentId={profileId} />
 
         {!hasData ? (
           /* ── Empty state — single card when no data at all ── */

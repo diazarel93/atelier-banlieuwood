@@ -15,6 +15,13 @@ export const ROUTES = {
   eleves: "/v2/eleves",
   eleveDetail: (id: string) => `/v2/eleves/${id}`,
 
+  // Legacy (still active)
+  sessionDetail: (id: string) => `/session/${id}`,
+  sessionResults: (id: string) => `/session/${id}/results`,
+  sessionNew: "/session/new",
+  legacyDashboard: "/dashboard",
+  legacyFicheCours: "/fiche-cours",
+
   // Pilot & Screen (old routes, still active)
   pilot: (id: string) => `/session/${id}/pilot`,
   screen: (id: string) => `/session/${id}/screen`,
@@ -33,4 +40,14 @@ export const ROUTES = {
   login: "/login",
   join: "/join",
   requestAccess: "/request-access",
+
+  // Legal
+  legalPrivacy: "/legal/privacy",
+  legalCgu: "/legal/cgu",
+  legalAccessibility: "/legal/accessibility",
+
+  // Public
+  home: "/",
+  about: "/about",
+  contact: "/contact",
 } as const;

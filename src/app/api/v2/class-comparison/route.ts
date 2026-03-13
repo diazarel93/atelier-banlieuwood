@@ -98,13 +98,22 @@ export async function GET(req: NextRequest) {
   }
 
   // Build comparison array
-  const classes = [...classScoresMap.entries()].map(([classLabel, scores]) => ({
-    classLabel,
-    averageScores: aggregateAxes(scores),
-    studentCount: classStudentCounts.get(classLabel) || 0,
-    scoredStudentCount: classStudentIds.get(classLabel)?.size || 0,
-    sessionCount: classSessionCounts.get(classLabel) || 0,
-  }));
+  const classes = [...classScoresMap.entries()].map(([classLabel, scores]) => {
+    const studentCount = classStudentCounts.get(classLabel) || 0;
+    const scoredStudentCount = classStudentIds.get(classLabel)?.size || 0;
+    const participationRate =
+      studentCount > 0
+        ? Math.round((scoredStudentCount / studentCount) * 100)
+        : 0;
+    return {
+      classLabel,
+      averageScores: aggregateAxes(scores),
+      studentCount,
+      scoredStudentCount,
+      sessionCount: classSessionCounts.get(classLabel) || 0,
+      participationRate,
+    };
+  });
 
   // Global average
   const allScores = [...classScoresMap.values()].flat();
