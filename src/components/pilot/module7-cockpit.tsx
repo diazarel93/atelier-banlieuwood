@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
 import type { Module7Data } from "@/hooks/use-session-polling";
 
 const PLAN_COLORS: Record<string, string> = {
@@ -14,6 +15,7 @@ const PLAN_COLORS: Record<string, string> = {
 interface Module7CockpitProps {
   module7: Module7Data;
   connectedCount: number;
+  sessionId: string;
 }
 
 // ── Position 1: Plans fondamentaux ──
@@ -197,44 +199,166 @@ function DecoupageView({ module7, connectedCount }: { module7: Module7Data; conn
 }
 
 // ── Position 4: Storyboard ──
-function StoryboardView({ module7 }: { module7: Module7Data }) {
+function StoryboardView({ module7, sessionId }: { module7: Module7Data; sessionId: string }) {
   const storyboard = module7.storyboard;
+  const storyboardScenes = storyboard?.scenes as { sceneId: string; title: string; plans: { position: number; planType: string; description: string; intention: string; imageUrl?: string }[] }[] | undefined;
   const scenes = module7.scenes || [];
+  const [assembling, setAssembling] = useState(false);
+  const [validating, setValidating] = useState(false);
+
+  const handleAssemble = async () => {
+    setAssembling(true);
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/storyboard-assemble`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur");
+      toast.success(`Storyboard assemblé (${data.scenes?.length || 0} scènes)`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erreur d'assemblage");
+    } finally {
+      setAssembling(false);
+    }
+  };
+
+  const handleValidate = async () => {
+    setValidating(true);
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/storyboard-assemble`, { method: "PATCH" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur");
+      toast.success("Storyboard validé !");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erreur de validation");
+    } finally {
+      setValidating(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-bold text-bw-heading">Storyboard</h3>
         {storyboard?.validated && (
           <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">
-            Valide
+            Validé
           </span>
         )}
       </div>
-      {scenes.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {scenes.map((scene) => (
-            <div
-              key={scene.id}
-              className="p-3 rounded-[18px] border border-black/[0.06] bg-bw-surface text-center"
+
+      {/* No storyboard yet — assemble button */}
+      {!storyboard && (
+        <div className="text-center py-6 space-y-3">
+          <p className="text-sm text-bw-muted">
+            Assembler le storyboard à partir des découpages des élèves.
+          </p>
+          <button
+            onClick={handleAssemble}
+            disabled={assembling}
+            className="inline-flex items-center gap-2 rounded-xl bg-bw-teal px-4 py-2 text-sm font-semibold text-white hover:bg-bw-teal/80 transition-colors disabled:opacity-50"
+          >
+            {assembling ? "Assemblage en cours..." : "Assembler le storyboard"}
+          </button>
+        </div>
+      )}
+
+      {/* Storyboard assembled but not validated — show scenes with images + validate button */}
+      {storyboard && !storyboard.validated && storyboardScenes && (
+        <div className="space-y-4">
+          {storyboardScenes.map((scene) => (
+            <motion.div
+              key={scene.sceneId}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-4 rounded-[18px] border border-black/[0.06] bg-bw-surface"
             >
-              <div className="w-full h-16 rounded-lg bg-black/[0.03] flex items-center justify-center mb-2">
-                <span className="text-2xl text-bw-muted/30">🎬</span>
+              <p className="text-sm font-semibold text-bw-heading mb-3">{scene.title}</p>
+              <div className="grid grid-cols-3 gap-2">
+                {scene.plans.map((plan) => {
+                  const color = PLAN_COLORS[plan.planType] || "#CBD5E1";
+                  return (
+                    <div key={plan.position} className="text-center">
+                      {plan.imageUrl ? (
+                        <img
+                          src={plan.imageUrl}
+                          alt={`${plan.planType} — ${plan.description}`}
+                          className="w-full aspect-video rounded-lg object-cover mb-1"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full aspect-video rounded-lg bg-black/[0.03] flex items-center justify-center mb-1">
+                          <span className="text-bw-muted/30 text-lg">🎬</span>
+                        </div>
+                      )}
+                      <span
+                        className="inline-block px-1.5 py-0.5 rounded-full text-[9px] font-semibold"
+                        style={{ background: `${color}20`, color }}
+                      >
+                        {plan.planType.replaceAll("-", " ")}
+                      </span>
+                      <p className="text-[10px] text-bw-muted mt-0.5 line-clamp-1">{plan.description}</p>
+                    </div>
+                  );
+                })}
               </div>
-              <p className="text-xs font-semibold text-bw-heading">Scene {scene.sceneNumber}</p>
-              <p className="text-[10px] text-bw-muted truncate">{scene.title}</p>
+            </motion.div>
+          ))}
+          <div className="flex justify-center gap-3">
+            <button
+              onClick={handleAssemble}
+              disabled={assembling}
+              className="rounded-xl border border-bw-teal/30 px-4 py-2 text-sm font-semibold text-bw-teal hover:bg-bw-teal/5 transition-colors disabled:opacity-50"
+            >
+              {assembling ? "Ré-assemblage..." : "Ré-assembler"}
+            </button>
+            <button
+              onClick={handleValidate}
+              disabled={validating}
+              className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors disabled:opacity-50"
+            >
+              {validating ? "Validation..." : "Valider le storyboard"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Storyboard validated — display with badge */}
+      {storyboard?.validated && storyboardScenes && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {storyboardScenes.map((scene) => (
+            <div
+              key={scene.sceneId}
+              className="p-3 rounded-[18px] border border-emerald-200 bg-emerald-50/30 text-center"
+            >
+              {scene.plans[0]?.imageUrl ? (
+                <img
+                  src={scene.plans[0].imageUrl}
+                  alt={scene.title}
+                  className="w-full aspect-video rounded-lg object-cover mb-2"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="w-full h-16 rounded-lg bg-emerald-100/50 flex items-center justify-center mb-2">
+                  <span className="text-emerald-400 text-lg">✓</span>
+                </div>
+              )}
+              <p className="text-xs font-semibold text-bw-heading">{scene.title}</p>
+              <p className="text-[10px] text-bw-muted">{scene.plans.length} plan{scene.plans.length > 1 ? "s" : ""}</p>
             </div>
           ))}
         </div>
-      ) : (
+      )}
+
+      {/* Fallback for no scenes at all */}
+      {!storyboard && scenes.length === 0 && (
         <p className="text-sm text-bw-muted text-center py-4">
-          Le storyboard sera assemble a partir des decoupages.
+          Aucun découpage soumis pour le moment.
         </p>
       )}
     </div>
   );
 }
 
-export function Module7Cockpit({ module7, connectedCount }: Module7CockpitProps) {
+export function Module7Cockpit({ module7, connectedCount, sessionId }: Module7CockpitProps) {
   const content = useMemo(() => {
     switch (module7.type) {
       case "plans":
@@ -244,11 +368,11 @@ export function Module7Cockpit({ module7, connectedCount }: Module7CockpitProps)
       case "decoupage":
         return <DecoupageView module7={module7} connectedCount={connectedCount} />;
       case "storyboard":
-        return <StoryboardView module7={module7} />;
+        return <StoryboardView module7={module7} sessionId={sessionId} />;
       default:
         return <p className="text-sm text-bw-muted">Type inconnu : {module7.type}</p>;
     }
-  }, [module7, connectedCount]);
+  }, [module7, connectedCount, sessionId]);
 
   return <div className="space-y-6">{content}</div>;
 }

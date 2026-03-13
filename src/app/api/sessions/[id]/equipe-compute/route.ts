@@ -160,6 +160,44 @@ export async function POST(
   });
 }
 
+// PATCH — Facilitateur assigns a role via veto (override)
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id: sessionId } = await params;
+
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
+  const admin = createAdminClient();
+  const body = await req.json();
+  const { studentId, roleKey } = body;
+
+  if (!studentId || !roleKey) {
+    return NextResponse.json({ error: "studentId et roleKey requis" }, { status: 400 });
+  }
+
+  // Upsert role with veto flag
+  const { error } = await admin
+    .from("module8_roles")
+    .upsert(
+      {
+        session_id: sessionId,
+        student_id: studentId,
+        role_key: roleKey,
+        is_veto: true,
+      },
+      { onConflict: "session_id,student_id" }
+    );
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true, veto: true });
+}
+
 // PUT — generate talent cards after roles are assigned
 export async function PUT(
   req: NextRequest,

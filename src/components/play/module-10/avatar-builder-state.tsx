@@ -32,6 +32,7 @@ export function AvatarBuilderState({
   const [faiblesse, setFaiblesse] = useState((module10.personnage as any)?.faiblesse as string || "");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [attempted, setAttempted] = useState(false);
   const [tab, setTab] = useState<"peau" | "coiffure" | "visage" | "style">("peau");
 
   // DiceBear Avataaars state
@@ -129,15 +130,18 @@ export function AvatarBuilderState({
     { key: "malin", label: "Malin" }, { key: "sensible", label: "Sensible" },
   ];
 
+  const canSubmit = prenom.trim().length >= 1 && force.trim().length >= 2 && faiblesse.trim().length >= 2;
+
   async function handleSubmit() {
-    if (!prenom.trim()) return;
+    setAttempted(true);
+    if (!canSubmit) return;
     setSubmitting(true);
     try {
       const finalAvatar: AvatarOptions = { ...avatarOpts };
       await fetch(`/api/sessions/${sessionId}/personnage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, prenom: prenom.trim(), traitDominant: trait, force: force.trim() || null, faiblesse: faiblesse.trim() || null, avatarData: finalAvatar }),
+        body: JSON.stringify({ studentId, prenom: prenom.trim(), traitDominant: trait, force: force.trim(), faiblesse: faiblesse.trim(), avatarData: finalAvatar }),
       });
       setSuccess(true);
       setTimeout(() => onDone({ prenom: prenom.trim(), trait, avatar: finalAvatar }), 600);
@@ -345,25 +349,25 @@ export function AvatarBuilderState({
         </div>
       </div>
 
-      {/* Force + Faiblesse */}
+      {/* Force + Faiblesse (obligatoires) */}
       <div className="w-full space-y-2">
         <div>
-          <p className="text-xs text-bw-muted uppercase tracking-wider mb-1">Sa force</p>
+          <p className={`text-xs uppercase tracking-wider mb-1 ${attempted && force.trim().length < 2 ? "text-red-400" : "text-bw-muted"}`}>Sa force <span className="text-red-400">*</span></p>
           <input value={force} onChange={(e) => setForce(e.target.value)}
             placeholder="Ce qu'il/elle fait le mieux..."
             maxLength={100}
-            className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-teal focus:outline-none transition-colors" />
+            className={`w-full rounded-xl bg-bw-elevated border px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:outline-none transition-colors ${attempted && force.trim().length < 2 ? "border-red-400/50 focus:border-red-400" : "border-white/[0.06] focus:border-bw-teal"}`} />
         </div>
         <div>
-          <p className="text-xs text-bw-muted uppercase tracking-wider mb-1">Sa faiblesse</p>
+          <p className={`text-xs uppercase tracking-wider mb-1 ${attempted && faiblesse.trim().length < 2 ? "text-red-400" : "text-bw-muted"}`}>Sa faiblesse <span className="text-red-400">*</span></p>
           <input value={faiblesse} onChange={(e) => setFaiblesse(e.target.value)}
             placeholder="Ce qui le/la freine..."
             maxLength={100}
-            className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-teal focus:outline-none transition-colors" />
+            className={`w-full rounded-xl bg-bw-elevated border px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:outline-none transition-colors ${attempted && faiblesse.trim().length < 2 ? "border-red-400/50 focus:border-red-400" : "border-white/[0.06] focus:border-bw-teal"}`} />
         </div>
       </div>
 
-      <button onClick={handleSubmit} disabled={submitting || !prenom.trim()}
+      <button onClick={handleSubmit} disabled={submitting}
         className="w-full py-3 rounded-xl bg-gradient-to-r from-bw-teal to-bw-teal text-white font-medium text-sm disabled:opacity-40 transition-opacity cursor-pointer">
         {submitting ? "Envoi..." : "Valider mon personnage"}
       </button>

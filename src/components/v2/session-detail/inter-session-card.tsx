@@ -53,6 +53,47 @@ export function InterSessionCard({ sessionId, currentModule }: InterSessionCardP
     );
   }
 
+  // M7 (dbModule=7): Generate fiches de tournage for M8
+  if (currentModule === 7) {
+    return (
+      <GlassCardV2 variant="flat" className="p-5 border-l-4 border-l-violet-500">
+        <div className="flex items-start gap-4">
+          <div className="text-2xl">📋</div>
+          <div className="flex-1">
+            <h3 className="text-sm font-semibold text-bw-heading">
+              Inter-séance : Fiches de tournage
+            </h3>
+            <p className="text-xs text-bw-muted mt-1">
+              Génère 6 fiches par rôle (réalisateur, cadreur, scripte, assistant, son, acteur)
+              à partir du scénario et du storyboard.
+            </p>
+            <button
+              onClick={async () => {
+                setLoading(true);
+                try {
+                  const res = await fetch(`/api/sessions/${sessionId}/fiches-tournage`, {
+                    method: "POST",
+                  });
+                  const data = await res.json();
+                  if (!res.ok) throw new Error(data.error || "Erreur");
+                  toast.success(`${data.count || 6} fiches de tournage générées`);
+                } catch (err) {
+                  toast.error(err instanceof Error ? err.message : "Erreur de génération");
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              disabled={loading}
+              className="mt-3 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-500 transition-colors disabled:opacity-50"
+            >
+              {loading ? "Génération en cours..." : "Générer les fiches de tournage"}
+            </button>
+          </div>
+        </div>
+      </GlassCardV2>
+    );
+  }
+
   // M8 (dbModule=8): Compute points from all modules
   if (currentModule === 8) {
     return (

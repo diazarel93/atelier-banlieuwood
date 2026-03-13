@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -57,10 +57,75 @@ function QuizView({ module8, connectedCount }: { module8: Module8Data; connected
   );
 }
 
+// ── Quick Tags ──
+const QUICK_TAGS = [
+  { key: "tres_creatif", label: "Très créatif", emoji: "🎨" },
+  { key: "force_de_proposition", label: "Force de proposition", emoji: "💡" },
+  { key: "bonne_ecoute", label: "Bonne écoute", emoji: "👂" },
+  { key: "tres_investi", label: "Très investi", emoji: "🔥" },
+  { key: "bonne_cooperation", label: "Bonne coopération", emoji: "🤝" },
+  { key: "leadership", label: "Leadership", emoji: "👑" },
+] as const;
+
+function QuickTagBar({ sessionId, ranking }: { sessionId: string; ranking: { studentId: string; displayName: string }[] }) {
+  const [selectedStudent, setSelectedStudent] = useState("");
+  const [sending, setSending] = useState<string | null>(null);
+
+  const sendTag = async (tag: string) => {
+    if (!selectedStudent) return;
+    setSending(tag);
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/facilitator-tags`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId: selectedStudent, tag }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Erreur");
+      }
+      toast.success("Tag ajouté !");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erreur");
+    } finally {
+      setSending(null);
+    }
+  };
+
+  return (
+    <div className="pt-3 border-t border-black/[0.04]">
+      <p className="text-xs font-semibold text-bw-muted uppercase tracking-wider mb-2">Observations rapides</p>
+      <select
+        value={selectedStudent}
+        onChange={(e) => setSelectedStudent(e.target.value)}
+        className="w-full text-xs rounded-lg border border-black/[0.08] bg-bw-surface px-2 py-1.5 mb-2"
+      >
+        <option value="">Sélectionner un élève...</option>
+        {ranking.map((r) => (
+          <option key={r.studentId} value={r.studentId}>{r.displayName}</option>
+        ))}
+      </select>
+      <div className="flex flex-wrap gap-1">
+        {QUICK_TAGS.map((t) => (
+          <button
+            key={t.key}
+            onClick={() => sendTag(t.key)}
+            disabled={!selectedStudent || sending === t.key}
+            className="px-2 py-1 rounded-lg text-[10px] font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200/60 transition-colors disabled:opacity-40"
+          >
+            {sending === t.key ? "..." : `${t.emoji} ${t.label}`}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Position 2: Debrief ──
-function DebriefView({ module8 }: { module8: Module8Data }) {
+function DebriefView({ module8, sessionId }: { module8: Module8Data; sessionId: string }) {
   const corrections = module8.corrections || [];
   const classResults = module8.classResults;
+  const studentList = module8.studentList || [];
   return (
     <div className="space-y-4">
       <h3 className="text-base font-bold text-bw-heading">Debrief — Resultats classe</h3>
@@ -114,6 +179,11 @@ function DebriefView({ module8 }: { module8: Module8Data }) {
           );
         })}
       </div>
+
+      {/* Quick tags — facilitator observations during debrief */}
+      {studentList.length > 0 && (
+        <QuickTagBar sessionId={sessionId} ranking={studentList} />
+      )}
     </div>
   );
 }
@@ -125,6 +195,8 @@ function RoleChoiceView({ module8, sessionId, connectedCount }: { module8: Modul
   const takenRoles = module8.takenRoles || [];
   const availableRoles = module8.availableRoles || [];
   const chosenCount = takenRoles.length;
+  const [vetoStudentId, setVetoStudentId] = useState("");
+  const [vetoRoleKey, setVetoRoleKey] = useState("");
 
   const computePoints = useMutation({
     mutationFn: async () => {
@@ -216,6 +288,117 @@ function RoleChoiceView({ module8, sessionId, connectedCount }: { module8: Modul
           </div>
         </div>
       )}
+
+      {/* Veto Banlieuwood — facilitator assigns a role */}
+      {module8.pointsComputed && (
+        <VetoSection
+          ranking={ranking}
+          takenRoles={takenRoles}
+          availableRoles={availableRoles}
+          sessionId={sessionId}
+          vetoStudentId={vetoStudentId}
+          setVetoStudentId={setVetoStudentId}
+          vetoRoleKey={vetoRoleKey}
+          setVetoRoleKey={setVetoRoleKey}
+        />
+      )}
+    </div>
+  );
+}
+
+// ── Veto sub-component ──
+function VetoSection({
+  ranking,
+  takenRoles,
+  availableRoles,
+  sessionId,
+  vetoStudentId,
+  setVetoStudentId,
+  vetoRoleKey,
+  setVetoRoleKey,
+}: {
+  ranking: NonNullable<Module8Data["ranking"]>;
+  takenRoles: NonNullable<Module8Data["takenRoles"]>;
+  availableRoles: NonNullable<Module8Data["availableRoles"]>;
+  sessionId: string;
+  vetoStudentId: string;
+  setVetoStudentId: (v: string) => void;
+  vetoRoleKey: string;
+  setVetoRoleKey: (v: string) => void;
+}) {
+  const queryClient = useQueryClient();
+  const takenStudentIds = new Set(takenRoles.map((r) => r.studentId));
+  const unassigned = ranking.filter((r) => !takenStudentIds.has(r.studentId));
+
+  const vetoMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}/equipe-compute`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId: vetoStudentId, roleKey: vetoRoleKey }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Erreur");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success("Veto Banlieuwood appliqué !");
+      setVetoStudentId("");
+      setVetoRoleKey("");
+      queryClient.invalidateQueries({ queryKey: ["session-cockpit", sessionId] });
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Erreur");
+    },
+  });
+
+  return (
+    <div className="pt-3 border-t border-amber-200/60">
+      <p className="text-xs font-semibold text-amber-600 uppercase tracking-wider mb-2">Veto Banlieuwood</p>
+      <p className="text-[10px] text-bw-muted mb-2">
+        Assigner un rôle à un élève (rare — uniquement si talent repéré).
+      </p>
+      <div className="flex flex-wrap gap-2 items-end">
+        <div className="flex-1 min-w-[120px]">
+          <label className="text-[10px] text-bw-muted block mb-0.5">Élève</label>
+          <select
+            value={vetoStudentId}
+            onChange={(e) => setVetoStudentId(e.target.value)}
+            className="w-full text-xs rounded-lg border border-black/[0.08] bg-bw-surface px-2 py-1.5"
+          >
+            <option value="">Choisir...</option>
+            {unassigned.map((r) => (
+              <option key={r.studentId} value={r.studentId}>
+                {r.displayName}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex-1 min-w-[120px]">
+          <label className="text-[10px] text-bw-muted block mb-0.5">Rôle</label>
+          <select
+            value={vetoRoleKey}
+            onChange={(e) => setVetoRoleKey(e.target.value)}
+            className="w-full text-xs rounded-lg border border-black/[0.08] bg-bw-surface px-2 py-1.5"
+          >
+            <option value="">Choisir...</option>
+            {availableRoles.map((r) => (
+              <option key={r.key} value={r.key}>
+                {r.emoji} {r.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button
+          onClick={() => vetoMutation.mutate()}
+          disabled={!vetoStudentId || !vetoRoleKey || vetoMutation.isPending}
+          className="px-3 py-1.5 text-xs bg-amber-500/20 hover:bg-amber-500/40 text-amber-700 rounded-lg transition-colors border border-amber-500/30 disabled:opacity-40"
+        >
+          {vetoMutation.isPending ? "..." : "Appliquer veto"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -223,9 +406,24 @@ function RoleChoiceView({ module8, sessionId, connectedCount }: { module8: Modul
 // ── Position 4: Team recap ──
 function TeamRecapView({ module8 }: { module8: Module8Data }) {
   const team = module8.team || [];
+  const formula = module8.formula || "F2";
   return (
     <div className="space-y-4">
-      <h3 className="text-base font-bold text-bw-heading">Equipe de tournage</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-base font-bold text-bw-heading">Equipe de tournage</h3>
+        <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+          formula === "F3"
+            ? "bg-violet-100 text-violet-700"
+            : "bg-blue-100 text-blue-700"
+        }`}>
+          {formula === "F3" ? "Rotation (F3)" : "Rôles fixes (F2)"}
+        </span>
+      </div>
+      {formula === "F3" && (
+        <p className="text-[10px] text-violet-600 bg-violet-50 rounded-lg px-3 py-1.5">
+          Les eleves changeront de poste à mi-journée pour decouvrir un second role.
+        </p>
+      )}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {team.map((member) => (
           <motion.div
@@ -347,7 +545,7 @@ export function Module8Cockpit({ sessionId, module8, connectedCount }: Module8Co
       case "quiz":
         return <QuizView module8={module8} connectedCount={connectedCount} />;
       case "debrief":
-        return <DebriefView module8={module8} />;
+        return <DebriefView module8={module8} sessionId={sessionId} />;
       case "role-choice":
         return <RoleChoiceView module8={module8} sessionId={sessionId} connectedCount={connectedCount} />;
       case "team-recap":

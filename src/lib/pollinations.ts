@@ -43,6 +43,43 @@ export function generateStoryboardUrls(params: StoryboardParams): string[] {
   });
 }
 
+// ── Module 7 — Scene storyboard panel image ──
+
+interface SceneStoryboardParams {
+  sceneTitle: string;
+  sceneDescription: string;
+  planType: string;           // plan-large, plan-moyen, gros-plan, plan-reaction
+  planDescription: string;
+  tone?: string;
+}
+
+const PLAN_SHOT_MAP: Record<string, string> = {
+  "plan-large": "wide establishing shot",
+  "plan-moyen": "medium shot",
+  "gros-plan": "close-up shot",
+  "plan-reaction": "reaction close-up shot",
+};
+
+/** Generate a single storyboard panel URL for a specific shot in a scene */
+export function generateSceneStoryboardUrl(params: SceneStoryboardParams): string {
+  const shotType = PLAN_SHOT_MAP[params.planType] || "medium shot";
+  const tone = params.tone || "dramatic";
+  const parts = [
+    `cinematic storyboard panel`,
+    `${shotType}`,
+    params.sceneDescription,
+    params.planDescription,
+    `urban French setting`,
+    `${tone} lighting`,
+    `manga-inspired style`,
+    `no text`,
+    `16:9`,
+  ];
+  const prompt = encodeURIComponent(parts.join(", "));
+  const seed = hashCode(params.sceneTitle + params.planType);
+  return `${BASE}/${prompt}?width=768&height=432&model=flux&nologo=true&seed=${seed}`;
+}
+
 /** Simple string hash for consistent seeds */
 function hashCode(str: string): number {
   let hash = 0;

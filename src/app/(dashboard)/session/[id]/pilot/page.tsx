@@ -1854,6 +1854,7 @@ function CockpitContent({
             <Module7Cockpit
               module7={module7Data}
               connectedCount={activeStudents.length}
+              sessionId={sessionId}
             />
           )}
 
@@ -3176,6 +3177,16 @@ export default function PilotPage() {
   // Called when cockpit reaches the end of a module (last Q or done)
   function handleModuleComplete() {
     markCurrentModuleCompleted();
+    // Auto-generate collective pools when M10 S2 (Pitch) completes
+    if (session?.current_module === 10 && (session.current_seance || 1) === 2) {
+      fetch(`/api/sessions/${sessionId}/collective-pools`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      }).then((res) => {
+        if (res.ok) toast.success("Cartes collect\u00E9es pour la Construction Collective");
+      }).catch(() => { /* pools can be generated manually from M12 */ });
+    }
     // Reset status so the sidebar shows completion, but don't change view
     updateSession.mutate({ status: "waiting", current_situation_index: 0 });
   }

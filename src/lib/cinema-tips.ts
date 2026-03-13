@@ -234,6 +234,86 @@ export const CINEMA_TIPS: CinemaTip[] = [
   { module: 0, text: "Robert Downey Jr. a failli ne jamais jouer Iron Man — personne ne voulait l'embaucher. Deuxième chance.", type: "acteur" },
   { module: 0, text: "Adèle Exarchopoulos a gagné la Palme d'Or à Cannes à 19 ans. La plus jeune de l'histoire.", type: "acteur" },
   { module: 0, text: "Keanu Reeves fait toutes ses cascades dans John Wick. Il s'entraîne pendant 6 mois avant chaque film.", type: "acteur" },
+
+  // ══════════════════════════════════════════════
+  // CITATIONS PÉDAGOGIQUES BANLIEUWOOD (Adrian)
+  // ══════════════════════════════════════════════
+
+  // --- Universelles ---
+  { module: 0, text: "Une histoire commence toujours par une question.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "Une idée devient intéressante quand on la partage.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "Une image ne raconte rien… jusqu'à ce que quelqu'un l'imagine.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "Les histoires les plus simples sont souvent les plus fortes.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "Une bonne idée n'est pas forcément parfaite. Elle est simplement vivante.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "L'imagination commence là où les réponses s'arrêtent.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "On n'a pas besoin de tout savoir pour commencer à créer.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "Une histoire avance toujours quand quelque chose résiste.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "Les films sont faits d'idées… mais aussi de discussions.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "Une idée seule est fragile. Une idée partagée devient une histoire.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "Dans une équipe, chaque regard peut changer l'histoire.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "Un film n'est jamais le résultat d'une seule personne.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "Les erreurs font souvent partie des meilleures idées.", source: "Banlieuwood", type: "quote" },
+  { module: 0, text: "La créativité n'est pas un talent magique. C'est une façon de regarder le monde.", source: "Banlieuwood", type: "quote" },
+
+  // --- Module 1 — Le Regard (observer, imaginer) ---
+  { module: 1, text: "Une image ne montre jamais tout.", source: "Banlieuwood", type: "quote" },
+  { module: 1, text: "Ce que tu vois dépend aussi de ce que tu imagines.", source: "Banlieuwood", type: "quote" },
+  { module: 1, text: "Deux personnes peuvent regarder la même image et voir deux histoires différentes.", source: "Banlieuwood", type: "quote" },
+  { module: 1, text: "Regarder attentivement, c'est déjà commencer à raconter.", source: "Banlieuwood", type: "quote" },
+  { module: 1, text: "Une image devient une histoire quand quelqu'un se pose une question.", source: "Banlieuwood", type: "quote" },
+  { module: 1, text: "Chaque détail peut être le début d'un récit.", source: "Banlieuwood", type: "quote" },
+  { module: 1, text: "Une histoire peut commencer par un simple regard.", source: "Banlieuwood", type: "quote" },
+
+  // --- Module 2 — La Scène (comprendre) ---
+  { module: 2, text: "Une scène existe parce que quelqu'un veut quelque chose.", source: "Banlieuwood", type: "quote" },
+  { module: 2, text: "Une histoire commence quand quelque chose bloque.", source: "Banlieuwood", type: "quote" },
+  { module: 2, text: "Sans obstacle, il n'y a pas d'histoire.", source: "Banlieuwood", type: "quote" },
+  { module: 2, text: "Les personnages deviennent intéressants quand ils doivent choisir.", source: "Banlieuwood", type: "quote" },
+  { module: 2, text: "Une scène avance quand un personnage agit.", source: "Banlieuwood", type: "quote" },
+  { module: 2, text: "Une bonne scène pose toujours une question au spectateur.", source: "Banlieuwood", type: "quote" },
+
+  // --- Module 10 séance 1 — Et si… (imaginer) ---
+  { module: 10, seance: 1, text: "Une idée commence souvent par : Et si…", source: "Banlieuwood", type: "quote" },
+  { module: 10, seance: 1, text: "L'imagination adore les questions.", source: "Banlieuwood", type: "quote" },
+  { module: 10, seance: 1, text: "Les histoires naissent quand on ose imaginer l'impossible.", source: "Banlieuwood", type: "quote" },
+  { module: 10, seance: 1, text: "Une idée étrange peut devenir une grande histoire.", source: "Banlieuwood", type: "quote" },
+  { module: 10, seance: 1, text: "Les meilleures idées arrivent souvent quand on ne les cherche pas trop.", source: "Banlieuwood", type: "quote" },
+  { module: 10, seance: 1, text: "Une idée peut venir d'un détail que personne n'avait remarqué.", source: "Banlieuwood", type: "quote" },
+
+  // --- Module 10 séance 2 — Le Pitch (structurer) ---
+  { module: 10, seance: 2, text: "Une histoire devient claire quand on comprend ce que veut le personnage.", source: "Banlieuwood", type: "quote" },
+  { module: 10, seance: 2, text: "Un personnage devient intéressant quand quelque chose l'empêche de réussir.", source: "Banlieuwood", type: "quote" },
+  { module: 10, seance: 2, text: "Une histoire avance quand le personnage prend une décision.", source: "Banlieuwood", type: "quote" },
+  { module: 10, seance: 2, text: "Une bonne histoire est souvent une lutte entre un désir et un obstacle.", source: "Banlieuwood", type: "quote" },
+  { module: 10, seance: 2, text: "Plus l'obstacle est fort, plus l'histoire devient passionnante.", source: "Banlieuwood", type: "quote" },
+
+  // --- Module 12 — Construction Collective ---
+  { module: 12, text: "Une idée peut changer quand elle rencontre celles des autres.", source: "Banlieuwood", type: "quote" },
+  { module: 12, text: "Les histoires collectives sont souvent plus riches que les histoires solitaires.", source: "Banlieuwood", type: "quote" },
+  { module: 12, text: "Écouter une idée peut parfois être aussi important que la proposer.", source: "Banlieuwood", type: "quote" },
+  { module: 12, text: "Construire une histoire ensemble demande de l'imagination… et de l'écoute.", source: "Banlieuwood", type: "quote" },
+  { module: 12, text: "Dans une équipe, chaque idée peut transformer l'histoire.", source: "Banlieuwood", type: "quote" },
+
+  // --- Module 5 — Le Scénario (écriture) ---
+  { module: 5, text: "Une première version n'est jamais la dernière.", source: "Banlieuwood", type: "quote" },
+  { module: 5, text: "Les histoires deviennent plus fortes quand on les retravaille.", source: "Banlieuwood", type: "quote" },
+  { module: 5, text: "Une bonne scène peut naître d'une simple discussion.", source: "Banlieuwood", type: "quote" },
+  { module: 5, text: "Les dialogues servent à révéler ce que les personnages pensent… ou cachent.", source: "Banlieuwood", type: "quote" },
+  { module: 5, text: "Réécrire, c'est donner plus de force à une idée.", source: "Banlieuwood", type: "quote" },
+
+  // --- Module 7 — La Mise en Scène ---
+  { module: 7, text: "La caméra ne montre pas seulement ce qui se passe. Elle montre comment le regarder.", source: "Banlieuwood", type: "quote" },
+  { module: 7, text: "Un plan peut changer complètement la manière dont on ressent une scène.", source: "Banlieuwood", type: "quote" },
+  { module: 7, text: "Le cinéma raconte aussi avec des images, pas seulement avec des mots.", source: "Banlieuwood", type: "quote" },
+  { module: 7, text: "Un regard peut parfois dire plus qu'un dialogue.", source: "Banlieuwood", type: "quote" },
+  { module: 7, text: "Le choix du cadre est aussi un choix d'émotion.", source: "Banlieuwood", type: "quote" },
+
+  // --- Module 8 — L'Équipe (tournage) ---
+  { module: 8, text: "Un film est toujours une aventure collective.", source: "Banlieuwood", type: "quote" },
+  { module: 8, text: "Chaque rôle compte dans la fabrication d'un film.", source: "Banlieuwood", type: "quote" },
+  { module: 8, text: "Derrière chaque image, il y a une équipe.", source: "Banlieuwood", type: "quote" },
+  { module: 8, text: "Un tournage est un moment où les idées deviennent réelles.", source: "Banlieuwood", type: "quote" },
+  { module: 8, text: "Faire un film, c'est transformer l'imagination en action.", source: "Banlieuwood", type: "quote" },
 ];
 
 /**

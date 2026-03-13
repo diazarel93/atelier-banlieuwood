@@ -25,16 +25,16 @@ export function ObjectifObstacleState({
   const [success, setSuccess] = useState(false);
 
   const OBJECTIFS = [
-    { key: "sauver", label: "Sauver quelqu'un" }, { key: "prouver", label: "Prouver quelque chose" },
-    { key: "fuir", label: "S'échapper" }, { key: "trouver", label: "Trouver la vérité" },
-    { key: "gagner", label: "Relever un défi" }, { key: "proteger", label: "Protéger un secret" },
-    { key: "changer", label: "Changer sa vie" }, { key: "venger", label: "Réparer une injustice" },
+    { key: "sauver", label: "Sauver quelqu'un", icon: "\u{1F6DF}" }, { key: "prouver", label: "Prouver quelque chose", icon: "\u{1F4AA}" },
+    { key: "fuir", label: "S'\u00E9chapper", icon: "\u{1F3C3}" }, { key: "trouver", label: "Trouver la v\u00E9rit\u00E9", icon: "\u{1F50D}" },
+    { key: "gagner", label: "Relever un d\u00E9fi", icon: "\u{1F3C6}" }, { key: "proteger", label: "Prot\u00E9ger un secret", icon: "\u{1F92B}" },
+    { key: "changer", label: "Changer sa vie", icon: "\u{1F504}" }, { key: "venger", label: "R\u00E9parer une injustice", icon: "\u2696\uFE0F" },
   ];
   const OBSTACLES = [
-    { key: "rival", label: "Un rival puissant" }, { key: "mensonge", label: "Un mensonge" },
-    { key: "temps", label: "Le temps qui presse" }, { key: "trahison", label: "Une trahison" },
-    { key: "peur", label: "Sa propre peur" }, { key: "regles", label: "Les règles" },
-    { key: "solitude", label: "La solitude" }, { key: "secret", label: "Un secret du passé" },
+    { key: "rival", label: "Un rival puissant", icon: "\u{1F44A}" }, { key: "mensonge", label: "Un mensonge", icon: "\u{1F3AD}" },
+    { key: "temps", label: "Le temps qui presse", icon: "\u23F0" }, { key: "trahison", label: "Une trahison", icon: "\u{1F5E1}\uFE0F" },
+    { key: "peur", label: "Sa propre peur", icon: "\u{1F628}" }, { key: "regles", label: "Les r\u00E8gles", icon: "\u{1F4CF}" },
+    { key: "solitude", label: "La solitude", icon: "\u{1F6B6}" }, { key: "secret", label: "Un secret du pass\u00E9", icon: "\u{1F512}" },
   ];
 
   function selectObjectif(key: string) {
@@ -82,9 +82,9 @@ export function ObjectifObstacleState({
         <div className="flex flex-wrap gap-1.5">
           {OBJECTIFS.map((o) => (
             <motion.button key={o.key} whileTap={{ scale: 0.95 }} onClick={() => selectObjectif(o.key)}
-              className={`px-2.5 py-1.5 rounded-lg text-xs border transition-colors cursor-pointer ${
+              className={`px-2.5 py-2 rounded-lg border transition-colors cursor-pointer flex flex-col items-center gap-0.5 min-w-[80px] ${
                 objectif === o.key && !showCustom ? "bg-bw-amber/20 border-bw-amber/40 text-bw-amber" : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:border-bw-amber/20"
-              }`}>{o.label}</motion.button>
+              }`}><span className="text-xl">{o.icon}</span><span className="text-xs">{o.label}</span></motion.button>
           ))}
           <motion.button whileTap={{ scale: 0.95 }} onClick={enableCustom}
             className={`px-2.5 py-1.5 rounded-lg text-xs border transition-colors cursor-pointer ${
@@ -126,9 +126,9 @@ export function ObjectifObstacleState({
         <div className="flex flex-wrap gap-1.5">
           {OBSTACLES.map((o) => (
             <motion.button key={o.key} whileTap={{ scale: 0.95 }} onClick={() => setObstacle(o.key)}
-              className={`px-2.5 py-1.5 rounded-lg text-xs border transition-colors cursor-pointer ${
+              className={`px-2.5 py-2 rounded-lg border transition-colors cursor-pointer flex flex-col items-center gap-0.5 min-w-[80px] ${
                 obstacle === o.key ? "bg-bw-danger/20 border-bw-danger/40 text-bw-danger" : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:border-bw-danger/20"
-              }`}>{o.label}</motion.button>
+              }`}><span className="text-xl">{o.icon}</span><span className="text-xs">{o.label}</span></motion.button>
           ))}
         </div>
       </div>

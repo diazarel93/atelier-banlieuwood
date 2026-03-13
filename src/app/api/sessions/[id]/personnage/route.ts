@@ -30,6 +30,20 @@ export async function POST(
     );
   }
 
+  if (typeof force !== "string" || force.trim().length < 2) {
+    return NextResponse.json(
+      { error: "La force est obligatoire (2 caractères minimum)" },
+      { status: 400 }
+    );
+  }
+
+  if (typeof faiblesse !== "string" || faiblesse.trim().length < 2) {
+    return NextResponse.json(
+      { error: "La faiblesse est obligatoire (2 caractères minimum)" },
+      { status: 400 }
+    );
+  }
+
   const admin = createAdminClient();
 
   // Verify session is module 10, séance 2

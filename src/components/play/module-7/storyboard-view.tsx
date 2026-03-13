@@ -3,15 +3,25 @@
 import { motion } from "motion/react";
 import type { Module7Data } from "@/hooks/use-session-polling";
 
+const PLAN_COLORS: Record<string, string> = {
+  "plan-large": "#7EA7F5",
+  "plan-moyen": "#6EC6B0",
+  "gros-plan": "#F3A765",
+  "plan-reaction": "#E78BB4",
+};
+
 interface StoryboardViewProps {
   module7: Module7Data;
 }
 
 export function StoryboardView({ module7 }: StoryboardViewProps) {
   const storyboard = module7.storyboard;
+  const storyboardScenes = storyboard?.scenes as
+    | { sceneId: string; title: string; plans: { position: number; planType: string; description: string; imageUrl?: string }[] }[]
+    | undefined;
   const scenes = module7.scenes || [];
 
-  if (storyboard?.validated) {
+  if (storyboard?.validated && storyboardScenes) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -25,17 +35,52 @@ export function StoryboardView({ module7 }: StoryboardViewProps) {
           </p>
         </div>
 
-        <div className="w-full space-y-4">
-          {scenes.map((scene, i) => (
+        <div className="w-full space-y-6">
+          {storyboardScenes.map((scene, i) => (
             <motion.div
-              key={scene.id}
+              key={scene.sceneId}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
               className="p-4 rounded-xl bg-bw-teal/10 border border-bw-teal/20"
             >
-              <p className="text-xs text-bw-teal font-mono">Scène {scene.sceneNumber}</p>
-              <p className="text-sm font-semibold text-white mt-1">{scene.title}</p>
+              <p className="text-xs text-bw-teal font-mono mb-3">
+                {scene.title}
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {scene.plans.map((plan) => {
+                  const color = PLAN_COLORS[plan.planType] || "#CBD5E1";
+                  return (
+                    <motion.div
+                      key={plan.position}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: i * 0.1 + plan.position * 0.05 }}
+                      className="text-center"
+                    >
+                      {plan.imageUrl ? (
+                        <img
+                          src={plan.imageUrl}
+                          alt={`${plan.planType} — ${plan.description}`}
+                          className="w-full aspect-video rounded-lg object-cover mb-1.5"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full aspect-video rounded-lg bg-white/5 flex items-center justify-center mb-1.5">
+                          <span className="text-white/20 text-lg">🎬</span>
+                        </div>
+                      )}
+                      <span
+                        className="inline-block px-1.5 py-0.5 rounded-full text-[9px] font-semibold"
+                        style={{ background: `${color}30`, color }}
+                      >
+                        {plan.planType.replaceAll("-", " ")}
+                      </span>
+                      <p className="text-[10px] text-white/50 mt-0.5 line-clamp-2">{plan.description}</p>
+                    </motion.div>
+                  );
+                })}
+              </div>
             </motion.div>
           ))}
         </div>

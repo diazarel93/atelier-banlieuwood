@@ -143,3 +143,131 @@ export function buildDecoupageTemplate(scene: { title: string; description: stri
     ],
   };
 }
+
+// ── Fiches de tournage (inter-séance M7→M8) ──
+
+export interface FicheSection {
+  heading: string;
+  content: string;
+}
+
+export interface FicheTournage {
+  title: string;
+  emoji: string;
+  sections: FicheSection[];
+}
+
+interface SceneInput {
+  title: string;
+  description: string;
+  act: string;
+  content?: string;
+  sceneNumber?: number;
+}
+
+interface StoryboardScene {
+  sceneId: string;
+  title: string;
+  plans: { position: number; planType: string; description: string; intention?: string; imageUrl?: string }[];
+}
+
+interface ScenarioInput {
+  fullText?: string;
+}
+
+const PLAN_LABELS: Record<string, string> = {
+  "plan-large": "Plan large",
+  "plan-moyen": "Plan moyen",
+  "gros-plan": "Gros plan",
+  "plan-reaction": "Plan réaction",
+};
+
+export const ROLE_KEYS = ["realisateur", "cadreur", "scripte", "assistant", "son", "acteur"] as const;
+export type RoleKey = (typeof ROLE_KEYS)[number];
+
+export function buildFicheTournage(
+  role: RoleKey,
+  scenes: SceneInput[],
+  storyboardScenes: StoryboardScene[],
+  scenario: ScenarioInput | null
+): FicheTournage {
+  switch (role) {
+    case "realisateur":
+      return buildRealisateur(scenes, storyboardScenes, scenario);
+    case "cadreur":
+      return buildCadreur(storyboardScenes);
+    case "scripte":
+      return buildScripte(scenes);
+    case "assistant":
+      return buildAssistant(scenes);
+    case "son":
+      return buildSon(scenes, scenario);
+    case "acteur":
+      return buildActeur(scenes, scenario);
+  }
+}
+
+function buildRealisateur(scenes: SceneInput[], storyboard: StoryboardScene[], scenario: ScenarioInput | null): FicheTournage {
+  const sections: FicheSection[] = [];
+  if (scenario?.fullText) {
+    sections.push({ heading: "Résumé du scénario", content: scenario.fullText.slice(0, 500) + (scenario.fullText.length > 500 ? "…" : "") });
+  }
+  for (const scene of scenes) {
+    const sb = storyboard.find((s) => s.title === scene.title);
+    const plans = sb?.plans.map((p) => `  • ${PLAN_LABELS[p.planType] || p.planType} — ${p.description}`).join("\n") || "  (pas encore découpé)";
+    sections.push({
+      heading: `Scène ${scene.sceneNumber || ""} : ${scene.title}`,
+      content: `${scene.description}\n\nPlans prévus :\n${plans}`,
+    });
+  }
+  return { title: "Fiche Réalisateur", emoji: "🎬", sections };
+}
+
+function buildCadreur(storyboard: StoryboardScene[]): FicheTournage {
+  const sections: FicheSection[] = [];
+  for (const scene of storyboard) {
+    const lines = scene.plans.map((p) =>
+      `  ${p.position}. ${PLAN_LABELS[p.planType] || p.planType} — ${p.description}${p.intention ? ` (${p.intention})` : ""}`
+    ).join("\n");
+    sections.push({ heading: scene.title, content: lines || "(aucun plan)" });
+  }
+  return { title: "Fiche Cadreur", emoji: "📷", sections };
+}
+
+function buildScripte(scenes: SceneInput[]): FicheTournage {
+  const sections: FicheSection[] = scenes.map((s) => ({
+    heading: `Scène ${s.sceneNumber || ""} : ${s.title}`,
+    content: `Lieu : (à compléter)\nPersonnages : (à compléter)\nAccessoires : (à compléter)\nDescription : ${s.description}`,
+  }));
+  return { title: "Fiche Scripte", emoji: "📋", sections };
+}
+
+function buildAssistant(scenes: SceneInput[]): FicheTournage {
+  const sections: FicheSection[] = scenes.map((s, i) => ({
+    heading: `${i + 1}. Scène ${s.sceneNumber || ""} : ${s.title}`,
+    content: `Acte : ${s.act}\nDurée estimée : (à compléter)\nNotes : ${s.description}`,
+  }));
+  return { title: "Fiche Assistant réal", emoji: "📝", sections };
+}
+
+function buildSon(scenes: SceneInput[], scenario: ScenarioInput | null): FicheTournage {
+  const sections: FicheSection[] = [];
+  for (const scene of scenes) {
+    // Extract dialogue lines (lines starting with character names in CAPS or with —)
+    const content = scene.content || "";
+    const dialogueLines = content.split("\n").filter((l) => /^[A-ZÉÈÊÀÂÔÎÙ].*:/.test(l.trim()) || l.trim().startsWith("—")).join("\n");
+    sections.push({
+      heading: `Scène ${scene.sceneNumber || ""} : ${scene.title}`,
+      content: dialogueLines || "(pas de dialogues écrits)\nAmbiance : (à compléter)",
+    });
+  }
+  return { title: "Fiche Son", emoji: "🎙️", sections };
+}
+
+function buildActeur(scenes: SceneInput[], scenario: ScenarioInput | null): FicheTournage {
+  const sections: FicheSection[] = scenes.map((s) => ({
+    heading: `Scène ${s.sceneNumber || ""} : ${s.title}`,
+    content: `${s.description}\n\nTexte :\n${s.content || "(pas encore écrit)"}\n\nNotes d'interprétation : (à compléter)`,
+  }));
+  return { title: "Fiche Acteur", emoji: "🎭", sections };
+}

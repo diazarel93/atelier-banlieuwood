@@ -24,7 +24,7 @@ export interface EtsiWriterStateProps {
 export function EtsiWriterState({
   module10, sessionId, studentId, onDone,
 }: EtsiWriterStateProps) {
-  const [phase, setPhase] = useState<"intro" | "select3" | "narrow1" | "write">(
+  const [phase, setPhase] = useState<"intro" | "select3" | "narrow1" | "write" | "closing">(
     module10.etsiText ? "write" : "intro"
   );
   const [selected, setSelected] = useState<string[]>([]);
@@ -74,11 +74,11 @@ export function EtsiWriterState({
         body: JSON.stringify({ studentId, imageId: finalId, etsiText: text.trim(), helpUsed: helpCount > 0, qcmAnswers }),
       });
       setSuccess(true);
-      setTimeout(() => onDone(), 600);
+      setTimeout(() => setPhase("closing"), 1200);
     } catch { toast.error("Erreur d'envoi"); setSubmitting(false); }
   }
 
-  if (success) return <SuccessCheck />;
+  if (success && phase !== "closing") return <SuccessCheck />;
 
   async function handleHelp(type: string) {
     setHelpLoading(true);
@@ -205,6 +205,37 @@ export function EtsiWriterState({
                 Écrire sur cette image
               </button>
             </div>
+          </motion.div>
+        )}
+
+        {/* ── Phase 4: Closing — spark → fire metaphor ── */}
+        {phase === "closing" && (
+          <motion.div key="closing" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
+            className="w-full space-y-6 text-center py-4">
+            <motion.div
+              initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", delay: 0.2 }}
+              className="text-5xl">
+              🔥
+            </motion.div>
+            <div className="space-y-3">
+              <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                className="text-sm text-bw-text font-medium">
+                Une idée, c&apos;est une <strong className="text-bw-teal">étincelle</strong>.
+              </motion.p>
+              <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
+                className="text-sm text-bw-text font-medium">
+                Une histoire, c&apos;est quand l&apos;étincelle devient un <strong className="text-amber-400">feu</strong>.
+              </motion.p>
+              <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2 }}
+                className="text-xs text-bw-muted mt-4">
+                Ton &laquo;&nbsp;Et si...&nbsp;&raquo; n&apos;est pas encore une histoire complète. C&apos;est un début. Et c&apos;est exactement ce qu&apos;il faut.
+              </motion.p>
+            </div>
+            <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }}
+              whileTap={{ scale: 0.95 }} onClick={() => onDone()}
+              className="w-full py-3 rounded-xl bg-bw-teal text-white font-medium text-sm cursor-pointer hover:brightness-110">
+              Continuer
+            </motion.button>
           </motion.div>
         )}
 

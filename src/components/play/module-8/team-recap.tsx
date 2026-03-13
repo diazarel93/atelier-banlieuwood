@@ -9,6 +9,7 @@ interface TeamRecapProps {
 
 export function TeamRecap({ module8 }: TeamRecapProps) {
   const team = module8.team || [];
+  const formula = module8.formula || "F2";
 
   return (
     <motion.div
@@ -21,6 +22,11 @@ export function TeamRecap({ module8 }: TeamRecapProps) {
         <p className="text-sm text-white/50 mt-1">
           {team.length} membres prêts pour le tournage !
         </p>
+        {formula === "F3" && (
+          <p className="text-xs text-violet-400 mt-2">
+            Rotation : vous changerez de poste à mi-journée.
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-3 w-full">
