@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isValidUUID } from "@/lib/api-utils";
-import { ETSI_IMAGES, getEtsiImage } from "@/lib/module10-data";
+import { ETSI_IMAGES, getEtsiImage, generatePitchMiroir } from "@/lib/module10-data";
 import type { AdminClient } from "./types";
 
 // ── MODULE 10 handler — Et si... + Pitch ──
@@ -51,15 +51,16 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
     budgetStats: null,
   };
 
-  // ── SÉANCE 1: Et si... ──
+  // ── SÉANCE 1: Et si... (2 positions: workspace complet + idea bank) ──
   if (currentSeance === 1) {
-    // pos 0 = Image selection + "Et si..." writing (special component)
+    // pos 0 = Image selection + "Et si..." writing + QCMs intégrés (single workspace)
     if (currentIndex === 0) {
       // Student picks their own image from all 10 — return all images
       let etsiText: string | undefined;
       let chosenImage: typeof ETSI_IMAGES[0] | undefined;
       let helpUsed = false;
       let submitted = false;
+      let qcmAnswers: Record<string, string> = {};
 
       if (studentId) {
         // Check if student already submitted any etsi
@@ -77,6 +78,7 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
           helpUsed = etsi.help_used;
           submitted = true;
           chosenImage = getEtsiImage(etsi.image_id);
+          qcmAnswers = (etsi.qcm_answers as Record<string, string>) || {};
         }
       }
 
@@ -112,6 +114,7 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
           image: chosenImage || null,
           images: ETSI_IMAGES, // All 10 images for selection
           etsiText,
+          qcmAnswers,
           helpUsed,
           helpEnabled,
           submitted,
@@ -124,15 +127,8 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
       });
     }
 
-    // pos 1-5 = QCM questions (ton, personnage, déclencheur, durée, fin)
-    if (currentIndex >= 1 && currentIndex <= 5) {
-      return handleStandardWithModule10(req, session, sessionId, admin, sessionBase, connectedCount || 0, {
-        type: "qcm" as const,
-      });
-    }
-
-    // pos 6 = Idea bank (special component)
-    if (currentIndex === 6) {
+    // pos 1 = Idea bank (special component)
+    if (currentIndex === 1) {
       const { data: ideas } = await admin
         .from("module10_idea_bank")
         .select("id, text, votes, student_id")
@@ -353,18 +349,23 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
         }
       }
 
-      // Get student's "Et si..." for context
+      // Get student's "Et si..." + QCM answers for context + pitch miroir
       let etsiText: string | undefined;
+      let pitchMiroir: string | undefined;
       if (studentId) {
         const { data: etsi } = await admin
           .from("module10_etsi")
-          .select("etsi_text")
+          .select("etsi_text, qcm_answers")
           .eq("session_id", sessionId)
           .eq("student_id", studentId)
           .limit(1)
           .maybeSingle();
 
         etsiText = etsi?.etsi_text;
+        if (etsi?.etsi_text) {
+          const qcm = (etsi.qcm_answers as Record<string, string>) || {};
+          pitchMiroir = generatePitchMiroir(etsi.etsi_text, qcm);
+        }
       }
 
       const { count: pitchCount } = await admin
@@ -402,6 +403,7 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
           obstacle,
           pitchText,
           etsiText,
+          pitchMiroir,
           helpEnabled,
           submitted,
           submittedCount: pitchCount || 0,

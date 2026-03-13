@@ -74,12 +74,13 @@ export interface Module5Data {
 }
 
 export interface Module10Data {
-  type: "etsi" | "qcm" | "idea-bank" | "avatar" | "objectif" | "pitch" | "chrono" | "confrontation";
+  type: "etsi" | "idea-bank" | "avatar" | "objectif" | "pitch" | "chrono" | "confrontation";
   // Et si (seance 1)
   image?: { id: string; url: string; title: string; description: string } | null;
   etsiText?: string;
   helpUsed?: boolean;
   submitted?: boolean;
+  qcmAnswers?: Record<string, string>;
   ideaBankCount?: number;
   ideaBankItems?: { id: string; text: string; votes: number }[];
   // Pitch (seance 2)
@@ -88,6 +89,7 @@ export interface Module10Data {
   objectifReason?: string | null;
   obstacle?: string | null;
   pitchText?: string | null;
+  pitchMiroir?: string;
   chronoSeconds?: number | null;
   // Confrontation
   confrontation?: { pitchA: { text: string; prenom: string }; pitchB: { text: string; prenom: string } } | null;

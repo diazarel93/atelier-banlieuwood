@@ -29,7 +29,7 @@ export function useCockpitModuleFlags(session: Session) {
     const isM10Etsi = mod === 10 && seance === 1;
     const isM10Pitch = mod === 10 && seance === 2;
     const isM10Any = mod === 10;
-    const isM10SpecialPosition = isM10Any && !(isM10Etsi && sitIdx === 1);
+    const isM10SpecialPosition = isM10Any; // All M10 positions are special (QCMs now integrated in workspace)
     const isM2ECSpecial = isM2ECChecklist || isM2ECSceneBuilder;
     const isM2ECAny = mod === 2;
     const isM12Any = mod === 12;

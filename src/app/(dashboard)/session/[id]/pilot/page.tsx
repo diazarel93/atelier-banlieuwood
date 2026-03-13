@@ -482,8 +482,7 @@ function CockpitContent({
   // Helper: M10 activity label
   const getM10ActivityLabel = (type?: string) => {
     switch (type) {
-      case "etsi": return "Et si... — Image + ecriture";
-      case "qcm": return "QCM narratif";
+      case "etsi": return "Et si... — Image + ecriture + QCMs";
       case "idea-bank": return "Banque d'idees";
       case "avatar": return "Creation personnage";
       case "objectif": return "Objectif + Obstacle";
@@ -969,9 +968,9 @@ function CockpitContent({
   const showM2ECComparison = session.current_module === 2 && (session.current_seance || 1) === 3 && displayIndex === 0;
   const showM2ECSpecial = showM2ECChecklist || showM2ECSceneBuilder;
   // Display-level M10 flags (based on displayIndex for preview)
-  // Séance 1: pos 0 (etsi), pos 2 (idea-bank) are special; pos 1 (qcm) is standard
+  // Séance 1: pos 0 (etsi + QCMs intégrés), pos 1 (idea-bank) — all special
   // Séance 2: all positions are special
-  const showM10Special = isM10Any && !(isM10Etsi && displayIndex === 1);
+  const showM10Special = isM10Any;
   const showM13Standard = isM13Any && (session.current_situation_index || 0) >= 5;
   const showStandardQA = (isStandardQA || (isM2ECAny && !showM2ECSpecial && !showM2ECComparison) || (isM10Any && !showM10Special) || showM13Standard) && !isM12Any && !(isM13Any && !showM13Standard) && !isM6Any && !isM7Any && !isM8Any;
 
@@ -1643,8 +1642,7 @@ function CockpitContent({
                       {isM10Etsi ? "Et si..." : "Pitch"}
                     </span>
                     <span className="text-xs text-bw-muted ml-auto uppercase tracking-wider">
-                      {module10Data?.type === "etsi" ? "Image + écriture"
-                        : module10Data?.type === "qcm" ? "QCM narratif"
+                      {module10Data?.type === "etsi" ? "Image + écriture + QCMs"
                         : module10Data?.type === "idea-bank" ? "Banque d'idées"
                         : module10Data?.type === "avatar" ? "Création personnage"
                         : module10Data?.type === "objectif" ? "Objectif + Obstacle"

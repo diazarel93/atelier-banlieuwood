@@ -392,6 +392,94 @@ export function isValidObstacle(key: string): boolean {
 
 export const CHRONO_DURATION = 30; // seconds
 
+// ── Et si... QCMs (integrated in the writing workspace) ──
+
+export interface EtsiQcm {
+  key: string;
+  question: string;
+  options: { key: string; label: string }[];
+}
+
+export const ETSI_QCMS: EtsiQcm[] = [
+  {
+    key: "tone",
+    question: "Quel ton pour ton histoire ?",
+    options: [
+      { key: "action", label: "De l'action et du suspense" },
+      { key: "emotion", label: "De l'émotion et des sentiments" },
+      { key: "mystere", label: "Du mystère et des secrets" },
+      { key: "humour", label: "De l'humour et de la surprise" },
+    ],
+  },
+  {
+    key: "character",
+    question: "Quel type de personnage ?",
+    options: [
+      { key: "solitaire", label: "Un solitaire" },
+      { key: "leader", label: "Un leader" },
+      { key: "outsider", label: "Un outsider" },
+      { key: "ordinaire", label: "Quelqu'un d'ordinaire" },
+    ],
+  },
+  {
+    key: "trigger",
+    question: "Ce qui change tout ?",
+    options: [
+      { key: "decouverte", label: "Une découverte inattendue" },
+      { key: "disparition", label: "Une disparition" },
+      { key: "rencontre", label: "Une rencontre" },
+      { key: "trahison", label: "Une trahison" },
+    ],
+  },
+  {
+    key: "ending",
+    question: "Comment ça finit ?",
+    options: [
+      { key: "victoire", label: "Une victoire" },
+      { key: "sacrifice", label: "Un sacrifice" },
+      { key: "surprise", label: "Un retournement" },
+      { key: "ouvert", label: "Une fin ouverte" },
+    ],
+  },
+];
+
+// ── Pitch miroir (deterministic template, intentionally imperfect) ──
+
+const TONE_LABELS: Record<string, string> = {
+  action: "pleine d'action",
+  emotion: "émouvante",
+  mystere: "mystérieuse",
+  humour: "drôle",
+};
+const TRIGGER_LABELS: Record<string, string> = {
+  decouverte: "une découverte inattendue",
+  disparition: "une disparition",
+  rencontre: "une rencontre",
+  trahison: "une trahison",
+};
+const ENDING_LABELS: Record<string, string> = {
+  victoire: "une victoire",
+  sacrifice: "un sacrifice",
+  surprise: "un retournement",
+  ouvert: "une question sans réponse",
+};
+
+export function generatePitchMiroir(
+  etsiText: string,
+  qcmAnswers: Record<string, string>,
+): string {
+  const tone = TONE_LABELS[qcmAnswers.tone] || "";
+  const trigger = TRIGGER_LABELS[qcmAnswers.trigger] || "quelque chose d'inattendu";
+  const ending = ENDING_LABELS[qcmAnswers.ending] || "une fin inattendue";
+
+  const parts: string[] = [etsiText.replace(/\.+$/, "") + "..."];
+  if (tone) parts.push(`C'est une histoire ${tone}.`);
+  parts.push(`Tout bascule à cause de ${trigger}.`);
+  parts.push(`À la fin, il y a ${ending}.`);
+
+  return parts.join(" ");
+}
+
 // ── Help types ──
 
 export const HELP_TYPES = ["example", "reformulate", "starter"] as const;

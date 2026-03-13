@@ -15,7 +15,7 @@ export async function POST(
   const { id: sessionId } = await params;
   const parsed = await safeJson(req);
   if ("error" in parsed) return parsed.error;
-  const { studentId, imageId, etsiText, helpUsed } = parsed.data;
+  const { studentId, imageId, etsiText, helpUsed, qcmAnswers } = parsed.data;
 
   if (!studentId || !imageId || !etsiText) {
     return NextResponse.json(
@@ -74,6 +74,11 @@ export async function POST(
     );
   }
 
+  // Validate qcmAnswers if provided (optional Record<string, string>)
+  const validQcm = qcmAnswers && typeof qcmAnswers === "object" && !Array.isArray(qcmAnswers)
+    ? Object.fromEntries(Object.entries(qcmAnswers as Record<string, unknown>).filter(([, v]) => typeof v === "string" && v.length > 0))
+    : {};
+
   // Upsert etsi response (one per student per session)
   const { data, error } = await admin
     .from("module10_etsi")
@@ -84,6 +89,7 @@ export async function POST(
         image_id: imageId,
         etsi_text: etsiText.trim(),
         help_used: !!helpUsed,
+        qcm_answers: validQcm,
       },
       { onConflict: "session_id,student_id,image_id" }
     )

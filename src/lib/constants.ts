@@ -181,7 +181,7 @@ export const MODULE_SEANCE_SITUATIONS: Record<number, Record<number, number>> = 
   3: { 1: 8, 2: 8, 3: 5 },          // Le Héros (8), Le Conflit (8), Le Sens (5)
   4: { 1: 8 },                       // Vis ma vie (8 situations, 1 séance)
   9: { 1: 8, 2: 5, 3: 8, 4: 8 },  // Old cinema (was Module 2): Le Cinéma (8), Les Choix/budget (5), Les Imprévus (8), Le Plan (8)
-  10: { 1: 7, 2: 5 },             // Et si... (1), Ton QCM (2), Personnage QCM (3), Déclencheur QCM (4), Durée QCM (5), Fin QCM (6), Idea-bank (7)
+  10: { 1: 2, 2: 5 },             // Et si... complet (image + écriture + QCMs intégrés) (1), Idea-bank (2)
   11: { 1: 6, 2: 6, 3: 6, 4: 6 }, // Ciné-Débat: L'Art de Raconter (6), Émotions (6), Héros (6), Coulisses (6)
   12: { 1: 8 }, // Construction Collective: 8 manches de vote
   13: { 1: 8 }, // Post-prod: 8 étapes de finalisation

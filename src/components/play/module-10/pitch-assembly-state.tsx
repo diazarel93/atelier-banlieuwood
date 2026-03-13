@@ -101,6 +101,17 @@ export function PitchAssemblyState({
       <span className="text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-bw-amber/20 text-bw-amber">
         Raconte l&apos;histoire
       </span>
+      {/* Pitch miroir — deterministic draft from "Et si..." + QCMs */}
+      {module10.pitchMiroir && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="w-full p-3 rounded-xl bg-bw-teal/10 border border-bw-teal/20">
+          <p className="text-xs text-bw-teal font-medium mb-1">Ton &laquo; Et si... &raquo; en version pitch :</p>
+          <p className="text-sm text-bw-text/80 italic leading-relaxed">{module10.pitchMiroir}</p>
+        </motion.div>
+      )}
       {/* Context badges — show what the student chose at previous steps */}
       <div className="w-full space-y-2">
         {perso && (

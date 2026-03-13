@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { SuccessCheck } from "@/components/play/success-check";
-import { ETSI_IMAGES } from "@/lib/module10-data";
+import { ETSI_IMAGES, ETSI_QCMS } from "@/lib/module10-data";
 import type { Module10Data } from "@/hooks/use-session-polling";
 
 const CINEMA_EXAMPLES = [
@@ -43,6 +43,7 @@ export function EtsiWriterState({
     return arr;
   }, [studentId]);
   const [text, setText] = useState(module10.etsiText || "");
+  const [qcmAnswers, setQcmAnswers] = useState<Record<string, string>>(module10.qcmAnswers || {});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [helpLoading, setHelpLoading] = useState(false);
@@ -59,6 +60,10 @@ export function EtsiWriterState({
     });
   }
 
+  function setQcm(key: string, value: string) {
+    setQcmAnswers((prev) => ({ ...prev, [key]: value }));
+  }
+
   async function handleSubmit() {
     if (!text.trim() || text.trim().length < 5 || !finalId) return;
     setSubmitting(true);
@@ -66,7 +71,7 @@ export function EtsiWriterState({
       await fetch(`/api/sessions/${sessionId}/etsi`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, imageId: finalId, etsiText: text.trim(), helpUsed: helpCount > 0 }),
+        body: JSON.stringify({ studentId, imageId: finalId, etsiText: text.trim(), helpUsed: helpCount > 0, qcmAnswers }),
       });
       setSuccess(true);
       setTimeout(() => onDone(), 600);
@@ -245,6 +250,36 @@ export function EtsiWriterState({
                 </motion.div>
               )}
             </AnimatePresence>
+            {/* ── QCMs intégrés (optionnels) ── */}
+            {text.trim().length >= 5 && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                className="w-full space-y-3 pt-2 border-t border-white/[0.06]">
+                <p className="text-xs text-bw-muted text-center">
+                  Affine ton idée <span className="text-bw-teal">(optionnel)</span>
+                </p>
+                {ETSI_QCMS.map((qcm) => (
+                  <div key={qcm.key} className="space-y-1.5">
+                    <p className="text-xs text-bw-text font-medium">{qcm.question}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {qcm.options.map((opt) => {
+                        const isSelected = qcmAnswers[qcm.key] === opt.key;
+                        return (
+                          <button key={opt.key}
+                            onClick={() => setQcm(qcm.key, isSelected ? "" : opt.key)}
+                            className={`px-2.5 py-1.5 text-xs rounded-lg border transition-all cursor-pointer ${
+                              isSelected
+                                ? "bg-bw-teal/15 border-bw-teal/40 text-bw-teal font-medium"
+                                : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:border-white/20"
+                            }`}>
+                            {opt.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            )}
             <div className="flex gap-2">
               {!module10.etsiText && (
                 <button onClick={() => setPhase("narrow1")}
@@ -254,7 +289,7 @@ export function EtsiWriterState({
               )}
               <button onClick={handleSubmit} disabled={submitting || text.trim().length < 5}
                 className="flex-1 py-3 rounded-xl bg-gradient-to-r from-bw-teal to-bw-teal text-white font-medium text-sm disabled:opacity-40 transition-opacity cursor-pointer">
-                {submitting ? "Envoi..." : "Envoyer mon « Et si... »"}
+                {submitting ? "Envoi..." : "J\u2019envoie mon idée"}
               </button>
             </div>
           </motion.div>
