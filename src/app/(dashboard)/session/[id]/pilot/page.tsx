@@ -15,7 +15,7 @@ import { useStuckDetection, countStuckLevels } from "@/hooks/use-stuck-detection
 import { useOnlineStatus } from "@/hooks/use-online-status";
 import { logAudit } from "@/lib/audit-log";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { CATEGORY_COLORS, PRODUCTION_CATEGORIES, getSeanceMax } from "@/lib/constants";
+import { CATEGORY_COLORS, getSeanceMax } from "@/lib/constants";
 import dynamic from "next/dynamic";
 import { getModuleGuide, getQuestionGuide, type QuestionGuide } from "@/lib/guide-data";
 
@@ -26,14 +26,13 @@ const QRCodeSVG = dynamic(
 import { MODULES, PHASES, getModuleByDb, getPhaseForModule } from "@/lib/modules-data";
 
 // Cockpit components
-import { InlineActions, GenericInlineActions, TeacherCommentBadge } from "@/components/pilot/response-actions";
+import { InlineActions, TeacherCommentBadge } from "@/components/pilot/response-actions";
 import { type ResponseCardResponse } from "@/components/pilot/response-card";
 import { InlineReformulation } from "@/components/pilot/inline-reformulation";
 import { QuickPhrases } from "@/components/pilot/quick-phrases";
 import { ChoicesHistory, type CollectiveChoice } from "@/components/pilot/choices-history";
 import type { StudentState } from "@/components/pilot/pulse-ring";
-import { CONTENT_CATALOG, EMOTIONS, SCENE_ELEMENTS, TIER_COLORS, TIER_LABELS, MAX_SLOTS, MAX_TOKENS, getElement } from "@/lib/module5-data";
-import { DiceBearAvatarMini } from "@/components/avatar-dicebear";
+
 import { useSound } from "@/hooks/use-sound";
 
 // Extracted cockpit sections
@@ -43,7 +42,10 @@ import { Module13Cockpit } from "@/components/pilot/module13-cockpit";
 import { Module6Cockpit } from "@/components/pilot/module6-cockpit";
 import { Module7Cockpit } from "@/components/pilot/module7-cockpit";
 import { Module8Cockpit } from "@/components/pilot/module8-cockpit";
-import { Module5EmotionDistribution } from "@/components/pilot/module5-emotion-distribution";
+import { Module1Cockpit } from "@/components/pilot/module1-cockpit";
+import { Module9BudgetCards } from "@/components/pilot/module9-budget-cards";
+import { Module10Cockpit } from "@/components/pilot/module10-cockpit";
+import { Module2ECCockpit } from "@/components/pilot/module2ec-cockpit";
 import { VotingResults } from "@/components/pilot/voting-results";
 import { ResponseStreamSection } from "@/components/pilot/response-stream-section";
 import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
@@ -1436,102 +1438,15 @@ function CockpitContent({
           {/* ── MODULE-SPECIFIC CONTENT ── */}
           <>
 
-          {/* M1 Positioning: option distribution bars only */}
-          {isM1Positioning && module1Data?.type === "positioning" && !isPreviewing && module1Data.questions?.[currentQIndex]?.options && (() => {
-            const OPTION_COLORS: Record<string, { bg: string; bgLight: string }> = {
-              a: { bg: "#7EA7F5", bgLight: "#EEF3FF" },
-              b: { bg: "#F3A765", bgLight: "#FFF3E8" },
-              c: { bg: "#6EC6B0", bgLight: "#E9F8F4" },
-              d: { bg: "#E78BB4", bgLight: "#FDECF4" },
-            };
-            const allCounts = module1Data.questions[currentQIndex].options?.map(o => module1Data.optionDistribution?.[o.key] || 0) || [];
-            const maxCount = Math.max(...allCounts, 0);
-            return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {module1Data.questions[currentQIndex].options?.map((opt) => {
-                const count = module1Data.optionDistribution?.[opt.key] || 0;
-                const total = activeStudents.length;
-                const pct = total > 0 ? Math.round((count / total) * 100) : 0;
-                const colors = OPTION_COLORS[opt.key] || OPTION_COLORS.a;
-                const hasVotes = count > 0;
-                const isDominant = count > 0 && count === maxCount && allCounts.filter(c => c === maxCount).length === 1;
-                return (
-                  <motion.div
-                    key={opt.key}
-                    animate={isDominant ? { scale: [1, 1.02, 1] } : { scale: 1 }}
-                    transition={isDominant ? { repeat: Infinity, duration: 2.5, ease: "easeInOut" } : undefined}
-                    className="rounded-[18px] transition-all duration-300 relative overflow-hidden flex flex-col justify-between"
-                    style={{
-                      padding: "20px 22px",
-                      minHeight: 152,
-                      background: hasVotes ? colors.bg : colors.bgLight,
-                      border: hasVotes ? "none" : `1px solid ${colors.bg}20`,
-                      boxShadow: isDominant
-                        ? `0 8px 32px ${colors.bg}45, 0 4px 12px ${colors.bg}20`
-                        : hasVotes
-                          ? `0 6px 24px ${colors.bg}35, 0 2px 6px ${colors.bg}15`
-                          : "0 2px 8px rgba(61,43,16,0.04)",
-                    }}
-                  >
-                    <div className="flex items-start gap-3">
-                      {/* Badge */}
-                      <span
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-[14px] font-bold flex-shrink-0"
-                        style={{
-                          backgroundColor: hasVotes ? "rgba(255,255,255,0.25)" : colors.bg,
-                          color: "#fff",
-                        }}
-                      >
-                        {opt.key.toUpperCase()}
-                      </span>
-                      <span className={`text-[16px] font-medium leading-snug flex-1 min-w-0 ${hasVotes ? "text-white" : "text-[#2C2C2C]"}`}>{opt.label}</span>
-                    </div>
-                    <div className="mt-auto pt-3 flex items-end gap-4">
-                      {/* Percentage hero — 36px/800 */}
-                      <span
-                        className="text-[40px] font-extrabold tabular-nums leading-none flex-shrink-0"
-                        style={{ color: hasVotes ? "#fff" : `${colors.bg}50` }}
-                      >
-                        {pct}%
-                      </span>
-                      <div className="flex-1 space-y-1.5">
-                        <div className={`h-3 rounded-full overflow-hidden ${hasVotes ? "bg-white/20" : "bg-black/[0.04]"}`}>
-                          <motion.div
-                            className="h-full rounded-full"
-                            style={{ backgroundColor: hasVotes ? "#fff" : colors.bg }}
-                            animate={{ width: `${pct}%` }}
-                            transition={{ duration: 0.6, ease: "easeOut" }}
-                          />
-                        </div>
-                        <span className={`text-[12px] tabular-nums font-medium ${hasVotes ? "text-white/80" : "text-[#7A7A7A]"}`}>{count} / {total} eleves</span>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-            );
-          })()}
-
-          {/* M1 Image: image display only */}
-          {isM1Image && module1Data?.type === "image" && (
-            <>
-              {module1Data.image ? (
-                <div className="space-y-2">
-                  <div className="rounded-xl overflow-hidden border border-black/[0.06] bg-bw-surface">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={module1Data.image.url} alt={module1Data.image.title}
-                      className="w-full aspect-[16/10] object-cover" />
-                  </div>
-                  <p className="text-xs text-bw-muted text-center">{module1Data.image.title}</p>
-                </div>
-              ) : (
-                <div className="rounded-xl bg-bw-surface border border-black/[0.06] aspect-[16/10] flex items-center justify-center">
-                  <p className="text-sm text-bw-muted">Image non disponible</p>
-                </div>
-              )}
-            </>
-          )}
+          {/* M1 Positioning + Image (extracted) */}
+          <Module1Cockpit
+            isPositioning={isM1Positioning}
+            isImage={isM1Image}
+            module1Data={module1Data}
+            currentQIndex={currentQIndex}
+            activeStudentCount={activeStudents.length}
+            isPreviewing={isPreviewing}
+          />
 
           {/* M1 Notebook: responses rendered by ResponseStreamSection below */}
 
@@ -1544,257 +1459,41 @@ function CockpitContent({
                 budgetAverages={budgetAverages}
               />
 
-              {/* Individual budgets */}
-              {budgetData && budgetData.budgets.length > 0 && (
-                <div className="space-y-2">
-                  {budgetData.budgets.filter((b) => !cardSearch || (b.students?.display_name || "").toLowerCase().includes(cardSearch.toLowerCase())).map((b) => (
-                    <div key={b.id} className="bg-bw-surface rounded-xl p-3 border border-black/[0.06] space-y-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base">{b.students?.avatar}</span>
-                        <span className="text-sm font-medium text-bw-heading">{b.students?.display_name}</span>
-                        <span className="ml-auto text-xs text-bw-teal font-medium tabular-nums">
-                          {b.credits_remaining} cr.
-                        </span>
-                      </div>
-                      <div className="flex gap-1">
-                        {PRODUCTION_CATEGORIES.map((cat) => {
-                          const cost = b.choices?.[cat.key] || 0;
-                          const opt = cat.options.find((o) => o.cost === cost) || cat.options[0];
-                          return (
-                            <div key={cat.key} className="flex-1 text-center">
-                              <div className="h-1.5 rounded-full mb-1"
-                                style={{ backgroundColor: cost > 0 ? cat.color : "rgba(0,0,0,0.05)", opacity: cost > 0 ? 0.7 : 1 }} />
-                              <span className="text-xs block" style={{ color: cat.color }}>{cat.label}</span>
-                              <span className="text-xs text-bw-muted block">{opt.label}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      {/* Inline actions — uniform with all modules */}
-                      <GenericInlineActions
-                        entityId={b.id}
-                        studentId={b.student_id}
-                        studentName={b.students?.display_name || "Élève"}
-                        onBroadcast={(msg) => { updateSession.mutate({ broadcast_message: msg, broadcast_at: new Date().toISOString() }); toast.success("Envoyé"); }}
-                        onWarn={(sid) => warnStudent.mutate(sid)}
-                        isWarnPending={warnStudent.isPending}
-                        warnings={studentWarnings[b.student_id] || 0}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {budgetSubmitted === 0 && session.status === "responding" && (
-                <div className="bg-bw-surface rounded-xl border border-black/[0.06] p-6 text-center space-y-3">
-                  <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
-                    className="text-3xl">💰</motion.div>
-                  <div>
-                    <p className="text-lg font-bold tabular-nums text-bw-teal">{budgetSubmitted}/{activeStudents.length}</p>
-                    <p className="text-xs text-bw-muted mt-0.5">budgets soumis</p>
-                  </div>
-                  <p className="text-xs text-bw-muted/70">Les choix budgetaires apparaitront ici.</p>
-                  <div className="flex items-center justify-center gap-2">
-                    <button onClick={openBroadcast}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
-                      📢 Message classe
-                    </button>
-                  </div>
-                </div>
-              )}
+              {/* Individual budgets + empty state (extracted) */}
+              <Module9BudgetCards
+                budgets={budgetData?.budgets || []}
+                cardSearch={cardSearch}
+                activeStudentCount={activeStudents.length}
+                budgetSubmitted={budgetSubmitted}
+                sessionStatus={session.status}
+                studentWarnings={studentWarnings}
+                onBroadcast={(msg) => { updateSession.mutate({ broadcast_message: msg, broadcast_at: new Date().toISOString() }); toast.success("Envoyé"); }}
+                onWarn={(sid) => warnStudent.mutate(sid)}
+                isWarnPending={warnStudent.isPending}
+                onOpenBroadcast={openBroadcast}
+              />
             </>
           )}
 
-          {/* ── MODULE 10: Et si... + Pitch overview ── */}
+          {/* ── MODULE 10: Et si... + Pitch (extracted) ── */}
           {showM10Special && (
-            <>
-              {/* Activity context */}
-              {!isPreviewing && (
-                <div className="glass-card p-4 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">{isM10Etsi ? "✨" : "🎤"}</span>
-                    <span className="text-sm font-semibold text-bw-heading">
-                      {isM10Etsi ? "Et si..." : "Pitch"}
-                    </span>
-                    <span className="text-xs text-bw-muted ml-auto uppercase tracking-wider">
-                      {module10Data?.type === "etsi" ? "Image + écriture + QCMs"
-                        : module10Data?.type === "idea-bank" ? "Banque d'idées"
-                        : module10Data?.type === "avatar" ? "Création personnage"
-                        : module10Data?.type === "objectif" ? "Objectif + Obstacle"
-                        : module10Data?.type === "pitch" ? "Assemblage pitch"
-                        : module10Data?.type === "chrono" ? "Test chrono 30s"
-                        : module10Data?.type === "confrontation" ? "Confrontation"
-                        : ""}
-                    </span>
-                  </div>
-                  <p className="text-xs text-bw-muted leading-relaxed">
-                    {module10Data?.type === "etsi"
-                      ? "Les élèves observent une image et écrivent leur « Et si... »."
-                      : module10Data?.type === "idea-bank"
-                      ? "Les élèves partagent leur meilleure idée « Et si... » et votent pour la plus inspirante."
-                      : module10Data?.type === "avatar"
-                      ? "Les élèves construisent l'identité visuelle de leur personnage : look, prénom, trait de caractère."
-                      : module10Data?.type === "objectif"
-                      ? "Les élèves choisissent ce que leur personnage VEUT (objectif) et ce qui l'en EMPÊCHE (obstacle). C'est le moteur du conflit."
-                      : module10Data?.type === "pitch"
-                      ? "Les élèves écrivent un vrai récit (min 80 car.) à partir de leur personnage, objectif et obstacle. Pas de template — ils racontent l'histoire."
-                      : module10Data?.type === "chrono"
-                      ? "Les élèves lisent leur pitch à voix haute en 30 secondes. Exercice d'oral et de concision."
-                      : module10Data?.type === "confrontation"
-                      ? "Deux pitchs sont projetés. La classe écoute et vote pour celui qui donne le plus envie de voir le film."
-                      : ""}
-                  </p>
-                </div>
-              )}
-
-              {/* Et si... Image — shown to students, visible in dashboard */}
-              {module10Data?.type === "etsi" && module10Data.image && (
-                <div className="rounded-xl overflow-hidden border border-bw-teal/20">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={module10Data.image.url}
-                    alt={module10Data.image.title}
-                    className="w-full h-auto max-h-48 object-cover"
-                  />
-                  <div className="bg-bw-elevated px-3 py-2 border-t border-black/[0.06]">
-                    <p className="text-xs font-medium text-bw-teal">{module10Data.image.title}</p>
-                    <p className="text-xs text-bw-muted mt-0.5 line-clamp-2">{module10Data.image.description}</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Pitch — show personnage card if available */}
-              {module10Data?.personnage && (module10Data.type === "objectif" || module10Data.type === "pitch" || module10Data.type === "chrono") && (
-                <div className="bg-bw-elevated rounded-xl p-3 border border-black/[0.06] flex items-center gap-3">
-                  <DiceBearAvatarMini options={module10Data.personnage.avatar || {}} size={40} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-bw-heading truncate">{module10Data.personnage.prenom}</p>
-                    <p className="text-xs text-bw-muted">{module10Data.personnage.trait}</p>
-                  </div>
-                  {module10Data.objectif && (
-                    <div className="text-right">
-                      <p className="text-xs text-bw-muted">Objectif</p>
-                      <p className="text-xs text-bw-teal truncate max-w-[120px]">{module10Data.objectif}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Confrontation — pitch picker + show selected pitchs */}
-              {module10Data?.type === "confrontation" && (
-                <>
-                  {/* Selected pitchs display */}
-                  {module10Data.confrontation && (
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="bg-bw-teal/10 rounded-xl p-3 border border-bw-teal/20">
-                        <p className="text-xs text-bw-teal font-bold uppercase mb-1">Pitch A — {module10Data.confrontation.pitchA.prenom}</p>
-                        <p className="text-xs text-bw-text line-clamp-3">{module10Data.confrontation.pitchA.text}</p>
-                      </div>
-                      <div className="bg-bw-danger/10 rounded-xl p-3 border border-bw-danger/20">
-                        <p className="text-xs text-bw-danger font-bold uppercase mb-1">Pitch B — {module10Data.confrontation.pitchB.prenom}</p>
-                        <p className="text-xs text-bw-text line-clamp-3">{module10Data.confrontation.pitchB.text}</p>
-                      </div>
-                    </div>
-                  )}
-                  {/* Pitch picker for teacher */}
-                  {module10Data.pitchList && module10Data.pitchList.length >= 2 && (
-                    <div className="bg-bw-surface rounded-xl p-3 border border-black/[0.06] space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-bw-muted uppercase font-semibold tracking-wider">Choisir les pitchs à confronter</span>
-                        <span className="text-xs text-bw-muted">{selectedPitchIds.length}/2</span>
-                      </div>
-                      {module10Data.pitchList.map((p) => {
-                        const isSelected = selectedPitchIds.includes(p.studentId);
-                        const idx = selectedPitchIds.indexOf(p.studentId);
-                        return (
-                          <button key={p.studentId}
-                            onClick={() => setSelectedPitchIds((prev) => {
-                              if (isSelected) return prev.filter((id) => id !== p.studentId);
-                              if (prev.length >= 2) return [prev[1], p.studentId];
-                              return [...prev, p.studentId];
-                            })}
-                            className={`w-full text-left p-2 rounded-lg border text-xs transition-colors cursor-pointer ${
-                              isSelected
-                                ? idx === 0 ? "bg-bw-teal/10 border-bw-teal/30 text-bw-teal" : "bg-bw-danger/10 border-bw-danger/30 text-bw-danger"
-                                : "bg-bw-bg border-black/[0.06] text-bw-muted hover:border-bw-teal/20"
-                            }`}>
-                            <span className="font-medium">{isSelected ? (idx === 0 ? "A" : "B") + " — " : ""}{p.prenom}</span>
-                            <span className="block text-xs text-bw-muted mt-0.5 line-clamp-1">{p.text}</span>
-                          </button>
-                        );
-                      })}
-                      {selectedPitchIds.length === 2 && (
-                        <button
-                          onClick={async () => {
-                            try {
-                              const res = await fetch(`/api/sessions/${sessionId}/situation?pitchA=${selectedPitchIds[0]}&pitchB=${selectedPitchIds[1]}`);
-                              if (res.ok) {
-                                const data = await res.json();
-                                queryClient.setQueryData(
-                                  ["pilot-situation", sessionId, session.current_module, session.current_seance, session.current_situation_index],
-                                  data
-                                );
-                                toast.success("Duel mis à jour");
-                              }
-                            } catch { toast.error("Erreur"); }
-                          }}
-                          className="w-full py-2 rounded-lg bg-bw-teal text-white text-xs font-medium cursor-pointer hover:brightness-110 transition-all">
-                          Lancer le duel
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </>
-              )}
-
-              {/* Idea bank items */}
-              {module10Data?.type === "idea-bank" && module10Data.ideaBankItems && module10Data.ideaBankItems.length > 0 && (
-                <div className="bg-bw-surface rounded-xl p-3 border border-black/[0.06] space-y-1.5">
-                  <p className="text-xs text-bw-muted uppercase font-semibold tracking-wider">💡 Banque d&apos;idées</p>
-                  {module10Data.ideaBankItems.slice(0, 5).map((item) => (
-                    <div key={item.id} className="flex items-center gap-2 text-xs">
-                      <span className="text-bw-teal font-medium tabular-nums">{item.votes}♥</span>
-                      <span className="text-bw-text truncate">{item.text}</span>
-                    </div>
-                  ))}
-                  {module10Data.ideaBankItems.length > 5 && (
-                    <p className="text-xs text-bw-muted">+{module10Data.ideaBankItems.length - 5} autres</p>
-                  )}
-                </div>
-              )}
-
-              {/* All submissions list (facilitator view for M10 special positions) */}
-              {module10Data?.allSubmissions && module10Data.allSubmissions.length > 0 && (
-                <div className="space-y-1.5">
-                  {module10Data.allSubmissions.filter((sub) => !cardSearch || (sub.studentName || "").toLowerCase().includes(cardSearch.toLowerCase()) || (sub.text || "").toLowerCase().includes(cardSearch.toLowerCase())).map((sub, i) => (
-                    <motion.div key={sub.studentId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.03 }}
-                      className="bg-bw-surface rounded-xl p-3 border border-black/[0.06] space-y-2">
-                      <div className="flex items-start gap-2">
-                        {sub.avatar && (
-                          <DiceBearAvatarMini options={sub.avatar} size={28} />
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <span className="text-xs font-medium text-bw-text">{sub.studentName}</span>
-                          <p className="text-sm text-bw-heading leading-snug mt-0.5 whitespace-pre-wrap">{sub.text}</p>
-                        </div>
-                      </div>
-                      {/* Inline actions — uniform with all modules */}
-                      <GenericInlineActions
-                        entityId={sub.studentId}
-                        studentId={sub.studentId}
-                        studentName={sub.studentName}
-                        onBroadcast={(msg) => { updateSession.mutate({ broadcast_message: msg, broadcast_at: new Date().toISOString() }); toast.success("Envoyé"); }}
-                        onWarn={(sid) => warnStudent.mutate(sid)}
-                        isWarnPending={warnStudent.isPending}
-                        warnings={studentWarnings[sub.studentId] || 0}
-                      />
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-
-            </>
+            <Module10Cockpit
+              isEtsi={isM10Etsi}
+              isPitch={isM10Pitch}
+              module10Data={module10Data}
+              isPreviewing={isPreviewing}
+              cardSearch={cardSearch}
+              selectedPitchIds={selectedPitchIds}
+              setSelectedPitchIds={setSelectedPitchIds}
+              sessionId={sessionId}
+              currentModule={session.current_module}
+              currentSeance={session.current_seance || 1}
+              currentSituationIndex={session.current_situation_index || 0}
+              studentWarnings={studentWarnings}
+              onBroadcast={(msg) => { updateSession.mutate({ broadcast_message: msg, broadcast_at: new Date().toISOString() }); toast.success("Envoyé"); }}
+              onWarn={(sid) => warnStudent.mutate(sid)}
+              isWarnPending={warnStudent.isPending}
+            />
           )}
 
           {/* ── MODULE 12: Construction Collective cockpit ── */}
@@ -1842,295 +1541,26 @@ function CockpitContent({
             />
           )}
 
-          {/* ── MODULE 2 EC: Checklist cockpit ── */}
-          {showM2ECChecklist && (
-            <>
-              {/* What students are doing */}
-              {!isPreviewing && (
-                <div className="glass-card !border-bw-pink/20 p-4 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <div className="led led-writing" style={{ background: "#EC4899", boxShadow: "0 0 8px rgba(236,72,153,0.5)" }} />
-                    <span className="text-sm font-semibold text-bw-pink">Étape 1 — Checklist</span>
-                  </div>
-                  <p className="text-xs text-bw-muted leading-relaxed">
-                    Les élèves choisissent <span className="text-bw-heading font-medium">3 contenus minimum</span> parmi ces 20 oeuvres,
-                    puis sélectionnent <span className="text-bw-heading font-medium">celui qui les touche le plus</span>.
-                  </p>
-                </div>
-              )}
-
-              {/* Top items when available */}
-              {module5Data?.topItems && module5Data.topItems.length > 0 && (
-                <div className="bg-bw-surface rounded-xl p-4 border border-black/[0.06] space-y-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Top contenus choisis</span>
-                  {module5Data.topItems.map((item, i) => {
-                    const catalog = CONTENT_CATALOG.find(c => c.key === item.key);
-                    const maxCount = module5Data.topItems![0].count;
-                    const pct = maxCount > 0 ? Math.round((item.count / maxCount) * 100) : 0;
-                    return (
-                      <motion.div key={item.key} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.05 }} className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-base w-6 text-center">{catalog?.emoji || "🎬"}</span>
-                          <span className="text-sm text-bw-heading flex-1 font-medium">{catalog?.label || item.key}</span>
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-bw-pink/10 text-bw-pink font-bold tabular-nums">{item.count} vote{item.count > 1 ? "s" : ""}</span>
-                        </div>
-                        <div className="h-1.5 bg-bw-bg rounded-full overflow-hidden ml-8">
-                          <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }}
-                            transition={{ duration: 0.4, delay: i * 0.05 }}
-                            className="h-full bg-bw-pink/60 rounded-full" />
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Waiting state when no data yet */}
-              {(!module5Data || module5Data.type !== "checklist") && session.status === "responding" && (
-                <div className="bg-bw-surface rounded-xl border border-black/[0.06] p-6 text-center space-y-3">
-                  <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
-                    className="text-2xl">📋</motion.div>
-                  <div>
-                    <p className="text-lg font-bold tabular-nums text-bw-teal">{module5Data?.submittedCount || 0}/{activeStudents.length}</p>
-                    <p className="text-xs text-bw-muted mt-0.5">checklists soumises</p>
-                  </div>
-                  <p className="text-xs text-bw-muted/70">Les choix des eleves apparaitront ici.</p>
-                  <div className="flex items-center justify-center gap-2">
-                    <button onClick={openBroadcast}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
-                      📢 Message classe
-                    </button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-
-          {/* ── MODULE 2 EC: Scene Builder cockpit ── */}
-          {showM2ECSceneBuilder && (
-            <>
-              {/* What students are doing — hidden when preview guide shows same info */}
-              {!isPreviewing && (
-                <div className="glass-card !border-bw-pink/20 p-4 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <div className="led led-writing" style={{ background: "#EC4899", boxShadow: "0 0 8px rgba(236,72,153,0.5)" }} />
-                    <span className="text-sm font-semibold text-bw-pink">Étape 2 — Construction de scène</span>
-                  </div>
-                  <p className="text-xs text-bw-muted leading-relaxed">
-                    Chaque élève construit une scène autour de <span className="text-bw-heading font-medium">l'émotion qu'il a choisie</span>.
-                    Il rédige <span className="text-bw-heading font-medium">intention + obstacle + changement</span>,
-                    puis choisit des éléments de mise en scène.
-                  </p>
-                  <div className="flex gap-3 text-xs">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-black/[0.06]">
-                      <span>📦</span><span className="text-bw-text">{MAX_SLOTS} emplacements</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-bw-bg border border-black/[0.06]">
-                      <span>🪙</span><span className="text-bw-text">{MAX_TOKENS} jetons max</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Emotions available */}
-              {/* Emotion distribution when available */}
-              {module5Data?.emotionDistribution && Object.keys(module5Data.emotionDistribution).length > 0 && (
-                <Module5EmotionDistribution emotionDistribution={module5Data.emotionDistribution} />
-              )}
-
-              {/* Scene cards from scenesData */}
-              {scenesData && scenesData.scenes.length > 0 && (
-                <div className="space-y-2">
-                  {scenesData.scenes.filter((sc) => !cardSearch || (sc.students?.display_name || "").toLowerCase().includes(cardSearch.toLowerCase()) || sc.intention?.toLowerCase().includes(cardSearch.toLowerCase()) || sc.obstacle?.toLowerCase().includes(cardSearch.toLowerCase())).map((sc, i) => {
-                    const emo = EMOTIONS.find(e => e.key === sc.emotion);
-                    return (
-                      <motion.div key={sc.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.04 }}
-                        className="bg-bw-surface rounded-xl p-3 border border-black/[0.06] space-y-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-base">{sc.students?.avatar || "👤"}</span>
-                          <span className="text-sm font-medium text-bw-heading">{sc.students?.display_name || "Élève"}</span>
-                          <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium"
-                            style={{ backgroundColor: `${emo?.color || "#EC4899"}20`, color: emo?.color || "#EC4899" }}>
-                            {emo?.label || sc.emotion}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-1 text-xs text-bw-muted">
-                          <div><span className="text-bw-muted">Intention:</span> {sc.intention}</div>
-                          <div><span className="text-bw-muted">Obstacle:</span> {sc.obstacle}</div>
-                        </div>
-                        <div className="flex items-center gap-1 flex-wrap">
-                          {sc.elements.map((el) => {
-                            const def = getElement(el.key);
-                            return (
-                              <span key={el.key} className="text-xs px-1.5 py-0.5 rounded bg-black/[0.04] text-bw-text">
-                                {def?.label || el.key}
-                              </span>
-                            );
-                          })}
-                          <span className="ml-auto text-xs text-bw-muted tabular-nums">{sc.tokens_used}🪙 {sc.slots_used}/5📦</span>
-                        </div>
-                        {/* Inline actions — uniform with all modules */}
-                        <GenericInlineActions
-                          entityId={sc.id}
-                          studentId={sc.student_id}
-                          studentName={sc.students?.display_name || "Élève"}
-                          onBroadcast={(msg) => { updateSession.mutate({ broadcast_message: msg, broadcast_at: new Date().toISOString() }); toast.success("Envoyé"); }}
-                          onWarn={(sid) => warnStudent.mutate(sid)}
-                          isWarnPending={warnStudent.isPending}
-                          warnings={studentWarnings[sc.student_id] || 0}
-                        />
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Waiting state when no scenes yet */}
-              {(!scenesData || scenesData.scenes.length === 0) && session.status === "responding" && (
-                <div className="bg-bw-surface rounded-xl border border-black/[0.06] p-6 text-center space-y-3">
-                  <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
-                    className="text-2xl">🎬</motion.div>
-                  <div>
-                    <p className="text-lg font-bold tabular-nums text-bw-teal">{scenesData?.count || 0}/{activeStudents.length}</p>
-                    <p className="text-xs text-bw-muted mt-0.5">scenes construites</p>
-                  </div>
-                  <p className="text-xs text-bw-muted/70">Les scenes apparaitront ici au fur et a mesure.</p>
-                  <div className="flex items-center justify-center gap-2">
-                    <button onClick={openBroadcast}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
-                      📢 Message classe
-                    </button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-
-          {/* ── MODULE 2 EC: Comparison cockpit (séance 3) ── */}
-          {showM2ECComparison && (
-            <>
-              {/* What students are doing */}
-              {!isPreviewing && (
-                <div className="glass-card !border-bw-pink/20 p-4 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <div className="led led-writing" style={{ background: "#EC4899", boxShadow: "0 0 8px rgba(236,72,153,0.5)" }} />
-                    <span className="text-sm font-semibold text-bw-pink">Étape 3 — Confrontation</span>
-                  </div>
-                  <p className="text-xs text-bw-muted leading-relaxed">
-                    Sélectionnez <span className="text-bw-heading font-medium">2 scènes</span> à projeter côte-à-côte.
-                    La classe compare les choix narratifs et les éléments de mise en scène.
-                  </p>
-                </div>
-              )}
-
-              {/* Scene picker — teacher selects 2 scenes */}
-              {scenesData && scenesData.scenes.length > 0 && (
-                <div className="space-y-3">
-                  <div className="bg-bw-pink/10 rounded-xl p-4 border border-bw-pink/20 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-bw-pink font-medium">{scenesData.count} scène{scenesData.count > 1 ? "s" : ""} disponible{scenesData.count > 1 ? "s" : ""}</span>
-                      <span className="text-xs text-bw-muted">{selectedSceneIds.length}/2 sélectionnée{selectedSceneIds.length > 1 ? "s" : ""}</span>
-                    </div>
-                    {selectedSceneIds.length === 2 && (
-                      <button
-                        onClick={() => selectComparison.mutate({ sceneAId: selectedSceneIds[0], sceneBId: selectedSceneIds[1] })}
-                        disabled={selectComparison.isPending}
-                        className="btn-glow w-full py-2 bg-bw-pink text-white rounded-xl text-sm font-medium cursor-pointer hover:brightness-110 disabled:opacity-50 transition-all duration-200 shadow-md shadow-bw-pink/20">
-                        {selectComparison.isPending ? "Envoi..." : "Projeter ces 2 scènes"}
-                      </button>
-                    )}
-                    {selectedSceneIds.length > 0 && selectedSceneIds.length < 2 && (
-                      <p className="text-xs text-bw-amber">Encore {2 - selectedSceneIds.length} scène à sélectionner</p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    {scenesData.scenes.filter((sc) => !cardSearch || (sc.students?.display_name || "").toLowerCase().includes(cardSearch.toLowerCase()) || sc.intention?.toLowerCase().includes(cardSearch.toLowerCase())).map((sc, i) => {
-                      const emo = EMOTIONS.find(e => e.key === sc.emotion);
-                      const isSelected = selectedSceneIds.includes(sc.id);
-                      return (
-                        <motion.div key={sc.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: i * 0.04 }}
-                          onClick={() => {
-                            setSelectedSceneIds(prev => {
-                              if (prev.includes(sc.id)) return prev.filter(id => id !== sc.id);
-                              if (prev.length >= 2) return [prev[1], sc.id];
-                              return [...prev, sc.id];
-                            });
-                          }}
-                          className={`bg-bw-surface rounded-xl p-3 border-2 cursor-pointer transition-all space-y-2 ${
-                            isSelected ? "border-bw-pink/60 bg-bw-pink/5" : "border-black/[0.06] hover:border-black/[0.10]"
-                          }`}>
-                          <div className="flex items-center gap-2">
-                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs ${
-                              isSelected ? "border-bw-pink bg-bw-pink text-white" : "border-bw-muted"
-                            }`}>
-                              {isSelected && (selectedSceneIds.indexOf(sc.id) === 0 ? "A" : "B")}
-                            </div>
-                            <span className="text-base">{sc.students?.avatar || "👤"}</span>
-                            <span className="text-sm font-medium text-bw-heading">{sc.students?.display_name || "Élève"}</span>
-                            <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium"
-                              style={{ backgroundColor: `${emo?.color || "#EC4899"}20`, color: emo?.color || "#EC4899" }}>
-                              {emo?.label || sc.emotion}
-                            </span>
-                          </div>
-                          <div className="text-xs text-bw-muted pl-7 space-y-0.5">
-                            <div><span className="text-bw-muted">Intention:</span> {sc.intention}</div>
-                            <div><span className="text-bw-muted">Obstacle:</span> {sc.obstacle}</div>
-                            <div><span className="text-bw-muted">Changement:</span> {sc.changement}</div>
-                          </div>
-                          <div className="flex items-center gap-1 flex-wrap pl-7">
-                            {sc.elements.map((el) => {
-                              const def = getElement(el.key);
-                              return (
-                                <span key={el.key} className="text-xs px-1.5 py-0.5 rounded bg-black/[0.04] text-bw-text">
-                                  {def?.label || el.key}
-                                </span>
-                              );
-                            })}
-                            <span className="ml-auto text-xs text-bw-muted tabular-nums">{sc.tokens_used}🪙 {sc.slots_used}/5📦</span>
-                          </div>
-                          {/* Inline actions — uniform with all modules */}
-                          <div className="pl-7">
-                            <GenericInlineActions
-                              entityId={sc.id}
-                              studentId={sc.student_id}
-                              studentName={sc.students?.display_name || "Élève"}
-                              onBroadcast={(msg) => { updateSession.mutate({ broadcast_message: msg, broadcast_at: new Date().toISOString() }); toast.success("Envoyé"); }}
-                              onWarn={(sid) => warnStudent.mutate(sid)}
-                              isWarnPending={warnStudent.isPending}
-                              warnings={studentWarnings[sc.student_id] || 0}
-                            />
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Waiting state when no scenes yet */}
-              {(!scenesData || scenesData.scenes.length === 0) && (
-                <div className="bg-bw-surface rounded-xl border border-black/[0.06] p-6 text-center space-y-3">
-                  <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}
-                    className="text-3xl">⚔️</motion.div>
-                  <div>
-                    <p className="text-lg font-bold tabular-nums text-bw-teal">{scenesData?.count || 0}/{activeStudents.length}</p>
-                    <p className="text-xs text-bw-muted mt-0.5">scenes disponibles</p>
-                  </div>
-                  <p className="text-xs text-bw-muted/70">Les scenes des eleves apparaitront ici pour la confrontation.</p>
-                  <div className="flex items-center justify-center gap-2">
-                    <button onClick={openBroadcast}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
-                      📢 Message classe
-                    </button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
+          {/* ── MODULE 2 EC: Checklist + Scene Builder + Comparison (extracted) ── */}
+          <Module2ECCockpit
+            showChecklist={showM2ECChecklist}
+            showSceneBuilder={showM2ECSceneBuilder}
+            showComparison={showM2ECComparison}
+            module5Data={module5Data}
+            scenesData={scenesData}
+            isPreviewing={isPreviewing}
+            cardSearch={cardSearch}
+            selectedSceneIds={selectedSceneIds}
+            setSelectedSceneIds={setSelectedSceneIds}
+            selectComparison={selectComparison}
+            activeStudentCount={activeStudents.length}
+            sessionStatus={session.status}
+            studentWarnings={studentWarnings}
+            onBroadcast={(msg) => { updateSession.mutate({ broadcast_message: msg, broadcast_at: new Date().toISOString() }); toast.success("Envoyé"); }}
+            onWarn={(sid) => warnStudent.mutate(sid)}
+            isWarnPending={warnStudent.isPending}
+            onOpenBroadcast={openBroadcast}
+          />
 
           {/* ── VOTE RESULTS (Standard Q&A) ── */}
           {isStandardQA && (session.status === "voting" || session.status === "reviewing") && voteData && voteData.results.length > 0 && (
