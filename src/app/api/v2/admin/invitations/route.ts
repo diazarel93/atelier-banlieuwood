@@ -3,6 +3,7 @@ import { requireAdmin, safeJson } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/email/resend-client";
 import { invitationEmail } from "@/lib/email/templates/invitation";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // GET /api/v2/admin/invitations — list all invitations
 export async function GET() {
@@ -82,12 +83,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ invitation: data });
   }
 
-  // For request type, no auth needed (public form)
+  // For request type, no auth needed (public form) — rate limit
+  const rl = checkRateLimit(getIP(req), "invitation-request", { max: 5, windowSec: 300 });
+  if (rl) {
+    return NextResponse.json({ error: rl.error }, { status: 429 });
+  }
+
+  // Force role to "client" for public requests (prevent privilege escalation)
   const { data, error } = await admin
     .from("invitations")
     .insert({
       email,
-      role: validRoles.includes(role) ? role : "client",
+      role: "client", // Public requests always get "client" role
       type: "request",
       institution,
       message,

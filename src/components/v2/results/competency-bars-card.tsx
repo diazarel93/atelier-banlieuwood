@@ -43,8 +43,8 @@ export function CompetencyBarsCard({ feedback }: CompetencyBarsCardProps) {
         {(feedback.strengths || feedback.weakness) && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
             {feedback.strengths && (
-              <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600">
+              <div className="rounded-xl bg-[var(--color-bw-green-100)] border border-emerald-200 dark:border-emerald-800 p-3">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                   Point fort
                 </span>
                 <p className="text-xs text-bw-heading mt-1">
@@ -53,8 +53,8 @@ export function CompetencyBarsCard({ feedback }: CompetencyBarsCardProps) {
               </div>
             )}
             {feedback.weakness && (
-              <div className="rounded-xl bg-amber-50 border border-amber-200 p-3">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-600">
+              <div className="rounded-xl bg-[var(--color-bw-amber-100)] border border-amber-200 dark:border-amber-800 p-3">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
                   Progression
                 </span>
                 <p className="text-xs text-bw-heading mt-1">

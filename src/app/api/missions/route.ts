@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { isValidUUID } from "@/lib/api-utils";
 
 // GET /api/missions — list available missions
 export async function GET(req: NextRequest) {
@@ -22,7 +23,7 @@ export async function GET(req: NextRequest) {
 
   // Get submissions if profileId provided
   let submissions: Record<string, unknown>[] = [];
-  if (profileId) {
+  if (profileId && isValidUUID(profileId)) {
     const { data } = await supabase
       .from("mission_submissions")
       .select("id, mission_id, profile_id, content, xp_earned, submitted_at")
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
   }
   const { missionId, profileId, content } = body as { missionId?: string; profileId?: string; content?: string };
 
-  if (!missionId || !profileId || !content) {
+  if (!missionId || !profileId || !content || !isValidUUID(missionId) || !isValidUUID(profileId)) {
     return NextResponse.json(
       { error: "missionId, profileId, et content requis" },
       { status: 400 },

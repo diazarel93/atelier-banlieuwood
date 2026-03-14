@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { isValidUUID } from "@/lib/api-utils";
 
 // GET /api/festival — list published entries
 export async function GET(req: NextRequest) {
@@ -27,7 +28,11 @@ export async function GET(req: NextRequest) {
     query = query.order("created_at", { ascending: false });
   }
 
-  const { data, error } = await query.limit(50);
+  const page = Math.max(1, parseInt(req.nextUrl.searchParams.get("page") || "1", 10));
+  const limit = Math.min(50, Math.max(1, parseInt(req.nextUrl.searchParams.get("limit") || "50", 10)));
+  const offset = (page - 1) * limit;
+
+  const { data, error } = await query.range(offset, offset + limit - 1);
 
   if (error) {
     console.error("[festival GET]", error.message);
@@ -43,9 +48,15 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { profileId, sessionId, title, content, entryType, category } = body;
 
-  if (!profileId || !title || !content || !entryType) {
+  if (!profileId || !title || !content || !entryType || !isValidUUID(profileId)) {
     return NextResponse.json(
-      { error: "profileId, title, content, et entryType requis" },
+      { error: "profileId (UUID), title, content, et entryType requis" },
+      { status: 400 },
+    );
+  }
+  if (title.length > 200 || content.length > 10000) {
+    return NextResponse.json(
+      { error: "Titre (max 200) ou contenu (max 10000) trop long" },
       { status: 400 },
     );
   }

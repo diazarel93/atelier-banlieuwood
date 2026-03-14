@@ -44,7 +44,7 @@ export function StudentListCard({
           {activeStudents.length}
         </span>
         {hasDemoStudents && (
-          <span className="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">
+          <span className="text-xs font-medium text-purple-600 dark:text-purple-400 bg-[var(--color-bw-surface-dim)] px-2 py-0.5 rounded-full">
             Mode démo
           </span>
         )}
@@ -73,12 +73,13 @@ export function StudentListCard({
             Partagez le code pour commencer
           </p>
           <button
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-purple-200 px-3 py-1.5 text-xs font-medium text-purple-600 hover:bg-purple-50 transition-colors cursor-pointer disabled:opacity-50"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-purple-200 dark:border-purple-800 px-3 py-1.5 text-xs font-medium text-purple-600 dark:text-purple-400 hover:bg-[var(--color-bw-surface-dim)] transition-colors cursor-pointer disabled:opacity-50"
             disabled={activateDemo.isPending}
+            aria-label={activateDemo.isPending ? "Chargement des élèves virtuels" : "Tester en mode démo"}
             onClick={() => activateDemo.mutate()}
           >
             {activateDemo.isPending ? (
-              <span className="inline-block w-3.5 h-3.5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" aria-label="Chargement" />
+              <span className="inline-block w-3.5 h-3.5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
             ) : (
               <span aria-hidden="true">🎮</span>
             )}
@@ -94,7 +95,7 @@ export function StudentListCard({
                 key={s.id}
                 className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-colors ${
                   isDemo
-                    ? "bg-purple-50 border border-purple-100"
+                    ? "bg-[var(--color-bw-surface-dim)] border border-purple-200 dark:border-purple-800"
                     : "bg-[var(--color-bw-surface-dim)] border border-[var(--color-bw-border-subtle)]"
                 }`}
               >
@@ -144,7 +145,7 @@ export function StudentListCard({
       {!hasDemoStudents && activeStudents.length > 0 && (
         <div className="mt-3 pt-3 border-t border-[var(--color-bw-border)]">
           <button
-            className="w-full text-xs font-medium text-purple-500 hover:text-purple-600 hover:bg-purple-50 py-2 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+            className="w-full text-xs font-medium text-purple-500 dark:text-purple-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-[var(--color-bw-surface-dim)] py-2 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
             disabled={activateDemo.isPending}
             onClick={() => activateDemo.mutate()}
           >

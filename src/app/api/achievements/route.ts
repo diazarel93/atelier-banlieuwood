@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { isValidUUID } from "@/lib/api-utils";
 
 // GET /api/achievements — get current user's achievements
 export async function GET(req: NextRequest) {
@@ -38,9 +39,22 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { profileId, achievementId, tier, progress } = body;
 
-  if (!profileId || !achievementId || !tier) {
+  const validTiers = ["bronze", "silver", "gold"];
+  if (!profileId || !achievementId || !tier || !isValidUUID(profileId)) {
     return NextResponse.json(
-      { error: "profileId, achievementId, et tier requis" },
+      { error: "profileId (UUID), achievementId, et tier requis" },
+      { status: 400 },
+    );
+  }
+  if (!validTiers.includes(tier)) {
+    return NextResponse.json(
+      { error: "tier invalide (bronze, silver, gold)" },
+      { status: 400 },
+    );
+  }
+  if (progress !== undefined && (typeof progress !== "number" || progress < 0 || progress > 100)) {
+    return NextResponse.json(
+      { error: "progress doit être entre 0 et 100" },
       { status: 400 },
     );
   }

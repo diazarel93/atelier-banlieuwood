@@ -16,20 +16,22 @@ export async function GET() {
     .single();
 
   if (error && error.code === "PGRST116") {
-    // No profile yet — create one
+    // No profile yet — upsert to avoid race condition with concurrent requests
     const { data: newProfile, error: createError } = await supabase
       .from("student_profiles")
-      .insert({
-        auth_user_id: user.id,
-        display_name: user.user_metadata?.display_name || user.email?.split("@")[0] || "Joueur",
-        avatar: user.user_metadata?.avatar || "🎬",
-        email: user.email,
-      })
+      .upsert(
+        {
+          auth_user_id: user.id,
+          display_name: user.user_metadata?.display_name || user.email?.split("@")[0] || "Joueur",
+          avatar: user.user_metadata?.avatar || "🎬",
+          email: user.email,
+        },
+        { onConflict: "auth_user_id" }
+      )
       .select()
       .single();
 
     if (createError) {
-      console.error("[student-profile GET create]", createError.message);
       return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
     }
     return NextResponse.json(newProfile);
@@ -59,7 +61,14 @@ export async function PATCH(req: NextRequest) {
 
   const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
   for (const field of allowedFields) {
-    if (body[field] !== undefined) updates[field] = body[field];
+    if (body[field] !== undefined) {
+      const val = body[field];
+      // Validate string length
+      if (typeof val === "string" && val.length > 200) {
+        return NextResponse.json({ error: `${field} trop long (max 200)` }, { status: 400 });
+      }
+      updates[field] = val;
+    }
   }
 
   const { data, error } = await supabase

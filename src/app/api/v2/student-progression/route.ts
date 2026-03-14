@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { oieToAxes } from "@/lib/axes-mapping";
+import { isValidUUID } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/student-progression?studentId=X
@@ -19,9 +20,9 @@ export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const studentId = url.searchParams.get("studentId");
 
-  if (!studentId) {
+  if (!studentId || !isValidUUID(studentId)) {
     return NextResponse.json(
-      { error: "studentId requis" },
+      { error: "studentId requis (UUID)" },
       { status: 400 }
     );
   }

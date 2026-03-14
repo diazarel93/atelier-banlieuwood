@@ -36,9 +36,9 @@ function getActivityBadge(lastActiveAt: string): {
 
 const BADGE_STYLES: Record<ActivityTier, string> = {
   active:
-    "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20",
+    "bg-[var(--color-bw-green-100)] text-emerald-700 dark:text-emerald-300 ring-1 ring-inset ring-emerald-600/20",
   recent:
-    "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20",
+    "bg-[var(--color-bw-amber-100)] text-amber-700 dark:text-amber-300 ring-1 ring-inset ring-amber-600/20",
   inactive:
     "bg-[var(--color-bw-surface-dim)] text-bw-muted ring-1 ring-inset ring-[var(--color-bw-border)]",
 };

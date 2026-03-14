@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   if (role) query = query.eq("role", role);
   if (status) query = query.eq("status", status);
 
-  const { data, error } = await query;
+  const { data, error } = await query.limit(500);
 
   if (error) {
     console.error("[admin/users GET]", error.message);
@@ -38,7 +38,7 @@ export async function PATCH(req: NextRequest) {
   const { userIds, status } = await req.json();
 
   const validStatuses = ["active", "pending", "blocked", "rejected"];
-  if (!Array.isArray(userIds) || userIds.length === 0 || !status || !validStatuses.includes(status)) {
+  if (!Array.isArray(userIds) || userIds.length === 0 || userIds.length > 100 || !status || !validStatuses.includes(status)) {
     return NextResponse.json({ error: "userIds (tableau non vide) et status valide requis" }, { status: 400 });
   }
 

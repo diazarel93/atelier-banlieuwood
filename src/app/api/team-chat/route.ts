@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { isValidUUID } from "@/lib/api-utils";
 
 // Blocked words for moderation
 const BLOCKED_PATTERNS = [
@@ -17,8 +18,8 @@ export async function GET(req: NextRequest) {
   const sessionId = req.nextUrl.searchParams.get("sessionId");
   const teamId = req.nextUrl.searchParams.get("teamId");
 
-  if (!sessionId) {
-    return NextResponse.json({ error: "sessionId requis" }, { status: 400 });
+  if (!sessionId || !isValidUUID(sessionId)) {
+    return NextResponse.json({ error: "sessionId requis (UUID)" }, { status: 400 });
   }
 
   let query = supabase
@@ -32,7 +33,7 @@ export async function GET(req: NextRequest) {
     .order("created_at", { ascending: true })
     .limit(100);
 
-  if (teamId) {
+  if (teamId && isValidUUID(teamId)) {
     query = query.eq("team_id", teamId);
   }
 
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
   const supabase = await createServerSupabase();
   const { sessionId, teamId, studentId, content, messageType } = await req.json();
 
-  if (!sessionId || !studentId || !content) {
+  if (!sessionId || !studentId || !content || !isValidUUID(sessionId) || !isValidUUID(studentId)) {
     return NextResponse.json(
       { error: "sessionId, studentId, et content requis" },
       { status: 400 },

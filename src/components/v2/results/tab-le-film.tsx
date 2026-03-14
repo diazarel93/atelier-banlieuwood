@@ -4,6 +4,7 @@ import { useRef, useState, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import { createAvatar } from "@dicebear/core";
 import { avataaars } from "@dicebear/collection";
+import DOMPurify from "dompurify";
 import { exportElementAsImage, exportElementAsPdf } from "@/lib/export-image";
 import {
   TEMPLATE_LABELS,
@@ -378,7 +379,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                       const svg = avatarSvgs[key] || "";
                       return (
                         <div key={i} style={{ width: 118, background: "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)", border: "1px solid rgba(212,168,67,0.12)", borderRadius: 12, padding: "10px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
-                          <div style={{ width: 56, height: 56, borderRadius: 28, overflow: "hidden", flexShrink: 0, border: "2px solid rgba(212,168,67,0.2)" }} dangerouslySetInnerHTML={{ __html: svg }} />
+                          <div style={{ width: 56, height: 56, borderRadius: 28, overflow: "hidden", flexShrink: 0, border: "2px solid rgba(212,168,67,0.2)" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true } }) }} />
                           <span style={{ fontSize: 12, fontWeight: 700, color: "#F1F5F9", textAlign: "center", lineHeight: 1.2 }}>{p.prenom}</span>
                           {p.trait_dominant && (
                             <span style={{ fontSize: 8, fontWeight: 700, color: "#FF6B35", textTransform: "uppercase", letterSpacing: 1.5, textAlign: "center" }}>{p.trait_dominant}</span>

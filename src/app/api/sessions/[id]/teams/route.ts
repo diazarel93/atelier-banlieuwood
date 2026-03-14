@@ -33,7 +33,8 @@ export async function POST(
   if ("error" in auth) return auth.error;
 
   const body = await req.json();
-  const teamName = body.teamName || `Equipe ${body.teamNumber || 1}`;
+  const rawName = body.teamName || `Equipe ${body.teamNumber || 1}`;
+  const teamName = typeof rawName === "string" ? rawName.slice(0, 50) : `Equipe ${body.teamNumber || 1}`;
   const teamNumber = body.teamNumber || 1;
   const teamColor = TEAM_COLORS[(teamNumber - 1) % TEAM_COLORS.length];
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 
 const QRCodeSVG = dynamic(
@@ -32,24 +32,46 @@ export function ProjectionOverlay({
   activeStudents,
   onClose,
 }: ProjectionOverlayProps) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
+
+      // Focus trap
+      if (e.key === "Tab" && overlayRef.current) {
+        const focusable = overlayRef.current.querySelectorAll<HTMLElement>(
+          'button, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+        } else {
+          if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      }
     }
     document.addEventListener("keydown", handleKey);
+    // Focus the close button on open
+    requestAnimationFrame(() => {
+      overlayRef.current?.querySelector<HTMLElement>("button")?.focus();
+    });
     return () => document.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
   return (
     <div
+      ref={overlayRef}
       className="fixed inset-0 z-50 bg-[#0a0c14] text-white flex flex-col items-center justify-center"
       role="dialog"
       aria-modal="true"
-      aria-label="Mode projection"
+      aria-label="Écran de projection — rejoindre la séance"
     >
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 text-sm text-white/50 hover:text-white px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+        className="absolute top-4 right-4 text-sm text-white/50 hover:text-white min-h-11 min-w-11 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
       >
         Quitter projection
       </button>

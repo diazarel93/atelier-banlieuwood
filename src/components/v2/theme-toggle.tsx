@@ -40,6 +40,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label={isDark ? "Passer en mode clair" : "Passer en mode sombre"}
+      aria-pressed={isDark}
       className="p-2 min-h-11 min-w-11 flex items-center justify-center rounded-lg text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
     >
       {isDark ? (

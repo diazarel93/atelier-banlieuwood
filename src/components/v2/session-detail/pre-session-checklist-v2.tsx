@@ -152,7 +152,7 @@ export function PreSessionChecklistV2({
         </div>
 
         {/* Items */}
-        <div className="px-4 pb-2 space-y-1">
+        <div className="px-4 pb-2 space-y-1" aria-live="polite" aria-atomic="false">
           {items.map((item) => (
             <div
               key={item.id}

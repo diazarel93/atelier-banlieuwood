@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { isValidUUID } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/student-profiles/[profileId]
@@ -10,6 +11,9 @@ export async function GET(
   { params }: { params: Promise<{ profileId: string }> }
 ) {
   const { profileId } = await params;
+  if (!isValidUUID(profileId)) {
+    return NextResponse.json({ error: "profileId invalide" }, { status: 400 });
+  }
   const supabase = await createServerSupabase();
   const {
     data: { user },

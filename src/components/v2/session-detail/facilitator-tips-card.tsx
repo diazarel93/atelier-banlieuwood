@@ -26,8 +26,8 @@ export function FacilitatorTipsCard({ guide }: FacilitatorTipsCardProps) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {/* Relancer */}
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">
+        <div className="rounded-xl border border-emerald-200 dark:border-emerald-800 bg-[var(--color-bw-green-100)] p-4">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
             Relancer
           </span>
           <ul className="mt-2 space-y-1.5">
@@ -40,8 +40,8 @@ export function FacilitatorTipsCard({ guide }: FacilitatorTipsCardProps) {
         </div>
 
         {/* Challenger */}
-        <div className="rounded-xl border border-purple-200 bg-purple-50/50 p-4">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600">
+        <div className="rounded-xl border border-purple-200 dark:border-purple-800 bg-[var(--color-bw-surface-dim)] p-4">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
             Challenger
           </span>
           <ul className="mt-2 space-y-1.5">
