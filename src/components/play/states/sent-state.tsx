@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { CINEMA_TIPS, type CinemaTip } from "@/lib/cinema-tips";
 import { BONUS_TRIVIA, pickBonusQuestions, type BonusQuestion } from "@/lib/bonus-trivia";
 import { CreativeAssistant } from "@/components/play/creative-assistant";
+import { MiniLeaderboard } from "@/components/play/mini-leaderboard";
 
 function pickTips(module?: number, seance?: number): CinemaTip[] {
   if (!module) return CINEMA_TIPS.slice(0, 30);
@@ -28,6 +29,8 @@ export interface SentStateProps {
   studentId?: string;
   currentModule?: number;
   currentSeance?: number;
+  topStudents?: { id: string; displayName: string; avatar: string; xp: number }[];
+  currentStudentId?: string;
 }
 
 function BonusTrivia() {
@@ -119,7 +122,7 @@ function BonusTrivia() {
   );
 }
 
-export function SentState({ responsesCount, connectedCount, streak, lastXpGain, sessionId, studentId, currentModule, currentSeance }: SentStateProps) {
+export function SentState({ responsesCount, connectedCount, streak, lastXpGain, sessionId, studentId, currentModule, currentSeance, topStudents, currentStudentId }: SentStateProps) {
   const tips = useMemo(() => pickTips(currentModule, currentSeance), [currentModule, currentSeance]);
   const [showBonus, setShowBonus] = useState(false);
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * tips.length));
@@ -208,6 +211,13 @@ export function SentState({ responsesCount, connectedCount, streak, lastXpGain, 
             <span className="text-bw-muted">/{connectedCount}</span>
             {" "}ont r&eacute;pondu
           </p>
+        </motion.div>
+      )}
+
+      {/* Mini leaderboard — top 3 */}
+      {topStudents && topStudents.length > 0 && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
+          <MiniLeaderboard entries={topStudents} currentStudentId={currentStudentId} />
         </motion.div>
       )}
 

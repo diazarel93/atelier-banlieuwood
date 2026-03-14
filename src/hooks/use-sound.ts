@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef } from "react";
 // Lightweight sound effects using Web Audio API — no external files needed
 // Each sound is generated procedurally
 
-type SoundName = "send" | "success" | "vote" | "reveal" | "jingle" | "drumroll" | "cardReveal" | "tick" | "fanfare" | "levelUp";
+export type SoundName = "send" | "success" | "vote" | "reveal" | "jingle" | "drumroll" | "cardReveal" | "tick" | "fanfare" | "levelUp" | "tap" | "type" | "streakLost" | "xpGain";
 
 function createAudioContext(): AudioContext | null {
   try {
@@ -220,6 +220,88 @@ function playLevelUp(ctx: AudioContext) {
   });
 }
 
+function playTap(ctx: AudioContext) {
+  // Micro-click — 1200Hz sine, 30ms, very quiet
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(1200, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.03);
+  gain.gain.setValueAtTime(0.06, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.03);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.03);
+}
+
+function playType(ctx: AudioContext) {
+  // Soft keystroke — 800Hz triangle, 20ms, very quiet
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(800, ctx.currentTime);
+  gain.gain.setValueAtTime(0.03, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.02);
+}
+
+function playStreakLost(ctx: AudioContext) {
+  // Dramatic descending tone — 400→150Hz saw, 400ms
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.type = "sawtooth";
+  osc.frequency.setValueAtTime(400, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.4);
+  gain.gain.setValueAtTime(0.15, ctx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.2);
+  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.4);
+  // Low thud at end
+  const thud = ctx.createOscillator();
+  const thudGain = ctx.createGain();
+  thud.connect(thudGain);
+  thudGain.connect(ctx.destination);
+  thud.type = "sine";
+  thud.frequency.setValueAtTime(80, ctx.currentTime + 0.3);
+  thudGain.gain.setValueAtTime(0.1, ctx.currentTime + 0.3);
+  thudGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+  thud.start(ctx.currentTime + 0.3);
+  thud.stop(ctx.currentTime + 0.5);
+}
+
+function playXpGain(ctx: AudioContext) {
+  // Quick ascending shimmer — 600→900Hz sine + sparkle
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(600, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.15);
+  gain.gain.setValueAtTime(0.08, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.2);
+  // Sparkle
+  const sparkle = ctx.createOscillator();
+  const sparkleGain = ctx.createGain();
+  sparkle.connect(sparkleGain);
+  sparkleGain.connect(ctx.destination);
+  sparkle.type = "sine";
+  sparkle.frequency.setValueAtTime(1319, ctx.currentTime + 0.1);
+  sparkleGain.gain.setValueAtTime(0.05, ctx.currentTime + 0.1);
+  sparkleGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+  sparkle.start(ctx.currentTime + 0.1);
+  sparkle.stop(ctx.currentTime + 0.25);
+}
+
 const SOUNDS: Record<SoundName, (ctx: AudioContext) => void> = {
   send: playSend,
   success: playSuccess,
@@ -231,6 +313,10 @@ const SOUNDS: Record<SoundName, (ctx: AudioContext) => void> = {
   tick: playTick,
   fanfare: playFanfare,
   levelUp: playLevelUp,
+  tap: playTap,
+  type: playType,
+  streakLost: playStreakLost,
+  xpGain: playXpGain,
 };
 
 export function useSound(opts?: { muted?: boolean }) {

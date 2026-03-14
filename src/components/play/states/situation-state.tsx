@@ -5,21 +5,25 @@ import { motion } from "motion/react";
 import { useTypewriter } from "@/hooks/use-typewriter";
 import { CATEGORY_COLORS, CATEGORY_LABELS } from "@/lib/constants";
 import type { SessionState } from "@/hooks/use-session-polling";
+import type { SoundName } from "@/hooks/use-sound";
 
 export interface SituationStateProps {
   situation: NonNullable<SessionState["situation"]>;
   onSubmit: (text: string) => void;
   submitting: boolean;
+  playSound?: (name: SoundName) => void;
 }
 
 export function SituationState({
   situation,
   onSubmit,
   submitting,
+  playSound,
 }: SituationStateProps) {
   const [text, setText] = useState("");
   const { displayed, done, skip } = useTypewriter(situation.prompt);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const lastTypeSound = useRef(0);
 
   // Word count
   const wordCount = useMemo(() => {
@@ -44,10 +48,16 @@ export function SituationState({
     setText(e.target.value);
     e.target.style.height = "auto";
     e.target.style.height = `${e.target.scrollHeight}px`;
+    // Throttled typing sound (80ms)
+    if (playSound && Date.now() - lastTypeSound.current > 80) {
+      lastTypeSound.current = Date.now();
+      playSound("type");
+    }
   }
 
   function handleSubmit() {
     if (!text.trim() || submitting) return;
+    playSound?.("tap");
     onSubmit(text.trim());
   }
 

@@ -27,6 +27,8 @@ import { XpToast } from "@/components/play/xp-toast";
 import { XpBar } from "@/components/play/xp-bar";
 import { XP_RESPOND, XP_VOTE, XP_RETAINED, XP_STREAK_BONUS_PER, XP_COMBO_PER, getLevel } from "@/lib/xp";
 import { CinematicIntro } from "@/components/play/cinematic-intro";
+import { OnboardingSlides } from "@/components/play/onboarding-slides";
+import { ConnectionBanner } from "@/components/play/connection-banner";
 import { CinemaFade } from "@/components/play/cinema-fade";
 import { WaitingState } from "@/components/play/states/waiting-state";
 import { SituationState } from "@/components/play/states/situation-state";
@@ -131,6 +133,11 @@ export default function PlayPage() {
   const [studentAvatar, setStudentAvatar] = useState("🎬");
   const [waitingFullscreen, setWaitingFullscreen] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !localStorage.getItem("bw-onboarded");
+  });
+  const prevStreakRef = useRef<number | null>(null);
   const [broadcastMsg, setBroadcastMsg] = useState<string | null>(null);
   const [coachTip, setCoachTip] = useState<string | null>(null);
   const coachShownForRef = useRef<string | null>(null);
@@ -204,6 +211,17 @@ export default function PlayPage() {
 
   const { data, isLoading, error, refetch } = useSessionPolling(sessionId, studentId);
   const { play } = useSound({ muted: data?.session?.muteSounds });
+
+  // Streak lost detection
+  useEffect(() => {
+    if (prevStreakRef.current !== null && prevStreakRef.current >= 2 && streak === 0) {
+      play("streakLost");
+      toast("\uD83D\uDD25\uD83D\uDC94 Streak perdu ! Recommence \u00e0 encha\u00eener", {
+        style: { background: "rgba(239,68,68,0.1)", borderColor: "rgba(239,68,68,0.2)", color: "#EF4444" },
+      });
+    }
+    prevStreakRef.current = streak;
+  }, [streak, play]);
 
   // Write back to persistent profile when session ends
   const profileWrittenRef = useRef(false);
@@ -354,6 +372,7 @@ export default function PlayPage() {
         const retainedXp = XP_RETAINED + comboBonus;
         setSessionXp((prev) => prev + retainedXp);
         setXpDelta({ amount: retainedXp, key: Date.now() });
+        play("xpGain");
         setTimeout(() => {
           play("success");
           // Escalating confetti for combos
@@ -412,6 +431,7 @@ export default function PlayPage() {
         setSessionXp((prev) => prev + xpGain);
         setXpDelta({ amount: xpGain, key: Date.now() });
         setLastXpGain(xpGain);
+        play("xpGain");
 
         // Module 3/4: trigger AI relance
         const rd = responseData as { id?: string } | null;
@@ -500,6 +520,7 @@ export default function PlayPage() {
         // XP gain for voting
         setSessionXp((prev) => prev + XP_VOTE);
         setXpDelta({ amount: XP_VOTE, key: Date.now() });
+        play("xpGain");
       }
     } catch {
       toast.error("Erreur de connexion");
@@ -846,7 +867,7 @@ export default function PlayPage() {
       if (session.status === "responding" && situation) {
         // In free mode, hasResponded means the server auto-advanced.
         // The polling will pick up the new situation, so just show the form.
-        return <SituationState key={situation.id} situation={situation} onSubmit={handleRespond} submitting={submitting} />;
+        return <SituationState key={situation.id} situation={situation} onSubmit={handleRespond} submitting={submitting} playSound={play} />;
       }
       return <WaitingState session={session} connectedCount={connectedCount} />;
     }
@@ -860,13 +881,13 @@ export default function PlayPage() {
     // Voting
     if (session.status === "voting" && situation) {
       if (hasVoted) return <SentState />; // No counter needed during vote
-      return <VoteState key={situation.id} voteOptions={voteOptions} situation={situation} sessionId={sessionId} studentId={studentId!} onVote={handleVote} voting={voting} />;
+      return <VoteState key={situation.id} voteOptions={voteOptions} situation={situation} sessionId={sessionId} studentId={studentId!} onVote={handleVote} voting={voting} playSound={play} />;
     }
 
     // Responding
     if (session.status === "responding" && situation) {
       if (hasResponded) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
-      return <SituationState key={situation.id} situation={situation} onSubmit={handleRespond} submitting={submitting} />;
+      return <SituationState key={situation.id} situation={situation} onSubmit={handleRespond} submitting={submitting} playSound={play} />;
     }
 
     // Waiting (default)
@@ -964,6 +985,16 @@ export default function PlayPage() {
 
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center px-3 sm:px-4 py-8">
+      <ConnectionBanner />
+
+      {/* Onboarding slides — first-time users */}
+      {showOnboarding && (
+        <OnboardingSlides onComplete={() => {
+          localStorage.setItem("bw-onboarded", "1");
+          setShowOnboarding(false);
+        }} />
+      )}
+
       {/* Cinematic intro */}
       <AnimatePresence>
         {showIntro && <CinematicIntro onComplete={handleIntroComplete} sessionTitle={data?.session?.title} studentName={studentDisplayName} studentAvatar={studentAvatar} />}

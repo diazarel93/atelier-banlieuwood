@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { ReactionBar, type ReactionCounts } from "@/components/reaction-bar";
 import type { SessionState } from "@/hooks/use-session-polling";
+import type { SoundName } from "@/hooks/use-sound";
 
 export interface VoteStateProps {
   voteOptions: SessionState["voteOptions"];
@@ -13,6 +14,7 @@ export interface VoteStateProps {
   studentId: string;
   onVote: (responseId: string) => void;
   voting: boolean;
+  playSound?: (name: SoundName) => void;
 }
 
 export function VoteState({
@@ -22,6 +24,7 @@ export function VoteState({
   studentId,
   onVote,
   voting,
+  playSound,
 }: VoteStateProps) {
   const [votedId, setVotedId] = useState<string | null>(null);
   const [reactions, setReactions] = useState<Record<string, ReactionCounts>>({});
@@ -51,6 +54,7 @@ export function VoteState({
   function handleTap(optionId: string) {
     if (voting) return;
     setVotedId(optionId);
+    playSound?.("tap");
     onVote(optionId);
     if (navigator.vibrate) navigator.vibrate(15);
   }

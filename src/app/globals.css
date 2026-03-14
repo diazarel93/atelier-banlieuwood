@@ -37,6 +37,7 @@
   --color-bw-gold:     #D4A843;
   --color-bw-gold-500: #A47C2A;
   --color-bw-gold-600: #836120;
+  --color-bw-gold-text: #8B6914;
 
   /* ── Turquoise Électrique — feedback, succès, joueurs ── */
   --color-bw-teal-50:  #EDFBFA;
@@ -93,7 +94,7 @@
   --color-bw-border-focus:  rgba(0,0,0,0.20);
 
   --color-bw-placeholder:   #A09680;
-  --color-bw-muted:         #7A7A7A;
+  --color-bw-muted:         #666666;
   --color-bw-text:          #4A4A4A;
   --color-bw-heading:       #2C2C2C;
   --color-bw-ink:           #1A1A1A;
@@ -1849,4 +1850,19 @@ html, body {
 
   /* Remove shimmer / animations */
   .shimmer, .animate-spin, .animate-pulse { animation: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REDUCED MOTION — respect user preference
+   ═══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .film-grain::after {
+    display: none !important;
+  }
 }

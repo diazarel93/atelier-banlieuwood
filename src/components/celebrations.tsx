@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 // ═══════════════════════════════════════════════════════════════
 // CELEBRATIONS — Progressive celebration system by player level
@@ -123,6 +124,7 @@ export function CelebrationOverlay({
   trigger,
   onComplete,
 }: CelebrationOverlayProps) {
+  const reducedMotion = useReducedMotion();
   const [showSpotlight, setShowSpotlight] = useState(false);
   const prevTriggerRef = useRef(false);
   const cleanupRef = useRef<(() => void) | null>(null);
@@ -144,6 +146,12 @@ export function CelebrationOverlay({
   }, []);
 
   const fireCelebration = useCallback(async () => {
+    if (reducedMotion) {
+      // Skip all visual effects, just call onComplete
+      onComplete?.();
+      return;
+    }
+
     const config = getCelebrationConfig(level);
 
     ensureKeyframes();
@@ -218,7 +226,7 @@ export function CelebrationOverlay({
       cleanupRef.current = null;
       onComplete?.();
     }, longestEffect + 200);
-  }, [level, onComplete]);
+  }, [level, onComplete, reducedMotion]);
 
   return (
     <AnimatePresence>
