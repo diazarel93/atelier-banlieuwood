@@ -532,7 +532,7 @@ export default function PlayPage() {
   // Determine which state to render
   function getView() {
     if (!data) return null;
-    const { session, situation, hasResponded, hasVoted, voteOptions, collectiveChoice, connectedCount, responsesCount } = data;
+    const { session, situation, hasResponded, hasVoted, voteOptions, collectiveChoice, connectedCount, responsesCount, topStudents, currentRank } = data;
 
     // Module 1 — Redesign Adrian — 3 types: positioning, image, notebook
     if (session.currentModule === 1 && data.module1 && (session.status === "responding" || (isFreeMode && session.status === "waiting"))) {
@@ -666,7 +666,7 @@ export default function PlayPage() {
     // Séance 1 index 0 — Checklist
     if (session.currentModule === 2 && session.currentSeance === 1 && session.currentSituationIndex === 0 && session.status === "responding") {
       if (checklistDone || data.module5?.submitted) {
-        return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+        return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} topStudents={topStudents} currentStudentId={studentId ?? undefined} />;
       }
       if (data.module5?.type === "checklist") {
         return (
@@ -684,7 +684,7 @@ export default function PlayPage() {
     // Séance 2 index 1 — Scene Builder
     if (session.currentModule === 2 && session.currentSeance === 2 && session.currentSituationIndex === 1 && session.status === "responding") {
       if (sceneDone || data.module5?.submitted) {
-        return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+        return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} topStudents={topStudents} currentStudentId={studentId ?? undefined} />;
       }
       if (data.module5?.type === "scene-builder") {
         return (
@@ -710,11 +710,11 @@ export default function PlayPage() {
       // Séance 1: Et si...
       if (session.currentSeance === 1) {
         if (m10.type === "etsi") {
-          if (etsiDone || m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+          if (etsiDone || m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} topStudents={topStudents} currentStudentId={studentId ?? undefined} />;
           return <EtsiWriterState key="m10-etsi" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={() => { setEtsiDone(true); play("send"); }} />;
         }
         if (m10.type === "idea-bank") {
-          if (m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+          if (m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} topStudents={topStudents} currentStudentId={studentId ?? undefined} />;
           return <IdeaBankState key="m10-ideas" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={() => play("send")} />;
         }
         // QCM falls through to standard Q&A below
@@ -727,13 +727,13 @@ export default function PlayPage() {
         if (m10.type === "avatar") {
           if (characterCard) return <CharacterCard {...characterCard} responsesCount={responsesCount} connectedCount={connectedCount} />;
           if (m10.submitted && m10.personnage) return <CharacterCard personnage={{ prenom: m10.personnage.prenom, trait: m10.personnage.trait, avatar: m10.personnage.avatar as unknown as AvatarOptions }} revealLevel={0} responsesCount={responsesCount} connectedCount={connectedCount} />;
-          if (m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+          if (m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} topStudents={topStudents} currentStudentId={studentId ?? undefined} />;
           return <AvatarBuilderState key="m10-avatar" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(data) => { setCharacterCard({ personnage: data, revealLevel: 0 }); play("cardReveal"); }} />;
         }
         if (m10.type === "objectif") {
           if (characterCard && characterCard.revealLevel >= 1) return <CharacterCard {...characterCard} responsesCount={responsesCount} connectedCount={connectedCount} />;
           if (m10.submitted && characterCard) return <CharacterCard {...characterCard} objectif={m10.objectif ?? undefined} obstacle={m10.obstacle ?? undefined} revealLevel={1} responsesCount={responsesCount} connectedCount={connectedCount} />;
-          if (m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+          if (m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} topStudents={topStudents} currentStudentId={studentId ?? undefined} />;
           // Late join: no personnage yet — let them create one first
           if (!m10.personnage) return <AvatarBuilderState key="m10-avatar-late" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(data) => { setCharacterCard({ personnage: data, revealLevel: 0 }); play("cardReveal"); }} />;
           return <ObjectifObstacleState key="m10-objectif" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(d) => { setCharacterCard((prev) => prev ? { ...prev, objectif: d.objectif, obstacle: d.obstacle, revealLevel: 1 } : prev); play("cardReveal"); }} />;
@@ -741,7 +741,7 @@ export default function PlayPage() {
         if (m10.type === "pitch") {
           if ((characterCard && characterCard.revealLevel >= 2) || m10.submitted) {
             if (characterCard) return <CharacterCard {...characterCard} pitchText={characterCard.pitchText || m10.pitchText || undefined} revealLevel={Math.max(characterCard.revealLevel, 2) as 0 | 1 | 2 | 3} responsesCount={responsesCount} connectedCount={connectedCount} />;
-            return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+            return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} topStudents={topStudents} currentStudentId={studentId ?? undefined} />;
           }
           // Late join: no personnage — create one first
           if (!m10.personnage) return <AvatarBuilderState key="m10-avatar-late" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(data) => { setCharacterCard({ personnage: data, revealLevel: 0 }); play("cardReveal"); }} />;
@@ -750,7 +750,7 @@ export default function PlayPage() {
         if (m10.type === "chrono") {
           if ((characterCard && characterCard.revealLevel >= 3) || m10.submitted) {
             if (characterCard) return <CharacterCard {...characterCard} chronoSeconds={characterCard.chronoSeconds ?? m10.chronoSeconds ?? undefined} revealLevel={3} responsesCount={responsesCount} connectedCount={connectedCount} />;
-            return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+            return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} topStudents={topStudents} currentStudentId={studentId ?? undefined} />;
           }
           // Late join: no personnage — create one first
           if (!m10.personnage) return <AvatarBuilderState key="m10-avatar-late" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(data) => { setCharacterCard({ personnage: data, revealLevel: 0 }); play("cardReveal"); }} />;
@@ -764,7 +764,7 @@ export default function PlayPage() {
 
     // ── MODULE 11: Ciné-Débat — rich stimulus component ──
     if (session.currentModule === 11 && data.module11 && session.status === "responding") {
-      if (hasResponded) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+      if (hasResponded) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} topStudents={topStudents} currentStudentId={studentId ?? undefined} />;
       return (
         <CineDebatState
           key={`m11-${situation?.id}`}
@@ -837,7 +837,7 @@ export default function PlayPage() {
     if (session.currentModule === 9 && (session.currentSeance || 1) === 2 && session.status === "responding") {
       if (budgetDone) {
         if (isFreeMode) return <SentState />;
-        return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+        return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} topStudents={topStudents} currentStudentId={studentId ?? undefined} />;
       }
       return <BudgetState sessionId={sessionId} studentId={studentId!} storyContext={storyContext} onDone={() => { setBudgetDone(true); play("send"); }} />;
     }
@@ -874,7 +874,7 @@ export default function PlayPage() {
 
     // Reviewing — show result if choice exists, otherwise wait
     if (session.status === "reviewing") {
-      if (collectiveChoice) return <ResultState collectiveChoice={collectiveChoice} isMyResponseChosen={data.isMyResponseChosen} comboCount={comboCount} onReveal={() => play("drumroll")} />;
+      if (collectiveChoice) return <ResultState collectiveChoice={collectiveChoice} isMyResponseChosen={data.isMyResponseChosen} comboCount={comboCount} onReveal={() => play("drumroll")} topStudents={topStudents} currentStudentId={studentId ?? undefined} currentRank={currentRank ?? undefined} />;
       return <WaitingState session={session} connectedCount={connectedCount} />;
     }
 
@@ -886,7 +886,7 @@ export default function PlayPage() {
 
     // Responding
     if (session.status === "responding" && situation) {
-      if (hasResponded) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+      if (hasResponded) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} topStudents={topStudents} currentStudentId={studentId ?? undefined} />;
       return <SituationState key={situation.id} situation={situation} onSubmit={handleRespond} submitting={submitting} playSound={play} />;
     }
 

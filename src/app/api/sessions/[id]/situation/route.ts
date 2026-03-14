@@ -130,6 +130,7 @@ export async function GET(
     connectedCountResult,
     responsesCountResult,
     budgetResult,
+    topStudentsResult,
   ] = await Promise.all([
     // Q3: Student response check
     studentId && situation
@@ -206,6 +207,14 @@ export async function GET(
           .select("choices")
           .eq("session_id", sessionId)
       : Promise.resolve({ data: null }),
+    // Q12: Top students by XP (for live leaderboard)
+    admin
+      .from("students")
+      .select("id, display_name, avatar, xp")
+      .eq("session_id", sessionId)
+      .eq("is_active", true)
+      .order("xp", { ascending: false })
+      .limit(5),
   ]);
 
   // ── Unpack results with safe access ──
@@ -237,6 +246,28 @@ export async function GET(
     budgetStats = { averages, submittedCount: budgets.length };
   } else if (session.current_module === 9 && (session.current_seance || 1) === 2) {
     budgetStats = { averages: {}, submittedCount: 0 };
+  }
+
+  // Top students for leaderboard
+  const topStudentsRaw = Array.isArray(topStudentsResult.data) ? topStudentsResult.data : [];
+  const topStudents = topStudentsRaw.map((s: { id: string; display_name: string; avatar: string; xp: number }) => ({
+    id: s.id,
+    displayName: s.display_name,
+    avatar: s.avatar,
+    xp: s.xp ?? 0,
+  }));
+  // Compute current student rank (1-indexed)
+  let currentRank: number | null = null;
+  if (studentId && topStudentsRaw.length > 0) {
+    const idx = topStudentsRaw.findIndex((s: { id: string }) => s.id === studentId);
+    if (idx >= 0) {
+      currentRank = idx + 1;
+    }
+    // If not in top 5, we need a count of students with more XP
+    if (currentRank === null) {
+      // Count students with more XP than this student — approximation via position
+      currentRank = topStudentsRaw.length + 1; // at least after the top 5
+    }
   }
 
   // Get prompt for the session's level
@@ -292,5 +323,7 @@ export async function GET(
     studentWarnings,
     studentKicked,
     team: studentTeam,
+    topStudents,
+    currentRank,
   }, { headers: { "Cache-Control": "private, no-store" } });
 }

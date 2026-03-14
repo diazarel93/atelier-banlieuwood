@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 export interface MiniLeaderboardProps {
   entries: { id: string; displayName: string; avatar: string; xp: number }[];
   currentStudentId?: string;
+  currentRank?: number;
 }
 
 const MEDAL_CONFIG = [
@@ -13,12 +14,14 @@ const MEDAL_CONFIG = [
   { emoji: "\u{1F949}", bg: "#CD7F32", label: "3e" },
 ] as const;
 
-export function MiniLeaderboard({ entries, currentStudentId }: MiniLeaderboardProps) {
+export function MiniLeaderboard({ entries, currentStudentId, currentRank }: MiniLeaderboardProps) {
   if (!entries || entries.length < 1) return null;
 
   const top3 = [...entries]
     .sort((a, b) => b.xp - a.xp)
     .slice(0, 3);
+
+  const isInTop3 = currentStudentId && top3.some((e) => e.id === currentStudentId);
 
   return (
     <div className="w-full max-w-[280px] space-y-1.5">
@@ -70,6 +73,19 @@ export function MiniLeaderboard({ entries, currentStudentId }: MiniLeaderboardPr
           </motion.div>
         );
       })}
+
+      {/* Show current player's rank if not in top 3 */}
+      {!isInTop3 && currentRank && currentRank > 3 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="flex items-center justify-center gap-1.5 pt-1"
+        >
+          <span className="text-xs text-bw-muted">···</span>
+          <span className="text-xs font-semibold text-bw-heading">Toi : {currentRank}e</span>
+        </motion.div>
+      )}
     </div>
   );
 }
