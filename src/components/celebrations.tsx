@@ -378,7 +378,7 @@ export function CelebrationBanner({
   );
 }
 
-// XP delta animation — floating "+10 XP" text
+// XP delta animation — floating "+10 pts" text
 export function XPDelta({ amount, visible }: { amount: number; visible: boolean }) {
   return (
     <AnimatePresence>
@@ -391,7 +391,7 @@ export function XPDelta({ amount, visible }: { amount: number; visible: boolean 
           className="fixed top-4 right-4 z-50 text-lg font-black pointer-events-none"
           style={{ color: "#FF6B35", textShadow: "0 2px 8px rgba(255,107,53,0.4)" }}
         >
-          +{amount} XP
+          +{amount} pts
         </motion.span>
       )}
     </AnimatePresence>

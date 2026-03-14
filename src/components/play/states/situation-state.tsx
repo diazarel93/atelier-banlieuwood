@@ -24,6 +24,7 @@ export function SituationState({
   const { displayed, done, skip } = useTypewriter(situation.prompt);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lastTypeSound = useRef(0);
+  const submitGuard = useRef(false);
 
   // Word count
   const wordCount = useMemo(() => {
@@ -56,7 +57,9 @@ export function SituationState({
   }
 
   function handleSubmit() {
-    if (!text.trim() || submitting) return;
+    if (!text.trim() || submitting || submitGuard.current) return;
+    submitGuard.current = true;
+    setTimeout(() => { submitGuard.current = false; }, 400);
     playSound?.("tap");
     onSubmit(text.trim());
   }
@@ -111,6 +114,9 @@ export function SituationState({
           ref={textareaRef}
           value={text}
           onChange={handleChange}
+          onFocus={(e) => {
+            e.target.scrollIntoView({ behavior: "smooth", block: "center" });
+          }}
           placeholder="Ecris ta reponse ici..."
           aria-label="Reponse a la situation"
           rows={2}
@@ -148,7 +154,7 @@ export function SituationState({
             transition={text.length > 20 ? { duration: 0.3, ease: "easeOut" } : {}}
             onClick={handleSubmit}
             disabled={!text.trim() || submitting}
-            className={`btn-glow px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl font-bold transition-all ${
+            className={`btn-glow px-6 py-3 sm:px-8 sm:py-3 min-h-[44px] rounded-xl font-bold transition-all ${
               text.trim() && !submitting
                 ? "text-white cursor-pointer shadow-lg"
                 : "bg-bw-elevated text-bw-muted cursor-not-allowed"

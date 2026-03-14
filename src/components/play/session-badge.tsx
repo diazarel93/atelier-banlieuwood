@@ -101,10 +101,10 @@ export function SessionBadge({
 
     // Stats grid (2x2)
     const stats = [
-      { icon: "⚡", label: "XP gagné", value: String(xp) },
+      { icon: "⚡", label: "Points gagnés", value: String(xp) },
       { icon: "💬", label: "Réponses", value: String(responses) },
-      { icon: "💡", label: "Idées retenues", value: String(retained) },
-      { icon: "🔥", label: "Meilleur streak", value: String(bestStreak) },
+      { icon: "💡", label: "Idées choisies", value: String(retained) },
+      { icon: "🔥", label: "Meilleure série", value: String(bestStreak) },
     ];
 
     const startY = 210;
@@ -216,19 +216,19 @@ export function SessionBadge({
 
         <div className="grid grid-cols-2 gap-3">
           {[
-            { icon: "⚡", value: xp, label: "XP" },
+            { icon: "⚡", value: xp, label: "Points" },
             { icon: "💬", value: responses, label: "Réponses" },
-            { icon: "💡", value: retained, label: "Retenues" },
-            { icon: "🔥", value: bestStreak, label: "Streak" },
+            { icon: "💡", value: retained, label: "Choisies" },
+            { icon: "🔥", value: bestStreak, label: "Série" },
           ].map((s) => (
             <div key={s.label} className="rounded-xl bg-white/50 p-2.5 space-y-0.5">
               <p className="text-lg font-bold text-bw-heading">{s.icon} {s.value}</p>
-              <p className="text-[10px] text-bw-muted">{s.label}</p>
+              <p className="text-xs text-bw-muted">{s.label}</p>
             </div>
           ))}
         </div>
 
-        <p className="text-[10px] text-bw-muted">{date || new Date().toLocaleDateString("fr-FR")}</p>
+        <p className="text-xs text-bw-muted">{date || new Date().toLocaleDateString("fr-FR")}</p>
       </motion.div>
 
       {/* Action buttons */}

@@ -178,7 +178,7 @@ export function CinematicIntro({ onComplete, sessionTitle, studentName, studentA
               className="flex items-center gap-2 justify-center text-bw-gold/50"
             >
               <div className="w-8 h-px bg-bw-gold/30" />
-              <span className="text-[10px] tracking-[0.4em] uppercase">Action !</span>
+              <span className="text-xs tracking-[0.4em] uppercase">Action !</span>
               <div className="w-8 h-px bg-bw-gold/30" />
             </motion.div>
           </motion.div>
@@ -190,7 +190,7 @@ export function CinematicIntro({ onComplete, sessionTitle, studentName, studentA
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.3 }}
         transition={{ delay: 2 }}
-        className="absolute bottom-8 text-[10px] text-white/30 tracking-wide"
+        className="absolute bottom-8 text-xs text-white/30 tracking-wide"
       >
         Toucher pour passer
       </motion.p>

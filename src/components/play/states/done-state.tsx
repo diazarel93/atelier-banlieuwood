@@ -111,13 +111,13 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
             <p className="text-xl sm:text-2xl font-bold text-bw-gold">
               <CountUp target={stats.retained} />
             </p>
-            <p className="text-xs text-bw-muted mt-0.5">Idées retenues</p>
+            <p className="text-xs text-bw-muted mt-0.5">Idées choisies</p>
           </div>
           <div className="glass-card p-3">
             <p className="text-xl sm:text-2xl font-bold text-bw-teal">
               <CountUp target={stats.bestStreak} />
             </p>
-            <p className="text-xs text-bw-muted mt-0.5">Meilleur streak</p>
+            <p className="text-xs text-bw-muted mt-0.5">Meilleure série</p>
           </div>
         </motion.div>
       )}
@@ -131,7 +131,7 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
           className="w-full max-w-xs glass-card p-4 text-center"
         >
           <p className="text-2xl font-bold text-bw-gold font-cinema">
-            <CountUp target={xp!} /> XP
+            <CountUp target={xp!} /> points
           </p>
           <p className="text-xs text-bw-muted mt-1">
             Niveau {getLevel(xp!).level} — {getLevel(xp!).name}
@@ -161,7 +161,7 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
               >
                 <span className="text-3xl">{a.icon}</span>
                 <span className="text-xs font-semibold text-bw-text leading-tight text-center">{a.name}</span>
-                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${TIER_COLORS[a.tier] || TIER_COLORS.bronze}`}>
+                <span className={`text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${TIER_COLORS[a.tier] || TIER_COLORS.bronze}`}>
                   {a.tier}
                 </span>
               </motion.div>
@@ -290,7 +290,7 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
                     <span className="text-base">{e.avatar}</span>
                     <span className="text-sm text-bw-text flex-1 truncate">{e.displayName}</span>
                     {(e.xp ?? 0) > 0 && (
-                      <span className="text-xs font-bold text-bw-gold tabular-nums">{e.xp} XP</span>
+                      <span className="text-xs font-bold text-bw-gold tabular-nums">{e.xp} pts</span>
                     )}
                     {i === 0 && <span className="text-xs">&#9733;</span>}
                   </div>
@@ -327,7 +327,7 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
             <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
           </svg>
-          Ma biblioth&egrave;que compl&egrave;te
+          Toutes mes créations
         </a>
       </motion.div>
 

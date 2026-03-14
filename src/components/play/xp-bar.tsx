@@ -51,7 +51,7 @@ export function XpBar({ xp, showDetails = false }: XpBarProps) {
         <span className="text-xs font-bold text-bw-gold font-cinema tracking-wider">
           Nv.{level} {name}
         </span>
-        <span className="text-xs text-bw-muted tabular-nums">{xp} XP</span>
+        <span className="text-xs text-bw-muted tabular-nums">{xp} pts</span>
       </div>
       <div className="h-2.5 rounded-full bg-white/[0.06] overflow-hidden relative">
         <motion.div
@@ -70,8 +70,8 @@ export function XpBar({ xp, showDetails = false }: XpBarProps) {
           />
         )}
       </div>
-      <p className="text-[10px] text-bw-muted text-right">
-        {xpToNext > 0 ? `${xpToNext} XP → prochain niveau` : "Niveau max !"}
+      <p className="text-xs text-bw-muted text-right">
+        {xpToNext > 0 ? `${xpToNext} pts → prochain niveau` : "Niveau max !"}
       </p>
     </motion.div>
   );

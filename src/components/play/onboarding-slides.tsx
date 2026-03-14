@@ -15,9 +15,9 @@ const SLIDES = [
       </svg>
     ),
     title: "RÉPONDS",
-    text: "Le facilitateur pose une question.\nÉcris ta meilleure idée !",
+    text: "Le prof pose une question.\nÉcris ta meilleure idée !",
     accent: "#FF6B35",
-    xp: "+10 XP par réponse",
+    xp: "+10 points par réponse",
   },
   {
     icon: (
@@ -28,7 +28,7 @@ const SLIDES = [
     title: "VOTE",
     text: "Choisis la meilleure idée\nparmi celles de la classe.",
     accent: "#8B5CF6",
-    xp: "+5 XP par vote",
+    xp: "+5 points par vote",
   },
   {
     icon: (
@@ -38,9 +38,9 @@ const SLIDES = [
       </svg>
     ),
     title: "GAGNE",
-    text: "Si ton idée est retenue : +25 XP !\nEnchaîne pour un streak 🔥",
+    text: "Si le groupe choisit ton idée : +25 points !\nFais une série pour gagner plus 🔥",
     accent: "#D4A843",
-    xp: "Monte de niveau !",
+    xp: "Passe au niveau suivant !",
   },
 ];
 

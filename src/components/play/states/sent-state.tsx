@@ -193,12 +193,12 @@ export function SentState({ responsesCount, connectedCount, streak, lastXpGain, 
               {"\uD83D\uDD25"}
             </motion.span>
             <span className="text-sm font-bold text-bw-amber">x{streak}</span>
-            <span className="text-xs text-bw-amber/70">streak</span>
+            <span className="text-xs text-bw-amber/70">série</span>
           </motion.div>
         )}
         {(lastXpGain ?? 0) > 0 && (
           <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 400, damping: 15, delay: 0.2 }} className="text-sm font-bold text-bw-gold">
-            +{lastXpGain} XP
+            +{lastXpGain} pts
           </motion.span>
         )}
       </div>

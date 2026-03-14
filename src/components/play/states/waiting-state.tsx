@@ -92,7 +92,7 @@ export function WaitingState({ session, connectedCount, topStudents, currentStud
         </h2>
         <div className="h-0.5 w-12 mx-auto rounded-full bg-gradient-to-r from-bw-primary to-bw-gold" />
         <p className="text-bw-muted text-sm">
-          Le facilitateur va bientot lancer la question...
+          Le prof va bientôt lancer la question...
         </p>
       </div>
 

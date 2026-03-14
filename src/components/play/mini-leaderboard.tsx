@@ -68,7 +68,7 @@ export function MiniLeaderboard({ entries, currentStudentId, currentRank }: Mini
 
             {/* XP */}
             <span className="text-xs font-bold text-bw-gold tabular-nums shrink-0">
-              {entry.xp} XP
+              {entry.xp} pts
             </span>
           </motion.div>
         );

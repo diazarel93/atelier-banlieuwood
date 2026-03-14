@@ -104,7 +104,7 @@ export function ResultState({
               <h2
                 className="text-xl sm:text-2xl tracking-wider font-cinema"
               >
-                CHOIX COLLECTIF
+                LE CHOIX DU GROUPE
               </h2>
             </div>
 
