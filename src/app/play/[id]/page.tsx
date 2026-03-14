@@ -86,8 +86,6 @@ const CineDebatState = dynamic(() => import("@/components/play/module-11/cine-de
 const MancheVoteState = dynamic(() => import("@/components/play/module-12/manche-vote-state").then(m => ({ default: m.MancheVoteState })), { ssr: false });
 const PostprodState = dynamic(() => import("@/components/play/module-13/postprod-state").then(m => ({ default: m.PostprodState })), { ssr: false });
 import { TeamChat } from "@/components/play/team-chat";
-import { PowerUpsBar } from "@/components/play/power-ups-bar";
-import { CelebrationBanner as CelebrationOverlay } from "@/components/celebrations";
 
 
 // ——— Main Page ———
@@ -115,13 +113,18 @@ export default function PlayPage() {
     situationId: string;
   } | null>(null);
   const [handRaised, setHandRaised] = useState(false);
-  const [celebration, setCelebration] = useState<{ type: "achievement" | "level_up" | "streak" | "retained" | "combo"; title: string; subtitle?: string; icon?: string } | null>(null);
+  const [isMuted, setIsMuted] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("bw-muted") === "true";
+    }
+    return false;
+  });
 
   // Engagement tracking
   const [streak, setStreak] = useState(1);
   const [comboCount, setComboCount] = useState(0);
   const [collectedCategories, setCollectedCategories] = useState<{ key: string; label: string; color: string }[]>([]);
-  const [gameStats, setGameStats] = useState({ responses: 0, retained: 0, bestStreak: 1 });
+  const [gameStats, setGameStats] = useState({ responses: 0, retained: 0, bestStreak: 1, votes: 0 });
   const [sessionXp, setSessionXp] = useState(0);
   const [xpDelta, setXpDelta] = useState<{ amount: number; key: number } | null>(null);
   const [lastXpGain, setLastXpGain] = useState(0);
@@ -136,7 +139,10 @@ export default function PlayPage() {
   const [studentDisplayName, setStudentDisplayName] = useState("Eleve");
   const [studentAvatar, setStudentAvatar] = useState("🎬");
   const [waitingFullscreen, setWaitingFullscreen] = useState(false);
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return !localStorage.getItem(`bw-intro-seen-${sessionId}`);
+  });
   const [showOnboarding, setShowOnboarding] = useState(() => {
     if (typeof window === "undefined") return false;
     return !localStorage.getItem("bw-onboarded");
@@ -153,7 +159,8 @@ export default function PlayPage() {
 
   const handleIntroComplete = useCallback(() => {
     setShowIntro(false);
-  }, []);
+    try { localStorage.setItem(`bw-intro-seen-${sessionId}`, "1"); } catch {}
+  }, [sessionId]);
 
   // Reconnection toast
   const wasOnlineRef = useRef(true);
@@ -216,7 +223,7 @@ export default function PlayPage() {
   }, [studentId, sessionId]);
 
   const { data, isLoading, error, refetch } = useSessionPolling(sessionId, studentId);
-  const { play } = useSound({ muted: data?.session?.muteSounds });
+  const { play } = useSound({ muted: isMuted || data?.session?.muteSounds });
 
   // Streak lost detection
   useEffect(() => {
@@ -245,6 +252,7 @@ export default function PlayPage() {
         retained: gameStats.retained,
         streak,
         bestStreak: gameStats.bestStreak,
+        totalVotes: gameStats.votes,
       }),
     })
       .then((r) => (r.ok ? r.json() : null))
@@ -533,6 +541,8 @@ export default function PlayPage() {
         toast.error((errData as { error?: string })?.error || "Erreur lors du vote");
       } else {
         play("vote");
+        // Track vote count for achievements
+        setGameStats((prev) => ({ ...prev, votes: prev.votes + 1 }));
         // XP gain for voting
         setSessionXp((prev) => prev + XP_VOTE);
         setXpDelta({ amount: XP_VOTE, key: Date.now() });
@@ -885,13 +895,13 @@ export default function PlayPage() {
         // The polling will pick up the new situation, so just show the form.
         return <SituationState key={situation.id} situation={situation} onSubmit={handleRespond} submitting={submitting} playSound={play} />;
       }
-      return <WaitingState session={session} connectedCount={connectedCount} crossSessionStreak={crossSessionStreak} />;
+      return <WaitingState session={session} connectedCount={connectedCount} crossSessionStreak={crossSessionStreak} onReplayTutorial={() => setShowOnboarding(true)} />;
     }
 
     // Reviewing — show result if choice exists, otherwise wait
     if (session.status === "reviewing") {
       if (collectiveChoice) return <ResultState collectiveChoice={collectiveChoice} isMyResponseChosen={data.isMyResponseChosen} comboCount={comboCount} onReveal={() => play("drumroll")} topStudents={topStudents} currentStudentId={studentId ?? undefined} currentRank={currentRank ?? undefined} />;
-      return <WaitingState session={session} connectedCount={connectedCount} crossSessionStreak={crossSessionStreak} />;
+      return <WaitingState session={session} connectedCount={connectedCount} crossSessionStreak={crossSessionStreak} onReplayTutorial={() => setShowOnboarding(true)} />;
     }
 
     // Voting
@@ -907,7 +917,7 @@ export default function PlayPage() {
     }
 
     // Waiting (default)
-    return <WaitingState session={session} connectedCount={connectedCount} crossSessionStreak={crossSessionStreak} />;
+    return <WaitingState session={session} connectedCount={connectedCount} crossSessionStreak={crossSessionStreak} onReplayTutorial={() => setShowOnboarding(true)} />;
   }
 
   if (noStudent) {
@@ -1158,12 +1168,38 @@ export default function PlayPage() {
             </span>
           )}
 
-          {/* Right: XP bar + timer or online count */}
+          {/* Right: XP bar + timer + mute + online count */}
           <div className="flex items-center gap-2">
             {sessionXp > 0 && <XpBar xp={sessionXp} />}
             {data.session.timerEndsAt && new Date(data.session.timerEndsAt).getTime() > Date.now() && (
               <CountdownTimer endsAt={data.session.timerEndsAt} size="sm" />
             )}
+            <button
+              type="button"
+              aria-label={isMuted ? "Activer le son" : "Couper le son"}
+              onClick={() => {
+                setIsMuted((prev) => {
+                  const next = !prev;
+                  localStorage.setItem("bw-muted", String(next));
+                  return next;
+                });
+              }}
+              className="w-7 h-7 flex items-center justify-center rounded-full text-bw-muted hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            >
+              {isMuted ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                  <line x1="23" y1="9" x2="17" y2="15" />
+                  <line x1="17" y1="9" x2="23" y2="15" />
+                </svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                </svg>
+              )}
+            </button>
             {!isFreeMode && (
               <div className="flex items-center gap-1">
                 <div className="w-1.5 h-1.5 rounded-full bg-bw-teal" />
@@ -1294,17 +1330,6 @@ export default function PlayPage() {
         />
       )}
 
-      {/* Celebration Overlay */}
-      {celebration && (
-        <CelebrationOverlay
-          type={celebration.type}
-          title={celebration.title}
-          subtitle={celebration.subtitle}
-          icon={celebration.icon}
-          visible={!!celebration}
-          onDismiss={() => setCelebration(null)}
-        />
-      )}
     </div>
   );
 }

@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireFacilitator } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateScenesPrompt, assignMissions } from "@/lib/module-scenario-data";
 import { log } from "@/lib/logger";
 
-// POST — Facilitateur generates scenes from M12 winners via AI
+// POST — Facilitateur generates scenes from M12 winners via AI (facilitator only)
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const admin = createAdminClient();
 
   // Verify session exists

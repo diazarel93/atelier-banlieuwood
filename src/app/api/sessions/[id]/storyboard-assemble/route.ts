@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireFacilitator } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateSceneStoryboardUrl } from "@/lib/pollinations";
 
-// POST — Facilitator assembles storyboard from student decoupages
+// POST — Facilitator assembles storyboard from student decoupages (facilitator only)
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const admin = createAdminClient();
 
   // Verify session exists
@@ -118,12 +122,15 @@ export async function POST(
   return NextResponse.json({ ok: true, scenes: assembledScenes });
 }
 
-// PATCH — Validate storyboard
+// PATCH — Validate storyboard (facilitator only)
 export async function PATCH(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const admin = createAdminClient();
 
   const { error } = await admin

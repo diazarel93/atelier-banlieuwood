@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireFacilitator, safeJson } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // Adrian: "L'intervenant peut ajouter des tags simples :
@@ -11,12 +12,15 @@ const VALID_TAGS = [
   "perturbateur", "decrochage",
 ] as const;
 
-// GET — List all tags for a session
+// GET — List all tags for a session (facilitator only)
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const admin = createAdminClient();
 
   const studentId = req.nextUrl.searchParams.get("studentId");
@@ -41,16 +45,20 @@ export async function GET(
   return NextResponse.json({ tags: data || [] });
 }
 
-// POST — Add a tag to a student
+// POST — Add a tag to a student (facilitator only)
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const admin = createAdminClient();
 
-  const body = await req.json();
-  const { studentId, tag } = body;
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { studentId, tag } = parsed.data;
 
   if (!studentId || !tag) {
     return NextResponse.json({ error: "studentId et tag requis" }, { status: 400 });
@@ -80,16 +88,20 @@ export async function POST(
   return NextResponse.json({ success: true, tag: data });
 }
 
-// DELETE — Remove a tag from a student
+// DELETE — Remove a tag from a student (facilitator only)
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const admin = createAdminClient();
 
-  const body = await req.json();
-  const { studentId, tag } = body;
+  const parsed = await safeJson(req);
+  if ("error" in parsed) return parsed.error;
+  const { studentId, tag } = parsed.data;
 
   if (!studentId || !tag) {
     return NextResponse.json({ error: "studentId et tag requis" }, { status: 400 });

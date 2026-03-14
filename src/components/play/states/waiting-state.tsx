@@ -14,6 +14,7 @@ export interface WaitingStateProps {
   topStudents?: { id: string; displayName: string; avatar: string; xp: number }[];
   currentStudentId?: string;
   crossSessionStreak?: number;
+  onReplayTutorial?: () => void;
 }
 
 function pickTips(module: number, seance?: number): CinemaTip[] {
@@ -29,7 +30,7 @@ const TYPE_ICONS: Record<string, string> = {
   acteur: "🌟", rappel: "📌", motivation: "💪",
 };
 
-export function WaitingState({ session, connectedCount, topStudents, currentStudentId, crossSessionStreak }: WaitingStateProps) {
+export function WaitingState({ session, connectedCount, topStudents, currentStudentId, crossSessionStreak, onReplayTutorial }: WaitingStateProps) {
   const tips = useMemo(() => pickTips(session.currentModule || 1, session.currentSeance), [session.currentModule, session.currentSeance]);
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * tips.length));
 
@@ -198,6 +199,19 @@ export function WaitingState({ session, connectedCount, topStudents, currentStud
         </svg>
         Ma biblioth&egrave;que
       </a>
+
+      {/* Replay onboarding tutorial */}
+      {onReplayTutorial && (
+        <button
+          onClick={() => {
+            localStorage.removeItem("bw-onboarded");
+            onReplayTutorial();
+          }}
+          className="text-[11px] text-bw-muted/60 hover:text-bw-muted transition-colors mt-1 cursor-pointer"
+        >
+          ? Revoir le tuto
+        </button>
+      )}
     </motion.div>
   );
 }

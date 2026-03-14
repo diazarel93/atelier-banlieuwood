@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CINEMA_TIPS, type CinemaTip } from "@/lib/cinema-tips";
 import { BONUS_TRIVIA, pickBonusQuestions, type BonusQuestion } from "@/lib/bonus-trivia";
-import { CreativeAssistant } from "@/components/play/creative-assistant";
 import { MiniLeaderboard } from "@/components/play/mini-leaderboard";
 
 function pickTips(module?: number, seance?: number): CinemaTip[] {
@@ -250,18 +249,6 @@ export function SentState({ responsesCount, connectedCount, streak, lastXpGain, 
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Creative Assistant — appears after bonus trivia */}
-      {showBonus && sessionId && studentId && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className="w-full flex justify-center px-4"
-        >
-          <CreativeAssistant sessionId={sessionId} studentId={studentId} />
-        </motion.div>
-      )}
 
       <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }} className="flex gap-1">
         {[0, 1, 2].map((i) => (

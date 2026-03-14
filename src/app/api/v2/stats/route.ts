@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
   // Fetch sessions (admin sees all)
   let sessQuery = supabase
     .from("sessions")
-    .select("id, title, status");
+    .select("id, title, status, class_label");
 
   if (!isAdmin) {
     sessQuery = sessQuery.eq("facilitator_id", user.id);

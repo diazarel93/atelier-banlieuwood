@@ -1,21 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireFacilitator } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isValidUUID } from "@/lib/api-utils";
 
 /**
  * GET /api/sessions/[id]/situations-preview
  * Returns ALL situations for a given module/seance (or the session's current one).
  * Accepts optional ?module=X&seance=Y query params to preview any module.
- * Used by the pilot cockpit + briefing to let teachers preview questions.
+ * Used by the pilot cockpit + briefing to let teachers preview questions (facilitator only).
  */
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: sessionId } = await params;
-  if (!isValidUUID(sessionId)) {
-    return NextResponse.json({ error: "ID invalide" }, { status: 400 });
-  }
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
 
   const admin = createAdminClient();
 

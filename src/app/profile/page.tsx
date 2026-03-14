@@ -90,6 +90,24 @@ const TIER_BG: Record<string, string> = {
   gold: "bg-yellow-100 text-yellow-800",
 };
 
+// ── Hidden achievements (impossible to unlock — no progress metric exists) ──
+
+const HIDDEN_ACHIEVEMENT_IDS = [
+  "tribun",
+  "pitcheur",
+  "mentor",
+  "festival_star",
+  "perfectionniste",
+  "noctambule",
+  "speed_runner",
+  "mission_hero",
+  "critique",
+] as const;
+
+const VISIBLE_ACHIEVEMENTS = ACHIEVEMENTS.filter(
+  (a) => !(HIDDEN_ACHIEVEMENT_IDS as readonly string[]).includes(a.id)
+);
+
 // ── Category filter ──
 
 type FilterCategory = "all" | AchievementCategory;
@@ -155,11 +173,14 @@ export default function ProfilePage() {
     }
   }
 
-  // Filter achievements by category
+  // Filter achievements by category (already excludes hidden/impossible ones)
   const filteredAchievements =
     badgeFilter === "all"
-      ? ACHIEVEMENTS
-      : ACHIEVEMENTS.filter((a) => a.category === badgeFilter);
+      ? VISIBLE_ACHIEVEMENTS
+      : VISIBLE_ACHIEVEMENTS.filter((a) => a.category === badgeFilter);
+
+  // Check if any visible achievement is unlocked (for empty state)
+  const hasAnyUnlocked = filteredAchievements.some((a) => unlockedMap.has(a.id));
 
   return (
     <main className="min-h-dvh bg-gradient-to-b from-[#F7F3EA] to-[#EFE8D8] pb-12">
@@ -356,6 +377,20 @@ export default function ProfilePage() {
               />
             ))}
           </div>
+
+          {/* Empty state — no badges unlocked yet */}
+          {!hasAnyUnlocked && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="glass-card p-6 text-center space-y-2"
+            >
+              <p className="text-3xl">{"\uD83C\uDFAF"}</p>
+              <p className="text-sm text-bw-muted leading-relaxed">
+                Continue a jouer pour debloquer ton premier badge !
+              </p>
+            </motion.div>
+          )}
 
           {/* Achievement cards */}
           <div className="grid grid-cols-2 gap-3">

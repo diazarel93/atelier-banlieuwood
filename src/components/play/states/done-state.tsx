@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { fireConfetti } from "@/components/play/utils";
 import { CountUp } from "@/components/play/count-up";
@@ -10,6 +10,7 @@ import type { AvatarOptions } from "@/components/avatar-dicebear";
 import { ROUTES } from "@/lib/routes";
 import { getLevel } from "@/lib/xp";
 import { SessionBadge } from "@/components/play/session-badge";
+import { useSound } from "@/hooks/use-sound";
 
 interface LeaderboardData {
   entries: { id: string; displayName: string; avatar: string; responses: number; votes: number; retained: number; xp?: number }[];
@@ -45,12 +46,23 @@ const TIER_COLORS: Record<string, string> = {
 export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar, stats, xp, characterCard, newAchievements, profileId }: DoneStateProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const { play } = useSound();
+  const fanfarePlayed = useRef(false);
 
   useEffect(() => {
     // Fire confetti on mount
     const t = setTimeout(() => fireConfetti(), 500);
     return () => clearTimeout(t);
   }, []);
+
+  // Play fanfare for gold achievements
+  useEffect(() => {
+    if (fanfarePlayed.current) return;
+    if (newAchievements && newAchievements.some((a) => a.tier === "gold")) {
+      fanfarePlayed.current = true;
+      play("fanfare");
+    }
+  }, [newAchievements, play]);
 
   useEffect(() => {
     fetch(`/api/sessions/${sessionId}/leaderboard`)

@@ -389,26 +389,6 @@ function JoinForm() {
           </Button>
         </motion.div>
 
-        {/* QR code option */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-center"
-        >
-          <button className="inline-flex items-center gap-2 text-xs text-bw-muted hover:text-bw-teal transition-colors cursor-pointer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-              <rect x="3" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="3" width="7" height="7" rx="1" />
-              <rect x="3" y="14" width="7" height="7" rx="1" />
-              <rect x="14" y="14" width="3" height="3" rx="0.5" />
-              <rect x="18" y="14" width="3" height="3" rx="0.5" />
-              <rect x="14" y="18" width="3" height="3" rx="0.5" />
-              <rect x="18" y="18" width="3" height="3" rx="0.5" />
-            </svg>
-            ou scanner un QR code
-          </button>
-        </motion.div>
       </motion.div>
     </div>
   );

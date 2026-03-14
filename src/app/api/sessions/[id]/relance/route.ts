@@ -1,20 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireFacilitator, isValidUUID, safeJson } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { isValidUUID, safeJson } from "@/lib/api-utils";
 import { generateRelance } from "@/lib/ai";
 
-// POST — Generate an AI relance for a student's response
+// POST — Generate an AI relance for a student's response (facilitator only)
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id: sessionId } = await params;
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const rl = checkRateLimit(getIP(req), "relance", { max: 10, windowSec: 60 });
   if (rl) {
     return NextResponse.json({ error: rl.error }, { status: 429 });
   }
 
-  const { id: sessionId } = await params;
   const parsed = await safeJson(req);
   if ("error" in parsed) return parsed.error;
   const { studentId, responseId } = parsed.data;
@@ -102,11 +105,15 @@ export async function POST(
   return NextResponse.json({ relanceText });
 }
 
-// PATCH — Store student's response to the relance
+// PATCH — Store student's response to the relance (facilitator only)
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id: sessionId } = await params;
+  const auth = await requireFacilitator(sessionId);
+  if ("error" in auth) return auth.error;
+
   const rl = checkRateLimit(getIP(req), "relance-patch", {
     max: 20,
     windowSec: 60,
@@ -115,7 +122,6 @@ export async function PATCH(
     return NextResponse.json({ error: rl.error }, { status: 429 });
   }
 
-  const { id: sessionId } = await params;
   const parsed = await safeJson(req);
   if ("error" in parsed) return parsed.error;
   const { responseId, relanceResponse } = parsed.data;

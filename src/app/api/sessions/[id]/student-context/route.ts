@@ -181,13 +181,14 @@ export async function PATCH(
   const parsed = await safeJson(req);
   if ("error" in parsed) return parsed.error;
 
-  const { studentId, sessionXp, responses, retained, streak, bestStreak } = parsed.data as {
+  const { studentId, sessionXp, responses, retained, streak, bestStreak, totalVotes } = parsed.data as {
     studentId?: string;
     sessionXp?: number;
     responses?: number;
     retained?: number;
     streak?: number;
     bestStreak?: number;
+    totalVotes?: number;
   };
 
   if (!studentId || !isValidUUID(studentId)) {
@@ -214,6 +215,7 @@ export async function PATCH(
   const xpToAdd = sessionXp || 0;
   const responsesToAdd = responses || 0;
   const retainedToAdd = retained || 0;
+  const votesToAdd = totalVotes || 0;
   const newStreak = streak || 0;
   const newBestStreak = bestStreak || 0;
 
@@ -242,6 +244,7 @@ export async function PATCH(
     const updatedSessionsPlayed = (existing.sessions_played || 0) + 1;
     const updatedTotalResponses = (existing.total_responses || 0) + responsesToAdd;
     const updatedRetainedCount = (existing.retained_count || 0) + retainedToAdd;
+    const updatedTotalVotes = (existing.total_votes || 0) + votesToAdd;
 
     await admin
       .from("student_profiles")
@@ -250,6 +253,7 @@ export async function PATCH(
         sessions_played: updatedSessionsPlayed,
         total_responses: updatedTotalResponses,
         retained_count: updatedRetainedCount,
+        total_votes: updatedTotalVotes,
         current_streak: computedStreak,
         best_streak: finalBestStreak,
         last_active_at: new Date().toISOString(),
@@ -265,7 +269,7 @@ export async function PATCH(
       retainedCount: updatedRetainedCount,
       currentStreak: computedStreak,
       bestStreak: finalBestStreak,
-      totalVotes: existing.total_votes || 0,
+      totalVotes: updatedTotalVotes,
       level: existing.level || 0,
     };
   } else {
@@ -286,6 +290,7 @@ export async function PATCH(
           sessions_played: 1,
           total_responses: responsesToAdd,
           retained_count: retainedToAdd,
+          total_votes: votesToAdd,
           current_streak: computedStreak,
           best_streak: Math.max(newBestStreak, computedStreak),
           last_active_at: new Date().toISOString(),
@@ -329,7 +334,7 @@ export async function PATCH(
       retainedCount: retainedToAdd,
       currentStreak: computedStreak,
       bestStreak: Math.max(newBestStreak, computedStreak),
-      totalVotes: 0,
+      totalVotes: votesToAdd,
       level: 0,
     };
   }
