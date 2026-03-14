@@ -74,6 +74,8 @@ export function ConnectionBanner() {
           className="fixed top-0 left-0 right-0 z-[45] flex justify-center px-4 pt-2 pointer-events-none"
         >
           <div
+            role="alert"
+            aria-live="assertive"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-md text-xs font-medium pointer-events-auto"
             style={{ background: c.bg, border: c.border, color: c.color }}
           >

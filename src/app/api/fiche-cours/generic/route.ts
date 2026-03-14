@@ -3,11 +3,12 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { generateFicheCours } from "@/lib/ai";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
+import { withErrorHandler } from "@/lib/api-utils";
 
 const VALID_LEVELS = ["primaire", "college", "lycee"];
 
 // POST — generate a generic (pre-session) fiche de cours
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
   const supabase = await createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
@@ -80,4 +81,4 @@ export async function POST(req: NextRequest) {
     },
     { headers: { "Cache-Control": "public, max-age=3600, stale-while-revalidate=7200" } }
   );
-}
+});

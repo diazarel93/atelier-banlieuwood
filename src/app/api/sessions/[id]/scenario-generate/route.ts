@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator } from "@/lib/api-utils";
+import { requireFacilitator, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateScenesPrompt, assignMissions } from "@/lib/module-scenario-data";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { log } from "@/lib/logger";
 
 // POST — Facilitateur generates scenes from M12 winners via AI (facilitator only)
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -157,4 +157,4 @@ export async function POST(
     missionsCount: missions.length,
     scenes: insertedScenes,
   });
-}
+});

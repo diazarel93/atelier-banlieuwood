@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/api-utils";
+import { requireAdmin, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // GET /api/v2/admin/stats — global admin stats
-export async function GET() {
+export const GET = withErrorHandler<Record<string, never>>(async function GET() {
   const auth = await requireAdmin();
   if ("error" in auth) return auth.error;
 
@@ -22,4 +22,4 @@ export async function GET() {
     totalSessions: sessionsRes.count ?? 0,
     pendingInvitations: invitationsRes.count ?? 0,
   });
-}
+});

@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { oieToAxes, aggregateAxes, type AxesScores } from "@/lib/axes-mapping";
+import { withErrorHandler } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/class-comparison
  * Compare scores across all classes for the facilitator.
  * Returns per-class averages and per-class student counts.
  */
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const {
     data: { user },
@@ -125,4 +126,4 @@ export async function GET(req: NextRequest) {
     totalStudents: allStudents.length,
     totalSessions: sessions.length,
   });
-}
+});

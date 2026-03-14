@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { getAuthUser } from "@/lib/auth-helpers";
+import { withErrorHandler } from "@/lib/api-utils";
 
-export async function GET() {
+export const GET = withErrorHandler<Record<string, never>>(async function GET() {
   const supabase = await createServerSupabase();
   const authUser = await getAuthUser(supabase);
 
@@ -18,4 +19,4 @@ export async function GET() {
     status: authUser.status,
     institution: authUser.institution,
   });
-}
+});

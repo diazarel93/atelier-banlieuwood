@@ -87,12 +87,14 @@ function TeamChatInner({ sessionId, teamId, studentId, studentName, studentAvata
       {/* Toggle Button */}
       <motion.button
         onClick={() => setOpen(!open)}
+        aria-label={`${open ? "Fermer" : "Ouvrir"} le chat${unread > 0 ? `, ${unread} message${unread > 1 ? "s" : ""} non lu${unread > 1 ? "s" : ""}` : ""}`}
+        aria-expanded={open}
         className="fixed bottom-20 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center text-xl bg-bw-violet text-white shadow-lg cursor-pointer"
         style={{ boxShadow: "0 4px 16px rgba(139,92,246,0.3)" }}
         whileTap={{ scale: 0.9 }}
         whileHover={{ scale: 1.1 }}
       >
-        💬
+        <span aria-hidden="true">💬</span>
         {unread > 0 && (
           <motion.span
             initial={{ scale: 0 }}
@@ -122,7 +124,7 @@ function TeamChatInner({ sessionId, teamId, studentId, studentName, studentAvata
                   {teamId ? "Chat Equipe" : "Chat Session"}
                 </span>
               </div>
-              <button onClick={() => setOpen(false)} className="text-bw-muted hover:text-bw-text cursor-pointer">
+              <button onClick={() => setOpen(false)} aria-label="Fermer le chat" className="text-bw-muted hover:text-bw-text cursor-pointer">
                 ✕
               </button>
             </div>
@@ -184,6 +186,7 @@ function TeamChatInner({ sessionId, teamId, studentId, studentName, studentAvata
                       <button
                         key={s}
                         onClick={() => sendMessage(s, "sticker")}
+                        aria-label={`Envoyer le sticker ${s}`}
                         className="w-8 h-8 rounded-lg hover:bg-white/[0.06] flex items-center justify-center text-lg cursor-pointer"
                       >
                         {s}
@@ -198,9 +201,11 @@ function TeamChatInner({ sessionId, teamId, studentId, studentName, studentAvata
             <div className="px-3 py-2 border-t border-white/[0.06] flex items-center gap-2">
               <button
                 onClick={() => setShowStickers(!showStickers)}
+                aria-label={showStickers ? "Masquer les stickers" : "Afficher les stickers"}
+                aria-expanded={showStickers}
                 className="text-sm cursor-pointer hover:scale-110 transition-transform"
               >
-                😊
+                <span aria-hidden="true">😊</span>
               </button>
               <input
                 type="text"
@@ -208,11 +213,13 @@ function TeamChatInner({ sessionId, teamId, studentId, studentName, studentAvata
                 onChange={(e) => setInput(e.target.value.slice(0, 200))}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
                 placeholder="Message..."
-                className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-1.5 text-sm text-bw-text placeholder:text-bw-placeholder focus:outline-none focus:border-bw-violet/40"
+                aria-label="Ecrire un message dans le chat"
+                className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-1.5 text-sm text-bw-text placeholder:text-bw-placeholder focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-violet/40 focus:border-bw-violet/40"
               />
               <button
                 onClick={() => sendMessage(input)}
                 disabled={!input.trim()}
+                aria-label="Envoyer le message"
                 className="text-sm font-bold text-bw-violet disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
               >
                 ↑

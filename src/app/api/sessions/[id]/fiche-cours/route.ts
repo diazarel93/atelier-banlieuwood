@@ -4,9 +4,10 @@ import { createServerSupabase } from "@/lib/supabase/server";
 import { getSessionFullData } from "@/lib/session-data";
 import { generateFicheCours } from "@/lib/ai";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
+import { withErrorHandler } from "@/lib/api-utils";
 
 // GET — return cached fiche de cours for this session
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -34,10 +35,10 @@ export async function GET(
     provider: data.ai_provider,
     generatedAt: data.generated_at,
   });
-}
+});
 
 // POST — generate fiche de cours linked to this session
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -117,4 +118,4 @@ export async function POST(
     provider,
     generatedAt: new Date().toISOString(),
   });
-}
+});

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 
 // POST — add idea to shared bank
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -75,10 +75,10 @@ export async function POST(
 
   if (error) { console.error("[idea-bank POST]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json(data);
-}
+});
 
 // GET — list all ideas for session
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -93,10 +93,10 @@ export async function GET(
 
   if (error) { console.error("[idea-bank GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json({ ideas: data || [], count: data?.length || 0 });
-}
+});
 
 // PATCH — vote on an idea (atomic increment, studentId for dedup)
-export async function PATCH(
+export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -167,4 +167,4 @@ export async function PATCH(
     return NextResponse.json({ error: "Conflit de votes, réessaye" }, { status: 409 });
   }
   return NextResponse.json(data);
-}
+});

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/student-profiles/[profileId]
  * Full student profile: info, scores, session history, responses, tags, portfolio, achievements, notes.
  */
-export async function GET(
+export const GET = withErrorHandler<{ profileId: string }>(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ profileId: string }> }
 ) {
@@ -317,4 +317,4 @@ export async function GET(
     achievements,
     notes: notesRes.data || [],
   });
-}
+});

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { detectAtRiskStudents, type StudentForRisk } from "@/lib/at-risk-detection";
 import { getAuthUser } from "@/lib/auth-helpers";
+import { withErrorHandler } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/dashboard-summary
@@ -9,7 +10,7 @@ import { getAuthUser } from "@/lib/auth-helpers";
  * Returns: today's sessions, quick stats, session dates for calendar.
  * Optional: ?classLabel=X to filter by class.
  */
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const rawClassLabel = req.nextUrl.searchParams.get("classLabel");
   const classLabelFilter = rawClassLabel && rawClassLabel.length <= 50 ? rawClassLabel : null;
   const supabase = await createServerSupabase();
@@ -233,7 +234,7 @@ export async function GET(req: NextRequest) {
     },
     { headers: { "Cache-Control": "private, max-age=10, stale-while-revalidate=20" } }
   );
-}
+});
 
 function summarize(s: Record<string, unknown>) {
   return {

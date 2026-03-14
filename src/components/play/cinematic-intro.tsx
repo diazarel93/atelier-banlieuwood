@@ -25,10 +25,14 @@ export function CinematicIntro({ onComplete, sessionTitle, studentName, studentA
 
   return (
     <motion.div
+      role="dialog"
+      aria-label="Introduction cinematique, toucher pour passer"
+      tabIndex={0}
       className="fixed inset-0 z-50 bg-[#0a0a0a] flex items-center justify-center overflow-hidden"
       animate={phase === "fade" ? { opacity: 0 } : { opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
       onClick={onComplete}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " " || e.key === "Escape") { e.preventDefault(); onComplete(); } }}
     >
       {/* Film grain overlay */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none film-grain" />

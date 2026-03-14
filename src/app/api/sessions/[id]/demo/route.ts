@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator } from "@/lib/api-utils";
+import { requireFacilitator, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   DEMO_STUDENTS,
   DEMO_STUDENT_NAMES,
   getDemoResponsesForStudents,
 } from "@/lib/demo-data";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // POST — activate demo mode: create 5 virtual students + responses for current situation
-export async function POST(
-  _req: NextRequest,
+export const POST = withErrorHandler(async function POST(
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "demo", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -116,13 +120,16 @@ export async function POST(
     ),
     responsesCreated,
   });
-}
+});
 
 // DELETE — remove demo students and all their responses
-export async function DELETE(
-  _req: NextRequest,
+export const DELETE = withErrorHandler(async function DELETE(
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "demo", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -171,7 +178,7 @@ export async function DELETE(
   }
 
   return NextResponse.json({ ok: true, deleted: demoStudentIds.length });
-}
+});
 
 // ── Helper: find the current situation for the session ──
 

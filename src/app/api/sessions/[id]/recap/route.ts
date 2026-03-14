@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
 
 // GET — fetch recap data for a student (collective story + personal contributions)
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -109,4 +109,4 @@ export async function GET(
     totalChoices: story.length,
     myPitch,
   });
-}
+});

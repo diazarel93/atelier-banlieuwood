@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { withErrorHandler } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // POST /api/auth/student-login — Magic link login for students
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
+  const rl = checkRateLimit(getIP(req), "student-login", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const supabase = await createServerSupabase();
   const { email, displayName, avatar } = await req.json();
 
@@ -29,4 +34,4 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ message: "Lien magique envoye ! Verifie tes emails." });
-}
+});

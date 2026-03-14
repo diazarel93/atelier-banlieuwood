@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin, safeJson } from "@/lib/api-utils";
+import { requireAdmin, safeJson, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/email/resend-client";
 import { invitationEmail } from "@/lib/email/templates/invitation";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // GET /api/v2/admin/invitations — list all invitations
-export async function GET() {
+export const GET = withErrorHandler<Record<string, never>>(async function GET() {
   const auth = await requireAdmin();
   if ("error" in auth) return auth.error;
 
@@ -22,10 +22,10 @@ export async function GET() {
   }
 
   return NextResponse.json({ invitations: data });
-}
+});
 
 // POST /api/v2/admin/invitations — create an invitation (admin or public request)
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
   const parsed = await safeJson<{
     email: string;
     role: string;
@@ -108,4 +108,4 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ ok: true, id: data.id });
-}
+});

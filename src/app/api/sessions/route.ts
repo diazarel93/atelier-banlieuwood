@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 import { createSessionSchema, formatZodError } from "@/lib/schemas";
 import { getAuthUser } from "@/lib/auth-helpers";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
@@ -9,7 +9,7 @@ import { customAlphabet } from "nanoid";
 const nanoid = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 
 // GET — list facilitator's sessions (admin sees all)
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const {
     data: { user },
@@ -116,10 +116,10 @@ export async function GET(req: NextRequest) {
   });
 
   return NextResponse.json(sessions);
-}
+});
 
 // POST — create a new session
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
   const rl = checkRateLimit(getIP(req), "sessions-create", { max: 10, windowSec: 60 });
   if (rl) {
     return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -193,4 +193,4 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json(data);
-}
+});

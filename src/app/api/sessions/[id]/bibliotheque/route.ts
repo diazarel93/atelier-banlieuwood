@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
 
 // GET — fetch student library data: own contributions, class responses (if sharing enabled),
 // idea bank, collective choices, module-specific data
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -248,4 +248,4 @@ export async function GET(
         }
       : null,
   });
-}
+});

@@ -88,6 +88,7 @@ function PowerUpsBarInner({ powerUps, onUsePowerUp, disabled }: PowerUpsBarProps
             <motion.button
               onClick={() => handleUse(pu.id)}
               disabled={isEmpty || disabled}
+              aria-label={`${pu.name} : ${pu.description}${isEmpty ? " (epuise)" : ` (${pu.count} restant${pu.count > 1 ? "s" : ""})`}`}
               className={`relative w-10 h-10 rounded-xl flex items-center justify-center text-lg cursor-pointer transition-all ${
                 isEmpty || disabled
                   ? "opacity-30 cursor-not-allowed"

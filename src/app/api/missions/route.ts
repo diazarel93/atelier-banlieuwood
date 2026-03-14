@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // GET /api/missions — list available missions
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const profileId = req.nextUrl.searchParams.get("profileId");
 
@@ -32,10 +33,13 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json({ missions: missions || [], submissions });
-}
+});
 
 // POST /api/missions — submit mission response
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
+  const rl = checkRateLimit(getIP(req), "missions", { max: 20, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const supabase = await createServerSupabase();
   let body: Record<string, unknown>;
   try {
@@ -95,4 +99,4 @@ export async function POST(req: NextRequest) {
   });
 
   return NextResponse.json(data);
-}
+});

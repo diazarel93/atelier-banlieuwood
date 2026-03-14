@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, safeJson } from "@/lib/api-utils";
+import { requireFacilitator, safeJson, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // Adrian: "L'intervenant peut ajouter des tags simples :
 // très créatif, force de proposition, bonne écoute, perturbateur, très investi"
@@ -13,7 +14,7 @@ const VALID_TAGS = [
 ] as const;
 
 // GET — List all tags for a session (facilitator only)
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -43,13 +44,16 @@ export async function GET(
   }
 
   return NextResponse.json({ tags: data || [] });
-}
+});
 
 // POST — Add a tag to a student (facilitator only)
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "facilitator-tags", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -86,13 +90,16 @@ export async function POST(
   }
 
   return NextResponse.json({ success: true, tag: data });
-}
+});
 
 // DELETE — Remove a tag from a student (facilitator only)
-export async function DELETE(
+export const DELETE = withErrorHandler(async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "facilitator-tags", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -120,4 +127,4 @@ export async function DELETE(
   }
 
   return NextResponse.json({ success: true });
-}
+});

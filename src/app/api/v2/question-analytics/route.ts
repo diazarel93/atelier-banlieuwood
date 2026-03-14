@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { withErrorHandler } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/question-analytics
  * Per-question analytics: avg score, response count, avg response time.
  * Optional: ?sessionId=X&classLabel=Y
  */
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const {
     data: { user },
@@ -133,4 +134,4 @@ export async function GET(req: NextRequest) {
     });
 
   return NextResponse.json({ questions });
-}
+});

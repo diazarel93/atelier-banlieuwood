@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, safeJson } from "@/lib/api-utils";
+import { requireFacilitator, safeJson, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // POST — facilitator validates the winning card for a manche
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "manche-winner", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -65,4 +69,4 @@ export async function POST(
   }
 
   return NextResponse.json({ ok: true, manche, cardId, winningText });
-}
+});

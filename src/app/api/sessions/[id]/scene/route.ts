@@ -9,7 +9,7 @@ import {
   MAX_SLOTS,
   MAX_TOKENS,
 } from "@/lib/module5-data";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 
 // AI feedback prompt
 const SCENE_FEEDBACK_SYSTEM = `Tu es un mentor cinéma bienveillant pour adolescents. Un élève vient de construire une scène.
@@ -42,7 +42,7 @@ Donne ton feedback en JSON.`;
 }
 
 // POST — student submits scene (Module 2 séance 2)
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -212,10 +212,10 @@ export async function POST(
     ...scene,
     ai_feedback: aiFeedback || scene.ai_feedback,
   });
-}
+});
 
 // GET — all scenes for session + stats
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -244,4 +244,4 @@ export async function GET(
     emotionDistribution,
     count: data?.length || 0,
   });
-}
+});

@@ -35,7 +35,11 @@ export function CoachBubble({ tip, onDismiss }: CoachBubbleProps) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -12, scale: 0.95 }}
           transition={{ type: "spring", stiffness: 400, damping: 28 }}
+          role="button"
+          tabIndex={0}
+          aria-label="Conseil du coach, cliquer pour fermer"
           onClick={handleDismiss}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleDismiss(); } }}
           className="w-full max-w-md mx-auto cursor-pointer"
         >
           <div className="flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl border border-bw-primary/20 bg-bw-primary/[0.08] backdrop-blur-sm">

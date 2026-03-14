@@ -239,7 +239,7 @@ export function AvatarBuilderState({
 
       {/* Name */}
       <input value={prenom} onChange={(e) => setPrenom(e.target.value)} placeholder="Prénom du personnage" maxLength={30}
-        className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-teal focus:outline-none transition-colors" />
+        className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-teal focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 transition-colors" />
 
       {/* Tab bar */}
       <div className="w-full overflow-x-auto scrollbar-hide">
@@ -356,14 +356,14 @@ export function AvatarBuilderState({
           <input value={force} onChange={(e) => setForce(e.target.value)}
             placeholder="Ce qu'il/elle fait le mieux..."
             maxLength={100}
-            className={`w-full rounded-xl bg-bw-elevated border px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:outline-none transition-colors ${attempted && force.trim().length < 2 ? "border-red-400/50 focus:border-red-400" : "border-white/[0.06] focus:border-bw-teal"}`} />
+            className={`w-full rounded-xl bg-bw-elevated border px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 transition-colors ${attempted && force.trim().length < 2 ? "border-red-400/50 focus:border-red-400" : "border-white/[0.06] focus:border-bw-teal"}`} />
         </div>
         <div>
           <p className={`text-xs uppercase tracking-wider mb-1 ${attempted && faiblesse.trim().length < 2 ? "text-red-400" : "text-bw-muted"}`}>Sa faiblesse <span className="text-red-400">*</span></p>
           <input value={faiblesse} onChange={(e) => setFaiblesse(e.target.value)}
             placeholder="Ce qui le/la freine..."
             maxLength={100}
-            className={`w-full rounded-xl bg-bw-elevated border px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:outline-none transition-colors ${attempted && faiblesse.trim().length < 2 ? "border-red-400/50 focus:border-red-400" : "border-white/[0.06] focus:border-bw-teal"}`} />
+            className={`w-full rounded-xl bg-bw-elevated border px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 transition-colors ${attempted && faiblesse.trim().length < 2 ? "border-red-400/50 focus:border-red-400" : "border-white/[0.06] focus:border-bw-teal"}`} />
         </div>
       </div>
 

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, isValidUUID, safeJson } from "@/lib/api-utils";
+import { requireFacilitator, isValidUUID, safeJson, withErrorHandler } from "@/lib/api-utils";
 import { logSessionEvent } from "@/lib/event-logger";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // GET — fetch all collective choices for a session (facilitator only)
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -19,13 +20,16 @@ export async function GET(
 
   if (error) { console.error("[collective-choice GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json(data || []);
-}
+});
 
 // POST — facilitator validates a collective choice
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "collective-choice", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -84,4 +88,4 @@ export async function POST(
   });
 
   return NextResponse.json(data);
-}
+});

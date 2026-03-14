@@ -76,7 +76,7 @@ export function IdeaBankState({
       {!module10.submitted && (
         <>
           <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Partage ton « Et si... » préféré..." rows={2} maxLength={300}
-            className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] p-3 text-sm text-bw-text placeholder:text-bw-muted resize-none focus:border-bw-teal focus:outline-none transition-colors" />
+            className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] p-3 text-sm text-bw-text placeholder:text-bw-muted resize-none focus:border-bw-teal focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 transition-colors" />
           <button onClick={handleSubmit} disabled={submitting || text.trim().length < 5}
             className="w-full py-3 rounded-xl bg-gradient-to-r from-bw-teal to-bw-teal text-white font-medium text-sm disabled:opacity-40 transition-opacity cursor-pointer">
             {submitting ? "Envoi..." : "Partager mon idée"}

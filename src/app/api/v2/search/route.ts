@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { getAuthUser } from "@/lib/auth-helpers";
+import { withErrorHandler } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/search?q=...
  * Lightweight search for command palette — returns matching sessions + students.
  */
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q")?.trim();
   if (!q || q.length < 2) {
     return NextResponse.json({ sessions: [], students: [] });
@@ -77,4 +78,4 @@ export async function GET(req: NextRequest) {
       avatar: s.avatar,
     })),
   });
-}
+});

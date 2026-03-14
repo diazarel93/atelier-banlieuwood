@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, isValidUUID } from "@/lib/api-utils";
+import { requireFacilitator, isValidUUID, withErrorHandler } from "@/lib/api-utils";
 
 // GET — vote results for a situation (facilitator only)
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -80,4 +80,4 @@ export async function GET(
     totalVotes: votes?.length || 0,
     results,
   });
-}
+});

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator } from "@/lib/api-utils";
+import { requireFacilitator, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // GET — export the collective story as structured data
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -196,4 +196,4 @@ export async function GET(
       highlightedCount: highlighted,
     },
   });
-}
+});

@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
+import { withErrorHandler } from "@/lib/api-utils";
 
 // GET /api/analytics — cross-session analytics for a facilitator
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -102,10 +103,10 @@ export async function GET(req: NextRequest) {
   });
 
   return NextResponse.json({ sessions: sessionMetrics, totals, trends });
-}
+});
 
 // POST /api/analytics — track event (uses admin client to bypass RLS)
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
   const rl = checkRateLimit(getIP(req), "analytics-event", { max: 100, windowSec: 60 });
   if (rl) {
     return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -133,4 +134,4 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ success: true });
-}
+});

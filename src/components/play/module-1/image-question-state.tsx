@@ -206,7 +206,7 @@ export function ImageQuestionState({
               : "Écris ta réponse ici..."}
             rows={3}
             maxLength={500}
-            className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-bw-heading placeholder:text-bw-muted focus:border-bw-primary focus:outline-none transition-colors resize-none"
+            className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-bw-heading placeholder:text-bw-muted focus:border-bw-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-primary/40 transition-colors resize-none"
             autoFocus
           />
 

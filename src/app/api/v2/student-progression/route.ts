@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { oieToAxes } from "@/lib/axes-mapping";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/student-progression?studentId=X
  * Returns per-session axis scores for a single student, ordered chronologically.
  */
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const {
     data: { user },
@@ -105,4 +105,4 @@ export async function GET(req: NextRequest) {
     displayName,
     points,
   });
-}
+});

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 import { joinSessionSchema, formatZodError } from "@/lib/schemas";
 import { signStudentToken } from "@/lib/student-token";
 
@@ -15,7 +15,7 @@ function isValidEmoji(str: string): boolean {
 }
 
 // POST — student joins a session with join code
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
   const rl = checkRateLimit(getIP(req), "join", { max: 10, windowSec: 60 });
   if (rl) {
     return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -163,4 +163,4 @@ export async function POST(req: NextRequest) {
     maxAge: 24 * 60 * 60,
   });
   return response;
-}
+});

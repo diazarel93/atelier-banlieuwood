@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // GET /api/festival — list published entries
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const category = req.nextUrl.searchParams.get("category");
   const sort = req.nextUrl.searchParams.get("sort") || "recent"; // recent, popular
@@ -40,10 +41,13 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json(data || []);
-}
+});
 
 // POST /api/festival — submit entry
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
+  const rl = checkRateLimit(getIP(req), "festival-submit", { max: 20, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const supabase = await createServerSupabase();
   const body = await req.json();
   const { profileId, sessionId, title, content, entryType, category } = body;
@@ -81,4 +85,4 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json(data);
-}
+});

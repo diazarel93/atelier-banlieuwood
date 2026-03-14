@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 const VALID_LOCALES = ["fr", "en"];
 
@@ -7,7 +8,10 @@ const VALID_LOCALES = ["fr", "en"];
  * POST /api/locale — Set locale preference via cookie
  * Body: { locale: "fr" | "en" }
  */
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
+  const rl = checkRateLimit(getIP(req), "locale", { max: 20, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const parsed = await safeJson<{ locale: string }>(req);
   if ("error" in parsed) return parsed.error;
   const { locale } = parsed.data;
@@ -25,4 +29,4 @@ export async function POST(req: NextRequest) {
   });
 
   return response;
-}
+});

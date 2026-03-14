@@ -251,6 +251,7 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
           <button
             onClick={() => setShowLeaderboard(!showLeaderboard)}
             aria-expanded={showLeaderboard}
+            aria-label={showLeaderboard ? "Masquer le tableau de la classe" : "Afficher le tableau de la classe"}
             className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-bw-elevated border border-white/[0.06] cursor-pointer hover:border-white/10 transition-colors"
           >
             <span className="text-sm font-medium text-bw-text">Tableau de la classe</span>

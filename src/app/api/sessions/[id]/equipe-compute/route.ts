@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { requireFacilitator } from "@/lib/api-utils";
+import { requireFacilitator, withErrorHandler } from "@/lib/api-utils";
 import { rankStudents, generateTalentCard } from "@/lib/module-equipe-data";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // POST — Facilitateur computes points & rankings for M8
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "equipe-compute", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
 
   // Auth: only the facilitator who owns this session
@@ -158,13 +162,16 @@ export async function POST(
       rank: p.rank,
     })),
   });
-}
+});
 
 // PATCH — Facilitateur assigns a role via veto (override)
-export async function PATCH(
+export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "equipe-compute", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
 
   const auth = await requireFacilitator(sessionId);
@@ -197,13 +204,16 @@ export async function PATCH(
   }
 
   return NextResponse.json({ success: true, veto: true });
-}
+});
 
 // PUT — generate talent cards after roles are assigned
-export async function PUT(
+export const PUT = withErrorHandler(async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "equipe-compute", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
 
   // Auth: only the facilitator who owns this session
@@ -261,4 +271,4 @@ export async function PUT(
   }
 
   return NextResponse.json({ success: true, cardsGenerated: count });
-}
+});

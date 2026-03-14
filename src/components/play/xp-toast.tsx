@@ -8,7 +8,7 @@ interface XpToastProps {
 
 export function XpToast({ delta }: XpToastProps) {
   return (
-    <div className="fixed top-20 right-4 z-50 pointer-events-none">
+    <div className="fixed top-20 right-4 z-50 pointer-events-none" aria-live="assertive" aria-atomic="true" role="status">
       <AnimatePresence>
         {delta && (
           <motion.div

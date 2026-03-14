@@ -157,7 +157,7 @@ export function ComparisonQuiz({ module7, sessionId, studentId }: ComparisonQuiz
             value={reasoning}
             onChange={(e) => setReasoning(e.target.value)}
             placeholder="Pourquoi ce choix ? (optionnel)"
-            className="w-full h-20 rounded-xl bg-bw-elevated border border-white/[0.06] p-3 text-xs text-bw-text placeholder:text-bw-muted resize-none focus:outline-none focus:border-bw-teal transition-colors"
+            className="w-full h-20 rounded-xl bg-bw-elevated border border-white/[0.06] p-3 text-xs text-bw-text placeholder:text-bw-muted resize-none focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 focus:border-bw-teal transition-colors"
           />
         </div>
       )}

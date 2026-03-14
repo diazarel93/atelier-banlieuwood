@@ -254,7 +254,7 @@ export function EtsiWriterState({
               placeholder="Et si..."
               rows={4}
               maxLength={500}
-              className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] p-3 text-sm text-bw-text placeholder:text-bw-muted resize-none focus:border-bw-teal focus:outline-none transition-colors"
+              className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] p-3 text-sm text-bw-text placeholder:text-bw-muted resize-none focus:border-bw-teal focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 transition-colors"
             />
             {module10.helpEnabled ? (
               <div className="flex items-center gap-2 w-full">

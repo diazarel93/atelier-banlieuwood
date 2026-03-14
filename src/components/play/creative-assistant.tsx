@@ -130,6 +130,7 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
               <span className="text-xs text-bw-muted">{usesLeft} restants</span>
               <button
                 onClick={() => { setOpen(false); handleReset(); }}
+                aria-label="Fermer l'assistant creatif"
                 className="w-5 h-5 rounded-full flex items-center justify-center text-bw-muted hover:text-white cursor-pointer transition-colors"
                 style={{ background: "rgba(255,255,255,0.06)" }}
               >
@@ -170,6 +171,7 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
                   <div className="flex items-center gap-2">
                     <button
                       onClick={handleReset}
+                      aria-label="Retour au choix du mode"
                       className="text-xs text-bw-muted hover:text-white cursor-pointer transition-colors"
                     >
                       &larr;
@@ -192,6 +194,7 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
                     <textarea
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
+                      aria-label="Decris ce que tu veux creer"
                       placeholder={
                         mode === "dialogue"
                           ? "Ex: Léa confronte son ami Thomas qui a menti..."
@@ -201,7 +204,7 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
                       }
                       maxLength={500}
                       rows={3}
-                      className="w-full px-3 py-2 rounded-lg text-xs text-bw-text placeholder:text-bw-muted/50 resize-none focus:outline-none focus:ring-1 focus:ring-bw-violet/40"
+                      className="w-full px-3 py-2 rounded-lg text-xs text-bw-text placeholder:text-bw-muted/50 resize-none focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-violet/40"
                       style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
                       disabled={loading}
                     />

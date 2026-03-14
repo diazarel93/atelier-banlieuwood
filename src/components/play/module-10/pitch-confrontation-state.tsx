@@ -105,19 +105,19 @@ export function PitchConfrontationState({
               <label className="text-xs text-bw-muted uppercase tracking-wider">1. Qui est ton personnage ?</label>
               <input value={answers.who} onChange={(e) => setAnswers((a) => ({ ...a, who: e.target.value }))}
                 maxLength={100} placeholder="Décris le personnage principal..."
-                className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors" />
+                className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-amber/40 transition-colors" />
             </div>
             <div>
               <label className="text-xs text-bw-muted uppercase tracking-wider">2. Qu&apos;est-ce qu&apos;il veut ?</label>
               <input value={answers.wants} onChange={(e) => setAnswers((a) => ({ ...a, wants: e.target.value }))}
                 maxLength={100} placeholder="Son objectif..."
-                className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors" />
+                className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-amber/40 transition-colors" />
             </div>
             <div>
               <label className="text-xs text-bw-muted uppercase tracking-wider">3. Qu&apos;est-ce qui l&apos;empêche ?</label>
               <input value={answers.obstacle} onChange={(e) => setAnswers((a) => ({ ...a, obstacle: e.target.value }))}
                 maxLength={100} placeholder="L'obstacle principal..."
-                className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors" />
+                className="w-full mt-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-amber/40 transition-colors" />
             </div>
             <button onClick={handleSubmitQuestions}
               disabled={submitting || !answers.who.trim() || !answers.wants.trim() || !answers.obstacle.trim()}

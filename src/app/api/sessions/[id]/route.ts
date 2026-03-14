@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, safeJson, broadcastSessionUpdate } from "@/lib/api-utils";
+import { requireFacilitator, safeJson, broadcastSessionUpdate, withErrorHandler } from "@/lib/api-utils";
 import { patchSessionSchema, formatZodError } from "@/lib/schemas";
 import { logSessionEvent } from "@/lib/event-logger";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // GET — session detail (facilitator only)
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -23,13 +24,16 @@ export async function GET(
   }
 
   return NextResponse.json(data);
-}
+});
 
 // PATCH — update session state (facilitator only)
-export async function PATCH(
+export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "session-update", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id } = await params;
   const auth = await requireFacilitator(id);
   if ("error" in auth) return auth.error;
@@ -120,14 +124,17 @@ export async function PATCH(
   }
 
   return NextResponse.json(data);
-}
+});
 
 // DELETE — soft-delete session (facilitator only)
 // Sets deleted_at timestamp; RLS policies filter out soft-deleted rows.
-export async function DELETE(
-  _req: NextRequest,
+export const DELETE = withErrorHandler(async function DELETE(
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "session-update", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id } = await params;
   const auth = await requireFacilitator(id);
   if ("error" in auth) return auth.error;
@@ -143,4 +150,4 @@ export async function DELETE(
   }
 
   return NextResponse.json({ ok: true });
-}
+});

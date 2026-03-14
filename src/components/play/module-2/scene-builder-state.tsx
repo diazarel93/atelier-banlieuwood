@@ -201,7 +201,7 @@ export function SceneBuilderState({
             placeholder="Qu'est-ce que ton personnage veut vraiment ?"
             rows={2}
             maxLength={300}
-            className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-bw-heading placeholder:text-bw-muted focus:border-bw-pink focus:outline-none transition-colors resize-none mt-1"
+            className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-bw-heading placeholder:text-bw-muted focus:border-bw-pink focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-pink/40 transition-colors resize-none mt-1"
           />
         </div>
         <div>
@@ -212,7 +212,7 @@ export function SceneBuilderState({
             placeholder="Qu'est-ce qui l'empêche d'y arriver ?"
             rows={2}
             maxLength={300}
-            className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-bw-heading placeholder:text-bw-muted focus:border-bw-pink focus:outline-none transition-colors resize-none mt-1"
+            className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-bw-heading placeholder:text-bw-muted focus:border-bw-pink focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-pink/40 transition-colors resize-none mt-1"
           />
         </div>
         <div>
@@ -223,7 +223,7 @@ export function SceneBuilderState({
             placeholder="Comment ça finit pour ton personnage ?"
             rows={2}
             maxLength={300}
-            className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-bw-heading placeholder:text-bw-muted focus:border-bw-pink focus:outline-none transition-colors resize-none mt-1"
+            className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-bw-heading placeholder:text-bw-muted focus:border-bw-pink focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-pink/40 transition-colors resize-none mt-1"
           />
         </div>
       </div>

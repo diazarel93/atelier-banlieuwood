@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator } from "@/lib/api-utils";
+import { requireFacilitator, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateSceneStoryboardUrl } from "@/lib/pollinations";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // POST — Facilitator assembles storyboard from student decoupages (facilitator only)
-export async function POST(
-  _req: NextRequest,
+export const POST = withErrorHandler(async function POST(
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "storyboard", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -120,13 +124,16 @@ export async function POST(
   }
 
   return NextResponse.json({ ok: true, scenes: assembledScenes });
-}
+});
 
 // PATCH — Validate storyboard (facilitator only)
-export async function PATCH(
-  _req: NextRequest,
+export const PATCH = withErrorHandler(async function PATCH(
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "storyboard", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -144,4 +151,4 @@ export async function PATCH(
   }
 
   return NextResponse.json({ ok: true, validated: true });
-}
+});

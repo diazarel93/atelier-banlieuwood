@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { withErrorHandler } from "@/lib/api-utils";
 
 // ── Types ──
 
@@ -38,7 +39,7 @@ export interface FilmData {
 }
 
 // GET — assemble all film data for the "Le Film" tab
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -133,4 +134,4 @@ export async function GET(
   };
 
   return NextResponse.json(filmData);
-}
+});

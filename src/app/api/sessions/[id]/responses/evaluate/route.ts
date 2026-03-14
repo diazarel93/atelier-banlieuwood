@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, isValidUUID, safeJson } from "@/lib/api-utils";
+import { requireFacilitator, isValidUUID, safeJson, withErrorHandler } from "@/lib/api-utils";
 import { generateAIText } from "@/lib/ai";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
@@ -40,7 +40,7 @@ Réponse de l'élève: "${answer}"
 Évalue cette réponse.`;
 }
 
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -136,4 +136,4 @@ export async function POST(
   }
 
   return NextResponse.json({ results });
-}
+});

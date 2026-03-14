@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 import { reactionSchema, formatZodError } from "@/lib/schemas";
 import { verifyStudentToken } from "@/lib/student-token";
 
 // POST — toggle emoji reaction on a response
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -101,10 +101,10 @@ export async function POST(
   }
 
   return NextResponse.json({ action: "added" });
-}
+});
 
 // GET — reaction counts for a situation's responses
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -152,4 +152,4 @@ export async function GET(
   }
 
   return NextResponse.json({ reactions: aggregated });
-}
+});

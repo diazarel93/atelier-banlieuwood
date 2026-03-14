@@ -219,7 +219,7 @@ export function ChecklistState({
               rows={4}
               maxLength={500}
               placeholder="Décris la scène : que se passe-t-il ? Pourquoi elle t'a marqué ?"
-              className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2.5 text-sm text-bw-text placeholder-bw-muted resize-none focus:border-bw-pink focus:outline-none transition-colors"
+              className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2.5 text-sm text-bw-text placeholder-bw-muted resize-none focus:border-bw-pink focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-pink/40 transition-colors"
             />
             <div className="flex justify-between items-center">
               <button onClick={() => setStep(2)}
@@ -248,7 +248,7 @@ export function ChecklistState({
               rows={3}
               maxLength={400}
               placeholder="Ce que le personnage ressent ou ce qui change..."
-              className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2.5 text-sm text-bw-text placeholder-bw-muted resize-none focus:border-bw-pink focus:outline-none transition-colors"
+              className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2.5 text-sm text-bw-text placeholder-bw-muted resize-none focus:border-bw-pink focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-pink/40 transition-colors"
             />
             <div className="flex justify-between items-center">
               <button onClick={() => setStep(3)}

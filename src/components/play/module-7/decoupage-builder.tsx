@@ -133,7 +133,7 @@ export function DecoupageBuilder({ module7, sessionId, studentId }: DecoupageBui
                 value={slot.planType}
                 onChange={(e) => updateSlot(i, "planType", e.target.value)}
                 disabled={submitted}
-                className="flex-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-2 py-1 text-xs text-bw-text focus:outline-none focus:border-bw-teal transition-colors"
+                className="flex-1 rounded-xl bg-bw-elevated border border-white/[0.06] px-2 py-1 text-xs text-bw-text focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 focus:border-bw-teal transition-colors"
               >
                 <option value="">Choisis un type...</option>
                 {planTypes.map((p) => (
@@ -148,14 +148,14 @@ export function DecoupageBuilder({ module7, sessionId, studentId }: DecoupageBui
               onChange={(e) => updateSlot(i, "description", e.target.value)}
               disabled={submitted}
               placeholder="Que montre ce plan ?"
-              className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-xs text-bw-text placeholder:text-bw-muted focus:outline-none focus:border-bw-teal transition-colors mb-1"
+              className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-xs text-bw-text placeholder:text-bw-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 focus:border-bw-teal transition-colors mb-1"
             />
             <input
               value={slot.intention}
               onChange={(e) => updateSlot(i, "intention", e.target.value)}
               disabled={submitted}
               placeholder="Pourquoi ce plan ici ?"
-              className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-xs text-bw-text placeholder:text-bw-muted focus:outline-none focus:border-bw-teal transition-colors"
+              className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-xs text-bw-text placeholder:text-bw-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 focus:border-bw-teal transition-colors"
             />
           </motion.div>
         ))}

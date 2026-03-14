@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
 import { nanoid } from "nanoid";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // POST — Generate a share token for a student's recap
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "recap-share", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const body = await req.json().catch(() => ({}));
   const { studentId } = body as { studentId?: string };
@@ -47,10 +51,10 @@ export async function POST(
   }
 
   return NextResponse.json({ shareToken });
-}
+});
 
 // GET — Fetch recap data via share token (public, no auth)
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -126,4 +130,4 @@ export async function GET(
     myChosenCount,
     totalChoices: story.length,
   });
-}
+});

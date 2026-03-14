@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { withErrorHandler } from "@/lib/api-utils";
 
 // GET /api/v2/notable-responses?sessionId=X
 // Returns the 3 most notable responses: most voted, most creative, most divisive
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const sessionId = req.nextUrl.searchParams.get("sessionId");
   if (!sessionId) {
     return NextResponse.json({ error: "sessionId requis" }, { status: 400 });
@@ -121,4 +122,4 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json({ mostVoted, mostCreative, mostDivisive });
-}
+});

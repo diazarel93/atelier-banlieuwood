@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { buildFicheTournage, ROLE_KEYS } from "@/lib/module-filmer-data";
 import type { RoleKey } from "@/lib/module-filmer-data";
+import { withErrorHandler } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // GET — Fetch existing fiches de tournage
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -29,13 +31,16 @@ export async function GET(
       generatedAt: f.generated_at,
     })),
   });
-}
+});
 
 // POST — Generate 6 fiches from M6 scenes + M7 storyboard + M6 scenario
-export async function POST(
-  _req: NextRequest,
+export const POST = withErrorHandler(async function POST(
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "fiches-tournage", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const admin = createAdminClient();
 
@@ -113,4 +118,4 @@ export async function POST(
       content: f.content,
     })),
   });
-}
+});

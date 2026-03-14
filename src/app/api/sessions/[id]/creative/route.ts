@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 
 const MAX_USES_PER_SESSION = 5;
 
@@ -45,7 +45,7 @@ Règles :
   },
 };
 
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -126,4 +126,4 @@ export async function POST(
   const remaining = MAX_USES_PER_SESSION - used - 1;
 
   return NextResponse.json({ text, remaining });
-}
+});

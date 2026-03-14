@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, safeJson } from "@/lib/api-utils";
+import { requireFacilitator, safeJson, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   MANCHES,
@@ -8,9 +8,10 @@ import {
   getUncoveredStudents,
   type PoolCard,
 } from "@/lib/module12-data";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // GET — fetch existing pools + winners for this session
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -38,13 +39,16 @@ export async function GET(
     winners: winnersRes.data || [],
     totalManches: MANCHES.length,
   });
-}
+});
 
 // POST — generate pools from Module 10 data (inter-séance)
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "collective-pools", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -156,4 +160,4 @@ export async function POST(
       banlieuCards: p.cards.filter((c) => c.isBanlieuwood).length,
     })),
   });
-}
+});

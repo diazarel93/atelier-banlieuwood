@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator } from "@/lib/api-utils";
+import { requireFacilitator, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { computeOIE, aggregateOIE, type OIEScores } from "@/lib/oie-profile";
 import { deriveTalentProfile } from "@/lib/talent-profiles";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // GET — return O-I-E scores for all students in the session
 // ?debug=true returns signal breakdown per student (always recomputes)
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -47,13 +48,16 @@ export async function GET(
   // No cache — compute on the fly
   const scores = await computeSessionOIE(admin, sessionId);
   return NextResponse.json({ scores, cached: false });
-}
+});
 
 // POST — (re)compute O-I-E for all students, persist in cache + aggregate to profiles
-export async function POST(
-  _req: NextRequest,
+export const POST = withErrorHandler(async function POST(
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "oie-profile", { max: 5, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const admin = createAdminClient();
 
@@ -126,7 +130,7 @@ export async function POST(
   }
 
   return NextResponse.json({ scores, computed: true });
-}
+});
 
 // ═══════════════════════════════════════════════════════
 // Internal computation

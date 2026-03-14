@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { withErrorHandler } from "@/lib/api-utils";
 
 /**
  * GET /api/badge/[token]
  * Public endpoint — returns student badge data for a share token.
  * No authentication required.
  */
-export async function GET(
+export const GET = withErrorHandler<{ token: string }>(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ token: string }> }
 ) {
@@ -104,4 +105,4 @@ export async function GET(
     ),
     date: session.created_at,
   });
-}
+});

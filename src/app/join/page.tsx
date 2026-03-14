@@ -222,7 +222,7 @@ function JoinForm() {
                   onChange={(e) => handleCodeChange(i, e.target.value)}
                   onKeyDown={(e) => handleCodeKeyDown(i, e)}
                   onPaste={handlePaste}
-                  className={`w-12 h-16 text-center text-2xl font-bold bg-bw-elevated/50 border rounded-xl text-bw-ink focus:outline-none transition-all uppercase ${
+                  className={`w-12 h-16 text-center text-2xl font-bold bg-bw-elevated/50 border rounded-xl text-bw-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal transition-all uppercase ${
                     error
                       ? "border-bw-danger/50 shadow-[0_0_12px_rgba(239,68,68,0.2)]"
                       : char
@@ -263,6 +263,7 @@ function JoinForm() {
             <button
               type="button"
               onClick={() => setName(RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)])}
+              aria-label="Generer un pseudo au hasard"
               className="w-full text-xs text-bw-teal/70 hover:text-bw-teal transition-colors cursor-pointer flex items-center justify-center gap-1.5"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -286,6 +287,8 @@ function JoinForm() {
                   transition={{ duration: 0.25, delay: 0.4 + i * 0.015 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setAvatar(emoji)}
+                  aria-label={`Choisir l'avatar ${getAvatarNickname(emoji) || emoji}`}
+                  aria-pressed={avatar === emoji}
                   className={`w-11 h-11 text-xl rounded-xl flex items-center justify-center transition-all cursor-pointer ${
                     avatar === emoji
                       ? "bg-bw-teal/20 border-2 border-bw-teal scale-110 shadow-[0_0_16px_rgba(78,205,196,0.25)]"
@@ -336,6 +339,8 @@ function JoinForm() {
           <button
             type="button"
             onClick={() => setShowProfileCode(!showProfileCode)}
+            aria-expanded={showProfileCode}
+            aria-label="Afficher le champ code joueur"
             className="w-full text-xs text-bw-muted hover:text-bw-teal transition-colors cursor-pointer text-center"
           >
             {showProfileCode ? "▾ " : "▸ "}Tu as deja un code joueur ?
@@ -355,7 +360,8 @@ function JoinForm() {
                   maxLength={4}
                   value={profileCode}
                   onChange={(e) => setProfileCode(e.target.value.toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 4))}
-                  className="w-full h-12 text-center text-lg font-mono font-bold tracking-[0.3em] rounded-xl bg-bw-elevated/50 border border-white/[0.08] text-bw-ink placeholder:text-bw-placeholder/40 focus:border-bw-teal/50 focus:ring-2 focus:ring-bw-teal/20 focus:outline-none transition-all uppercase"
+                  aria-label="Code joueur existant (4 caracteres)"
+                  className="w-full h-12 text-center text-lg font-mono font-bold tracking-[0.3em] rounded-xl bg-bw-elevated/50 border border-white/[0.08] text-bw-ink placeholder:text-bw-placeholder/40 focus:border-bw-teal/50 focus:ring-2 focus:ring-bw-teal/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal transition-all uppercase"
                 />
               </motion.div>
             )}

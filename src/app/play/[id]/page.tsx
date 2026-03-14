@@ -978,6 +978,7 @@ export default function PlayPage() {
           <p className="text-bw-muted">Session introuvable ou expirée</p>
           <button
             onClick={() => refetch()}
+            aria-label="Réessayer de charger la session"
             className="btn-glow px-4 py-2 bg-bw-primary text-white rounded-xl text-sm font-medium cursor-pointer"
           >
             Réessayer
@@ -1011,6 +1012,14 @@ export default function PlayPage() {
 
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center px-3 sm:px-4 py-8">
+      {/* Skip navigation — accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded"
+      >
+        Aller au contenu principal
+      </a>
+
       <ConnectionBanner />
 
       {/* Onboarding slides — first-time users */}
@@ -1034,7 +1043,7 @@ export default function PlayPage() {
             animate={{ height: "auto", opacity: 1 }}
             className="w-full max-w-md mb-3"
           >
-            <div className={`px-4 py-2.5 rounded-xl text-center text-sm font-medium ${
+            <div role="alert" className={`px-4 py-2.5 rounded-xl text-center text-sm font-medium ${
               data.studentWarnings >= 2
                 ? "bg-bw-danger/20 text-bw-danger border border-bw-danger/30"
                 : "bg-bw-amber/20 text-bw-amber border border-bw-amber/30"
@@ -1077,6 +1086,7 @@ export default function PlayPage() {
               <p className="text-sm text-white font-medium">{broadcastMsg}</p>
               <button
                 onClick={() => setBroadcastMsg(null)}
+                aria-label="Fermer le message"
                 className="absolute top-1.5 right-2 text-bw-muted hover:text-white text-xs cursor-pointer"
               >✕</button>
             </div>
@@ -1091,6 +1101,8 @@ export default function PlayPage() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
+            role="alert"
+            aria-live="assertive"
             className="fixed top-0 left-0 right-0 z-50 bg-bw-danger/90 text-white text-center py-2 text-sm font-medium"
           >
             Pas de connexion internet
@@ -1266,7 +1278,7 @@ export default function PlayPage() {
       )}
 
       {/* Main content */}
-      <div className={`w-full max-w-md ${collectedCategories.length > 0 ? "" : coachTip ? "" : "mt-12"}`}>
+      <div id="main-content" className={`w-full max-w-md ${collectedCategories.length > 0 ? "" : coachTip ? "" : "mt-12"}`}>
         <ErrorBoundary>
           <AnimatePresence mode="wait">
             <CinemaFade viewKey={viewKey}>
@@ -1294,6 +1306,8 @@ export default function PlayPage() {
               }
             } catch { /* ignore */ }
           }}
+          aria-label={handRaised ? "Baisser la main" : "Lever la main, j'ai besoin d'aide"}
+          aria-pressed={handRaised}
           className={`fixed bottom-4 left-4 z-20 w-11 h-11 rounded-full flex items-center justify-center text-lg cursor-pointer transition-all shadow-lg ${
             handRaised
               ? "bg-bw-amber/20 border-2 border-bw-amber/60 scale-110"

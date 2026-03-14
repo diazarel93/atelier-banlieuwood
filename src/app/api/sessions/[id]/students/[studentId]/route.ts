@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, safeJson } from "@/lib/api-utils";
+import { requireFacilitator, safeJson, withErrorHandler } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // PATCH — warn a student (auto-kick at 3 warnings)
-export async function PATCH(
+export const PATCH = withErrorHandler<{ id: string; studentId: string }>(async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string; studentId: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "student-manage", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId, studentId } = await params;
 
   // Auth: only the facilitator who owns this session
@@ -59,13 +63,16 @@ export async function PATCH(
   }
 
   return NextResponse.json({ error: "Action inconnue" }, { status: 400 });
-}
+});
 
 // DELETE — remove a student from the session (facilitator only)
-export async function DELETE(
-  _req: NextRequest,
+export const DELETE = withErrorHandler<{ id: string; studentId: string }>(async function DELETE(
+  req: NextRequest,
   { params }: { params: Promise<{ id: string; studentId: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "student-manage", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId, studentId } = await params;
 
   // Auth: only the facilitator who owns this session
@@ -86,4 +93,4 @@ export async function DELETE(
   }
 
   return NextResponse.json({ ok: true });
-}
+});

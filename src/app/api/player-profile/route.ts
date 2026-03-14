@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
 
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const profileId = req.nextUrl.searchParams.get("profileId");
   if (!profileId || !isValidUUID(profileId)) {
     return NextResponse.json(
@@ -222,4 +222,4 @@ export async function GET(req: NextRequest) {
     classLeaderboard,
     nextSession,
   });
-}
+});

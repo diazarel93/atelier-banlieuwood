@@ -1,5 +1,41 @@
 "use client";
 
+// REFACTOR PLAN: This file is 2090 lines. Consider extracting:
+//
+// 1. Module-specific screen sections (the <main> block, lines 334-2027):
+//    The main content is a single giant AnimatePresence with conditional branches
+//    per module and status. Extract per-module screen components:
+//
+//    a. ScreenInitialJoin → src/components/screen/screen-initial-join.tsx (~80 lines)
+//       Waiting state with no module selected: clapperboard, join code, QR (lines 337-412).
+//
+//    b. ScreenModule1 → src/components/screen/screen-module1.tsx (~350 lines)
+//       M1 waiting/responding/reviewing for positioning, image, notebook (lines 413-680).
+//
+//    c. ScreenModule9Budget → src/components/screen/screen-module9-budget.tsx (~90 lines)
+//       M9 seance 2 budget waiting + responding with budget bars (lines 505-775).
+//
+//    d. ScreenModule2EC → src/components/screen/screen-module2ec.tsx (~220 lines)
+//       M2 EC checklist, scene builder, comparison (lines 776-1063).
+//
+//    e. ScreenModule10 → src/components/screen/screen-module10.tsx (~340 lines)
+//       M10 "Et si..." + Pitch: all etsi/avatar/pitch/chrono/confrontation (lines 1064-1406).
+//
+//    f. ScreenModule11 → src/components/screen/screen-module11.tsx (~150 lines)
+//       M11 Cine-debat: stimulus projection (lines 1407-1555).
+//
+//    g. ScreenVotingReviewing → src/components/screen/screen-voting-reviewing.tsx (~250 lines)
+//       Voting results, reviewing states, collective choice celebration (lines 1556-1908).
+//
+//    h. ScreenDonePaused → src/components/screen/screen-done-paused.tsx (~100 lines)
+//       Paused + Done cinema celebration (lines 1909-2027).
+//
+// 2. useScreenData (hook) → src/hooks/use-screen-data.ts (~200 lines)
+//    All derived state logic: module flags, situation parsing, M10/M11 data (lines 50-300).
+//
+// Estimated total reduction: ~1600 lines extracted, leaving ~490 lines in this file.
+// Priority: Extract per-module screen components first (natural boundaries, self-contained).
+
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";

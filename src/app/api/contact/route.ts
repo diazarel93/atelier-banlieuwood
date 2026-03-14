@@ -1,6 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { log } from "@/lib/logger";
+import { withErrorHandler } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 interface ContactPayload {
   name: string;
@@ -18,7 +20,10 @@ const TYPE_LABELS: Record<string, string> = {
   presse: "Presse / Médias",
 };
 
-export async function POST(request: Request) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(request: NextRequest) {
+  const rl = checkRateLimit(getIP(request), "contact", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   try {
     const body = (await request.json()) as ContactPayload;
 
@@ -100,4 +105,4 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
-}
+});

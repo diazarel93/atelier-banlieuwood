@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // POST /api/festival/vote — vote for an entry
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
   // Rate limit: 30 votes per minute per IP
   const rl = checkRateLimit(getIP(req), "festival-vote", { max: 30, windowSec: 60 });
   if (rl) {
@@ -51,4 +51,4 @@ export async function POST(req: NextRequest) {
   await supabase.rpc("increment_vote_count", { p_entry_id: entryId });
 
   return NextResponse.json({ success: true });
-}
+});

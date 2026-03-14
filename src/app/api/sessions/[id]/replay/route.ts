@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator } from "@/lib/api-utils";
+import { requireFacilitator, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // GET — return replay data (events + context) for a finished session
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -66,4 +66,4 @@ export async function GET(
     collectiveChoices: choicesRes.data || [],
     situations: situationsRes.data || [],
   });
-}
+});

@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { withErrorHandler } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/student-profiles
  * List all student profiles linked to the facilitator's sessions.
  * Optional: ?classLabel=X to filter by class.
  */
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const {
     data: { user },
@@ -139,4 +140,4 @@ export async function GET(req: NextRequest) {
     page,
     totalPages,
   });
-}
+});

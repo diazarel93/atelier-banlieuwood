@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator } from "@/lib/api-utils";
+import { requireFacilitator, withErrorHandler } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 const TEAM_COLORS = ["#FF6B35", "#4ECDC4", "#8B5CF6", "#EC4899", "#F59E0B", "#10B981", "#3B82F6", "#EF4444"];
 
 // GET — list teams with their students
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -21,13 +22,16 @@ export async function GET(
   if (error) { console.error("[teams GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
 
   return NextResponse.json(teams || []);
-}
+});
 
 // POST — create a team
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "teams", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -52,13 +56,16 @@ export async function POST(
   if (error) { console.error("[teams POST]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
 
   return NextResponse.json(data, { status: 201 });
-}
+});
 
 // DELETE — delete a team (reset students' team_id)
-export async function DELETE(
+export const DELETE = withErrorHandler(async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "teams", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -83,4 +90,4 @@ export async function DELETE(
   }
 
   return NextResponse.json({ ok: true });
-}
+});

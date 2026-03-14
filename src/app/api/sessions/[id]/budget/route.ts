@@ -7,7 +7,7 @@ import {
   BUDGET_RESERVE_MIN,
   generateBudgetSummary,
 } from "@/lib/constants";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 
 const VALID_KEYS = BUDGET_CATEGORIES.map((c) => c.key);
 const VALID_COSTS = new Map(
@@ -15,7 +15,7 @@ const VALID_COSTS = new Map(
 );
 
 // POST — student submits budget allocation (Module 2)
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -129,10 +129,10 @@ export async function POST(
   }
 
   return NextResponse.json(data);
-}
+});
 
 // GET — all budgets for a session (facilitator) + optional story context
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -189,4 +189,4 @@ export async function GET(
     count: data?.length || 0,
     ...(storyContext ? { storyContext } : {}),
   });
-}
+});

@@ -81,7 +81,7 @@ export function NotebookState({
         placeholder="Observe le monde autour de toi. Note un détail, une scène, un son qui pourrait devenir le début d'un film."
         rows={8}
         maxLength={2000}
-        className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-4 text-bw-heading placeholder:text-bw-muted focus:border-bw-violet focus:outline-none transition-colors resize-none flex-1"
+        className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-4 text-bw-heading placeholder:text-bw-muted focus:border-bw-violet focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-violet/40 transition-colors resize-none flex-1"
         autoFocus
       />
 

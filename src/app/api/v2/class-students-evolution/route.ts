@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { oieToAxes, type AxesScores } from "@/lib/axes-mapping";
+import { withErrorHandler } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/class-students-evolution?classLabel=X
  * Returns per-session scores for all students in a class, chronologically.
  * Used for multi-student progression comparison.
  */
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const {
     data: { user },
@@ -140,4 +141,4 @@ export async function GET(req: NextRequest) {
     })),
     students,
   });
-}
+});

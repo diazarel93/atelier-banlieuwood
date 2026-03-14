@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isValidUUID, requireFacilitator } from "@/lib/api-utils";
+import { isValidUUID, requireFacilitator, withErrorHandler } from "@/lib/api-utils";
 import { QUIZ_METIERS } from "@/lib/module-equipe-data";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // GET — fetch scenario data for a session (facilitator only)
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -34,13 +35,16 @@ export async function GET(
     .single();
 
   return NextResponse.json({ scenes: scenes || [], missions: missions || [], scenario });
-}
+});
 
 // POST — handle various module actions (M6 missions, M7 comparisons/decoupages, M8 quiz/roles)
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "scenario", { max: 20, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const admin = createAdminClient();
   const body = await req.json();
@@ -144,13 +148,16 @@ export async function POST(
   }
 
   return NextResponse.json({ error: "Type d'action inconnu" }, { status: 400 });
-}
+});
 
 // PATCH — update mission content (M6)
-export async function PATCH(
+export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "scenario", { max: 20, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const admin = createAdminClient();
   const body = await req.json();
@@ -200,4 +207,4 @@ export async function PATCH(
   }
 
   return NextResponse.json({ success: true });
-}
+});

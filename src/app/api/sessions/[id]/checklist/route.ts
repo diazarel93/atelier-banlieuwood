@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { CONTENT_CATALOG, isValidContentKey, MIN_CHECKLIST } from "@/lib/module5-data";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 
 // POST — student submits checklist (Module 2 séance 1)
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -114,10 +114,10 @@ export async function POST(
   }
 
   return NextResponse.json(data);
-}
+});
 
 // GET — all checklists for session + top items
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -156,4 +156,4 @@ export async function GET(
     topItems,
     count: data?.length || 0,
   });
-}
+});

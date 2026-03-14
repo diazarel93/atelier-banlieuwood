@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { requireFacilitator, isValidUUID } from "@/lib/api-utils";
+import { requireFacilitator, isValidUUID, withErrorHandler } from "@/lib/api-utils";
 import { log } from "@/lib/logger";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 /**
  * POST /api/sessions/[id]/postprod
  * Submit student work for Module 13 positions 1-5.
  * Body: { studentId, position, data }
  */
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "postprod", { max: 20, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const admin = createAdminClient();
 
@@ -95,17 +99,20 @@ export async function POST(
     log.error("Module 13 submit error", { route: "/api/sessions/[id]/postprod", error: String(err) });
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
-}
+});
 
 /**
  * PUT /api/sessions/[id]/postprod
  * Facilitator validates a result for a position.
  * Body: { position, resultType, resultData }
  */
-export async function PUT(
+export const PUT = withErrorHandler(async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "postprod", { max: 20, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -129,13 +136,13 @@ export async function PUT(
   );
 
   return NextResponse.json({ ok: true });
-}
+});
 
 /**
  * GET /api/sessions/[id]/postprod
  * Facilitator gets all M13 data for the session.
  */
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -162,4 +169,4 @@ export async function GET(
     trailers: trailers.data || [],
     results: results.data || [],
   });
-}
+});

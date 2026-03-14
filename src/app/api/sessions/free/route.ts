@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 import { customAlphabet } from "nanoid";
 
 const nanoid = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 
 // POST — create a free (solo) session without auth
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
   const rl = checkRateLimit(getIP(req), "free-session", { max: 5, windowSec: 60 });
   if (rl) {
     return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -82,4 +82,4 @@ export async function POST(req: NextRequest) {
     sessionId: session.id,
     studentId: student.id,
   });
-}
+});

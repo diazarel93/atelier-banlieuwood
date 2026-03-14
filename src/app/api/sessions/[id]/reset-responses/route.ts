@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, isValidUUID, safeJson } from "@/lib/api-utils";
+import { requireFacilitator, isValidUUID, safeJson, withErrorHandler } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // POST — reset all responses for a situation (teacher replays the question)
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "reset-responses", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;
@@ -51,4 +55,4 @@ export async function POST(
   }
 
   return NextResponse.json({ ok: true, resetCount });
-}
+});

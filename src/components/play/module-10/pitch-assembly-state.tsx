@@ -157,7 +157,7 @@ export function PitchAssemblyState({
           <p className="text-xs text-bw-muted mb-1.5">Raconte la suite : un jour, que se passe-t-il ?</p>
           <textarea value={pitchText} onChange={(e) => setPitchText(e.target.value)} rows={5} maxLength={600}
             placeholder={`Un jour, ${perso?.prenom || "mon personnage"} décide de... mais alors...`}
-            className="w-full rounded-lg bg-transparent text-sm text-bw-text placeholder:text-bw-muted resize-none focus:outline-none" />
+            className="w-full rounded-lg bg-transparent text-sm text-bw-text placeholder:text-bw-muted resize-none focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-amber/40" />
         </div>
       </div>
       <div className="flex items-center gap-2 w-full">

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isValidUUID, safeJson } from "@/lib/api-utils";
+import { isValidUUID, safeJson, withErrorHandler } from "@/lib/api-utils";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { checkAchievements, type ProfileStats, type AchievementUnlock } from "@/lib/achievement-checker";
 
@@ -8,7 +8,7 @@ import { checkAchievements, type ProfileStats, type AchievementUnlock } from "@/
  * GET /api/sessions/[id]/student-context?studentId=X
  * Returns the student's persistent profile for cross-session continuity.
  */
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -80,7 +80,7 @@ export async function GET(
     retainedCount: profile.retained_count || 0,
     level: profile.level || 0,
   });
-}
+});
 
 /**
  * Generate a 4-char alphanumeric profile code (no ambiguous O/0/1/I).
@@ -173,7 +173,7 @@ async function upsertAchievements(
  * Write back session stats to persistent profile on session completion.
  * Also checks achievements and returns any new unlocks.
  */
-export async function PATCH(
+export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -356,4 +356,4 @@ export async function PATCH(
     profileCode: profileRow?.profile_code ?? null,
     newUnlocks,
   });
-}
+});

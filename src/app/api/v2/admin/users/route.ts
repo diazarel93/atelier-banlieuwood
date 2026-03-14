@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/api-utils";
+import { requireAdmin, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // GET /api/v2/admin/users — list all users (admin only)
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const auth = await requireAdmin();
   if ("error" in auth) return auth.error;
 
@@ -28,10 +29,13 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json({ users: data });
-}
+});
 
 // PATCH /api/v2/admin/users — bulk update (admin only)
-export async function PATCH(req: NextRequest) {
+export const PATCH = withErrorHandler<Record<string, never>>(async function PATCH(req: NextRequest) {
+  const rl = checkRateLimit(getIP(req), "admin-users-bulk", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const auth = await requireAdmin();
   if ("error" in auth) return auth.error;
 
@@ -61,4 +65,4 @@ export async function PATCH(req: NextRequest) {
   }
 
   return NextResponse.json({ ok: true, count: userIds.length });
-}
+});

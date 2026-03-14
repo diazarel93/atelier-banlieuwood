@@ -1,5 +1,40 @@
 "use client";
 
+// REFACTOR PLAN: This file is 2629 lines. Consider extracting:
+//
+// 1. CockpitContent (lines 98-2120) — the in-game facilitator view
+//    This is the largest inline component (~2020 lines). Split into:
+//
+//    a. CockpitQuestionCard → src/components/pilot/cockpit-question-card.tsx (~120 lines)
+//       The hero question card section (lines 1134-1229): badge, nav pills, question text, guide.
+//
+//    b. CockpitCenterPanel → src/components/pilot/cockpit-center-panel.tsx (~550 lines)
+//       Center column with toolbar, tabs, response stream, vote results (lines 1256-1860).
+//       Includes: tab toggle, search bar, response filter/sort, empty state, "pas encore repondu" chips.
+//
+//    c. CockpitModuleContent → src/components/pilot/cockpit-module-content.tsx (~400 lines)
+//       Module-specific content switch block (lines 1439-1565): M1, M9, M10, M12, M13, M6, M7, M8, M2EC.
+//       Already uses dynamic imports — just needs the JSX wrapper extracted.
+//
+//    d. CockpitRightPanel → src/components/pilot/cockpit-right-panel.tsx (~100 lines)
+//       Right sidebar: AI assistant panel, session timeline (lines 1866-1960).
+//
+//    e. CockpitFooterSection → src/components/pilot/cockpit-footer-section.tsx (~130 lines)
+//       Footer bar, floating next action, onboarding hints, students drawer, modals (lines 1961-2120).
+//
+//    f. CockpitLogic (hook) → src/hooks/use-cockpit-content.ts (~450 lines)
+//       All useState, useMemo, useCallback, useEffect logic inside CockpitContent (lines 173-650).
+//       Returns computed values: filteredResponses, moduleFlags, handlers, etc.
+//
+// 2. PilotPage (lines 2128-2629) — the outer shell with auth, sidebar, layout
+//    This is ~500 lines and could be left as-is, or split:
+//
+//    a. PilotMobileDrawers → src/components/pilot/pilot-mobile-drawers.tsx (~80 lines)
+//       Mobile sidebar drawer + mobile context drawer (lines 2447-2629).
+//
+// Estimated total reduction: ~1800 lines extracted, leaving ~800 lines in this file.
+// Priority: Extract CockpitLogic hook first (biggest win, cleanest separation).
+
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";

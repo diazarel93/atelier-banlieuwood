@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { XP_RESPOND, XP_VOTE, XP_RETAINED } from "@/lib/xp";
+import { withErrorHandler } from "@/lib/api-utils";
 
 // GET — session leaderboard (collective badges, not competitive ranking)
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -107,4 +108,4 @@ export async function GET(
     badges,
     totals: { responses: totalResponses, votes: totalVotes, retained: totalRetained, participants: participantCount },
   });
-}
+});

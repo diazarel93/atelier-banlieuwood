@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { withErrorHandler } from "@/lib/api-utils";
 
 // GET — find similar sessions and return comparison data
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -94,4 +95,4 @@ export async function GET(
     currentChoices: currentChoices || [],
     similar: comparisons,
   });
-}
+});

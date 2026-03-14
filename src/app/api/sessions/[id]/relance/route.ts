@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireFacilitator, isValidUUID, safeJson } from "@/lib/api-utils";
+import { requireFacilitator, isValidUUID, safeJson, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { generateRelance } from "@/lib/ai";
 
 // POST — Generate an AI relance for a student's response (facilitator only)
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -103,10 +103,10 @@ export async function POST(
     .eq("id", responseId);
 
   return NextResponse.json({ relanceText });
-}
+});
 
 // PATCH — Store student's response to the relance (facilitator only)
-export async function PATCH(
+export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -154,4 +154,4 @@ export async function PATCH(
   }
 
   return NextResponse.json({ ok: true });
-}
+});

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { withErrorHandler } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 /**
  * POST /api/v2/student-profiles/[profileId]/notes
@@ -8,10 +10,13 @@ import { createServerSupabase } from "@/lib/supabase/server";
  * DELETE /api/v2/student-profiles/[profileId]/notes?noteId=X
  * Delete a teacher note.
  */
-export async function POST(
+export const POST = withErrorHandler<{ profileId: string }>(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ profileId: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "student-notes", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { profileId } = await params;
   const supabase = await createServerSupabase();
   const {
@@ -62,12 +67,15 @@ export async function POST(
   }
 
   return NextResponse.json(note, { status: 201 });
-}
+});
 
-export async function DELETE(
+export const DELETE = withErrorHandler<{ profileId: string }>(async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ profileId: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "student-notes", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { profileId } = await params;
   const noteId = req.nextUrl.searchParams.get("noteId");
 
@@ -97,4 +105,4 @@ export async function DELETE(
   }
 
   return NextResponse.json({ ok: true });
-}
+});

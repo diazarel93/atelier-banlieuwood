@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 import { sendEmail } from "@/lib/email/resend-client";
 import { welcomeEmail } from "@/lib/email/templates/welcome";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
+  const rl = checkRateLimit(getIP(req), "auth-setup", { max: 10, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const supabase = await createServerSupabase();
   const {
     data: { user },
@@ -106,4 +110,4 @@ export async function POST(req: NextRequest) {
   sendEmail(user.email!, subject, html);
 
   return NextResponse.json({ ok: true, role: userRole, status: userStatus });
-}
+});

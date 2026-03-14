@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { CATEGORY_LABELS } from "@/lib/constants";
+import { withErrorHandler } from "@/lib/api-utils";
 
 // Competency categories derived from narrative categories
 const COMPETENCIES: Record<string, { label: string; description: string }> = {
@@ -26,7 +27,7 @@ interface ResponseRow {
 }
 
 // GET — generate educational feedback for a session
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -191,4 +192,4 @@ export async function GET(
     strengths: topCompetency ? { label: topCompetency.label, detail: `Point fort du groupe en ${topCompetency.label.toLowerCase()} (${topCompetency.score}%)` } : null,
     weakness: weakCompetency ? { label: weakCompetency.label, detail: `Axe de progression : ${weakCompetency.label.toLowerCase()} (${weakCompetency.score}%)` } : null,
   });
-}
+});

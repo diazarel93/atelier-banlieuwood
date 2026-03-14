@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { withErrorHandler } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
-export async function GET() {
+export const GET = withErrorHandler<Record<string, never>>(async function GET() {
   const supabase = await createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -43,9 +45,12 @@ export async function GET() {
   }
 
   return NextResponse.json(profile);
-}
+});
 
-export async function PATCH(req: NextRequest) {
+export const PATCH = withErrorHandler<Record<string, never>>(async function PATCH(req: NextRequest) {
+  const rl = checkRateLimit(getIP(req), "student-profile", { max: 20, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const supabase = await createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -84,4 +89,4 @@ export async function PATCH(req: NextRequest) {
   }
 
   return NextResponse.json(data);
-}
+});

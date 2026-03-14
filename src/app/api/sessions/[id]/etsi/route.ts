@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { requireFacilitator, safeJson } from "@/lib/api-utils";
+import { requireFacilitator, safeJson, withErrorHandler } from "@/lib/api-utils";
 import { isValidEtsiImageId } from "@/lib/module10-data";
 
 // POST — student submits "Et si..." text for an image
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -102,12 +102,12 @@ export async function POST(
   }
 
   return NextResponse.json(data);
-}
+});
 
 // GET — get "Et si..." responses
 // With ?studentId → student's own responses (no auth needed, scoped by student+session)
 // Without ?studentId → all responses (facilitator only)
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -140,4 +140,4 @@ export async function GET(
 
   if (error) { console.error("[etsi GET all]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json({ responses: data || [], count: data?.length || 0 });
-}
+});

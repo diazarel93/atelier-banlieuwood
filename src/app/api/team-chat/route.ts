@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { isValidUUID } from "@/lib/api-utils";
+import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // Blocked words for moderation
 const BLOCKED_PATTERNS = [
@@ -13,7 +14,7 @@ function isClean(text: string): boolean {
 }
 
 // GET /api/team-chat — get team messages
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const sessionId = req.nextUrl.searchParams.get("sessionId");
   const teamId = req.nextUrl.searchParams.get("teamId");
@@ -45,10 +46,13 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json(data || []);
-}
+});
 
 // POST /api/team-chat — send message
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
+  const rl = checkRateLimit(getIP(req), "team-chat", { max: 20, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const supabase = await createServerSupabase();
   const { sessionId, teamId, studentId, content, messageType } = await req.json();
 
@@ -88,4 +92,4 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json(data);
-}
+});

@@ -108,7 +108,7 @@ function BonusTrivia() {
               {selected !== null && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2 space-y-2">
                   <p className="text-xs text-bw-muted leading-relaxed">{q.explanation}</p>
-                  <button onClick={handleNext} className="w-full py-1.5 rounded-lg text-xs font-semibold bg-bw-violet/15 text-bw-violet hover:bg-bw-violet/25 cursor-pointer transition-colors">
+                  <button onClick={handleNext} aria-label="Passer a la question bonus suivante" className="w-full py-1.5 rounded-lg text-xs font-semibold bg-bw-violet/15 text-bw-violet hover:bg-bw-violet/25 cursor-pointer transition-colors">
                     Question suivante →
                   </button>
                 </motion.div>

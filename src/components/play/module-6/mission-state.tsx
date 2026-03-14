@@ -113,7 +113,7 @@ export function MissionState({ module6, sessionId, studentId, isWriting = false 
             onChange={(e) => setContent(e.target.value)}
             disabled={submitted}
             placeholder="Écris ici ta contribution..."
-            className="w-full h-40 rounded-xl bg-bw-elevated border border-white/[0.06] p-3 text-sm text-bw-text placeholder:text-bw-muted resize-none focus:outline-none focus:border-bw-teal transition-colors"
+            className="w-full h-40 rounded-xl bg-bw-elevated border border-white/[0.06] p-3 text-sm text-bw-text placeholder:text-bw-muted resize-none focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 focus:border-bw-teal transition-colors"
           />
           <div className="flex justify-between items-center mt-2">
             <span className="text-xs text-white/30">{content.length} caractères</span>

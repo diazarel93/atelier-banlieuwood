@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 
 // POST — submit assembled pitch
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -104,10 +104,10 @@ export async function POST(
 
   if (error) { console.error("[pitch POST]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json(data);
-}
+});
 
 // GET — get student's pitch or all pitchs
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -136,10 +136,10 @@ export async function GET(
 
   if (error) { console.error("[pitch GET all]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json({ pitchs: data || [], count: data?.length || 0 });
-}
+});
 
 // PATCH — update chrono seconds only
-export async function PATCH(
+export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -170,4 +170,4 @@ export async function PATCH(
 
   if (error) { console.error("[pitch PATCH]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
   return NextResponse.json(data);
-}
+});

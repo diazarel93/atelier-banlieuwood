@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { withErrorHandler } from "@/lib/api-utils";
 
 // GET — Cross-session analytics for the facilitator's dashboard
-export async function GET() {
+export const GET = withErrorHandler<Record<string, never>>(async function GET() {
   const supabase = await createServerSupabase();
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -186,4 +187,4 @@ export async function GET() {
     weeklyTrend,
     dailyActivity,
   });
-}
+});

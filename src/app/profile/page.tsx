@@ -271,7 +271,7 @@ export default function ProfilePage() {
                   : "Niveau max !"}
               </span>
             </div>
-            <div className="h-3 rounded-full bg-white/[0.08] overflow-hidden relative">
+            <div className="h-3 rounded-full bg-white/[0.08] overflow-hidden relative" role="progressbar" aria-valuenow={Math.round(level.progress * 100)} aria-valuemin={0} aria-valuemax={100} aria-label={`Progression vers le prochain niveau : ${Math.round(level.progress * 100)}%`}>
               <motion.div
                 className="h-full rounded-full relative"
                 style={{
@@ -677,6 +677,7 @@ function FilterTab({
   return (
     <button
       onClick={onClick}
+      aria-pressed={active}
       className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
         active
           ? "bg-[#D4A843]/15 text-[#D4A843] border border-[#D4A843]/30"

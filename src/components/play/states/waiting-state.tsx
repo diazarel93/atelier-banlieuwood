@@ -151,11 +151,12 @@ export function WaitingState({ session, connectedCount, topStudents, currentStud
         <MiniLeaderboard entries={topStudents} currentStudentId={currentStudentId} />
       )}
 
-      <div className="rounded-xl px-4 py-2 sm:px-6 sm:py-3 flex items-center gap-3" style={{ background: "linear-gradient(135deg, rgba(78,205,196,0.08), rgba(78,205,196,0.03))", border: "1px solid rgba(78,205,196,0.15)" }}>
+      <div className="rounded-xl px-4 py-2 sm:px-6 sm:py-3 flex items-center gap-3" aria-live="polite" aria-atomic="true" style={{ background: "linear-gradient(135deg, rgba(78,205,196,0.08), rgba(78,205,196,0.03))", border: "1px solid rgba(78,205,196,0.15)" }}>
         <motion.div
           animate={{ opacity: [1, 0.3, 1] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
           className="w-2.5 h-2.5 rounded-full bg-bw-teal"
+          aria-hidden="true"
         />
         <span className="text-sm text-bw-teal font-medium">
           {connectedCount} connect&eacute;{connectedCount > 1 ? "s" : ""}
@@ -207,6 +208,7 @@ export function WaitingState({ session, connectedCount, topStudents, currentStud
             localStorage.removeItem("bw-onboarded");
             onReplayTutorial();
           }}
+          aria-label="Revoir le tutoriel"
           className="text-[11px] text-bw-muted/60 hover:text-bw-muted transition-colors mt-1 cursor-pointer"
         >
           ? Revoir le tuto

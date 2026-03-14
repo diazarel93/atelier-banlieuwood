@@ -1,15 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin, isValidUUID } from "@/lib/api-utils";
+import { requireAdmin, isValidUUID, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/email/resend-client";
 import { accountValidatedEmail } from "@/lib/email/templates/account-validated";
 import { accountRejectedEmail } from "@/lib/email/templates/account-rejected";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // PATCH /api/v2/admin/users/[userId] — validate/reject/deactivate a user
-export async function PATCH(
+export const PATCH = withErrorHandler<{ userId: string }>(async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ userId: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "admin-user-action", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const auth = await requireAdmin();
   if ("error" in auth) return auth.error;
 
@@ -70,4 +74,4 @@ export async function PATCH(
   }
 
   return NextResponse.json({ user: data });
-}
+});

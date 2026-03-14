@@ -234,7 +234,7 @@ function DebatInput({
               placeholder="Parce que..."
               maxLength={500}
               rows={2}
-              className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-bw-heading placeholder:text-bw-muted focus:border-bw-primary focus:outline-none transition-colors resize-none"
+              className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-3 text-bw-heading placeholder:text-bw-muted focus:border-bw-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-primary/40 transition-colors resize-none"
             />
             <div className="flex justify-between items-center">
               <span className="text-xs text-bw-muted">{justification.length}/500</span>
@@ -289,7 +289,7 @@ function OpenInput({
         placeholder="Ecris ta réponse ici..."
         rows={2}
         maxLength={500}
-        className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-4 text-bw-heading placeholder:text-bw-muted focus:border-bw-primary focus:outline-none transition-colors resize-none overflow-hidden"
+        className="w-full bw-script bg-bw-elevated border border-white/[0.06] rounded-xl p-4 text-bw-heading placeholder:text-bw-muted focus:border-bw-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-primary/40 transition-colors resize-none overflow-hidden"
       />
       <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
         <motion.div

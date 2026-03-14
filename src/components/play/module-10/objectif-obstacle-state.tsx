@@ -99,7 +99,7 @@ export function ObjectifObstacleState({
                 onChange={(e) => setCustomObjectif(e.target.value)}
                 placeholder="Mon personnage veut..."
                 maxLength={200}
-                className="w-full mt-2 rounded-xl bg-bw-elevated border border-bw-amber/30 px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors"
+                className="w-full mt-2 rounded-xl bg-bw-elevated border border-bw-amber/30 px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-amber/40 transition-colors"
                 autoFocus
               />
             </motion.div>
@@ -115,7 +115,7 @@ export function ObjectifObstacleState({
                 onChange={(e) => setObjectifReason(e.target.value)}
                 placeholder={`Pourquoi ${module10.personnage?.prenom || "ton personnage"} veut ça ?`}
                 maxLength={200}
-                className="w-full rounded-xl bg-bw-elevated border border-bw-amber/20 px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none transition-colors"
+                className="w-full rounded-xl bg-bw-elevated border border-bw-amber/20 px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-amber focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-amber/40 transition-colors"
               />
             </motion.div>
           )}

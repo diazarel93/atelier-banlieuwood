@@ -134,14 +134,24 @@ export function withErrorHandler<
   handler: (
     req: NextRequest,
     ctx: { params: Promise<P> }
-  ) => Promise<NextResponse>
+  ) => Promise<NextResponse | undefined>
 ) {
   return async (
     req: NextRequest,
     ctx: { params: Promise<P> }
   ): Promise<NextResponse> => {
     try {
-      return await handler(req, ctx);
+      const result = await handler(req, ctx);
+      if (!result) {
+        console.error(
+          `[API Error] ${req.method} ${req.nextUrl.pathname}: handler returned undefined`
+        );
+        return NextResponse.json(
+          { error: "Internal server error" },
+          { status: 500 }
+        );
+      }
+      return result;
     } catch (error) {
       console.error(
         `[API Error] ${req.method} ${req.nextUrl.pathname}:`,

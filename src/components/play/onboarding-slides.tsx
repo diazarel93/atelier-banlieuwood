@@ -62,12 +62,15 @@ export function OnboardingSlides({ onComplete }: OnboardingSlidesProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      role="region"
+      aria-label={`Tutoriel, etape ${current + 1} sur ${SLIDES.length}`}
       className="fixed inset-0 z-[60] bg-bw-bg flex flex-col items-center justify-center px-6"
       onClick={next}
     >
       {/* Skip button */}
       <button
         onClick={(e) => { e.stopPropagation(); onComplete(); }}
+        aria-label="Passer le tutoriel"
         className="absolute top-6 right-6 text-xs text-bw-muted hover:text-bw-text transition-colors cursor-pointer"
       >
         Passer →
@@ -114,10 +117,13 @@ export function OnboardingSlides({ onComplete }: OnboardingSlidesProps) {
       </AnimatePresence>
 
       {/* Dots */}
-      <div className="absolute bottom-12 flex gap-2">
+      <div className="absolute bottom-12 flex gap-2" role="tablist" aria-label="Etapes du tutoriel">
         {SLIDES.map((_, i) => (
           <div
             key={i}
+            role="tab"
+            aria-selected={i === current}
+            aria-label={`Etape ${i + 1}`}
             className="w-2 h-2 rounded-full transition-all duration-300"
             style={{
               backgroundColor: i === current ? slide.accent : "rgba(0,0,0,0.1)",

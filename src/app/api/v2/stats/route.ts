@@ -3,12 +3,13 @@ import { createServerSupabase } from "@/lib/supabase/server";
 import { oieToAxes, aggregateAxes, type AxesScores } from "@/lib/axes-mapping";
 import { getAuthUser } from "@/lib/auth-helpers";
 import { log } from "@/lib/logger";
+import { withErrorHandler } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/stats?classLabel=X&sessionId=Y
  * Aggregate OIE scores → 4 axes for the V2 Statistiques page.
  */
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const {
     data: { user },
@@ -133,4 +134,4 @@ export async function GET(req: NextRequest) {
     },
     { headers: { "Cache-Control": "private, max-age=15, stale-while-revalidate=30" } }
   );
-}
+});

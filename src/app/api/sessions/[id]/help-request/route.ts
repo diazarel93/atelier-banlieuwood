@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 import { isValidHelpType, isValidHelpStep, MAX_HELP_PER_STEP } from "@/lib/module10-data";
 
 const HELP_SYSTEM_PROMPT = `Tu es un mentor cinéma bienveillant pour adolescents (10-18 ans).
@@ -40,7 +40,7 @@ function buildHelpPrompt(helpType: string, step: string, context?: string): stri
 }
 
 // POST — log help request + return AI hint
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -140,4 +140,4 @@ export async function POST(
   const remaining = MAX_HELP_PER_STEP - (count || 0) - 1;
 
   return NextResponse.json({ hint, remaining });
-}
+});

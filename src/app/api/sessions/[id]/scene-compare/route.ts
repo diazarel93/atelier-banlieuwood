@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isValidUUID, safeJson } from "@/lib/api-utils";
+import { isValidUUID, safeJson, withErrorHandler } from "@/lib/api-utils";
 import { getElement } from "@/lib/module5-data";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // POST — facilitator selects 2 scenes for comparison (Module 2 séance 3)
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "scene-compare", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId } = await params;
   const parsed = await safeJson(req);
   if ("error" in parsed) return parsed.error;
@@ -67,10 +71,10 @@ export async function POST(
   }
 
   return NextResponse.json(data);
-}
+});
 
 // GET — returns the 2 scenes (anonymized) for projection
-export async function GET(
+export const GET = withErrorHandler(async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -112,4 +116,4 @@ export async function GET(
   const sceneB = { ...rawB, elements: enrichElements(rawB.elements as { key: string }[] | null) };
 
   return NextResponse.json({ sceneA, sceneB });
-}
+});

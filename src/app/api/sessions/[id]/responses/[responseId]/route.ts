@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 import { logSessionEvent } from "@/lib/event-logger";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // PATCH — update response flags (is_hidden, is_vote_option) — facilitator only
-export async function PATCH(
+export const PATCH = withErrorHandler<{ id: string; responseId: string }>(async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string; responseId: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "response-flags", { max: 30, windowSec: 60 });
+  if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
+
   const { id: sessionId, responseId } = await params;
   const supabase = await createServerSupabase();
   const {
@@ -134,4 +138,4 @@ export async function PATCH(
   }
 
   return NextResponse.json({ ok: true });
-}
+});

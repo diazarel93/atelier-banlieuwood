@@ -239,6 +239,7 @@ export function SessionBadge({
         <button
           onClick={handleDownload}
           disabled={generating}
+          aria-label="Telecharger mon badge en image"
           className="flex-1 h-10 rounded-xl bg-bw-gold/10 text-bw-gold text-sm font-medium hover:bg-bw-gold/20 transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -249,6 +250,7 @@ export function SessionBadge({
         <button
           onClick={handleShare}
           disabled={generating}
+          aria-label="Partager mon badge"
           className="flex-1 h-10 rounded-xl bg-bw-teal/10 text-bw-teal text-sm font-medium hover:bg-bw-teal/20 transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
