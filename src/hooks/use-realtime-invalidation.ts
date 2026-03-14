@@ -8,10 +8,17 @@ import type { RealtimeChannel } from "@supabase/supabase-js";
 export type ConnectionStatus = "connected" | "connecting" | "disconnected";
 
 /**
- * Map of Supabase table names → TanStack Query keys to invalidate.
- * When a row changes in the table (filtered by session_id), all listed
- * query keys are invalidated, triggering a refetch.
+ * Returns the appropriate polling interval based on realtime connection status.
+ * When connected, use a slow interval (heartbeat). When disconnected, poll faster.
  */
+export function getPollingInterval(
+  status: ConnectionStatus | undefined,
+  fastMs: number,
+  slowMs: number
+): number {
+  return status === "connected" ? slowMs : fastMs;
+}
+
 const TABLE_INVALIDATION_MAP: Record<string, (sessionId: string) => string[][]> = {
   sessions: (sid) => [
     ["session-state", sid],
@@ -49,45 +56,46 @@ const TABLE_INVALIDATION_MAP: Record<string, (sessionId: string) => string[][]> 
     ["pilot-teams", sid],
     ["session-state", sid],
   ],
-  // M6 — Le Scénario
-  module6_scenes: (sid) => [["session-state", sid]],
-  module6_missions: (sid) => [["session-state", sid]],
-  module6_scenario: (sid) => [["session-state", sid]],
-  // M7 — La Mise en scène
-  module7_comparisons: (sid) => [["session-state", sid]],
-  module7_decoupages: (sid) => [["session-state", sid]],
-  module7_storyboard: (sid) => [["session-state", sid]],
-  // M8 — L'Équipe
-  module8_quiz: (sid) => [["session-state", sid]],
-  module8_roles: (sid) => [["session-state", sid]],
-  module8_points: (sid) => [["session-state", sid]],
-  module8_talent_cards: (sid) => [["session-state", sid]],
+  module6_scenes: (sid) => [["session-state", sid], ["m6-scenes", sid]],
+  module6_missions: (sid) => [["session-state", sid], ["m6-missions", sid]],
+  module6_scenario: (sid) => [["session-state", sid], ["m6-scenario", sid]],
+  module7_comparisons: (sid) => [["session-state", sid], ["m7-comparisons", sid]],
+  module7_decoupages: (sid) => [["session-state", sid], ["m7-decoupages", sid]],
+  module7_storyboard: (sid) => [["session-state", sid], ["m7-storyboard", sid]],
+  module8_quiz: (sid) => [["session-state", sid], ["m8-quiz", sid]],
+  module8_roles: (sid) => [["session-state", sid], ["m8-roles", sid]],
+  module8_points: (sid) => [["session-state", sid], ["m8-points", sid]],
+  module8_talent_cards: (sid) => [["session-state", sid], ["m8-talent-cards", sid]],
 };
 
-/**
- * Tables that use postgres_changes (child tables with session_id FK).
- * The `sessions` table is handled via broadcast instead (RLS blocks
- * postgres_changes for unauthenticated student clients).
- */
 const CHILD_TABLES = Object.keys(TABLE_INVALIDATION_MAP).filter((t) => t !== "sessions");
+
+const MAX_RETRIES = 5;
+const BACKOFF_BASE_MS = 2000;
+const BACKOFF_MAX_MS = 30000;
 
 /**
  * Subscribe to Supabase Realtime changes for a session.
  *
  * Two mechanisms:
  * 1. **postgres_changes** for child tables (responses, votes, students, etc.)
- *    — filtered by session_id, works for authenticated clients.
  * 2. **broadcast** for session-level changes (status, question, timer, etc.)
- *    — sent by the PATCH API route, received by ALL clients (no RLS).
  *
- * Fallback: 30s polling via refetchInterval on each query.
+ * Features:
+ * - Exponential backoff reconnection (2s → 4s → 8s → 16s → 30s, max 5 retries)
+ * - Granular M6/M7/M8 query keys for targeted invalidation
+ * - Clean channel unsubscribe + removal on cleanup
  *
  * Returns `{ status }` — the current connection status.
  */
 export function useRealtimeInvalidation(sessionId: string): { status: ConnectionStatus } {
   const queryClient = useQueryClient();
   const channelRef = useRef<RealtimeChannel | null>(null);
+  const retryRef = useRef(0);
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [status, setStatus] = useState<ConnectionStatus>("connecting");
+  // Bump to trigger re-subscription via useEffect
+  const [epoch, setEpoch] = useState(0);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -96,7 +104,7 @@ export function useRealtimeInvalidation(sessionId: string): { status: Connection
     const supabase = createClient();
     const channel = supabase.channel(`session-${sessionId}`);
 
-    // 1. postgres_changes for child tables (filtered by session_id)
+    // postgres_changes for child tables (filtered by session_id)
     for (const table of CHILD_TABLES) {
       channel.on(
         "postgres_changes" as const,
@@ -115,7 +123,7 @@ export function useRealtimeInvalidation(sessionId: string): { status: Connection
       );
     }
 
-    // 2. Broadcast for session-level changes (bypasses RLS — works for students)
+    // Broadcast for session-level changes (bypasses RLS)
     channel.on("broadcast", { event: "session-update" }, () => {
       const keys = TABLE_INVALIDATION_MAP.sessions(sessionId);
       for (const key of keys) {
@@ -123,24 +131,54 @@ export function useRealtimeInvalidation(sessionId: string): { status: Connection
       }
     });
 
-    // Track subscription status
     channel.subscribe((channelStatus) => {
       if (channelStatus === "SUBSCRIBED") {
         setStatus("connected");
-      } else if (channelStatus === "CLOSED" || channelStatus === "CHANNEL_ERROR") {
+        retryRef.current = 0;
+      } else if (
+        channelStatus === "CLOSED" ||
+        channelStatus === "CHANNEL_ERROR" ||
+        channelStatus === "TIMED_OUT"
+      ) {
         setStatus("disconnected");
-      } else if (channelStatus === "TIMED_OUT") {
-        setStatus("disconnected");
+        // Schedule reconnect with exponential backoff
+        if (retryRef.current < MAX_RETRIES) {
+          const delay = Math.min(
+            BACKOFF_BASE_MS * Math.pow(2, retryRef.current),
+            BACKOFF_MAX_MS
+          );
+          retryRef.current += 1;
+          retryTimerRef.current = setTimeout(() => setEpoch((e) => e + 1), delay);
+        }
       }
     });
 
     channelRef.current = channel;
 
     return () => {
+      // Clear pending retry timer
+      if (retryTimerRef.current) {
+        clearTimeout(retryTimerRef.current);
+        retryTimerRef.current = null;
+      }
+      // Unsubscribe then remove channel
+      channel.unsubscribe();
       supabase.removeChannel(channel);
       channelRef.current = null;
     };
-  }, [sessionId, queryClient]);
+  }, [sessionId, queryClient, epoch]);
+
+  // Reset retries when tab becomes visible again (student picks up phone)
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible" && retryRef.current >= MAX_RETRIES) {
+        retryRef.current = 0;
+        setEpoch((e) => e + 1);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
 
   return { status };
 }

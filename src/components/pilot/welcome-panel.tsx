@@ -90,7 +90,7 @@ export function WelcomePanel({
             {/* Join code display */}
             <div className="text-center pt-3">
               <p className="text-[11px] uppercase tracking-widest text-bw-muted mb-2.5">Code de la session</p>
-              <button onClick={onCopyCode} className="cursor-pointer group">
+              <button onClick={onCopyCode} aria-label="Copier le code de session" className="cursor-pointer group">
                 <div className="flex gap-2 justify-center">
                   {joinCode.split("").map((char, i) => (
                     <motion.span

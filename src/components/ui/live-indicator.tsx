@@ -41,8 +41,8 @@ export function LiveIndicator({
   const config = statusConfig[status]
 
   return (
-    <div className={cn("inline-flex items-center gap-2", className)}>
-      <span className={config.dotClass} />
+    <div className={cn("inline-flex items-center gap-2", className)} role="status" aria-label={config.label}>
+      <span className={config.dotClass} aria-hidden="true" />
       {showLabel && (
         <span
           className={cn(

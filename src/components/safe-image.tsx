@@ -18,14 +18,19 @@ interface SafeImageProps {
 }
 
 /**
- * Image wrapper with fallback — displays a placeholder emoji
- * when the image fails to load (network error, TMDB down, etc.)
- * Uses next/image for optimization. Set unoptimized=true for AI-generated URLs.
+ * Image wrapper with graceful loading + error fallback.
+ *
+ * Features:
+ * - Shimmer placeholder while loading
+ * - Smooth fade-in on load (respects prefers-reduced-motion)
+ * - Emoji fallback on error
+ * - Auto-detects pollinations.ai URLs as unoptimized
+ * - Accessible: role="img" + aria-label on fallback
  */
 export function SafeImage({
   src,
   alt,
-  fallbackEmoji = "🎬",
+  fallbackEmoji = "\uD83C\uDFAC",
   className = "",
   style,
   width,
@@ -36,8 +41,10 @@ export function SafeImage({
   priority,
 }: SafeImageProps) {
   const [failed, setFailed] = useState(!src);
+  const [loaded, setLoaded] = useState(false);
 
   const handleError = useCallback(() => setFailed(true), []);
+  const handleLoad = useCallback(() => setLoaded(true), []);
 
   if (failed || !src) {
     return (
@@ -52,24 +59,37 @@ export function SafeImage({
     );
   }
 
-  // For external URLs without configured remotePatterns, use unoptimized
   const isExternal = src.startsWith("http");
   const shouldUnoptimize = unoptimized ?? (isExternal && src.includes("pollinations.ai"));
 
   return (
-    <Image
-      src={src}
-      alt={alt}
-      className={className}
-      style={style}
-      onError={handleError}
-      width={fill ? undefined : (width ?? 300)}
-      height={fill ? undefined : (height ?? 200)}
-      fill={fill}
-      unoptimized={shouldUnoptimize}
-      sizes={sizes}
-      priority={priority}
-      loading={priority ? undefined : "lazy"}
-    />
+    <span className="relative inline-block" style={fill ? { display: "block", width: "100%", height: "100%" } : undefined}>
+      {/* Shimmer placeholder — visible until image loads */}
+      {!loaded && (
+        <span
+          className={`absolute inset-0 motion-safe:animate-pulse rounded-xl bg-bw-surface-dim/40 ${className}`}
+          style={style}
+          aria-hidden="true"
+        />
+      )}
+      <Image
+        src={src}
+        alt={alt}
+        className={`${className} transition-opacity duration-300 motion-reduce:transition-none`}
+        style={{
+          ...style,
+          opacity: loaded ? 1 : 0,
+        }}
+        onError={handleError}
+        onLoad={handleLoad}
+        width={fill ? undefined : (width ?? 300)}
+        height={fill ? undefined : (height ?? 200)}
+        fill={fill}
+        unoptimized={shouldUnoptimize}
+        sizes={sizes}
+        priority={priority}
+        loading={priority ? undefined : "lazy"}
+      />
+    </span>
   );
 }

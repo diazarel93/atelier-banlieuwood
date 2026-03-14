@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { getModuleByDb } from "@/lib/modules-data";
 import { logAudit, type AuditAction } from "@/lib/audit-log";
+import { getPollingInterval } from "@/hooks/use-realtime-invalidation";
 
 // ── Types ──
 
@@ -64,7 +65,12 @@ export type CollectiveChoice = import("@/components/pilot/choices-history").Coll
 
 // ── Hook ──
 
-export function usePilotSession(sessionId: string, checkingAuth: boolean, actorId: string = "system") {
+export function usePilotSession(
+  sessionId: string,
+  checkingAuth: boolean,
+  actorId: string = "system",
+  realtimeStatus?: import("./use-realtime-invalidation").ConnectionStatus
+) {
   const queryClient = useQueryClient();
 
   // ── Queries ──
@@ -76,7 +82,7 @@ export function usePilotSession(sessionId: string, checkingAuth: boolean, actorI
       if (!res.ok) throw new Error("Session introuvable");
       return res.json();
     },
-    refetchInterval: 10_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 10_000, 30_000),
     enabled: !checkingAuth,
   });
 
@@ -89,7 +95,7 @@ export function usePilotSession(sessionId: string, checkingAuth: boolean, actorI
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: 15_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 15_000, 60_000),
     enabled: !checkingAuth && !!session,
   });
 
@@ -105,7 +111,7 @@ export function usePilotSession(sessionId: string, checkingAuth: boolean, actorI
       if (!res.ok) return null;
       return res.json();
     },
-    refetchInterval: 10_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 10_000, 30_000),
     enabled: !checkingAuth && !!session && hasActiveModule,
   });
 
@@ -144,7 +150,7 @@ export function usePilotSession(sessionId: string, checkingAuth: boolean, actorI
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: 10_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 10_000, 30_000),
     enabled: !checkingAuth && (!!situation || (isModule1 && m1SituationIds.length > 0)) && hasActiveModule,
   });
 
@@ -157,7 +163,7 @@ export function usePilotSession(sessionId: string, checkingAuth: boolean, actorI
       if (!res.ok) return { totalVotes: 0, results: [] };
       return res.json();
     },
-    refetchInterval: 10_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 10_000, 30_000),
     enabled: !checkingAuth && !!situation && hasActiveModule && (session?.status === "voting" || session?.status === "reviewing"),
   });
 
@@ -169,7 +175,7 @@ export function usePilotSession(sessionId: string, checkingAuth: boolean, actorI
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: 10_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 10_000, 30_000),
     enabled: !checkingAuth && !!session && hasActiveModule && (session?.current_module === 3 || session?.current_module === 4),
   });
 
@@ -181,7 +187,7 @@ export function usePilotSession(sessionId: string, checkingAuth: boolean, actorI
       if (!res.ok) return { scores: {} };
       return res.json();
     },
-    refetchInterval: 30_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 30_000, 60_000),
     enabled: !checkingAuth && !!session,
   });
 

@@ -4,6 +4,8 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { safeJson } from "@/lib/api-utils";
 import { voteSchema, formatZodError } from "@/lib/schemas";
 import { logSessionEvent } from "@/lib/event-logger";
+import * as Sentry from "@sentry/nextjs";
+import { verifyStudentToken } from "@/lib/student-token";
 
 // POST — student submits a vote
 export async function POST(
@@ -27,14 +29,27 @@ export async function POST(
     );
   }
 
-  const { studentId, situationId, chosenResponseId } = validated.data;
+  // Prefer token-based auth over body studentId
+  let { studentId } = validated.data;
+  const { situationId, chosenResponseId } = validated.data;
+
+  const tokenCookie = req.cookies.get("bw-student-token")?.value;
+  const authHeader = req.headers.get("authorization");
+  const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  const rawToken = tokenCookie || bearerToken;
+  if (rawToken) {
+    const verified = verifyStudentToken(rawToken);
+    if (verified && verified.sessionId === sessionId) {
+      studentId = verified.studentId;
+    }
+  }
 
   const admin = createAdminClient();
 
   // Check session status
   const { data: session } = await admin
     .from("sessions")
-    .select("status")
+    .select("status, current_module, current_seance, current_situation_index")
     .eq("id", sessionId)
     .is("deleted_at", null)
     .single();
@@ -58,6 +73,32 @@ export async function POST(
     return NextResponse.json(
       { error: "Joueur introuvable dans cette partie" },
       { status: 404 }
+    );
+  }
+
+  // Race condition guard: verify situation matches current session state
+  const { data: voteSituation } = await admin
+    .from("situations")
+    .select("position, module, seance")
+    .eq("id", situationId)
+    .single();
+
+  if (!voteSituation) {
+    return NextResponse.json(
+      { error: "Situation introuvable", code: "SITUATION_NOT_FOUND" },
+      { status: 400 }
+    );
+  }
+
+  const isStale =
+    voteSituation.module !== session.current_module ||
+    voteSituation.seance !== session.current_seance ||
+    voteSituation.position !== session.current_situation_index;
+
+  if (isStale) {
+    return NextResponse.json(
+      { error: "La session a deja avance a une nouvelle question", code: "SITUATION_ADVANCED" },
+      { status: 409 }
     );
   }
 
@@ -95,6 +136,7 @@ export async function POST(
     .single();
 
   if (error) {
+    Sentry.captureException(error);
     console.error("[vote]", error.message);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }

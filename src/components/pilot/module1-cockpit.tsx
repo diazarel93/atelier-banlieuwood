@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { SafeImage } from "@/components/safe-image";
 
 interface Module1Option {
   key: string;
@@ -39,7 +40,7 @@ export function Module1Cockpit({ isPositioning, isImage, module1Data, currentQIn
         const allCounts = module1Data.questions![currentQIndex].options?.map(o => module1Data.optionDistribution?.[o.key] || 0) || [];
         const maxCount = Math.max(...allCounts, 0);
         return (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" role="group" aria-label="Distribution des reponses">
             {module1Data.questions![currentQIndex].options?.map((opt) => {
               const count = module1Data.optionDistribution?.[opt.key] || 0;
               const total = activeStudentCount;
@@ -50,6 +51,8 @@ export function Module1Cockpit({ isPositioning, isImage, module1Data, currentQIn
               return (
                 <motion.div
                   key={opt.key}
+                  role="region"
+                  aria-label={`Option ${opt.key.toUpperCase()}: ${opt.label} — ${pct}%, ${count} sur ${total} eleves`}
                   animate={isDominant ? { scale: [1, 1.02, 1] } : { scale: 1 }}
                   transition={isDominant ? { repeat: Infinity, duration: 2.5, ease: "easeInOut" } : undefined}
                   className="rounded-[18px] transition-all duration-300 relative overflow-hidden flex flex-col justify-between"
@@ -109,8 +112,8 @@ export function Module1Cockpit({ isPositioning, isImage, module1Data, currentQIn
           {module1Data.image ? (
             <div className="space-y-2">
               <div className="rounded-xl overflow-hidden border border-black/[0.06] bg-bw-surface">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={module1Data.image.url} alt={module1Data.image.title}
+                <SafeImage src={module1Data.image.url} alt={module1Data.image.title}
+                  width={800} height={500}
                   className="w-full aspect-[16/10] object-cover" />
               </div>
               <p className="text-xs text-bw-muted text-center">{module1Data.image.title}</p>

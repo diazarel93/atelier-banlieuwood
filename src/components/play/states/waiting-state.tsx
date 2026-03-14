@@ -4,11 +4,15 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CINEMA_TIPS, type CinemaTip } from "@/lib/cinema-tips";
 import { ROUTES } from "@/lib/routes";
+import { PHASES, MAIN_PHASE_IDS, getModuleByDb, getPhaseForModule } from "@/lib/modules-data";
 import type { SessionState } from "@/hooks/use-session-polling";
+import { MiniLeaderboard } from "@/components/play/mini-leaderboard";
 
 export interface WaitingStateProps {
   session: SessionState["session"];
   connectedCount: number;
+  topStudents?: { id: string; displayName: string; avatar: string; xp: number }[];
+  currentStudentId?: string;
 }
 
 function pickTips(module: number, seance?: number): CinemaTip[] {
@@ -24,7 +28,7 @@ const TYPE_ICONS: Record<string, string> = {
   acteur: "🌟", rappel: "📌", motivation: "💪",
 };
 
-export function WaitingState({ session, connectedCount }: WaitingStateProps) {
+export function WaitingState({ session, connectedCount, topStudents, currentStudentId }: WaitingStateProps) {
   const tips = useMemo(() => pickTips(session.currentModule || 1, session.currentSeance), [session.currentModule, session.currentSeance]);
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * tips.length));
 
@@ -90,6 +94,48 @@ export function WaitingState({ session, connectedCount }: WaitingStateProps) {
           Le facilitateur va bientot lancer la question...
         </p>
       </div>
+
+      {/* Phase indicator — "Tu es ici" */}
+      {(() => {
+        const currentModule = getModuleByDb(session.currentModule || 1, session.currentSeance || 1);
+        const currentPhase = currentModule ? getPhaseForModule(currentModule.id) : null;
+        if (!currentPhase) return null;
+        const mainPhases = PHASES.filter((p) => (MAIN_PHASE_IDS as readonly string[]).includes(p.id));
+        const currentIdx = mainPhases.findIndex((p) => p.id === currentPhase.id);
+        if (currentIdx < 0) return null;
+        return (
+          <div className="flex flex-col items-center gap-2 max-w-[280px]">
+            <p className="text-xs text-bw-muted uppercase tracking-wider">
+              Phase {currentIdx + 1} sur {mainPhases.length}
+            </p>
+            <div className="flex items-center gap-1.5">
+              {mainPhases.map((phase, i) => (
+                <div
+                  key={phase.id}
+                  className="w-2.5 h-2.5 rounded-full transition-all"
+                  style={{
+                    backgroundColor: i < currentIdx
+                      ? phase.color
+                      : i === currentIdx
+                        ? currentPhase.color
+                        : "rgba(255,255,255,0.1)",
+                    boxShadow: i === currentIdx ? `0 0 8px ${currentPhase.color}60` : "none",
+                    transform: i === currentIdx ? "scale(1.3)" : "scale(1)",
+                  }}
+                />
+              ))}
+            </div>
+            <p className="text-sm font-medium" style={{ color: currentPhase.color }}>
+              {currentPhase.emoji} {currentPhase.label}
+            </p>
+          </div>
+        );
+      })()}
+
+      {/* Mini leaderboard — top 3 students */}
+      {topStudents && topStudents.length > 0 && (
+        <MiniLeaderboard entries={topStudents} currentStudentId={currentStudentId} />
+      )}
 
       <div className="rounded-xl px-4 py-2 sm:px-6 sm:py-3 flex items-center gap-3" style={{ background: "linear-gradient(135deg, rgba(78,205,196,0.08), rgba(78,205,196,0.03))", border: "1px solid rgba(78,205,196,0.15)" }}>
         <motion.div

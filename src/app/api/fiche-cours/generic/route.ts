@@ -47,11 +47,14 @@ export async function POST(req: NextRequest) {
       : cached?.[0];
 
     if (match) {
-      return NextResponse.json({
-        fiche: match.content,
-        provider: match.ai_provider,
-        generatedAt: match.generated_at,
-      });
+      return NextResponse.json(
+        {
+          fiche: match.content,
+          provider: match.ai_provider,
+          generatedAt: match.generated_at,
+        },
+        { headers: { "Cache-Control": "public, max-age=3600, stale-while-revalidate=7200" } }
+      );
     }
   }
 
@@ -69,9 +72,12 @@ export async function POST(req: NextRequest) {
     { onConflict: "level,COALESCE(template, '__none__')" }
   );
 
-  return NextResponse.json({
-    fiche,
-    provider,
-    generatedAt: new Date().toISOString(),
-  });
+  return NextResponse.json(
+    {
+      fiche,
+      provider,
+      generatedAt: new Date().toISOString(),
+    },
+    { headers: { "Cache-Control": "public, max-age=3600, stale-while-revalidate=7200" } }
+  );
 }

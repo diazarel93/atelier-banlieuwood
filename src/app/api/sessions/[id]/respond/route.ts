@@ -5,6 +5,8 @@ import { safeJson, broadcastSessionUpdate } from "@/lib/api-utils";
 import { respondSchema, formatZodError } from "@/lib/schemas";
 import { getSeanceMax, MODULE_SEANCE_SITUATIONS } from "@/lib/constants";
 import { logSessionEvent } from "@/lib/event-logger";
+import * as Sentry from "@sentry/nextjs";
+import { verifyStudentToken } from "@/lib/student-token";
 // Module 1 uses real situation IDs from the situations table (module=1)
 
 const MAX_RESPONSE_LENGTH = 500;
@@ -32,7 +34,20 @@ export async function POST(
     );
   }
 
-  const { studentId, situationId, text } = validated.data;
+  // Prefer token-based auth over body studentId
+  let { studentId } = validated.data;
+  const { situationId, text } = validated.data;
+
+  const tokenCookie = req.cookies.get("bw-student-token")?.value;
+  const authHeader = req.headers.get("authorization");
+  const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  const rawToken = tokenCookie || bearerToken;
+  if (rawToken) {
+    const verified = verifyStudentToken(rawToken);
+    if (verified && verified.sessionId === sessionId) {
+      studentId = verified.studentId;
+    }
+  }
 
   const admin = createAdminClient();
 
@@ -149,6 +164,7 @@ export async function POST(
     .single();
 
   if (error) {
+    Sentry.captureException(error);
     console.error("[respond]", error.message);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
@@ -179,6 +195,9 @@ export async function POST(
     .from("students")
     .update({ last_seen_at: new Date().toISOString() })
     .eq("id", studentId);
+
+  // Broadcast update so pilot/screen get instant notification
+  broadcastSessionUpdate(sessionId);
 
   // ── Free mode: auto-create collective choice + auto-advance ──
   if (session.mode === "free") {

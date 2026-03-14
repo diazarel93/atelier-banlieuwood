@@ -7,15 +7,29 @@ import {
   enqueue,
   flush,
   count as queueCount,
+  clearStale,
   type QueuedAction,
 } from "@/lib/offline-queue";
 
 let idCounter = 0;
 
+function getStudentToken(url: string): string | null {
+  try {
+    const match = url.match(/\/sessions\/([^/]+)\//);
+    if (!match) return null;
+    return localStorage.getItem(`bw-student-token-${match[1]}`);
+  } catch {
+    return null;
+  }
+}
+
 async function executeAction(action: QueuedAction): Promise<boolean> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const token = getStudentToken(action.url);
+  if (token) headers["Authorization"] = `Bearer ${token}`;
   const res = await fetch(action.url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: action.body,
   });
   return res.ok;
@@ -26,8 +40,9 @@ export function useOfflineQueue() {
   const wasOnline = useRef(true);
   const [pendingCount, setPendingCount] = useState(0);
 
-  // Sync count on mount
+  // Sync count on mount + clear stale entries
   useEffect(() => {
+    clearStale();
     setPendingCount(queueCount());
   }, []);
 
@@ -80,9 +95,12 @@ export function useOfflineQueue() {
 
       // Online — try normal fetch
       try {
+        const fetchHeaders: Record<string, string> = { "Content-Type": "application/json" };
+        const token = getStudentToken(url);
+        if (token) fetchHeaders["Authorization"] = `Bearer ${token}`;
         const res = await fetch(url, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: fetchHeaders,
           body: jsonBody,
         });
 

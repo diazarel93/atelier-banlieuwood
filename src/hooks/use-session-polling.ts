@@ -322,7 +322,12 @@ export interface SessionState {
   team?: { id: string; teamName: string; teamColor: string; teamNumber: number } | null;
 }
 
-export function useSessionPolling(sessionId: string, studentId: string | null, opts?: { skipStudentCheck?: boolean }) {
+export function useSessionPolling(
+  sessionId: string,
+  studentId: string | null,
+  opts?: { skipStudentCheck?: boolean; realtimeStatus?: import("./use-realtime-invalidation").ConnectionStatus }
+) {
+  const interval = opts?.realtimeStatus === "connected" ? 30_000 : 5_000;
   return useQuery<SessionState>({
     queryKey: ["session-state", sessionId, studentId],
     queryFn: async () => {
@@ -331,7 +336,8 @@ export function useSessionPolling(sessionId: string, studentId: string | null, o
       if (!res.ok) throw new Error("Session introuvable");
       return res.json();
     },
-    refetchInterval: 5_000, // Fallback polling — Realtime broadcast handles instant updates
+    refetchInterval: interval,
+    staleTime: 2_000,
     // Wait for studentId to be loaded unless explicitly skipped (e.g. screen page)
     enabled: !!sessionId && (opts?.skipStudentCheck || studentId !== null),
   });

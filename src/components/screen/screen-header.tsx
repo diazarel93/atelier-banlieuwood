@@ -59,7 +59,7 @@ export function ScreenHeader({ session, seanceIntro, moduleColor, maxSituations,
         )}
         {/* Step dots */}
         {!noModuleSelected && session.status !== "done" && maxSituations > 1 && (
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5" role="group" aria-label={`Étape ${(session.currentSituationIndex ?? 0) + 1} sur ${maxSituations}`}>
             {Array.from({ length: maxSituations }).map((_, i) => (
               <motion.div
                 key={i}
@@ -78,7 +78,7 @@ export function ScreenHeader({ session, seanceIntro, moduleColor, maxSituations,
         )}
         {/* Progress bar */}
         {!noModuleSelected && session.status !== "done" && progressPct > 0 && (
-          <div className="w-24 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+          <div className="w-24 h-1.5 rounded-full overflow-hidden" role="progressbar" aria-valuenow={progressPct} aria-valuemin={0} aria-valuemax={100} aria-label="Progression du module" style={{ background: "rgba(255,255,255,0.06)" }}>
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progressPct}%` }}
@@ -88,11 +88,12 @@ export function ScreenHeader({ session, seanceIntro, moduleColor, maxSituations,
             />
           </div>
         )}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" role="status" aria-label={`${connectedCount} élève${connectedCount > 1 ? "s" : ""} en ligne`}>
           <motion.div
             animate={{ opacity: [1, 0.3, 1] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
             className="w-2.5 h-2.5 rounded-full bg-bw-teal"
+            aria-hidden="true"
           />
           <span className="text-lg">{connectedCount} en ligne</span>
         </div>

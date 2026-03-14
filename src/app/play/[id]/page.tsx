@@ -21,6 +21,7 @@ import type { AvatarOptions } from "@/components/avatar-dicebear";
 import { CharacterCard } from "@/components/module10/character-card";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { HelpButton } from "@/components/help-button";
+import { SafeImage } from "@/components/safe-image";
 import { fireConfetti, haptic } from "@/components/play/utils";
 import { XpToast } from "@/components/play/xp-toast";
 import { XpBar } from "@/components/play/xp-bar";
@@ -35,39 +36,56 @@ import { VoteState } from "@/components/play/states/vote-state";
 import { ResultState } from "@/components/play/states/result-state";
 import { PausedState } from "@/components/play/states/paused-state";
 import { DoneState } from "@/components/play/states/done-state";
-import { PositioningState } from "@/components/play/module-1/positioning-state";
-import { ImageQuestionState } from "@/components/play/module-1/image-question-state";
-import { NotebookState } from "@/components/play/module-1/notebook-state";
-import { ChecklistState } from "@/components/play/module-2/checklist-state";
-import { SceneBuilderState } from "@/components/play/module-2/scene-builder-state";
-import { BudgetState } from "@/components/play/module-9/budget-state";
-import { EtsiWriterState } from "@/components/play/module-10/etsi-writer-state";
-import { IdeaBankState } from "@/components/play/module-10/idea-bank-state";
-import { AvatarDoneState } from "@/components/play/module-10/avatar-done-state";
-import { AvatarBuilderState } from "@/components/play/module-10/avatar-builder-state";
-import { ObjectifObstacleState } from "@/components/play/module-10/objectif-obstacle-state";
-import { PitchAssemblyState } from "@/components/play/module-10/pitch-assembly-state";
-import { ChronoTestState } from "@/components/play/module-10/chrono-test-state";
-import { PitchConfrontationState } from "@/components/play/module-10/pitch-confrontation-state";
-import { CineDebatState } from "@/components/play/module-11/cine-debat-state";
-import { MancheVoteState } from "@/components/play/module-12/manche-vote-state";
-import { PostprodState } from "@/components/play/module-13/postprod-state";
-import { FriseNarrative } from "@/components/play/module-6/frise-narrative";
-import { SceneCardList } from "@/components/play/module-6/scene-card";
-import { MissionState } from "@/components/play/module-6/mission-state";
-import { ScenarioAssembly } from "@/components/play/module-6/scenario-assembly";
-import { PlanTypesGallery } from "@/components/play/module-7/plan-types-gallery";
-import { ComparisonQuiz } from "@/components/play/module-7/comparison-quiz";
-import { DecoupageBuilder } from "@/components/play/module-7/decoupage-builder";
-import { StoryboardView } from "@/components/play/module-7/storyboard-view";
-import { MetierQuiz } from "@/components/play/module-8/metier-quiz";
-import { DebriefView } from "@/components/play/module-8/debrief-view";
-import { RolePicker } from "@/components/play/module-8/role-picker";
-import { TalentCard } from "@/components/play/module-8/talent-card";
-import { TeamRecap } from "@/components/play/module-8/team-recap";
+import dynamic from "next/dynamic";
+
+// Module 1
+const PositioningState = dynamic(() => import("@/components/play/module-1/positioning-state").then(m => ({ default: m.PositioningState })), { ssr: false });
+const ImageQuestionState = dynamic(() => import("@/components/play/module-1/image-question-state").then(m => ({ default: m.ImageQuestionState })), { ssr: false });
+const NotebookState = dynamic(() => import("@/components/play/module-1/notebook-state").then(m => ({ default: m.NotebookState })), { ssr: false });
+
+// Module 2
+const ChecklistState = dynamic(() => import("@/components/play/module-2/checklist-state").then(m => ({ default: m.ChecklistState })), { ssr: false });
+const SceneBuilderState = dynamic(() => import("@/components/play/module-2/scene-builder-state").then(m => ({ default: m.SceneBuilderState })), { ssr: false });
+
+// Module 6
+const FriseNarrative = dynamic(() => import("@/components/play/module-6/frise-narrative").then(m => ({ default: m.FriseNarrative })), { ssr: false });
+const SceneCardList = dynamic(() => import("@/components/play/module-6/scene-card").then(m => ({ default: m.SceneCardList })), { ssr: false });
+const MissionState = dynamic(() => import("@/components/play/module-6/mission-state").then(m => ({ default: m.MissionState })), { ssr: false });
+const ScenarioAssembly = dynamic(() => import("@/components/play/module-6/scenario-assembly").then(m => ({ default: m.ScenarioAssembly })), { ssr: false });
+
+// Module 7
+const PlanTypesGallery = dynamic(() => import("@/components/play/module-7/plan-types-gallery").then(m => ({ default: m.PlanTypesGallery })), { ssr: false });
+const ComparisonQuiz = dynamic(() => import("@/components/play/module-7/comparison-quiz").then(m => ({ default: m.ComparisonQuiz })), { ssr: false });
+const DecoupageBuilder = dynamic(() => import("@/components/play/module-7/decoupage-builder").then(m => ({ default: m.DecoupageBuilder })), { ssr: false });
+const StoryboardView = dynamic(() => import("@/components/play/module-7/storyboard-view").then(m => ({ default: m.StoryboardView })), { ssr: false });
+
+// Module 8
+const MetierQuiz = dynamic(() => import("@/components/play/module-8/metier-quiz").then(m => ({ default: m.MetierQuiz })), { ssr: false });
+const DebriefView = dynamic(() => import("@/components/play/module-8/debrief-view").then(m => ({ default: m.DebriefView })), { ssr: false });
+const RolePicker = dynamic(() => import("@/components/play/module-8/role-picker").then(m => ({ default: m.RolePicker })), { ssr: false });
+const TalentCard = dynamic(() => import("@/components/play/module-8/talent-card").then(m => ({ default: m.TalentCard })), { ssr: false });
+const TeamRecap = dynamic(() => import("@/components/play/module-8/team-recap").then(m => ({ default: m.TeamRecap })), { ssr: false });
+
+// Module 9
+const BudgetState = dynamic(() => import("@/components/play/module-9/budget-state").then(m => ({ default: m.BudgetState })), { ssr: false });
+
+// Module 10
+const EtsiWriterState = dynamic(() => import("@/components/play/module-10/etsi-writer-state").then(m => ({ default: m.EtsiWriterState })), { ssr: false });
+const IdeaBankState = dynamic(() => import("@/components/play/module-10/idea-bank-state").then(m => ({ default: m.IdeaBankState })), { ssr: false });
+const AvatarDoneState = dynamic(() => import("@/components/play/module-10/avatar-done-state").then(m => ({ default: m.AvatarDoneState })), { ssr: false });
+const AvatarBuilderState = dynamic(() => import("@/components/play/module-10/avatar-builder-state").then(m => ({ default: m.AvatarBuilderState })), { ssr: false });
+const ObjectifObstacleState = dynamic(() => import("@/components/play/module-10/objectif-obstacle-state").then(m => ({ default: m.ObjectifObstacleState })), { ssr: false });
+const PitchAssemblyState = dynamic(() => import("@/components/play/module-10/pitch-assembly-state").then(m => ({ default: m.PitchAssemblyState })), { ssr: false });
+const ChronoTestState = dynamic(() => import("@/components/play/module-10/chrono-test-state").then(m => ({ default: m.ChronoTestState })), { ssr: false });
+const PitchConfrontationState = dynamic(() => import("@/components/play/module-10/pitch-confrontation-state").then(m => ({ default: m.PitchConfrontationState })), { ssr: false });
+
+// Module 11-13
+const CineDebatState = dynamic(() => import("@/components/play/module-11/cine-debat-state").then(m => ({ default: m.CineDebatState })), { ssr: false });
+const MancheVoteState = dynamic(() => import("@/components/play/module-12/manche-vote-state").then(m => ({ default: m.MancheVoteState })), { ssr: false });
+const PostprodState = dynamic(() => import("@/components/play/module-13/postprod-state").then(m => ({ default: m.PostprodState })), { ssr: false });
 import { TeamChat } from "@/components/play/team-chat";
 import { PowerUpsBar } from "@/components/play/power-ups-bar";
-import { CelebrationOverlay } from "@/components/celebrations";
+import { CelebrationBanner as CelebrationOverlay } from "@/components/celebrations";
 
 
 // ——— Main Page ———
@@ -163,8 +181,49 @@ export default function PlayPage() {
     setStudentLoaded(true);
   }, [sessionId]);
 
+  // Hydrate from persistent profile (cross-session continuity)
+  const profileHydratedRef = useRef(false);
+  useEffect(() => {
+    if (!studentId || profileHydratedRef.current) return;
+    profileHydratedRef.current = true;
+    fetch(`/api/sessions/${sessionId}/student-context?studentId=${studentId}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((profile) => {
+        if (!profile || !profile.profileId) return;
+        if (profile.totalXp > 0) setSessionXp(profile.totalXp);
+        if (profile.currentStreak > 0) setStreak(profile.currentStreak);
+        setGameStats((prev) => ({
+          ...prev,
+          responses: profile.totalResponses || prev.responses,
+          retained: profile.retainedCount || prev.retained,
+          bestStreak: Math.max(profile.bestStreak || 0, prev.bestStreak),
+        }));
+      })
+      .catch(() => {/* silent — profile is optional */});
+  }, [studentId, sessionId]);
+
   const { data, isLoading, error, refetch } = useSessionPolling(sessionId, studentId);
   const { play } = useSound({ muted: data?.session?.muteSounds });
+
+  // Write back to persistent profile when session ends
+  const profileWrittenRef = useRef(false);
+  useEffect(() => {
+    if (!studentId || profileWrittenRef.current) return;
+    if (!data?.session || data.session.status !== "done") return;
+    profileWrittenRef.current = true;
+    fetch(`/api/sessions/${sessionId}/student-context`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        studentId,
+        sessionXp,
+        responses: gameStats.responses,
+        retained: gameStats.retained,
+        streak,
+        bestStreak: gameStats.bestStreak,
+      }),
+    }).catch(() => {/* silent */});
+  }, [studentId, sessionId, data?.session?.status, sessionXp, gameStats, streak]);
 
   const isFreeMode = data?.session?.mode === "free";
 
@@ -331,7 +390,7 @@ export default function PlayPage() {
         const errInfo = responseData as { error?: string; code?: string } | null;
         if (errInfo?.code === "SITUATION_ADVANCED") {
           // Session moved on — refetch to show new question
-          queryClient.invalidateQueries({ queryKey: ["play-session"] });
+          queryClient.invalidateQueries({ queryKey: ["session-state", sessionId, studentId] });
         } else {
           toast.error(errInfo?.error || "Erreur lors de l'envoi");
         }
@@ -505,17 +564,20 @@ export default function PlayPage() {
               <span className="text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-bw-violet/20 text-bw-violet">
                 {data.module1.image.title || `Image ${data.module1.image.position}`}
               </span>
-              <div
+              <button
                 className="w-full rounded-xl overflow-hidden border border-white/[0.06] cursor-pointer"
                 onClick={() => setWaitingFullscreen(true)}
+                aria-label="Agrandir l'image en plein écran"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SafeImage
                   src={data.module1.image.url}
                   alt={data.module1.image.title}
                   className="w-full object-contain"
+                  fill
+                  unoptimized
+                  sizes="(max-width: 768px) 100vw, 500px"
                 />
-              </div>
+              </button>
               <motion.div
                 animate={{ opacity: [0.4, 1, 0.4] }}
                 transition={{ repeat: Infinity, duration: 2 }}
@@ -537,17 +599,20 @@ export default function PlayPage() {
                 >
                   <button
                     onClick={() => setWaitingFullscreen(false)}
+                    aria-label="Fermer"
                     className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white cursor-pointer hover:bg-white/20 transition-colors z-10"
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                       <path d="M18 6L6 18M6 6l12 12"/>
                     </svg>
                   </button>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <SafeImage
                     src={data.module1.image.url}
                     alt={data.module1.image.title}
                     className="max-w-full max-h-full object-contain"
+                    fill
+                    unoptimized
+                    sizes="100vw"
                   />
                 </motion.div>
               )}
@@ -757,7 +822,7 @@ export default function PlayPage() {
     }
 
     // Done
-    if (session.status === "done") return <DoneState sessionId={sessionId} stats={gameStats} xp={sessionXp} characterCard={characterCard} />;
+    if (session.status === "done") return <DoneState sessionId={sessionId} sessionTitle={session.title} studentName={studentDisplayName} studentAvatar={studentAvatar} stats={gameStats} xp={sessionXp} characterCard={characterCard} />;
 
     // Paused
     if (session.status === "paused") return <PausedState />;
@@ -901,7 +966,7 @@ export default function PlayPage() {
     <div className="min-h-dvh flex flex-col items-center justify-center px-3 sm:px-4 py-8">
       {/* Cinematic intro */}
       <AnimatePresence>
-        {showIntro && <CinematicIntro onComplete={handleIntroComplete} />}
+        {showIntro && <CinematicIntro onComplete={handleIntroComplete} sessionTitle={data?.session?.title} studentName={studentDisplayName} studentAvatar={studentAvatar} />}
       </AnimatePresence>
 
       {/* Warning banner */}
@@ -1026,6 +1091,15 @@ export default function PlayPage() {
                 </span>
               );
             }
+            // All other modules: show position/total
+            if (data.situation) {
+              const seanceMax = getSeanceMax(mod, seance);
+              return (
+                <span className="text-xs text-bw-muted tabular-nums">
+                  {data.situation.position}/{seanceMax}
+                </span>
+              );
+            }
             return null;
           })()}
 
@@ -1052,22 +1126,24 @@ export default function PlayPage() {
           </div>
         </div>
         {/* Progress bar — visible for all modules now */}
-        {data.session.status !== "done" && (
-          <div className="h-1 bg-white/[0.04]">
-            <motion.div
-              className="h-full rounded-r-full"
-              style={{ background: "linear-gradient(90deg, #FF6B35, #D4A843)" }}
-              animate={{
-                width: data.session.currentModule === 1
-                  ? `${((data.module1?.currentSeance || 1) / (data.module1?.totalSeances || 5)) * 100}%`
-                  : isFreeMode && freeProgress
-                    ? `${(freeProgress.current / freeProgress.total) * 100}%`
-                    : `${((data.session.currentSituationIndex + 1) / getSeanceMax(data.session.currentModule, data.session.currentSeance)) * 100}%`
-              }}
-              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-            />
-          </div>
-        )}
+        {data.session.status !== "done" && (() => {
+          const seanceMax = getSeanceMax(data.session.currentModule, data.session.currentSeance);
+          const pct = data.session.currentModule === 1
+            ? ((data.module1?.currentSeance || 1) / (data.module1?.totalSeances || 5)) * 100
+            : isFreeMode && freeProgress
+              ? (freeProgress.current / freeProgress.total) * 100
+              : ((data.session.currentSituationIndex + 1) / seanceMax) * 100;
+          return (
+            <div className="h-1 bg-white/[0.04]" role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100} aria-label={`Progression : ${Math.round(pct)}%`}>
+              <motion.div
+                className="h-full rounded-r-full"
+                style={{ background: "linear-gradient(90deg, #FF6B35, #D4A843)" }}
+                animate={{ width: `${pct}%` }}
+                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+              />
+            </div>
+          );
+        })()}
       </div>
 
       {/* XP Toast */}

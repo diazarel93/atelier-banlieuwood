@@ -9,6 +9,7 @@ import { ETSI_IMAGES, getEtsiImage, OBJECTIFS, OBSTACLES, TRAITS } from "@/lib/m
 import { EMOTIONS } from "@/lib/module5-data";
 import { BrandLogo } from "@/components/brand-logo";
 import { DiceBearAvatar } from "@/components/avatar-dicebear";
+import { SafeImage } from "@/components/safe-image";
 
 // ——— Types ———
 
@@ -374,8 +375,7 @@ function ImaginationTab({ data }: { data: BiblioData }) {
               <div key={etsi.imageId} className="rounded-xl overflow-hidden border border-white/[0.06]">
                 {img && (
                   <div className="p-3 bg-bw-elevated/50 flex items-center gap-3">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={img.url} alt={img.title} className="w-16 h-12 rounded-lg object-cover bg-bw-bg" />
+                    <SafeImage src={img.url} alt={img.title} width={64} height={48} className="w-16 h-12 rounded-lg object-cover bg-bw-bg" />
                     <div>
                       <p className="text-xs font-medium">{img.title}</p>
                       <p className="text-xs text-bw-muted">{img.description}</p>

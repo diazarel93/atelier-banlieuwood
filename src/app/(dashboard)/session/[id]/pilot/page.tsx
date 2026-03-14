@@ -35,17 +35,17 @@ import type { StudentState } from "@/components/pilot/pulse-ring";
 
 import { useSound } from "@/hooks/use-sound";
 
-// Extracted cockpit sections
-import { Module9BudgetOverview } from "@/components/pilot/module9-budget-overview";
-import { Module12Cockpit } from "@/components/pilot/module12-cockpit";
-import { Module13Cockpit } from "@/components/pilot/module13-cockpit";
-import { Module6Cockpit } from "@/components/pilot/module6-cockpit";
-import { Module7Cockpit } from "@/components/pilot/module7-cockpit";
-import { Module8Cockpit } from "@/components/pilot/module8-cockpit";
-import { Module1Cockpit } from "@/components/pilot/module1-cockpit";
-import { Module9BudgetCards } from "@/components/pilot/module9-budget-cards";
-import { Module10Cockpit } from "@/components/pilot/module10-cockpit";
-import { Module2ECCockpit } from "@/components/pilot/module2ec-cockpit";
+// Extracted cockpit sections — lazy loaded per module
+const Module9BudgetOverview = dynamic(() => import("@/components/pilot/module9-budget-overview").then(m => ({ default: m.Module9BudgetOverview })), { ssr: false });
+const Module12Cockpit = dynamic(() => import("@/components/pilot/module12-cockpit").then(m => ({ default: m.Module12Cockpit })), { ssr: false });
+const Module13Cockpit = dynamic(() => import("@/components/pilot/module13-cockpit").then(m => ({ default: m.Module13Cockpit })), { ssr: false });
+const Module6Cockpit = dynamic(() => import("@/components/pilot/module6-cockpit").then(m => ({ default: m.Module6Cockpit })), { ssr: false });
+const Module7Cockpit = dynamic(() => import("@/components/pilot/module7-cockpit").then(m => ({ default: m.Module7Cockpit })), { ssr: false });
+const Module8Cockpit = dynamic(() => import("@/components/pilot/module8-cockpit").then(m => ({ default: m.Module8Cockpit })), { ssr: false });
+const Module1Cockpit = dynamic(() => import("@/components/pilot/module1-cockpit").then(m => ({ default: m.Module1Cockpit })), { ssr: false });
+const Module9BudgetCards = dynamic(() => import("@/components/pilot/module9-budget-cards").then(m => ({ default: m.Module9BudgetCards })), { ssr: false });
+const Module10Cockpit = dynamic(() => import("@/components/pilot/module10-cockpit").then(m => ({ default: m.Module10Cockpit })), { ssr: false });
+const Module2ECCockpit = dynamic(() => import("@/components/pilot/module2ec-cockpit").then(m => ({ default: m.Module2ECCockpit })), { ssr: false });
 import { VotingResults } from "@/components/pilot/voting-results";
 import { ResponseStreamSection } from "@/components/pilot/response-stream-section";
 import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
@@ -2180,7 +2180,7 @@ export default function PilotPage() {
     highlightResponse, nudgeStudent, warnStudent,
     lowerHand, scoreResponse, aiEvaluate,
     resetResponse, resetAllResponses,
-  } = usePilotSession(sessionId, checkingAuth, actorId);
+  } = usePilotSession(sessionId, checkingAuth, actorId, effectiveConnectionStatus);
 
   // Undo-aware wrappers for reversible mutations (#13)
   const undoableToggleHide = useMemo(() => ({

@@ -2,11 +2,17 @@
  * Consistent loading skeletons for V2 pages.
  * Three variants: dashboard, list, detail.
  * Pure JSX — no client hooks needed.
+ *
+ * Accessibility: aria-busy, role="status", screen reader announcements.
+ * Motion: respects prefers-reduced-motion via motion-safe utility.
  */
 
 function Shimmer({ className }: { className?: string }) {
   return (
-    <div className={`animate-pulse rounded-xl bg-bw-surface-dim/60 ${className || ""}`} />
+    <div
+      className={`motion-safe:animate-pulse rounded-xl bg-bw-surface-dim/60 ${className || ""}`}
+      aria-hidden="true"
+    />
   );
 }
 
@@ -71,70 +77,83 @@ function TabsSkeleton() {
   );
 }
 
+/**
+ * Wrapper that adds screen reader announcements to skeleton containers.
+ */
+function SkeletonWrapper({ children, label }: { children: React.ReactNode; label: string }) {
+  return (
+    <div role="status" aria-busy="true" aria-label={label}>
+      <span className="sr-only">{label}</span>
+      {children}
+    </div>
+  );
+}
+
 // ── Skeleton Variants ──
 
 /** Dashboard skeleton: 3 KPI cards + 1 table */
 export function DashboardSkeleton() {
   return (
-    <div className="space-y-6 p-6">
-      {/* KPI cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <KpiCardSkeleton />
-        <KpiCardSkeleton />
-        <KpiCardSkeleton />
-      </div>
-      {/* Table */}
-      <div className="rounded-2xl border border-bw-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-bw-border">
-          <Shimmer className="h-5 w-40" />
+    <SkeletonWrapper label="Chargement du tableau de bord...">
+      <div className="space-y-6 p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <KpiCardSkeleton />
+          <KpiCardSkeleton />
+          <KpiCardSkeleton />
         </div>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <TableRowSkeleton key={i} />
-        ))}
+        <div className="rounded-2xl border border-bw-border bg-card overflow-hidden">
+          <div className="px-4 py-3 border-b border-bw-border">
+            <Shimmer className="h-5 w-40" />
+          </div>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <TableRowSkeleton key={`row-${i}`} />
+          ))}
+        </div>
       </div>
-    </div>
+    </SkeletonWrapper>
   );
 }
 
 /** List skeleton: filter bar + 5 card placeholders */
 export function ListSkeleton() {
   return (
-    <div className="space-y-4 p-6">
-      <FilterBarSkeleton />
-      <div className="space-y-3">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <CardSkeleton key={i} />
-        ))}
+    <SkeletonWrapper label="Chargement de la liste...">
+      <div className="space-y-4 p-6">
+        <FilterBarSkeleton />
+        <div className="space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <CardSkeleton key={`card-${i}`} />
+          ))}
+        </div>
       </div>
-    </div>
+    </SkeletonWrapper>
   );
 }
 
 /** Detail skeleton: header + tabs + content */
 export function DetailSkeleton() {
   return (
-    <div className="space-y-6 p-6">
-      {/* Header */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-3">
-          <Shimmer className="h-5 w-48" />
-          <Shimmer className="h-6 w-20 rounded-full" />
+    <SkeletonWrapper label="Chargement du detail...">
+      <div className="space-y-6 p-6">
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <Shimmer className="h-5 w-48" />
+            <Shimmer className="h-6 w-20 rounded-full" />
+          </div>
+          <Shimmer className="h-4 w-64" />
         </div>
-        <Shimmer className="h-4 w-64" />
+        <TabsSkeleton />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <KpiCardSkeleton />
+          <KpiCardSkeleton />
+        </div>
+        <div className="rounded-2xl border border-bw-border bg-card overflow-hidden">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <TableRowSkeleton key={`detail-row-${i}`} />
+          ))}
+        </div>
       </div>
-      {/* Tabs */}
-      <TabsSkeleton />
-      {/* Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <KpiCardSkeleton />
-        <KpiCardSkeleton />
-      </div>
-      <div className="rounded-2xl border border-bw-border bg-card overflow-hidden">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <TableRowSkeleton key={i} />
-        ))}
-      </div>
-    </div>
+    </SkeletonWrapper>
   );
 }
 

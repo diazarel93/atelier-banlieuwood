@@ -9,6 +9,7 @@ import { StoryboardViewer } from "@/components/module10/storyboard-viewer";
 import type { AvatarOptions } from "@/components/avatar-dicebear";
 import { ROUTES } from "@/lib/routes";
 import { getLevel } from "@/lib/xp";
+import { SessionBadge } from "@/components/play/session-badge";
 
 interface LeaderboardData {
   entries: { id: string; displayName: string; avatar: string; responses: number; votes: number; retained: number; xp?: number }[];
@@ -18,6 +19,9 @@ interface LeaderboardData {
 
 export interface DoneStateProps {
   sessionId: string;
+  sessionTitle?: string;
+  studentName?: string;
+  studentAvatar?: string;
   stats?: { responses: number; retained: number; bestStreak: number };
   xp?: number;
   characterCard?: {
@@ -30,7 +34,7 @@ export interface DoneStateProps {
   } | null;
 }
 
-export function DoneState({ sessionId, stats, xp, characterCard }: DoneStateProps) {
+export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar, stats, xp, characterCard }: DoneStateProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
 
@@ -124,6 +128,26 @@ export function DoneState({ sessionId, stats, xp, characterCard }: DoneStateProp
           <p className="text-xs text-bw-muted mt-1">
             Niveau {getLevel(xp!).level} — {getLevel(xp!).name}
           </p>
+        </motion.div>
+      )}
+
+      {/* Shareable badge */}
+      {hasStats && studentName && (
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+          className="w-full max-w-xs"
+        >
+          <SessionBadge
+            sessionTitle={sessionTitle || "Session Banlieuwood"}
+            studentName={studentName}
+            studentAvatar={studentAvatar || "🎬"}
+            xp={xp || 0}
+            responses={stats.responses}
+            retained={stats.retained}
+            bestStreak={stats.bestStreak}
+          />
         </motion.div>
       )}
 

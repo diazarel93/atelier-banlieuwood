@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { safeJson } from "@/lib/api-utils";
 import { joinSessionSchema, formatZodError } from "@/lib/schemas";
+import { signStudentToken } from "@/lib/student-token";
 
 const MAX_DISPLAY_NAME_LENGTH = 30;
 const MAX_STUDENTS_PER_SESSION = 50;
@@ -83,10 +84,19 @@ export async function POST(req: NextRequest) {
       .update({ is_active: true, last_seen_at: new Date().toISOString() })
       .eq("id", existingStudent.id);
 
-    return NextResponse.json({
+    const token = signStudentToken(existingStudent.id, session.id);
+    const response = NextResponse.json({
       studentId: existingStudent.id,
       sessionId: session.id,
+      token,
     });
+    response.cookies.set("bw-student-token", token, {
+      httpOnly: true,
+      sameSite: "strict",
+      path: "/",
+      maxAge: 24 * 60 * 60,
+    });
+    return response;
   }
 
   // Enforce max students per session
@@ -120,8 +130,17 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return NextResponse.json({
+  const token = signStudentToken(student.id, session.id);
+  const response = NextResponse.json({
     studentId: student.id,
     sessionId: session.id,
+    token,
   });
+  response.cookies.set("bw-student-token", token, {
+    httpOnly: true,
+    sameSite: "strict",
+    path: "/",
+    maxAge: 24 * 60 * 60,
+  });
+  return response;
 }

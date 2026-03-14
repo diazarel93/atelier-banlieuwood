@@ -5,6 +5,8 @@ import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
+const isDev = process.env.NODE_ENV === "development";
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -50,19 +52,24 @@ const nextConfig: NextConfig = {
             value: "camera=(), microphone=(), geolocation=()",
           },
           {
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains",
+          },
+          {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' browser.sentry-cdn.com",
+              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} browser.sentry-cdn.com`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://image.tmdb.org https://images.unsplash.com https://image.pollinations.ai",
               "media-src 'self' assets.mixkit.co",
               "font-src 'self'",
-              "connect-src 'self' *.supabase.co generativelanguage.googleapis.com eu.i.posthog.com *.i.posthog.com localhost:11434 *.sentry.io *.ingest.sentry.io",
+              `connect-src 'self' *.supabase.co generativelanguage.googleapis.com eu.i.posthog.com *.i.posthog.com${isDev ? " localhost:11434" : ""} *.sentry.io *.ingest.sentry.io`,
               "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
+              "report-uri /api/csp-report",
             ].join("; "),
           },
         ],

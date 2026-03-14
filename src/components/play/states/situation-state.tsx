@@ -134,6 +134,8 @@ export function SituationState({
           <motion.button
             whileTap={{ scale: 0.95 }}
             whileHover={text.trim() && !submitting ? { scale: 1.03 } : undefined}
+            animate={text.length > 20 && !submitting ? { scale: [1, 1.05, 1] } : {}}
+            transition={text.length > 20 ? { duration: 0.3, ease: "easeOut" } : {}}
             onClick={handleSubmit}
             disabled={!text.trim() || submitting}
             className={`btn-glow px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl font-bold transition-all ${
@@ -143,7 +145,7 @@ export function SituationState({
             }`}
             style={text.trim() && !submitting ? { background: "linear-gradient(135deg, #FF6B35, #D4A843)", boxShadow: "0 4px 15px rgba(255,107,53,0.3)" } : undefined}
           >
-            {submitting ? "Envoi..." : "Envoyer"}
+            {submitting ? "Envoi..." : text.length > 100 ? "Envoyer ta super réponse !" : "Envoyer"}
           </motion.button>
         </div>
       </div>

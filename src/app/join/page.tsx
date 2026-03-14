@@ -8,8 +8,9 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { TicketIllustration } from "@/components/cinema-illustrations";
+import { EXTENDED_AVATARS, getAvatarNickname } from "@/lib/avatar-nicknames";
 
-const AVATARS = ["🎬", "🎭", "🎥", "🎤", "🎨", "🎵", "🌟", "💫", "🔥", "⚡", "🎯", "🚀"];
+const AVATARS = EXTENDED_AVATARS;
 
 const RANDOM_NAMES = [
   "RealisateurFou", "StarDuCinema", "ClapDeDebut", "ScenaristeNinja",
@@ -112,11 +113,14 @@ function JoinForm() {
       }
 
       const data = await res.json();
-      // Store student info in localStorage for reconnection
+      // Store student info + auth token in localStorage for reconnection
       localStorage.setItem(
         `bw-student-${data.sessionId}`,
         JSON.stringify({ studentId: data.studentId, displayName: name, avatar })
       );
+      if (data.token) {
+        localStorage.setItem(`bw-student-token-${data.sessionId}`, data.token);
+      }
       router.push(`/play/${data.sessionId}`);
     } catch {
       toast.error("Erreur de connexion");
@@ -266,16 +270,16 @@ function JoinForm() {
             <label className="text-sm text-bw-muted block text-center">
               Choisis ton emoji
             </label>
-            <div className="grid grid-cols-6 gap-2 justify-items-center">
+            <div className="grid grid-cols-5 gap-2 justify-items-center max-h-[200px] overflow-y-auto pr-1 scrollbar-thin">
               {AVATARS.map((emoji, i) => (
                 <motion.button
                   key={emoji}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.25, delay: 0.4 + i * 0.03 }}
+                  transition={{ duration: 0.25, delay: 0.4 + i * 0.015 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setAvatar(emoji)}
-                  className={`w-12 h-12 text-2xl rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+                  className={`w-11 h-11 text-xl rounded-xl flex items-center justify-center transition-all cursor-pointer ${
                     avatar === emoji
                       ? "bg-bw-teal/20 border-2 border-bw-teal scale-110 shadow-[0_0_16px_rgba(78,205,196,0.25)]"
                       : "bg-bw-surface border border-white/[0.06] hover:border-white/[0.15] hover:bg-bw-elevated/50"
@@ -298,6 +302,20 @@ function JoinForm() {
                 </motion.button>
               ))}
             </div>
+            {/* Nickname display */}
+            <AnimatePresence>
+              {avatar && getAvatarNickname(avatar) && (
+                <motion.p
+                  key={avatar}
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="text-center text-xs text-bw-teal font-medium"
+                >
+                  {avatar} {getAvatarNickname(avatar)}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
 
@@ -321,6 +339,7 @@ function JoinForm() {
             <motion.button
               whileTap={canSubmit ? { scale: 0.97 } : {}}
               onClick={handleJoin}
+              data-testid="join-submit"
             >
               {loading ? "Connexion..." : "ENTRER"}
             </motion.button>

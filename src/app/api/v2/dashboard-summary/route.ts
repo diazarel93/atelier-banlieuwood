@@ -214,22 +214,25 @@ export async function GET(req: NextRequest) {
     totalStudents: { value: pctChange(studentsLast7, studentsPrev7), label: "vs 7j préc." },
   };
 
-  return NextResponse.json({
-    todaySessions: todaySessions.map(summarize),
-    tomorrowSessions: tomorrowSessions.map(summarize),
-    recentSessions,
-    stats: {
-      totalSessions,
-      doneSessions,
-      activeSessions,
-      totalStudents,
+  return NextResponse.json(
+    {
+      todaySessions: todaySessions.map(summarize),
+      tomorrowSessions: tomorrowSessions.map(summarize),
+      recentSessions,
+      stats: {
+        totalSessions,
+        doneSessions,
+        activeSessions,
+        totalStudents,
+      },
+      trends,
+      sessionDates,
+      completedModuleIds,
+      classLabels,
+      atRiskStudents,
     },
-    trends,
-    sessionDates,
-    completedModuleIds,
-    classLabels,
-    atRiskStudents,
-  });
+    { headers: { "Cache-Control": "private, max-age=10, stale-while-revalidate=20" } }
+  );
 }
 
 function summarize(s: Record<string, unknown>) {

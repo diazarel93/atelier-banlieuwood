@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { useSessionPolling, Module10Data, Module11Data } from "@/hooks/use-session-polling";
-import { useRealtimeInvalidation } from "@/hooks/use-realtime-invalidation";
+import { useRealtimeInvalidation, getPollingInterval } from "@/hooks/use-realtime-invalidation";
 import { useQuery } from "@tanstack/react-query";
 import { CATEGORY_COLORS, TEMPLATE_LABELS, MODULE_SEANCE_SITUATIONS, PRODUCTION_CATEGORIES, getSeanceMax } from "@/lib/constants";
 import dynamic from "next/dynamic";
@@ -33,6 +33,9 @@ import { ApplauseMeter } from "@/components/screen/applause-meter";
 import { ReactionBar } from "@/components/reaction-bar";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { HelpButton } from "@/components/help-button";
+import { SafeImage } from "@/components/safe-image";
+import { FlipCounter } from "@/components/screen/flip-counter";
+import { TicketReveal } from "@/components/screen/ticket-reveal";
 
 interface VoteResult {
   response: { id: string; text: string; students: { display_name: string; avatar: string } };
@@ -46,8 +49,8 @@ import type { HighlightedResponse } from "@/components/screen/highlighted-panel"
 
 export default function ScreenPage() {
   const { id: sessionId } = useParams<{ id: string }>();
-  useRealtimeInvalidation(sessionId);
-  const { data, error, refetch } = useSessionPolling(sessionId, null, { skipStudentCheck: true });
+  const { status: realtimeStatus } = useRealtimeInvalidation(sessionId);
+  const { data, error, refetch } = useSessionPolling(sessionId, null, { skipStudentCheck: true, realtimeStatus });
 
   // Vote results for projection
   const { data: voteData } = useQuery<{ totalVotes: number; results: VoteResult[] }>({
@@ -58,7 +61,8 @@ export default function ScreenPage() {
       if (!res.ok) return { totalVotes: 0, results: [] };
       return res.json();
     },
-    refetchInterval: 5_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
+    staleTime: 2_000,
     enabled: !!data?.situation?.id && (data?.session?.status === "voting" || data?.session?.status === "reviewing"),
   });
 
@@ -68,12 +72,12 @@ export default function ScreenPage() {
     queryKey: ["screen-highlighted", sessionId, currentSituationId],
     queryFn: async () => {
       if (!currentSituationId) return [];
-      const res = await fetch(`/api/sessions/${sessionId}/responses?situationId=${currentSituationId}`);
+      const res = await fetch(`/api/sessions/${sessionId}/responses?situationId=${currentSituationId}&highlighted=true`);
       if (!res.ok) return [];
-      const all: HighlightedResponse[] = await res.json();
-      return all.filter((r) => r.is_highlighted);
+      return res.json() as Promise<HighlightedResponse[]>;
     },
-    refetchInterval: 5_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
+    staleTime: 2_000,
     enabled: !!data?.session && data.session.status !== "done" && !!currentSituationId,
   });
 
@@ -87,7 +91,8 @@ export default function ScreenPage() {
       const all: { text: string }[] = await res.json();
       return all.map((r) => r.text).filter(Boolean);
     },
-    refetchInterval: 5_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
+    staleTime: 2_000,
     refetchOnWindowFocus: true,
     enabled: !!data?.session && data.session.status === "responding" && !!currentSituationId,
   });
@@ -108,7 +113,8 @@ export default function ScreenPage() {
         avatar: r.students?.avatar || "🎭",
       }));
     },
-    refetchInterval: 5_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
+    staleTime: 2_000,
     refetchOnWindowFocus: true,
     enabled: !!data?.session && data.session.status === "reviewing" && revealPhase != null && !!currentSituationId,
   });
@@ -123,7 +129,8 @@ export default function ScreenPage() {
       const json = await res.json();
       return json.reactions || {};
     },
-    refetchInterval: 5_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
+    staleTime: 2_000,
     refetchOnWindowFocus: true,
     enabled: !!data?.session && ["voting", "reviewing", "results"].includes(data.session.status) && !!currentSituationId,
   });
@@ -163,7 +170,8 @@ export default function ScreenPage() {
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: 5_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
+    staleTime: 2_000,
     refetchOnWindowFocus: true,
     enabled: !!data?.session && data.session.status !== "done",
   });
@@ -293,7 +301,7 @@ export default function ScreenPage() {
 
   return (
     <ErrorBoundary variant="full">
-    <div className="min-h-dvh flex flex-col relative">
+    <div className="min-h-dvh flex flex-col relative film-grain">
       {/* Broadcast message overlay */}
       <BroadcastMessageOverlay broadcastMsg={broadcastMsg} />
 
@@ -415,10 +423,11 @@ export default function ScreenPage() {
                     </span>
                   </div>
                   <div className="relative rounded-2xl overflow-hidden border border-white/10 max-h-[60vh] mx-auto">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <SafeImage
                       src={data.module1.image.url}
                       alt={data.module1.image.title}
+                      width={1200}
+                      height={750}
                       className="w-full h-full object-contain max-h-[60vh]"
                     />
                     <div className="absolute bottom-4 right-4 backdrop-blur-md rounded-xl p-4 flex items-center gap-4" style={{ background: "rgba(18,20,24,0.85)", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 8px 32px rgba(0,0,0,0.4)" }}>
@@ -583,10 +592,11 @@ export default function ScreenPage() {
               </div>
               {data.module1.image && (
                 <div className="relative rounded-2xl overflow-hidden border border-white/10 max-h-[50vh] mx-auto">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <SafeImage
                     src={data.module1.image.url}
                     alt={data.module1.image.title}
+                    width={1200}
+                    height={750}
                     className="w-full h-full object-contain max-h-[50vh]"
                   />
                 </div>
@@ -688,31 +698,12 @@ export default function ScreenPage() {
               <p className="text-4xl leading-snug font-medium px-4">
                 {situation.prompt}
               </p>
-              {/* Live response counter + progress ring + timer */}
-              <div className="flex items-center justify-center gap-6">
+              {/* Live response counter — FlipCounter + timer */}
+              <div className="flex items-center justify-center gap-8">
                 {session.timerEndsAt && new Date(session.timerEndsAt).getTime() > Date.now() && (
                   <CountdownTimer endsAt={session.timerEndsAt} size="lg" />
                 )}
-                <div className="relative w-20 h-20">
-                  <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-                    <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
-                    <motion.circle cx="40" cy="40" r="34" fill="none" stroke={moduleColor} strokeWidth="5"
-                      strokeLinecap="round" strokeDasharray={2 * Math.PI * 34}
-                      initial={{ strokeDashoffset: 2 * Math.PI * 34 }}
-                      animate={{ strokeDashoffset: connectedCount > 0 ? 2 * Math.PI * 34 * (1 - responsesCount / connectedCount) : 2 * Math.PI * 34 }}
-                      transition={{ duration: 0.8, ease: "easeOut" }}
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <motion.span key={responsesCount} initial={{ scale: 1.3, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-                      className="text-lg font-bold tabular-nums" style={{ color: moduleColor }}>
-                      {responsesCount}
-                    </motion.span>
-                  </div>
-                </div>
-                <span className="text-lg text-bw-muted">
-                  {responsesCount}/{connectedCount} réponse{responsesCount > 1 ? "s" : ""}
-                </span>
+                <FlipCounter current={responsesCount} total={connectedCount} label="réponses" />
               </div>
               {/* Word cloud — appears when responses come in */}
               {wordCloudTexts && wordCloudTexts.length > 0 && (
@@ -1089,8 +1080,8 @@ export default function ScreenPage() {
               </div>
               <div className="relative rounded-2xl overflow-hidden border border-cyan-500/20 max-h-[55vh] mx-auto"
                 style={{ boxShadow: "0 0 60px rgba(6,182,212,0.12), 0 8px 32px rgba(0,0,0,0.4)" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={module10.image.url} alt={module10.image.title}
+                <SafeImage src={module10.image.url} alt={module10.image.title}
+                  width={1200} height={750}
                   className="w-full h-full object-contain max-h-[55vh]" />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-6 py-4">
                   <p className="text-lg font-medium text-white">{module10.image.title}</p>
@@ -1119,8 +1110,8 @@ export default function ScreenPage() {
               </div>
               <div className="relative rounded-2xl overflow-hidden border border-cyan-500/20 max-h-[45vh] mx-auto"
                 style={{ boxShadow: "0 0 40px rgba(6,182,212,0.1), 0 8px 32px rgba(0,0,0,0.4)" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={module10.image.url} alt={module10.image.title}
+                <SafeImage src={module10.image.url} alt={module10.image.title}
+                  width={1200} height={750}
                   className="w-full h-full object-contain max-h-[45vh]" />
               </div>
               <p className="text-3xl text-center leading-snug font-medium px-8">
@@ -1445,8 +1436,8 @@ export default function ScreenPage() {
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
                       className="flex items-center justify-center gap-4">
                       {module11.authorImageUrl && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={module11.authorImageUrl} alt={module11.author}
+                        <SafeImage src={module11.authorImageUrl} alt={module11.author}
+                          width={64} height={64}
                           className="w-16 h-16 rounded-full object-cover border-2" style={{ borderColor: "#E11D48" }} />
                       )}
                       <div className="text-left">
@@ -1461,8 +1452,8 @@ export default function ScreenPage() {
                       className="flex gap-4 justify-center">
                       {module11.filmography.map((film, i) => (
                         <div key={i} className="text-center">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={`https://image.tmdb.org/t/p/w185${film.posterPath}`} alt={film.title}
+                          <SafeImage src={`https://image.tmdb.org/t/p/w185${film.posterPath}`} alt={film.title}
+                            width={96} height={144}
                             className="w-24 h-36 rounded-xl object-cover border border-white/[0.08]" />
                           <p className="text-xs text-bw-muted mt-1">{film.title} ({film.year})</p>
                         </div>
@@ -1500,8 +1491,8 @@ export default function ScreenPage() {
                   <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                     className="inline-block rounded-2xl overflow-hidden border border-white/[0.08]"
                     style={{ boxShadow: "0 0 60px rgba(225,29,72,0.1), 0 8px 32px rgba(0,0,0,0.4)" }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={module11.imageUrl} alt={module11.sourceTitle || "Affiche"}
+                    <SafeImage src={module11.imageUrl} alt={module11.sourceTitle || "Affiche"}
+                      width={600} height={900}
                       className="max-h-[55vh] object-contain" />
                   </motion.div>
                   {module11.sourceTitle && (
@@ -2048,7 +2039,9 @@ export default function ScreenPage() {
       )}
 
       {/* Highlighted responses — teacher-projected, anchored bottom */}
-      <HighlightedResponsesPanel highlightedResponses={highlightedResponses || []} />
+      {highlightedResponses && highlightedResponses.length > 0 && (
+        <TicketReveal responses={highlightedResponses} maxVisible={3} />
+      )}
 
       {/* Live response counter bar */}
       <AnimatePresence>

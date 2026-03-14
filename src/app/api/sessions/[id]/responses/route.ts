@@ -25,12 +25,19 @@ export async function GET(
     .from("responses")
     .select("*, students(display_name, avatar)")
     .eq("session_id", sessionId)
-    .order("submitted_at", { ascending: true });
+    .order("submitted_at", { ascending: true })
+    .limit(200);
 
   if (situationId) {
     query = query.eq("situation_id", situationId);
   } else if (situationIds.length > 0) {
     query = query.in("situation_id", situationIds);
+  }
+
+  // Server-side filter for highlighted responses (avoids sending all to client)
+  const highlighted = req.nextUrl.searchParams.get("highlighted");
+  if (highlighted === "true") {
+    query = query.eq("is_highlighted", true);
   }
 
   const { data, error } = await query;

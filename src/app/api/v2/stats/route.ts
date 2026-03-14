@@ -119,15 +119,18 @@ export async function GET(req: NextRequest) {
     ),
   ];
 
-  return NextResponse.json({
-    classAverage,
-    students: studentsList,
-    sessionCount: sessionIds.length,
-    classLabels,
-    sessions: (sessions || []).map((s) => ({
-      id: s.id,
-      title: s.title,
-      classLabel: (s as Record<string, unknown>).class_label || null,
-    })),
-  });
+  return NextResponse.json(
+    {
+      classAverage,
+      students: studentsList,
+      sessionCount: sessionIds.length,
+      classLabels,
+      sessions: (sessions || []).map((s) => ({
+        id: s.id,
+        title: s.title,
+        classLabel: (s as Record<string, unknown>).class_label || null,
+      })),
+    },
+    { headers: { "Cache-Control": "private, max-age=15, stale-while-revalidate=30" } }
+  );
 }

@@ -8,7 +8,7 @@ import { customAlphabet } from "nanoid";
 const nanoid = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 
 // GET — list facilitator's sessions (admin sees all)
-export async function GET() {
+export async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const {
     data: { user },
@@ -21,10 +21,16 @@ export async function GET() {
   const authUser = await getAuthUser(supabase);
   const isAdmin = authUser?.role === "admin";
 
+  const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
+  const pageSize = 50;
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+
   let query = supabase
     .from("sessions")
     .select("*, students(id, is_active, last_seen_at)")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(from, to);
 
   // Admin sees all sessions; others see only their own
   if (!isAdmin) {

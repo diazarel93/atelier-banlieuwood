@@ -31,7 +31,8 @@ export function CountdownTimer({ endsAt, size = "md", onExpired }: CountdownTime
     return () => clearInterval(interval);
   }, [endsAt, onExpired]);
 
-  const isUrgent = secondsLeft <= 5 && secondsLeft > 0;
+  const isUrgent = secondsLeft <= 10 && secondsLeft > 0;
+  const isCritical = secondsLeft <= 3 && secondsLeft > 0;
   const isExpired = secondsLeft === 0;
 
   const mins = Math.floor(secondsLeft / 60);
@@ -69,20 +70,26 @@ export function CountdownTimer({ endsAt, size = "md", onExpired }: CountdownTime
       ) : (
         <motion.div
           key="counting"
-          animate={isUrgent ? { scale: [1, 1.05, 1] } : {}}
-          transition={isUrgent ? { repeat: Infinity, duration: 0.5 } : {}}
+          animate={isCritical ? { scale: [1, 1.1, 1], x: [0, -2, 2, -1, 1, 0] } : isUrgent ? { scale: [1, 1.08, 1] } : {}}
+          transition={isCritical ? { repeat: Infinity, duration: 0.3 } : isUrgent ? { repeat: Infinity, duration: 0.8 } : {}}
           className={`inline-flex items-center gap-2 rounded-xl backdrop-blur-md ${sizeClasses[size]}`}
           style={{
-            background: isUrgent
-              ? "rgba(239, 68, 68, 0.12)"
-              : "rgba(26, 29, 34, 0.7)",
-            border: isUrgent
+            background: isCritical
+              ? "rgba(239, 68, 68, 0.15)"
+              : isUrgent
+                ? "rgba(245, 158, 11, 0.12)"
+                : "rgba(26, 29, 34, 0.7)",
+            border: isCritical
               ? "1px solid rgba(239, 68, 68, 0.3)"
-              : "1px solid rgba(255, 255, 255, 0.06)",
-            color: isUrgent ? "#EF4444" : "#F5F5F7",
-            boxShadow: isUrgent
+              : isUrgent
+                ? "1px solid rgba(245, 158, 11, 0.3)"
+                : "1px solid rgba(255, 255, 255, 0.06)",
+            color: isCritical ? "#EF4444" : isUrgent ? "#F59E0B" : "#F5F5F7",
+            boxShadow: isCritical
               ? "0 0 24px rgba(239, 68, 68, 0.2), 0 0 8px rgba(239, 68, 68, 0.1), inset 0 1px 0 rgba(255,255,255,0.04)"
-              : "0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
+              : isUrgent
+                ? "0 0 20px rgba(245, 158, 11, 0.15), inset 0 1px 0 rgba(255,255,255,0.04)"
+                : "0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
           }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

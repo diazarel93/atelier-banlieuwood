@@ -10,6 +10,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\" --ignore-path .gitignore",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "simulate-session": "npx tsx scripts/simulate-session.ts"
   },
   "dependencies": {
@@ -49,6 +50,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^5.1.4",
+    "@vitest/coverage-v8": "^4.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "prettier": "^3.8.1",

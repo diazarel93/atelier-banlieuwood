@@ -18,7 +18,8 @@ export async function GET(
     .from("session_events")
     .select("id, event_type, student_id, situation_id, payload, occurred_at, seq")
     .eq("session_id", sessionId)
-    .order("seq", { ascending: true });
+    .order("seq", { ascending: true })
+    .limit(5000);
 
   if (evErr) {
     return NextResponse.json({ error: evErr.message }, { status: 500 });
@@ -45,7 +46,8 @@ export async function GET(
       .from("responses")
       .select("id, student_id, situation_id, text, response_time_ms, ai_score, is_highlighted, submitted_at")
       .eq("session_id", sessionId)
-      .order("submitted_at", { ascending: true }),
+      .order("submitted_at", { ascending: true })
+      .limit(1000),
     admin
       .from("collective_choices")
       .select("id, situation_id, category, restitution_label, chosen_text, validated_at")

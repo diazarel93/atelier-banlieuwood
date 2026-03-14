@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRealtimeInvalidation } from "@/hooks/use-realtime-invalidation";
+import { useRealtimeInvalidation, getPollingInterval } from "@/hooks/use-realtime-invalidation";
 import { getModuleByDb, getPhaseForModule } from "@/lib/modules-data";
 import { getModuleGuide } from "@/lib/guide-data";
 import { getSessionState, getSessionUrls, type SessionUrls } from "@/lib/session-state";
@@ -34,7 +34,7 @@ export interface SessionDetailData {
 
 export function useSessionDetail(id: string) {
   const queryClient = useQueryClient();
-  useRealtimeInvalidation(id);
+  const { status: realtimeStatus } = useRealtimeInvalidation(id);
 
   const query = useQuery<SessionDetailData>({
     queryKey: ["session", id],
@@ -44,7 +44,7 @@ export function useSessionDetail(id: string) {
       return res.json();
     },
     enabled: !!id,
-    refetchInterval: 10_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 10_000, 30_000),
   });
 
   const session = query.data;

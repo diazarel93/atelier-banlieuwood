@@ -27,10 +27,13 @@ export async function GET(req: NextRequest) {
     .from("achievement_definitions")
     .select("*");
 
-  return NextResponse.json({
-    unlocked: achievements || [],
-    definitions: definitions || [],
-  });
+  return NextResponse.json(
+    {
+      unlocked: achievements || [],
+      definitions: definitions || [],
+    },
+    { headers: { "Cache-Control": "private, max-age=60, stale-while-revalidate=120" } }
+  );
 }
 
 // POST /api/achievements — unlock an achievement

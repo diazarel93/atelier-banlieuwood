@@ -10,6 +10,10 @@ let studentResult: { data: unknown; error: unknown | null } = {
   data: { id: "stu-001" },
   error: null,
 };
+let situationResult: { data: unknown; error: unknown | null } = {
+  data: { position: 0, module: 3, seance: 1 },
+  error: null,
+};
 let responseResult: { data: unknown; error: unknown | null } = {
   data: { id: "resp-001" },
   error: null,
@@ -64,6 +68,7 @@ vi.mock("@/lib/supabase/admin", () => ({
 
       if (table === "sessions") return makeChain(() => sessionResult);
       if (table === "students") return makeChain(() => studentResult);
+      if (table === "situations") return makeChain(() => situationResult);
       if (table === "responses") return makeChain(() => responseResult);
       if (table === "votes") return makeChain(() => voteResult);
       return makeChain(() => ({ data: null, error: null }));
@@ -85,7 +90,8 @@ const VALID_UUID3 = "770e8400-e29b-41d4-a716-446655440002";
 describe("POST /api/sessions/[id]/vote", () => {
   beforeEach(() => {
     querySequence = [];
-    sessionResult = { data: { status: "voting" }, error: null };
+    sessionResult = { data: { status: "voting", current_module: 3, current_seance: 1, current_situation_index: 0 }, error: null };
+    situationResult = { data: { position: 0, module: 3, seance: 1 }, error: null };
     studentResult = { data: { id: "stu-001" }, error: null };
     responseResult = { data: { id: "resp-001" }, error: null };
     voteResult = {

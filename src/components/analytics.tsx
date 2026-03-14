@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Script from "next/script";
+import { useReportWebVitals } from "next/web-vitals";
 import { hasAnalyticsConsent } from "@/lib/cookie-consent";
 
 /**
@@ -9,12 +10,46 @@ import { hasAnalyticsConsent } from "@/lib/cookie-consent";
  * PostHog only loads when analytics consent is given (RGPD).
  * Sentry remains unconditional (legitimate interest for error monitoring).
  */
+function WebVitalsReporter() {
+  const buffer = useRef<{ name: string; value: number; rating: string; id: string }[]>([]);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const flushMetrics = useCallback(() => {
+    if (buffer.current.length === 0) return;
+    const metrics = [...buffer.current];
+    buffer.current = [];
+    // Use sendBeacon for reliability on page unload
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/web-vitals", JSON.stringify(metrics));
+    } else {
+      fetch("/api/web-vitals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(metrics),
+        keepalive: true,
+      }).catch(() => {});
+    }
+  }, []);
+
+  useReportWebVitals((metric) => {
+    buffer.current.push({
+      name: metric.name,
+      value: metric.value,
+      rating: metric.rating,
+      id: metric.id,
+    });
+    // Debounce: flush after 2s of no new metrics
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(flushMetrics, 2000);
+  });
+
+  return null;
+}
+
 export function Analytics() {
   const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
   const posthogHost =
     process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://eu.i.posthog.com";
-  const sentryDsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
-
   const [analyticsAllowed, setAnalyticsAllowed] = useState(false);
 
   useEffect(() => {
@@ -49,32 +84,10 @@ export function Analytics() {
         />
       )}
 
-      {/* Sentry — unconditional (legitimate interest for error monitoring) */}
-      {sentryDsn && (
-        <Script
-          id="sentry"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                var script = document.createElement('script');
-                script.src = 'https://browser.sentry-cdn.com/8.0.0/bundle.tracing.min.js';
-                script.crossOrigin = 'anonymous';
-                script.onload = function() {
-                  Sentry.init({
-                    dsn: '${sentryDsn}',
-                    tracesSampleRate: 0.1,
-                    replaysSessionSampleRate: 0,
-                    replaysOnErrorSampleRate: 1.0,
-                    environment: window.location.hostname === 'banlieuwood.fr' ? 'production' : 'development',
-                  });
-                };
-                document.head.appendChild(script);
-              })();
-            `,
-          }}
-        />
-      )}
+      {/* Sentry is now handled by @sentry/nextjs via withSentryConfig — no CDN script needed */}
+
+      {/* Web Vitals collection */}
+      <WebVitalsReporter />
     </>
   );
 }
