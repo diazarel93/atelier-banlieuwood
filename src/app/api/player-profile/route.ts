@@ -144,6 +144,38 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Fallback: if no class_label found, use most recent session_id for a session-level leaderboard
+  if (classLeaderboard.length === 0 && sessionHistory.length > 0) {
+    const latestSessionId = sessionHistory[0].sessionId;
+
+    const { data: sessionStudents } = await supabase
+      .from("students")
+      .select("profile_id")
+      .eq("session_id", latestSessionId)
+      .not("profile_id", "is", null);
+
+    if (sessionStudents && sessionStudents.length > 0) {
+      const uniqueProfileIds = [
+        ...new Set(sessionStudents.map((s) => s.profile_id).filter(Boolean)),
+      ] as string[];
+
+      const { data: leaderboardProfiles } = await supabase
+        .from("student_profiles")
+        .select("id, display_name, avatar, total_xp")
+        .in("id", uniqueProfileIds)
+        .order("total_xp", { ascending: false })
+        .limit(10);
+
+      classLeaderboard = (leaderboardProfiles || []).map((p, i) => ({
+        profileId: p.id,
+        displayName: p.display_name,
+        avatar: p.avatar,
+        totalXp: p.total_xp ?? 0,
+        rank: i + 1,
+      }));
+    }
+  }
+
   // ── 5. Next scheduled session ──
   let nextSession: { title: string; scheduledAt: string; classLabel: string } | null = null;
   if (latestClassLabel) {

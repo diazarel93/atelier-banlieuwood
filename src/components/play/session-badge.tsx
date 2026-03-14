@@ -36,6 +36,9 @@ export function SessionBadge({
     const ctx = canvas.getContext("2d");
     if (!ctx) return null;
 
+    // Wait for custom fonts (Bebas Neue, Plus Jakarta Sans) to be loaded
+    await document.fonts.ready;
+
     const W = 600;
     const H = 400;
     canvas.width = W;

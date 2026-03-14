@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { safeJson } from "@/lib/api-utils";
 import { reactionSchema, formatZodError } from "@/lib/schemas";
+import { verifyStudentToken } from "@/lib/student-token";
 
 // POST — toggle emoji reaction on a response
 export async function POST(
@@ -26,7 +27,19 @@ export async function POST(
     );
   }
 
-  const { responseId, studentId, emoji } = validated.data;
+  let { responseId, studentId, emoji } = validated.data;
+
+  // Prefer token-based auth over body studentId
+  const tokenCookie = req.cookies.get("bw-student-token")?.value;
+  const authHeader = req.headers.get("authorization");
+  const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  const rawToken = tokenCookie || bearerToken;
+  if (rawToken) {
+    const verified = verifyStudentToken(rawToken);
+    if (verified && verified.sessionId === sessionId) {
+      studentId = verified.studentId;
+    }
+  }
   const admin = createAdminClient();
 
   // Verify session is in a reactable state

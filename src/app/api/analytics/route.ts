@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // GET /api/analytics — cross-session analytics for a facilitator
 export async function GET(req: NextRequest) {
@@ -105,6 +106,11 @@ export async function GET(req: NextRequest) {
 
 // POST /api/analytics — track event (uses admin client to bypass RLS)
 export async function POST(req: NextRequest) {
+  const rl = checkRateLimit(getIP(req), "analytics-event", { max: 100, windowSec: 60 });
+  if (rl) {
+    return NextResponse.json({ error: rl.error }, { status: 429 });
+  }
+
   const admin = createAdminClient();
   const body = await req.json();
   const { eventType, sessionId, studentId, profileId, metadata } = body;

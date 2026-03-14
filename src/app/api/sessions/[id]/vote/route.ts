@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { safeJson } from "@/lib/api-utils";
+import { safeJson, withErrorHandler } from "@/lib/api-utils";
 import { voteSchema, formatZodError } from "@/lib/schemas";
 import { logSessionEvent } from "@/lib/event-logger";
 import * as Sentry from "@sentry/nextjs";
 import { verifyStudentToken } from "@/lib/student-token";
 
 // POST — student submits a vote
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -151,4 +151,4 @@ export async function POST(
   });
 
   return NextResponse.json(data);
-}
+});

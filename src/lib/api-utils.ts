@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { getAuthUser } from "@/lib/auth-helpers";
 import type { AuthUser } from "@/lib/auth";
+import * as Sentry from "@sentry/nextjs";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -120,4 +121,39 @@ export async function safeJson<T = Record<string, any>>(
       ),
     };
   }
+}
+
+/**
+ * Wrap an API route handler with try/catch + Sentry error reporting.
+ * Catches unhandled exceptions, logs them, reports to Sentry, and
+ * returns a consistent 500 JSON response.
+ */
+export function withErrorHandler<
+  P extends Record<string, string> = { id: string }
+>(
+  handler: (
+    req: NextRequest,
+    ctx: { params: Promise<P> }
+  ) => Promise<NextResponse>
+) {
+  return async (
+    req: NextRequest,
+    ctx: { params: Promise<P> }
+  ): Promise<NextResponse> => {
+    try {
+      return await handler(req, ctx);
+    } catch (error) {
+      console.error(
+        `[API Error] ${req.method} ${req.nextUrl.pathname}:`,
+        error
+      );
+      Sentry.captureException(error, {
+        extra: { method: req.method, url: req.nextUrl.pathname },
+      });
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
+      );
+    }
+  };
 }

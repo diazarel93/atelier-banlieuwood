@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireFacilitator } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateScenesPrompt, assignMissions } from "@/lib/module-scenario-data";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { log } from "@/lib/logger";
 
 // POST — Facilitateur generates scenes from M12 winners via AI (facilitator only)
@@ -9,6 +10,11 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "scenario-generate", { max: 5, windowSec: 60 });
+  if (rl) {
+    return NextResponse.json({ error: rl.error }, { status: 429 });
+  }
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;

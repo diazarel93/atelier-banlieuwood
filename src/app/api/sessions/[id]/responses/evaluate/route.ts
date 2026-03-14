@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireFacilitator, isValidUUID, safeJson } from "@/lib/api-utils";
 import { generateAIText } from "@/lib/ai";
+import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 /**
  * POST /api/sessions/{id}/responses/evaluate
@@ -43,6 +44,11 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rl = checkRateLimit(getIP(req), "responses-evaluate", { max: 5, windowSec: 60 });
+  if (rl) {
+    return NextResponse.json({ error: rl.error }, { status: 429 });
+  }
+
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
   if ("error" in auth) return auth.error;

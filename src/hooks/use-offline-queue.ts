@@ -46,6 +46,30 @@ export function useOfflineQueue() {
     setPendingCount(queueCount());
   }, []);
 
+  const retryFlush = useCallback(() => {
+    const pending = queueCount();
+    if (pending === 0) return;
+    flush(executeAction).then(({ sent, failed }) => {
+      setPendingCount(queueCount());
+      if (sent > 0) {
+        toast.success(
+          sent === 1
+            ? "Réponse envoyée !"
+            : `${sent} réponses envoyées !`
+        );
+      }
+      if (failed > 0) {
+        toast.error(`${failed} réponse(s) n'ont pas pu être envoyées`, {
+          action: {
+            label: "Réessayer",
+            onClick: () => retryFlush(),
+          },
+          duration: 8000,
+        });
+      }
+    });
+  }, []);
+
   // Auto-flush when coming back online
   useEffect(() => {
     if (isOnline && !wasOnline.current) {
@@ -61,13 +85,19 @@ export function useOfflineQueue() {
             );
           }
           if (failed > 0) {
-            toast.error(`${failed} réponse(s) n'ont pas pu être envoyées`);
+            toast.error(`${failed} réponse(s) n'ont pas pu être envoyées`, {
+              action: {
+                label: "Réessayer",
+                onClick: () => retryFlush(),
+              },
+              duration: 8000,
+            });
           }
         });
       }
     }
     wasOnline.current = isOnline;
-  }, [isOnline]);
+  }, [isOnline, retryFlush]);
 
   const submitWithQueue = useCallback(
     async (

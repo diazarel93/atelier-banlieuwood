@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { safeJson } from "@/lib/api-utils";
+import { verifyStudentToken } from "@/lib/student-token";
 
 // POST — student raises or lowers their hand
 export async function POST(
@@ -15,7 +16,19 @@ export async function POST(
 
   const parsed = await safeJson(req);
   if ("error" in parsed) return parsed.error;
-  const { studentId, raised } = parsed.data as { studentId: string; raised: boolean };
+  let { studentId, raised } = parsed.data as { studentId: string; raised: boolean };
+
+  // Prefer token-based auth over body studentId
+  const tokenCookie = req.cookies.get("bw-student-token")?.value;
+  const authHeader = req.headers.get("authorization");
+  const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  const rawToken = tokenCookie || bearerToken;
+  if (rawToken) {
+    const verified = verifyStudentToken(rawToken);
+    if (verified && verified.sessionId === sessionId) {
+      studentId = verified.studentId;
+    }
+  }
 
   if (!studentId) {
     return NextResponse.json({ error: "studentId requis" }, { status: 400 });

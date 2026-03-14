@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import { safeJson, broadcastSessionUpdate } from "@/lib/api-utils";
+import { safeJson, broadcastSessionUpdate, withErrorHandler } from "@/lib/api-utils";
 import { respondSchema, formatZodError } from "@/lib/schemas";
 import { getSeanceMax, MODULE_SEANCE_SITUATIONS } from "@/lib/constants";
 import { logSessionEvent } from "@/lib/event-logger";
@@ -13,7 +13,7 @@ const MAX_RESPONSE_LENGTH = 500;
 const MAX_NOTEBOOK_LENGTH = 2000;
 
 // POST — student submits a response
-export async function POST(
+export const POST = withErrorHandler(async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -261,4 +261,4 @@ export async function POST(
   }
 
   return NextResponse.json(data);
-}
+});
