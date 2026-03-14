@@ -127,6 +127,10 @@ export default function PlayPage() {
   const [lastXpGain, setLastXpGain] = useState(0);
   const prevLevelRef = useRef(0);
 
+  const [newAchievements, setNewAchievements] = useState<{ achievementId: string; name: string; icon: string; tier: string }[]>([]);
+  const [profileId, setProfileId] = useState<string | null>(null);
+  const [crossSessionStreak, setCrossSessionStreak] = useState(0);
+
   const [noStudent, setNoStudent] = useState(false);
   const [studentLoaded, setStudentLoaded] = useState(false);
   const [studentDisplayName, setStudentDisplayName] = useState("Eleve");
@@ -199,6 +203,8 @@ export default function PlayPage() {
         if (!profile || !profile.profileId) return;
         if (profile.totalXp > 0) setSessionXp(profile.totalXp);
         if (profile.currentStreak > 0) setStreak(profile.currentStreak);
+        setCrossSessionStreak(profile.currentStreak || 0);
+        setProfileId(profile.profileId || null);
         setGameStats((prev) => ({
           ...prev,
           responses: profile.totalResponses || prev.responses,
@@ -240,7 +246,17 @@ export default function PlayPage() {
         streak,
         bestStreak: gameStats.bestStreak,
       }),
-    }).catch(() => {/* silent */});
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!data) return;
+        setNewAchievements(data.newUnlocks || []);
+        if (data.profileId) {
+          setProfileId(data.profileId);
+          localStorage.setItem("bw-profile-id", data.profileId);
+        }
+      })
+      .catch(() => {/* silent */});
   }, [studentId, sessionId, data?.session?.status, sessionXp, gameStats, streak]);
 
   const isFreeMode = data?.session?.mode === "free";
@@ -843,7 +859,7 @@ export default function PlayPage() {
     }
 
     // Done
-    if (session.status === "done") return <DoneState sessionId={sessionId} sessionTitle={session.title} studentName={studentDisplayName} studentAvatar={studentAvatar} stats={gameStats} xp={sessionXp} characterCard={characterCard} />;
+    if (session.status === "done") return <DoneState sessionId={sessionId} sessionTitle={session.title} studentName={studentDisplayName} studentAvatar={studentAvatar} stats={gameStats} xp={sessionXp} characterCard={characterCard} newAchievements={newAchievements} profileId={profileId} />;
 
     // Paused
     if (session.status === "paused") return <PausedState />;
@@ -869,13 +885,13 @@ export default function PlayPage() {
         // The polling will pick up the new situation, so just show the form.
         return <SituationState key={situation.id} situation={situation} onSubmit={handleRespond} submitting={submitting} playSound={play} />;
       }
-      return <WaitingState session={session} connectedCount={connectedCount} />;
+      return <WaitingState session={session} connectedCount={connectedCount} crossSessionStreak={crossSessionStreak} />;
     }
 
     // Reviewing — show result if choice exists, otherwise wait
     if (session.status === "reviewing") {
       if (collectiveChoice) return <ResultState collectiveChoice={collectiveChoice} isMyResponseChosen={data.isMyResponseChosen} comboCount={comboCount} onReveal={() => play("drumroll")} topStudents={topStudents} currentStudentId={studentId ?? undefined} currentRank={currentRank ?? undefined} />;
-      return <WaitingState session={session} connectedCount={connectedCount} />;
+      return <WaitingState session={session} connectedCount={connectedCount} crossSessionStreak={crossSessionStreak} />;
     }
 
     // Voting
@@ -891,7 +907,7 @@ export default function PlayPage() {
     }
 
     // Waiting (default)
-    return <WaitingState session={session} connectedCount={connectedCount} />;
+    return <WaitingState session={session} connectedCount={connectedCount} crossSessionStreak={crossSessionStreak} />;
   }
 
   if (noStudent) {

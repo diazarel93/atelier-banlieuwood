@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isValidUUID, safeJson } from "@/lib/api-utils";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
+import { checkAchievements, type ProfileStats, type AchievementUnlock } from "@/lib/achievement-checker";
 
 /**
  * GET /api/sessions/[id]/student-context?studentId=X
@@ -82,8 +83,85 @@ export async function GET(
 }
 
 /**
+ * Compute cross-session streak from streak_updated_date.
+ * - If today: already counted, keep current_streak as-is
+ * - If yesterday: increment current_streak
+ * - If older or null: reset to 1
+ */
+function computeStreak(streakUpdatedDate: string | null, currentStreak: number): number {
+  if (!streakUpdatedDate) return 1;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const last = new Date(streakUpdatedDate + "T00:00:00");
+  const diffMs = today.getTime() - last.getTime();
+  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return currentStreak; // already counted today
+  if (diffDays === 1) return currentStreak + 1; // consecutive day
+  return 1; // streak broken
+}
+
+/**
+ * Upsert achievements into student_achievements.
+ * - If not exists: INSERT
+ * - If exists with lower tier: UPDATE tier + unlocked_at
+ * - If exists with same/higher tier: skip
+ * Returns the list of newly unlocked achievements.
+ */
+async function upsertAchievements(
+  admin: ReturnType<typeof createAdminClient>,
+  profileId: string,
+  earned: AchievementUnlock[],
+): Promise<AchievementUnlock[]> {
+  if (earned.length === 0) return [];
+
+  // Fetch existing achievements for this profile
+  const { data: existingRows } = await admin
+    .from("student_achievements")
+    .select("achievement_id, tier")
+    .eq("profile_id", profileId);
+
+  // Build a map: achievementId -> set of tiers already unlocked
+  const existingMap = new Map<string, Set<string>>();
+  for (const row of existingRows || []) {
+    const set = existingMap.get(row.achievement_id) || new Set();
+    set.add(row.tier);
+    existingMap.set(row.achievement_id, set);
+  }
+
+  const newUnlocks: AchievementUnlock[] = [];
+  const now = new Date().toISOString();
+
+  for (const unlock of earned) {
+    const existing = existingMap.get(unlock.achievementId);
+    if (existing?.has(unlock.tier)) continue; // already have this tier
+
+    // Upsert: insert on conflict do nothing (unique constraint: profile_id, achievement_id, tier)
+    const { error } = await admin
+      .from("student_achievements")
+      .upsert(
+        {
+          profile_id: profileId,
+          achievement_id: unlock.achievementId,
+          tier: unlock.tier,
+          progress: unlock.progress,
+          unlocked_at: now,
+          seen: false,
+        },
+        { onConflict: "profile_id,achievement_id,tier" }
+      );
+
+    if (!error) {
+      newUnlocks.push(unlock);
+    }
+  }
+
+  return newUnlocks;
+}
+
+/**
  * PATCH /api/sessions/[id]/student-context
  * Write back session stats to persistent profile on session completion.
+ * Also checks achievements and returns any new unlocks.
  */
 export async function PATCH(
   req: NextRequest,
@@ -129,62 +207,106 @@ export async function PATCH(
   const newStreak = streak || 0;
   const newBestStreak = bestStreak || 0;
 
+  let profileId: string;
+  let updatedStats: ProfileStats;
+
   if (student.profile_id) {
-    // Update existing profile — increment counters
+    profileId = student.profile_id;
+
+    // Fetch existing profile with all fields needed for achievements
     const { data: existing } = await admin
       .from("student_profiles")
-      .select("total_xp, sessions_played, total_responses, retained_count, current_streak, best_streak")
-      .eq("id", student.profile_id)
+      .select("total_xp, sessions_played, total_responses, retained_count, current_streak, best_streak, total_votes, level, streak_updated_date")
+      .eq("id", profileId)
       .single();
 
-    if (existing) {
-      await admin
-        .from("student_profiles")
-        .update({
-          total_xp: (existing.total_xp || 0) + xpToAdd,
-          sessions_played: (existing.sessions_played || 0) + 1,
-          total_responses: (existing.total_responses || 0) + responsesToAdd,
-          retained_count: (existing.retained_count || 0) + retainedToAdd,
-          current_streak: newStreak,
-          best_streak: Math.max(existing.best_streak || 0, newBestStreak),
-          last_active_at: new Date().toISOString(),
-          streak_updated_date: new Date().toISOString().split("T")[0],
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", student.profile_id);
+    if (!existing) {
+      return NextResponse.json({ error: "Profil introuvable" }, { status: 404 });
     }
 
-    return NextResponse.json({ ok: true, profileId: student.profile_id });
+    // Cross-session streak logic
+    const computedStreak = computeStreak(existing.streak_updated_date, existing.current_streak || 0);
+    const finalBestStreak = Math.max(existing.best_streak || 0, newBestStreak, computedStreak);
+
+    const updatedTotalXp = (existing.total_xp || 0) + xpToAdd;
+    const updatedSessionsPlayed = (existing.sessions_played || 0) + 1;
+    const updatedTotalResponses = (existing.total_responses || 0) + responsesToAdd;
+    const updatedRetainedCount = (existing.retained_count || 0) + retainedToAdd;
+
+    await admin
+      .from("student_profiles")
+      .update({
+        total_xp: updatedTotalXp,
+        sessions_played: updatedSessionsPlayed,
+        total_responses: updatedTotalResponses,
+        retained_count: updatedRetainedCount,
+        current_streak: computedStreak,
+        best_streak: finalBestStreak,
+        last_active_at: new Date().toISOString(),
+        streak_updated_date: new Date().toISOString().split("T")[0],
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", profileId);
+
+    updatedStats = {
+      totalXp: updatedTotalXp,
+      sessionsPlayed: updatedSessionsPlayed,
+      totalResponses: updatedTotalResponses,
+      retainedCount: updatedRetainedCount,
+      currentStreak: computedStreak,
+      bestStreak: finalBestStreak,
+      totalVotes: existing.total_votes || 0,
+      level: existing.level || 0,
+    };
+  } else {
+    // Create new profile and link to student
+    const computedStreak = 1; // first session = streak of 1
+
+    const { data: newProfile, error: createErr } = await admin
+      .from("student_profiles")
+      .insert({
+        display_name: student.display_name || "Eleve",
+        avatar: student.avatar || "🎬",
+        total_xp: xpToAdd,
+        sessions_played: 1,
+        total_responses: responsesToAdd,
+        retained_count: retainedToAdd,
+        current_streak: computedStreak,
+        best_streak: Math.max(newBestStreak, computedStreak),
+        last_active_at: new Date().toISOString(),
+        streak_updated_date: new Date().toISOString().split("T")[0],
+      })
+      .select("id")
+      .single();
+
+    if (createErr || !newProfile) {
+      console.error("[student-context] Profile creation failed:", createErr?.message);
+      return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    }
+
+    profileId = newProfile.id;
+
+    // Link profile to student
+    await admin
+      .from("students")
+      .update({ profile_id: profileId })
+      .eq("id", studentId);
+
+    updatedStats = {
+      totalXp: xpToAdd,
+      sessionsPlayed: 1,
+      totalResponses: responsesToAdd,
+      retainedCount: retainedToAdd,
+      currentStreak: computedStreak,
+      bestStreak: Math.max(newBestStreak, computedStreak),
+      totalVotes: 0,
+      level: 0,
+    };
   }
 
-  // Create new profile and link to student
-  const { data: newProfile, error: createErr } = await admin
-    .from("student_profiles")
-    .insert({
-      display_name: student.display_name || "Élève",
-      avatar: student.avatar || "🎬",
-      total_xp: xpToAdd,
-      sessions_played: 1,
-      total_responses: responsesToAdd,
-      retained_count: retainedToAdd,
-      current_streak: newStreak,
-      best_streak: newBestStreak,
-      last_active_at: new Date().toISOString(),
-      streak_updated_date: new Date().toISOString().split("T")[0],
-    })
-    .select("id")
-    .single();
+  // Check achievements and upsert new unlocks
+  const earned = checkAchievements(updatedStats);
+  const newUnlocks = await upsertAchievements(admin, profileId, earned);
 
-  if (createErr || !newProfile) {
-    console.error("[student-context] Profile creation failed:", createErr?.message);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
-  }
-
-  // Link profile to student
-  await admin
-    .from("students")
-    .update({ profile_id: newProfile.id })
-    .eq("id", studentId);
-
-  return NextResponse.json({ ok: true, profileId: newProfile.id });
+  return NextResponse.json({ ok: true, profileId, newUnlocks });
 }

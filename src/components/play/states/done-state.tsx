@@ -32,9 +32,17 @@ export interface DoneStateProps {
     chronoSeconds?: number;
     revealLevel: 0 | 1 | 2 | 3;
   } | null;
+  newAchievements?: { achievementId: string; name: string; icon: string; tier: string }[];
+  profileId?: string | null;
 }
 
-export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar, stats, xp, characterCard }: DoneStateProps) {
+const TIER_COLORS: Record<string, string> = {
+  bronze: "bg-amber-700/20 text-amber-600 border-amber-700/30",
+  silver: "bg-gray-400/20 text-gray-500 border-gray-400/30",
+  gold: "bg-bw-gold/20 text-bw-gold border-bw-gold/30",
+};
+
+export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar, stats, xp, characterCard, newAchievements, profileId }: DoneStateProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
 
@@ -128,6 +136,37 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
           <p className="text-xs text-bw-muted mt-1">
             Niveau {getLevel(xp!).level} — {getLevel(xp!).name}
           </p>
+        </motion.div>
+      )}
+
+      {/* Newly unlocked achievements */}
+      {newAchievements && newAchievements.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: hasStats ? 1.0 : 0.6 }}
+          className="w-full max-w-xs space-y-3"
+        >
+          <h3 className="text-sm font-cinema tracking-wider text-bw-gold">
+            BADGES D&Eacute;BLOQU&Eacute;S !
+          </h3>
+          <div className="flex gap-2.5 overflow-x-auto pb-1 justify-center flex-wrap">
+            {newAchievements.map((a, i) => (
+              <motion.div
+                key={a.achievementId}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20, delay: (hasStats ? 1.2 : 0.8) + i * 0.15 }}
+                className="glass-card flex flex-col items-center gap-1.5 p-3 min-w-[80px]"
+              >
+                <span className="text-3xl">{a.icon}</span>
+                <span className="text-xs font-semibold text-bw-text leading-tight text-center">{a.name}</span>
+                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${TIER_COLORS[a.tier] || TIER_COLORS.bronze}`}>
+                  {a.tier}
+                </span>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
       )}
 
@@ -291,6 +330,24 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
           Ma biblioth&egrave;que compl&egrave;te
         </a>
       </motion.div>
+
+      {/* Profile CTA */}
+      {profileId && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: hasStats ? 2.0 : 1.2 }}
+          className="w-full max-w-xs"
+        >
+          <a
+            href="/profile"
+            className="btn-glow flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-bw-gold via-amber-500 to-bw-gold text-white font-bold text-sm text-center shadow-[0_4px_24px_rgba(212,168,67,0.35)] hover:shadow-[0_4px_32px_rgba(212,168,67,0.5)] transition-shadow font-cinema tracking-wide"
+          >
+            <span className="text-base">&#127968;</span>
+            MON PROFIL
+          </a>
+        </motion.div>
+      )}
     </motion.div>
   );
 }

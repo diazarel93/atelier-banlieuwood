@@ -13,6 +13,7 @@ export interface WaitingStateProps {
   connectedCount: number;
   topStudents?: { id: string; displayName: string; avatar: string; xp: number }[];
   currentStudentId?: string;
+  crossSessionStreak?: number;
 }
 
 function pickTips(module: number, seance?: number): CinemaTip[] {
@@ -28,7 +29,7 @@ const TYPE_ICONS: Record<string, string> = {
   acteur: "🌟", rappel: "📌", motivation: "💪",
 };
 
-export function WaitingState({ session, connectedCount, topStudents, currentStudentId }: WaitingStateProps) {
+export function WaitingState({ session, connectedCount, topStudents, currentStudentId, crossSessionStreak }: WaitingStateProps) {
   const tips = useMemo(() => pickTips(session.currentModule || 1, session.currentSeance), [session.currentModule, session.currentSeance]);
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * tips.length));
 
@@ -94,6 +95,18 @@ export function WaitingState({ session, connectedCount, topStudents, currentStud
           Le facilitateur va bientot lancer la question...
         </p>
       </div>
+
+      {/* Cross-session streak */}
+      {(crossSessionStreak ?? 0) > 0 && (
+        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}>
+          <div className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500/15 to-orange-500/15 border border-amber-500/30 rounded-full px-3 py-1">
+            <span>&#128293;</span>
+            <span className="text-xs font-bold text-amber-600">
+              {crossSessionStreak} session{crossSessionStreak! > 1 ? "s" : ""} d&apos;affil&eacute;e
+            </span>
+          </div>
+        </motion.div>
+      )}
 
       {/* Phase indicator — "Tu es ici" */}
       {(() => {
