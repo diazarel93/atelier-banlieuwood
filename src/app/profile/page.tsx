@@ -31,6 +31,7 @@ interface ProfileData {
   lastActiveAt: string | null;
   streakUpdatedDate: string | null;
   creativeProfile: string | null;
+  profileCode: string | null;
 }
 
 interface UnlockedAchievement {
@@ -61,11 +62,18 @@ interface LeaderboardEntry {
   rank: number;
 }
 
+interface NextSessionData {
+  title: string;
+  scheduledAt: string;
+  classLabel: string;
+}
+
 interface PlayerProfileResponse {
   profile: ProfileData;
   achievements: UnlockedAchievement[];
   sessionHistory: SessionEntry[];
   classLeaderboard: LeaderboardEntry[];
+  nextSession: NextSessionData | null;
 }
 
 // ── Tier colors ──
@@ -130,7 +138,7 @@ export default function ProfilePage() {
     );
   }
 
-  const { profile, achievements, sessionHistory, classLeaderboard } = data;
+  const { profile, achievements, sessionHistory, classLeaderboard, nextSession } = data;
   const level = getLevel(profile.totalXp);
   const xpToNext = level.nextThreshold - level.currentXp;
 
@@ -278,6 +286,14 @@ export default function ProfilePage() {
               Pas de streak actif
             </p>
           )}
+
+          {/* Profile code */}
+          {profile.profileCode && (
+            <div className="flex items-center gap-2 bg-white/60 rounded-lg px-3 py-1.5">
+              <span className="text-xs text-bw-muted">Code joueur :</span>
+              <span className="font-mono font-bold text-bw-heading tracking-widest text-sm">{profile.profileCode}</span>
+            </div>
+          )}
         </motion.section>
 
         {/* ── Stats Grid ── */}
@@ -358,6 +374,23 @@ export default function ProfilePage() {
             </AnimatePresence>
           </div>
         </motion.section>
+
+        {/* ── Next Session Notification ── */}
+        {nextSession && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+          >
+            <div className="glass-card p-4 border-l-4 border-bw-teal">
+              <p className="text-xs text-bw-teal font-cinema tracking-wider uppercase">Prochaine session</p>
+              <p className="font-semibold text-bw-heading mt-1">{nextSession.title}</p>
+              <p className="text-sm text-bw-muted">
+                {new Date(nextSession.scheduledAt).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}
+              </p>
+            </div>
+          </motion.section>
+        )}
 
         {/* ── Session History ── */}
         {sessionHistory.length > 0 && (

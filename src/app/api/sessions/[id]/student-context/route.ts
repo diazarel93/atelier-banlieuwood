@@ -83,6 +83,16 @@ export async function GET(
 }
 
 /**
+ * Generate a 4-char alphanumeric profile code (no ambiguous O/0/1/I).
+ */
+function generateProfileCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+/**
  * Compute cross-session streak from streak_updated_date.
  * - If today: already counted, keep current_streak as-is
  * - If yesterday: increment current_streak
@@ -262,22 +272,42 @@ export async function PATCH(
     // Create new profile and link to student
     const computedStreak = 1; // first session = streak of 1
 
-    const { data: newProfile, error: createErr } = await admin
-      .from("student_profiles")
-      .insert({
-        display_name: student.display_name || "Eleve",
-        avatar: student.avatar || "🎬",
-        total_xp: xpToAdd,
-        sessions_played: 1,
-        total_responses: responsesToAdd,
-        retained_count: retainedToAdd,
-        current_streak: computedStreak,
-        best_streak: Math.max(newBestStreak, computedStreak),
-        last_active_at: new Date().toISOString(),
-        streak_updated_date: new Date().toISOString().split("T")[0],
-      })
-      .select("id")
-      .single();
+    let newProfile: { id: string; profile_code: string | null } | null = null;
+    let createErr: { message: string } | null = null;
+    const MAX_CODE_RETRIES = 3;
+
+    for (let attempt = 0; attempt < MAX_CODE_RETRIES; attempt++) {
+      const result = await admin
+        .from("student_profiles")
+        .insert({
+          display_name: student.display_name || "Eleve",
+          avatar: student.avatar || "🎬",
+          total_xp: xpToAdd,
+          sessions_played: 1,
+          total_responses: responsesToAdd,
+          retained_count: retainedToAdd,
+          current_streak: computedStreak,
+          best_streak: Math.max(newBestStreak, computedStreak),
+          last_active_at: new Date().toISOString(),
+          streak_updated_date: new Date().toISOString().split("T")[0],
+          profile_code: generateProfileCode(),
+        })
+        .select("id, profile_code")
+        .single();
+
+      if (!result.error) {
+        newProfile = result.data;
+        createErr = null;
+        break;
+      }
+      // Retry only on unique constraint violation (profile_code conflict)
+      if (result.error.code === "23505" && result.error.message?.includes("profile_code")) {
+        createErr = result.error;
+        continue;
+      }
+      createErr = result.error;
+      break;
+    }
 
     if (createErr || !newProfile) {
       console.error("[student-context] Profile creation failed:", createErr?.message);
@@ -308,5 +338,17 @@ export async function PATCH(
   const earned = checkAchievements(updatedStats);
   const newUnlocks = await upsertAchievements(admin, profileId, earned);
 
-  return NextResponse.json({ ok: true, profileId, newUnlocks });
+  // Fetch profile_code for the response
+  const { data: profileRow } = await admin
+    .from("student_profiles")
+    .select("profile_code")
+    .eq("id", profileId)
+    .single();
+
+  return NextResponse.json({
+    ok: true,
+    profileId,
+    profileCode: profileRow?.profile_code ?? null,
+    newUnlocks,
+  });
 }

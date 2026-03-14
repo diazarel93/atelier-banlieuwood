@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   const { data: profile, error: profileErr } = await supabase
     .from("student_profiles")
     .select(
-      "id, display_name, avatar, avatar_frame, custom_title, total_xp, current_streak, best_streak, sessions_played, total_responses, retained_count, level, last_active_at, streak_updated_date, creative_profile"
+      "id, display_name, avatar, avatar_frame, custom_title, total_xp, current_streak, best_streak, sessions_played, total_responses, retained_count, level, last_active_at, streak_updated_date, creative_profile, profile_code"
     )
     .eq("id", profileId)
     .single();
@@ -144,6 +144,28 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // ── 5. Next scheduled session ──
+  let nextSession: { title: string; scheduledAt: string; classLabel: string } | null = null;
+  if (latestClassLabel) {
+    const { data: upcoming } = await supabase
+      .from("sessions")
+      .select("id, title, scheduled_at, class_label")
+      .eq("class_label", latestClassLabel)
+      .gt("scheduled_at", new Date().toISOString())
+      .is("deleted_at", null)
+      .order("scheduled_at", { ascending: true })
+      .limit(1)
+      .single();
+
+    if (upcoming) {
+      nextSession = {
+        title: upcoming.title,
+        scheduledAt: upcoming.scheduled_at,
+        classLabel: upcoming.class_label,
+      };
+    }
+  }
+
   return NextResponse.json({
     profile: {
       id: profile.id,
@@ -161,9 +183,11 @@ export async function GET(req: NextRequest) {
       lastActiveAt: profile.last_active_at,
       streakUpdatedDate: profile.streak_updated_date,
       creativeProfile: profile.creative_profile,
+      profileCode: profile.profile_code ?? null,
     },
     achievements,
     sessionHistory,
     classLeaderboard,
+    nextSession,
   });
 }

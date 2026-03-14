@@ -42,6 +42,7 @@ export const joinSessionSchema = z.object({
   joinCode: z.string().min(1, "Code requis").max(6),
   displayName: z.string().trim().min(1, "Prénom trop court").max(30),
   avatar: z.string().min(1, "Avatar requis"),
+  profileCode: z.string().max(4).optional(),
 });
 
 export type JoinSessionInput = z.infer<typeof joinSessionSchema>;

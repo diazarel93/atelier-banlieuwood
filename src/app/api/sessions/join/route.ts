@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
   const cleanName = validated.data.displayName.trim().slice(0, MAX_DISPLAY_NAME_LENGTH);
   const cleanCode = validated.data.joinCode.trim().toUpperCase().slice(0, 6);
   const avatar = validated.data.avatar;
+  const profileCode = validated.data.profileCode?.trim().toUpperCase().slice(0, 4) || null;
 
   if (!isValidEmoji(String(avatar))) {
     return NextResponse.json(
@@ -112,14 +113,32 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Create new student
+  // If profileCode provided, try to find existing profile
+  let linkedProfileId: string | null = null;
+  if (profileCode && profileCode.length === 4) {
+    const { data: existingProfile } = await admin
+      .from("student_profiles")
+      .select("id")
+      .eq("profile_code", profileCode)
+      .single();
+    if (existingProfile) {
+      linkedProfileId = existingProfile.id;
+    }
+  }
+
+  // Create new student (with optional profile link)
+  const insertData: Record<string, string> = {
+    session_id: session.id,
+    display_name: cleanName,
+    avatar: String(avatar),
+  };
+  if (linkedProfileId) {
+    insertData.profile_id = linkedProfileId;
+  }
+
   const { data: student, error: studentError } = await admin
     .from("students")
-    .insert({
-      session_id: session.id,
-      display_name: cleanName,
-      avatar: String(avatar),
-    })
+    .insert(insertData)
     .select("id")
     .single();
 
@@ -135,6 +154,7 @@ export async function POST(req: NextRequest) {
     studentId: student.id,
     sessionId: session.id,
     token,
+    ...(linkedProfileId ? { profileId: linkedProfileId } : {}),
   });
   response.cookies.set("bw-student-token", token, {
     httpOnly: true,

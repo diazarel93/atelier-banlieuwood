@@ -26,6 +26,8 @@ function JoinForm() {
   const [code, setCode] = useState<string[]>(["", "", "", "", "", ""]);
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [profileCode, setProfileCode] = useState("");
+  const [showProfileCode, setShowProfileCode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -101,6 +103,7 @@ function JoinForm() {
           joinCode: code.join(""),
           displayName: name.trim(),
           avatar,
+          ...(profileCode.length === 4 ? { profileCode } : {}),
         }),
       });
 
@@ -120,6 +123,10 @@ function JoinForm() {
       );
       if (data.token) {
         localStorage.setItem(`bw-student-token-${data.sessionId}`, data.token);
+      }
+      // Save profile link for cross-device reconnection
+      if (data.profileId) {
+        localStorage.setItem("bw-profile-id", data.profileId);
       }
       router.push(`/play/${data.sessionId}`);
     } catch {
@@ -317,6 +324,42 @@ function JoinForm() {
               )}
             </AnimatePresence>
           </div>
+        </motion.div>
+
+        {/* Optional profile code for cross-device reconnection */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.42 }}
+          className="space-y-2"
+        >
+          <button
+            type="button"
+            onClick={() => setShowProfileCode(!showProfileCode)}
+            className="w-full text-xs text-bw-muted hover:text-bw-teal transition-colors cursor-pointer text-center"
+          >
+            {showProfileCode ? "▾ " : "▸ "}Tu as deja un code joueur ?
+          </button>
+          <AnimatePresence>
+            {showProfileCode && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <input
+                  type="text"
+                  placeholder="XXXX"
+                  maxLength={4}
+                  value={profileCode}
+                  onChange={(e) => setProfileCode(e.target.value.toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 4))}
+                  className="w-full h-12 text-center text-lg font-mono font-bold tracking-[0.3em] rounded-xl bg-bw-elevated/50 border border-white/[0.08] text-bw-ink placeholder:text-bw-placeholder/40 focus:border-bw-teal/50 focus:ring-2 focus:ring-bw-teal/20 focus:outline-none transition-all uppercase"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
 
         {/* Submit */}
