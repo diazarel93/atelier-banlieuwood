@@ -20,7 +20,7 @@ export function SessionActionBar({
   isDuplicating,
 }: SessionActionBarProps) {
   return (
-    <div className="sticky top-14 z-30 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 bg-white/85 backdrop-blur-xl border-b border-[var(--color-bw-border)] flex flex-wrap items-center gap-3">
+    <div className="sticky top-14 z-30 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 bg-card/85 backdrop-blur-xl border-b border-[var(--color-bw-border)] flex flex-wrap items-center gap-3">
       {ss.canPilot && (
         <Link
           href={ROUTES.pilot(sessionId)}

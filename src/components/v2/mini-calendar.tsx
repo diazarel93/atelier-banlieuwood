@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
 
@@ -36,8 +36,19 @@ export function MiniCalendar({
   onSelectDate,
   className,
 }: MiniCalendarProps) {
-  const now = new Date();
+  const [now, setNow] = useState(() => new Date());
   const [monthOffset, setMonthOffset] = useState(0);
+
+  // Refresh "now" when user returns to the tab (fixes stale today highlight after midnight)
+  useEffect(() => {
+    function onVisible() {
+      if (document.visibilityState === "visible") {
+        setNow(new Date());
+      }
+    }
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, []);
   const baseMonth = monthProp || now;
   const month = new Date(baseMonth.getFullYear(), baseMonth.getMonth() + monthOffset, 1);
   const year = month.getFullYear();
@@ -51,7 +62,7 @@ export function MiniCalendar({
     return set;
   }, [sessionDates]);
 
-  const days = (() => {
+  const days = useMemo(() => {
     const firstDay = new Date(year, monthIdx, 1);
     // Monday = 0 in our grid
     const startDay = (firstDay.getDay() + 6) % 7;
@@ -65,7 +76,7 @@ export function MiniCalendar({
       cells.push(new Date(year, monthIdx, d));
     }
     return cells;
-  })();
+  }, [year, monthIdx]);
 
   return (
     <GlassCardV2 className={cn("p-4", className)}>
@@ -75,7 +86,7 @@ export function MiniCalendar({
           type="button"
           onClick={() => setMonthOffset((o) => o - 1)}
           aria-label="Mois précédent"
-          className="p-1 rounded-md text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+          className="p-2 min-h-9 min-w-9 flex items-center justify-center rounded-md text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
             <polyline points="15 18 9 12 15 6" />
@@ -88,7 +99,7 @@ export function MiniCalendar({
           type="button"
           onClick={() => setMonthOffset((o) => o + 1)}
           aria-label="Mois suivant"
-          className="p-1 rounded-md text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+          className="p-2 min-h-9 min-w-9 flex items-center justify-center rounded-md text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
             <polyline points="9 18 15 12 9 6" />
@@ -121,11 +132,14 @@ export function MiniCalendar({
             `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
           );
 
+          const dateLabel = `${date.getDate()} ${MONTHS[monthIdx]} ${year}${hasSession ? " — séance prévue" : ""}`;
+
           return (
             <button
               key={date.getDate()}
               type="button"
               onClick={() => onSelectDate?.(date)}
+              aria-label={dateLabel}
               className={cn(
                 "relative flex h-7 w-full items-center justify-center rounded-md text-xs transition-colors",
                 isSelected

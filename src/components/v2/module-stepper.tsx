@@ -31,7 +31,7 @@ export function ModuleStepperV2({ steps, className }: ModuleStepperV2Props) {
                   isDone &&
                     "text-white",
                   isCurrent &&
-                    "text-white ring-2 ring-offset-2 ring-offset-white",
+                    "text-white ring-2 ring-offset-2 ring-offset-[var(--card)]",
                   !isDone && !isCurrent &&
                     "bg-[var(--color-bw-surface-dim)] text-bw-muted"
                 )}

@@ -166,7 +166,7 @@ export default function SeancesPage() {
               aria-label="Rechercher une séance"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-9 w-48 rounded-lg border border-[var(--color-bw-border)] bg-white pl-9 pr-8 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
+              className="h-9 w-48 rounded-lg border border-[var(--color-bw-border)] bg-card pl-9 pr-8 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
             />
             {search && (
               <button
@@ -216,7 +216,7 @@ export default function SeancesPage() {
           ) : isLoading ? (
             <div className="flex flex-col gap-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-24 rounded-2xl bg-white shimmer" />
+                <div key={i} className="h-24 rounded-2xl bg-card shimmer" />
               ))}
             </div>
           ) : grouped.length === 0 ? (

@@ -40,13 +40,13 @@ const BADGE_STYLES: Record<ActivityTier, string> = {
   recent:
     "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20",
   inactive:
-    "bg-gray-50 text-gray-500 ring-1 ring-inset ring-gray-500/10",
+    "bg-[var(--color-bw-surface-dim)] text-bw-muted ring-1 ring-inset ring-[var(--color-bw-border)]",
 };
 
 const DOT_STYLES: Record<ActivityTier, string> = {
   active: "bg-emerald-500",
   recent: "bg-amber-400",
-  inactive: "bg-gray-300",
+  inactive: "bg-[var(--color-bw-border)]",
 };
 
 function formatShortDate(iso: string) {

@@ -1,12 +1,12 @@
 "use client";
 
-import { motion } from "motion/react";
-import { cn } from "@/lib/utils";
+import { motion, useReducedMotion } from "motion/react";
 import { KpiCard } from "./kpi-card";
 import type { DashboardStats } from "@/hooks/use-dashboard-v2";
 
 interface QuickStatsProps {
   stats: DashboardStats;
+  trends?: Record<string, { value: number; label?: string }>;
   className?: string;
 }
 
@@ -19,13 +19,20 @@ const cardVariants = {
   }),
 };
 
-export function QuickStats({ stats, className }: QuickStatsProps) {
+export function QuickStats({ stats, trends, className }: QuickStatsProps) {
+  const prefersReducedMotion = useReducedMotion();
+
+  const variants = prefersReducedMotion
+    ? { hidden: {}, visible: () => ({}) }
+    : cardVariants;
+
   return (
-    <div className={cn("grid grid-cols-2 gap-4", className)}>
-      <motion.div custom={0} variants={cardVariants} initial="hidden" animate="visible">
+    <div className={className ? `grid grid-cols-2 gap-4 ${className}` : "grid grid-cols-2 gap-4"}>
+      <motion.div custom={0} variants={variants} initial="hidden" animate="visible">
         <KpiCard
           label="Séances animées"
           value={stats.doneSessions}
+          trend={trends?.doneSessions}
           color="var(--color-axis-comprehension)"
           icon={
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -34,10 +41,11 @@ export function QuickStats({ stats, className }: QuickStatsProps) {
           }
         />
       </motion.div>
-      <motion.div custom={1} variants={cardVariants} initial="hidden" animate="visible">
+      <motion.div custom={1} variants={variants} initial="hidden" animate="visible">
         <KpiCard
           label="En cours"
           value={stats.activeSessions}
+          trend={trends?.activeSessions}
           color="var(--color-axis-engagement)"
           icon={
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -47,10 +55,11 @@ export function QuickStats({ stats, className }: QuickStatsProps) {
           }
         />
       </motion.div>
-      <motion.div custom={2} variants={cardVariants} initial="hidden" animate="visible">
+      <motion.div custom={2} variants={variants} initial="hidden" animate="visible">
         <KpiCard
           label="Total séances"
           value={stats.totalSessions}
+          trend={trends?.totalSessions}
           color="var(--color-axis-creativite)"
           icon={
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -59,10 +68,11 @@ export function QuickStats({ stats, className }: QuickStatsProps) {
           }
         />
       </motion.div>
-      <motion.div custom={3} variants={cardVariants} initial="hidden" animate="visible">
+      <motion.div custom={3} variants={variants} initial="hidden" animate="visible">
         <KpiCard
           label="Élèves touchés"
           value={stats.totalStudents}
+          trend={trends?.totalStudents}
           color="var(--color-axis-expression)"
           icon={
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">

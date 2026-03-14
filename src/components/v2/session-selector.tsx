@@ -40,7 +40,7 @@ export function SessionSelector({
           onClassChange(e.target.value || null);
           onSessionChange(null);
         }}
-        className="h-9 rounded-lg border border-[var(--color-bw-border)] bg-white px-3 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+        className="h-9 rounded-lg border border-[var(--color-bw-border)] bg-card px-3 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
       >
         <option value="">Toutes les classes</option>
         {classLabels.map((label) => (
@@ -54,7 +54,7 @@ export function SessionSelector({
       <select
         value={selectedSessionId || ""}
         onChange={(e) => onSessionChange(e.target.value || null)}
-        className="h-9 rounded-lg border border-[var(--color-bw-border)] bg-white px-3 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+        className="h-9 rounded-lg border border-[var(--color-bw-border)] bg-card px-3 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
       >
         <option value="">Toutes les séances</option>
         {filteredSessions.map((s) => (

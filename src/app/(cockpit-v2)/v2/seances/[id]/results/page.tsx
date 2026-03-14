@@ -37,9 +37,9 @@ export default function ResultsPageV2() {
           ]}
         />
         <div className="mt-4 space-y-4">
-          <div className="h-32 rounded-2xl bg-white shimmer" />
-          <div className="h-10 rounded-xl bg-white shimmer w-80" />
-          <div className="h-64 rounded-2xl bg-white shimmer" />
+          <div className="h-32 rounded-2xl bg-card shimmer" />
+          <div className="h-10 rounded-xl bg-card shimmer w-80" />
+          <div className="h-64 rounded-2xl bg-card shimmer" />
         </div>
       </div>
     );

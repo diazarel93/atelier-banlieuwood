@@ -90,7 +90,7 @@ export default function ElevesPage() {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher un élève..."
               aria-label="Rechercher un élève"
-              className="h-9 w-48 rounded-lg border border-[var(--color-bw-border)] bg-white pl-9 pr-8 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
+              className="h-9 w-48 rounded-lg border border-[var(--color-bw-border)] bg-card pl-9 pr-8 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
             />
             {search && (
               <button
@@ -109,7 +109,7 @@ export default function ElevesPage() {
             <select
               value={classLabel ?? ""}
               onChange={(e) => setClassLabel(e.target.value || null)}
-              className="rounded-lg border border-[var(--color-bw-border)] bg-white px-3 py-1.5 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+              className="rounded-lg border border-[var(--color-bw-border)] bg-card px-3 py-1.5 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
             >
               <option value="">Toutes les classes</option>
               {classLabels.map((cl) => (
@@ -136,9 +136,9 @@ export default function ElevesPage() {
 
       {isLoading ? (
         <div className="space-y-4">
-          <div className="h-12 rounded-2xl bg-white shimmer" />
+          <div className="h-12 rounded-2xl bg-card shimmer" />
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-12 rounded-xl bg-white shimmer" />
+            <div key={i} className="h-12 rounded-xl bg-card shimmer" />
           ))}
         </div>
       ) : isError ? (

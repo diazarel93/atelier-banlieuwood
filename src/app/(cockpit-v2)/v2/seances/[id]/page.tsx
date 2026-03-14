@@ -52,15 +52,15 @@ export default function SessionDetailPage() {
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
         <BreadcrumbV2 items={[{ label: "Séances", href: ROUTES.seances }]} />
         <div className="space-y-4 mt-4">
-          <div className="h-48 rounded-2xl bg-white shimmer" />
+          <div className="h-48 rounded-2xl bg-card shimmer" />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-8 space-y-4">
-              <div className="h-40 rounded-2xl bg-white shimmer" />
-              <div className="h-64 rounded-2xl bg-white shimmer" />
+              <div className="h-40 rounded-2xl bg-card shimmer" />
+              <div className="h-64 rounded-2xl bg-card shimmer" />
             </div>
             <div className="lg:col-span-4 space-y-4">
-              <div className="h-40 rounded-2xl bg-white shimmer" />
-              <div className="h-48 rounded-2xl bg-white shimmer" />
+              <div className="h-40 rounded-2xl bg-card shimmer" />
+              <div className="h-48 rounded-2xl bg-card shimmer" />
             </div>
           </div>
         </div>

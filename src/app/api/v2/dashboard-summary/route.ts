@@ -28,7 +28,8 @@ export async function GET(req: NextRequest) {
   let query = supabase
     .from("sessions")
     .select("id, title, status, level, template, created_at, scheduled_at, class_label, completed_modules, students(id)")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(500);
 
   if (!isAdmin) {
     query = query.eq("facilitator_id", user.id);
@@ -177,6 +178,42 @@ export async function GET(req: NextRequest) {
   // Recent sessions for the timeline (last 15, descending)
   const recentSessions = allSessions.slice(0, 15).map(summarize);
 
+  // Trends: compare last 7 days vs previous 7 days
+  const d7ago = new Date(now);
+  d7ago.setDate(d7ago.getDate() - 7);
+  const d14ago = new Date(now);
+  d14ago.setDate(d14ago.getDate() - 14);
+
+  const sessionsLast7 = allSessions.filter((s) => {
+    const d = (s as Record<string, unknown>).scheduled_at as string || s.created_at;
+    return d && d >= d7ago.toISOString();
+  });
+  const sessionsPrev7 = allSessions.filter((s) => {
+    const d = (s as Record<string, unknown>).scheduled_at as string || s.created_at;
+    return d && d >= d14ago.toISOString() && d < d7ago.toISOString();
+  });
+
+  const doneLast7 = sessionsLast7.filter((s) => s.status === "done").length;
+  const donePrev7 = sessionsPrev7.filter((s) => s.status === "done").length;
+  const studentsLast7 = sessionsLast7.reduce(
+    (acc, s) => acc + ((s.students as { id: string }[])?.length || 0), 0
+  );
+  const studentsPrev7 = sessionsPrev7.reduce(
+    (acc, s) => acc + ((s.students as { id: string }[])?.length || 0), 0
+  );
+
+  function pctChange(curr: number, prev: number): number {
+    if (prev === 0) return curr > 0 ? 100 : 0;
+    return Math.round(((curr - prev) / prev) * 100);
+  }
+
+  const trends = {
+    doneSessions: { value: pctChange(doneLast7, donePrev7), label: "vs 7j préc." },
+    activeSessions: { value: pctChange(activeSessions, sessionsPrev7.filter((s) => s.status === "active" || s.status === "responding" || s.status === "waiting").length), label: "vs 7j préc." },
+    totalSessions: { value: pctChange(sessionsLast7.length, sessionsPrev7.length), label: "vs 7j préc." },
+    totalStudents: { value: pctChange(studentsLast7, studentsPrev7), label: "vs 7j préc." },
+  };
+
   return NextResponse.json({
     todaySessions: todaySessions.map(summarize),
     tomorrowSessions: tomorrowSessions.map(summarize),
@@ -187,6 +224,7 @@ export async function GET(req: NextRequest) {
       activeSessions,
       totalStudents,
     },
+    trends,
     sessionDates,
     completedModuleIds,
     classLabels,

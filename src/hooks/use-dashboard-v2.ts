@@ -37,6 +37,7 @@ interface DashboardSummary {
   completedModuleIds: string[];
   classLabels: string[];
   atRiskStudents?: AtRiskStudent[];
+  trends?: Record<string, { value: number; label?: string }>;
 }
 
 async function fetchDashboardSummary(

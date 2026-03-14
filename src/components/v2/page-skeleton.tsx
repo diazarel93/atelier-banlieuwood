@@ -1,8 +1,7 @@
-"use client";
-
 /**
  * Consistent loading skeletons for V2 pages.
  * Three variants: dashboard, list, detail.
+ * Pure JSX — no client hooks needed.
  */
 
 function Shimmer({ className }: { className?: string }) {
@@ -13,7 +12,7 @@ function Shimmer({ className }: { className?: string }) {
 
 function KpiCardSkeleton() {
   return (
-    <div className="rounded-2xl border border-bw-border bg-white p-5 space-y-3">
+    <div className="rounded-2xl border border-bw-border bg-card p-5 space-y-3">
       <Shimmer className="h-3 w-20" />
       <Shimmer className="h-8 w-16" />
       <Shimmer className="h-2 w-32" />
@@ -35,7 +34,7 @@ function TableRowSkeleton() {
 
 function CardSkeleton() {
   return (
-    <div className="rounded-2xl border border-bw-border bg-white p-4 space-y-3">
+    <div className="rounded-2xl border border-bw-border bg-card p-4 space-y-3">
       <div className="flex items-center gap-3">
         <Shimmer className="h-10 w-10 rounded-full flex-shrink-0" />
         <div className="flex-1 space-y-2">
@@ -85,7 +84,7 @@ export function DashboardSkeleton() {
         <KpiCardSkeleton />
       </div>
       {/* Table */}
-      <div className="rounded-2xl border border-bw-border bg-white overflow-hidden">
+      <div className="rounded-2xl border border-bw-border bg-card overflow-hidden">
         <div className="px-4 py-3 border-b border-bw-border">
           <Shimmer className="h-5 w-40" />
         </div>
@@ -130,7 +129,7 @@ export function DetailSkeleton() {
         <KpiCardSkeleton />
         <KpiCardSkeleton />
       </div>
-      <div className="rounded-2xl border border-bw-border bg-white overflow-hidden">
+      <div className="rounded-2xl border border-bw-border bg-card overflow-hidden">
         {Array.from({ length: 4 }).map((_, i) => (
           <TableRowSkeleton key={i} />
         ))}

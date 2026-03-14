@@ -21,7 +21,7 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   active: { label: "Actif", color: "bg-green-100 text-green-700" },
   pending: { label: "En attente", color: "bg-amber-100 text-amber-700" },
   rejected: { label: "Refuse", color: "bg-red-100 text-red-700" },
-  deactivated: { label: "Desactive", color: "bg-gray-100 text-gray-600" },
+  deactivated: { label: "Desactive", color: "bg-[var(--color-bw-surface-dim)] text-bw-muted" },
 };
 
 const ROLE_LABELS: Record<string, string> = {
@@ -88,7 +88,7 @@ export default function AdminUsersPage() {
         <select
           value={filterRole}
           onChange={(e) => setFilterRole(e.target.value)}
-          className="rounded-xl border border-bw-border bg-white px-3 py-2 text-sm"
+          className="rounded-xl border border-bw-border bg-card px-3 py-2 text-sm"
           aria-label="Filtrer par role"
         >
           <option value="">Tous les roles</option>
@@ -99,7 +99,7 @@ export default function AdminUsersPage() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="rounded-xl border border-bw-border bg-white px-3 py-2 text-sm"
+          className="rounded-xl border border-bw-border bg-card px-3 py-2 text-sm"
           aria-label="Filtrer par statut"
         >
           <option value="">Tous les statuts</option>
@@ -142,7 +142,7 @@ export default function AdminUsersPage() {
               </thead>
               <tbody>
                 {users.map((user) => {
-                  const statusInfo = STATUS_LABELS[user.status] ?? { label: user.status, color: "bg-gray-100" };
+                  const statusInfo = STATUS_LABELS[user.status] ?? { label: user.status, color: "bg-[var(--color-bw-surface-dim)]" };
                   return (
                     <tr key={user.id} className="border-b border-bw-border/50 last:border-0">
                       <td className="px-4 py-3 font-medium text-bw-heading">{user.name}</td>

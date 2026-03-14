@@ -246,7 +246,7 @@
   /* Selection — warm orange on light */
   ::selection {
     background: rgba(255, 107, 53, 0.2);
-    color: #2C2C2C;
+    color: var(--color-bw-heading);
   }
 
   /* Focus visible — clean ring */
@@ -1320,6 +1320,128 @@ html, body {
   --shadow-bw-md:  0 4px 6px rgba(107,70,193,0.06), 0 2px 4px rgba(0,0,0,0.03);
   --shadow-bw-lg:  0 10px 15px rgba(107,70,193,0.07), 0 4px 6px rgba(0,0,0,0.03);
   --shadow-bw-glow-violet: 0 2px 12px rgba(107,70,193,0.12), 0 1px 4px rgba(0,0,0,0.04);
+
+  /* ── Glass card shadows ── */
+  --glass-shadow:          0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(107,70,193,0.06);
+  --glass-shadow-elevated: 0 2px 6px rgba(0,0,0,0.05), 0 12px 32px rgba(107,70,193,0.10);
+  --glass-shadow-hover:    0 4px 12px rgba(0,0,0,0.06), 0 16px 40px rgba(107,70,193,0.12);
+  --glass-border-hover:    rgba(107,70,193,0.18);
+
+  color-scheme: light;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   THEME LAVANDE DARK — Dark mode for cockpit-v2
+   Applied via [data-theme="dark"] on the .theme-lavande wrapper.
+   ═══════════════════════════════════════════════════════════════ */
+
+.theme-lavande[data-theme="dark"] {
+  /* ── Surfaces ── */
+  --background:           #1a1a2e;
+  --color-bw-bg:          #1a1a2e;
+  --color-bw-surface-dim: #22223a;
+  --color-bw-surface:     #2a2a44;
+  --color-bw-surface-bright: #2a2a44;
+  --color-bw-elevated:    #2e2e4a;
+  --color-bw-popover:     #2a2a44;
+
+  /* ── Borders ── */
+  --color-bw-border:        #3a3a56;
+  --color-bw-border-subtle: rgba(255,255,255,0.06);
+  --color-bw-border-strong: rgba(255,255,255,0.14);
+  --color-bw-border-focus:  rgba(255,255,255,0.22);
+  --border:                 #3a3a56;
+
+  /* ── Text ── */
+  --color-bw-heading:     #f0f0f5;
+  --color-bw-text:        #c8c8d8;
+  --color-bw-muted:       #9898aa;
+  --color-bw-ink:         #f5f5fa;
+  --color-bw-placeholder: #6a6a80;
+  --foreground:           #f0f0f5;
+
+  /* ── Card / Popover ── */
+  --card:              #2a2a44;
+  --card-foreground:   #f0f0f5;
+  --popover:           #2a2a44;
+  --popover-foreground:#f0f0f5;
+
+  /* ── Secondary / Muted ── */
+  --secondary:           #22223a;
+  --secondary-foreground:#f0f0f5;
+  --muted:               #22223a;
+  --muted-foreground:    #9898aa;
+  --accent:              #2e2e4a;
+  --accent-foreground:   #f0f0f5;
+
+  /* ── Sidebar ── */
+  --sidebar:           #1e1e32;
+  --sidebar-foreground:#f0f0f5;
+  --sidebar-border:    #3a3a56;
+  --sidebar-accent:    #22223a;
+  --sidebar-accent-foreground: #f0f0f5;
+
+  /* ── Dark aliases ── */
+  --color-bw-dark-bg:       #1a1a2e;
+  --color-bw-dark-card:     #2a2a44;
+  --color-bw-dark-surface:  #2a2a44;
+  --color-bw-dark-elevated: #2e2e4a;
+  --color-bw-dark-border:   rgba(255,255,255,0.08);
+  --color-bw-dark-muted:    #9898aa;
+  --color-bw-dark-soft:     #9898aa;
+  --color-bw-dark-text:     #c8c8d8;
+  --color-bw-dark-heading:  #f0f0f5;
+
+  /* ── Shadows (darker, more subtle) ── */
+  --shadow-bw-sm:  0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.15);
+  --shadow-bw-md:  0 4px 6px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.15);
+  --shadow-bw-lg:  0 10px 15px rgba(0,0,0,0.25), 0 4px 6px rgba(0,0,0,0.15);
+  --shadow-bw-glow-violet: 0 2px 12px rgba(139,92,246,0.2), 0 1px 4px rgba(0,0,0,0.15);
+
+  /* ── Glass card shadows (dark) ── */
+  --glass-shadow:          0 1px 3px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.25);
+  --glass-shadow-elevated: 0 2px 6px rgba(0,0,0,0.2), 0 12px 32px rgba(0,0,0,0.35);
+  --glass-shadow-hover:    0 4px 12px rgba(0,0,0,0.15), 0 16px 40px rgba(0,0,0,0.35);
+  --glass-border-hover:    rgba(255,255,255,0.08);
+
+  /* ── Semantic colors (dark-safe) ── */
+  --color-bw-green-100: #064e3b;
+  --color-bw-green: #34d399;
+  --color-bw-danger-100: #450a0a;
+  --color-bw-danger: #f87171;
+  --color-bw-amber-100: #451a03;
+  --color-bw-amber: #fbbf24;
+
+  /* ── Input ── */
+  --input: rgba(255,255,255,0.06);
+
+  /* ── Scrollbar ── */
+  scrollbar-color: rgba(255,255,255,0.12) transparent;
+
+  color-scheme: dark;
+}
+
+.theme-lavande[data-theme="dark"] .shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.04) 50%, transparent 75%);
+  background-size: 200% 100%;
+}
+
+.theme-lavande[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.10);
+}
+.theme-lavande[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.18);
+}
+
+/* ── Glass card utility classes (theme-aware shadows) ── */
+.glass-shadow          { box-shadow: var(--glass-shadow); }
+.glass-shadow-elevated { box-shadow: var(--glass-shadow-elevated); }
+.glass-interactive:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+}
+.glass-interactive:active {
+  box-shadow: var(--glass-shadow);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1681,7 +1803,7 @@ html, body {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
   .float, .float-slow, .shimmer, .spotlight-sweep::before {
     animation: none !important;

@@ -87,7 +87,7 @@ export default function AdminInvitationsPage() {
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="rounded-xl border border-bw-border bg-white px-3 py-2 text-sm"
+            className="rounded-xl border border-bw-border bg-card px-3 py-2 text-sm"
             aria-label="Role"
           >
             <option value="client">Client</option>
@@ -155,7 +155,7 @@ export default function AdminInvitationsPage() {
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                         inv.status === "pending" ? "bg-amber-100 text-amber-700"
                           : inv.status === "accepted" ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-600"
+                          : "bg-[var(--color-bw-surface-dim)] text-bw-muted"
                       }`}>
                         {inv.status}
                       </span>

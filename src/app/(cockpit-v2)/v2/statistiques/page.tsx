@@ -118,11 +118,11 @@ export default function StatistiquesPage() {
         <div className="flex flex-col gap-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-28 rounded-2xl bg-white shimmer" />
+              <div key={i} className="h-28 rounded-2xl bg-card shimmer" />
             ))}
           </div>
-          <div className="h-48 rounded-2xl bg-white shimmer" />
-          <div className="h-64 rounded-2xl bg-white shimmer" />
+          <div className="h-48 rounded-2xl bg-card shimmer" />
+          <div className="h-64 rounded-2xl bg-card shimmer" />
         </div>
       ) : isError ? (
         <GlassCardV2 className="p-8 text-center">
@@ -184,7 +184,7 @@ export default function StatistiquesPage() {
                       s.scores.engagement;
                   const ringColor = [
                     "ring-amber-200 bg-amber-50/50",
-                    "ring-gray-200 bg-gray-50/50",
+                    "ring-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/50",
                     "ring-orange-200 bg-orange-50/40",
                   ][i];
                   return (

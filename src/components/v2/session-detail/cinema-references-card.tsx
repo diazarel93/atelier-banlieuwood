@@ -85,7 +85,7 @@ export function CinemaReferencesCard() {
             key={film.title}
             className="group relative rounded-xl overflow-hidden border border-[var(--color-bw-border)] hover:border-[var(--color-bw-border)] hover:-translate-y-0.5 transition-all duration-300"
           >
-            <div className="relative aspect-[2/3] overflow-hidden bg-gray-100">
+            <div className="relative aspect-[2/3] overflow-hidden bg-[var(--color-bw-surface-dim)]">
               <Image
                 src={`${TMDB_IMG}/w342${film.poster}`}
                 alt={film.title}
@@ -99,7 +99,7 @@ export function CinemaReferencesCard() {
               </span>
             </div>
 
-            <div className="p-2.5 bg-white">
+            <div className="p-2.5 bg-card">
               <p className="font-semibold text-xs text-bw-heading leading-tight">
                 {film.title}
               </p>

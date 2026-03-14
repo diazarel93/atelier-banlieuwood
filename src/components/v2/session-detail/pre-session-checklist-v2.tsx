@@ -75,7 +75,7 @@ export function PreSessionChecklistV2({
         className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg cursor-pointer transition-colors ${
           allChecked
             ? "bg-emerald-500 text-white"
-            : "bg-white border border-[var(--color-bw-border)] text-bw-heading"
+            : "bg-card border border-[var(--color-bw-border)] text-bw-heading"
         }`}
       >
         <span className="text-sm">{allChecked ? "✅" : "📋"}</span>
@@ -88,7 +88,7 @@ export function PreSessionChecklistV2({
 
   return (
     <div className="fixed bottom-6 right-6 z-50 w-[340px]">
-      <div className="bg-white rounded-2xl border border-[var(--color-bw-border)] shadow-xl overflow-hidden">
+      <div className="bg-card rounded-2xl border border-[var(--color-bw-border)] shadow-xl overflow-hidden">
         {/* Header */}
         <div className="px-5 pt-5 pb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">

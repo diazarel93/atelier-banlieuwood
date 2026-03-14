@@ -123,7 +123,7 @@ export function ProgressionChart({ studentId }: ProgressionChartProps) {
                 cx={x}
                 cy={y}
                 r="3"
-                fill="white"
+                fill="var(--card)"
                 stroke={axis.color}
                 strokeWidth="2"
               >

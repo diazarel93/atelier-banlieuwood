@@ -45,8 +45,8 @@ export default function SessionPreparePage() {
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
         <BreadcrumbV2 items={baseCrumbs} />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-4">
-          <div className="lg:col-span-3 h-64 rounded-2xl bg-white shimmer" />
-          <div className="lg:col-span-9 h-96 rounded-2xl bg-white shimmer" />
+          <div className="lg:col-span-3 h-64 rounded-2xl bg-card shimmer" />
+          <div className="lg:col-span-9 h-96 rounded-2xl bg-card shimmer" />
         </div>
       </div>
     );

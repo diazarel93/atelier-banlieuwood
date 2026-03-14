@@ -19,7 +19,7 @@ export function DatePicker({ value, onChange, label, className }: DatePickerProp
         type="datetime-local"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-9 rounded-lg border border-[var(--color-bw-border)] bg-white px-3 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
+        className="h-9 rounded-lg border border-[var(--color-bw-border)] bg-card px-3 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
       />
     </div>
   );

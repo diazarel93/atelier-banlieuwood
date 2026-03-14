@@ -113,7 +113,7 @@ export function SessionTimeline({ events, totalDurationMs }: SessionTimelineProp
                   <div key={i} className="relative flex items-start gap-3">
                     {/* Dot */}
                     <div
-                      className="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full border-2 border-white"
+                      className="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full border-2 border-[var(--card)]"
                       style={{ backgroundColor: config.color }}
                     />
                     {/* Content */}

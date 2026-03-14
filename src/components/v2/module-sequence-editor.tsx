@@ -36,7 +36,7 @@ export function ModuleSequenceEditor({
               className={cn(
                 "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold",
                 isDone && "text-white",
-                isCurrent && "text-white ring-2 ring-offset-2 ring-offset-white",
+                isCurrent && "text-white ring-2 ring-offset-2 ring-offset-[var(--card)]",
                 !isDone && !isCurrent && "bg-[var(--color-bw-surface-dim)] text-bw-muted"
               )}
               style={

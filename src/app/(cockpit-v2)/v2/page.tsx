@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { motion } from "motion/react";
-import { ROUTES } from "@/lib/routes";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useDashboardSummary } from "@/hooks/use-dashboard-v2";
+import { useAuthUser } from "@/hooks/use-auth-user";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
+import { ROUTES } from "@/lib/routes";
 import { TodaySessions } from "@/components/v2/today-sessions";
 import { QuickStats } from "@/components/v2/quick-stats";
 import { MiniCalendar } from "@/components/v2/mini-calendar";
@@ -12,7 +15,10 @@ import { GlassCardV2 } from "@/components/v2/glass-card";
 import { AtRiskWidget } from "@/components/v2/at-risk-widget";
 import { FacilitatorTimeline } from "@/components/v2/facilitator-timeline";
 import { OnboardingWizard } from "@/components/v2/onboarding-wizard";
+import { ActionRequiredWidget } from "@/components/v2/action-required-widget";
+import { WhatsNewWidget } from "@/components/v2/whats-new-widget";
 import { PHASES, MAIN_PHASE_IDS } from "@/lib/modules-data";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 function getGreeting(): string {
   const h = new Date().getHours();
@@ -21,16 +27,46 @@ function getGreeting(): string {
   return "Bonsoir";
 }
 
+// Static computation — no need to recalculate per render
+const mainPhases = PHASES.filter((p) =>
+  (MAIN_PHASE_IDS as readonly string[]).includes(p.id)
+);
+
 export default function DashboardV2Page() {
   const [classLabel, setClassLabel] = useState<string | null>(null);
   const { data, isLoading, isError, refetch } = useDashboardSummary(classLabel);
+  const { data: authUser } = useAuthUser();
+  const prefersReducedMotion = useReducedMotion();
 
-  const sessionDates = (data?.sessionDates || []).map((d) => new Date(d));
+  const router = useRouter();
 
-  // Main phases for the progress sidebar (M1–M8)
-  const mainPhases = PHASES.filter((p) =>
-    (MAIN_PHASE_IDS as readonly string[]).includes(p.id)
+  // Page-level keyboard shortcuts (Notion/Linear-style)
+  const shortcuts = useMemo(
+    () => [
+      { key: "n", action: () => router.push(ROUTES.seanceNew), label: "Nouvelle séance" },
+      { key: "s", action: () => router.push(ROUTES.seances), label: "Séances" },
+      { key: "e", action: () => router.push(ROUTES.eleves), label: "Élèves" },
+      { key: "r", action: () => { refetch(); toast.success("Données actualisées"); }, label: "Rafraîchir" },
+    ],
+    [router, refetch]
   );
+  useKeyboardShortcuts(shortcuts);
+
+  const sessionDates = useMemo(
+    () => (data?.sessionDates || []).map((d) => new Date(d)),
+    [data?.sessionDates]
+  );
+
+  const columnVariants = prefersReducedMotion
+    ? { hidden: {}, visible: () => ({}) }
+    : {
+        hidden: { opacity: 0, y: 20 },
+        visible: (i: number) => ({
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.4, delay: i * 0.1, ease: "easeOut" as const },
+        }),
+      };
 
   const isFirstUse = data && data.stats.totalSessions === 0;
   const completedModuleIds = data?.completedModuleIds || [];
@@ -40,23 +76,57 @@ export default function DashboardV2Page() {
     ? `${todayCount} séance${todayCount > 1 ? "s" : ""} aujourd'hui`
     : "Aucune séance prévue";
 
+  // Milestone celebrations
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    const milestones = [5, 10, 25, 50, 100];
+    const done = data?.stats.doneSessions ?? 0;
+    const reached = milestones.filter((m) => done >= m);
+    if (reached.length === 0) return;
+    const latest = reached[reached.length - 1];
+    const seen = Number(localStorage.getItem("bw-milestone-seen") || "0");
+    if (latest > seen) {
+      localStorage.setItem("bw-milestone-seen", String(latest));
+      import("canvas-confetti").then((mod) =>
+        mod.default({ particleCount: 80, spread: 60 })
+      );
+      toast.success(`${latest} séances animées !`);
+    }
+  }, [data?.stats.doneSessions, prefersReducedMotion]);
+
+  const firstName = authUser?.name ? authUser.name.split(" ")[0] : "";
+
   return (
-    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
+    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6" aria-live="polite">
       {/* Welcome header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-xl font-bold text-bw-heading">
-            <span className="text-gradient-cinema">{getGreeting()}</span>
+            <span className="text-gradient-cinema">
+              {getGreeting()}{firstName ? `, ${firstName}` : ""} !
+            </span>
           </h1>
-          <p className="text-sm text-bw-muted mt-0.5">
-            {isLoading ? "Chargement..." : subtitle}
-          </p>
+          <div className="flex items-center gap-3 mt-0.5">
+            <p className="text-sm text-bw-muted">
+              {isLoading ? "Chargement..." : subtitle}
+            </p>
+            {data && data.stats.activeSessions > 0 && (
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-bw-green)]">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute h-full w-full rounded-full bg-[var(--color-bw-green)] opacity-75" />
+                  <span className="relative rounded-full h-2 w-2 bg-[var(--color-bw-green)]" />
+                </span>
+                {data.stats.activeSessions} en direct
+              </span>
+            )}
+          </div>
         </div>
         {data && data.classLabels.length > 0 && (
           <select
             value={classLabel ?? ""}
             onChange={(e) => setClassLabel(e.target.value || null)}
-            className="rounded-lg border border-[var(--color-bw-border)] bg-white px-3 py-1.5 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+            aria-label="Filtrer par classe"
+            className="rounded-lg border border-[var(--color-bw-border)] bg-card px-3 py-1.5 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
           >
             <option value="">Toutes les classes</option>
             {data.classLabels.map((cl) => (
@@ -77,30 +147,75 @@ export default function DashboardV2Page() {
       ) : data ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left column — Today's sessions */}
-          <div className="lg:col-span-4">
-            <TodaySessions
-              todaySessions={data.todaySessions}
-              tomorrowSessions={data.tomorrowSessions}
-            />
-          </div>
+          <motion.div
+            custom={0}
+            variants={columnVariants}
+            initial="hidden"
+            animate="visible"
+            className="lg:col-span-4"
+          >
+            <ErrorBoundary variant="compact">
+              <TodaySessions
+                todaySessions={data.todaySessions}
+                tomorrowSessions={data.tomorrowSessions}
+              />
+            </ErrorBoundary>
+          </motion.div>
 
           {/* Center column — Stats */}
-          <div className="lg:col-span-5 flex flex-col gap-4">
-            <QuickStats stats={data.stats} />
+          <motion.div
+            custom={1}
+            variants={columnVariants}
+            initial="hidden"
+            animate="visible"
+            className="lg:col-span-5 flex flex-col gap-4"
+          >
+            <ErrorBoundary variant="compact">
+              <QuickStats stats={data.stats} trends={data.trends} />
+            </ErrorBoundary>
 
             <div className="flex-1">
               <h3 className="label-caps text-bw-muted mb-3">
                 Agenda
               </h3>
-              <MiniCalendar sessionDates={sessionDates} />
+              <ErrorBoundary variant="compact">
+                <MiniCalendar sessionDates={sessionDates} />
+              </ErrorBoundary>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right column — Modules progression + at-risk */}
-          <div className="lg:col-span-3 flex flex-col gap-4">
+          {/* Right column — Actions + Modules progression + at-risk */}
+          <motion.div
+            custom={2}
+            variants={columnVariants}
+            initial="hidden"
+            animate="visible"
+            className="lg:col-span-3 flex flex-col gap-4"
+          >
+            <ErrorBoundary variant="compact">
+              <WhatsNewWidget
+                stats={data.stats}
+                trends={data.trends}
+                recentSessions={data.recentSessions}
+                todaySessions={data.todaySessions}
+              />
+            </ErrorBoundary>
+
+            <ErrorBoundary variant="compact">
+              <ActionRequiredWidget
+                todaySessions={data.todaySessions}
+                tomorrowSessions={data.tomorrowSessions}
+                atRiskStudents={data.atRiskStudents}
+                recentSessions={data.recentSessions}
+              />
+            </ErrorBoundary>
+
             {data.atRiskStudents && data.atRiskStudents.length > 0 && (
-              <AtRiskWidget students={data.atRiskStudents} />
+              <ErrorBoundary variant="compact">
+                <AtRiskWidget students={data.atRiskStudents} />
+              </ErrorBoundary>
             )}
+            <ErrorBoundary variant="compact">
             <GlassCardV2 className="p-4">
               <h3 className="label-caps text-bw-muted mb-3">
                 Modules
@@ -127,7 +242,14 @@ export default function DashboardV2Page() {
                         <p className="text-sm font-medium text-bw-heading truncate">
                           {phase.label}
                         </p>
-                        <div className="mt-1 h-1.5 w-full rounded-full bg-[var(--color-bw-surface-dim)] overflow-hidden">
+                        <div
+                          className="mt-1 h-1.5 w-full rounded-full bg-[var(--color-bw-surface-dim)] overflow-hidden"
+                          role="progressbar"
+                          aria-valuenow={pct}
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-label={`${phase.label} : ${pct}%`}
+                        >
                           <div
                             className="h-full rounded-full transition-all duration-500"
                             style={{
@@ -145,133 +267,27 @@ export default function DashboardV2Page() {
                 })}
               </div>
             </GlassCardV2>
+            </ErrorBoundary>
 
             {/* Facilitator session history timeline */}
             {data.recentSessions && data.recentSessions.length > 0 && (
-              <FacilitatorTimeline
-                sessions={data.recentSessions.map((s) => ({
-                  id: s.id,
-                  title: s.title,
-                  status: s.status,
-                  classLabel: s.classLabel,
-                  studentCount: s.studentCount,
-                  date: s.scheduledAt,
-                }))}
-              />
+              <ErrorBoundary variant="compact">
+                <FacilitatorTimeline
+                  sessions={data.recentSessions.map((s) => ({
+                    id: s.id,
+                    title: s.title,
+                    status: s.status,
+                    classLabel: s.classLabel,
+                    studentCount: s.studentCount,
+                    date: s.scheduledAt,
+                  }))}
+                />
+              </ErrorBoundary>
             )}
-          </div>
+          </motion.div>
         </div>
       ) : null}
     </div>
-  );
-}
-
-function FirstUseState() {
-  const steps = [
-    { num: 1, label: "Créez une séance", color: "#FF6B35" },
-    { num: 2, label: "Préparez le contenu", color: "#D4A843" },
-    { num: 3, label: "Lancez avec vos élèves", color: "#8B5CF6" },
-  ];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-    >
-      <GlassCardV2 className="p-8 flex flex-col items-center text-center max-w-lg mx-auto">
-        {/* Clap SVG illustration */}
-        <motion.div
-          className="mb-6"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-        >
-          <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* Clap base */}
-            <rect x="12" y="38" width="56" height="30" rx="4" fill="#F3F4F6" stroke="#9CA3AF" strokeWidth="1.5" />
-            {/* Clap top (hinged) */}
-            <path d="M12 38L22 18H58L68 38" fill="#FF6B35" fillOpacity="0.15" stroke="#FF6B35" strokeWidth="1.5" strokeLinejoin="round" />
-            {/* Diagonal stripes on top */}
-            <line x1="30" y1="22" x2="26" y2="36" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="40" y1="20" x2="36" y2="36" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="50" y1="22" x2="46" y2="36" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
-            {/* Text lines on base */}
-            <line x1="22" y1="48" x2="48" y2="48" stroke="#D4A843" strokeWidth="2" strokeLinecap="round" />
-            <line x1="22" y1="54" x2="40" y2="54" stroke="#D4A843" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
-            <line x1="22" y1="60" x2="34" y2="60" stroke="#D4A843" strokeWidth="2" strokeLinecap="round" opacity="0.3" />
-            {/* Sparkles */}
-            <circle cx="16" cy="14" r="2" fill="#FF6B35" opacity="0.6" />
-            <circle cx="64" cy="12" r="1.5" fill="#D4A843" opacity="0.5" />
-            <circle cx="72" cy="24" r="2" fill="#8B5CF6" opacity="0.4" />
-          </svg>
-        </motion.div>
-
-        <motion.h2
-          className="text-lg font-bold text-bw-heading mb-2"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-        >
-          Prêt à lancer votre première séance ?
-        </motion.h2>
-        <motion.p
-          className="text-sm text-bw-muted mb-6 leading-relaxed"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.25 }}
-        >
-          Créez une séance pour commencer à piloter des ateliers d&apos;écriture
-          cinématographique avec vos élèves.
-        </motion.p>
-
-        <motion.div
-          className="flex items-center gap-3 mb-8"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.3 }}
-        >
-          <Link
-            href={ROUTES.seanceNew}
-            className="inline-flex items-center gap-2 rounded-lg bg-bw-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-            Créer ma première séance
-          </Link>
-          <Link
-            href={ROUTES.bibliotheque}
-            className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2.5 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
-          >
-            Explorer les modules
-          </Link>
-        </motion.div>
-
-        {/* 3 steps with staggered animation */}
-        <div className="flex items-start gap-6">
-          {steps.map((step, i) => (
-            <motion.div
-              key={step.num}
-              className="flex flex-col items-center gap-2 flex-1"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.4 + i * 0.1 }}
-            >
-              <div
-                className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white"
-                style={{ backgroundColor: step.color }}
-              >
-                {step.num}
-              </div>
-              <span className="text-xs text-bw-muted leading-tight text-center">
-                {step.label}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-      </GlassCardV2>
-    </motion.div>
   );
 }
 
@@ -287,21 +303,21 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
     <GlassCardV2 className="p-8 flex flex-col items-center text-center max-w-md mx-auto">
       {/* Alert triangle SVG */}
       <div className="mb-4">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
           <path
             d="M24 6L4 42h40L24 6z"
-            fill="#FEF3C7"
-            stroke="#F59E0B"
+            fill="var(--color-bw-amber-100)"
+            stroke="var(--color-bw-amber)"
             strokeWidth="2"
             strokeLinejoin="round"
           />
           <path
             d="M24 20v10"
-            stroke="#F59E0B"
+            stroke="var(--color-bw-amber)"
             strokeWidth="2.5"
             strokeLinecap="round"
           />
-          <circle cx="24" cy="35" r="1.5" fill="#F59E0B" />
+          <circle cx="24" cy="35" r="1.5" fill="var(--color-bw-amber)" />
         </svg>
       </div>
       <p className="text-sm font-medium text-bw-heading mb-1">
@@ -340,7 +356,7 @@ function DashboardSkeleton() {
       {/* Left — Today sessions skeleton */}
       <div className="lg:col-span-4 flex flex-col gap-4">
         {[1, 2].map((i) => (
-          <div key={i} className="rounded-2xl bg-white border border-[var(--color-bw-border)] p-5">
+          <div key={i} className="rounded-2xl bg-card border border-[var(--color-bw-border)] p-5">
             <div className="h-2.5 w-20 rounded-full bg-[var(--color-bw-surface-dim)] shimmer mb-4" />
             <div className="flex flex-col gap-4">
               {[1, 2].map((j) => (
@@ -361,7 +377,7 @@ function DashboardSkeleton() {
       <div className="lg:col-span-5 flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="rounded-2xl bg-white border border-[var(--color-bw-border)] p-5">
+            <div key={i} className="rounded-2xl bg-card border border-[var(--color-bw-border)] p-5">
               <div className="flex items-start justify-between">
                 <div>
                   <div className="h-2.5 w-16 rounded-full bg-[var(--color-bw-surface-dim)] shimmer mb-3" />
@@ -372,11 +388,11 @@ function DashboardSkeleton() {
             </div>
           ))}
         </div>
-        <div className="h-64 rounded-2xl bg-white border border-[var(--color-bw-border)] shimmer" />
+        <div className="h-64 rounded-2xl bg-card border border-[var(--color-bw-border)] shimmer" />
       </div>
       {/* Right — Modules */}
       <div className="lg:col-span-3">
-        <div className="rounded-2xl bg-white border border-[var(--color-bw-border)] p-5">
+        <div className="rounded-2xl bg-card border border-[var(--color-bw-border)] p-5">
           <div className="h-2.5 w-20 rounded-full bg-[var(--color-bw-surface-dim)] shimmer mb-5" />
           <div className="flex flex-col gap-4">
             {[1, 2, 3, 4, 5].map((i) => (

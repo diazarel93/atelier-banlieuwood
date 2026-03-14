@@ -49,7 +49,7 @@ export function NotesPanel({ notes, onAdd, onDelete, isAdding }: NotesPanelProps
           <select
             value={noteType}
             onChange={(e) => setNoteType(e.target.value)}
-            className="rounded-lg border border-[var(--color-bw-border)] bg-white px-2.5 py-1.5 text-body-xs font-medium text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
+            className="rounded-lg border border-[var(--color-bw-border)] bg-card px-2.5 py-1.5 text-body-xs font-medium text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
           >
             {NOTE_TYPES.map((t) => (
               <option key={t.value} value={t.value}>
@@ -64,7 +64,7 @@ export function NotesPanel({ notes, onAdd, onDelete, isAdding }: NotesPanelProps
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Ajouter une note..."
-            className="flex-1 h-9 rounded-lg border border-[var(--color-bw-border)] bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
+            className="flex-1 h-9 rounded-lg border border-[var(--color-bw-border)] bg-card px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
           />
           <button
             type="submit"

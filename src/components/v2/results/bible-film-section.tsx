@@ -87,7 +87,7 @@ export function BibleFilmSection({
                       <span className="text-sm font-semibold text-bw-heading">
                         {c.name}
                       </span>
-                      <span className="text-xs rounded-md bg-white px-1.5 py-0.5 text-bw-muted border border-[var(--color-bw-border)]">
+                      <span className="text-xs rounded-md bg-card px-1.5 py-0.5 text-bw-muted border border-[var(--color-bw-border)]">
                         {c.role}
                       </span>
                     </div>

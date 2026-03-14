@@ -83,14 +83,14 @@ export function ModuleGuideModal({
 
       {/* Modal */}
       <motion.div
-        className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto mt-12 mb-8 mx-4 bg-white rounded-2xl border border-[var(--color-bw-border)] shadow-2xl"
+        className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto mt-12 mb-8 mx-4 bg-card rounded-2xl border border-[var(--color-bw-border)] shadow-2xl"
         initial={{ opacity: 0, y: 24, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 24, scale: 0.96 }}
         transition={{ duration: 0.25, ease: "easeOut" }}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-[var(--color-bw-border)] px-6 py-4 flex items-start justify-between rounded-t-2xl">
+        <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm border-b border-[var(--color-bw-border)] px-6 py-4 flex items-start justify-between rounded-t-2xl">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-sm" aria-hidden="true">{exercise.phaseEmoji}</span>
@@ -192,7 +192,7 @@ export function ModuleGuideModal({
                         <div key={i} className="flex items-start gap-4 relative">
                           {/* Step number circle */}
                           <div
-                            className="relative z-10 w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-white"
+                            className="relative z-10 w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-card"
                             style={{
                               backgroundColor: `${exercise.color}15`,
                               color: exercise.color,

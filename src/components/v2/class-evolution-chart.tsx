@@ -184,7 +184,7 @@ export function ClassEvolutionChart({ classLabel }: ClassEvolutionChartProps) {
                     cx={x}
                     cy={y}
                     r="2.5"
-                    fill="white"
+                    fill="var(--card)"
                     stroke={color}
                     strokeWidth="1.5"
                   >

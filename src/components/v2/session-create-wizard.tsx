@@ -165,7 +165,7 @@ export function SessionCreateWizard() {
                 enterKeyHint="next"
                 maxLength={100}
                 className={cn(
-                  "h-10 rounded-lg border bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
+                  "h-10 rounded-lg border bg-card px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
                   titleError ? "border-red-400" : "border-[var(--color-bw-border)]"
                 )}
                 autoFocus
@@ -185,7 +185,7 @@ export function SessionCreateWizard() {
                 enterKeyHint="next"
                 maxLength={50}
                 className={cn(
-                  "h-10 rounded-lg border bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
+                  "h-10 rounded-lg border bg-card px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
                   classLabelError ? "border-red-400" : "border-[var(--color-bw-border)]"
                 )}
               />
@@ -272,7 +272,7 @@ export function SessionCreateWizard() {
                 enterKeyHint="next"
                 maxLength={200}
                 className={cn(
-                  "h-10 rounded-lg border bg-white px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
+                  "h-10 rounded-lg border bg-card px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
                   thematiqueError ? "border-red-400" : "border-[var(--color-bw-border)]"
                 )}
               />

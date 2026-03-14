@@ -43,9 +43,11 @@ export function KpiCard({
           <span
             className="text-2xl font-bold tabular-nums text-bw-heading"
             style={color ? { color } : undefined}
+            aria-hidden="true"
           >
             {displayValue}
           </span>
+          <span className="sr-only">{value}</span>
         </div>
         {icon && (
           <div

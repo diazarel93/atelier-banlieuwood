@@ -121,8 +121,9 @@ export function OnboardingWizard() {
           {/* Navigation buttons */}
           <div className="flex items-center justify-between mt-6 pt-4 border-t border-bw-border">
             <button
+              type="button"
               onClick={dismiss}
-              className="text-xs text-bw-muted hover:text-bw-heading transition-colors cursor-pointer"
+              className="text-xs text-bw-muted hover:text-bw-heading transition-colors cursor-pointer min-h-11 px-2"
             >
               Passer
             </button>
@@ -130,13 +131,15 @@ export function OnboardingWizard() {
             <div className="flex gap-2">
               {!isFirst && (
                 <button
+                  type="button"
                   onClick={prevStep}
                   className="rounded-xl border border-bw-border px-4 py-2 text-sm font-medium text-bw-muted hover:text-bw-heading transition-colors cursor-pointer"
                 >
-                  Precedent
+                  Précédent
                 </button>
               )}
               <button
+                type="button"
                 onClick={isLast ? dismiss : nextStep}
                 className="rounded-xl bg-bw-primary px-4 py-2 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors cursor-pointer"
               >
