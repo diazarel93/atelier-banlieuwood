@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import type { PhaseDef, ModuleDef } from "@/lib/modules-data";
-import { PhaseStepper } from "@/components/pilot/phase-stepper";
 import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
 import { LiveIndicator } from "@/components/ui/live-indicator";
 import type { ConnectionStatus } from "@/hooks/use-realtime-invalidation";
@@ -202,53 +201,36 @@ export function CockpitHeader({
 
   return (
     <header
-      className="flex-shrink-0 flex flex-col bg-white/85 backdrop-blur-[8px] border-b border-bw-border shadow-[0_2px_12px_rgba(61,43,16,0.04)]"
+      className="flex-shrink-0 bg-white/85 backdrop-blur-[8px] border-b border-bw-border shadow-[0_2px_12px_rgba(61,43,16,0.04)]"
     >
-      {/* ── Row 1: Brand + Session timer + Phase Stepper ── */}
-      <div className="flex items-center h-[72px] px-3 xl:px-5 gap-3">
-        {/* LEFT: Hamburger + Title + session timer */}
-        <div className="flex items-center gap-2 flex-shrink-0 min-w-0">
-          <button
-            onClick={onOpenModules}
-            title="Parcours des modules"
-            className="w-9 h-9 rounded-[10px] flex items-center justify-center text-bw-muted hover:text-bw-heading bg-white/80 border border-bw-border cursor-pointer transition-colors flex-shrink-0 hover:shadow-sm"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-          {/* Issue 5 — Bebas Neue cinema title */}
-          <span className="text-display-sm tracking-wider text-bw-heading" style={{ fontSize: 18 }}>
-            COCKPIT
-          </span>
-          {/* Issue 1 — Session timer moved to Row 1, small muted */}
-          {sessionStartedAt && (
-            <span className="text-[11px] font-medium text-bw-muted tabular-nums flex-shrink-0 hidden sm:block ml-1">
-              <ElapsedTimer startedAt={sessionStartedAt} variant="plain" />
-            </span>
-          )}
-        </div>
-
-        {/* CENTER/RIGHT: Phase Stepper — takes remaining space */}
-        <div className="flex-1 min-w-0 px-2">
-          <PhaseStepper
-            phases={phases}
-            modules={modules}
-            activeModuleId={activeModuleId}
-            completedModules={completedModules}
-            onPhaseClick={onPhaseClick}
-            phaseTimings={phaseTimings}
-          />
-        </div>
-      </div>
-
-      {/* ── Row 2: Status bar — module pill, timer, energy donut, connection, student count, controls ── */}
+      {/* ── Single row: Brand + Module + Status + Controls ── */}
       <div
-        className="flex items-center h-11 px-3 xl:px-5 gap-2.5 xl:gap-3 bg-bw-surface-dim/45 border-t border-bw-border/50"
+        className="flex items-center h-12 px-3 xl:px-5 gap-2.5 xl:gap-3"
       >
-        {/* LEFT: Module pill + Timers + Energy donut + Connection + Students */}
+        {/* LEFT: Hamburger + Title + Timer */}
+        <button
+          onClick={onOpenModules}
+          title="Parcours des modules"
+          aria-label="Ouvrir le menu des modules"
+          className="w-9 h-9 rounded-[10px] flex items-center justify-center text-bw-muted hover:text-bw-heading bg-white/80 border border-bw-border cursor-pointer transition-colors flex-shrink-0 hover:shadow-sm sm:hidden"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        <span className="text-[15px] font-bold tracking-wider text-bw-heading flex-shrink-0 uppercase" style={{ fontFamily: "var(--font-cinema, inherit)" }}>
+          Cockpit
+        </span>
+        {sessionStartedAt && (
+          <span className="text-[11px] font-medium text-bw-muted tabular-nums flex-shrink-0 hidden sm:block">
+            <ElapsedTimer startedAt={sessionStartedAt} variant="plain" />
+          </span>
+        )}
+        <div className="w-px h-5 bg-bw-border/50 flex-shrink-0 hidden sm:block" />
+
+        {/* Module pill + Timers + Energy donut + Connection + Students */}
         <div className="flex items-center gap-2.5 min-w-0 flex-shrink-0">
           {/* Module badge — pill shape */}
           <span
