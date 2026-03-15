@@ -84,9 +84,10 @@ export default function DashboardV2Page() {
     const reached = milestones.filter((m) => done >= m);
     if (reached.length === 0) return;
     const latest = reached[reached.length - 1];
-    const seen = Number(localStorage.getItem("bw-milestone-seen") || "0");
+    let seen = 0;
+    try { seen = Number(localStorage.getItem("bw-milestone-seen") || "0"); } catch {}
     if (latest > seen) {
-      localStorage.setItem("bw-milestone-seen", String(latest));
+      try { localStorage.setItem("bw-milestone-seen", String(latest)); } catch {}
       import("canvas-confetti").then((mod) =>
         mod.default({ particleCount: 80, spread: 60 })
       );

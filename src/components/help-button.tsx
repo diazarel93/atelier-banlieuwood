@@ -26,14 +26,16 @@ export function HelpButton({ pageKey, tips }: HelpButtonProps) {
   // Show badge on first visit
   const [showBadge, setShowBadge] = useState(false);
   useEffect(() => {
-    const seen = localStorage.getItem(storageKey);
-    if (!seen) setShowBadge(true);
+    try {
+      const seen = localStorage.getItem(storageKey);
+      if (!seen) setShowBadge(true);
+    } catch {}
   }, [storageKey]);
 
   function handleOpen() {
     setOpen(true);
     setShowBadge(false);
-    localStorage.setItem(storageKey, "true");
+    try { localStorage.setItem(storageKey, "true"); } catch {}
   }
 
   function handleNext() {

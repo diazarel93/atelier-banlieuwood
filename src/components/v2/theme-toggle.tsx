@@ -6,20 +6,22 @@ export function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    // Check localStorage first, then OS preference
-    const stored = localStorage.getItem("bw-theme");
-    if (stored === "dark") {
-      setIsDark(true);
-      document.querySelector(".theme-lavande")?.setAttribute("data-theme", "dark");
-    } else if (stored === null) {
-      // No stored preference — check OS preference
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (prefersDark) {
+    try {
+      // Check localStorage first, then OS preference
+      const stored = localStorage.getItem("bw-theme");
+      if (stored === "dark") {
         setIsDark(true);
         document.querySelector(".theme-lavande")?.setAttribute("data-theme", "dark");
-        localStorage.setItem("bw-theme", "dark");
+      } else if (stored === null) {
+        // No stored preference — check OS preference
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (prefersDark) {
+          setIsDark(true);
+          document.querySelector(".theme-lavande")?.setAttribute("data-theme", "dark");
+          localStorage.setItem("bw-theme", "dark");
+        }
       }
-    }
+    } catch { /* iPad Private Browsing — ignore */ }
   }, []);
 
   function toggle() {
@@ -28,10 +30,10 @@ export function ThemeToggle() {
     const el = document.querySelector(".theme-lavande");
     if (next) {
       el?.setAttribute("data-theme", "dark");
-      localStorage.setItem("bw-theme", "dark");
+      try { localStorage.setItem("bw-theme", "dark"); } catch {}
     } else {
       el?.removeAttribute("data-theme");
-      localStorage.setItem("bw-theme", "light");
+      try { localStorage.setItem("bw-theme", "light"); } catch {}
     }
   }
 

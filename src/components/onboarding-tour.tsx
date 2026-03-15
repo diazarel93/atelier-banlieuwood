@@ -116,12 +116,14 @@ export function OnboardingTour() {
   // Check localStorage on mount
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const done = localStorage.getItem(STORAGE_KEY);
-    if (!done) {
-      // Small delay to let the dashboard render its elements
-      const timer = setTimeout(() => setActive(true), 800);
-      return () => clearTimeout(timer);
-    }
+    try {
+      const done = localStorage.getItem(STORAGE_KEY);
+      if (!done) {
+        // Small delay to let the dashboard render its elements
+        const timer = setTimeout(() => setActive(true), 800);
+        return () => clearTimeout(timer);
+      }
+    } catch { /* iPad Private Browsing */ }
   }, []);
 
   // Locate the target element for the current step
@@ -153,7 +155,7 @@ export function OnboardingTour() {
 
   function finish() {
     setActive(false);
-    localStorage.setItem(STORAGE_KEY, "true");
+    try { localStorage.setItem(STORAGE_KEY, "true"); } catch {}
   }
 
   function next() {
