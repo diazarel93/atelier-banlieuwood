@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { ROUTES } from "@/lib/routes";
 import { NotificationBell } from "./notification-bell";
 import { ThemeToggle } from "./theme-toggle";
+import { FullscreenToggle } from "./fullscreen-toggle";
 import { CommandPalette } from "./command-palette";
 import { useAuthUser } from "@/hooks/use-auth-user";
 import {
@@ -146,6 +147,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
 
           {/* Right side */}
           <div className="flex items-center gap-2">
+            <FullscreenToggle />
             <ThemeToggle />
             <NotificationBell />
             {isAdmin && (
