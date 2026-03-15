@@ -8,7 +8,7 @@ import { CompareResponsesModal } from "@/components/pilot/compare-responses-moda
 import { SessionExport } from "@/components/pilot/session-export";
 import { KeyboardShortcutsModal } from "@/components/pilot/keyboard-shortcuts-modal";
 import { ConfirmModal } from "@/components/confirm-modal";
-import type { UseMutationResult } from "@tanstack/react-query";
+import { useCockpit } from "@/components/pilot/cockpit-context";
 
 interface SpotlightData {
   studentName: string;
@@ -100,7 +100,6 @@ export interface CockpitModalsProps {
   // Kick
   kickTarget: { id: string; name: string } | null;
   setKickTarget: (v: { id: string; name: string } | null) => void;
-  removeStudent: UseMutationResult<unknown, Error, string>;
   // Raw responses for filtering/mapping
   responses: RawResponse[];
   visibleResponses: RawResponse[];
@@ -137,10 +136,10 @@ export function CockpitModals({
   setShowShortcuts,
   kickTarget,
   setKickTarget,
-  removeStudent,
   responses,
   visibleResponses,
 }: CockpitModalsProps) {
+  const { removeStudent } = useCockpit();
   const debateResponses: ResponseForDebate[] = responses
     .filter(r => !r.is_hidden && !r.reset_at)
     .map(r => ({

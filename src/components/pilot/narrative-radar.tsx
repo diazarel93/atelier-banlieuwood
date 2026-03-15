@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
-import { motion } from "motion/react";
+import { BaseRadar, type RadarAxis } from "./base-radar";
 
 // ═══════════════════════════════════════════════════════════════
 // NARRATIVE RADAR — Spider chart of 5 class competencies
 // Imagination / Émotion / Observation / Construction / Expression
-// Computed from completed modules + current responses
+// Computed from completed modules + current responses.
+// Now delegates SVG rendering to BaseRadar.
 // ═══════════════════════════════════════════════════════════════
 
 export interface NarrativeScores {
@@ -22,18 +22,13 @@ interface NarrativeRadarProps {
   size?: number;
 }
 
-const AXES = [
-  { key: "imagination" as const, label: "Imagination", color: "#06B6D4", angle: -90 },
-  { key: "emotion" as const, label: "Émotion", color: "#EC4899", angle: -18 },
-  { key: "expression" as const, label: "Expression", color: "#F59E0B", angle: 54 },
-  { key: "construction" as const, label: "Construction", color: "#14B8A6", angle: 126 },
-  { key: "observation" as const, label: "Observation", color: "#8B5CF6", angle: 198 },
+const AXES: RadarAxis[] = [
+  { key: "imagination", label: "Imagination", color: "#06B6D4", angle: -90 },
+  { key: "emotion", label: "Émotion", color: "#EC4899", angle: -18 },
+  { key: "expression", label: "Expression", color: "#F59E0B", angle: 54 },
+  { key: "construction", label: "Construction", color: "#14B8A6", angle: 126 },
+  { key: "observation", label: "Observation", color: "#8B5CF6", angle: 198 },
 ];
-
-function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
-  const rad = (angleDeg * Math.PI) / 180;
-  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
-}
 
 /**
  * Compute narrative scores from completed phases and current session data.
@@ -46,9 +41,6 @@ export function computeNarrativeScores(
   responsePct: number, // 0-100, current question response rate
   stuckPct: number,    // 0-100, percentage stuck
 ): NarrativeScores {
-  // Base scores from completed modules
-  const completionRate = totalModules > 0 ? completedModules.length / totalModules : 0;
-
   // Phase → competency mapping (M1–M8 + bonus)
   const phaseCompetencies: Record<string, (keyof NarrativeScores)[]> = {
     regard: ["observation", "imagination"],
@@ -76,8 +68,6 @@ export function computeNarrativeScores(
   for (const [phaseId, comps] of Object.entries(phaseCompetencies)) {
     for (const comp of comps) {
       competencyTotal[comp]++;
-      // Check if any module from this phase is completed
-      // Simplified: use phase presence in completed modules
       const phaseModuleIds = getPhaseModuleIds(phaseId);
       const completedFromPhase = phaseModuleIds.filter(id => completedModules.includes(id));
       if (completedFromPhase.length > 0) {
@@ -93,25 +83,18 @@ export function computeNarrativeScores(
 
   for (const key of Object.keys(scores) as (keyof NarrativeScores)[]) {
     const base = competencyTotal[key] > 0
-      ? (competencyHits[key] / competencyTotal[key]) * 70 // max 70 from completion
+      ? (competencyHits[key] / competencyTotal[key]) * 70
       : 0;
-
-    // Boost from current session engagement
     const engagementBoost = responsePct > 0 ? Math.min(responsePct * 0.3, 30) : 0;
-
-    // Penalty from stuck students
     const stuckPenalty = stuckPct > 20 ? (stuckPct - 20) * 0.3 : 0;
-
-    // Current phase boost
     const currentBoost = currentPhaseId && phaseCompetencies[currentPhaseId]?.includes(key) ? 10 : 0;
-
     scores[key] = Math.min(100, Math.max(5, Math.round(base + engagementBoost + currentBoost - stuckPenalty)));
   }
 
   return scores;
 }
 
-// Helper to get module IDs for a phase (simplified mapping)
+// Helper to get module IDs for a phase
 function getPhaseModuleIds(phaseId: string): string[] {
   const map: Record<string, string[]> = {
     regard: ["m1a", "m1b", "m1c", "m1d", "m1e"],
@@ -131,104 +114,25 @@ function getPhaseModuleIds(phaseId: string): string[] {
 }
 
 export function NarrativeRadar({ scores, size = 180 }: NarrativeRadarProps) {
-  const cx = size / 2;
-  const cy = size / 2;
-  const maxR = size / 2 - 28; // leave room for labels
-
-  // Grid rings
-  const rings = [0.25, 0.5, 0.75, 1.0];
-
-  // Compute polygon points
-  const polygon = useMemo(() => {
-    return AXES.map((axis) => {
-      const value = scores[axis.key] / 100;
-      const r = value * maxR;
-      return polarToCartesian(cx, cy, r, axis.angle);
-    });
-  }, [scores, cx, cy, maxR]);
-
-  const polygonPath = polygon.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + "Z";
+  const values: Record<string, number> = {
+    imagination: scores.imagination,
+    emotion: scores.emotion,
+    expression: scores.expression,
+    construction: scores.construction,
+    observation: scores.observation,
+  };
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        {/* Grid rings */}
-        {rings.map((pct) => (
-          <polygon
-            key={pct}
-            points={AXES.map((a) => {
-              const p = polarToCartesian(cx, cy, maxR * pct, a.angle);
-              return `${p.x},${p.y}`;
-            }).join(" ")}
-            fill="none"
-            stroke="#E8DFD2"
-            strokeWidth={pct === 1 ? 1.5 : 0.8}
-            opacity={0.6}
-          />
-        ))}
-
-        {/* Axis lines */}
-        {AXES.map((axis) => {
-          const p = polarToCartesian(cx, cy, maxR, axis.angle);
-          return (
-            <line
-              key={axis.key}
-              x1={cx} y1={cy} x2={p.x} y2={p.y}
-              stroke="#E8DFD2" strokeWidth={0.8} opacity={0.5}
-            />
-          );
-        })}
-
-        {/* Filled polygon */}
-        <motion.path
-          d={polygonPath}
-          fill="rgba(107,140,255,0.12)"
-          stroke="#6B8CFF"
-          strokeWidth={2}
-          strokeLinejoin="round"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          style={{ transformOrigin: `${cx}px ${cy}px` }}
-        />
-
-        {/* Data points */}
-        {AXES.map((axis, i) => {
-          const value = scores[axis.key] / 100;
-          const r = value * maxR;
-          const p = polarToCartesian(cx, cy, r, axis.angle);
-          return (
-            <motion.circle
-              key={axis.key}
-              cx={p.x} cy={p.y} r={3.5}
-              fill={axis.color}
-              stroke="white" strokeWidth={2}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.1 + i * 0.08, type: "spring" }}
-            />
-          );
-        })}
-
-        {/* Labels */}
-        {AXES.map((axis) => {
-          const labelR = maxR + 18;
-          const p = polarToCartesian(cx, cy, labelR, axis.angle);
-          return (
-            <text
-              key={`label-${axis.key}`}
-              x={p.x} y={p.y}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontSize={9}
-              fontWeight={600}
-              fill={axis.color}
-            >
-              {axis.label}
-            </text>
-          );
-        })}
-      </svg>
+      <BaseRadar
+        axes={AXES}
+        values={values}
+        size={size}
+        rings={[0.25, 0.5, 0.75, 1.0]}
+        fillColor="rgba(107,140,255,0.12)"
+        strokeColor="#6B8CFF"
+        padding={28}
+      />
 
       {/* Score chips */}
       <div className="flex flex-wrap justify-center gap-1.5">
@@ -240,7 +144,7 @@ export function NarrativeRadar({ scores, size = 180 }: NarrativeRadarProps) {
           >
             <span className="w-1.5 h-1.5 rounded-full" style={{ background: axis.color }} />
             <span className="text-[9px] font-bold tabular-nums" style={{ color: axis.color }}>
-              {scores[axis.key]}
+              {scores[axis.key as keyof NarrativeScores]}
             </span>
           </div>
         ))}

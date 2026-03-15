@@ -5,9 +5,9 @@ import { motion, AnimatePresence } from "motion/react";
 import type { StudentState } from "@/components/pilot/pulse-ring";
 import { SpatialClassroomGrid } from "@/components/pilot/spatial-classroom-grid";
 import { StudentConstellation } from "@/components/pilot/student-constellation";
-import { EmotionalRadar } from "@/components/pilot/emotional-radar";
+import { EmotionalRadar } from "@/components/pilot/pedagogical-radar";
 import { ClassCognitiveState } from "@/components/pilot/class-cognitive-state";
-import { CognitiveMap } from "@/components/pilot/cognitive-map";
+import { CognitiveMap } from "@/components/pilot/m1-cognitive-bars";
 
 // ═══════════════════════════════════════════════════════════════
 // CLASS DASHBOARD PANEL — Left sidebar: engagement donut, progress,

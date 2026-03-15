@@ -6,38 +6,12 @@ import { computeCognitiveState, type CognitiveStateResult } from "@/components/p
 import { NarrativeRadar, computeNarrativeScores } from "@/components/pilot/narrative-radar";
 import { ClassDynamicsRadar, computeClassDynamics } from "@/components/pilot/class-dynamics-radar";
 import { AttentionPriority, computeAttentionQueue, type AttentionSignals } from "@/components/pilot/attention-priority";
+import { generateSuggestions, type SessionContext, type AISuggestion } from "@/lib/ai-suggestions";
 
 // ═══════════════════════════════════════════════════════════════
 // AI ASSISTANT — 5-bloc restructured panel
-// Bloc 0: ATTENTION PRIORITY (single primary alert)
-// Bloc 1: Alerts (hands + stuck) — subdued when priority active
-// Bloc 2: Analyse IA (cognitive state + live stats)
-// Bloc 3: Suggestions pédagogiques (grouped)
-// Bloc 4: Qui a voté quoi (QCM vote columns)
+// Pure suggestion logic extracted to src/lib/ai-suggestions.ts
 // ═══════════════════════════════════════════════════════════════
-
-interface SessionContext {
-  status: string;
-  responsesCount: number;
-  totalStudents: number;
-  stuckCount: number;
-  stuckNames?: string[];
-  handsRaised: number;
-  handsNames?: string[];
-  handsRaisedAt?: (string | null)[]; // timestamps for duration
-  elapsedSeconds: number;
-  currentModule: number;
-  currentSeance: number;
-  currentSituation: number;
-  averageResponseTime?: number;
-  optionDistribution?: Record<string, number>;
-  // Radar narratif
-  completedModules?: string[];
-  currentPhaseId?: string | null;
-  totalModuleCount?: number;
-  // Dynamics radar
-  disconnectedCount?: number;
-}
 
 // QCM vote data passed from page.tsx
 interface QCMVoteData {
@@ -45,16 +19,6 @@ interface QCMVoteData {
   votesByOption: Record<string, { avatar: string; name: string; id: string }[]>;
   totalVotes: number;
   totalStudents: number;
-}
-
-interface AISuggestion {
-  id: string;
-  type: "tip" | "alert" | "insight" | "action";
-  message: string;
-  priority: "low" | "medium" | "high";
-  group?: "stimulation" | "interaction" | "analyse";
-  actionLabel?: string;
-  onAction?: () => void;
 }
 
 const SUGGESTION_ICONS: Record<string, string> = {
@@ -87,137 +51,6 @@ const GROUP_LABELS: Record<string, { label: string; icon: string }> = {
   interaction: { label: "Interaction", icon: "💬" },
   analyse: { label: "Analyse", icon: "📊" },
 };
-
-function generateSuggestions(ctx: SessionContext): AISuggestion[] {
-  const suggestions: AISuggestion[] = [];
-
-  // Stuck students — stimulation group
-  if (ctx.stuckCount > 0 && ctx.status === "responding") {
-    const names = ctx.stuckNames?.slice(0, 3);
-    const nameStr = names?.length
-      ? names.join(", ") + (ctx.stuckCount > 3 ? ` +${ctx.stuckCount - 3}` : "")
-      : `${ctx.stuckCount} eleve${ctx.stuckCount > 1 ? "s" : ""}`;
-    suggestions.push({
-      id: "stuck-alert",
-      type: "alert",
-      message: ctx.stuckCount === 1
-        ? `${nameStr} semble bloque. Donnez un exemple ou reformulez.`
-        : `${nameStr} semblent bloques. Envisagez un indice ou une reformulation.`,
-      priority: ctx.stuckCount >= 3 ? "high" : "medium",
-      group: "stimulation",
-      actionLabel: "Envoyer un indice",
-    });
-  }
-
-  // Slow response → stimulation
-  if (ctx.status === "responding" && ctx.elapsedSeconds > 120 && ctx.responsesCount < ctx.totalStudents * 0.5) {
-    suggestions.push({
-      id: "slow-responses",
-      type: "insight",
-      message: "Peu de reponses apres 2 min. Reformulez la question ou donnez un exemple concret pour debloquer la classe.",
-      priority: "medium",
-      group: "stimulation",
-      actionLabel: "Reformuler la question",
-    });
-  }
-
-  // Send example — stimulation
-  if (ctx.status === "responding" && ctx.responsesCount > 0 && ctx.responsesCount < ctx.totalStudents * 0.5 && ctx.elapsedSeconds > 60) {
-    suggestions.push({
-      id: "send-example",
-      type: "tip",
-      message: "Les hesitants ont besoin d'un declic. Envoyez un exemple concret ou une piste de reflexion.",
-      priority: "low",
-      group: "stimulation",
-      actionLabel: "Envoyer un exemple",
-    });
-  }
-
-  // Early silence — nobody answered yet after 90s
-  if (ctx.status === "responding" && ctx.responsesCount === 0 && ctx.elapsedSeconds > 90 && ctx.totalStudents > 3) {
-    suggestions.push({
-      id: "total-silence",
-      type: "alert",
-      message: "Aucune reponse. Lisez la question a voix haute ou proposez un premier element de reponse.",
-      priority: "high",
-      group: "stimulation",
-      actionLabel: "Relancer la classe",
-    });
-  }
-
-  // All responded → interaction
-  if (ctx.status === "responding" && ctx.responsesCount === ctx.totalStudents && ctx.totalStudents > 0) {
-    suggestions.push({
-      id: "all-responded",
-      type: "action",
-      message: "Tous les eleves ont repondu ! Lancez le vote.",
-      priority: "high",
-      group: "interaction",
-      actionLabel: "Lancer le vote",
-    });
-  }
-
-  // Classe partagee → interaction (debate)
-  if (ctx.optionDistribution) {
-    const counts = Object.entries(ctx.optionDistribution).sort((a, b) => b[1] - a[1]);
-    const totalVotes = counts.reduce((sum, [, v]) => sum + v, 0);
-    if (totalVotes >= 3 && counts.length >= 2) {
-      const [topKey, topCount] = counts[0];
-      const [secondKey, secondCount] = counts[1];
-      const topPct = (topCount / totalVotes) * 100;
-      const secondPct = (secondCount / totalVotes) * 100;
-      if (topPct >= 30 && secondPct >= 30 && (topPct - secondPct) < 15) {
-        suggestions.push({
-          id: "classe-partagee",
-          type: "insight",
-          message: `La classe hesite entre ${topKey.toUpperCase()} (${Math.round(topPct)}%) et ${secondKey.toUpperCase()} (${Math.round(secondPct)}%). Moment ideal pour un debat — demandez a chaque camp de justifier.`,
-          priority: "high",
-          group: "interaction",
-          actionLabel: "Lancer un debat",
-        });
-      }
-    }
-  }
-
-  // Low participation → interaction
-  if (ctx.status === "responding" && ctx.totalStudents > 5 && ctx.responsesCount < 2 && ctx.elapsedSeconds > 60) {
-    suggestions.push({
-      id: "low-participation",
-      type: "insight",
-      message: "La classe est silencieuse. Relancez a l'oral ou envoyez un message d'encouragement collectif.",
-      priority: "medium",
-      group: "interaction",
-      actionLabel: "Encourager la classe",
-    });
-  }
-
-  // Great engagement → analyse
-  if (ctx.status === "responding" && ctx.responsesCount >= ctx.totalStudents * 0.8 && ctx.elapsedSeconds < 90) {
-    suggestions.push({
-      id: "good-pace",
-      type: "tip",
-      message: "Excellent rythme ! Les eleves sont tres engages.",
-      priority: "low",
-      group: "analyse",
-    });
-  }
-
-  // Long session → analyse
-  if (ctx.elapsedSeconds > 600) {
-    suggestions.push({
-      id: "long-session",
-      type: "tip",
-      message: "Plus de 10 minutes. Variez le rythme (vote, pause, discussion orale).",
-      priority: "low",
-      group: "analyse",
-    });
-  }
-
-  return suggestions.sort((a, b) => {
-    const order = { high: 0, medium: 1, low: 2 };
-    return order[a.priority] - order[b.priority];
-  });
-}
 
 // ── Collapsible section for radars ──
 function CollapsibleRadar({ icon, label, color, bg, border, defaultOpen = false, children }: {

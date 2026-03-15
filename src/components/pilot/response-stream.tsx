@@ -2,53 +2,30 @@
 
 import { AnimatePresence } from "motion/react";
 import { ResponseCard, type ResponseCardResponse } from "./response-card";
+import { useCockpit } from "./cockpit-context";
 
 interface ResponseStreamProps {
   responses: ResponseCardResponse[];
-  sessionStatus: string;
   winnerResponseId?: string;
-  onToggleSelect: (responseId: string, current: boolean) => void;
-  onToggleHide: (responseId: string, current: boolean) => void;
   onValidate?: (response: ResponseCardResponse) => void;
-  isPending?: boolean;
-  // Teacher interaction callbacks
-  onComment?: (responseId: string, comment: string | null) => void;
-  onHighlight?: (responseId: string, highlighted: boolean) => void;
-  onNudge?: (responseId: string, nudgeText: string) => void;
-  onWarn?: (studentId: string) => void;
-  onScore?: (responseId: string, score: number) => void;
-  onReset?: (responseId: string) => void;
   onSpotlight?: (response: ResponseCardResponse) => void;
-  isNudgePending?: boolean;
-  isCommentPending?: boolean;
-  isWarnPending?: boolean;
-  isScorePending?: boolean;
-  isResetPending?: boolean;
-  studentWarnings?: Record<string, number>;
 }
 
 export function ResponseStream({
   responses,
-  sessionStatus,
   winnerResponseId,
-  onToggleSelect,
-  onToggleHide,
   onValidate,
-  isPending,
-  onComment,
-  onHighlight,
-  onNudge,
-  onWarn,
-  onScore,
-  onReset,
   onSpotlight,
-  isNudgePending,
-  isCommentPending,
-  isWarnPending,
-  isScorePending,
-  isResetPending,
-  studentWarnings,
 }: ResponseStreamProps) {
+  // ── Mutations from context (no more prop drilling) ──
+  const {
+    session, studentWarnings,
+    toggleVoteOption, toggleHide, commentResponse, highlightResponse,
+    nudgeStudent, warnStudent, scoreResponse, resetResponse,
+  } = useCockpit();
+
+  const sessionStatus = session.status;
+
   // Pin selected responses at top
   const selected = responses.filter((r) => r.is_vote_option && !r.is_hidden);
   const rest = responses.filter((r) => !(r.is_vote_option && !r.is_hidden));
@@ -65,23 +42,23 @@ export function ResponseStream({
         response={r}
         state={state}
         sessionStatus={sessionStatus}
-        onSelect={() => onToggleSelect(r.id, r.is_vote_option)}
-        onHide={() => onToggleHide(r.id, r.is_hidden)}
+        onSelect={() => toggleVoteOption.mutate({ responseId: r.id, is_vote_option: !r.is_vote_option })}
+        onHide={() => toggleHide.mutate({ responseId: r.id, is_hidden: !r.is_hidden })}
         onValidate={onValidate ? () => onValidate(r) : undefined}
-        isPending={isPending}
-        onComment={onComment}
-        onHighlight={onHighlight}
-        onNudge={onNudge}
-        onWarn={onWarn}
-        onScore={onScore}
-        onReset={onReset}
+        isPending={toggleVoteOption.isPending || toggleHide.isPending}
+        onComment={(id, comment) => commentResponse.mutate({ responseId: id, comment })}
+        onHighlight={(id, highlighted) => highlightResponse.mutate({ responseId: id, highlighted })}
+        onNudge={(id, text) => nudgeStudent.mutate({ responseId: id, nudgeText: text })}
+        onWarn={(sid) => warnStudent.mutate(sid)}
+        onScore={(id, score) => scoreResponse.mutate({ responseId: id, score })}
+        onReset={(id) => resetResponse.mutate(id)}
         onSpotlight={onSpotlight ? () => onSpotlight(r) : undefined}
-        isNudgePending={isNudgePending}
-        isCommentPending={isCommentPending}
-        isWarnPending={isWarnPending}
-        isScorePending={isScorePending}
-        isResetPending={isResetPending}
-        warnings={studentWarnings?.[r.student_id] || 0}
+        isNudgePending={nudgeStudent.isPending}
+        isCommentPending={commentResponse.isPending}
+        isWarnPending={warnStudent.isPending}
+        isScorePending={scoreResponse.isPending}
+        isResetPending={resetResponse.isPending}
+        warnings={studentWarnings[r.student_id] || 0}
       />
     );
   };

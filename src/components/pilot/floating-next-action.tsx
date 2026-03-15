@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { type NextAction } from "@/components/pilot/get-next-action";
+import { type NextAction } from "@/lib/cockpit-next-action";
 
 interface FloatingNextActionProps {
   nextAction: NextAction | null;

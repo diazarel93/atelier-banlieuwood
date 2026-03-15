@@ -7,6 +7,7 @@ import { ResponseStream } from "@/components/pilot/response-stream";
 import { type ResponseCardResponse } from "@/components/pilot/response-card";
 import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
 import { StuckAlert } from "@/components/pilot/stuck-alert";
+import { useCockpit } from "@/components/pilot/cockpit-context";
 
 interface StuckStudent {
   id: string;
@@ -24,17 +25,13 @@ interface QuestionGuide {
 export interface ResponseStreamSectionProps {
   // Data
   filteredResponses: ResponseCardResponse[];
-  responses: { id: string; is_hidden: boolean; is_vote_option: boolean; is_highlighted: boolean; ai_score?: number; student_id: string; text: string; submitted_at: string; teacher_comment: string | null; teacher_score?: number; ai_feedback?: string | null; reset_at?: string | null; previous_text?: string | null; students: { display_name: string; avatar: string } }[];
-  activeStudents: { id: string; display_name?: string; avatar?: string }[];
   respondedCount: number;
   highlightedCount: number;
   respondingOpenedAt: number | null;
-  sessionStatus: string;
   winnerResponseId: string | undefined;
   stuckStudents: StuckStudent[];
   questionGuide: QuestionGuide | undefined;
   situation: { id: string; position: number; category: string; restitutionLabel: string; prompt: string } | undefined;
-  studentWarnings: Record<string, number>;
 
   // Filter & sort state
   responseFilter: "all" | "visible" | "highlighted";
@@ -53,18 +50,6 @@ export interface ResponseStreamSectionProps {
   onClearAllHighlights: () => void;
   onNudgeAllStuck: () => void;
 
-  // Mutations
-  toggleVoteOption: { mutate: (args: { responseId: string; is_vote_option: boolean }) => void; isPending: boolean };
-  toggleHide: { mutate: (args: { responseId: string; is_hidden: boolean }) => void; isPending: boolean };
-  commentResponse: { mutate: (args: { responseId: string; comment: string | null }) => void; isPending: boolean };
-  highlightResponse: { mutate: (args: { responseId: string; highlighted: boolean }) => void; isPending: boolean };
-  nudgeStudent: { mutate: (args: { responseId: string; nudgeText: string }) => void; isPending: boolean };
-  warnStudent: { mutate: (args: string) => void; isPending: boolean };
-  scoreResponse: { mutate: (args: { responseId: string; score: number }) => void; isPending: boolean };
-  resetResponse: { mutate: (args: string) => void; isPending: boolean };
-  aiEvaluate: { mutate: (args: string[]) => void; isPending: boolean };
-  resetAllResponses: { mutate: (args: string) => void; isPending: boolean };
-
   // Reformulation callback
   onReformulate: (r: ResponseCardResponse) => void;
 
@@ -78,17 +63,13 @@ export interface ResponseStreamSectionProps {
 
 export function ResponseStreamSection({
   filteredResponses,
-  responses,
-  activeStudents,
   respondedCount,
   highlightedCount,
   respondingOpenedAt,
-  sessionStatus,
   winnerResponseId,
   stuckStudents,
   questionGuide,
   situation,
-  studentWarnings,
   responseFilter,
   setResponseFilter,
   responseSortMode,
@@ -100,21 +81,21 @@ export function ResponseStreamSection({
   onToggleRevealAnswer,
   onClearAllHighlights,
   onNudgeAllStuck,
-  toggleVoteOption,
-  toggleHide,
-  commentResponse,
-  highlightResponse,
-  nudgeStudent,
-  warnStudent,
-  scoreResponse,
-  resetResponse,
-  aiEvaluate,
-  resetAllResponses,
   onReformulate,
   onSpotlight,
   onHighlightAllVisible,
   onHideAllVisible,
 }: ResponseStreamSectionProps) {
+  // ── Mutations & data from context (no more prop drilling) ──
+  const {
+    session, responses, activeStudents, studentWarnings,
+    toggleVoteOption, toggleHide, commentResponse, highlightResponse,
+    nudgeStudent, warnStudent, scoreResponse, resetResponse,
+    aiEvaluate, resetAllResponses,
+  } = useCockpit();
+
+  const sessionStatus = session.status;
+
   const [searchQuery, setSearchQuery] = useState("");
   const [overflowOpen, setOverflowOpen] = useState(false);
   const visibleResponses = responses.filter((r) => !r.is_hidden);
@@ -327,27 +308,11 @@ export function ResponseStreamSection({
       {searchedResponses.length > 0 ? (
         <ResponseStream
           responses={searchedResponses}
-          sessionStatus={sessionStatus}
           winnerResponseId={winnerResponseId}
-          onToggleSelect={(id, current) => toggleVoteOption.mutate({ responseId: id, is_vote_option: !current })}
-          onToggleHide={(id, current) => toggleHide.mutate({ responseId: id, is_hidden: !current })}
           onValidate={sessionStatus === "reviewing" ? (r) => {
             onReformulate(r);
           } : undefined}
-          isPending={toggleVoteOption.isPending || toggleHide.isPending}
-          onComment={(id, comment) => commentResponse.mutate({ responseId: id, comment })}
-          onHighlight={(id, highlighted) => highlightResponse.mutate({ responseId: id, highlighted })}
-          onNudge={(id, text) => nudgeStudent.mutate({ responseId: id, nudgeText: text })}
-          onWarn={(sid) => warnStudent.mutate(sid)}
-          onScore={(id, score) => scoreResponse.mutate({ responseId: id, score })}
-          onReset={(id) => resetResponse.mutate(id)}
           onSpotlight={onSpotlight}
-          isNudgePending={nudgeStudent.isPending}
-          isCommentPending={commentResponse.isPending}
-          isWarnPending={warnStudent.isPending}
-          isScorePending={scoreResponse.isPending}
-          isResetPending={resetResponse.isPending}
-          studentWarnings={studentWarnings}
         />
       ) : responses.length > 0 && searchedResponses.length === 0 ? (
         <div className="bg-bw-surface rounded-xl border border-black/[0.06] p-4 text-center">

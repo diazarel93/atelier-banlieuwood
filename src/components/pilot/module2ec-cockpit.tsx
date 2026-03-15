@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { CONTENT_CATALOG, EMOTIONS, MAX_SLOTS, MAX_TOKENS, getElement } from "@/lib/module5-data";
-import { Module5EmotionDistribution } from "@/components/pilot/module5-emotion-distribution";
+import { Module5EmotionDistribution } from "@/components/pilot/emotion-distribution";
 import { GenericInlineActions } from "@/components/pilot/response-actions";
 
 interface M2ECScene {

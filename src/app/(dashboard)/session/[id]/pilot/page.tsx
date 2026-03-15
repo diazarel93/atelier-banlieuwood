@@ -100,8 +100,8 @@ import { CockpitModals } from "@/components/pilot/cockpit-modals";
 import { ModuleSidebar, SidebarDrawer } from "@/components/pilot/module-sidebar";
 import { WelcomePanel } from "@/components/pilot/welcome-panel";
 import { ModuleBriefing } from "@/components/pilot/module-briefing";
-import { ContextPanel } from "@/components/pilot/context-panel";
-import { getNextAction, type NextAction } from "@/components/pilot/get-next-action";
+import { ContextPanel } from "@/components/pilot/teacher-docks";
+import { getNextAction, type NextAction } from "@/lib/cockpit-next-action";
 import { TeamManager } from "@/components/pilot/team-manager";
 import { ClassroomMap } from "@/components/pilot/classroom-map";
 import { SpotlightModal } from "@/components/pilot/spotlight-modal";
@@ -121,6 +121,9 @@ import { SessionProgressBar } from "@/components/pilot/session-progress-bar";
 import { FloatingNextAction } from "@/components/pilot/floating-next-action";
 import { OnboardingHints } from "@/components/pilot/onboarding-hints";
 import { usePilotOnboarding } from "@/hooks/use-pilot-onboarding";
+import { CockpitProvider, useCockpit } from "@/components/pilot/cockpit-context";
+import { useCockpitModals } from "@/hooks/use-cockpit-modals";
+import { useCockpitDarkMode } from "@/hooks/use-cockpit-dark-mode";
 
 import type { Session, Student, Response, VoteResult } from "@/hooks/use-pilot-session";
 
@@ -131,82 +134,37 @@ import type { Session, Student, Response, VoteResult } from "@/hooks/use-pilot-s
 // ——————————————————————————————————————————————————————
 
 function CockpitContent({
-  session,
-  situationData,
-  responses,
-  voteData,
-  activeStudents,
-  collectiveChoices,
-  onModuleComplete,
-  updateSession,
-  toggleHide,
-  toggleVoteOption,
-  validateChoice,
-  removeStudent,
-  commentResponse,
-  highlightResponse,
-  nudgeStudent,
-  warnStudent,
-  toggleStudentActive,
-  lowerHand,
-  scoreResponse,
-  aiEvaluate,
-  resetResponse,
-  resetAllResponses,
   commentingResponse,
   setCommentingResponse,
   commentText,
   setCommentText,
-  sessionId,
   router,
   showStudents,
   setShowStudents,
   sidebarWidth,
   totalQuestions,
-  onSelectStudent,
-  teams,
-  onOpenModules,
-  onOpenScreen,
-  oieScores,
 }: {
-  session: Session;
-  situationData: Record<string, unknown> | null;
-  responses: Response[];
-  voteData: { totalVotes: number; results: VoteResult[] } | undefined;
-  activeStudents: Student[];
-  collectiveChoices: CollectiveChoice[];
-  onModuleComplete: () => void;
-  updateSession: ReturnType<typeof useMutation<unknown, Error, Record<string, unknown>>>;
-  toggleHide: ReturnType<typeof useMutation<unknown, Error, { responseId: string; is_hidden: boolean }>>;
-  toggleVoteOption: ReturnType<typeof useMutation<unknown, Error, { responseId: string; is_vote_option: boolean }>>;
-  validateChoice: ReturnType<typeof useMutation<unknown, Error, { response: Response; text: string }>>;
-  removeStudent: ReturnType<typeof useMutation<unknown, Error, string>>;
-  commentResponse: ReturnType<typeof useMutation<unknown, Error, { responseId: string; comment: string | null }>>;
-  highlightResponse: ReturnType<typeof useMutation<unknown, Error, { responseId: string; highlighted: boolean }>>;
-  nudgeStudent: ReturnType<typeof useMutation<unknown, Error, { responseId: string; nudgeText: string }>>;
-  warnStudent: ReturnType<typeof useMutation<unknown, Error, string>>;
-  toggleStudentActive: ReturnType<typeof useMutation<unknown, Error, { studentId: string; isActive: boolean }>>;
-  lowerHand: ReturnType<typeof useMutation<unknown, Error, string>>;
-  scoreResponse: ReturnType<typeof useMutation<unknown, Error, { responseId: string; score: number }>>;
-  aiEvaluate: ReturnType<typeof useMutation<unknown, Error, string[]>>;
-  resetResponse: ReturnType<typeof useMutation<unknown, Error, string>>;
-  resetAllResponses: ReturnType<typeof useMutation<{ resetCount: number }, Error, string>>;
   commentingResponse: string | null;
   setCommentingResponse: (id: string | null) => void;
   commentText: string;
   setCommentText: (text: string) => void;
-  sessionId: string;
   router: ReturnType<typeof useRouter>;
   showStudents: boolean;
   setShowStudents: (v: boolean) => void;
   sidebarWidth: number;
   totalQuestions?: number;
-  onSelectStudent: (student: Student) => void;
-  teams: { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[];
-  onOpenModules?: () => void;
-  onOpenScreen?: () => void;
-  oieScores?: Record<string, import("@/lib/oie-profile").OIEScores>;
 }) {
+  // ── Context: all mutations + session data ──
+  const {
+    session, sessionId, responses, activeStudents, voteData, collectiveChoices,
+    situationData, oieScores, teams,
+    updateSession, toggleHide, toggleVoteOption, validateChoice, removeStudent,
+    commentResponse, highlightResponse, nudgeStudent, warnStudent,
+    toggleStudentActive, lowerHand, scoreResponse, aiEvaluate,
+    resetResponse, resetAllResponses,
+    onModuleComplete, onSelectStudent, onOpenModules, onOpenScreen,
+    studentWarnings,
+  } = useCockpit();
   const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
   const [centerTab, setCenterTab] = useState<"responses" | "classmap">("responses");
   const [classroomLayout, setClassroomLayout] = useState<"rows" | "u-shape" | "islands" | "free">("rows");
@@ -225,32 +183,17 @@ function CockpitContent({
   const [responseSortMode, setResponseSortMode] = useState<"time" | "highlighted">("time");
   const [selectedResponseIds, setSelectedResponseIds] = useState<Set<string>>(new Set());
 
-  // ── New feature state ──
-  const [showBroadcast, setShowBroadcast] = useState(false);
-  const [broadcastPrefill, setBroadcastPrefill] = useState("");
-  const [broadcastTitle, setBroadcastTitle] = useState<string | undefined>();
-  const [broadcastIcon, setBroadcastIcon] = useState<string | undefined>();
-  const openBroadcast = useCallback(() => {
-    setBroadcastPrefill("");
-    setBroadcastTitle(undefined);
-    setBroadcastIcon(undefined);
-    setShowBroadcast(true);
-  }, []);
-  const openBroadcastWith = useCallback((prefill: string, title?: string, icon?: string) => {
-    setBroadcastPrefill(prefill);
-    setBroadcastTitle(title);
-    setBroadcastIcon(icon);
-    setShowBroadcast(true);
-  }, []);
-  const [showExport, setShowExport] = useState(false);
-  const [spotlightResponse, setSpotlightResponse] = useState<{ studentName: string; studentAvatar: string; text: string; score?: number | null; highlighted?: boolean } | null>(null);
-  const [showDebate, setShowDebate] = useState(false);
-  const [showWordCloud, setShowWordCloud] = useState(false);
-  const [showCompare, setShowCompare] = useState(false);
-  const [showRevealAnswer, setShowRevealAnswer] = useState(false);
-  const [showShortcuts, setShowShortcuts] = useState(false);
+  // ── Modals (extracted hook) ──
+  const modals = useCockpitModals();
+  const {
+    showBroadcast, setShowBroadcast, broadcastPrefill, broadcastTitle, broadcastIcon,
+    openBroadcast, openBroadcastWith,
+    showExport, setShowExport, spotlightResponse, setSpotlightResponse,
+    showDebate, setShowDebate, showWordCloud, setShowWordCloud,
+    showCompare, setShowCompare, showRevealAnswer, setShowRevealAnswer,
+    showShortcuts, setShowShortcuts, kickTarget, setKickTarget, closeAllModals,
+  } = modals;
   const [focusMode, setFocusMode] = useState(false);
-  const [kickTarget, setKickTarget] = useState<{ id: string; name: string } | null>(null);
   const allRespondedNotified = useRef(false);
   const prevResponseCountRef = useRef(0);
   const [allResponded, setAllResponded] = useState(false);
@@ -264,10 +207,7 @@ function CockpitContent({
     timelineTracked.current.add(key);
     setTimelineEvents(prev => [...prev, createTimelineEvent(type, label, detail, severity)]);
   }, []);
-  const [isDarkMode, setIsDarkMode] = useState(() => typeof window !== 'undefined' && localStorage.getItem('cockpit-dark') === '1');
-  useEffect(() => {
-    localStorage.setItem('cockpit-dark', isDarkMode ? '1' : '0');
-  }, [isDarkMode]);
+  const { isDarkMode, setIsDarkMode } = useCockpitDarkMode();
   const [autoAdvance, setAutoAdvance] = useState(false);
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState(0);
@@ -316,11 +256,7 @@ function CockpitContent({
   const hiddenCount = responses.length - visibleResponses.length;
   const voteOptionCount = responses.filter((r) => r.is_vote_option && !r.is_hidden).length;
 
-  // Build warnings map: studentId → warning count
-  const studentWarnings: Record<string, number> = {};
-  for (const s of session.students || []) {
-    studentWarnings[s.id] = s.warnings || 0;
-  }
+  // studentWarnings comes from CockpitContext
 
   // Fetch individual student budgets for Module 9 (old M2 budget quiz)
   const { data: budgetData } = useQuery<{
@@ -875,16 +811,9 @@ function CockpitContent({
   }, [session.status, updateSession]);
 
   const handleCloseAllModals = useCallback(() => {
-    setShowBroadcast(false);
-    setShowExport(false);
-    setShowCompare(false);
-    setShowShortcuts(false);
-    setShowRevealAnswer(false);
-    setShowDebate(false);
-    setShowWordCloud(false);
-    setSpotlightResponse(null);
+    closeAllModals();
     setTimerMode(false);
-  }, []);
+  }, [closeAllModals]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleNextActionCb = useCallback(() => handleNextAction(), [nextAction, canGoNext, updateSession]);
@@ -1692,17 +1621,13 @@ function CockpitContent({
           {!focusMode && (isStandardQA || isM1Image || isM1Notebook) && session.status !== "done" && session.status !== "paused" && !(session.status === "voting" || session.status === "reviewing") && (
             <ResponseStreamSection
               filteredResponses={filteredResponses as ResponseCardResponse[]}
-              responses={responses}
-              activeStudents={activeStudents}
               respondedCount={respondedCount}
               highlightedCount={highlightedCount}
               respondingOpenedAt={respondingOpenedAt}
-              sessionStatus={session.status}
               winnerResponseId={winnerResponseId}
               stuckStudents={stuckStudents}
               questionGuide={questionGuide}
               situation={situation}
-              studentWarnings={studentWarnings}
               responseFilter={responseFilter}
               setResponseFilter={setResponseFilter}
               responseSortMode={responseSortMode}
@@ -1714,16 +1639,6 @@ function CockpitContent({
               onToggleRevealAnswer={() => setShowRevealAnswer((v) => !v)}
               onClearAllHighlights={handleClearAllHighlights}
               onNudgeAllStuck={handleNudgeAllStuck}
-              toggleVoteOption={toggleVoteOption}
-              toggleHide={toggleHide}
-              commentResponse={commentResponse}
-              highlightResponse={highlightResponse}
-              nudgeStudent={nudgeStudent}
-              warnStudent={warnStudent}
-              scoreResponse={scoreResponse}
-              resetResponse={resetResponse}
-              aiEvaluate={aiEvaluate}
-              resetAllResponses={resetAllResponses}
               onReformulate={(r) => {
                 setReformulating(r as unknown as Response);
                 setReformulatedText(r.text);
@@ -2085,7 +2000,6 @@ function CockpitContent({
         skipSituation={skipSituation}
         handleNextAction={handleNextAction}
         nextAction={nextAction}
-        updateSession={updateSession}
         goToSituation={goToSituation}
         setPreviewIndex={setPreviewIndex}
         focusMode={focusMode}
@@ -2209,7 +2123,6 @@ function CockpitContent({
         setShowShortcuts={setShowShortcuts}
         kickTarget={kickTarget}
         setKickTarget={setKickTarget}
-        removeStudent={removeStudent}
         responses={responses}
         visibleResponses={visibleResponses}
       />
@@ -2562,45 +2475,49 @@ export default function PilotPage() {
           />
         ) : hasActiveModule ? (
           <ErrorBoundary>
+          <CockpitProvider value={{
+            session,
+            sessionId,
+            responses,
+            activeStudents,
+            voteData,
+            collectiveChoices,
+            situationData,
+            oieScores,
+            teams: teams || [],
+            updateSession,
+            toggleHide: undoableToggleHide,
+            toggleVoteOption: undoableToggleVote,
+            validateChoice,
+            removeStudent,
+            commentResponse,
+            highlightResponse: undoableHighlight,
+            nudgeStudent,
+            warnStudent,
+            toggleStudentActive,
+            lowerHand,
+            scoreResponse,
+            aiEvaluate,
+            resetResponse,
+            resetAllResponses,
+            onModuleComplete: handleModuleComplete,
+            onSelectStudent: (s) => { setSelectedStudentId(s.id); setShowStudents(false); },
+            onOpenModules: () => setSidebarOpen(!sidebarOpen),
+            onOpenScreen: () => window.open(ROUTES.screen(sessionId), "_blank"),
+            studentWarnings: Object.fromEntries((session.students || []).map(s => [s.id, s.warnings || 0])),
+          }}>
           <CockpitContent
-            session={session}
-            situationData={situationData}
-            responses={responses}
-            voteData={voteData}
-            activeStudents={activeStudents}
-            collectiveChoices={collectiveChoices}
-            onModuleComplete={handleModuleComplete}
-            updateSession={updateSession}
-            toggleHide={undoableToggleHide}
-            toggleVoteOption={undoableToggleVote}
-            validateChoice={validateChoice}
-            removeStudent={removeStudent}
-            commentResponse={commentResponse}
-            highlightResponse={undoableHighlight}
-            nudgeStudent={nudgeStudent}
-            warnStudent={warnStudent}
-            toggleStudentActive={toggleStudentActive}
-            lowerHand={lowerHand}
-            scoreResponse={scoreResponse}
-            aiEvaluate={aiEvaluate}
-            resetResponse={resetResponse}
-            resetAllResponses={resetAllResponses}
             commentingResponse={commentingResponse}
             setCommentingResponse={setCommentingResponse}
             commentText={commentText}
             setCommentText={setCommentText}
-            sessionId={sessionId}
             router={router}
             showStudents={showStudents}
             setShowStudents={setShowStudents}
             sidebarWidth={sidebarWidth}
             totalQuestions={totalQuestions}
-            onSelectStudent={(s) => { setSelectedStudentId(s.id); setShowStudents(false); }}
-            teams={teams || []}
-            onOpenModules={() => setSidebarOpen(!sidebarOpen)}
-            onOpenScreen={() => window.open(ROUTES.screen(sessionId), "_blank")}
-            oieScores={oieScores}
           />
+          </CockpitProvider>
           </ErrorBoundary>
         ) : (
           <div className="flex-1 overflow-y-auto">

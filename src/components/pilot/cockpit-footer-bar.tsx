@@ -6,9 +6,9 @@ import { SelectionBar } from "@/components/pilot/selection-bar";
 import { FloatingNextAction } from "@/components/pilot/floating-next-action";
 import { OnboardingHints } from "@/components/pilot/onboarding-hints";
 import type { OnboardingStep } from "@/hooks/use-pilot-onboarding";
-import type { NextAction } from "@/components/pilot/get-next-action";
+import type { NextAction } from "@/lib/cockpit-next-action";
 import type { TimelineEventType } from "@/components/pilot/session-timeline";
-import type { UseMutationResult } from "@tanstack/react-query";
+import { useCockpit } from "@/components/pilot/cockpit-context";
 
 interface NotRespondedStudent {
   id: string;
@@ -47,7 +47,6 @@ export interface CockpitFooterBarProps {
   skipSituation: () => void;
   handleNextAction: () => void;
   nextAction: NextAction | null;
-  updateSession: UseMutationResult<unknown, Error, Record<string, unknown>>;
   goToSituation: (index: number) => void;
   setPreviewIndex: (v: number | null) => void;
   // Toggles
@@ -102,7 +101,6 @@ export function CockpitFooterBar({
   skipSituation,
   handleNextAction,
   nextAction,
-  updateSession,
   goToSituation,
   setPreviewIndex,
   focusMode,
@@ -117,6 +115,7 @@ export function CockpitFooterBar({
   onboarding,
   revealPhase,
 }: CockpitFooterBarProps) {
+  const { updateSession } = useCockpit();
   if (sessionStatus === "done" || sessionStatus === "paused") return null;
 
   return (
