@@ -75,7 +75,7 @@ function ClassDashboardPanelInner({
   cognitiveTotal,
   notRespondedStudents = [],
 }: ClassDashboardPanelProps) {
-  const [mapExpanded, setMapExpanded] = useState(true);
+  const [mapExpanded, setMapExpanded] = useState(false);
   const [mapView, setMapView] = useState<"grid" | "constellation">("grid");
 
   // Pre-build student lookup map — O(1) instead of O(n) per access

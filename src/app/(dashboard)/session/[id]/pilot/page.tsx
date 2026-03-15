@@ -1234,8 +1234,8 @@ function CockpitContent({
 
         {/* ── SPLIT-PANEL LAYOUT ── */}
         <div className="flex-1 flex overflow-hidden min-h-0" style={{ background: "#F6F2EA", backgroundImage: "radial-gradient(ellipse at 50% 20%, rgba(255,107,53,0.03), transparent 60%)" }}>
-          {/* LEFT: Classe en direct — 300px panel, hidden below lg */}
-          <div data-onboarding="classmap" className="hidden md:flex w-[240px] lg:w-[300px] flex-shrink-0 flex-col m-2 mr-0 rounded-2xl shadow-sm overflow-hidden glass-cockpit">
+          {/* LEFT: Classe en direct — responsive panel, visible from sm */}
+          <div data-onboarding="classmap" className="hidden sm:flex w-[200px] md:w-[240px] lg:w-[300px] flex-shrink-0 flex-col m-2 mr-0 rounded-2xl shadow-sm overflow-hidden glass-cockpit">
             <ClassDashboardPanel
               session={session}
               studentStates={studentStates}
