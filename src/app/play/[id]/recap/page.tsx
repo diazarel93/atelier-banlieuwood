@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
@@ -43,6 +43,14 @@ interface RecapData {
 type TabId = "film" | "contributions" | "pitch";
 
 export default function RecapPage() {
+  return (
+    <Suspense fallback={<div className="min-h-dvh flex items-center justify-center bg-bw-bg"><div className="w-8 h-8 border-2 border-bw-primary border-t-transparent rounded-full animate-spin" /></div>}>
+      <RecapPageInner />
+    </Suspense>
+  );
+}
+
+function RecapPageInner() {
   const { id: sessionId } = useParams<{ id: string }>();
   const searchParams = useSearchParams();
   const shareToken = searchParams.get("share");

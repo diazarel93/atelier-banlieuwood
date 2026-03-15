@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { SessionCreateWizard } from "@/components/v2/session-create-wizard";
 import { BreadcrumbV2 } from "@/components/v2/breadcrumb";
 
@@ -9,7 +10,9 @@ export default function NewSeancePage() {
         { label: "Nouvelle séance" },
       ]} />
       <div className="mt-6">
-        <SessionCreateWizard />
+        <Suspense fallback={<div className="animate-pulse h-96 rounded-2xl bg-muted/30" />}>
+          <SessionCreateWizard />
+        </Suspense>
       </div>
     </div>
   );

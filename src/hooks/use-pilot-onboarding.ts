@@ -22,20 +22,20 @@ export function usePilotOnboarding() {
   // Initialize from localStorage synchronously to avoid flash
   const [done, setDone] = useState(() => {
     if (typeof window === "undefined") return true;
-    return !!localStorage.getItem(STORAGE_KEY);
+    try { return !!localStorage.getItem(STORAGE_KEY); } catch { return true; }
   });
   const [currentStep, setCurrentStep] = useState(0);
 
   const dismiss = useCallback(() => {
     setDone(true);
-    localStorage.setItem(STORAGE_KEY, "true");
+    try { localStorage.setItem(STORAGE_KEY, "true"); } catch {}
   }, []);
 
   const nextStep = useCallback(() => {
     setCurrentStep((prev) => {
       if (prev >= STEPS.length - 1) {
         setDone(true);
-        localStorage.setItem(STORAGE_KEY, "true");
+        try { localStorage.setItem(STORAGE_KEY, "true"); } catch {}
         return prev;
       }
       return prev + 1;

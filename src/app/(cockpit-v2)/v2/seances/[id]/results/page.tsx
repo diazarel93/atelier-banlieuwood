@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { BreadcrumbV2 } from "@/components/v2/breadcrumb";
@@ -15,6 +15,14 @@ import { useResultsData } from "@/hooks/use-results-data";
 import { useNotableResponses } from "@/hooks/use-notable-responses";
 
 export default function ResultsPageV2() {
+  return (
+    <Suspense fallback={<div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8"><div className="h-64 rounded-2xl bg-card shimmer" /></div>}>
+      <ResultsPageInner />
+    </Suspense>
+  );
+}
+
+function ResultsPageInner() {
   const params = useParams();
   const sessionId = params.id as string;
   const searchParams = useSearchParams();

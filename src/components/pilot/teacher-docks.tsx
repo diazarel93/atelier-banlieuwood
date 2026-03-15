@@ -82,13 +82,17 @@ export function ContextDocks(props: ContextDocksProps) {
   // Restore last open tab from localStorage
   const [upperOpen, setUpperOpen] = useState<UpperTab | null>(() => {
     if (typeof window === "undefined") return null;
-    const saved = localStorage.getItem(UPPER_KEY);
-    return saved === "guide" || saved === "stats" || saved === "timer" ? saved : null;
+    try {
+      const saved = localStorage.getItem(UPPER_KEY);
+      return saved === "guide" || saved === "stats" || saved === "timer" ? saved : null;
+    } catch { return null; }
   });
   const [lowerOpen, setLowerOpen] = useState<LowerTab | null>(() => {
     if (typeof window === "undefined") return null;
-    const saved = localStorage.getItem(LOWER_KEY);
-    return saved === "students" || saved === "broadcast" || saved === "teams" ? saved : null;
+    try {
+      const saved = localStorage.getItem(LOWER_KEY);
+      return saved === "students" || saved === "broadcast" || saved === "teams" ? saved : null;
+    } catch { return null; }
   });
 
   // Track previous response count for pulse animation
@@ -105,8 +109,8 @@ export function ContextDocks(props: ContextDocksProps) {
   }, [props.responsesCount, upperOpen]);
 
   // Persist open state
-  useEffect(() => { localStorage.setItem(UPPER_KEY, upperOpen || ""); }, [upperOpen]);
-  useEffect(() => { localStorage.setItem(LOWER_KEY, lowerOpen || ""); }, [lowerOpen]);
+  useEffect(() => { try { localStorage.setItem(UPPER_KEY, upperOpen || ""); } catch {} }, [upperOpen]);
+  useEffect(() => { try { localStorage.setItem(LOWER_KEY, lowerOpen || ""); } catch {} }, [lowerOpen]);
 
   function toggleUpper(tab: UpperTab) {
     setUpperOpen((prev) => (prev === tab ? null : tab));

@@ -28,7 +28,7 @@ function readQueue(): QueuedAction[] {
 }
 
 function writeQueue(queue: QueuedAction[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(queue)); } catch {}
 }
 
 export function enqueue(action: QueuedAction): EnqueueResult {
