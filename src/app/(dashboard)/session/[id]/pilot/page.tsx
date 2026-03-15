@@ -2526,9 +2526,8 @@ export default function PilotPage() {
 
       {/* ── BODY: Sidebar + Main ── */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Module sidebar — fixed left panel, hidden during active cockpit */}
-        {!(hasActiveModule && moduleView === "cockpit") && (
-          <ModuleSidebar
+        {/* Module sidebar — fixed left panel, always visible on sm+ */}
+        <ModuleSidebar
             modules={MODULES}
             phases={PHASES}
             activeModuleId={activeModule?.id || null}
@@ -2541,7 +2540,6 @@ export default function PilotPage() {
             currentQuestionIndex={hasActiveModule ? currentQuestionIndex : undefined}
             totalModuleQuestions={hasActiveModule ? totalQuestions : undefined}
           />
-        )}
 
         {/* Mobile sidebar drawer */}
         <MobileSidebarDrawer open={mobileSidebarOpen} onClose={() => setMobileSidebarOpen(false)}>
@@ -2562,7 +2560,7 @@ export default function PilotPage() {
         </MobileSidebarDrawer>
 
         {/* Centre — contenu principal (offset by sidebar on sm+) */}
-        <div className={`flex-1 overflow-hidden flex flex-col ${!(hasActiveModule && moduleView === "cockpit") ? "sm:pl-[260px]" : ""}`}>
+        <div className="flex-1 overflow-hidden flex flex-col sm:pl-[260px]">
         {selectedModuleId && moduleView === "briefing" ? (
           <ModuleBriefing
             module={MODULES.find((m) => m.id === selectedModuleId)!}
