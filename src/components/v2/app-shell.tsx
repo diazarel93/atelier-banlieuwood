@@ -49,6 +49,11 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
   const { data: authUser } = useAuthUser();
   const isAdmin = authUser?.role === "admin";
 
+  // Close mobile drawer on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
   // Cmd+K / Ctrl+K global shortcut
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -204,91 +209,137 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           </div>
         </div>
 
-        {/* Mobile menu dropdown */}
-        <div
-          className={cn(
-            "md:hidden overflow-hidden transition-all duration-200 ease-out",
-            mobileOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
-          )}
-          aria-hidden={!mobileOpen}
-          // @ts-expect-error -- inert is valid HTML but not yet in React's types
-          inert={mobileOpen ? undefined : ""}
-        >
-          <nav aria-label="Navigation mobile" className="border-t border-[var(--color-bw-border)] bg-card px-4 pb-3 pt-2">
-            <div className="flex flex-col gap-0.5">
-              {NAV_ITEMS.map((item) => {
-                const isActive =
-                  item.href === ROUTES.dashboard
-                    ? pathname === ROUTES.dashboard
-                    : pathname.startsWith(item.href);
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    aria-current={isActive ? "page" : undefined}
-                    className={cn(
-                      "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-bw-primary/5 text-bw-heading"
-                        : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
-                    )}
-                  >
-                    <span className={cn(isActive ? "text-bw-primary" : "text-bw-muted")} aria-hidden="true">
-                      {item.icon}
-                    </span>
-                    {item.label}
-                    {isActive && (
-                      <span className="ml-auto h-1.5 w-1.5 rounded-full bg-bw-primary" />
-                    )}
-                  </Link>
-                );
-              })}
-              {/* Aide link in mobile menu */}
-              <Link
-                href={ROUTES.aide}
-                onClick={() => setMobileOpen(false)}
-                aria-current={pathname.startsWith("/v2/aide") ? "page" : undefined}
-                className={cn(
-                  "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-                  pathname.startsWith("/v2/aide")
-                    ? "bg-bw-primary/5 text-bw-heading"
-                    : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
-                )}
-              >
-                <span className={cn(pathname.startsWith("/v2/aide") ? "text-bw-primary" : "text-bw-muted")} aria-hidden="true">
-                  <IconHelp />
-                </span>
-                Aide
-                {pathname.startsWith("/v2/aide") && (
-                  <span className="ml-auto h-1.5 w-1.5 rounded-full bg-bw-primary" />
-                )}
-              </Link>
-              {/* Settings link in mobile menu */}
-              <Link
-                href={ROUTES.settings}
-                onClick={() => setMobileOpen(false)}
-                aria-current={pathname.startsWith("/v2/settings") ? "page" : undefined}
-                className={cn(
-                  "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-                  pathname.startsWith("/v2/settings")
-                    ? "bg-bw-primary/5 text-bw-heading"
-                    : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
-                )}
-              >
-                <span className={cn(pathname.startsWith("/v2/settings") ? "text-bw-primary" : "text-bw-muted")} aria-hidden="true">
-                  <IconSettings />
-                </span>
-                Reglages
-                {pathname.startsWith("/v2/settings") && (
-                  <span className="ml-auto h-1.5 w-1.5 rounded-full bg-bw-primary" />
-                )}
-              </Link>
-            </div>
-          </nav>
-        </div>
       </header>
+
+      {/* Mobile drawer overlay */}
+      {mobileOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Mobile drawer */}
+      <div
+        className={cn(
+          "md:hidden fixed top-0 left-0 bottom-0 z-50 w-[280px] bg-card shadow-2xl flex flex-col transition-transform duration-300 ease-out",
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+        aria-hidden={!mobileOpen}
+        // @ts-expect-error -- inert is valid HTML but not yet in React's types
+        inert={mobileOpen ? undefined : ""}
+      >
+        {/* Drawer header */}
+        <div className="flex items-center justify-between px-5 h-16 border-b border-[var(--color-bw-border)] shrink-0">
+          <Link href={ROUTES.dashboard} onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-bw-primary text-white text-xs font-bold shadow-sm">
+              BW
+            </div>
+            <span className="text-base font-bold text-bw-heading">Banlieuwood</span>
+          </Link>
+          <button
+            type="button"
+            aria-label="Fermer le menu"
+            onClick={() => setMobileOpen(false)}
+            className="p-2 rounded-lg text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] active:scale-95 transition-all"
+          >
+            <IconClose />
+          </button>
+        </div>
+
+        {/* Drawer nav */}
+        <nav aria-label="Navigation mobile" className="flex-1 overflow-y-auto px-3 py-4">
+          {/* Primary nav */}
+          <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-bw-muted/60">Navigation</p>
+          <div className="flex flex-col gap-1">
+            {NAV_ITEMS.map((item) => {
+              const isActive =
+                item.href === ROUTES.dashboard
+                  ? pathname === ROUTES.dashboard
+                  : pathname.startsWith(item.href);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  aria-current={isActive ? "page" : undefined}
+                  className={cn(
+                    "flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-all",
+                    isActive
+                      ? "bg-bw-primary/10 text-bw-heading shadow-sm"
+                      : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                  )}
+                >
+                  <span className={cn(
+                    "flex items-center justify-center w-8 h-8 rounded-lg transition-colors",
+                    isActive
+                      ? "bg-bw-primary text-white shadow-sm"
+                      : "bg-[var(--color-bw-surface-dim)] text-bw-muted"
+                  )} aria-hidden="true">
+                    {item.icon}
+                  </span>
+                  {item.label}
+                  {isActive && (
+                    <span className="ml-auto h-2 w-2 rounded-full bg-bw-primary" />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Divider */}
+          <div className="my-4 mx-3 h-px bg-[var(--color-bw-border)]" />
+
+          {/* Secondary nav */}
+          <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-bw-muted/60">Support</p>
+          <div className="flex flex-col gap-1">
+            {[
+              { href: ROUTES.aide, label: "Aide", icon: <IconHelp />, match: "/v2/aide" },
+              { href: ROUTES.settings, label: "Réglages", icon: <IconSettings />, match: "/v2/settings" },
+            ].map((item) => {
+              const isActive = pathname.startsWith(item.match);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  aria-current={isActive ? "page" : undefined}
+                  className={cn(
+                    "flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-all",
+                    isActive
+                      ? "bg-bw-primary/10 text-bw-heading shadow-sm"
+                      : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                  )}
+                >
+                  <span className={cn(
+                    "flex items-center justify-center w-8 h-8 rounded-lg transition-colors",
+                    isActive
+                      ? "bg-bw-primary text-white shadow-sm"
+                      : "bg-[var(--color-bw-surface-dim)] text-bw-muted"
+                  )} aria-hidden="true">
+                    {item.icon}
+                  </span>
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+
+        {/* Drawer footer — CTA */}
+        <div className="shrink-0 px-3 pb-5 pt-3 border-t border-[var(--color-bw-border)]">
+          <Link
+            href={ROUTES.seanceNew}
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center justify-center gap-2 w-full rounded-xl bg-bw-primary px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 active:scale-[0.97] transition-all"
+          >
+            <IconPlus />
+            Nouvelle séance
+          </Link>
+        </div>
+      </div>
 
       {/* Content */}
       <main id="main-content" className="flex-1 pb-20 md:pb-0">{children}</main>
