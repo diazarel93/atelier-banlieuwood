@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { GlassCardV2 } from "./glass-card";
 import { ROUTES } from "@/lib/routes";
+import { IconCheck, IconChevronRight } from "./icons";
 import type { SessionSummary, AtRiskStudent } from "@/hooks/use-dashboard-v2";
 
 interface ActionRequiredWidgetProps {
@@ -51,11 +52,7 @@ export function ActionRequiredWidget({
   for (const s of recentDone) {
     actions.push({
       id: `results-${s.id}`,
-      icon: (
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M3 7l2.5 2.5L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ),
+      icon: <IconCheck />,
       label: `Résultats "${s.title}"`,
       href: ROUTES.seanceResults(s.id),
       priority: "medium",
@@ -108,15 +105,7 @@ export function ActionRequiredWidget({
             <span className="flex-1 text-bw-heading font-medium truncate text-sm">
               {action.label}
             </span>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              className="text-bw-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-            >
-              <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <IconChevronRight className="text-bw-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
           </Link>
         ))}
       </div>

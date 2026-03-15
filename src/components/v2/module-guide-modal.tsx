@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { GlassCardV2 } from "@/components/v2/glass-card";
+import { IconClock } from "@/components/v2/icons";
 import { ROUTES } from "@/lib/routes";
 import type { ModuleGuide } from "@/lib/guide-data";
 import type { ExerciseEntry } from "@/lib/exercise-catalog";
@@ -135,18 +136,7 @@ export function ModuleGuideModal({
           {/* Meta row */}
           <div className="flex flex-wrap items-center gap-3 text-sm text-bw-muted">
             <span className="flex items-center gap-1">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 6v6l4 2" />
-              </svg>
+              <IconClock />
               {exercise.duration}
             </span>
             <span>{exercise.questions} questions</span>

@@ -116,7 +116,7 @@ export default function StudentLoginPage() {
                 <label className="text-sm font-semibold mb-1.5 block" style={{ color: "#1A1A2E" }}>
                   Choisis ton avatar
                 </label>
-                <div className="grid grid-cols-8 gap-2">
+                <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
                   {AVATARS.map((a) => (
                     <motion.button
                       key={a}

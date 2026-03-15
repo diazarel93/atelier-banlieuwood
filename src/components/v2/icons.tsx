@@ -153,3 +153,20 @@ export function IconClose({ size = 18, className }: IconProps) {
     </svg>
   );
 }
+
+export function IconCheck({ size = 14, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 14 14" fill="none" className={className} aria-hidden="true">
+      <path d="M3 7L6 10L11 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function IconClock({ size = 14, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className} aria-hidden="true">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 6v6l4 2" />
+    </svg>
+  );
+}

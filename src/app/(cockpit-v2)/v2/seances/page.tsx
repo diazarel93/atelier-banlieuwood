@@ -7,6 +7,7 @@ import { ROUTES } from "@/lib/routes";
 import { SeanceTabs, type SeanceTab } from "@/components/v2/seance-tabs";
 import { SeanceDayGroup } from "@/components/v2/seance-day-group";
 import { SeanceCalendarSidebar } from "@/components/v2/seance-calendar-sidebar";
+import { EmptyState } from "@/components/v2/empty-state";
 import { getModuleById } from "@/lib/modules-data";
 import { useConfirmAction } from "@/hooks/use-confirm-action";
 import { ConfirmModal } from "@/components/confirm-modal";
@@ -220,7 +221,7 @@ export default function SeancesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-xl font-bold text-bw-heading">Seances</h1>
+          <h1 className="text-heading-lg text-bw-heading">Seances</h1>
           <p className="text-sm text-bw-muted mt-0.5">
             Gerez et preparez vos seances
           </p>
@@ -279,18 +280,18 @@ export default function SeancesPage() {
         {/* Main list */}
         <div className="lg:col-span-8 xl:col-span-9">
           {isError ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <p className="text-bw-muted text-sm mb-4">
-                Impossible de charger les seances
-              </p>
-              <button
-                type="button"
-                onClick={() => refetch()}
-                className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
-              >
-                Reessayer
-              </button>
-            </div>
+            <EmptyState
+              icon={
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 8v4M12 16h.01" />
+                </svg>
+              }
+              title="Erreur de chargement"
+              description="Impossible de charger les seances."
+              accent="amber"
+              action={{ label: "Reessayer", onClick: () => refetch() }}
+            />
           ) : currentlyLoading ? (
             <div className="flex flex-col gap-4">
               {[1, 2, 3].map((i) => (
@@ -298,21 +299,21 @@ export default function SeancesPage() {
               ))}
             </div>
           ) : grouped.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <p className="text-bw-muted text-sm mb-4">
-                {tab === "archived"
-                  ? "Aucune seance archivee"
-                  : "Aucune seance dans cette categorie"}
-              </p>
-              {tab !== "archived" && (
-                <Link
-                  href={ROUTES.seanceNew}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-bw-primary px-4 py-2 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors"
-                >
-                  Creer une seance
-                </Link>
-              )}
-            </div>
+            <EmptyState
+              icon={
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
+              }
+              title={tab === "archived" ? "Aucune seance archivee" : "Aucune seance dans cette categorie"}
+              description={
+                tab === "archived"
+                  ? "Les seances archivees apparaitront ici."
+                  : "Creez une nouvelle seance pour commencer."
+              }
+              action={tab !== "archived" ? { label: "Creer une seance", href: ROUTES.seanceNew } : undefined}
+            />
           ) : (
             <div className="flex flex-col gap-6">
               {grouped.map(([label, items]) => (

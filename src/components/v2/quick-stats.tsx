@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { KpiCard } from "./kpi-card";
+import { IconCheck, IconClock } from "./icons";
 import type { DashboardStats } from "@/hooks/use-dashboard-v2";
 
 interface QuickStatsProps {
@@ -34,11 +35,7 @@ export function QuickStats({ stats, trends, className }: QuickStatsProps) {
           value={stats.doneSessions}
           trend={trends?.doneSessions}
           color="var(--color-axis-comprehension)"
-          icon={
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M3 7l4 4 8-8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          }
+          icon={<IconCheck size={18} />}
         />
       </motion.div>
       <motion.div custom={1} variants={variants} initial="hidden" animate="visible">
@@ -47,12 +44,7 @@ export function QuickStats({ stats, trends, className }: QuickStatsProps) {
           value={stats.activeSessions}
           trend={trends?.activeSessions}
           color="var(--color-axis-engagement)"
-          icon={
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M9 6v4l2.5 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          }
+          icon={<IconClock size={18} />}
         />
       </motion.div>
       <motion.div custom={2} variants={variants} initial="hidden" animate="visible">

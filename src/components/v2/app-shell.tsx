@@ -72,7 +72,9 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       </a>
 
       {/* Top navigation bar */}
-      <header className="sticky top-0 z-40 w-full bg-card/80 backdrop-blur-xl border-b border-[var(--color-bw-border)]">
+      <header className="sticky top-0 z-40 w-full bg-card/80 backdrop-blur-xl border-b border-[var(--color-bw-border)] relative">
+        {/* Subtle cinema accent — warm gradient top-line */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--color-bw-primary)]/20 to-transparent" aria-hidden="true" />
         <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-6 px-4 sm:px-6">
           {/* Logo */}
           <Link href={ROUTES.dashboard} className="flex items-center gap-2.5 shrink-0 group">
@@ -289,7 +291,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Content */}
-      <main id="main-content" className="flex-1 pb-16 md:pb-0">{children}</main>
+      <main id="main-content" className="flex-1 pb-20 md:pb-0">{children}</main>
 
       {/* Mobile bottom nav */}
       <nav
@@ -297,6 +299,8 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/90 backdrop-blur-xl border-t border-[var(--color-bw-border)]"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
+        {/* Subtle film-strip perforation line above nav */}
+        <div className="film-strip-line absolute top-0 left-4 right-4 -translate-y-px" aria-hidden="true" />
         <div className="flex items-center justify-around h-14">
           {BOTTOM_NAV_ITEMS.map((item) => {
             const isActive =

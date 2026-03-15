@@ -189,7 +189,7 @@ export default function StudioPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="grid grid-cols-4 gap-3 mt-6"
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6"
         >
           <StatCard icon="🎬" value={profile.sessions_played} label="Sessions" color="#FF6B35" />
           <StatCard icon="✍️" value={profile.total_responses} label="Reponses" color="#4ECDC4" />

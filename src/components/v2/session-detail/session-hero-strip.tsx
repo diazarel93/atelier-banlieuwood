@@ -1,6 +1,7 @@
 "use client";
 
 import { GlassCardV2 } from "@/components/v2/glass-card";
+import { IconClock } from "@/components/v2/icons";
 import type { ModuleDef, PhaseDef } from "@/lib/modules-data";
 
 const LEVEL_LABELS: Record<string, string> = {
@@ -68,18 +69,7 @@ export function SessionHeroStrip({
         {currentModule && (
           <>
             <span className="text-bw-muted flex items-center gap-1">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 6v6l4 2" />
-              </svg>
+              <IconClock />
               {currentModule.duration}
             </span>
             <span className="text-bw-muted">

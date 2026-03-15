@@ -101,7 +101,7 @@ export default function DashboardV2Page() {
       {/* Welcome header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-xl font-bold text-bw-heading">
+          <h1 className="text-heading-lg text-bw-heading">
             <span className="text-gradient-cinema">
               {getGreeting()}{firstName ? `, ${firstName}` : ""} !
             </span>
@@ -145,14 +145,14 @@ export default function DashboardV2Page() {
       ) : isFirstUse ? (
         <OnboardingWizard />
       ) : data ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
           {/* Left column — Today's sessions */}
           <motion.div
             custom={0}
             variants={columnVariants}
             initial="hidden"
             animate="visible"
-            className="lg:col-span-4"
+            className="md:col-span-1 lg:col-span-4"
           >
             <ErrorBoundary variant="compact">
               <TodaySessions
@@ -168,7 +168,7 @@ export default function DashboardV2Page() {
             variants={columnVariants}
             initial="hidden"
             animate="visible"
-            className="lg:col-span-5 flex flex-col gap-4"
+            className="md:col-span-1 lg:col-span-5 flex flex-col gap-4"
           >
             <ErrorBoundary variant="compact">
               <QuickStats stats={data.stats} trends={data.trends} />
@@ -190,7 +190,7 @@ export default function DashboardV2Page() {
             variants={columnVariants}
             initial="hidden"
             animate="visible"
-            className="lg:col-span-3 flex flex-col gap-4"
+            className="md:col-span-2 lg:col-span-3 flex flex-col gap-4"
           >
             <ErrorBoundary variant="compact">
               <WhatsNewWidget
@@ -352,9 +352,9 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 
 function DashboardSkeleton() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
       {/* Left — Today sessions skeleton */}
-      <div className="lg:col-span-4 flex flex-col gap-4">
+      <div className="md:col-span-1 lg:col-span-4 flex flex-col gap-4">
         {[1, 2].map((i) => (
           <div key={i} className="rounded-2xl bg-card border border-[var(--color-bw-border)] p-5">
             <div className="h-2.5 w-20 rounded-full bg-[var(--color-bw-surface-dim)] shimmer mb-4" />
@@ -374,7 +374,7 @@ function DashboardSkeleton() {
         ))}
       </div>
       {/* Center — KPIs + calendar */}
-      <div className="lg:col-span-5 flex flex-col gap-4">
+      <div className="md:col-span-1 lg:col-span-5 flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-4">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="rounded-2xl bg-card border border-[var(--color-bw-border)] p-5">
@@ -391,7 +391,7 @@ function DashboardSkeleton() {
         <div className="h-64 rounded-2xl bg-card border border-[var(--color-bw-border)] shimmer" />
       </div>
       {/* Right — Modules */}
-      <div className="lg:col-span-3">
+      <div className="md:col-span-2 lg:col-span-3">
         <div className="rounded-2xl bg-card border border-[var(--color-bw-border)] p-5">
           <div className="h-2.5 w-20 rounded-full bg-[var(--color-bw-surface-dim)] shimmer mb-5" />
           <div className="flex flex-col gap-4">

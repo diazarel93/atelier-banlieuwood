@@ -42,9 +42,15 @@ export function GlassCardV2({
   ...props
 }: GlassCardV2Props) {
   const isClickable = !!onClick;
+  // Auto-enable hover effects for clickable cards unless explicitly disabled
+  const resolvedHover = hover ?? isClickable;
   return (
     <div
-      className={cn(glassCardVariants({ variant, hover }), className)}
+      className={cn(
+        glassCardVariants({ variant, hover: resolvedHover }),
+        isClickable && "cursor-pointer",
+        className,
+      )}
       onClick={onClick}
       {...(isClickable && {
         role: "button",

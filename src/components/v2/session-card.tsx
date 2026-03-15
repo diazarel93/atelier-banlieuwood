@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
+import { IconClock } from "./icons";
 import {
   StatusBadge,
   STATUS_BG_TINT,
@@ -97,9 +98,7 @@ export function SessionCardV2({
         <div className="flex items-center gap-3 text-body-xs text-bw-muted">
           {scheduledAt && (
             <span className="flex items-center gap-1 tabular-nums">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
-              </svg>
+              <IconClock size={12} />
               {formatTime(scheduledAt)}
             </span>
           )}

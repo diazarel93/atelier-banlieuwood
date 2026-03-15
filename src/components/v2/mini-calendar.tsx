@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
+import { IconChevronLeft, IconChevronRightNav } from "./icons";
 
 interface MiniCalendarProps {
   /** Dates with sessions — show dots */
@@ -88,9 +89,7 @@ export function MiniCalendar({
           aria-label="Mois précédent"
           className="p-2 min-h-9 min-w-9 flex items-center justify-center rounded-md text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
+          <IconChevronLeft />
         </button>
         <span className="text-sm font-semibold text-bw-heading">
           {MONTHS[monthIdx]} {year}
@@ -101,9 +100,7 @@ export function MiniCalendar({
           aria-label="Mois suivant"
           className="p-2 min-h-9 min-w-9 flex items-center justify-center rounded-md text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
+          <IconChevronRightNav />
         </button>
       </div>
 

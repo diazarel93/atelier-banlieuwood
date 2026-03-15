@@ -8,6 +8,7 @@ import {
 } from "@/lib/exercise-catalog";
 import { getModuleGuide } from "@/lib/guide-data";
 import { GlassCardV2 } from "@/components/v2/glass-card";
+import { EmptyState } from "@/components/v2/empty-state";
 import { ModuleGuideModal } from "@/components/v2/module-guide-modal";
 import type { ModuleGuide } from "@/lib/guide-data";
 
@@ -172,7 +173,7 @@ export default function BibliothequePage() {
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-xl font-bold text-bw-heading">
+        <h1 className="text-heading-lg text-bw-heading">
           Bibliothèque pédagogique
         </h1>
         <p className="text-sm text-bw-muted mt-1 max-w-2xl">
@@ -292,11 +293,18 @@ export default function BibliothequePage() {
       {/* Phases */}
       <div className="space-y-4">
         {grouped.length === 0 && (
-          <div className="flex items-center justify-center py-16">
-            <p className="text-sm text-bw-muted">
-              Aucun module ne correspond à la recherche
-            </p>
-          </div>
+          <EmptyState
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+            }
+            title="Aucun module trouve"
+            description="Aucun module ne correspond a votre recherche. Essayez avec d'autres termes."
+            accent="violet"
+            action={{ label: "Effacer la recherche", onClick: () => setSearch("") }}
+          />
         )}
 
         {grouped.map(({ phase, exercises }) => {

@@ -181,7 +181,7 @@ export default function AidePage() {
     <div className="mx-auto max-w-[900px] px-4 sm:px-6 py-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-xl font-bold text-bw-heading">Aide</h1>
+        <h1 className="text-heading-lg text-bw-heading">Aide</h1>
         <p className="text-sm text-bw-muted mt-0.5">
           Guides, FAQ et raccourcis pour utiliser Banlieuwood
         </p>

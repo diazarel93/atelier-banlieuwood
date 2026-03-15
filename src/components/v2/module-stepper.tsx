@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { IconCheck } from "./icons";
 
 interface ModuleStep {
   id: string;
@@ -45,15 +46,7 @@ export function ModuleStepperV2({ steps, className }: ModuleStepperV2Props) {
                 }
               >
                 {isDone ? (
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path
-                      d="M3 7L6 10L11 4"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <IconCheck />
                 ) : (
                   i + 1
                 )}

@@ -198,7 +198,7 @@ export default function FreePage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={20}
-              className="h-12 text-center rounded-xl bg-bw-elevated/50 border-white/[0.08] text-bw-ink placeholder:text-bw-placeholder focus:border-bw-violet/50 focus:ring-2 focus:ring-bw-violet/20 transition-all"
+              className="h-12 text-center rounded-xl bg-bw-elevated/50 border-[var(--color-bw-border)] text-bw-ink placeholder:text-bw-placeholder focus:border-bw-violet/50 focus:ring-2 focus:ring-bw-violet/20 transition-all"
             />
           </div>
 
@@ -207,7 +207,7 @@ export default function FreePage() {
             <label className="text-sm text-bw-muted block text-center">
               Choisis ton emoji
             </label>
-            <div className="grid grid-cols-6 gap-2 justify-items-center">
+            <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 justify-items-center">
               {AVATARS.map((emoji, i) => (
                 <motion.button
                   key={emoji}
@@ -219,7 +219,7 @@ export default function FreePage() {
                   className={`w-12 h-12 text-2xl rounded-xl flex items-center justify-center transition-all cursor-pointer ${
                     avatar === emoji
                       ? "bg-bw-violet/20 border-2 border-bw-violet scale-110 shadow-[0_0_16px_rgba(139,92,246,0.25)]"
-                      : "bg-bw-surface border border-white/[0.06] hover:border-white/[0.15] hover:bg-bw-elevated/50"
+                      : "bg-bw-surface border border-[var(--color-bw-border-subtle)] hover:border-[var(--color-bw-border)] hover:bg-bw-elevated/50"
                   }`}
                 >
                   <AnimatePresence mode="wait">

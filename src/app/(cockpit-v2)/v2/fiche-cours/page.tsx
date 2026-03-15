@@ -92,7 +92,7 @@ export default function FicheCoursPageV2() {
       <div className="max-w-2xl mx-auto mt-6 space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-2xl font-bold text-bw-heading">
+          <h1 className="text-heading-xl text-bw-heading">
             Fiche de Cours
           </h1>
           <p className="text-sm text-bw-muted">

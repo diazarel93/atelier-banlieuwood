@@ -227,7 +227,7 @@ function JoinForm() {
                       ? "border-bw-danger/50 shadow-[0_0_12px_rgba(239,68,68,0.2)]"
                       : char
                         ? "border-bw-teal/40 shadow-[0_0_10px_rgba(78,205,196,0.15)]"
-                        : "border-white/[0.08]"
+                        : "border-[var(--color-bw-border)]"
                   } focus:border-bw-teal focus:shadow-[0_0_16px_rgba(78,205,196,0.25)]`}
                 />
               ))}
@@ -258,7 +258,7 @@ function JoinForm() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={20}
-              className="h-12 text-center rounded-xl bg-bw-elevated/50 border-white/[0.08] text-bw-ink placeholder:text-bw-placeholder focus:border-bw-teal/50 focus:ring-2 focus:ring-bw-teal/20 transition-all"
+              className="h-12 text-center rounded-xl bg-bw-elevated/50 border-[var(--color-bw-border)] text-bw-ink placeholder:text-bw-placeholder focus:border-bw-teal/50 focus:ring-2 focus:ring-bw-teal/20 transition-all"
             />
             <button
               type="button"
@@ -278,7 +278,7 @@ function JoinForm() {
             <label className="text-sm text-bw-muted block text-center">
               Choisis ton emoji
             </label>
-            <div className="grid grid-cols-5 gap-2 justify-items-center max-h-[200px] overflow-y-auto pr-1 scrollbar-thin">
+            <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 justify-items-center max-h-[200px] overflow-y-auto pr-1 scrollbar-thin">
               {AVATARS.map((emoji, i) => (
                 <motion.button
                   key={emoji}
@@ -292,7 +292,7 @@ function JoinForm() {
                   className={`w-11 h-11 text-xl rounded-xl flex items-center justify-center transition-all cursor-pointer ${
                     avatar === emoji
                       ? "bg-bw-teal/20 border-2 border-bw-teal scale-110 shadow-[0_0_16px_rgba(78,205,196,0.25)]"
-                      : "bg-bw-surface border border-white/[0.06] hover:border-white/[0.15] hover:bg-bw-elevated/50"
+                      : "bg-bw-surface border border-[var(--color-bw-border-subtle)] hover:border-[var(--color-bw-border)] hover:bg-bw-elevated/50"
                   }`}
                 >
                   <AnimatePresence mode="wait">
@@ -361,7 +361,7 @@ function JoinForm() {
                   value={profileCode}
                   onChange={(e) => setProfileCode(e.target.value.toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 4))}
                   aria-label="Code joueur existant (4 caracteres)"
-                  className="w-full h-12 text-center text-lg font-mono font-bold tracking-[0.3em] rounded-xl bg-bw-elevated/50 border border-white/[0.08] text-bw-ink placeholder:text-bw-placeholder/40 focus:border-bw-teal/50 focus:ring-2 focus:ring-bw-teal/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal transition-all uppercase"
+                  className="w-full h-12 text-center text-lg font-mono font-bold tracking-[0.3em] rounded-xl bg-bw-elevated/50 border border-[var(--color-bw-border)] text-bw-ink placeholder:text-bw-placeholder/40 focus:border-bw-teal/50 focus:ring-2 focus:ring-bw-teal/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal transition-all uppercase"
                 />
               </motion.div>
             )}
@@ -381,7 +381,7 @@ function JoinForm() {
             className={`w-full rounded-xl font-semibold transition-all duration-300 ${
               canSubmit
                 ? "bg-gradient-to-r from-bw-teal to-bw-teal-500 hover:from-bw-teal-500 hover:to-bw-teal text-white shadow-bw-glow-teal btn-glow"
-                : "bg-bw-elevated text-bw-muted border border-white/[0.06]"
+                : "bg-bw-elevated text-bw-muted border border-[var(--color-bw-border)]"
             }`}
             disabled={!canSubmit || loading}
           >
