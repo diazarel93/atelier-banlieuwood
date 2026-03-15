@@ -1136,59 +1136,59 @@ function CockpitContent({
       {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}
       <main className="flex-1 flex flex-col overflow-hidden">
 
-        {/* ── QUESTION CARD — HERO: dominant, 40px padding, 36px text ── */}
+        {/* ── QUESTION CARD — compact, leaves room for cockpit panels ── */}
         {universalQuestionText && (
-          <div className="flex-shrink-0 px-3 sm:px-5 py-3 sm:py-4">
-            <div className="rounded-[16px] sm:rounded-[20px]" style={{
-              padding: "clamp(20px, 4vw, 40px) clamp(16px, 4vw, 40px) clamp(16px, 3.5vw, 36px)",
+          <div className="flex-shrink-0 px-3 sm:px-5 py-2 sm:py-2.5">
+            <div className="rounded-[14px] sm:rounded-[16px]" style={{
+              padding: "12px 16px 10px",
               background: "#FFFFFF",
-              boxShadow: "0 12px 32px rgba(61,43,16,0.08), 0 4px 8px rgba(61,43,16,0.03)",
+              boxShadow: "0 4px 16px rgba(61,43,16,0.06), 0 2px 4px rgba(61,43,16,0.02)",
               border: "1px solid #E8DFD2",
             }}>
-              {/* Top row: badge + nav + guide */}
-              <div className="flex items-center gap-2.5 mb-5">
-                <span className="text-[13px] font-semibold px-3 py-1 rounded-full flex-shrink-0"
-                  style={{ backgroundColor: `${CATEGORY_COLORS[universalCategoryLabel] || moduleColor}15`, color: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
-                  {universalCategoryLabel}
-                </span>
-                {isPreviewing && <span className="text-[11px] px-2 py-1 rounded-full bg-[#F5A45B]/15 text-[#D4842A] font-bold uppercase flex-shrink-0">Apercu</span>}
-                <div className="flex-1" />
-                {maxSituations > 1 && (
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
-                    <button onClick={previewPrev} disabled={displayIndex <= 0} aria-label="Question precedente"
-                      className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-                    </button>
-                    <span className="text-[13px] text-[#7A7A7A] tabular-nums font-medium px-1">Q{displayIndex + 1}/{maxSituations}</span>
-                    <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1} aria-label="Question suivante"
-                      className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                    </button>
+              {/* Top row: badge + question text + nav + guide — all on one line */}
+              <div className="flex items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: `${CATEGORY_COLORS[universalCategoryLabel] || moduleColor}15`, color: CATEGORY_COLORS[universalCategoryLabel] || moduleColor }}>
+                      {universalCategoryLabel}
+                    </span>
+                    {isPreviewing && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F5A45B]/15 text-[#D4842A] font-bold uppercase flex-shrink-0">Apercu</span>}
                   </div>
-                )}
-                {questionGuide && (
-                  <button
-                    onClick={() => setGuideExpanded(!guideExpanded)}
-                    className={`h-8 px-3 rounded-[10px] text-[13px] font-medium cursor-pointer transition-all flex-shrink-0 border ${
-                      guideExpanded ? "bg-[#E8F5F2] text-[#1B5E50] border-[#C8E6DD]" : "text-[#7A7A7A] hover:text-[#1B5E50] bg-white border-[#E8DFD2]"
-                    }`}
-                  >
-                    {guideExpanded ? "▴ Guide" : "▾ Guide"}
-                  </button>
-                )}
+                  {/* Question text — readable but compact */}
+                  <p className={`text-[18px] sm:text-[20px] md:text-[22px] font-bold leading-[1.3] ${isPreviewing ? "text-[#D4842A]" : "text-[#2C2C2C]"}`}>
+                    {universalQuestionText}
+                  </p>
+                </div>
+                {/* Right side controls */}
+                <div className="flex items-center gap-1.5 flex-shrink-0 pt-0.5">
+                  {maxSituations > 1 && (
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <button onClick={previewPrev} disabled={displayIndex <= 0} aria-label="Question precedente"
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                      </button>
+                      <span className="text-[12px] text-[#7A7A7A] tabular-nums font-medium px-0.5">Q{displayIndex + 1}/{maxSituations}</span>
+                      <button onClick={previewNext} disabled={displayIndex >= maxSituations - 1} aria-label="Question suivante"
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-[#7A7A7A] hover:text-[#2C2C2C] bg-white border border-[#E8DFD2] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                      </button>
+                    </div>
+                  )}
+                  {questionGuide && (
+                    <button
+                      onClick={() => setGuideExpanded(!guideExpanded)}
+                      className={`h-7 px-2.5 rounded-lg text-[12px] font-medium cursor-pointer transition-all flex-shrink-0 border ${
+                        guideExpanded ? "bg-[#E8F5F2] text-[#1B5E50] border-[#C8E6DD]" : "text-[#7A7A7A] hover:text-[#1B5E50] bg-white border-[#E8DFD2]"
+                      }`}
+                    >
+                      {guideExpanded ? "▴ Guide" : "▾ Guide"}
+                    </button>
+                  )}
+                </div>
               </div>
-              {/* Question text — HERO: 32-36px, strong, dominant */}
-              <p className={`text-[28px] md:text-[36px] font-bold leading-[1.25] ${isPreviewing ? "text-[#D4842A]" : "text-[#2C2C2C]"}`}>
-                {universalQuestionText}
-              </p>
-              {/* Pedagogical subtitle from guide */}
-              {(isPreviewing ? previewGuide : questionGuide)?.whatToExpect && (
-                <p className="mt-2 text-[14px] text-[#7A7A7A] leading-relaxed">
-                  {(isPreviewing ? previewGuide : questionGuide)!.whatToExpect}
-                </p>
-              )}
             </div>
-            {/* Collapsible guide section */}
+            {/* Collapsible guide section — compact */}
             <AnimatePresence>
               {guideExpanded && (isPreviewing ? previewGuide : questionGuide) && (
                 <motion.div
@@ -1197,15 +1197,15 @@ function CockpitContent({
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="mt-5 pt-5 space-y-3" style={{ borderTop: "1px solid #EFE4D8" }}>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="rounded-[14px] p-4 space-y-1" style={{ background: "#F0FAF8", border: "1px solid #D5EDE8" }}>
-                        <p className="text-[11px] uppercase tracking-wider font-bold text-[#1B5E50]">Ce qu&apos;on attend</p>
-                        <p className="text-[13px] text-[#4A4A4A] leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.whatToExpect}</p>
+                  <div className="mt-3 pt-3 space-y-2" style={{ borderTop: "1px solid #EFE4D8" }}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className="rounded-xl px-3 py-2.5 space-y-0.5" style={{ background: "#F0FAF8", border: "1px solid #D5EDE8" }}>
+                        <p className="text-[10px] uppercase tracking-wider font-bold text-[#1B5E50]">Ce qu&apos;on attend</p>
+                        <p className="text-[12px] text-[#4A4A4A] leading-snug">{(isPreviewing ? previewGuide : questionGuide)?.whatToExpect}</p>
                       </div>
-                      <div className="rounded-[14px] p-4 space-y-1" style={{ background: "#FFF8F0", border: "1px solid #F0DFC8" }}>
-                        <p className="text-[11px] uppercase tracking-wider font-bold text-[#8B6914]">Pieges frequents</p>
-                        <p className="text-[13px] text-[#8B6914] leading-relaxed">{(isPreviewing ? previewGuide : questionGuide)?.commonPitfalls}</p>
+                      <div className="rounded-xl px-3 py-2.5 space-y-0.5" style={{ background: "#FFF8F0", border: "1px solid #F0DFC8" }}>
+                        <p className="text-[10px] uppercase tracking-wider font-bold text-[#8B6914]">Pieges frequents</p>
+                        <p className="text-[12px] text-[#8B6914] leading-snug">{(isPreviewing ? previewGuide : questionGuide)?.commonPitfalls}</p>
                       </div>
                     </div>
                     <QuickPhrases questionGuide={(isPreviewing ? previewGuide : questionGuide) ?? undefined} />
@@ -1215,14 +1215,14 @@ function CockpitContent({
             </AnimatePresence>
             {/* Preview banner when looking ahead */}
             {isPreviewing && (
-              <div className="mt-4">
-                <div className="rounded-[14px] px-4 py-3 flex items-center gap-3" style={{ background: "#FFF8F0", border: "1px solid #F0DFC8" }}>
-                  <span className="text-[13px] text-[#D4842A] font-medium">Apercu Q{displayIndex + 1}</span>
+              <div className="mt-2">
+                <div className="rounded-xl px-3 py-2 flex items-center gap-2" style={{ background: "#FFF8F0", border: "1px solid #F0DFC8" }}>
+                  <span className="text-[12px] text-[#D4842A] font-medium">Apercu Q{displayIndex + 1}</span>
                   <div className="flex-1" />
                   <button onClick={() => setPreviewIndex(null)}
-                    className="text-[13px] text-[#7A7A7A] hover:text-[#2C2C2C] cursor-pointer transition-colors">Retour Q{currentQIndex + 1}</button>
+                    className="text-[12px] text-[#7A7A7A] hover:text-[#2C2C2C] cursor-pointer transition-colors">Retour Q{currentQIndex + 1}</button>
                   <button onClick={() => goToSituation(displayIndex)}
-                    className="text-[13px] px-3.5 py-1.5 bg-[#F5A45B] text-white rounded-[10px] font-semibold cursor-pointer hover:brightness-105 transition-all"
+                    className="text-[12px] px-3 py-1 bg-[#F5A45B] text-white rounded-lg font-semibold cursor-pointer hover:brightness-105 transition-all"
                     style={{ boxShadow: "0 2px 8px rgba(245,164,91,0.3)" }}>
                     Lancer Q{displayIndex + 1}
                   </button>
