@@ -220,6 +220,7 @@ function CockpitContent({
   // Screen mode (#15) and freeze (#22) state
   const [screenMode, setScreenMode] = useState<string>("default");
   const [screenFrozen, setScreenFrozen] = useState(false);
+  const [mobileSidePanel, setMobileSidePanel] = useState<"left" | "right" | null>(null);
   const { play } = useSound();
 
   const queryClient = useQueryClient();
@@ -1234,8 +1235,8 @@ function CockpitContent({
 
         {/* ── SPLIT-PANEL LAYOUT ── */}
         <div className="flex-1 flex overflow-hidden min-h-0" style={{ background: "#F6F2EA", backgroundImage: "radial-gradient(ellipse at 50% 20%, rgba(255,107,53,0.03), transparent 60%)" }}>
-          {/* LEFT: Classe en direct — always visible, fluid width */}
-          <div data-onboarding="classmap" className="flex w-[180px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[300px] flex-shrink-0 flex-col m-1.5 sm:m-2 mr-0 rounded-2xl shadow-sm overflow-hidden glass-cockpit">
+          {/* LEFT: Classe en direct — hidden below lg, overlay drawer on mobile */}
+          <div data-onboarding="classmap" className="hidden lg:flex w-[260px] xl:w-[300px] flex-shrink-0 flex-col m-2 mr-0 rounded-2xl shadow-sm overflow-hidden glass-cockpit">
             <ClassDashboardPanel
               session={session}
               studentStates={studentStates}
@@ -1259,7 +1260,35 @@ function CockpitContent({
             />
           </div>
           {/* CENTER: Question + Responses — glassmorphism */}
-          <div className="flex-1 overflow-y-auto min-h-0 m-1.5 sm:m-2 rounded-2xl shadow-sm glass-cockpit">
+          <div className="flex-1 overflow-y-auto min-h-0 m-1.5 lg:m-2 rounded-2xl shadow-sm glass-cockpit">
+          {/* Mobile panel toggle buttons — visible below lg only */}
+          <div className="flex lg:hidden items-center justify-between px-3 py-2 border-b border-[#E8DFD2]/50">
+            <button
+              onClick={() => setMobileSidePanel(mobileSidePanel === "left" ? null : "left")}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all cursor-pointer"
+              style={{
+                background: mobileSidePanel === "left" ? "rgba(255,107,53,0.1)" : "rgba(255,255,255,0.5)",
+                color: mobileSidePanel === "left" ? "#FF6B35" : "#7A7A7A",
+                border: `1px solid ${mobileSidePanel === "left" ? "rgba(255,107,53,0.2)" : "#E8DFD2"}`,
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="18" rx="2"/><rect x="14" y="3" width="7" height="18" rx="2" opacity=".3"/></svg>
+              Classe
+              {stuckStudents.length > 0 && <span className="w-1.5 h-1.5 rounded-full bg-[#EB5757]" />}
+            </button>
+            <button
+              onClick={() => setMobileSidePanel(mobileSidePanel === "right" ? null : "right")}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all cursor-pointer"
+              style={{
+                background: mobileSidePanel === "right" ? "rgba(107,140,255,0.1)" : "rgba(255,255,255,0.5)",
+                color: mobileSidePanel === "right" ? "#3B5998" : "#7A7A7A",
+                border: `1px solid ${mobileSidePanel === "right" ? "rgba(107,140,255,0.2)" : "#E8DFD2"}`,
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Assistant IA
+            </button>
+          </div>
           {ficheStudentId ? (
             <div className="px-4 py-4">
               {(() => {
@@ -1782,8 +1811,8 @@ function CockpitContent({
         </div>
         )}
         </div>
-          {/* RIGHT: Assistant pedagogique — always visible, fluid width */}
-          <div className="flex w-[180px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[320px] flex-shrink-0 flex-col m-1.5 sm:m-2 ml-0 rounded-2xl shadow-sm overflow-hidden"
+          {/* RIGHT: Assistant pedagogique — hidden below lg, overlay drawer on mobile */}
+          <div className="hidden lg:flex w-[260px] xl:w-[320px] flex-shrink-0 flex-col m-2 ml-0 rounded-2xl shadow-sm overflow-hidden"
             style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.4)" }}>
             {/* Title */}
             <div className="px-3 lg:px-5 pt-3 lg:pt-5 pb-2 lg:pb-3 flex-shrink-0">
@@ -1876,6 +1905,119 @@ function CockpitContent({
           </div>
         </div>
       </main>
+
+      {/* ── MOBILE SIDE PANEL OVERLAYS (below lg only) ── */}
+      <AnimatePresence>
+        {mobileSidePanel && (
+          <>
+            <motion.div
+              key="panel-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="lg:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+              onClick={() => setMobileSidePanel(null)}
+            />
+            <motion.div
+              key="panel-drawer"
+              initial={{ x: mobileSidePanel === "left" ? -320 : 320, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: mobileSidePanel === "left" ? -320 : 320, opacity: 0 }}
+              transition={{ type: "spring", damping: 28, stiffness: 320 }}
+              className={`lg:hidden fixed inset-y-0 z-50 w-[300px] sm:w-[340px] flex flex-col overflow-hidden rounded-none ${
+                mobileSidePanel === "left" ? "left-0" : "right-0"
+              }`}
+              style={{
+                background: "rgba(255,255,255,0.95)",
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+                boxShadow: mobileSidePanel === "left"
+                  ? "4px 0 24px rgba(0,0,0,0.12)"
+                  : "-4px 0 24px rgba(0,0,0,0.12)",
+              }}
+            >
+              {/* Drawer header */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-[#E8DFD2]">
+                <span className="text-[14px] font-bold text-[#2C2C2C]">
+                  {mobileSidePanel === "left" ? "Cockpit de classe" : "Assistant pedagogique"}
+                </span>
+                <button
+                  onClick={() => setMobileSidePanel(null)}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[#7A7A7A] hover:text-[#2C2C2C] hover:bg-black/5 cursor-pointer transition-colors"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+              </div>
+              {/* Drawer content */}
+              <div className="flex-1 overflow-y-auto">
+                {mobileSidePanel === "left" ? (
+                  <ClassDashboardPanel
+                    session={session}
+                    studentStates={studentStates}
+                    stuckStudents={stuckStudents}
+                    setFicheStudentId={(id) => { setFicheStudentId(id); setMobileSidePanel(null); }}
+                    lowerHand={lowerHand}
+                    handleNudgeAllStuck={handleNudgeAllStuck}
+                    cognitiveOptions={isM1Positioning && module1Data?.optionDistribution && module1Data.questions?.[currentQIndex]?.options
+                      ? module1Data.questions[currentQIndex].options!.map((o: { key: string; label: string }) => ({
+                          key: o.key,
+                          label: o.label,
+                          count: (module1Data.optionDistribution as Record<string, number>)[o.key] || 0,
+                        }))
+                      : undefined
+                    }
+                    cognitiveTotal={isM1Positioning && module1Data?.optionDistribution
+                      ? Object.values(module1Data.optionDistribution as Record<string, number>).reduce((sum, v) => sum + v, 0)
+                      : undefined
+                    }
+                    notRespondedStudents={notRespondedStudents}
+                  />
+                ) : (
+                  <div className="px-4 pb-4 pt-2 space-y-3">
+                    {session.status !== "done" ? (
+                      <AIAssistantPanel
+                        context={{
+                          status: session.status,
+                          totalStudents: activeStudents.length,
+                          responsesCount: respondedCount,
+                          stuckCount: stuckStudents.length,
+                          stuckNames: stuckStudents.map(s => s.name?.split(" ")[0] || s.name),
+                          handsRaised: session.students?.filter(s => s.hand_raised_at).length || 0,
+                          handsNames: session.students?.filter(s => s.hand_raised_at).map(s => s.display_name?.split(" ")[0] || s.display_name) || [],
+                          handsRaisedAt: session.students?.filter(s => s.hand_raised_at).map(s => s.hand_raised_at ?? null) || [],
+                          elapsedSeconds: respondingOpenedAt ? Math.round((Date.now() - respondingOpenedAt) / 1000) : 0,
+                          currentModule: session.current_module,
+                          currentSeance: session.current_seance || 1,
+                          currentSituation: session.current_situation_index || 0,
+                          optionDistribution: (isM1Positioning && module1Data?.optionDistribution)
+                            ? module1Data.optionDistribution as Record<string, number>
+                            : undefined,
+                          completedModules: session.completed_modules || [],
+                          currentPhaseId: currentMod ? getPhaseForModule(currentMod.id)?.id || null : null,
+                          totalModuleCount: MODULES.filter(m => !m.disabled && !m.comingSoon).length,
+                          disconnectedCount: (session.students || []).filter(s => !s.is_active || s.kicked).length,
+                        }}
+                        onSendHint={() => { openBroadcastWith("Petit indice : ", "Envoyer un indice", "💡"); setMobileSidePanel(null); }}
+                        onReformulate={() => { openBroadcastWith("Reformulation : ", "Reformuler la consigne", "🔄"); setMobileSidePanel(null); }}
+                        onLaunchVote={() => { updateSession.mutate({ status: "voting", timer_ends_at: null }); setMobileSidePanel(null); }}
+                        onBroadcast={() => { openBroadcast(); setMobileSidePanel(null); }}
+                        onDebate={() => { setShowDebate(true); addTimelineEvent("debate_launched", "Debat lance", undefined, "highlight"); setMobileSidePanel(null); }}
+                        onStudentClick={(id) => { setFicheStudentId(id); setMobileSidePanel(null); }}
+                      />
+                    ) : (
+                      <div className="text-center py-8 space-y-2">
+                        <span className="text-2xl">🎬</span>
+                        <p className="text-xs text-bw-muted">Session terminee.</p>
+                      </div>
+                    )}
+                    <SessionTimeline events={timelineEvents} sessionStartedAt={sessionStartedAt} />
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* ── FOOTER + FLOATING ACTION + ONBOARDING ── */}
       <CockpitFooterBar
