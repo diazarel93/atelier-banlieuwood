@@ -2252,7 +2252,7 @@ export default function PilotPage() {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   // Right panel removed — floating docks handle their own state
 
-  const sidebarWidth = 0; // Dock is floating, no layout offset needed
+  const sidebarWidth = 220; // Fixed sidebar width on sm+
 
   // Effective connection status: combine navigator.onLine + channel status (#2)
   const effectiveConnectionStatus = !isOnline ? "disconnected" as const : connectionStatus;
@@ -2526,7 +2526,7 @@ export default function PilotPage() {
 
       {/* ── BODY: Sidebar + Main ── */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Floating module dock — hidden during cockpit to free space */}
+        {/* Module sidebar — fixed left panel, hidden during active cockpit */}
         {!(hasActiveModule && moduleView === "cockpit") && (
           <ModuleSidebar
             modules={MODULES}
@@ -2561,7 +2561,8 @@ export default function PilotPage() {
           />
         </MobileSidebarDrawer>
 
-        {/* Centre — contenu principal */}
+        {/* Centre — contenu principal (offset by sidebar on sm+) */}
+        <div className={`flex-1 overflow-hidden flex flex-col ${!(hasActiveModule && moduleView === "cockpit") ? "sm:pl-[220px]" : ""}`}>
         {selectedModuleId && moduleView === "briefing" ? (
           <ModuleBriefing
             module={MODULES.find((m) => m.id === selectedModuleId)!}
@@ -2640,6 +2641,7 @@ export default function PilotPage() {
         )}
 
         {/* ContextDocks removed — info redistributed to split panel + header */}
+        </div>
       </div>
 
       {/* Module switch confirmation */}
