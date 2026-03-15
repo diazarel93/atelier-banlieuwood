@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createServerSupabase } from "@/lib/supabase/server";
 import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
 
 // GET — fetch recap data for a student (collective story + personal contributions)
@@ -12,6 +13,24 @@ export const GET = withErrorHandler(async function GET(
 
   if (!isValidUUID(sessionId)) {
     return NextResponse.json({ error: "Session invalide" }, { status: 400 });
+  }
+
+  // Auth check: require authenticated user who owns this session
+  const supabase = await createServerSupabase();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  }
+
+  // Ownership check via RLS-scoped query
+  const { data: ownedSession } = await supabase
+    .from("sessions")
+    .select("id")
+    .eq("id", sessionId)
+    .is("deleted_at", null)
+    .single();
+  if (!ownedSession) {
+    return NextResponse.json({ error: "Session introuvable" }, { status: 404 });
   }
 
   const admin = createAdminClient();

@@ -201,22 +201,27 @@ export function useResultsData(sessionId: string) {
   const [bibleLoading, setBibleLoading] = useState(false);
   const [bibleProvider, setBibleProvider] = useState<string | null>(null);
 
-  // Load cached AI content on mount
+  // Load cached AI content on mount — with AbortController to prevent memory leaks
   useEffect(() => {
-    fetch(`/api/sessions/${sessionId}/bilan`)
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    fetch(`/api/sessions/${sessionId}/bilan`, { signal })
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => { if (data?.bilan) { setBilan(data.bilan); setBilanProvider(data.provider); } })
       .catch(() => {});
 
-    fetch(`/api/sessions/${sessionId}/fiche-cours`)
+    fetch(`/api/sessions/${sessionId}/fiche-cours`, { signal })
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => { if (data?.fiche) { setFiche(data.fiche); setFicheProvider(data.provider); } })
       .catch(() => {});
 
-    fetch(`/api/sessions/${sessionId}/bible`)
+    fetch(`/api/sessions/${sessionId}/bible`, { signal })
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => { if (data?.bible) { setBible(data.bible); setBibleProvider(data.provider); } })
       .catch(() => {});
+
+    return () => controller.abort();
   }, [sessionId]);
 
   // ── Generators ──
@@ -266,6 +271,10 @@ export function useResultsData(sessionId: string) {
         ? `/api/sessions/${sessionId}/bible?force=true`
         : `/api/sessions/${sessionId}/bible`;
       const res = await fetch(url, { method: "POST" });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Erreur");
+      }
       const data = await res.json();
       if (data?.bible) {
         setBible(data.bible);

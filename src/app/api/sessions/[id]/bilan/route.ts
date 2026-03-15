@@ -18,6 +18,17 @@ export const GET = withErrorHandler(async function GET(
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
 
+  // Ownership check: verify user owns this session via RLS
+  const { data: ownedSession } = await supabase
+    .from("sessions")
+    .select("id")
+    .eq("id", sessionId)
+    .is("deleted_at", null)
+    .single();
+  if (!ownedSession) {
+    return NextResponse.json({ error: "Session introuvable" }, { status: 404 });
+  }
+
   const admin = createAdminClient();
   const { data } = await admin
     .from("session_reports")
@@ -47,6 +58,17 @@ export const POST = withErrorHandler(async function POST(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  }
+
+  // Ownership check: verify user owns this session via RLS
+  const { data: ownedSession } = await supabase
+    .from("sessions")
+    .select("id")
+    .eq("id", sessionId)
+    .is("deleted_at", null)
+    .single();
+  if (!ownedSession) {
+    return NextResponse.json({ error: "Session introuvable" }, { status: 404 });
   }
 
   // Rate limit: 3 req/min

@@ -88,7 +88,7 @@ export default function StatistiquesPage() {
 
   // Podium: top 3 students by totalResponses (fallback to sum of scores)
   const podium = useMemo(() => {
-    if (!data || data.students.length <= 3) return null;
+    if (!data || data.students.length < 3) return null;
     const sorted = [...data.students].sort((a, b) => {
       const aResp =
         a.totalResponses ??

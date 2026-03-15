@@ -129,7 +129,7 @@ export async function fetchOIEScoresByStudentIds(
     .from("session_oie_scores")
     .select("student_id, session_id, observation, imagination, expression, response_count, computed_at")
     .in("student_id", studentIds)
-    .order("computed_at", { ascending: true });
+    .order("computed_at", { ascending: false });
 
   if (opts?.limit) {
     query = query.limit(opts.limit);
@@ -170,7 +170,7 @@ export async function fetchCollectiveChoice(
     .select("*")
     .eq("session_id", sessionId)
     .eq("situation_id", situationId)
-    .single();
+    .maybeSingle();
   return { data, error };
 }
 

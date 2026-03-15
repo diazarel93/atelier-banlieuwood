@@ -36,7 +36,7 @@ export function useCockpitModuleFlags(session: Session) {
     const isM12Manche = isM12Any && seance === 1;
     const isM13Any = mod === 13;
     const isM13Postprod = isM13Any && seance === 1;
-    const isM6Any = mod === 5 && seance === 1;
+    const isM6Any = mod === 6 && seance === 1;
     const isM7Any = mod === 7 && seance === 1;
     const isM8Any = mod === 8 && seance === 1;
     const isQAModule = mod === 3 || mod === 4 || isM1Positioning || mod === 9 || (mod === 2 && !isM2ECSpecial && !isM2ECComparison) || (isM10Any && !isM10SpecialPosition) || (isM13Any && sitIdx >= 5);

@@ -46,8 +46,10 @@ export function useUndoStack() {
       const entry = prev[prev.length - 1];
       const rest = prev.slice(0, -1);
 
-      // Execute undo (fire-and-forget)
-      Promise.resolve(entry.undo()).catch(() => {});
+      // Execute undo — surface errors to user
+      Promise.resolve(entry.undo()).catch(() => {
+        toast.error("Erreur lors de l'annulation");
+      });
       setRedoStack((r) => [...r, entry]);
 
       toast("Action annulée", {
@@ -55,9 +57,15 @@ export function useUndoStack() {
         action: {
           label: "Refaire",
           onClick: () => {
-            Promise.resolve(entry.redo()).catch(() => {});
+            Promise.resolve(entry.redo()).catch((err) => {
+              toast.error("Erreur lors du rétablissement");
+            });
             setRedoStack((r) => r.filter((e) => e.id !== entry.id));
-            setUndoStack((u) => [...u, entry]);
+            setUndoStack((u) => {
+              // Only re-add if redo stack was not already cleared by a new push()
+              if (u.length > 0 && u[u.length - 1].id === entry.id) return u;
+              return [...u, entry];
+            });
           },
         },
       });

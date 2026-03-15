@@ -212,12 +212,37 @@ export const PATCH = withErrorHandler(async function PATCH(
     return NextResponse.json({ error: "Élève introuvable" }, { status: 404 });
   }
 
-  const xpToAdd = sessionXp || 0;
-  const responsesToAdd = responses || 0;
-  const retainedToAdd = retained || 0;
-  const votesToAdd = totalVotes || 0;
-  const newStreak = streak || 0;
-  const newBestStreak = bestStreak || 0;
+  // Server-side computation: count actual responses/retained/votes from DB
+  // Client-supplied values are ignored to prevent stat inflation
+  const { count: actualResponses } = await admin
+    .from("responses")
+    .select("*", { count: "exact", head: true })
+    .eq("session_id", sessionId)
+    .eq("student_id", studentId)
+    .is("reset_at", null);
+
+  const { count: actualRetained } = await admin
+    .from("collective_choices")
+    .select("*", { count: "exact", head: true })
+    .eq("session_id", sessionId)
+    .in(
+      "source_response_id",
+      (await admin.from("responses").select("id").eq("session_id", sessionId).eq("student_id", studentId)).data?.map((r) => r.id) || []
+    );
+
+  const { count: actualVotes } = await admin
+    .from("votes")
+    .select("*", { count: "exact", head: true })
+    .eq("session_id", sessionId)
+    .eq("student_id", studentId);
+
+  // XP: compute from actual response count * base XP per response
+  const XP_PER_RESPONSE = 10;
+  const XP_BONUS_RETAINED = 25;
+  const responsesToAdd = actualResponses || 0;
+  const retainedToAdd = actualRetained || 0;
+  const votesToAdd = actualVotes || 0;
+  const xpToAdd = responsesToAdd * XP_PER_RESPONSE + retainedToAdd * XP_BONUS_RETAINED;
 
   let profileId: string;
   let updatedStats: ProfileStats;
@@ -238,7 +263,7 @@ export const PATCH = withErrorHandler(async function PATCH(
 
     // Cross-session streak logic
     const computedStreak = computeStreak(existing.streak_updated_date, existing.current_streak || 0);
-    const finalBestStreak = Math.max(existing.best_streak || 0, newBestStreak, computedStreak);
+    const finalBestStreak = Math.max(existing.best_streak || 0, bestStreak || 0, computedStreak);
 
     const updatedTotalXp = (existing.total_xp || 0) + xpToAdd;
     const updatedSessionsPlayed = (existing.sessions_played || 0) + 1;
@@ -292,7 +317,7 @@ export const PATCH = withErrorHandler(async function PATCH(
           retained_count: retainedToAdd,
           total_votes: votesToAdd,
           current_streak: computedStreak,
-          best_streak: Math.max(newBestStreak, computedStreak),
+          best_streak: Math.max(bestStreak || 0, computedStreak),
           last_active_at: new Date().toISOString(),
           streak_updated_date: new Date().toISOString().split("T")[0],
           profile_code: generateProfileCode(),
@@ -333,7 +358,7 @@ export const PATCH = withErrorHandler(async function PATCH(
       totalResponses: responsesToAdd,
       retainedCount: retainedToAdd,
       currentStreak: computedStreak,
-      bestStreak: Math.max(newBestStreak, computedStreak),
+      bestStreak: Math.max(bestStreak || 0, computedStreak),
       totalVotes: votesToAdd,
       level: 0,
     };

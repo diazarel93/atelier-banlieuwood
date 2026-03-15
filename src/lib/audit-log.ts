@@ -1,5 +1,3 @@
-import { createAdminClient } from "@/lib/supabase/admin";
-
 export type AuditAction =
   | "module_switch"
   | "student_remove"
@@ -20,25 +18,17 @@ interface AuditLogEntry {
 }
 
 /**
- * Fire-and-forget audit log insert.
- * Logs pilot actions for accountability and debugging.
+ * Fire-and-forget audit log via POST /api/audit.
+ * Safe to call from client components — no server-only imports.
  * Never throws — failures are silently ignored.
  */
 export function logAudit({ action, actor, sessionId, details }: AuditLogEntry) {
   try {
-    const admin = createAdminClient();
-    admin
-      .from("audit_logs")
-      .insert({
-        action,
-        actor_id: actor,
-        session_id: sessionId,
-        details: details || {},
-      })
-      .then(
-        () => {},
-        () => {}
-      );
+    fetch("/api/audit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action, actor, sessionId, details }),
+    }).catch(() => {});
   } catch {
     // Silent — audit logging should never block the main flow
   }

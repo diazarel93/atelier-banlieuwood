@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useTransform, type PanInfo } from "motion/react";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { InlineActions, TeacherCommentBadge } from "./response-actions";
 
 export interface ResponseCardResponse {
@@ -82,8 +82,14 @@ function ResponseCardInner({
   const [swiped, setSwiped] = useState<"left" | "right" | null>(null);
   const [isCommenting, setIsCommenting] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const swipeTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const x = useMotionValue(0);
   const opacity = useTransform(x, [-120, 0, 120], [0.5, 1, 0.5]);
+
+  // Cleanup swipe timeout on unmount
+  useEffect(() => {
+    return () => { if (swipeTimerRef.current) clearTimeout(swipeTimerRef.current); };
+  }, []);
 
   const handleDragEnd = useCallback(
     (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
@@ -95,7 +101,8 @@ function ResponseCardInner({
         setSwiped("right");
         onSelect();
       }
-      setTimeout(() => setSwiped(null), 300);
+      if (swipeTimerRef.current) clearTimeout(swipeTimerRef.current);
+      swipeTimerRef.current = setTimeout(() => setSwiped(null), 300);
     },
     [onHide, onSelect]
   );

@@ -203,12 +203,13 @@ export function usePilotSession(
       if (!res.ok) throw new Error("Erreur");
       return res.json();
     },
-    onSuccess: (_data, updates) => {
+    onSuccess: (responseData, updates) => {
       queryClient.invalidateQueries({ queryKey: ["pilot-session", sessionId] });
-      // Auto-audit status transitions
+      // Auto-audit status transitions — use responseData for previous status check
       const status = updates.status as string | undefined;
+      const prevStatus = responseData?.previousStatus ?? session?.status;
       if (status === "paused") logAudit({ action: "session_pause", actor: actorId, sessionId });
-      else if (status === "responding" && session?.status === "paused") logAudit({ action: "session_resume", actor: actorId, sessionId });
+      else if (status === "responding" && prevStatus === "paused") logAudit({ action: "session_resume", actor: actorId, sessionId });
       else if (status === "voting") logAudit({ action: "vote_start", actor: actorId, sessionId });
       else if (status === "done") logAudit({ action: "session_end", actor: actorId, sessionId });
     },
@@ -230,15 +231,21 @@ export function usePilotSession(
   });
 
   const validateChoice = useMutation({
-    mutationFn: async ({ response, text }: { response: Response; text: string }) => {
-      const sit = (situationData as { situation?: { id: string; category: string; restitutionLabel: string } })?.situation;
+    mutationFn: async ({ response, text, situationSnapshot }: {
+      response: Response;
+      text: string;
+      situationSnapshot?: { id: string; category: string; restitutionLabel: string };
+    }) => {
+      // Use snapshot passed at call time to avoid stale closure on situationData
+      const sit = situationSnapshot ?? (situationData as { situation?: { id: string; category: string; restitutionLabel: string } })?.situation;
+      if (!sit?.id) throw new Error("Aucune situation active");
       const res = await fetch(`/api/sessions/${sessionId}/collective-choice`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          situationId: sit?.id,
-          category: sit?.category,
-          restitutionLabel: sit?.restitutionLabel,
+          situationId: sit.id,
+          category: sit.category,
+          restitutionLabel: sit.restitutionLabel,
           chosenText: text,
           sourceResponseId: response.id,
         }),
@@ -247,8 +254,12 @@ export function usePilotSession(
       return res.json();
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pilot-choices", sessionId] });
+      updateSession.mutate(
+        { status: "reviewing" },
+        { onError: () => toast.error("Erreur lors du passage en revue") }
+      );
       toast.success("Choix collectif validé !");
-      updateSession.mutate({ status: "reviewing" });
     },
     onError: () => toast.error("Erreur de validation"),
   });

@@ -61,7 +61,7 @@ export default function SessionDetailPage() {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
-        <BreadcrumbV2 items={[{ label: "Seances", href: ROUTES.seances }]} />
+        <BreadcrumbV2 items={[{ label: "Séances", href: ROUTES.seances }]} />
         <div className="space-y-4 mt-4">
           <div className="h-48 rounded-2xl bg-card shimmer" />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -83,7 +83,7 @@ export default function SessionDetailPage() {
   if (isError || !session || !sessionState) {
     return (
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
-        <BreadcrumbV2 items={[{ label: "Seances", href: ROUTES.seances }]} />
+        <BreadcrumbV2 items={[{ label: "Séances", href: ROUTES.seances }]} />
         <GlassCardV2 className="p-8 text-center mt-4">
           <p className="text-bw-muted text-sm mb-4">
             Session introuvable ou erreur de chargement
@@ -120,7 +120,7 @@ export default function SessionDetailPage() {
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
       <BreadcrumbV2
         items={[
-          { label: "Seances", href: ROUTES.seances },
+          { label: "Séances", href: ROUTES.seances },
           { label: session.title },
         ]}
       />
@@ -141,9 +141,9 @@ export default function SessionDetailPage() {
           sessionState={sessionState}
           onProjection={() => setProjectionMode(true)}
           onDuplicate={() =>
-            duplicateSession.mutateAsync().then((newSession) =>
-              router.push(ROUTES.seanceDetail(newSession.id))
-            )
+            duplicateSession.mutateAsync()
+              .then((newSession) => router.push(ROUTES.seanceDetail(newSession.id)))
+              .catch(() => {})
           }
           isDuplicating={duplicateSession.isPending}
           onEdit={() => setEditOpen(true)}
@@ -256,7 +256,9 @@ export default function SessionDetailPage() {
         open={editOpen}
         onClose={() => setEditOpen(false)}
         onSave={(payload) => {
-          updateSession.mutateAsync(payload).then(() => setEditOpen(false));
+          updateSession.mutateAsync(payload)
+            .then(() => setEditOpen(false))
+            .catch(() => {});
         }}
         isPending={updateSession.isPending}
         initial={{

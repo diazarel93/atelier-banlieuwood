@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { STUCK_THRESHOLD_MS, STUCK_DETECTION_DELAY_MS } from "@/components/pilot/pilot-settings";
+import { STUCK_THRESHOLD_MS } from "@/components/pilot/pilot-settings";
 
 export type StuckLevel = "ok" | "nudge" | "slow" | "stuck";
 

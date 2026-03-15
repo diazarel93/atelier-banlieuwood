@@ -88,8 +88,10 @@ export function useConfirmAction<T = unknown>(): ConfirmActionState<T> {
     setState((s) => ({ ...s, isPending: true }));
     try {
       await state.action();
-    } finally {
       setState((s) => ({ ...s, open: false, action: null, isPending: false }));
+    } catch {
+      // Keep dialog open on error so user can retry
+      setState((s) => ({ ...s, isPending: false }));
     }
   }, [state.action]);
 

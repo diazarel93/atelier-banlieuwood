@@ -452,7 +452,7 @@ export function CockpitHeader({
                     <div className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${isDarkMode ? "left-2" : "left-px"}`} />
                   </div>
                   <span className="text-bw-text">
-                    {isDarkMode ? "🌙" : "🌙"} Nuit de Tournage
+                    {isDarkMode ? "☀️" : "🌙"} Nuit de Tournage
                   </span>
                 </button>
               )}
