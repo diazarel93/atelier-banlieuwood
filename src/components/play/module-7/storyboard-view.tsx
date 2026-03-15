@@ -78,7 +78,7 @@ export function StoryboardView({ module7 }: StoryboardViewProps) {
                         className="inline-block px-1.5 py-0.5 rounded-full text-[9px] font-semibold"
                         style={{ background: `${color}30`, color }}
                       >
-                        {plan.planType.replaceAll("-", " ")}
+                        {plan.planType.replace(/-/g, " ")}
                       </span>
                       <p className="text-[10px] text-white/50 mt-0.5 line-clamp-2">{plan.description}</p>
                     </motion.div>

@@ -87,7 +87,7 @@ function ComparaisonView({ module7 }: { module7: Module7Data }) {
               <div className="flex items-center gap-3">
                 {/* Plan A */}
                 <div className="flex-1 text-center">
-                  <p className="text-xs font-semibold text-bw-heading">{comp.planA.type.replaceAll("-", " ")}</p>
+                  <p className="text-xs font-semibold text-bw-heading">{comp.planA.type.replace(/-/g, " ")}</p>
                   <p className="text-[40px] font-extrabold tabular-nums" style={{ color: total > 0 ? colorA : "#CBD5E1" }}>
                     {total > 0 ? `${pctA}%` : "—"}
                   </p>
@@ -99,7 +99,7 @@ function ComparaisonView({ module7 }: { module7: Module7Data }) {
                 </div>
                 {/* Plan B */}
                 <div className="flex-1 text-center">
-                  <p className="text-xs font-semibold text-bw-heading">{comp.planB.type.replaceAll("-", " ")}</p>
+                  <p className="text-xs font-semibold text-bw-heading">{comp.planB.type.replace(/-/g, " ")}</p>
                   <p className="text-[40px] font-extrabold tabular-nums" style={{ color: total > 0 ? colorB : "#CBD5E1" }}>
                     {total > 0 ? `${pctB}%` : "—"}
                   </p>
@@ -297,7 +297,7 @@ function StoryboardView({ module7, sessionId }: { module7: Module7Data; sessionI
                         className="inline-block px-1.5 py-0.5 rounded-full text-[9px] font-semibold"
                         style={{ background: `${color}20`, color }}
                       >
-                        {plan.planType.replaceAll("-", " ")}
+                        {plan.planType.replace(/-/g, " ")}
                       </span>
                       <p className="text-[10px] text-bw-muted mt-0.5 line-clamp-1">{plan.description}</p>
                     </div>

@@ -31,7 +31,9 @@ export function useUndoStack() {
     (entry: Omit<UndoEntry, "id" | "timestamp">) => {
       const full: UndoEntry = {
         ...entry,
-        id: crypto.randomUUID(),
+        id: typeof crypto.randomUUID === "function"
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
         timestamp: Date.now(),
       };
       setUndoStack((prev) => [...prev.slice(-(MAX_STACK_SIZE - 1)), full]);
