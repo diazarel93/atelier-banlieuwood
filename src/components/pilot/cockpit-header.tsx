@@ -212,7 +212,7 @@ export function CockpitHeader({
           onClick={onOpenModules}
           title="Parcours des modules"
           aria-label="Ouvrir le menu des modules"
-          className="w-9 h-9 rounded-[10px] flex items-center justify-center text-bw-muted hover:text-bw-heading bg-white/80 border border-bw-border cursor-pointer transition-colors flex-shrink-0 hover:shadow-sm sm:hidden"
+          className="w-9 h-9 rounded-[10px] flex items-center justify-center text-bw-muted hover:text-bw-heading bg-white/80 border border-bw-border cursor-pointer transition-colors flex-shrink-0 hover:shadow-sm"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="3" y1="6" x2="21" y2="6" />

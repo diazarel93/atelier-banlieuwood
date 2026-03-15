@@ -97,14 +97,7 @@ function ModuleSidebarInner({
   }, [handleKey]);
 
   return (
-    <div
-      className="fixed left-0 top-0 bottom-0 z-30 hidden sm:flex flex-col w-[260px]"
-      style={{
-        background: "linear-gradient(180deg, #1A1A2E 0%, #16162A 100%)",
-        borderRight: "1px solid rgba(255,255,255,0.06)",
-        boxShadow: "4px 0 24px rgba(0,0,0,0.3)",
-      }}
-    >
+    <div className="flex flex-col h-full">
       {/* ── Header ── */}
       <div className="px-5 pt-5 pb-4">
         <div className="flex items-center justify-between mb-3">
@@ -337,8 +330,8 @@ function ModuleSidebarInner({
 
 export const ModuleSidebar = memo(ModuleSidebarInner);
 
-// ── Mobile drawer (below sm) ──
-export function MobileSidebarDrawer({
+// ── Sidebar Drawer — unified overlay for all screen sizes ──
+export function SidebarDrawer({
   open,
   onClose,
   children,
@@ -347,6 +340,16 @@ export function MobileSidebarDrawer({
   onClose: () => void;
   children: React.ReactNode;
 }) {
+  // Close on Escape
+  useEffect(() => {
+    if (!open) return;
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [open, onClose]);
+
   return (
     <AnimatePresence>
       {open && (
@@ -355,21 +358,33 @@ export function MobileSidebarDrawer({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
             onClick={onClose}
           />
           <motion.div
             initial={{ x: -300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed inset-y-0 left-0 z-50 w-[300px] overflow-y-auto"
+            transition={{ type: "spring", damping: 28, stiffness: 320 }}
+            className="fixed inset-y-0 left-0 z-50 w-[280px] sm:w-[300px] flex flex-col"
             style={{
               background: "linear-gradient(180deg, #1A1A2E 0%, #16162A 100%)",
               borderRight: "1px solid rgba(255,255,255,0.06)",
               boxShadow: "4px 0 24px rgba(0,0,0,0.4)",
             }}
           >
+            {/* Close button */}
+            <div className="flex items-center justify-end px-3 pt-3 pb-0">
+              <button
+                onClick={onClose}
+                aria-label="Fermer le parcours"
+                className="p-2 rounded-lg text-white/40 hover:text-white/80 hover:bg-white/10 transition-colors"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
             {children}
           </motion.div>
         </>

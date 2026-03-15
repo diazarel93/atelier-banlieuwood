@@ -97,7 +97,7 @@ import { CockpitFooterBar } from "@/components/pilot/cockpit-footer-bar";
 import { CockpitModals } from "@/components/pilot/cockpit-modals";
 
 // Layout components
-import { ModuleSidebar, MobileSidebarDrawer } from "@/components/pilot/module-sidebar";
+import { ModuleSidebar, SidebarDrawer } from "@/components/pilot/module-sidebar";
 import { WelcomePanel } from "@/components/pilot/welcome-panel";
 import { ModuleBriefing } from "@/components/pilot/module-briefing";
 import { ContextPanel } from "@/components/pilot/context-panel";
@@ -2235,7 +2235,7 @@ export default function PilotPage() {
   const [codeCopied, setCodeCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const [showStudents, setShowStudents] = useState(false);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileContextOpen, setMobileContextOpen] = useState(false);
   const [pendingModuleSwitch, setPendingModuleSwitch] = useState<{ moduleId: string; isQuickLaunch: boolean } | null>(null);
   const { play: playSound } = useSound();
@@ -2252,7 +2252,7 @@ export default function PilotPage() {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   // Right panel removed — floating docks handle their own state
 
-  const sidebarWidth = 260; // Fixed sidebar width on sm+
+  const sidebarWidth = 0; // Sidebar is now overlay, no offset needed
 
   // Effective connection status: combine navigator.onLine + channel status (#2)
   const effectiveConnectionStatus = !isOnline ? "disconnected" as const : connectionStatus;
@@ -2335,7 +2335,7 @@ export default function PilotPage() {
     if (!mod || mod.disabled) return;
     setSelectedModuleId(moduleId);
     setModuleView("briefing");
-    setMobileSidebarOpen(false);
+    setSidebarOpen(false);
   }
 
   // Actually perform the module switch
@@ -2359,7 +2359,7 @@ export default function PilotPage() {
     }
     if (isQuickLaunch) {
       setSelectedModuleId(moduleId);
-      setMobileSidebarOpen(false);
+      setSidebarOpen(false);
     }
     setModuleView("cockpit");
   }
@@ -2385,7 +2385,7 @@ export default function PilotPage() {
     if (!mod || mod.disabled) return;
     setSelectedModuleId(moduleId);
     setModuleView("briefing");
-    setMobileSidebarOpen(false);
+    setSidebarOpen(false);
   }
 
   // Marks the current module as completed when switching away
@@ -2526,41 +2526,26 @@ export default function PilotPage() {
 
       {/* ── BODY: Sidebar + Main ── */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Module sidebar — fixed left panel, always visible on sm+ */}
-        <ModuleSidebar
-            modules={MODULES}
-            phases={PHASES}
-            activeModuleId={activeModule?.id || null}
-            selectedModuleId={moduleView === "briefing" ? selectedModuleId : null}
-            completedModules={session.completed_modules || []}
-            onSelectModule={handleSelectModule}
-            responsesCount={responses?.length || 0}
-            moduleStartedAt={moduleStartedAt}
-            sessionStatus={session.status}
-            currentQuestionIndex={hasActiveModule ? currentQuestionIndex : undefined}
-            totalModuleQuestions={hasActiveModule ? totalQuestions : undefined}
-          />
-
-        {/* Mobile sidebar drawer */}
-        <MobileSidebarDrawer open={mobileSidebarOpen} onClose={() => setMobileSidebarOpen(false)}>
+        {/* Module sidebar — overlay drawer, hidden by default */}
+        <SidebarDrawer open={sidebarOpen} onClose={() => setSidebarOpen(false)}>
           <ModuleSidebar
             modules={MODULES}
             phases={PHASES}
             activeModuleId={activeModule?.id || null}
             selectedModuleId={moduleView === "briefing" ? selectedModuleId : null}
             completedModules={session.completed_modules || []}
-            onSelectModule={(id) => { handleSelectModule(id); setMobileSidebarOpen(false); }}
-            onQuickLaunch={(id) => { handleQuickLaunchModule(id); setMobileSidebarOpen(false); }}
+            onSelectModule={(id) => { handleSelectModule(id); setSidebarOpen(false); }}
+            onQuickLaunch={(id) => { handleQuickLaunchModule(id); setSidebarOpen(false); }}
             responsesCount={responses?.length || 0}
             moduleStartedAt={moduleStartedAt}
             sessionStatus={session.status}
             currentQuestionIndex={hasActiveModule ? currentQuestionIndex : undefined}
             totalModuleQuestions={hasActiveModule ? totalQuestions : undefined}
           />
-        </MobileSidebarDrawer>
+        </SidebarDrawer>
 
-        {/* Centre — contenu principal (offset by sidebar on sm+) */}
-        <div className="flex-1 overflow-hidden flex flex-col sm:pl-[260px]">
+        {/* Centre — contenu principal (full width) */}
+        <div className="flex-1 overflow-hidden flex flex-col">
         {selectedModuleId && moduleView === "briefing" ? (
           <ModuleBriefing
             module={MODULES.find((m) => m.id === selectedModuleId)!}
@@ -2612,7 +2597,7 @@ export default function PilotPage() {
             totalQuestions={totalQuestions}
             onSelectStudent={(s) => { setSelectedStudentId(s.id); setShowStudents(false); }}
             teams={teams || []}
-            onOpenModules={() => setMobileSidebarOpen(true)}
+            onOpenModules={() => setSidebarOpen(!sidebarOpen)}
             onOpenScreen={() => window.open(ROUTES.screen(sessionId), "_blank")}
             oieScores={oieScores}
           />
