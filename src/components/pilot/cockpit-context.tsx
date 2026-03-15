@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useMemo, type ReactNode } from "react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { Session, Student, Response, VoteResult } from "@/hooks/use-pilot-session";
 import type { CollectiveChoice } from "@/components/pilot/choices-history";
@@ -12,8 +12,9 @@ type Mut<TData, TVariables> = Pick<
   "mutate" | "mutateAsync" | "isPending" | "isError"
 >;
 
-export interface CockpitContextValue {
-  // ── Session data ──
+// ── Data context: changes on every poll cycle ──
+
+export interface CockpitDataValue {
   session: Session;
   sessionId: string;
   responses: Response[];
@@ -23,8 +24,12 @@ export interface CockpitContextValue {
   situationData: Record<string, unknown> | null;
   oieScores?: Record<string, import("@/lib/oie-profile").OIEScores>;
   teams: { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[];
+  studentWarnings: Record<string, number>;
+}
 
-  // ── Mutations ──
+// ── Actions context: stable identity (mutations + callbacks) ──
+
+export interface CockpitActionsValue {
   updateSession: Mut<unknown, Record<string, unknown>>;
   toggleHide: Mut<unknown, { responseId: string; is_hidden: boolean }>;
   toggleVoteOption: Mut<unknown, { responseId: string; is_vote_option: boolean }>;
@@ -40,18 +45,20 @@ export interface CockpitContextValue {
   aiEvaluate: Mut<unknown, string[]>;
   resetResponse: Mut<unknown, string>;
   resetAllResponses: Mut<{ resetCount: number }, string>;
-
-  // ── Callbacks ──
   onModuleComplete: () => void;
   onSelectStudent: (student: Student) => void;
   onOpenModules?: () => void;
   onOpenScreen?: () => void;
-
-  // ── Student warnings map ──
-  studentWarnings: Record<string, number>;
 }
 
-const CockpitContext = createContext<CockpitContextValue | null>(null);
+// ── Combined type (backwards-compatible) ──
+
+export type CockpitContextValue = CockpitDataValue & CockpitActionsValue;
+
+// ── Contexts ──
+
+const CockpitDataContext = createContext<CockpitDataValue | null>(null);
+const CockpitActionsContext = createContext<CockpitActionsValue | null>(null);
 
 export function CockpitProvider({
   value,
@@ -60,13 +67,71 @@ export function CockpitProvider({
   value: CockpitContextValue;
   children: ReactNode;
 }) {
+  // Split into stable actions ref — mutations from useMutation keep stable identity,
+  // so this object only changes when the provider re-renders (not on data changes).
+  const actions = useMemo<CockpitActionsValue>(() => ({
+    updateSession: value.updateSession,
+    toggleHide: value.toggleHide,
+    toggleVoteOption: value.toggleVoteOption,
+    validateChoice: value.validateChoice,
+    removeStudent: value.removeStudent,
+    commentResponse: value.commentResponse,
+    highlightResponse: value.highlightResponse,
+    nudgeStudent: value.nudgeStudent,
+    warnStudent: value.warnStudent,
+    toggleStudentActive: value.toggleStudentActive,
+    lowerHand: value.lowerHand,
+    scoreResponse: value.scoreResponse,
+    aiEvaluate: value.aiEvaluate,
+    resetResponse: value.resetResponse,
+    resetAllResponses: value.resetAllResponses,
+    onModuleComplete: value.onModuleComplete,
+    onSelectStudent: value.onSelectStudent,
+    onOpenModules: value.onOpenModules,
+    onOpenScreen: value.onOpenScreen,
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), []);
+
+  const data: CockpitDataValue = {
+    session: value.session,
+    sessionId: value.sessionId,
+    responses: value.responses,
+    activeStudents: value.activeStudents,
+    voteData: value.voteData,
+    collectiveChoices: value.collectiveChoices,
+    situationData: value.situationData,
+    oieScores: value.oieScores,
+    teams: value.teams,
+    studentWarnings: value.studentWarnings,
+  };
+
   return (
-    <CockpitContext.Provider value={value}>{children}</CockpitContext.Provider>
+    <CockpitActionsContext.Provider value={actions}>
+      <CockpitDataContext.Provider value={data}>
+        {children}
+      </CockpitDataContext.Provider>
+    </CockpitActionsContext.Provider>
   );
 }
 
+/** Get all cockpit data + actions (backwards-compatible) */
 export function useCockpit(): CockpitContextValue {
-  const ctx = useContext(CockpitContext);
-  if (!ctx) throw new Error("useCockpit must be used within <CockpitProvider>");
+  const data = useContext(CockpitDataContext);
+  const actions = useContext(CockpitActionsContext);
+  if (!data || !actions) throw new Error("useCockpit must be used within <CockpitProvider>");
+  return { ...data, ...actions };
+}
+
+/** Get only cockpit data (re-renders on data changes) */
+export function useCockpitData(): CockpitDataValue {
+  const ctx = useContext(CockpitDataContext);
+  if (!ctx) throw new Error("useCockpitData must be used within <CockpitProvider>");
+  return ctx;
+}
+
+/** Get only cockpit actions (stable identity — no re-renders on data changes) */
+export function useCockpitActions(): CockpitActionsValue {
+  const ctx = useContext(CockpitActionsContext);
+  if (!ctx) throw new Error("useCockpitActions must be used within <CockpitProvider>");
   return ctx;
 }

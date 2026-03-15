@@ -1219,6 +1219,12 @@ html.light body::after {
   display: inline-block;
 }
 
+/* Cockpit celebration glow (CSS instead of JS-driven motion for perf) */
+@keyframes celebration-glow {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.08); opacity: 0.2; }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE DEFAULTS
    ═══════════════════════════════════════════════════════════════ */

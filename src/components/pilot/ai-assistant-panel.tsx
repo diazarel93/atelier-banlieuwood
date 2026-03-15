@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, memo, useMemo, type ReactNode } from "react";
+import { useState, useCallback, memo, useMemo, type ReactNode } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { computeCognitiveState, type CognitiveStateResult } from "@/components/pilot/class-cognitive-state";
 import { NarrativeRadar, computeNarrativeScores } from "@/components/pilot/narrative-radar";
@@ -112,24 +112,15 @@ function AIAssistantPanelInner({
   onStudentClick?: (id: string) => void;
 }) {
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
-  const [suggestions, setSuggestions] = useState<AISuggestion[]>([]);
 
-  const updateSuggestions = useCallback(() => {
-    const newSuggestions = generateSuggestions(context).filter(
-      (s) => !dismissed.has(s.id),
-    );
-    setSuggestions(newSuggestions);
-  }, [context, dismissed]);
-
-  useEffect(() => {
-    updateSuggestions();
-  }, [updateSuggestions]);
+  const suggestions = useMemo(
+    () => generateSuggestions(context).filter((s) => !dismissed.has(s.id)),
+    [context, dismissed],
+  );
 
   const dismiss = useCallback((id: string) => {
     setDismissed((prev) => new Set(prev).add(id));
   }, []);
-
-  const activeSuggestions = suggestions.filter((s) => !dismissed.has(s.id));
 
   // Cognitive state for analysis bloc
   const cognitiveState = useMemo<CognitiveStateResult | null>(
@@ -186,7 +177,11 @@ function AIAssistantPanelInner({
     status: context.status,
     isClassDivided: divisionInfo?.isDivided || false,
     divisionLabel: divisionInfo?.label,
-  }), [context, divisionInfo]);
+  }), [
+    context.stuckCount, context.stuckNames, context.handsRaised, context.handsNames,
+    context.handsRaisedAt, context.responsesCount, context.totalStudents,
+    context.disconnectedCount, context.elapsedSeconds, context.status, divisionInfo,
+  ]);
 
   // Check if attention priority has an active alert (for deduplication)
   const attentionQueue = useMemo(() => computeAttentionQueue(attentionSignals), [attentionSignals]);
@@ -198,14 +193,14 @@ function AIAssistantPanelInner({
   const ATTENTION_COVERED_IDS = new Set(["stuck-alert", "total-silence", "all-responded", "classe-partagee"]);
   const grouped = useMemo(() => {
     const groups: Record<string, AISuggestion[]> = { stimulation: [], interaction: [], analyse: [] };
-    for (const s of activeSuggestions) {
+    for (const s of suggestions) {
       if (hasPrimaryAttention && ATTENTION_COVERED_IDS.has(s.id)) continue;
       const g = s.group || "analyse";
       if (!groups[g]) groups[g] = [];
       groups[g].push(s);
     }
     return groups;
-  }, [activeSuggestions, hasPrimaryAttention]);
+  }, [suggestions, hasPrimaryAttention]);
 
   // Route attention actions to existing callbacks
   const handleAttentionAction = useCallback((actionId: string) => {
@@ -391,7 +386,7 @@ function AIAssistantPanelInner({
       })()}
 
       {/* ═══ BLOC 3: SUGGESTIONS PÉDAGOGIQUES — grouped ═══ */}
-      {activeSuggestions.length > 0 && (
+      {suggestions.length > 0 && (
         <div className="space-y-2">
           {(["stimulation", "interaction", "analyse"] as const).map((groupKey) => {
             const items = grouped[groupKey];

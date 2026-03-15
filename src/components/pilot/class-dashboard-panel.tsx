@@ -78,6 +78,13 @@ function ClassDashboardPanelInner({
   const [mapExpanded, setMapExpanded] = useState(true);
   const [mapView, setMapView] = useState<"grid" | "constellation">("grid");
 
+  // Pre-build student lookup map — O(1) instead of O(n) per access
+  const studentMap = useMemo(() => {
+    const m = new Map<string, NonNullable<ClassDashboardPanelProps["session"]["students"]>[number]>();
+    for (const s of session.students || []) m.set(s.id, s);
+    return m;
+  }, [session.students]);
+
   // Compute engagement stats
   const stats = useMemo(() => {
     const respondedN = studentStates.filter(s => s.state === "responded").length;
@@ -113,10 +120,10 @@ function ClassDashboardPanelInner({
   // Stuck students with avatar info
   const stuckWithAvatars = useMemo(() =>
     stuckStudents.map(s => {
-      const raw = session.students?.find(st => st.id === s.id);
+      const raw = studentMap.get(s.id);
       return { ...s, avatar: raw?.avatar || "👤", display_name: raw?.display_name || s.name };
     }),
-    [stuckStudents, session.students]
+    [stuckStudents, studentMap]
   );
 
   // Emotional radar — derived from student states
@@ -133,6 +140,21 @@ function ClassDashboardPanelInner({
     const creativite = online > 0 ? Math.round(((respondedN + thinkingN * 0.5) / online) * 100) : 0;
     return { comprehension, creativite: Math.min(100, creativite), expression, engagement };
   }, [stats]);
+
+  // Enriched student states for grid/constellation (memoized, O(n) via Map)
+  const enrichedStates = useMemo(() =>
+    studentStates.map(s => {
+      const raw = studentMap.get(s.id);
+      return {
+        id: s.id,
+        state: s.state,
+        display_name: raw?.display_name || s.display_name,
+        avatar: raw?.avatar || s.avatar,
+        hand_raised_at: raw?.hand_raised_at,
+      };
+    }),
+    [studentStates, studentMap]
+  );
 
   // Donut SVG data
   const donutSegments = useMemo(() => {
@@ -193,14 +215,11 @@ function ClassDashboardPanelInner({
                   );
                 })}
               </svg>
-              {/* Celebration glow ring when all responded */}
+              {/* Celebration glow ring when all responded — CSS animation for perf */}
               {stats.respondedN > 0 && stats.respondedN === stats.online && (
-                <motion.div
-                  className="absolute inset-[-4px] rounded-full pointer-events-none"
+                <div
+                  className="absolute inset-[-4px] rounded-full pointer-events-none animate-[celebration-glow_2s_ease-in-out_infinite]"
                   style={{ border: "2px solid rgba(76,175,80,0.3)" }}
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: [1, 1.08, 1], opacity: [0.6, 0.2, 0.6] }}
-                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
                 />
               )}
               <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -338,7 +357,7 @@ function ClassDashboardPanelInner({
                 const raisedMs = s.hand_raised_at ? Date.now() - new Date(s.hand_raised_at).getTime() : 0;
                 const raisedMin = Math.floor(raisedMs / 60000);
                 const durationLabel = raisedMin >= 1 ? `${raisedMin}min` : "<1min";
-                const st = studentStates.find(ss => ss.id === s.id);
+                const st = studentStates.find(ss => ss.id === s.id); // small list (hands only), OK
                 return (
                   <button
                     key={s.id}
@@ -446,31 +465,13 @@ function ClassDashboardPanelInner({
               >
                 {mapView === "grid" ? (
                   <SpatialClassroomGrid
-                    studentStates={studentStates.map(s => {
-                      const raw = session.students?.find(st => st.id === s.id);
-                      return {
-                        id: s.id,
-                        state: s.state,
-                        display_name: raw?.display_name || s.display_name,
-                        avatar: raw?.avatar || s.avatar,
-                        hand_raised_at: raw?.hand_raised_at,
-                      };
-                    })}
+                    studentStates={enrichedStates}
                     onStudentClick={(sid) => setFicheStudentId(sid)}
                   />
                 ) : (
                   <div className="px-2 pb-2">
                     <StudentConstellation
-                      studentStates={studentStates.map(s => {
-                        const raw = session.students?.find(st => st.id === s.id);
-                        return {
-                          id: s.id,
-                          state: s.state,
-                          display_name: raw?.display_name || s.display_name,
-                          avatar: raw?.avatar || s.avatar,
-                          hand_raised_at: raw?.hand_raised_at,
-                        };
-                      })}
+                      studentStates={enrichedStates}
                       onStudentClick={(sid) => setFicheStudentId(sid)}
                     />
                   </div>

@@ -8,7 +8,7 @@ import { OnboardingHints } from "@/components/pilot/onboarding-hints";
 import type { OnboardingStep } from "@/hooks/use-pilot-onboarding";
 import type { NextAction } from "@/lib/cockpit-next-action";
 import type { TimelineEventType } from "@/components/pilot/session-timeline";
-import { useCockpit } from "@/components/pilot/cockpit-context";
+import { useCockpitActions } from "@/components/pilot/cockpit-context";
 
 interface NotRespondedStudent {
   id: string;
@@ -115,7 +115,7 @@ export function CockpitFooterBar({
   onboarding,
   revealPhase,
 }: CockpitFooterBarProps) {
-  const { updateSession } = useCockpit();
+  const { updateSession } = useCockpitActions();
   if (sessionStatus === "done" || sessionStatus === "paused") return null;
 
   return (

@@ -102,15 +102,15 @@ import { WelcomePanel } from "@/components/pilot/welcome-panel";
 import { ModuleBriefing } from "@/components/pilot/module-briefing";
 import { ContextPanel } from "@/components/pilot/teacher-docks";
 import { getNextAction, type NextAction } from "@/lib/cockpit-next-action";
-import { TeamManager } from "@/components/pilot/team-manager";
-import { ClassroomMap } from "@/components/pilot/classroom-map";
-import { SpotlightModal } from "@/components/pilot/spotlight-modal";
-import { DebatePanel } from "@/components/pilot/debate-panel";
-import { WordCloud } from "@/components/pilot/word-cloud";
+const TeamManager = dynamic(() => import("@/components/pilot/team-manager").then(m => ({ default: m.TeamManager })), { ssr: false });
+const ClassroomMap = dynamic(() => import("@/components/pilot/classroom-map").then(m => ({ default: m.ClassroomMap })), { ssr: false });
+const SpotlightModal = dynamic(() => import("@/components/pilot/spotlight-modal").then(m => ({ default: m.SpotlightModal })), { ssr: false });
+const DebatePanel = dynamic(() => import("@/components/pilot/debate-panel").then(m => ({ default: m.DebatePanel })), { ssr: false });
+const WordCloud = dynamic(() => import("@/components/pilot/word-cloud").then(m => ({ default: m.WordCloud })), { ssr: false });
 import { TIMER_PRESETS, STUCK_THRESHOLD_MS, STUCK_DETECTION_DELAY_MS } from "@/components/pilot/pilot-settings";
-import { StudentFiche } from "@/components/pilot/student-fiche";
-import { AIAssistantPanel } from "@/components/pilot/ai-assistant-panel";
-import { ComprehensionHeatmap } from "@/components/pilot/comprehension-heatmap";
+const StudentFiche = dynamic(() => import("@/components/pilot/student-fiche").then(m => ({ default: m.StudentFiche })), { ssr: false });
+const AIAssistantPanel = dynamic(() => import("@/components/pilot/ai-assistant-panel").then(m => ({ default: m.AIAssistantPanel })), { ssr: false });
+const ComprehensionHeatmap = dynamic(() => import("@/components/pilot/comprehension-heatmap").then(m => ({ default: m.ComprehensionHeatmap })), { ssr: false });
 import { SessionStateBanner } from "@/components/pilot/session-state-banner";
 import { CenterStateBanner } from "@/components/pilot/center-state-banner";
 import { ROUTES } from "@/lib/routes";
@@ -238,14 +238,19 @@ function CockpitContent({
   }, [ficheStudentId]);
 
   // Fetch all situations for the seance (for preview of upcoming questions)
+  const { data: situationsPreviewData } = useQuery<{ situations: typeof allSituations }>({
+    queryKey: ["situations-preview", session?.id, session?.current_module, session?.current_seance],
+    queryFn: async () => {
+      const res = await fetch(`/api/sessions/${session.id}/situations-preview`);
+      if (!res.ok) return { situations: [] };
+      return res.json();
+    },
+    enabled: !!session?.id,
+    staleTime: 60_000, // situations rarely change mid-session
+  });
   useEffect(() => {
-    if (!session?.id) return;
-    fetch(`/api/sessions/${session.id}/situations-preview`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d?.situations) setAllSituations(d.situations); })
-      .catch(() => {});
-   
-  }, [session?.id, session?.current_module, session?.current_seance]);
+    if (situationsPreviewData?.situations) setAllSituations(situationsPreviewData.situations);
+  }, [situationsPreviewData]);
 
   const situation = (situationData as { situation?: { id: string; position: number; category: string; restitutionLabel: string; prompt: string } })?.situation;
   const budgetStats = (situationData as { budgetStats?: { submittedCount: number; averages: Record<string, number> } })?.budgetStats;
@@ -761,11 +766,11 @@ function CockpitContent({
     if (session.status !== "responding" || !respondingOpenedAt) return [];
     const elapsed = Date.now() - respondingOpenedAt;
     if (elapsed < STUCK_DETECTION_DELAY_MS) return [];
-    const respondedIds = new Set(responses.map((r) => r.student_id));
+    // Reuse respondedStudentIds (already includes module submissions)
     return activeStudents
-      .filter((s) => !respondedIds.has(s.id))
+      .filter((s) => !respondedStudentIds.has(s.id))
       .map((s) => ({ id: s.id, name: s.display_name, avatar: s.avatar }));
-  }, [session.status, respondingOpenedAt, responses, activeStudents]);
+  }, [session.status, respondingOpenedAt, respondedStudentIds, activeStudents]);
 
   // ── Attention priority active? (for CenterStateBanner deduplication) ──
   const hasPrimaryAttention = useMemo(() => {

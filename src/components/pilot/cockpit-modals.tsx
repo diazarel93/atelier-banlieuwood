@@ -8,7 +8,7 @@ import { CompareResponsesModal } from "@/components/pilot/compare-responses-moda
 import { SessionExport } from "@/components/pilot/session-export";
 import { KeyboardShortcutsModal } from "@/components/pilot/keyboard-shortcuts-modal";
 import { ConfirmModal } from "@/components/confirm-modal";
-import { useCockpit } from "@/components/pilot/cockpit-context";
+import { useCockpitActions } from "@/components/pilot/cockpit-context";
 
 interface SpotlightData {
   studentName: string;
@@ -139,7 +139,7 @@ export function CockpitModals({
   responses,
   visibleResponses,
 }: CockpitModalsProps) {
-  const { removeStudent } = useCockpit();
+  const { removeStudent } = useCockpitActions();
   const debateResponses: ResponseForDebate[] = responses
     .filter(r => !r.is_hidden && !r.reset_at)
     .map(r => ({
