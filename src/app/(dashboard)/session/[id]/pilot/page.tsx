@@ -1351,7 +1351,7 @@ function CockpitContent({
           {session.status !== "done" && !focusMode && (
             <div data-onboarding="responses" className="flex items-center gap-2 pb-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.5)" }}>
               {/* Toggle pill: Responses / Plan de classe — Issue 12: hidden on desktop (left panel has classmap) */}
-              <div className="hidden rounded-xl p-0.5 flex-shrink-0" style={{ background: "rgba(255,255,255,0.4)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.3)" }} role="tablist" aria-label="Vue centrale">
+              <div className="flex lg:hidden rounded-xl p-0.5 flex-shrink-0" style={{ background: "rgba(255,255,255,0.4)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.3)" }} role="tablist" aria-label="Vue centrale">
                 <button
                   onClick={() => setCenterTab("responses")}
                   role="tab"
@@ -1809,62 +1809,6 @@ function CockpitContent({
           )}
           </AnimatePresence>
 
-          {/* ── PLAN DE CLASSE — always visible below responses on mobile (< lg) ── */}
-          <div className="lg:hidden mt-4 rounded-xl p-3" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.4)" }}>
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[13px] font-semibold text-[#2C2C2C]">Plan de classe</h4>
-              <div className="flex rounded-[8px] p-0.5" style={{ background: "#EFE4D8" }} role="radiogroup" aria-label="Disposition des tables">
-                {([
-                  { value: "rows", label: "Rangs", icon: "≡" },
-                  { value: "u-shape", label: "En U", icon: "⊔" },
-                  { value: "islands", label: "Ilots", icon: "⊞" },
-                  { value: "free", label: "Libre", icon: "⊡" },
-                ] as const).map(opt => (
-                  <button
-                    key={opt.value}
-                    onClick={() => setClassroomLayout(opt.value)}
-                    role="radio"
-                    aria-checked={classroomLayout === opt.value}
-                    className="flex items-center gap-1 px-2 py-1 rounded-[6px] text-[11px] font-semibold transition-all cursor-pointer"
-                    style={{
-                      background: classroomLayout === opt.value ? "#FFFFFF" : "transparent",
-                      color: classroomLayout === opt.value ? "#2C2C2C" : "#7A7A7A",
-                      boxShadow: classroomLayout === opt.value ? "0 1px 3px rgba(61,43,16,0.08)" : "none",
-                    }}
-                  >
-                    <span className="text-[12px]">{opt.icon}</span>
-                    <span>{opt.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-            <ClassroomMap
-              students={studentStates.map(s => {
-                const raw = session.students?.find(st => st.id === s.id);
-                return {
-                  id: s.id,
-                  display_name: raw?.display_name || "",
-                  avatar: raw?.avatar || "",
-                  state: s.state,
-                  hand_raised_at: raw?.hand_raised_at || null,
-                  warnings: raw?.warnings || 0,
-                };
-              })}
-              teams={teams}
-              responses={responses}
-              moduleResponseTexts={moduleResponseTexts}
-              sessionStatus={session.status}
-              onNudge={(responseId, text) => nudgeStudent.mutate({ responseId, nudgeText: text })}
-              onWarn={(sid) => warnStudent.mutate(sid)}
-              onBroadcast={openBroadcast}
-              onNudgeAllStuck={() => handleNudgeAllStuck()}
-              onStudentClick={(sid) => setFicheStudentId(sid)}
-              layout={classroomLayout}
-              desksPerRow={classroomLayout === "rows" ? (activeStudents.length > 20 ? 4 : 3) : 3}
-              deskSize={activeStudents.length > 20 ? "xs" : activeStudents.length > 12 ? "sm" : "md"}
-              sessionId={session.id}
-            />
-          </div>
 
         </div>
         )}
