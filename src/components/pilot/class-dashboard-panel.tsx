@@ -180,20 +180,20 @@ function ClassDashboardPanelInner({
   return (
     <div className="flex flex-col h-full">
       {/* ── Section title ── */}
-      <div className="px-4 pt-4 pb-1 flex-shrink-0">
-        <span className="text-[14px] font-bold text-bw-heading">Cockpit de classe</span>
+      <div className="px-2.5 lg:px-4 pt-3 lg:pt-4 pb-1 flex-shrink-0">
+        <span className="text-[12px] lg:text-[14px] font-bold text-bw-heading">Cockpit de classe</span>
       </div>
 
       {/* ── Scrollable content ── */}
-      <div className="flex-1 overflow-y-auto min-h-0 px-3 pb-3 space-y-2.5">
+      <div className="flex-1 overflow-y-auto min-h-0 px-2 lg:px-3 pb-2 lg:pb-3 space-y-2">
 
         {/* ── DONUT + LEGEND ── */}
         <GlassCard>
-          <div className="flex items-center gap-4">
-            {/* SVG Donut — 100px — shows RESPONSE progress, not engagement */}
-            <div className="relative flex-shrink-0" style={{ width: 100, height: 100 }}
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* SVG Donut — responsive size */}
+            <div className="relative flex-shrink-0 w-[72px] h-[72px] sm:w-[88px] sm:h-[88px] lg:w-[100px] lg:h-[100px]"
               role="img" aria-label={`Participation ${stats.respondedN}/${stats.online}`}>
-              <svg width="100" height="100" viewBox="0 0 100 100" className="transform -rotate-90">
+              <svg width="100%" height="100%" viewBox="0 0 100 100" className="transform -rotate-90">
                 <circle cx="50" cy="50" r="40" fill="none" stroke="#EFE8DD" strokeWidth="8" />
                 {donutSegments.map((seg, i) => {
                   if (seg.pct <= 0) return null;
@@ -228,12 +228,12 @@ function ClassDashboardPanelInner({
                   initial={{ scale: 1.2 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 15 }}
-                  className="text-[18px] font-extrabold tabular-nums leading-none"
+                  className="text-[14px] sm:text-[16px] lg:text-[18px] font-extrabold tabular-nums leading-none"
                   style={{ color: stats.responsePct >= 70 ? "#4CAF50" : stats.responsePct >= 30 ? "#F2C94C" : "#B0A99E" }}
                 >
                   {stats.respondedN}/{stats.online}
                 </motion.span>
-                <span className="text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] mt-0.5">
+                <span className="text-[7px] sm:text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] mt-0.5">
                   {stats.respondedN > 0 && stats.respondedN === stats.online
                     ? "complet !"
                     : stats.online > 0 && stats.respondedN < stats.online * 0.5
@@ -251,14 +251,14 @@ function ClassDashboardPanelInner({
                 { color: "#EB5757", label: "Bloque", count: stats.stuckN, alwaysShow: false },
                 { color: "#C4BDB2", label: "Absent", count: stats.offN, alwaysShow: false },
               ].filter(item => item.alwaysShow || item.count > 0).map(item => (
-                <div key={item.label} className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: item.color }} />
-                  <span className="text-[12px] font-semibold text-bw-text flex-1">{item.label}</span>
+                <div key={item.label} className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full flex-shrink-0" style={{ background: item.color }} />
+                  <span className="text-[10px] sm:text-[11px] lg:text-[12px] font-semibold text-bw-text flex-1 truncate">{item.label}</span>
                   <motion.span
                     key={`${item.label}-${item.count}`}
                     initial={{ scale: 1.2 }}
                     animate={{ scale: 1 }}
-                    className="text-[13px] font-bold tabular-nums"
+                    className="text-[11px] sm:text-[12px] lg:text-[13px] font-bold tabular-nums"
                     style={{ color: item.color }}
                   >
                     {item.count}

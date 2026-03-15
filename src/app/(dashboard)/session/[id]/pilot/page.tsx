@@ -1234,8 +1234,8 @@ function CockpitContent({
 
         {/* ── SPLIT-PANEL LAYOUT ── */}
         <div className="flex-1 flex overflow-hidden min-h-0" style={{ background: "#F6F2EA", backgroundImage: "radial-gradient(ellipse at 50% 20%, rgba(255,107,53,0.03), transparent 60%)" }}>
-          {/* LEFT: Classe en direct — responsive panel, visible from sm */}
-          <div data-onboarding="classmap" className="hidden sm:flex w-[200px] md:w-[240px] lg:w-[300px] flex-shrink-0 flex-col m-2 mr-0 rounded-2xl shadow-sm overflow-hidden glass-cockpit">
+          {/* LEFT: Classe en direct — always visible, fluid width */}
+          <div data-onboarding="classmap" className="flex w-[180px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[300px] flex-shrink-0 flex-col m-1.5 sm:m-2 mr-0 rounded-2xl shadow-sm overflow-hidden glass-cockpit">
             <ClassDashboardPanel
               session={session}
               studentStates={studentStates}
@@ -1259,7 +1259,7 @@ function CockpitContent({
             />
           </div>
           {/* CENTER: Question + Responses — glassmorphism */}
-          <div className="flex-1 overflow-y-auto min-h-0 m-2 rounded-2xl shadow-sm glass-cockpit">
+          <div className="flex-1 overflow-y-auto min-h-0 m-1.5 sm:m-2 rounded-2xl shadow-sm glass-cockpit">
           {ficheStudentId ? (
             <div className="px-4 py-4">
               {(() => {
@@ -1782,16 +1782,16 @@ function CockpitContent({
         </div>
         )}
         </div>
-          {/* RIGHT: Assistant pedagogique — 320px panel, hidden below xl */}
-          <div className="hidden lg:flex w-[260px] xl:w-[320px] flex-shrink-0 flex-col m-2 ml-0 rounded-2xl shadow-sm overflow-hidden"
+          {/* RIGHT: Assistant pedagogique — always visible, fluid width */}
+          <div className="flex w-[180px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[320px] flex-shrink-0 flex-col m-1.5 sm:m-2 ml-0 rounded-2xl shadow-sm overflow-hidden"
             style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.4)" }}>
             {/* Title */}
-            <div className="px-5 pt-5 pb-3 flex-shrink-0">
-              <h3 className="text-[18px] font-semibold text-[#2C2C2C]">Assistant pedagogique</h3>
-              <p className="text-[13px] text-[#7A7A7A] mt-0.5">Aide a la lecture de la classe</p>
+            <div className="px-3 lg:px-5 pt-3 lg:pt-5 pb-2 lg:pb-3 flex-shrink-0">
+              <h3 className="text-[14px] lg:text-[18px] font-semibold text-[#2C2C2C]">Assistant pedagogique</h3>
+              <p className="text-[11px] lg:text-[13px] text-[#7A7A7A] mt-0.5 hidden sm:block">Aide a la lecture de la classe</p>
             </div>
             {/* AI suggestions + insights */}
-            <div className="flex-1 overflow-y-auto px-5 pb-5 space-y-4">
+            <div className="flex-1 overflow-y-auto px-3 lg:px-5 pb-3 lg:pb-5 space-y-3 lg:space-y-4">
               {session.status !== "done" ? (
                 <AIAssistantPanel
                   context={{
