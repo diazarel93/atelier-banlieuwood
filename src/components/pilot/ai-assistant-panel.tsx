@@ -286,8 +286,8 @@ function AIAssistantPanelInner({
             <span className="text-[12px] font-bold text-[#3B5998]">Analyse en direct</span>
           </div>
           <div className="space-y-2">
-            {/* Cognitive state phrase */}
-            {cognitiveState && (
+            {/* Cognitive state phrase — skip "reflexion active" (already shown in left panel suggestion) */}
+            {cognitiveState && cognitiveState.severity !== "calm" && (
               <p className="text-[12px] font-semibold leading-relaxed" style={{ color: "#4A6FA5" }}>
                 {cognitiveState.icon} {cognitiveState.text}
               </p>
@@ -329,8 +329,8 @@ function AIAssistantPanelInner({
         </div>
       )}
 
-      {/* ═══ BLOC 2.5: RADAR NARRATIF (collapsible, closed by default in live) ═══ */}
-      {context.completedModules && context.completedModules.length > 0 && (() => {
+      {/* ═══ BLOC 2.5: RADAR NARRATIF (hidden until responses arrive) ═══ */}
+      {context.completedModules && context.completedModules.length > 0 && context.responsesCount > 0 && (() => {
         const responsePct = context.totalStudents > 0
           ? Math.round((context.responsesCount / context.totalStudents) * 100)
           : 0;
@@ -354,8 +354,8 @@ function AIAssistantPanelInner({
         );
       })()}
 
-      {/* ═══ BLOC 2.75: RADAR DYNAMIQUE DE CLASSE ═══ */}
-      {context.status === "responding" && context.totalStudents > 0 && (() => {
+      {/* ═══ BLOC 2.75: RADAR DYNAMIQUE DE CLASSE (hidden until responses arrive) ═══ */}
+      {context.status === "responding" && context.totalStudents > 0 && context.responsesCount > 0 && (() => {
         const optSpread = (() => {
           if (!context.optionDistribution) return 0;
           const counts = Object.values(context.optionDistribution);

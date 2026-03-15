@@ -243,14 +243,14 @@ function ClassDashboardPanelInner({
               </div>
             </div>
 
-            {/* Legend */}
+            {/* Legend — hide zero-value lines to reduce noise */}
             <div className="flex-1 space-y-1.5">
               {[
-                { color: "#4CAF50", label: "Repondu", count: stats.respondedN },
-                { color: "#F2C94C", label: "Reflexion", count: stats.thinkingN },
-                { color: "#EB5757", label: "Bloque", count: stats.stuckN },
-                { color: "#C4BDB2", label: "Absent", count: stats.offN },
-              ].map(item => (
+                { color: "#4CAF50", label: "Repondu", count: stats.respondedN, alwaysShow: true },
+                { color: "#F2C94C", label: "Reflexion", count: stats.thinkingN, alwaysShow: true },
+                { color: "#EB5757", label: "Bloque", count: stats.stuckN, alwaysShow: false },
+                { color: "#C4BDB2", label: "Absent", count: stats.offN, alwaysShow: false },
+              ].filter(item => item.alwaysShow || item.count > 0).map(item => (
                 <div key={item.label} className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: item.color }} />
                   <span className="text-[12px] font-semibold text-bw-text flex-1">{item.label}</span>
@@ -268,32 +268,7 @@ function ClassDashboardPanelInner({
             </div>
           </div>
 
-          {/* Response progress bar */}
-          {stats.online > 0 && (
-            <div className="mt-3">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-semibold text-bw-muted">Progression reponses</span>
-                <span className="text-[11px] font-bold tabular-nums" style={{ color: stats.responsePct >= 80 ? "#4CAF50" : stats.responsePct >= 50 ? "#F2C94C" : "#B0A99E" }}>
-                  {stats.respondedN}/{stats.online}
-                </span>
-              </div>
-              <div className="h-2 rounded-full overflow-hidden" style={{ background: "#EFE8DD" }}>
-                <motion.div
-                  className="h-full rounded-full"
-                  initial={false}
-                  animate={{ width: `${stats.responsePct}%` }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                  style={{
-                    background: stats.responsePct >= 80
-                      ? "linear-gradient(90deg, #4CAF50, #66BB6A)"
-                      : stats.responsePct >= 50
-                        ? "linear-gradient(90deg, #F2C94C, #FFD54F)"
-                        : "linear-gradient(90deg, #C4BDB2, #D5CFC6)",
-                  }}
-                />
-              </div>
-            </div>
-          )}
+          {/* Progress bar removed — donut already shows response count */}
 
           {/* Suggestion banner */}
           {suggestion && (
@@ -400,8 +375,8 @@ function ClassDashboardPanelInner({
           </GlassCard>
         )}
 
-        {/* ── EMOTIONAL RADAR — class pulse ── */}
-        {stats.online > 0 && (
+        {/* ── EMOTIONAL RADAR — class pulse (hidden when 0 responses — empty radar is noise) ── */}
+        {stats.respondedN > 0 && (
           <GlassCard>
             <div className="flex items-center justify-between mb-2">
               <span className="text-[11px] font-bold uppercase tracking-wider text-bw-muted">

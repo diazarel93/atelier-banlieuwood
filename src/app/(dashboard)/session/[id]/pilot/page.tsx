@@ -1738,35 +1738,17 @@ function CockpitContent({
             </div>
           )}
 
-          {/* ── EMPTY STATE — lively waiting state with animated avatars ── */}
+          {/* ── EMPTY STATE — clean, minimal waiting indicator ── */}
           {session.status === "responding" && unifiedRespondedCount === 0 && responses.length === 0 && !isStandardQA && !isM1Image && !isM1Notebook && !isM12Any && !(isM13Any && !showM13Standard) && !isM6Any && !isM7Any && !isM8Any && !isBudgetQuiz && !isM1Positioning && (
             <div
-              className="rounded-[16px] p-8 text-center space-y-5"
+              className="rounded-[16px] p-6 text-center space-y-3"
               style={{
                 background: "#FFFFFF",
                 border: "1px solid #EFE4D8",
                 boxShadow: "0 4px 16px rgba(61,43,16,0.04)",
               }}
             >
-              {/* Animated student avatars — thinking */}
-              <div className="flex items-center justify-center gap-1.5 flex-wrap">
-                {activeStudents.slice(0, 12).map((s, i) => (
-                  <motion.span
-                    key={s.id}
-                    className="w-9 h-9 rounded-full flex items-center justify-center text-lg"
-                    style={{ background: "#FFF8E1", border: "2px solid #FFE082" }}
-                    animate={{ y: [0, -4, 0], opacity: [0.6, 1, 0.6] }}
-                    transition={{ repeat: Infinity, duration: 2, delay: i * 0.15, ease: "easeInOut" }}
-                    title={s.display_name}
-                  >
-                    {s.avatar}
-                  </motion.span>
-                ))}
-                {activeStudents.length > 12 && (
-                  <span className="text-[12px] text-[#B0A99E] font-semibold ml-1">+{activeStudents.length - 12}</span>
-                )}
-              </div>
-              {/* Thinking dots animation */}
+              {/* Thinking dots */}
               <div className="flex items-center justify-center gap-1.5">
                 {[0, 1, 2].map(i => (
                   <motion.span
@@ -1778,96 +1760,15 @@ function CockpitContent({
                   />
                 ))}
               </div>
-              <div>
-                <p className="text-[20px] font-bold text-[#F2C94C]">{activeStudents.length} eleves reflechissent...</p>
-                <p className="text-[13px] text-[#B0A99E] mt-1">Les reponses apparaitront ici au fur et a mesure.</p>
-              </div>
-              <div className="flex items-center justify-center gap-2.5">
-                <button onClick={openBroadcast}
-                  className="flex items-center gap-2 h-9 px-4 rounded-[10px] text-[13px] font-medium bg-white border border-[#E8DFD2] text-[#7A7A7A] hover:text-[#2C2C2C] hover:shadow-sm cursor-pointer transition-all">
-                  📢 Message classe
-                </button>
-              </div>
-              <p className="text-[12px] text-[#C4BDB2] italic">Astuce : projetez la question sur l&apos;ecran ↗</p>
+              <p className="text-[16px] font-bold text-[#F2C94C]">{activeStudents.length} eleves reflechissent...</p>
+              <button onClick={openBroadcast}
+                className="flex items-center gap-2 h-8 px-3.5 mx-auto rounded-lg text-[12px] font-medium bg-white border border-[#E8DFD2] text-[#7A7A7A] hover:text-[#2C2C2C] hover:shadow-sm cursor-pointer transition-all">
+                📢 Message classe
+              </button>
             </div>
           )}
 
-          {/* ── PAS ENCORE RÉPONDU — student chips (hidden for M1 Positioning — info visible in left panel plan de classe) ── */}
-          {!focusMode && !isM1Positioning && session.status === "responding" && notRespondedStudents.length > 0 && (
-            <div
-              className="rounded-[16px] p-4 space-y-3"
-              style={{
-                background: "#FFFFFF",
-                border: "1px solid #EFE4D8",
-                boxShadow: "0 2px 8px rgba(61,43,16,0.04)",
-              }}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-[13px] font-semibold text-[#7A7A7A] flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#F2C94C]" />
-                  Pas encore repondu ({notRespondedStudents.length})
-                </span>
-                {stuckStudents.length > 0 && (
-                  <button onClick={handleNudgeAllStuck}
-                    className="text-[12px] font-semibold cursor-pointer transition-colors px-2.5 py-1 rounded-[8px]"
-                    style={{ background: "#FFF0E6", color: "#8B4513", border: "1px solid #E6DBCF" }}>
-                    Relancer {stuckStudents.length} bloque{stuckStudents.length > 1 ? "s" : ""}
-                  </button>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {notRespondedStudents.slice(0, 20).map((s) => {
-                  const st = studentStates.find((ss) => ss.id === s.id);
-                  const isStuck = st?.state === "stuck";
-                  const hasHand = !!s.hand_raised_at;
-                  return (
-                    <div key={s.id} className="group flex items-center gap-0.5">
-                      <button
-                        onClick={() => setFicheStudentId(s.id)}
-                        className="flex items-center gap-1.5 h-8 px-3 rounded-l-[10px] rounded-r-none text-[12px] font-medium cursor-pointer transition-all duration-200 group-hover:rounded-r-none"
-                        style={{
-                          background: isStuck ? "#FFEBEE" : hasHand ? "#FFF8E1" : "#F7F3EA",
-                          border: `1px solid ${isStuck ? "#FFCDD2" : hasHand ? "#FFE082" : "#E8DFD2"}`,
-                          borderRight: "none",
-                          color: isStuck ? "#C62828" : hasHand ? "#F57F17" : "#4A4A4A",
-                        }}
-                      >
-                        <span className="text-sm">{s.avatar}</span>
-                        <span>{s.display_name}</span>
-                        {isStuck && <span className="text-[10px] animate-pulse">●</span>}
-                        {hasHand && <span className="text-xs">✋</span>}
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          updateSession.mutate({
-                            broadcast_message: `Courage ${s.display_name}, n'oublie pas de répondre !`,
-                            broadcast_at: new Date().toISOString(),
-                          });
-                          play("send");
-                          toast.success(`Encouragement envoyé à ${s.display_name}`);
-                          addTimelineEvent("nudge_sent", `Encouragement ${s.display_name}`, undefined, "info");
-                        }}
-                        title={`Encourager ${s.display_name}`}
-                        className="h-8 w-7 rounded-r-[10px] rounded-l-none flex items-center justify-center text-[11px] cursor-pointer transition-all duration-200 opacity-0 group-hover:opacity-100"
-                        style={{
-                          background: "#FFF0E6",
-                          border: "1px solid #E6DBCF",
-                          borderLeft: "none",
-                          color: "#C2570A",
-                        }}
-                      >
-                        💪
-                      </button>
-                    </div>
-                  );
-                })}
-                {notRespondedStudents.length > 20 && (
-                  <span className="text-[12px] text-[#B0A99E] self-center px-1">+{notRespondedStudents.length - 20} autres</span>
-                )}
-              </div>
-            </div>
-          )}
+          {/* "Pas encore répondu" removed — info already in left panel "En attente" */}
 
           {/* Choices history (Standard Q&A) */}
           {!focusMode && isStandardQA && collectiveChoices.length > 0 && (
