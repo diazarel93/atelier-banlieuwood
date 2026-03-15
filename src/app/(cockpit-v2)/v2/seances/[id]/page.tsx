@@ -37,6 +37,7 @@ export default function SessionDetailPage() {
     session,
     isLoading,
     isError,
+    error,
     currentModule,
     currentPhase,
     guide,
@@ -87,6 +88,11 @@ export default function SessionDetailPage() {
           <p className="text-bw-muted text-sm mb-4">
             Session introuvable ou erreur de chargement
           </p>
+          {error && (
+            <p className="text-xs text-red-400 mb-4 font-mono">
+              {error.message}
+            </p>
+          )}
           <Link
             href={ROUTES.seances}
             className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"

@@ -50,7 +50,10 @@ export function useSessionDetail(id: string) {
     queryKey: ["session", id],
     queryFn: async () => {
       const res = await fetch(`/api/sessions/${id}`);
-      if (!res.ok) throw new Error("Session introuvable");
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || `Erreur ${res.status}`);
+      }
       return res.json();
     },
     enabled: !!id,
@@ -195,6 +198,7 @@ export function useSessionDetail(id: string) {
     session,
     isLoading: query.isLoading,
     isError: query.isError,
+    error: query.error,
     currentModule,
     currentPhase,
     guide,
