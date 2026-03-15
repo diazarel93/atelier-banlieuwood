@@ -72,6 +72,7 @@ function ModuleSidebarInner({
 
   const allMods = modules.filter((m) => !m.disabled);
   const globalDone = allMods.filter((m) => completedModules.includes(m.id)).length;
+  const globalPct = allMods.length > 0 ? Math.round((globalDone / allMods.length) * 100) : 0;
 
   useEffect(() => {
     if (activeModuleId && activePhase) {
@@ -82,7 +83,6 @@ function ModuleSidebarInner({
   const handleKey = useCallback((e: KeyboardEvent) => {
     const tag = (e.target as HTMLElement)?.tagName;
     if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (e.target as HTMLElement)?.isContentEditable) return;
-
     const digit = parseInt(e.key);
     if (digit >= 1 && digit <= visiblePhases.length) {
       e.preventDefault();
@@ -97,213 +97,241 @@ function ModuleSidebarInner({
   }, [handleKey]);
 
   return (
-    <>
-      {/* ── SIDEBAR — full panel with labels ── */}
-      <div className="fixed left-0 top-14 bottom-0 z-30 hidden sm:flex flex-col w-[220px] bg-white/95 backdrop-blur-sm border-r border-[#E8DFD2]"
-        style={{ boxShadow: "2px 0 12px rgba(61,43,16,0.04)" }}
-      >
-        {/* Global progress header */}
-        <div className="px-4 pt-4 pb-3 border-b border-[#EFE4D8]">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#9A9082]">Modules</span>
-            <span className="text-[13px] font-bold tabular-nums px-2 py-0.5 rounded-full"
-              style={{
-                background: globalDone === allMods.length && globalDone > 0 ? "#F0FAF4" : "#F5F1EB",
-                color: globalDone === allMods.length && globalDone > 0 ? "#4CAF50" : "#2C2C2C",
-              }}
-            >
-              {globalDone}/{allMods.length}
-            </span>
-          </div>
-          {/* Mini progress bar */}
-          <div className="mt-2 h-1.5 rounded-full overflow-hidden bg-[#F0EBE0]">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${allMods.length > 0 ? Math.round((globalDone / allMods.length) * 100) : 0}%`,
-                background: globalDone === allMods.length && globalDone > 0
-                  ? "linear-gradient(90deg, #4CAF50, #66BB6A)"
-                  : "linear-gradient(90deg, #FF6B35, #FF8F5E)",
-              }}
-            />
-          </div>
+    <div
+      className="fixed left-0 top-0 bottom-0 z-30 hidden sm:flex flex-col w-[260px]"
+      style={{
+        background: "linear-gradient(180deg, #1A1A2E 0%, #16162A 100%)",
+        borderRight: "1px solid rgba(255,255,255,0.06)",
+        boxShadow: "4px 0 24px rgba(0,0,0,0.3)",
+      }}
+    >
+      {/* ── Header ── */}
+      <div className="px-5 pt-5 pb-4">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-[13px] font-bold uppercase tracking-[0.15em] text-white/40">
+            Parcours
+          </h2>
+          <span
+            className="text-[13px] font-bold tabular-nums px-2.5 py-1 rounded-lg"
+            style={{
+              background: globalDone === allMods.length && globalDone > 0 ? "rgba(76,175,80,0.15)" : "rgba(255,255,255,0.06)",
+              color: globalDone === allMods.length && globalDone > 0 ? "#66BB6A" : "rgba(255,255,255,0.7)",
+            }}
+          >
+            {globalDone}/{allMods.length}
+          </span>
         </div>
-
-        {/* Scrollable phase list */}
-        <div className="flex-1 overflow-y-auto py-2 px-2 space-y-0.5">
-          {visiblePhases.map((phase) => {
-            const isActivePhase = activePhase?.id === phase.id;
-            const isExpanded = expandedPhaseId === phase.id;
-            const { done, total, allDone } = getPhaseProgress(phase);
-            const phaseMods = phase.moduleIds
-              .map((id) => modules.find((m) => m.id === id))
-              .filter((m): m is ModuleDef => !!m && !m.disabled);
-
-            return (
-              <div key={phase.id}>
-                {/* Phase header button */}
-                <button
-                  onClick={() => setExpandedPhaseId(isExpanded ? null : phase.id)}
-                  className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left transition-all duration-150 group focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none"
-                  style={{
-                    background: isExpanded
-                      ? `${phase.color}0C`
-                      : isActivePhase
-                        ? `${phase.color}06`
-                        : undefined,
-                  }}
-                >
-                  {/* Phase emoji + indicator */}
-                  <div className="relative flex-shrink-0">
-                    <div
-                      className="w-9 h-9 rounded-xl flex items-center justify-center text-base transition-all"
-                      style={{
-                        background: isExpanded ? `${phase.color}18` : "#F5F1EB",
-                        border: isExpanded ? `1.5px solid ${phase.color}40` : "1.5px solid transparent",
-                      }}
-                    >
-                      {phase.emoji}
-                    </div>
-                    {/* Active pulse dot */}
-                    {isActivePhase && !isExpanded && (
-                      <motion.div
-                        className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full"
-                        style={{ backgroundColor: phase.color, border: "2px solid white" }}
-                        animate={{ scale: [0.8, 1.2, 0.8] }}
-                        transition={{ repeat: Infinity, duration: 1.5 }}
-                      />
-                    )}
-                    {/* Done badge */}
-                    {allDone && (
-                      <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-white flex items-center justify-center" style={{ border: "1.5px solid #C6E9D0" }}>
-                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="4" strokeLinecap="round"><path d="M20 6L9 17l-5-5" /></svg>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Label + progress */}
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-semibold text-[#2C2C2C] truncate leading-tight group-hover:text-[#1a1a1a]">
-                      {phase.label}
-                    </div>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <div className="flex-1 h-1 rounded-full bg-[#F0EBE0] max-w-[60px]">
-                        <div
-                          className="h-full rounded-full transition-all duration-300"
-                          style={{
-                            width: `${total > 0 ? Math.round((done / total) * 100) : 0}%`,
-                            background: allDone ? "#4CAF50" : phase.color,
-                          }}
-                        />
-                      </div>
-                      <span className="text-[10px] tabular-nums text-[#9A9082] font-medium">{done}/{total}</span>
-                    </div>
-                  </div>
-
-                  {/* Chevron */}
-                  <svg
-                    width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A9082" strokeWidth="2" strokeLinecap="round"
-                    className="flex-shrink-0 transition-transform duration-200"
-                    style={{ transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }}
-                  >
-                    <path d="M9 18l6-6-6-6" />
-                  </svg>
-                </button>
-
-                {/* Expanded modules list */}
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="overflow-hidden"
-                    >
-                      <div className="pl-4 pr-1 py-1 space-y-0.5">
-                        {phaseMods.map((mod) => {
-                          const status = getModuleStatus(mod);
-                          const isActive = mod.id === activeModuleId;
-                          const isDone = status === "completed";
-                          const qCount = isActive && totalModuleQuestions ? totalModuleQuestions : mod.questions;
-
-                          return (
-                            <button
-                              key={mod.id}
-                              onClick={() => { onSelectModule(mod.id); }}
-                              className="w-full text-left rounded-lg px-2.5 py-2 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none group/mod"
-                              style={{
-                                background: isActive ? `${mod.color}0C` : undefined,
-                                borderLeft: isActive ? `3px solid ${mod.color}` : "3px solid transparent",
-                              }}
-                            >
-                              <div className="flex items-center gap-2">
-                                {/* Status dot */}
-                                {isDone ? (
-                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="3" strokeLinecap="round" className="flex-shrink-0"><path d="M20 6L9 17l-5-5" /></svg>
-                                ) : isActive ? (
-                                  <motion.div
-                                    className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                                    style={{ background: mod.color }}
-                                    animate={{ scale: [1, 1.3, 1] }}
-                                    transition={{ repeat: Infinity, duration: 1.5 }}
-                                  />
-                                ) : (
-                                  <div className="w-2 h-2 rounded-full flex-shrink-0 bg-[#D4CDC3]" />
-                                )}
-
-                                {/* Title */}
-                                <span className={`text-[12.5px] leading-snug flex-1 truncate ${
-                                  isActive ? "text-[#2C2C2C] font-semibold" : isDone ? "text-[#9A9082]" : "text-[#5A5A5A] group-hover/mod:text-[#2C2C2C]"
-                                }`}>
-                                  {mod.title}
-                                </span>
-
-                                {/* Duration */}
-                                {!isActive && (
-                                  <span className="text-[10px] text-[#B0A89C] flex-shrink-0 tabular-nums">{mod.duration}</span>
-                                )}
-                              </div>
-
-                              {/* Active progress row */}
-                              {isActive && (
-                                <div className="flex items-center gap-2 mt-1 ml-[18px]">
-                                  {qCount > 0 && (
-                                    <span className="text-[11px] font-medium tabular-nums" style={{ color: mod.color }}>
-                                      Q{(currentQuestionIndex ?? 0) + 1}/{qCount}
-                                    </span>
-                                  )}
-                                  {responsesCount !== undefined && responsesCount > 0 && (
-                                    <motion.span
-                                      key={responsesCount}
-                                      initial={{ scale: 1.3, opacity: 0 }}
-                                      animate={{ scale: 1, opacity: 1 }}
-                                      className="text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full"
-                                      style={{ background: "#F0FAF4", color: "#4CAF50" }}
-                                    >
-                                      {responsesCount} rep.
-                                    </motion.span>
-                                  )}
-                                  {elapsed && (
-                                    <span className="text-[10px] tabular-nums font-medium" style={{ color: "#F5A45B" }}>{elapsed}</span>
-                                  )}
-                                </div>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
+        {/* Progress bar */}
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+          <motion.div
+            className="h-full rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${globalPct}%` }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            style={{
+              background: globalDone === allMods.length && globalDone > 0
+                ? "linear-gradient(90deg, #4CAF50, #66BB6A)"
+                : "linear-gradient(90deg, #FF6B35, #FF8F5E)",
+            }}
+          />
         </div>
       </div>
 
-      {/* Click-away to close expanded panel (no longer needed but keep for compat) */}
-    </>
+      {/* ── Phase list ── */}
+      <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-1 scrollbar-thin" style={{ scrollbarColor: "rgba(255,255,255,0.1) transparent" }}>
+        {visiblePhases.map((phase, phaseIdx) => {
+          const isActivePhase = activePhase?.id === phase.id;
+          const isExpanded = expandedPhaseId === phase.id;
+          const { done, total, allDone } = getPhaseProgress(phase);
+          const phaseMods = phase.moduleIds
+            .map((id) => modules.find((m) => m.id === id))
+            .filter((m): m is ModuleDef => !!m && !m.disabled);
+
+          return (
+            <div key={phase.id}>
+              {/* Phase button */}
+              <button
+                onClick={() => setExpandedPhaseId(isExpanded ? null : phase.id)}
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all duration-200 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+                style={{
+                  background: isExpanded
+                    ? `${phase.color}15`
+                    : isActivePhase
+                      ? "rgba(255,255,255,0.04)"
+                      : "transparent",
+                }}
+              >
+                {/* Number + emoji */}
+                <div className="relative flex-shrink-0">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
+                    style={{
+                      background: isExpanded
+                        ? `${phase.color}25`
+                        : allDone
+                          ? "rgba(76,175,80,0.15)"
+                          : "rgba(255,255,255,0.06)",
+                      border: isExpanded
+                        ? `2px solid ${phase.color}60`
+                        : allDone
+                          ? "2px solid rgba(76,175,80,0.3)"
+                          : "2px solid transparent",
+                    }}
+                  >
+                    {allDone ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#66BB6A" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5" /></svg>
+                    ) : (
+                      <span>{phase.emoji}</span>
+                    )}
+                  </div>
+                  {/* Active pulse */}
+                  {isActivePhase && !isExpanded && (
+                    <motion.div
+                      className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full"
+                      style={{ backgroundColor: phase.color, border: "2px solid #1A1A2E" }}
+                      animate={{ scale: [0.8, 1.3, 0.8], opacity: [0.5, 1, 0.5] }}
+                      transition={{ repeat: Infinity, duration: 1.5 }}
+                    />
+                  )}
+                </div>
+
+                {/* Label + count */}
+                <div className="flex-1 min-w-0">
+                  <div className="text-[15px] font-semibold text-white/90 leading-tight group-hover:text-white transition-colors">
+                    {phase.label}
+                  </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    {/* Mini progress dots */}
+                    <div className="flex gap-1">
+                      {Array.from({ length: total }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="w-2 h-2 rounded-full transition-colors"
+                          style={{
+                            background: i < done
+                              ? "#66BB6A"
+                              : isActivePhase && i === done
+                                ? phase.color
+                                : "rgba(255,255,255,0.12)",
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-[11px] tabular-nums text-white/30 font-medium">
+                      {done}/{total}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Chevron */}
+                <svg
+                  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                  className="flex-shrink-0 text-white/20 group-hover:text-white/40 transition-all duration-200"
+                  style={{ transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }}
+                >
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </button>
+
+              {/* Expanded modules */}
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="overflow-hidden"
+                  >
+                    <div className="py-1.5 pl-5 pr-2 space-y-0.5">
+                      {phaseMods.map((mod) => {
+                        const status = getModuleStatus(mod);
+                        const isActive = mod.id === activeModuleId;
+                        const isDone = status === "completed";
+                        const qCount = isActive && totalModuleQuestions ? totalModuleQuestions : mod.questions;
+
+                        return (
+                          <button
+                            key={mod.id}
+                            onClick={() => onSelectModule(mod.id)}
+                            className="w-full text-left rounded-lg px-3 py-2.5 transition-all duration-150 group/mod focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+                            style={{
+                              background: isActive ? `${mod.color}12` : "transparent",
+                              borderLeft: isActive ? `3px solid ${mod.color}` : "3px solid transparent",
+                            }}
+                          >
+                            <div className="flex items-center gap-2.5">
+                              {/* Status */}
+                              {isDone ? (
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#66BB6A" strokeWidth="3" strokeLinecap="round" className="flex-shrink-0"><path d="M20 6L9 17l-5-5" /></svg>
+                              ) : isActive ? (
+                                <motion.div
+                                  className="w-3 h-3 rounded-full flex-shrink-0"
+                                  style={{ background: mod.color, boxShadow: `0 0 8px ${mod.color}80` }}
+                                  animate={{ scale: [1, 1.4, 1] }}
+                                  transition={{ repeat: Infinity, duration: 1.5 }}
+                                />
+                              ) : (
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: "rgba(255,255,255,0.15)" }} />
+                              )}
+
+                              {/* Title — FULL, no truncation */}
+                              <span className={`text-[14px] leading-snug flex-1 ${
+                                isActive
+                                  ? "text-white font-semibold"
+                                  : isDone
+                                    ? "text-white/35 line-through decoration-white/15"
+                                    : "text-white/60 group-hover/mod:text-white/80"
+                              }`}>
+                                {mod.title}
+                              </span>
+
+                              {/* Duration */}
+                              {!isActive && (
+                                <span className="text-[11px] text-white/20 flex-shrink-0 tabular-nums font-medium">
+                                  {mod.duration}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Active: progress row */}
+                            {isActive && (
+                              <div className="flex items-center gap-2.5 mt-1.5 ml-[22px]">
+                                {qCount > 0 && (
+                                  <span className="text-[12px] font-bold tabular-nums" style={{ color: mod.color }}>
+                                    Q{(currentQuestionIndex ?? 0) + 1}/{qCount}
+                                  </span>
+                                )}
+                                {responsesCount !== undefined && responsesCount > 0 && (
+                                  <motion.span
+                                    key={responsesCount}
+                                    initial={{ scale: 1.4, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    className="text-[11px] font-bold tabular-nums px-2 py-0.5 rounded-full"
+                                    style={{ background: "rgba(76,175,80,0.15)", color: "#66BB6A" }}
+                                  >
+                                    {responsesCount} rep.
+                                  </motion.span>
+                                )}
+                                {elapsed && (
+                                  <span className="text-[11px] tabular-nums font-semibold" style={{ color: "#F5A45B" }}>
+                                    {elapsed}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -327,7 +355,7 @@ export function MobileSidebarDrawer({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
             onClick={onClose}
           />
           <motion.div
@@ -335,8 +363,12 @@ export function MobileSidebarDrawer({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed inset-y-0 left-0 z-50 w-[300px] overflow-y-auto bg-white"
-            style={{ borderRight: "1px solid #E8DFD2", boxShadow: "4px 0 24px rgba(61,43,16,0.10)" }}
+            className="fixed inset-y-0 left-0 z-50 w-[300px] overflow-y-auto"
+            style={{
+              background: "linear-gradient(180deg, #1A1A2E 0%, #16162A 100%)",
+              borderRight: "1px solid rgba(255,255,255,0.06)",
+              boxShadow: "4px 0 24px rgba(0,0,0,0.4)",
+            }}
           >
             {children}
           </motion.div>

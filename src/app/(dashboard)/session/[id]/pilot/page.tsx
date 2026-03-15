@@ -2252,7 +2252,7 @@ export default function PilotPage() {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   // Right panel removed — floating docks handle their own state
 
-  const sidebarWidth = 220; // Fixed sidebar width on sm+
+  const sidebarWidth = 260; // Fixed sidebar width on sm+
 
   // Effective connection status: combine navigator.onLine + channel status (#2)
   const effectiveConnectionStatus = !isOnline ? "disconnected" as const : connectionStatus;
@@ -2562,7 +2562,7 @@ export default function PilotPage() {
         </MobileSidebarDrawer>
 
         {/* Centre — contenu principal (offset by sidebar on sm+) */}
-        <div className={`flex-1 overflow-hidden flex flex-col ${!(hasActiveModule && moduleView === "cockpit") ? "sm:pl-[220px]" : ""}`}>
+        <div className={`flex-1 overflow-hidden flex flex-col ${!(hasActiveModule && moduleView === "cockpit") ? "sm:pl-[260px]" : ""}`}>
         {selectedModuleId && moduleView === "briefing" ? (
           <ModuleBriefing
             module={MODULES.find((m) => m.id === selectedModuleId)!}
