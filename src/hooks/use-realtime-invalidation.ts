@@ -101,8 +101,19 @@ export function useRealtimeInvalidation(sessionId: string): { status: Connection
     if (!sessionId) return;
 
     setStatus("connecting");
-    const supabase = createClient();
-    const channel = supabase.channel(`session-${sessionId}`);
+
+    let supabase: ReturnType<typeof createClient>;
+    let channel: RealtimeChannel;
+
+    try {
+      supabase = createClient();
+      channel = supabase.channel(`session-${sessionId}`);
+    } catch (err) {
+      // WebSocket not available (iPad Safari insecure context) — fallback to polling
+      console.warn("[Realtime] WebSocket unavailable, falling back to polling:", (err as Error).message);
+      setStatus("disconnected");
+      return;
+    }
 
     // postgres_changes for child tables (filtered by session_id)
     for (const table of CHILD_TABLES) {
@@ -131,27 +142,34 @@ export function useRealtimeInvalidation(sessionId: string): { status: Connection
       }
     });
 
-    channel.subscribe((channelStatus) => {
-      if (channelStatus === "SUBSCRIBED") {
-        setStatus("connected");
-        retryRef.current = 0;
-      } else if (
-        channelStatus === "CLOSED" ||
-        channelStatus === "CHANNEL_ERROR" ||
-        channelStatus === "TIMED_OUT"
-      ) {
-        setStatus("disconnected");
-        // Schedule reconnect with exponential backoff
-        if (retryRef.current < MAX_RETRIES) {
-          const delay = Math.min(
-            BACKOFF_BASE_MS * Math.pow(2, retryRef.current),
-            BACKOFF_MAX_MS
-          );
-          retryRef.current += 1;
-          retryTimerRef.current = setTimeout(() => setEpoch((e) => e + 1), delay);
+    try {
+      channel.subscribe((channelStatus) => {
+        if (channelStatus === "SUBSCRIBED") {
+          setStatus("connected");
+          retryRef.current = 0;
+        } else if (
+          channelStatus === "CLOSED" ||
+          channelStatus === "CHANNEL_ERROR" ||
+          channelStatus === "TIMED_OUT"
+        ) {
+          setStatus("disconnected");
+          // Schedule reconnect with exponential backoff
+          if (retryRef.current < MAX_RETRIES) {
+            const delay = Math.min(
+              BACKOFF_BASE_MS * Math.pow(2, retryRef.current),
+              BACKOFF_MAX_MS
+            );
+            retryRef.current += 1;
+            retryTimerRef.current = setTimeout(() => setEpoch((e) => e + 1), delay);
+          }
         }
-      }
-    });
+      });
+    } catch (err) {
+      // WebSocket subscribe threw (iPad Safari "The operation is insecure")
+      console.warn("[Realtime] Subscribe failed, falling back to polling:", (err as Error).message);
+      setStatus("disconnected");
+      return;
+    }
 
     channelRef.current = channel;
 
@@ -162,8 +180,12 @@ export function useRealtimeInvalidation(sessionId: string): { status: Connection
         retryTimerRef.current = null;
       }
       // Unsubscribe then remove channel
-      channel.unsubscribe();
-      supabase.removeChannel(channel);
+      try {
+        channel.unsubscribe();
+        supabase.removeChannel(channel);
+      } catch {
+        // Ignore cleanup errors
+      }
       channelRef.current = null;
     };
   }, [sessionId, queryClient, epoch]);
