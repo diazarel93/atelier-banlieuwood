@@ -1351,7 +1351,7 @@ function CockpitContent({
           {session.status !== "done" && !focusMode && (
             <div data-onboarding="responses" className="flex items-center gap-2 pb-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.5)" }}>
               {/* Toggle pill: Responses / Plan de classe — Issue 12: hidden on desktop (left panel has classmap) */}
-              <div className="flex lg:hidden rounded-xl p-0.5 flex-shrink-0" style={{ background: "rgba(255,255,255,0.4)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.3)" }} role="tablist" aria-label="Vue centrale">
+              <div className="flex rounded-xl p-0.5 flex-shrink-0" style={{ background: "rgba(255,255,255,0.4)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.3)" }} role="tablist" aria-label="Vue centrale">
                 <button
                   onClick={() => setCenterTab("responses")}
                   role="tab"
