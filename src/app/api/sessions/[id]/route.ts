@@ -20,7 +20,13 @@ export const GET = withErrorHandler(async function GET(
     .single();
 
   if (error) {
-    return NextResponse.json({ error: "Session introuvable" }, { status: 404 });
+    console.error("[sessions GET]", id, error.message, error.code);
+    // PGRST204 = no rows, else it's a query/schema error
+    const status = error.code === "PGRST116" ? 404 : 500;
+    return NextResponse.json(
+      { error: status === 404 ? "Session introuvable" : `Erreur DB: ${error.message}` },
+      { status }
+    );
   }
 
   return NextResponse.json(data);
