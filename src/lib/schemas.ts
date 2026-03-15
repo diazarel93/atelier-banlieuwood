@@ -100,7 +100,7 @@ export const patchSessionSchema = z
     current_module: z.number().int().min(1).max(12).optional(),
     current_seance: z.number().int().min(1).max(5).optional(),
     current_situation_index: z.number().int().min(0).optional(),
-    title: z.string().min(1).max(60).optional(),
+    title: z.string().min(1).max(100).optional(),
     timer_ends_at: z.string().nullable().optional(),
     completed_modules: z
       .array(z.enum(VALID_MODULE_IDS))
@@ -110,6 +110,13 @@ export const patchSessionSchema = z
     broadcast_at: z.string().nullable().optional(),
     mute_sounds: z.boolean().optional(),
     reveal_phase: z.number().int().min(0).max(4).nullable().optional(),
+    // Editable session metadata
+    class_label: z.string().max(50).nullable().optional(),
+    level: z.enum(["primaire", "college", "lycee"]).optional(),
+    scheduled_at: z.string().nullable().optional(),
+    thematique: z.string().max(200).nullable().optional(),
+    teacher_notes: z.string().nullable().optional(),
+    deleted_at: z.string().nullable().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, {
     message: "Rien a mettre a jour",

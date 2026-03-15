@@ -14,6 +14,8 @@ export const ROUTES = {
   ficheCours: "/v2/fiche-cours",
   eleves: "/v2/eleves",
   eleveDetail: (id: string) => `/v2/eleves/${id}`,
+  settings: "/v2/settings",
+  aide: "/v2/aide",
 
   // Legacy aliases → now point to V2 (301 redirects in next.config.ts)
   sessionDetail: (id: string) => `/v2/seances/${id}`,

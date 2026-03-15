@@ -6,7 +6,7 @@ import { log } from "@/lib/logger";
 import { withErrorHandler } from "@/lib/api-utils";
 
 /**
- * GET /api/v2/stats?classLabel=X&sessionId=Y
+ * GET /api/v2/stats?classLabel=X&sessionId=Y&dateFrom=YYYY-MM-DD&dateTo=YYYY-MM-DD
  * Aggregate OIE scores → 4 axes for the V2 Statistiques page.
  */
 export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
@@ -25,14 +25,30 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   const url = new URL(req.url);
   const classLabel = url.searchParams.get("classLabel");
   const sessionId = url.searchParams.get("sessionId");
+  const dateFrom = url.searchParams.get("dateFrom");
+  const dateTo = url.searchParams.get("dateTo");
+  const moduleFilter = url.searchParams.get("module"); // dbModule number as string
 
   // Fetch sessions (admin sees all)
   let sessQuery = supabase
     .from("sessions")
-    .select("id, title, status, class_label");
+    .select("id, title, status, class_label, created_at, current_module");
 
   if (!isAdmin) {
     sessQuery = sessQuery.eq("facilitator_id", user.id);
+  }
+
+  // Date range filters
+  if (dateFrom) {
+    sessQuery = sessQuery.gte("created_at", `${dateFrom}T00:00:00`);
+  }
+  if (dateTo) {
+    sessQuery = sessQuery.lte("created_at", `${dateTo}T23:59:59`);
+  }
+
+  // Module filter
+  if (moduleFilter) {
+    sessQuery = sessQuery.eq("current_module", parseInt(moduleFilter, 10));
   }
 
   const { data: sessions, error: sessErr } = await sessQuery;

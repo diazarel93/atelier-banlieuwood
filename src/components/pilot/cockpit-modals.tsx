@@ -93,6 +93,7 @@ export interface CockpitModalsProps {
   moduleLabel: string;
   questionPrompt: string;
   activeStudentCount: number;
+  sessionId?: string;
   // Shortcuts
   showShortcuts: boolean;
   setShowShortcuts: (v: boolean) => void;
@@ -131,6 +132,7 @@ export function CockpitModals({
   moduleLabel,
   questionPrompt,
   activeStudentCount,
+  sessionId,
   showShortcuts,
   setShowShortcuts,
   kickTarget,
@@ -223,6 +225,7 @@ export function CockpitModals({
         questionPrompt={questionPrompt}
         responses={exportResponses}
         studentCount={activeStudentCount}
+        sessionId={sessionId}
       />
 
       <KeyboardShortcutsModal showShortcuts={showShortcuts} setShowShortcuts={setShowShortcuts} />

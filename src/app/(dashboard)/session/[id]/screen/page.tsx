@@ -117,7 +117,7 @@ export default function ScreenPage() {
     enabled: !!data?.session && data.session.status !== "done" && !!currentSituationId,
   });
 
-  // Word cloud — fetch response texts while responding
+  // Word cloud — fetch response texts while responding OR when screen mode is wordcloud
   const { data: wordCloudTexts } = useQuery<string[]>({
     queryKey: ["screen-wordcloud", sessionId, currentSituationId],
     queryFn: async () => {
@@ -130,7 +130,7 @@ export default function ScreenPage() {
     refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
     staleTime: 2_000,
     refetchOnWindowFocus: true,
-    enabled: !!data?.session && data.session.status === "responding" && !!currentSituationId,
+    enabled: !!data?.session && (data.session.status === "responding" || data?.session?.broadcastMessage === "__SCREEN_MODE:wordcloud") && !!currentSituationId,
   });
 
   // Reveal mode — fetch full responses with student info when reveal is active
@@ -175,13 +175,28 @@ export default function ScreenPage() {
   const [broadcastMsg, setBroadcastMsg] = useState<string | null>(null);
   const lastBroadcastAt = useRef<string | null>(null);
   useEffect(() => {
-    if (!data?.session?.broadcastMessage || !data.session.broadcastAt) return;
-    if (data.session.broadcastAt === lastBroadcastAt.current) return;
-    lastBroadcastAt.current = data.session.broadcastAt;
-    setBroadcastMsg(data.session.broadcastMessage);
-    const t = setTimeout(() => setBroadcastMsg(null), 12000);
-    return () => clearTimeout(t);
+    const msg = data?.session?.broadcastMessage;
+    const at = data?.session?.broadcastAt;
+    // Handle null/cleared broadcast — always clear overlay
+    if (!msg) {
+      setBroadcastMsg(null);
+      lastBroadcastAt.current = null;
+      return;
+    }
+    if (!at) return;
+    if (at === lastBroadcastAt.current) return;
+    lastBroadcastAt.current = at;
+    setBroadcastMsg(msg);
+    // Screen control commands persist until cleared — no auto-dismiss
+    const isScreenCommand = msg.startsWith("__SCREEN_MODE:") || msg === "__SCREEN_FROZEN";
+    if (!isScreenCommand) {
+      const t = setTimeout(() => setBroadcastMsg(null), 12000);
+      return () => clearTimeout(t);
+    }
   }, [data?.session?.broadcastMessage, data?.session?.broadcastAt]);
+
+  // Parse screen mode from broadcast message (#15)
+  const screenModeFromBroadcast = broadcastMsg?.startsWith("__SCREEN_MODE:") ? broadcastMsg.replace("__SCREEN_MODE:", "") : null;
 
   // ── Briefing state ──
   const [showBriefing, setShowBriefing] = useState(false);
@@ -340,6 +355,53 @@ export default function ScreenPage() {
     <div className="min-h-dvh flex flex-col relative film-grain">
       {/* Broadcast message overlay */}
       <BroadcastMessageOverlay broadcastMsg={broadcastMsg} />
+
+      {/* Screen mode: Responses — full-screen highlighted responses (#15) */}
+      <AnimatePresence>
+        {screenModeFromBroadcast === "responses" && highlightedResponses && highlightedResponses.length > 0 && (
+          <motion.div
+            key="screen-mode-responses"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[90] bg-gradient-to-b from-[#1a1a2e] to-[#16213e] flex flex-col items-center justify-center p-8"
+          >
+            <p className="text-sm text-white/50 uppercase tracking-[0.2em] font-semibold mb-6">Réponses mises en avant</p>
+            <div className="max-w-3xl w-full space-y-4 max-h-[80vh] overflow-y-auto">
+              {highlightedResponses.map((r, i) => (
+                <motion.div
+                  key={r.id || i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.15 }}
+                  className="px-6 py-4 rounded-2xl bg-white/10 border border-white/10 backdrop-blur-sm"
+                >
+                  <p className="text-lg text-white/90 leading-relaxed">{r.text}</p>
+                  <p className="text-sm text-white/40 mt-2">{r.students?.display_name}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Screen mode: Word Cloud — full-screen (#15) */}
+      <AnimatePresence>
+        {screenModeFromBroadcast === "wordcloud" && wordCloudTexts && wordCloudTexts.length > 0 && (
+          <motion.div
+            key="screen-mode-wordcloud"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[90] bg-gradient-to-b from-[#1a1a2e] to-[#16213e] flex flex-col items-center justify-center p-8"
+          >
+            <p className="text-sm text-white/50 uppercase tracking-[0.2em] font-semibold mb-6">Nuage de mots</p>
+            <div className="max-w-4xl w-full">
+              <WordCloud texts={wordCloudTexts} accentColor={moduleColor} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Ambient colored light spots — follow module color */}
       <AmbientGradients moduleColor={moduleColor} />

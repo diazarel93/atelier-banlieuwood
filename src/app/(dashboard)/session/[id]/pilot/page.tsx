@@ -147,6 +147,7 @@ function CockpitContent({
   highlightResponse,
   nudgeStudent,
   warnStudent,
+  toggleStudentActive,
   lowerHand,
   scoreResponse,
   aiEvaluate,
@@ -184,6 +185,7 @@ function CockpitContent({
   highlightResponse: ReturnType<typeof useMutation<unknown, Error, { responseId: string; highlighted: boolean }>>;
   nudgeStudent: ReturnType<typeof useMutation<unknown, Error, { responseId: string; nudgeText: string }>>;
   warnStudent: ReturnType<typeof useMutation<unknown, Error, string>>;
+  toggleStudentActive: ReturnType<typeof useMutation<unknown, Error, { studentId: string; isActive: boolean }>>;
   lowerHand: ReturnType<typeof useMutation<unknown, Error, string>>;
   scoreResponse: ReturnType<typeof useMutation<unknown, Error, { responseId: string; score: number }>>;
   aiEvaluate: ReturnType<typeof useMutation<unknown, Error, string[]>>;
@@ -275,6 +277,9 @@ function CockpitContent({
   const [broadcastHistory, setBroadcastHistory] = useState<{ text: string; sentAt: Date }[]>([]);
   const [timerMode, setTimerMode] = useState(false);
   const [interventionMode, setInterventionMode] = useState(false);
+  // Screen mode (#15) and freeze (#22) state
+  const [screenMode, setScreenMode] = useState<string>("default");
+  const [screenFrozen, setScreenFrozen] = useState(false);
   const { play } = useSound();
 
   const queryClient = useQueryClient();
@@ -928,6 +933,32 @@ function CockpitContent({
     addTimelineEvent("broadcast_sent", "Message envoye", message.slice(0, 50), "info");
   }
 
+  // ── Screen mode handler (#15) ──
+  function handleSetScreenMode(mode: string) {
+    setScreenMode(mode);
+    if (mode === "default") {
+      // Clear any screen mode broadcast — don't set broadcast_message at all so it doesn't flash
+      updateSession.mutate({ broadcast_message: null });
+    } else {
+      updateSession.mutate({ broadcast_message: `__SCREEN_MODE:${mode}`, broadcast_at: new Date().toISOString() });
+    }
+    if (screenFrozen) setScreenFrozen(false);
+    toast.success(`Écran : ${mode === "default" ? "Question" : mode === "responses" ? "Réponses" : mode === "wordcloud" ? "Nuage de mots" : "Écran noir"}`);
+  }
+
+  // ── Freeze screen handler (#22) ──
+  function handleToggleFreeze() {
+    const newFrozen = !screenFrozen;
+    setScreenFrozen(newFrozen);
+    if (newFrozen) {
+      updateSession.mutate({ broadcast_message: "__SCREEN_FROZEN", broadcast_at: new Date().toISOString() });
+      toast.success("Écran gelé — les élèves voient un écran figé");
+    } else {
+      updateSession.mutate({ broadcast_message: null });
+      toast.success("Écran dégelé");
+    }
+  }
+
   // ── Bulk: highlight all visible ──
   function handleHighlightAllVisible() {
     const toHighlight = responses.filter((r) => !r.is_hidden && !r.is_highlighted);
@@ -1161,6 +1192,11 @@ function CockpitContent({
         stuckCount={stuckStudents.length}
         isDarkMode={isDarkMode}
         onToggleDark={() => setIsDarkMode(v => !v)}
+        sessionId={sessionId}
+        screenMode={screenMode}
+        onSetScreenMode={handleSetScreenMode}
+        screenFrozen={screenFrozen}
+        onToggleFreeze={handleToggleFreeze}
       />
 
       {/* ── ZERO-SCROLL LAYOUT — split panel, content scrolls internally ── */}
@@ -1322,6 +1358,8 @@ function CockpitContent({
                     warnStudent={warnStudent}
                     studentWarnings={studentWarnings}
                     oieScores={oieScores?.[ficheStudentId] ?? null}
+                    onToggleActive={(studentId, isActive) => toggleStudentActive.mutate({ studentId, isActive })}
+                    isToggleActivePending={toggleStudentActive.isPending}
                   />
                 );
               })()}
@@ -1863,20 +1901,45 @@ function CockpitContent({
                   const isStuck = st?.state === "stuck";
                   const hasHand = !!s.hand_raised_at;
                   return (
-                    <button key={s.id}
-                      onClick={() => setFicheStudentId(s.id)}
-                      className="flex items-center gap-1.5 h-8 px-3 rounded-[10px] text-[12px] font-medium cursor-pointer transition-all duration-200"
-                      style={{
-                        background: isStuck ? "#FFEBEE" : hasHand ? "#FFF8E1" : "#F7F3EA",
-                        border: `1px solid ${isStuck ? "#FFCDD2" : hasHand ? "#FFE082" : "#E8DFD2"}`,
-                        color: isStuck ? "#C62828" : hasHand ? "#F57F17" : "#4A4A4A",
-                      }}
-                    >
-                      <span className="text-sm">{s.avatar}</span>
-                      <span>{s.display_name}</span>
-                      {isStuck && <span className="text-[10px] animate-pulse">●</span>}
-                      {hasHand && <span className="text-xs">✋</span>}
-                    </button>
+                    <div key={s.id} className="group flex items-center gap-0.5">
+                      <button
+                        onClick={() => setFicheStudentId(s.id)}
+                        className="flex items-center gap-1.5 h-8 px-3 rounded-l-[10px] rounded-r-none text-[12px] font-medium cursor-pointer transition-all duration-200 group-hover:rounded-r-none"
+                        style={{
+                          background: isStuck ? "#FFEBEE" : hasHand ? "#FFF8E1" : "#F7F3EA",
+                          border: `1px solid ${isStuck ? "#FFCDD2" : hasHand ? "#FFE082" : "#E8DFD2"}`,
+                          borderRight: "none",
+                          color: isStuck ? "#C62828" : hasHand ? "#F57F17" : "#4A4A4A",
+                        }}
+                      >
+                        <span className="text-sm">{s.avatar}</span>
+                        <span>{s.display_name}</span>
+                        {isStuck && <span className="text-[10px] animate-pulse">●</span>}
+                        {hasHand && <span className="text-xs">✋</span>}
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          updateSession.mutate({
+                            broadcast_message: `Courage ${s.display_name}, n'oublie pas de répondre !`,
+                            broadcast_at: new Date().toISOString(),
+                          });
+                          play("send");
+                          toast.success(`Encouragement envoyé à ${s.display_name}`);
+                          addTimelineEvent("nudge_sent", `Encouragement ${s.display_name}`, undefined, "info");
+                        }}
+                        title={`Encourager ${s.display_name}`}
+                        className="h-8 w-7 rounded-r-[10px] rounded-l-none flex items-center justify-center text-[11px] cursor-pointer transition-all duration-200 opacity-0 group-hover:opacity-100"
+                        style={{
+                          background: "#FFF0E6",
+                          border: "1px solid #E6DBCF",
+                          borderLeft: "none",
+                          color: "#C2570A",
+                        }}
+                      >
+                        💪
+                      </button>
+                    </div>
                   );
                 })}
                 {notRespondedStudents.length > 20 && (
@@ -2141,6 +2204,7 @@ function CockpitContent({
         moduleLabel={moduleLabel}
         questionPrompt={situation?.prompt || ""}
         activeStudentCount={activeStudents.length}
+        sessionId={sessionId}
         showShortcuts={showShortcuts}
         setShowShortcuts={setShowShortcuts}
         kickTarget={kickTarget}
@@ -2213,7 +2277,7 @@ export default function PilotPage() {
     updateSession, removeStudent, validateChoice,
     toggleHide, toggleVoteOption, commentResponse,
     highlightResponse, nudgeStudent, warnStudent,
-    lowerHand, scoreResponse, aiEvaluate,
+    toggleStudentActive, lowerHand, scoreResponse, aiEvaluate,
     resetResponse, resetAllResponses,
   } = usePilotSession(sessionId, checkingAuth, actorId, effectiveConnectionStatus);
 
@@ -2531,6 +2595,7 @@ export default function PilotPage() {
             highlightResponse={undoableHighlight}
             nudgeStudent={nudgeStudent}
             warnStudent={warnStudent}
+            toggleStudentActive={toggleStudentActive}
             lowerHand={lowerHand}
             scoreResponse={scoreResponse}
             aiEvaluate={aiEvaluate}

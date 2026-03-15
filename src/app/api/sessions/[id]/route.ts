@@ -15,7 +15,7 @@ export const GET = withErrorHandler(async function GET(
 
   const { data, error } = await auth.supabase
     .from("sessions")
-    .select("id, title, status, level, template, join_code, facilitator_id, created_at, scheduled_at, class_label, current_module, current_seance, current_situation_index, timer_ends_at, question_opened_at, broadcast_message, completed_modules, thematique, deleted_at, students(id, display_name, avatar, session_id, profile_id, joined_at)")
+    .select("id, title, status, level, template, join_code, facilitator_id, created_at, scheduled_at, class_label, current_module, current_seance, current_situation_index, timer_ends_at, question_opened_at, broadcast_message, completed_modules, thematique, deleted_at, teacher_notes, students(id, display_name, avatar, session_id, profile_id, joined_at)")
     .eq("id", id)
     .single();
 

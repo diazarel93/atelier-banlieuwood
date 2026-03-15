@@ -101,6 +101,7 @@ export default function ResultsPageV2() {
           onCsv={data.handleExportCsv}
           onPdf={data.handlePrintPdf}
           onDownloadMd={data.handleDownloadMarkdown}
+          onShare={data.handleShareSummary}
         />
       </div>
 
@@ -125,6 +126,7 @@ export default function ResultsPageV2() {
             bilan={data.bilan}
             onSwitchToIaTab={() => handleTabChange("outils-ia")}
             notableResponses={notableResponses ?? null}
+            feedback={data.feedback}
           />
         )}
 

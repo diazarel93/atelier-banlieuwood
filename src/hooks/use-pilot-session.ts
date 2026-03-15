@@ -350,6 +350,25 @@ export function usePilotSession(
     onError: () => toast.error("Erreur"),
   });
 
+  // #24 — Pause / reactivate student (mute toggle)
+  const toggleStudentActive = useMutation({
+    mutationFn: async ({ studentId, isActive }: { studentId: string; isActive: boolean }) => {
+      const res = await fetch(`/api/sessions/${sessionId}/students/${studentId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "toggle_active", is_active: isActive }),
+      });
+      if (!res.ok) throw new Error("Erreur");
+      return res.json();
+    },
+    onSuccess: (data: { is_active: boolean }, { studentId, isActive }) => {
+      queryClient.invalidateQueries({ queryKey: ["pilot-session", sessionId] });
+      toast.success(isActive ? "Élève réactivé" : "Élève mis en pause");
+      logAudit({ action: "student_toggle_active" as AuditAction, actor: actorId, sessionId, details: { studentId, is_active: isActive } });
+    },
+    onError: () => toast.error("Erreur"),
+  });
+
   const lowerHand = useMutation({
     mutationFn: async (studentId: string) => {
       const res = await fetch(`/api/sessions/${sessionId}/students/${studentId}`, {
@@ -464,6 +483,7 @@ export function usePilotSession(
     highlightResponse,
     nudgeStudent,
     warnStudent,
+    toggleStudentActive,
     lowerHand,
     scoreResponse,
     aiEvaluate,

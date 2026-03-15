@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,9 @@ interface WizardData {
   scheduledAt: string;
   template: string;
   thematique: string;
+  repeat: boolean;
+  repeatFrequency: "weekly" | "biweekly";
+  repeatCount: number;
 }
 
 const LEVELS = [
@@ -39,8 +42,10 @@ const TEMPLATES = [
 
 export function SessionCreateWizard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [classLabels, setClassLabels] = useState<string[]>([]);
   const [data, setData] = useState<WizardData>({
     title: "",
     classLabel: "",
@@ -48,7 +53,26 @@ export function SessionCreateWizard() {
     scheduledAt: "",
     template: "",
     thematique: "",
+    repeat: false,
+    repeatFrequency: "weekly",
+    repeatCount: 4,
   });
+
+  // Pre-fill thematique from ?module= query param (from library CTA)
+  useEffect(() => {
+    const moduleParam = searchParams.get("module");
+    if (moduleParam) {
+      update({ thematique: moduleParam });
+    }
+  }, [searchParams]);
+
+  // Fetch distinct class labels for autocomplete
+  useEffect(() => {
+    fetch("/api/sessions/class-labels")
+      .then((res) => (res.ok ? res.json() : { labels: [] }))
+      .then((json) => setClassLabels(json.labels || []))
+      .catch(() => {});
+  }, []);
 
   const update = (partial: Partial<WizardData>) =>
     setData((d) => ({ ...d, ...partial }));
@@ -79,24 +103,51 @@ export function SessionCreateWizard() {
   async function handleCreate() {
     setSaving(true);
     try {
-      const res = await fetch("/api/sessions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: data.title.trim(),
-          level: data.level,
-          template: data.template || null,
-          thematique: data.thematique || null,
-          scheduled_at: data.scheduledAt || null,
-          class_label: data.classLabel || null,
-        }),
-      });
-      if (!res.ok) throw new Error("Erreur création");
-      const session = await res.json();
-      toast.success("Séance créée !");
-      router.push(ROUTES.seancePrepare(session.id));
+      const count =
+        data.repeat && data.scheduledAt ? data.repeatCount : 1;
+      const dayIncrement =
+        data.repeatFrequency === "biweekly" ? 14 : 7;
+      let firstSessionId: string | null = null;
+
+      for (let i = 0; i < count; i++) {
+        let scheduledAt = data.scheduledAt || null;
+        if (scheduledAt && i > 0) {
+          const d = new Date(scheduledAt);
+          d.setDate(d.getDate() + i * dayIncrement);
+          scheduledAt = d.toISOString();
+        }
+
+        const sessionTitle =
+          count > 1
+            ? `${data.title.trim()} (${i + 1}/${count})`
+            : data.title.trim();
+
+        const res = await fetch("/api/sessions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: sessionTitle,
+            level: data.level,
+            template: data.template || null,
+            thematique: data.thematique || null,
+            scheduled_at: scheduledAt,
+            class_label: data.classLabel || null,
+          }),
+        });
+        if (!res.ok) throw new Error("Erreur creation");
+        const session = await res.json();
+        if (i === 0) firstSessionId = session.id;
+      }
+
+      if (count > 1) {
+        toast.success(`${count} seances creees !`);
+        router.push(ROUTES.seances);
+      } else {
+        toast.success("Seance creee !");
+        router.push(ROUTES.seancePrepare(firstSessionId!));
+      }
     } catch {
-      toast.error("Erreur lors de la création de la séance");
+      toast.error("Erreur lors de la creation de la seance");
       setSaving(false);
     }
   }
@@ -179,16 +230,25 @@ export function SessionCreateWizard() {
               <input
                 id="wizard-class"
                 type="text"
+                list="class-label-options"
                 value={data.classLabel}
                 onChange={(e) => update({ classLabel: e.target.value })}
                 placeholder="Ex: 4ème B"
                 enterKeyHint="next"
                 maxLength={50}
+                autoComplete="off"
                 className={cn(
                   "h-10 rounded-lg border bg-card px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
                   classLabelError ? "border-red-400" : "border-[var(--color-bw-border)]"
                 )}
               />
+              {classLabels.length > 0 && (
+                <datalist id="class-label-options">
+                  {classLabels.map((label) => (
+                    <option key={label} value={label} />
+                  ))}
+                </datalist>
+              )}
               {classLabelError && <span className="text-xs text-red-500">{classLabelError}</span>}
             </div>
             <div className="flex flex-col gap-1.5">
@@ -221,6 +281,90 @@ export function SessionCreateWizard() {
               />
               {scheduledAtError && <span className="text-xs text-red-500">{scheduledAtError}</span>}
             </div>
+
+            {/* Repeat toggle — only shown when a date is set */}
+            {data.scheduledAt && (
+              <div className="flex flex-col gap-3">
+                <label className="flex items-center gap-2.5 cursor-pointer">
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={data.repeat}
+                    onClick={() => update({ repeat: !data.repeat })}
+                    className={cn(
+                      "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors",
+                      data.repeat
+                        ? "bg-bw-primary"
+                        : "bg-[var(--color-bw-surface-dim)] border border-[var(--color-bw-border)]"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform",
+                        data.repeat ? "translate-x-[18px]" : "translate-x-[3px]"
+                      )}
+                    />
+                  </button>
+                  <span className="text-xs font-medium text-bw-heading">
+                    Repeter
+                  </span>
+                </label>
+
+                {data.repeat && (
+                  <div className="flex flex-col gap-2 pl-0.5">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs font-medium text-bw-muted">
+                        Frequence
+                      </label>
+                      <div className="flex gap-2">
+                        {([
+                          { value: "weekly", label: "Chaque semaine" },
+                          { value: "biweekly", label: "Toutes les 2 semaines" },
+                        ] as const).map((opt) => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() =>
+                              update({ repeatFrequency: opt.value })
+                            }
+                            className={cn(
+                              "flex-1 rounded-lg border py-2 text-xs font-medium transition-colors",
+                              data.repeatFrequency === opt.value
+                                ? "border-bw-primary bg-bw-primary/5 text-bw-primary"
+                                : "border-[var(--color-bw-border)] text-bw-muted hover:text-bw-heading"
+                            )}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label
+                        htmlFor="wizard-repeat-count"
+                        className="text-xs font-medium text-bw-muted"
+                      >
+                        Nombre de seances
+                      </label>
+                      <select
+                        id="wizard-repeat-count"
+                        value={data.repeatCount}
+                        onChange={(e) =>
+                          update({ repeatCount: parseInt(e.target.value) })
+                        }
+                        className="h-10 rounded-lg border border-[var(--color-bw-border)] bg-card px-3 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
+                      >
+                        {[2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                          <option key={n} value={n}>
+                            {n} seances
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </motion.div>
         )}
 
@@ -313,7 +457,23 @@ export function SessionCreateWizard() {
                 label="Template"
                 value={TEMPLATES.find((t) => t.value === data.template)?.label || "Aucun"}
               />
-              {data.thematique && <Row label="Thématique" value={data.thematique} />}
+              {data.thematique && <Row label="Thematique" value={data.thematique} />}
+              {data.repeat && data.scheduledAt && (
+                <>
+                  <Row
+                    label="Repetition"
+                    value={
+                      data.repeatFrequency === "biweekly"
+                        ? "Toutes les 2 semaines"
+                        : "Chaque semaine"
+                    }
+                  />
+                  <Row
+                    label="Nombre de seances"
+                    value={String(data.repeatCount)}
+                  />
+                </>
+              )}
             </div>
           </motion.div>
         )}
@@ -354,7 +514,11 @@ export function SessionCreateWizard() {
               disabled={saving}
               className="rounded-lg bg-bw-primary px-4 py-2 text-sm font-semibold text-white hover:bg-bw-primary-500 disabled:opacity-50 transition-colors btn-glow"
             >
-              {saving ? "Création..." : "Créer la séance"}
+              {saving
+                ? "Creation..."
+                : data.repeat && data.scheduledAt
+                  ? `Creer ${data.repeatCount} seances`
+                  : "Creer la seance"}
             </button>
           )}
         </div>

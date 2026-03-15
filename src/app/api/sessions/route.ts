@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { safeJson, withErrorHandler } from "@/lib/api-utils";
 import { createSessionSchema, formatZodError } from "@/lib/schemas";
 import { getAuthUser } from "@/lib/auth-helpers";
@@ -9,6 +10,8 @@ import { customAlphabet } from "nanoid";
 const nanoid = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 
 // GET — list facilitator's sessions (admin sees all)
+// Query params:
+//   ?archived=true — return only soft-deleted sessions (bypasses RLS via admin client)
 export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
   const {
@@ -21,13 +24,17 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
 
   const authUser = await getAuthUser(supabase);
   const isAdmin = authUser?.role === "admin";
+  const showArchived = req.nextUrl.searchParams.get("archived") === "true";
 
   const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
   const pageSize = 50;
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
 
-  let query = supabase
+  // For archived sessions, use admin client to bypass RLS (which filters deleted_at IS NOT NULL)
+  const client = showArchived ? createAdminClient() : supabase;
+
+  let query = client
     .from("sessions")
     .select("*, students(id, is_active, last_seen_at)")
     .order("created_at", { ascending: false })
@@ -36,6 +43,11 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   // Admin sees all sessions; others see only their own
   if (!isAdmin) {
     query = query.eq("facilitator_id", user.id);
+  }
+
+  // Filter by archived status
+  if (showArchived) {
+    query = query.not("deleted_at", "is", null);
   }
 
   const { data, error } = await query;

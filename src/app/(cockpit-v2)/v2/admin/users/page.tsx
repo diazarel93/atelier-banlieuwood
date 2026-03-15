@@ -34,6 +34,7 @@ export default function AdminUsersPage() {
   const queryClient = useQueryClient();
   const [filterRole, setFilterRole] = useState<string>("");
   const [filterStatus, setFilterStatus] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const { data, isLoading } = useQuery<{ users: User[] }>({
     queryKey: ["admin-users", filterRole, filterStatus],
@@ -67,7 +68,17 @@ export default function AdminUsersPage() {
     },
   });
 
-  const users = data?.users ?? [];
+  const allUsers = data?.users ?? [];
+  const users = searchQuery.trim()
+    ? allUsers.filter((u) => {
+        const q = searchQuery.trim().toLowerCase();
+        return (
+          u.name.toLowerCase().includes(q) ||
+          u.email.toLowerCase().includes(q) ||
+          (u.institution || "").toLowerCase().includes(q)
+        );
+      })
+    : allUsers;
 
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 space-y-6">
@@ -80,11 +91,46 @@ export default function AdminUsersPage() {
 
       <div className="flex items-center justify-between">
         <h1 className="text-heading-lg text-bw-heading">Utilisateurs</h1>
-        <p className="text-sm text-bw-muted">{users.length} utilisateur{users.length > 1 ? "s" : ""}</p>
+        <p className="text-sm text-bw-muted">
+          {searchQuery && users.length !== allUsers.length
+            ? `${users.length} / ${allUsers.length} utilisateur${allUsers.length > 1 ? "s" : ""}`
+            : `${users.length} utilisateur${users.length > 1 ? "s" : ""}`
+          }
+        </p>
       </div>
 
       {/* Filters */}
       <div className="flex gap-2 flex-wrap">
+        <div className="relative">
+          <svg
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-bw-muted pointer-events-none"
+            width="14" height="14" viewBox="0 0 14 14" fill="none"
+            aria-hidden="true"
+          >
+            <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M10 10l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Rechercher par nom ou email..."
+            aria-label="Rechercher un utilisateur"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-9 w-64 rounded-xl border border-bw-border bg-card pl-9 pr-8 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              aria-label="Effacer la recherche"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 rounded text-bw-muted hover:text-bw-heading transition-colors"
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </button>
+          )}
+        </div>
         <select
           value={filterRole}
           onChange={(e) => setFilterRole(e.target.value)}

@@ -1818,10 +1818,24 @@ html, body {
    PRINT STYLES — results & fiche de cours
    ═══════════════════════════════════════════════════════════════ */
 @media print {
+  @page {
+    margin: 1cm;
+    size: A4;
+  }
+
   /* Hide non-essential UI */
   header, nav, .btn-glow, button, a[href="/v2/seances"],
   [aria-label="Navigation principale"],
   [aria-label="Navigation mobile"] {
+    display: none !important;
+  }
+
+  /* Hide tabs bar, breadcrumb, export buttons, replay controls, and no-print elements */
+  [class*="sticky"][class*="z-30"],
+  [class*="breadcrumb" i],
+  .no-print,
+  select,
+  [data-sonner-toaster] {
     display: none !important;
   }
 
@@ -1850,6 +1864,23 @@ html, body {
 
   /* Remove shimmer / animations */
   .shimmer, .animate-spin, .animate-pulse { animation: none !important; }
+
+  /* Print-friendly stat rings: preserve colors */
+  [class*="StatRing"], svg circle {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Avoid page breaks in response cards */
+  [class*="rounded-lg"][class*="border"] {
+    break-inside: avoid;
+  }
+
+  /* Keep colored elements visible */
+  .text-bw-primary, [class*="bg-bw-primary"] {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════

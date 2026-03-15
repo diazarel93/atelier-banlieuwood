@@ -21,6 +21,8 @@ import {
   IconSearch,
   IconHamburger,
   IconClose,
+  IconSettings,
+  IconHelp,
 } from "./icons";
 
 interface NavItem {
@@ -155,6 +157,30 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
               </Link>
             )}
             <Link
+              href={ROUTES.aide}
+              aria-label="Aide"
+              className={cn(
+                "inline-flex items-center justify-center rounded-xl p-2 transition-colors",
+                pathname.startsWith("/v2/aide")
+                  ? "bg-bw-primary/10 text-bw-primary"
+                  : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+              )}
+            >
+              <IconHelp size={18} />
+            </Link>
+            <Link
+              href={ROUTES.settings}
+              aria-label="Reglages"
+              className={cn(
+                "inline-flex items-center justify-center rounded-xl p-2 transition-colors",
+                pathname.startsWith("/v2/settings")
+                  ? "bg-bw-primary/10 text-bw-primary"
+                  : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+              )}
+            >
+              <IconSettings size={18} />
+            </Link>
+            <Link
               href={ROUTES.seanceNew}
               aria-label="Créer une nouvelle séance"
               className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 hover:shadow-md active:scale-[0.97] transition-all duration-150"
@@ -217,6 +243,46 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                   </Link>
                 );
               })}
+              {/* Aide link in mobile menu */}
+              <Link
+                href={ROUTES.aide}
+                onClick={() => setMobileOpen(false)}
+                aria-current={pathname.startsWith("/v2/aide") ? "page" : undefined}
+                className={cn(
+                  "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                  pathname.startsWith("/v2/aide")
+                    ? "bg-bw-primary/5 text-bw-heading"
+                    : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                )}
+              >
+                <span className={cn(pathname.startsWith("/v2/aide") ? "text-bw-primary" : "text-bw-muted")} aria-hidden="true">
+                  <IconHelp />
+                </span>
+                Aide
+                {pathname.startsWith("/v2/aide") && (
+                  <span className="ml-auto h-1.5 w-1.5 rounded-full bg-bw-primary" />
+                )}
+              </Link>
+              {/* Settings link in mobile menu */}
+              <Link
+                href={ROUTES.settings}
+                onClick={() => setMobileOpen(false)}
+                aria-current={pathname.startsWith("/v2/settings") ? "page" : undefined}
+                className={cn(
+                  "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                  pathname.startsWith("/v2/settings")
+                    ? "bg-bw-primary/5 text-bw-heading"
+                    : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                )}
+              >
+                <span className={cn(pathname.startsWith("/v2/settings") ? "text-bw-primary" : "text-bw-muted")} aria-hidden="true">
+                  <IconSettings />
+                </span>
+                Reglages
+                {pathname.startsWith("/v2/settings") && (
+                  <span className="ml-auto h-1.5 w-1.5 rounded-full bg-bw-primary" />
+                )}
+              </Link>
             </div>
           </nav>
         </div>

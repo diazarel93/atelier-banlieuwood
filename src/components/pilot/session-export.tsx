@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
 interface ExportResponse {
@@ -22,9 +23,11 @@ interface SessionExportProps {
   questionPrompt: string;
   responses: ExportResponse[];
   studentCount: number;
+  /** Session ID — required for full export mode */
+  sessionId?: string;
 }
 
-function generateMarkdown(props: Omit<SessionExportProps, "open" | "onClose">): string {
+function generateMarkdown(props: Omit<SessionExportProps, "open" | "onClose" | "sessionId">): string {
   const { sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount } = props;
   const now = new Date().toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 
@@ -47,7 +50,7 @@ function generateMarkdown(props: Omit<SessionExportProps, "open" | "onClose">): 
     for (const r of highlighted) {
       md += `- **${r.studentName}** : ${r.text}`;
       if (r.teacher_score) md += ` _(${r.teacher_score}/5)_`;
-      if (r.teacher_comment) md += `\n  - 💬 Prof : ${r.teacher_comment}`;
+      if (r.teacher_comment) md += `\n  - Prof : ${r.teacher_comment}`;
       md += `\n`;
     }
     md += `\n`;
@@ -58,7 +61,7 @@ function generateMarkdown(props: Omit<SessionExportProps, "open" | "onClose">): 
     md += `- **${r.studentName}** (${new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}) : ${r.text}`;
     if (r.teacher_score) md += ` _(${r.teacher_score}/5)_`;
     if (r.ai_score) md += ` _(IA: ${r.ai_score}/5)_`;
-    if (r.teacher_comment) md += `\n  - 💬 Prof : ${r.teacher_comment}`;
+    if (r.teacher_comment) md += `\n  - Prof : ${r.teacher_comment}`;
     md += `\n`;
   }
 
@@ -109,7 +112,7 @@ function downloadCSV(responses: ExportResponse[], filename: string) {
   URL.revokeObjectURL(url);
 }
 
-function downloadPDF(props: Omit<SessionExportProps, "open" | "onClose">) {
+function downloadPDF(props: Omit<SessionExportProps, "open" | "onClose" | "sessionId">) {
   const { sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount } = props;
   const now = new Date().toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 
@@ -201,10 +204,51 @@ export function SessionExport({
   questionPrompt,
   responses,
   studentCount,
+  sessionId,
 }: SessionExportProps) {
-  const markdown = generateMarkdown({ sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount });
+  const [exportMode, setExportMode] = useState<"current" | "full">("current");
+  const [fullMarkdown, setFullMarkdown] = useState<string | null>(null);
+  const [fullLoading, setFullLoading] = useState(false);
+  const [fullStats, setFullStats] = useState<{ totalResponses: number; starredCount: number; highlightedCount: number } | null>(null);
+
+  // Reset state when modal opens
+  useEffect(() => {
+    if (open) {
+      setExportMode("current");
+      setFullMarkdown(null);
+      setFullStats(null);
+    }
+  }, [open]);
+
+  // Fetch full export from API when switching to full mode
+  const fetchFullExport = useCallback(async () => {
+    if (!sessionId) return;
+    setFullLoading(true);
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/export`);
+      if (!res.ok) throw new Error("Erreur");
+      const data = await res.json();
+      setFullMarkdown(data.markdown);
+      setFullStats(data.stats);
+    } catch {
+      setFullMarkdown("Erreur lors du chargement de l'export complet.");
+    } finally {
+      setFullLoading(false);
+    }
+  }, [sessionId]);
+
+  useEffect(() => {
+    if (exportMode === "full" && !fullMarkdown && !fullLoading) {
+      fetchFullExport();
+    }
+  }, [exportMode, fullMarkdown, fullLoading, fetchFullExport]);
+
+  const currentMarkdown = generateMarkdown({ sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount });
+  const activeMarkdown = exportMode === "full" ? (fullMarkdown || "Chargement...") : currentMarkdown;
   const slug = sessionTitle.replace(/[^a-zA-Z0-9]/g, "-").slice(0, 30);
-  const filename = `seance-${slug}-${new Date().toISOString().slice(0, 10)}.md`;
+  const filename = exportMode === "full"
+    ? `seance-complete-${slug}-${new Date().toISOString().slice(0, 10)}.md`
+    : `seance-${slug}-${new Date().toISOString().slice(0, 10)}.md`;
 
   return (
     <AnimatePresence>
@@ -227,45 +271,101 @@ export function SessionExport({
                 <span className="text-lg">📋</span>
                 <h3 className="text-sm font-semibold">Export de séance</h3>
               </div>
-              <button onClick={onClose} className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">✕</button>
+              <button onClick={onClose} className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">&#10005;</button>
             </div>
+
+            {/* Mode toggle — current question vs full session */}
+            {sessionId && (
+              <div className="px-5 py-2 border-b border-black/[0.04] flex items-center gap-2 flex-shrink-0">
+                <div className="flex rounded-lg bg-bw-surface-dim p-0.5 text-[12px] font-medium">
+                  <button
+                    onClick={() => setExportMode("current")}
+                    className={`px-3 py-1.5 rounded-md cursor-pointer transition-all ${
+                      exportMode === "current" ? "bg-white shadow-sm text-bw-heading" : "text-bw-muted hover:text-bw-text"
+                    }`}
+                  >
+                    Question actuelle
+                  </button>
+                  <button
+                    onClick={() => setExportMode("full")}
+                    className={`px-3 py-1.5 rounded-md cursor-pointer transition-all ${
+                      exportMode === "full" ? "bg-white shadow-sm text-bw-heading" : "text-bw-muted hover:text-bw-text"
+                    }`}
+                  >
+                    Séance complète
+                  </button>
+                </div>
+                {exportMode === "full" && fullStats && (
+                  <span className="text-[11px] text-bw-muted ml-auto">
+                    {fullStats.totalResponses} réponses, {fullStats.highlightedCount} mises en avant
+                  </span>
+                )}
+              </div>
+            )}
 
             {/* Preview */}
             <div className="flex-1 overflow-y-auto px-5 py-3">
-              <pre className="text-xs text-bw-text leading-relaxed whitespace-pre-wrap font-mono bg-bw-surface rounded-xl p-4 border border-black/[0.04] max-h-[50vh] overflow-y-auto">
-                {markdown}
-              </pre>
+              {fullLoading && exportMode === "full" ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-center space-y-2">
+                    <div className="w-6 h-6 border-2 border-bw-primary border-t-transparent rounded-full animate-spin mx-auto" />
+                    <p className="text-xs text-bw-muted">Chargement de l&apos;export complet...</p>
+                  </div>
+                </div>
+              ) : (
+                <pre className="text-xs text-bw-text leading-relaxed whitespace-pre-wrap font-mono bg-bw-surface rounded-xl p-4 border border-black/[0.04] max-h-[50vh] overflow-y-auto">
+                  {activeMarkdown}
+                </pre>
+              )}
             </div>
 
             {/* Actions */}
             <div className="px-5 py-3 border-t border-black/[0.04] flex items-center justify-between flex-shrink-0">
-              <p className="text-xs text-bw-muted">{responses.length} réponses, {filename}</p>
+              <p className="text-xs text-bw-muted">
+                {exportMode === "current" ? `${responses.length} réponses` : fullStats ? `${fullStats.totalResponses} réponses (toutes questions)` : "..."}, {filename}
+              </p>
               <div className="flex gap-2">
                 <button
-                  onClick={() => { navigator.clipboard.writeText(markdown); }}
-                  className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors"
+                  onClick={() => { navigator.clipboard.writeText(activeMarkdown); }}
+                  disabled={fullLoading}
+                  className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors disabled:opacity-40"
                 >
                   Copier
                 </button>
                 <button
-                  onClick={() => downloadMarkdown(markdown, filename)}
-                  className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors"
+                  onClick={() => downloadMarkdown(activeMarkdown, filename)}
+                  disabled={fullLoading}
+                  className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors disabled:opacity-40"
                 >
                   .md
                 </button>
-                <button
-                  onClick={() => downloadCSV(responses, filename.replace(/\.md$/, ".csv"))}
-                  className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors"
-                >
-                  CSV
-                </button>
-                <button
-                  onClick={() => downloadPDF({ sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount })}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110"
-                  style={{ backgroundColor: "#F5A45B", color: "white" }}
-                >
-                  PDF
-                </button>
+                {exportMode === "current" && (
+                  <button
+                    onClick={() => downloadCSV(responses, filename.replace(/\.md$/, ".csv"))}
+                    className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors"
+                  >
+                    CSV
+                  </button>
+                )}
+                {exportMode === "current" && (
+                  <button
+                    onClick={() => downloadPDF({ sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount })}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110"
+                    style={{ backgroundColor: "#F5A45B", color: "white" }}
+                  >
+                    PDF
+                  </button>
+                )}
+                {exportMode === "full" && (
+                  <button
+                    onClick={() => downloadMarkdown(activeMarkdown, filename)}
+                    disabled={fullLoading}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110 disabled:opacity-40"
+                    style={{ backgroundColor: "#F5A45B", color: "white" }}
+                  >
+                    Télécharger
+                  </button>
+                )}
               </div>
             </div>
           </motion.div>

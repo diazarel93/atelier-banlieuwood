@@ -4,6 +4,7 @@ export type AuditAction =
   | "module_switch"
   | "student_remove"
   | "student_warn"
+  | "student_toggle_active"
   | "session_pause"
   | "session_resume"
   | "response_reset"

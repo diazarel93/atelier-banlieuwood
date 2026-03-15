@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import { BrandLogo } from "@/components/brand-logo";
+import { CountdownTimer } from "@/components/countdown-timer";
 import { TEMPLATE_LABELS } from "@/lib/constants";
 
 export interface ScreenHeaderSession {
@@ -9,6 +10,7 @@ export interface ScreenHeaderSession {
   template?: string | null;
   status: string;
   currentSituationIndex?: number;
+  timerEndsAt?: string | null;
 }
 
 export interface ScreenHeaderSeanceIntro {
@@ -56,6 +58,10 @@ export function ScreenHeader({ session, seanceIntro, moduleColor, maxSituations,
           <span className="text-sm font-medium" style={{ color: moduleColor }}>
             {seanceIntro.icon} {seanceIntro.title}
           </span>
+        )}
+        {/* Global countdown timer — visible to students when active */}
+        {session.timerEndsAt && new Date(session.timerEndsAt).getTime() > Date.now() && (
+          <CountdownTimer endsAt={session.timerEndsAt} size="lg" />
         )}
         {/* Step dots */}
         {!noModuleSelected && session.status !== "done" && maxSituations > 1 && (

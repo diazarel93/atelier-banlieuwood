@@ -22,6 +22,8 @@ export interface SessionDetailData {
   scheduled_at: string | null;
   class_label: string | null;
   completed_modules: string[];
+  teacher_notes: string | null;
+  deleted_at: string | null;
   students: {
     id: string;
     display_name: string;
@@ -30,6 +32,14 @@ export interface SessionDetailData {
   }[];
   created_at: string;
   studentCount: number;
+}
+
+export interface SessionEditPayload {
+  title?: string;
+  class_label?: string | null;
+  level?: string;
+  scheduled_at?: string | null;
+  thematique?: string | null;
 }
 
 export function useSessionDetail(id: string) {
@@ -125,6 +135,62 @@ export function useSessionDetail(id: string) {
     onError: (err: Error) => toast.error(err.message),
   });
 
+  const updateSession = useMutation({
+    mutationFn: async (payload: SessionEditPayload) => {
+      const res = await fetch(`/api/sessions/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Erreur" }));
+        throw new Error(err.error || "Erreur lors de la mise à jour");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success("Séance mise à jour");
+      queryClient.invalidateQueries({ queryKey: ["session", id] });
+      queryClient.invalidateQueries({ queryKey: ["sessions"] });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
+  const archiveSession = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/sessions/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Erreur" }));
+        throw new Error(err.error || "Erreur lors de l'archivage");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success("Séance archivée");
+      queryClient.invalidateQueries({ queryKey: ["sessions"] });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
+  const updateNotes = useMutation({
+    mutationFn: async (teacher_notes: string) => {
+      const res = await fetch(`/api/sessions/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ teacher_notes: teacher_notes || null }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Erreur" }));
+        throw new Error(err.error || "Erreur lors de la sauvegarde des notes");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["session", id] });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
   return {
     session,
     isLoading: query.isLoading,
@@ -142,5 +208,8 @@ export function useSessionDetail(id: string) {
     activateDemo,
     deactivateDemo,
     duplicateSession,
+    updateSession,
+    archiveSession,
+    updateNotes,
   };
 }

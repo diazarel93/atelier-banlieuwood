@@ -14,6 +14,7 @@ import { EmptyState } from "@/components/v2/empty-state";
 import { useQuestionAnalytics } from "@/hooks/use-question-analytics";
 import { ClassComparisonChart } from "@/components/v2/class-comparison-chart";
 import { ClassEvolutionChart } from "@/components/v2/class-evolution-chart";
+import { PHASES, getModuleById } from "@/lib/modules-data";
 import type { AxesScores } from "@/lib/axes-mapping";
 
 interface StatsStudent {
@@ -32,13 +33,34 @@ interface StatsData {
   sessions: { id: string; title: string; classLabel: string | null }[];
 }
 
+// Build unique module options from PHASES for the filter dropdown
+const MODULE_OPTIONS = PHASES.flatMap((p) =>
+  p.moduleIds.map((mid) => {
+    const mod = getModuleById(mid);
+    return mod
+      ? { value: String(mod.dbModule), label: `${p.label} — ${mod.title}`, dbModule: mod.dbModule }
+      : null;
+  })
+).filter((o): o is { value: string; label: string; dbModule: number } => o !== null);
+
+// Deduplicate by dbModule (keep first occurrence)
+const UNIQUE_MODULE_OPTIONS = MODULE_OPTIONS.filter(
+  (opt, i, arr) => arr.findIndex((o) => o.value === opt.value) === i
+);
+
 async function fetchStats(
   classLabel: string | null,
-  sessionId: string | null
+  sessionId: string | null,
+  dateFrom: string | null,
+  dateTo: string | null,
+  moduleFilter: string | null
 ): Promise<StatsData> {
   const params = new URLSearchParams();
   if (classLabel) params.set("classLabel", classLabel);
   if (sessionId) params.set("sessionId", sessionId);
+  if (dateFrom) params.set("dateFrom", dateFrom);
+  if (dateTo) params.set("dateTo", dateTo);
+  if (moduleFilter) params.set("module", moduleFilter);
   const res = await fetch(`/api/v2/stats?${params}`);
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
@@ -50,10 +72,13 @@ async function fetchStats(
 export default function StatistiquesPage() {
   const [classLabel, setClassLabel] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [dateFrom, setDateFrom] = useState<string | null>(null);
+  const [dateTo, setDateTo] = useState<string | null>(null);
+  const [moduleFilter, setModuleFilter] = useState<string | null>(null);
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["v2", "stats", classLabel, sessionId],
-    queryFn: () => fetchStats(classLabel, sessionId),
+    queryKey: ["v2", "stats", classLabel, sessionId, dateFrom, dateTo, moduleFilter],
+    queryFn: () => fetchStats(classLabel, sessionId, dateFrom, dateTo, moduleFilter),
     staleTime: 30_000,
   });
 
@@ -103,6 +128,48 @@ export default function StatistiquesPage() {
               onSessionChange={setSessionId}
             />
           )}
+          {/* Module filter */}
+          <select
+            value={moduleFilter || ""}
+            onChange={(e) => setModuleFilter(e.target.value || null)}
+            className="h-9 rounded-lg border border-[var(--color-bw-border)] bg-card px-3 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+          >
+            <option value="">Tous les modules</option>
+            {UNIQUE_MODULE_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          <div className="flex items-center gap-1.5">
+            <label className="text-xs text-bw-muted shrink-0">Du</label>
+            <input
+              type="date"
+              value={dateFrom || ""}
+              onChange={(e) => setDateFrom(e.target.value || null)}
+              className="h-9 rounded-lg border border-[var(--color-bw-border)] bg-card px-2 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+            />
+            <label className="text-xs text-bw-muted shrink-0">au</label>
+            <input
+              type="date"
+              value={dateTo || ""}
+              onChange={(e) => setDateTo(e.target.value || null)}
+              className="h-9 rounded-lg border border-[var(--color-bw-border)] bg-card px-2 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+            />
+            {(dateFrom || dateTo) && (
+              <button
+                type="button"
+                onClick={() => { setDateFrom(null); setDateTo(null); }}
+                className="h-9 rounded-lg border border-[var(--color-bw-border)] px-2 text-xs font-medium text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+                title="Effacer les dates"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            )}
+          </div>
           {sessionId && (
             <Link
               href={ROUTES.seanceResults(sessionId)}

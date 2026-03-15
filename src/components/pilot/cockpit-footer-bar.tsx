@@ -158,6 +158,11 @@ export function CockpitFooterBar({
                     style={{ background: "rgba(232,245,242,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#1B5E50" }}>
                     💬 <span className="hidden sm:inline">Discussion</span>
                   </button>
+                  <button onClick={() => openBroadcastWith("Question ouverte : ", "Question libre", "✋")}
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
+                    style={{ background: "rgba(255,243,232,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#C2570A" }}>
+                    ✋ <span className="hidden sm:inline">Question libre</span>
+                  </button>
                   <button onClick={() => { setShowDebate(true); addTimelineEvent("debate_launched", "Debat lance", undefined, "highlight"); }} disabled={visibleResponses.length < 1}
                     className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
                     style={{ background: "rgba(240,236,248,0.8)", border: "1px solid rgba(230,219,207,0.6)", color: "#5B3A8E" }}>

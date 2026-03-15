@@ -362,7 +362,7 @@ export function ModuleGuideModal({
           {/* CTA */}
           <div className="pt-2">
             <Link
-              href={ROUTES.seanceNew}
+              href={`${ROUTES.seanceNew}?module=${encodeURIComponent(exercise.title)}`}
               onClick={onClose}
               className="flex items-center justify-center gap-2 w-full rounded-xl bg-bw-primary py-3 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
             >

@@ -33,6 +33,23 @@ export const PATCH = withErrorHandler<{ id: string; studentId: string }>(async f
     return NextResponse.json({ hand_raised_at: null });
   }
 
+  // Toggle active state — pause/reactivate student (#24)
+  if (body.action === "toggle_active") {
+    const newActive = body.is_active === true;
+    const { error } = await supabase
+      .from("students")
+      .update({ is_active: newActive })
+      .eq("id", studentId)
+      .eq("session_id", sessionId);
+
+    if (error) {
+      console.error("[studentId toggle_active]", error.message);
+      return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    }
+
+    return NextResponse.json({ is_active: newActive });
+  }
+
   if (body.action === "warn") {
     // Get current warnings
     const { data: student } = await supabase

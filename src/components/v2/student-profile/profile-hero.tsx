@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import { GlassCardV2 } from "../glass-card";
 import { Avatar } from "../avatar";
 import { StatRing } from "../stat-ring";
@@ -7,14 +8,14 @@ import { AXES, type AxesScores } from "@/lib/axes-mapping";
 import { resolveTalentProfile } from "@/lib/talent-profiles";
 
 const TAG_LABELS: Record<string, { label: string; emoji: string }> = {
-  tres_creatif: { label: "Très créatif", emoji: "🎨" },
-  force_de_proposition: { label: "Force de proposition", emoji: "💡" },
-  bonne_ecoute: { label: "Bonne écoute", emoji: "👂" },
-  tres_investi: { label: "Très investi", emoji: "🔥" },
-  bonne_cooperation: { label: "Bonne coopération", emoji: "🤝" },
-  leadership: { label: "Leadership", emoji: "👑" },
-  perturbateur: { label: "Perturbateur", emoji: "⚠️" },
-  decrochage: { label: "Décrochage", emoji: "📉" },
+  tres_creatif: { label: "Tres creatif", emoji: "\u{1F3A8}" },
+  force_de_proposition: { label: "Force de proposition", emoji: "\u{1F4A1}" },
+  bonne_ecoute: { label: "Bonne ecoute", emoji: "\u{1F442}" },
+  tres_investi: { label: "Tres investi", emoji: "\u{1F525}" },
+  bonne_cooperation: { label: "Bonne cooperation", emoji: "\u{1F91D}" },
+  leadership: { label: "Leadership", emoji: "\u{1F451}" },
+  perturbateur: { label: "Perturbateur", emoji: "\u{26A0}\u{FE0F}" },
+  decrochage: { label: "Decrochage", emoji: "\u{1F4C9}" },
 };
 
 interface ProfileHeroProps {
@@ -30,6 +31,10 @@ interface ProfileHeroProps {
   avgAiScore?: number | null;
   avgResponseTimeMs?: number | null;
   facilitatorTags?: { tag: string; count: number }[];
+  /** Called when the teacher renames the student. If omitted, edit is disabled. */
+  onRename?: (newName: string) => void;
+  /** True while the rename mutation is in flight */
+  isRenaming?: boolean;
 }
 
 function formatRelativeDate(iso: string): string {
@@ -71,7 +76,56 @@ export function ProfileHero({
   avgAiScore,
   avgResponseTimeMs,
   facilitatorTags,
+  onRename,
+  isRenaming,
 }: ProfileHeroProps) {
+  const [editing, setEditing] = useState(false);
+  const [editValue, setEditValue] = useState(displayName);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Focus input when editing starts
+  useEffect(() => {
+    if (editing) {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    }
+  }, [editing]);
+
+  // Sync edit value when displayName changes (after successful rename)
+  useEffect(() => {
+    if (!editing) {
+      setEditValue(displayName);
+    }
+  }, [displayName, editing]);
+
+  function startEditing() {
+    setEditValue(displayName);
+    setEditing(true);
+  }
+
+  function cancelEditing() {
+    setEditing(false);
+    setEditValue(displayName);
+  }
+
+  function confirmRename() {
+    const trimmed = editValue.trim();
+    if (trimmed && trimmed !== displayName && onRename) {
+      onRename(trimmed);
+    }
+    setEditing(false);
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      confirmRename();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      cancelEditing();
+    }
+  }
+
   const hasScores =
     scores &&
     (scores.comprehension > 0 ||
@@ -95,10 +149,45 @@ export function ProfileHero({
           <Avatar name={displayName} emoji={avatar} size="lg" />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="text-heading-xl text-bw-heading truncate">
-                {displayName}
-              </h1>
-              {cp && (
+              {editing ? (
+                <div className="flex items-center gap-1.5">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    onBlur={confirmRename}
+                    maxLength={100}
+                    className="h-8 w-48 rounded-lg border border-bw-primary bg-card px-2 text-heading-xl text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30 transition-colors"
+                    aria-label="Modifier le nom de l'eleve"
+                  />
+                </div>
+              ) : (
+                <>
+                  <h1 className="text-heading-xl text-bw-heading truncate">
+                    {displayName}
+                  </h1>
+                  {onRename && (
+                    <button
+                      type="button"
+                      onClick={startEditing}
+                      disabled={isRenaming}
+                      aria-label="Modifier le nom"
+                      className="shrink-0 p-1 rounded-lg text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors disabled:opacity-50"
+                    >
+                      {isRenaming ? (
+                        <span className="block h-3.5 w-3.5 rounded-full border-2 border-bw-muted/30 border-t-bw-primary animate-spin" />
+                      ) : (
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                          <path d="M10 1.5l2.5 2.5L4.5 12H2v-2.5L10 1.5z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </button>
+                  )}
+                </>
+              )}
+              {cp && !editing && (
                 <span
                   className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold"
                   style={{ background: `${cp.color}15`, color: cp.color }}
@@ -117,13 +206,13 @@ export function ProfileHero({
                 <span className="font-semibold text-bw-heading tabular-nums">
                   {sessionCount}
                 </span>{" "}
-                séance{sessionCount !== 1 ? "s" : ""}
+                seance{sessionCount !== 1 ? "s" : ""}
               </span>
               <span className="text-body-xs text-bw-muted">
                 <span className="font-semibold text-bw-heading tabular-nums">
                   {totalResponses}
                 </span>{" "}
-                réponse{totalResponses !== 1 ? "s" : ""}
+                reponse{totalResponses !== 1 ? "s" : ""}
               </span>
               {avgAiScore !== null && avgAiScore !== undefined && (
                 <span className="text-body-xs text-bw-muted">
@@ -160,7 +249,7 @@ export function ProfileHero({
                       title={`${def?.label || t.tag} (${t.count}x)`}
                     >
                       {def?.emoji} {def?.label || t.tag}
-                      {t.count > 1 && <span className="opacity-60">×{t.count}</span>}
+                      {t.count > 1 && <span className="opacity-60">{"\u00D7"}{t.count}</span>}
                     </span>
                   );
                 })}
@@ -173,7 +262,7 @@ export function ProfileHero({
                       title={`${def?.label || t.tag} (${t.count}x)`}
                     >
                       {def?.emoji} {def?.label || t.tag}
-                      {t.count > 1 && <span className="opacity-60">×{t.count}</span>}
+                      {t.count > 1 && <span className="opacity-60">{"\u00D7"}{t.count}</span>}
                     </span>
                   );
                 })}

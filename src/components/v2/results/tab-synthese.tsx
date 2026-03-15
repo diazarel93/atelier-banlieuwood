@@ -12,7 +12,8 @@ import { SessionTimeline } from "./session-timeline";
 import { CollectiveStoryCards } from "./collective-story-cards";
 import { BudgetBarsCard } from "./budget-bars-card";
 import { PitchListCard } from "./pitch-list-card";
-import type { ExportData, M10Pitch, ReplayData, BilanData } from "@/hooks/use-results-data";
+import { StudentDetailCard } from "./student-detail-card";
+import type { ExportData, M10Pitch, ReplayData, BilanData, FeedbackData } from "@/hooks/use-results-data";
 import type { PosterChoice, PosterStudent } from "@/components/film-poster";
 
 interface TabSyntheseProps {
@@ -28,6 +29,7 @@ interface TabSyntheseProps {
   bilan: BilanData | null;
   onSwitchToIaTab: () => void;
   notableResponses: NotableResponses | null;
+  feedback: FeedbackData | null;
 }
 
 export function TabSynthese({
@@ -43,6 +45,7 @@ export function TabSynthese({
   bilan,
   onSwitchToIaTab,
   notableResponses,
+  feedback,
 }: TabSyntheseProps) {
   const lines = exportData.markdown.split("\n");
 
@@ -59,6 +62,9 @@ export function TabSynthese({
 
       {/* Notable responses */}
       <NotableResponsesCard data={notableResponses} />
+
+      {/* Per-student detail */}
+      <StudentDetailCard sessionId={sessionId} feedback={feedback} />
 
       {/* Session timeline */}
       {replayData && replayData.events.length > 0 && (

@@ -52,6 +52,9 @@ interface StudentFicheProps {
   warnStudent: { mutate: (args: string) => void; isPending: boolean };
   studentWarnings: Record<string, number>;
   oieScores?: OIEScores | null;
+  // #24 — Pause / reactivate student
+  onToggleActive?: (studentId: string, isActive: boolean) => void;
+  isToggleActivePending?: boolean;
 }
 
 export function StudentFiche({
@@ -76,6 +79,8 @@ export function StudentFiche({
   warnStudent,
   studentWarnings,
   oieScores,
+  onToggleActive,
+  isToggleActivePending,
 }: StudentFicheProps) {
   const [nudgeText, setNudgeText] = useState("");
   const [showNudgeInput, setShowNudgeInput] = useState(false);
@@ -150,10 +155,30 @@ export function StudentFiche({
               {warnings > 0 && (
                 <span className="text-xs text-amber-400 font-medium">{warnings}/3 avert.</span>
               )}
+              {!student.is_active && (
+                <span className="text-xs text-red-500 font-medium">En pause</span>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* #24 — Paused student banner */}
+      {!student.is_active && onToggleActive && (
+        <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] bg-red-50 border border-red-200">
+          <span className="text-sm">⏸</span>
+          <span className="text-xs font-medium text-red-700 flex-1">
+            Cet élève est en pause. Il ne peut pas répondre.
+          </span>
+          <button
+            onClick={() => onToggleActive(student.id, true)}
+            disabled={isToggleActivePending}
+            className="px-2.5 py-1 rounded-lg text-xs font-medium bg-white border border-red-200 text-red-700 hover:bg-red-50 cursor-pointer transition-all disabled:opacity-50"
+          >
+            {isToggleActivePending ? "..." : "Réactiver"}
+          </button>
+        </div>
+      )}
 
       {/* O-I-E Creative profile radar + synthesis + debug */}
       {oieScores && (
@@ -329,6 +354,26 @@ export function StudentFiche({
             <span className="text-sm">⚠️</span>
             {warnings > 0 ? `Avertir (${warnings}/3)` : "Avertir"}
           </button>
+          {/* #24 — Pause / Reactivate toggle */}
+          {onToggleActive && (
+            <button
+              onClick={() => onToggleActive(student.id, !student.is_active)}
+              disabled={isToggleActivePending}
+              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all active:scale-95 disabled:opacity-50 ${
+                student.is_active
+                  ? "text-red-500 hover:bg-red-50"
+                  : "text-emerald-600 hover:bg-emerald-50"
+              }`}
+            >
+              <span className="text-sm">{student.is_active ? "⏸" : "▶️"}</span>
+              {isToggleActivePending
+                ? "..."
+                : student.is_active
+                ? "Mettre en pause"
+                : "Réactiver"
+              }
+            </button>
+          )}
         </div>
 
         {/* View progression link */}

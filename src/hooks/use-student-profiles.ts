@@ -182,9 +182,39 @@ export function useDeleteNote(profileId: string) {
       return res.json();
     },
     onSuccess: () => {
-      toast.success("Note supprimée");
+      toast.success("Note supprimee");
       queryClient.invalidateQueries({
         queryKey: ["v2", "student-profile", profileId],
+      });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+}
+
+export function useUpdateStudentName(profileId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (displayName: string) => {
+      const res = await fetch(`/api/v2/student-profiles/${profileId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Erreur" }));
+        throw new Error(err.error || "Erreur lors de la mise a jour du nom");
+      }
+      return res.json();
+    },
+    onSuccess: (data) => {
+      toast.success(`Nom mis a jour : ${data.displayName}`);
+      queryClient.invalidateQueries({
+        queryKey: ["v2", "student-profile", profileId],
+      });
+      // Also invalidate the list
+      queryClient.invalidateQueries({
+        queryKey: ["v2", "student-profiles"],
       });
     },
     onError: (err: Error) => toast.error(err.message),

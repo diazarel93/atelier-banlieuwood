@@ -11,6 +11,7 @@ interface HeroStripProps {
   onCsv: () => void;
   onPdf: () => void;
   onDownloadMd: () => void;
+  onShare: () => void;
 }
 
 export function HeroStrip({
@@ -20,6 +21,7 @@ export function HeroStrip({
   onCsv,
   onPdf,
   onDownloadMd,
+  onShare,
 }: HeroStripProps) {
   const { session, studentsCount, choicesCount } = exportData;
   const stats = feedback?.stats;
@@ -75,6 +77,7 @@ export function HeroStrip({
             { label: "CSV", onClick: onCsv, disabled: !feedback },
             { label: "PDF", onClick: onPdf },
             { label: ".md", onClick: onDownloadMd },
+            { label: "Partager", onClick: onShare },
           ].map((btn) => (
             <button
               key={btn.label}

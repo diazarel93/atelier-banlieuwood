@@ -351,6 +351,62 @@ export function useResultsData(sessionId: string) {
     window.print();
   }, []);
 
+  const handleShareSummary = useCallback(() => {
+    const exp = exportQuery.data;
+    const fb = feedbackQuery.data;
+    if (!exp) return;
+
+    const lines: string[] = [];
+    lines.push(`# ${exp.session.title}`);
+    lines.push(`*${exp.session.date} - ${exp.session.level}*`);
+    lines.push("");
+
+    // KPIs
+    lines.push("## Chiffres cles");
+    lines.push(`- ${exp.studentsCount} eleve${exp.studentsCount !== 1 ? "s" : ""}`);
+    lines.push(`- ${fb?.stats.totalResponses ?? exp.choicesCount} reponse${(fb?.stats.totalResponses ?? exp.choicesCount) !== 1 ? "s" : ""}`);
+    if (fb) {
+      lines.push(`- ${fb.stats.participationRate}% de participation`);
+      lines.push(`- Score global : ${fb.overallScore}%`);
+    }
+    lines.push("");
+
+    // Competencies
+    if (fb && fb.competencies.length > 0) {
+      lines.push("## Competences");
+      for (const c of fb.competencies) {
+        lines.push(`- **${c.label}** : ${c.score}% (${c.detail})`);
+      }
+      lines.push("");
+    }
+
+    // Group profile
+    if (fb) {
+      lines.push("## Profil du groupe");
+      lines.push(fb.groupProfile);
+      lines.push("");
+      if (fb.strengths) lines.push(`Point fort : ${fb.strengths.detail}`);
+      if (fb.weakness) lines.push(`Axe de progression : ${fb.weakness.detail}`);
+      lines.push("");
+    }
+
+    // Top students
+    if (fb && fb.students.length > 0) {
+      lines.push("## Top contributeurs");
+      for (const s of fb.students.slice(0, 5)) {
+        lines.push(`- ${s.name} : ${s.responses} rep., ${s.chosenCount} choix retenu${s.chosenCount !== 1 ? "s" : ""}`);
+      }
+      lines.push("");
+    }
+
+    lines.push("---");
+    lines.push("*Genere avec Banlieuwood*");
+
+    const summary = lines.join("\n");
+    navigator.clipboard.writeText(summary);
+    toast.success("Resume copie dans le presse-papier !");
+  }, [exportQuery.data, feedbackQuery.data]);
+
   return {
     // Eager data
     exportData: exportQuery.data ?? null,
@@ -388,6 +444,7 @@ export function useResultsData(sessionId: string) {
     handleDownloadMarkdown,
     handleExportCsv,
     handlePrintPdf,
+    handleShareSummary,
   };
 }
 

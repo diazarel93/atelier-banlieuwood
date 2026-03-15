@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/lib/routes";
 import { SeanceTabs, type SeanceTab } from "@/components/v2/seance-tabs";
 import { SeanceDayGroup } from "@/components/v2/seance-day-group";
 import { SeanceCalendarSidebar } from "@/components/v2/seance-calendar-sidebar";
 import { getModuleById } from "@/lib/modules-data";
+import { useConfirmAction } from "@/hooks/use-confirm-action";
+import { ConfirmModal } from "@/components/confirm-modal";
+import { toast } from "sonner";
 import Link from "next/link";
 
 interface Session {
@@ -20,11 +23,18 @@ interface Session {
   scheduled_at: string | null;
   class_label: string | null;
   studentCount: number;
+  deleted_at: string | null;
 }
 
 async function fetchSessions(): Promise<Session[]> {
   const res = await fetch("/api/sessions");
-  if (!res.ok) throw new Error("Erreur chargement séances");
+  if (!res.ok) throw new Error("Erreur chargement seances");
+  return res.json();
+}
+
+async function fetchArchivedSessions(): Promise<Session[]> {
+  const res = await fetch("/api/sessions?archived=true");
+  if (!res.ok) throw new Error("Erreur chargement archives");
   return res.json();
 }
 
@@ -50,19 +60,84 @@ function getDateLabel(dateStr: string): string {
 
 export default function SeancesPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [tab, setTab] = useState<SeanceTab>("upcoming");
   const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const confirm = useConfirmAction();
 
+  const toggleSelect = useCallback((id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const clearSelection = useCallback(() => setSelected(new Set()), []);
+
+  const handleBulkArchive = useCallback(() => {
+    const count = selected.size;
+    if (count === 0) return;
+    confirm.requestConfirm({
+      title: `Archiver ${count} seance${count > 1 ? "s" : ""} ?`,
+      description: `${count} seance${count > 1 ? "s seront archivees" : " sera archivee"}. Vous pourrez les retrouver dans l'onglet Archives.`,
+      confirmLabel: "Archiver",
+      confirmVariant: "danger",
+      action: async () => {
+        const ids = [...selected];
+        const results = await Promise.allSettled(
+          ids.map((id) =>
+            fetch(`/api/sessions/${id}`, { method: "DELETE" })
+          )
+        );
+        const succeeded = results.filter(
+          (r) => r.status === "fulfilled" && (r.value as Response).ok
+        ).length;
+        if (succeeded === ids.length) {
+          toast.success(`${succeeded} seance${succeeded > 1 ? "s archivees" : " archivee"}`);
+        } else {
+          toast.error(`${succeeded}/${ids.length} archivees. Certaines ont echoue.`);
+        }
+        clearSelection();
+        queryClient.invalidateQueries({ queryKey: ["sessions"] });
+      },
+    });
+  }, [selected, confirm, clearSelection, queryClient]);
+
+  // Active sessions (deleted_at IS NULL, enforced by RLS)
   const { data: sessions = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["sessions"],
     queryFn: fetchSessions,
     refetchInterval: 15_000,
   });
 
+  // Archived (soft-deleted) sessions -- only fetched when tab is "archived"
+  const { data: archivedSessions = [], isLoading: isLoadingArchived } = useQuery({
+    queryKey: ["sessions", "archived"],
+    queryFn: fetchArchivedSessions,
+    enabled: tab === "archived",
+  });
+
   const filtered = useMemo(() => {
+    // For the archived tab, use the separate archived query
+    if (tab === "archived") {
+      let list = archivedSessions;
+      if (search.trim()) {
+        const q = search.toLowerCase();
+        list = list.filter(
+          (s) =>
+            s.title.toLowerCase().includes(q) ||
+            s.class_label?.toLowerCase().includes(q)
+        );
+      }
+      return list;
+    }
+
     let list = sessions;
 
-    // Filter by tab — exclusive logic, no overlap
+    // Filter by tab -- exclusive logic, no overlap
     switch (tab) {
       case "upcoming":
         // Scheduled in the future OR waiting with a schedule date
@@ -87,7 +162,7 @@ export default function SeancesPage() {
             (!s.scheduled_at || new Date(s.scheduled_at) <= new Date())
         );
         break;
-      case "archived":
+      case "done":
         list = list.filter((s) => s.status === "done");
         break;
     }
@@ -103,7 +178,7 @@ export default function SeancesPage() {
     }
 
     return list;
-  }, [sessions, tab, search]);
+  }, [sessions, archivedSessions, tab, search]);
 
   // Group by date
   const grouped = useMemo(() => {
@@ -116,7 +191,7 @@ export default function SeancesPage() {
     return Object.entries(groups);
   }, [filtered]);
 
-  // Tab counts — must match filter logic above
+  // Tab counts -- must match filter logic above
   const counts = useMemo(() => {
     const now = new Date();
     const upcoming = sessions.filter(
@@ -128,23 +203,26 @@ export default function SeancesPage() {
     const draft = sessions.filter(
       (s) => s.status === "waiting" && (!s.scheduled_at || new Date(s.scheduled_at) <= now)
     ).length;
-    const archived = sessions.filter((s) => s.status === "done").length;
-    return { upcoming, active, draft, archived };
-  }, [sessions]);
+    const done = sessions.filter((s) => s.status === "done").length;
+    const archived = archivedSessions.length;
+    return { upcoming, active, draft, done, archived };
+  }, [sessions, archivedSessions]);
 
   // Calendar dates
   const sessionDates = sessions
     .map((s) => new Date(s.scheduled_at || s.created_at))
     .filter(Boolean);
 
+  const currentlyLoading = isLoading || (tab === "archived" && isLoadingArchived);
+
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-xl font-bold text-bw-heading">Séances</h1>
+          <h1 className="text-xl font-bold text-bw-heading">Seances</h1>
           <p className="text-sm text-bw-muted mt-0.5">
-            Gérez et préparez vos séances
+            Gerez et preparez vos seances
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -163,7 +241,7 @@ export default function SeancesPage() {
             <input
               type="text"
               placeholder="Rechercher..."
-              aria-label="Rechercher une séance"
+              aria-label="Rechercher une seance"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="h-9 w-48 rounded-lg border border-[var(--color-bw-border)] bg-card pl-9 pr-8 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors"
@@ -188,7 +266,7 @@ export default function SeancesPage() {
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
-            Nouvelle séance
+            Nouvelle seance
           </Link>
         </div>
       </div>
@@ -203,17 +281,17 @@ export default function SeancesPage() {
           {isError ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <p className="text-bw-muted text-sm mb-4">
-                Impossible de charger les séances
+                Impossible de charger les seances
               </p>
               <button
                 type="button"
                 onClick={() => refetch()}
                 className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
               >
-                Réessayer
+                Reessayer
               </button>
             </div>
-          ) : isLoading ? (
+          ) : currentlyLoading ? (
             <div className="flex flex-col gap-4">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="h-24 rounded-2xl bg-card shimmer" />
@@ -222,14 +300,18 @@ export default function SeancesPage() {
           ) : grouped.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <p className="text-bw-muted text-sm mb-4">
-                Aucune séance dans cette catégorie
+                {tab === "archived"
+                  ? "Aucune seance archivee"
+                  : "Aucune seance dans cette categorie"}
               </p>
-              <Link
-                href={ROUTES.seanceNew}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-bw-primary px-4 py-2 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors"
-              >
-                Créer une séance
-              </Link>
+              {tab !== "archived" && (
+                <Link
+                  href={ROUTES.seanceNew}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-bw-primary px-4 py-2 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors"
+                >
+                  Creer une seance
+                </Link>
+              )}
             </div>
           ) : (
             <div className="flex flex-col gap-6">
@@ -251,6 +333,8 @@ export default function SeancesPage() {
                     };
                   })}
                   onSessionClick={(id) => router.push(ROUTES.seanceDetail(id))}
+                  selectedIds={selected}
+                  onToggleSelect={toggleSelect}
                 />
               ))}
             </div>
@@ -262,6 +346,46 @@ export default function SeancesPage() {
           <SeanceCalendarSidebar sessionDates={sessionDates} />
         </div>
       </div>
+
+      {/* Bulk action floating toolbar */}
+      {selected.size > 0 && (
+        <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 rounded-2xl bg-card border border-[var(--color-bw-border)] shadow-xl px-4 py-2.5 animate-in slide-in-from-bottom-4 duration-200">
+          <span className="text-sm font-medium text-bw-heading tabular-nums">
+            {selected.size} selectionnee{selected.size > 1 ? "s" : ""}
+          </span>
+          <button
+            type="button"
+            onClick={handleBulkArchive}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-red-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-600 transition-colors"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+              <path d="M10 11v6M14 11v6" />
+            </svg>
+            Archiver ({selected.size})
+          </button>
+          <button
+            type="button"
+            onClick={clearSelection}
+            className="rounded-lg border border-[var(--color-bw-border)] px-3 py-1.5 text-sm font-medium text-bw-muted hover:text-bw-heading transition-colors"
+          >
+            Annuler
+          </button>
+        </div>
+      )}
+
+      {/* Confirm modal */}
+      <ConfirmModal
+        open={confirm.open}
+        onClose={confirm.onClose}
+        onConfirm={confirm.onConfirm}
+        title={confirm.title}
+        description={confirm.description}
+        confirmLabel={confirm.confirmLabel}
+        confirmVariant={confirm.confirmVariant}
+        isPending={confirm.isPending}
+      />
     </div>
   );
 }

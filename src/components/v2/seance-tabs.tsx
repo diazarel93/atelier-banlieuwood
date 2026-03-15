@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useSwipe } from "@/hooks/use-swipe";
 
-export type SeanceTab = "upcoming" | "active" | "draft" | "archived";
+export type SeanceTab = "upcoming" | "active" | "draft" | "done" | "archived";
 
 interface SeanceTabsProps {
   active: SeanceTab;
@@ -17,7 +17,8 @@ const TABS: { key: SeanceTab; label: string }[] = [
   { key: "upcoming", label: "A venir" },
   { key: "active", label: "En cours" },
   { key: "draft", label: "Brouillons" },
-  { key: "archived", label: "Archives" },
+  { key: "done", label: "Terminees" },
+  { key: "archived", label: "Archivees" },
 ];
 
 export function SeanceTabs({ active, counts, onChange, className }: SeanceTabsProps) {
@@ -39,8 +40,8 @@ export function SeanceTabs({ active, counts, onChange, className }: SeanceTabsPr
   return (
     <div
       role="tablist"
-      aria-label="Filtrer les séances"
-      className={cn("flex items-center gap-1 rounded-xl bg-[var(--color-bw-surface-dim)] p-1", className)}
+      aria-label="Filtrer les seances"
+      className={cn("flex items-center gap-1 rounded-xl bg-[var(--color-bw-surface-dim)] p-1 overflow-x-auto", className)}
       {...swipeHandlers}
     >
       {TABS.map((tab) => (
@@ -51,7 +52,7 @@ export function SeanceTabs({ active, counts, onChange, className }: SeanceTabsPr
           aria-selected={active === tab.key}
           onClick={() => onChange(tab.key)}
           className={cn(
-            "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all",
+            "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all whitespace-nowrap",
             active === tab.key
               ? "bg-card text-bw-heading shadow-sm"
               : "text-bw-muted hover:text-bw-heading"

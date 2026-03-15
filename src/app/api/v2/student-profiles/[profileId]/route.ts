@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
+import { isValidUUID, withErrorHandler, safeJson } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/student-profiles/[profileId]
@@ -317,4 +317,75 @@ export const GET = withErrorHandler<{ profileId: string }>(async function GET(
     achievements,
     notes: notesRes.data || [],
   });
+});
+
+/**
+ * PATCH /api/v2/student-profiles/[profileId]
+ * Update student display_name. The teacher must own at least one session the student belongs to.
+ * Body: { displayName: string }
+ */
+export const PATCH = withErrorHandler<{ profileId: string }>(async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ profileId: string }> }
+) {
+  const { profileId } = await params;
+  if (!isValidUUID(profileId)) {
+    return NextResponse.json({ error: "profileId invalide" }, { status: 400 });
+  }
+
+  const parsed = await safeJson<{ displayName: string }>(req);
+  if ("error" in parsed) return parsed.error;
+  const { displayName } = parsed.data;
+
+  if (!displayName || typeof displayName !== "string" || displayName.trim().length === 0) {
+    return NextResponse.json({ error: "displayName requis" }, { status: 400 });
+  }
+
+  const trimmedName = displayName.trim().slice(0, 100);
+
+  const supabase = await createServerSupabase();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
+  }
+
+  // Get facilitator sessions to verify ownership
+  const { data: facSessions } = await supabase
+    .from("sessions")
+    .select("id")
+    .eq("facilitator_id", user.id);
+
+  if (!facSessions || facSessions.length === 0) {
+    return NextResponse.json({ error: "Aucune seance trouvee" }, { status: 404 });
+  }
+
+  const facSessionIds = facSessions.map((s) => s.id);
+
+  // Find all student rows for this profile in facilitator's sessions
+  const { data: students } = await supabase
+    .from("students")
+    .select("id, session_id")
+    .in("session_id", facSessionIds)
+    .or(`profile_id.eq.${profileId},id.eq.${profileId}`);
+
+  if (!students || students.length === 0) {
+    return NextResponse.json({ error: "Eleve introuvable" }, { status: 404 });
+  }
+
+  // Update display_name on all matching student rows
+  const studentIds = students.map((s) => s.id);
+  const { error: updateError } = await supabase
+    .from("students")
+    .update({ display_name: trimmedName })
+    .in("id", studentIds);
+
+  if (updateError) {
+    console.error("[PATCH student-profiles] update error:", updateError);
+    return NextResponse.json({ error: "Erreur lors de la mise a jour" }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true, displayName: trimmedName });
 });

@@ -15,6 +15,7 @@ import {
   useStudentProfile,
   useCreateNote,
   useDeleteNote,
+  useUpdateStudentName,
 } from "@/hooks/use-student-profiles";
 import { ProgressionChart } from "@/components/v2/student-profile/progression-chart";
 
@@ -25,6 +26,7 @@ export default function EleveDetailPage() {
   const { data: profile, isLoading, isError } = useStudentProfile(profileId);
   const createNote = useCreateNote(profileId);
   const deleteNote = useDeleteNote(profileId);
+  const updateName = useUpdateStudentName(profileId);
 
   if (isLoading) {
     return (
@@ -113,6 +115,8 @@ export default function EleveDetailPage() {
               ? profile.sessionHistory[profile.sessionHistory.length - 1].date
               : undefined
           }
+          onRename={(newName) => updateName.mutate(newName)}
+          isRenaming={updateName.isPending}
         />
 
         {/* Standalone progression chart — self-fetches data */}
@@ -172,6 +176,57 @@ export default function EleveDetailPage() {
                 }))}
               />
               <ResponseHistoryList responses={profile.recentResponses} />
+
+              {/* Attendance history */}
+              {profile.sessionHistory.length > 0 && (
+                <GlassCardV2 className="p-5">
+                  <h2 className="label-caps mb-3">Historique de presence</h2>
+                  <div className="flex flex-col gap-2">
+                    {profile.sessionHistory.map((sh) => (
+                      <div
+                        key={sh.sessionId}
+                        className="flex items-center justify-between rounded-lg border border-[var(--color-bw-border-subtle)] px-3 py-2"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <p className="text-heading-xs text-bw-heading truncate">
+                            {sh.sessionTitle}
+                          </p>
+                          <p className="text-body-xs text-bw-muted tabular-nums">
+                            {new Date(sh.date).toLocaleDateString("fr-FR", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}
+                            {sh.classLabel && (
+                              <span className="ml-2 text-bw-muted">
+                                · {sh.classLabel}
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                        <span className="shrink-0 ml-3 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                          <svg
+                            width="10"
+                            height="10"
+                            viewBox="0 0 10 10"
+                            fill="none"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M2 5l2 2 4-4"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          Present
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </GlassCardV2>
+              )}
             </div>
 
             {/* Right — portfolio + badges + notes */}

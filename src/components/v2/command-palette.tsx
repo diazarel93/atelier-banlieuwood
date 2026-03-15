@@ -13,6 +13,7 @@ import {
   IconAdmin,
   IconPlus,
   IconSearch,
+  IconSettings,
 } from "./icons";
 
 interface Command {
@@ -34,6 +35,7 @@ const NAV_COMMANDS: Command[] = [
   { id: "modules", label: "Modules", href: ROUTES.bibliotheque, icon: <IconModules size={16} />, section: "nav" },
   { id: "fiche-cours", label: "Fiche de cours", href: ROUTES.ficheCours, icon: <IconFicheCours size={16} />, section: "nav" },
   { id: "admin", label: "Administration", href: ROUTES.admin, icon: <IconAdmin size={16} />, section: "nav" },
+  { id: "settings", label: "Reglages", href: ROUTES.settings, icon: <IconSettings size={16} />, section: "nav" },
 ];
 
 interface SearchResult {

@@ -48,6 +48,14 @@ interface CockpitHeaderProps {
   timerEndsAt?: string | null;
   onSetTimer?: (seconds: number) => void;
   onClearTimer?: () => void;
+  // Student screen preview (#23)
+  sessionId?: string;
+  // Screen mode control (#15)
+  screenMode?: string;
+  onSetScreenMode?: (mode: string) => void;
+  // Freeze screen (#22)
+  screenFrozen?: boolean;
+  onToggleFreeze?: () => void;
 }
 
 /* ── Mini energy donut SVG (20x20) — Issue 3 ── */
@@ -165,6 +173,11 @@ export function CockpitHeader({
   timerEndsAt,
   onSetTimer,
   onClearTimer,
+  sessionId,
+  screenMode,
+  onSetScreenMode,
+  screenFrozen,
+  onToggleFreeze,
 }: CockpitHeaderProps) {
   // Controls popover (Issue 1 — merge auto-advance + pause)
   const [controlsOpen, setControlsOpen] = useState(false);
@@ -291,6 +304,27 @@ export function CockpitHeader({
         {/* Spacer */}
         <div className="flex-1" />
 
+        {/* #23 — Student screen preview button */}
+        {sessionId && (
+          <button
+            onClick={() => {
+              window.open(
+                `/session/${sessionId}/screen`,
+                "bw-screen-preview",
+                "width=375,height=812,menubar=no,toolbar=no,location=no,status=no"
+              );
+            }}
+            title="Ouvrir l'écran élève dans une fenêtre"
+            className="btn-cockpit-sm bg-white/80 border border-bw-border text-bw-muted hover:text-bw-heading hover:bg-bw-surface-dim gap-1.5 flex-shrink-0"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+              <line x1="12" y1="18" x2="12.01" y2="18" />
+            </svg>
+            <span className="hidden xl:inline text-[13px] font-medium">Vue élève</span>
+          </button>
+        )}
+
         {/* RIGHT: Controls popover (Issue 1 — merge auto-advance + pause) */}
         <div className="relative flex-shrink-0" ref={controlsRef}>
           <button
@@ -339,6 +373,55 @@ export function CockpitHeader({
                 </svg>
                 Écran
               </button>
+
+              {/* Screen mode selector (#15) */}
+              {onSetScreenMode && (
+                <>
+                  <div className="border-t border-bw-border/50 my-1" />
+                  <div className="px-3 py-1">
+                    <span className="text-[11px] font-semibold text-bw-muted uppercase tracking-wider">Mode écran</span>
+                  </div>
+                  <div className="space-y-0.5 px-1">
+                    {([
+                      { mode: "default", label: "Question", icon: "📋" },
+                      { mode: "responses", label: "Réponses", icon: "💬" },
+                      { mode: "wordcloud", label: "Nuage de mots", icon: "☁️" },
+                      { mode: "blank", label: "Écran noir", icon: "⬛" },
+                    ] as const).map(({ mode, label, icon }) => (
+                      <button
+                        key={mode}
+                        onClick={() => { onSetScreenMode(mode); }}
+                        className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[12px] font-medium cursor-pointer transition-colors ${
+                          (screenMode || "default") === mode
+                            ? "bg-bw-primary/10 text-bw-primary"
+                            : "text-bw-text hover:bg-bw-surface-dim"
+                        }`}
+                      >
+                        <span className="text-[12px] w-4 text-center">{icon}</span>
+                        {label}
+                        {(screenMode || "default") === mode && (
+                          <span className="ml-auto text-[10px] text-bw-primary">&#10003;</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {/* Freeze screen toggle (#22) */}
+              {onToggleFreeze && (
+                <button
+                  onClick={onToggleFreeze}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
+                >
+                  <div className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${screenFrozen ? "bg-blue-500" : "bg-black/10"}`}>
+                    <div className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${screenFrozen ? "left-2" : "left-px"}`} />
+                  </div>
+                  <span className={screenFrozen ? "text-blue-600" : "text-bw-text"}>
+                    {screenFrozen ? "❄️ Ecran gelé" : "❄️ Geler l'écran"}
+                  </span>
+                </button>
+              )}
 
               {/* Timer presets (#7-8) */}
               {onSetTimer && (

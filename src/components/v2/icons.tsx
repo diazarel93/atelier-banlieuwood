@@ -119,6 +119,33 @@ export function IconHamburger({ size = 18, className }: IconProps) {
   );
 }
 
+export function IconSettings({ size = 18, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" fill="none" className={className} aria-hidden="true">
+      <circle cx="9" cy="9" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M14.3 3.7l-1.4 1.4M5.1 12.9l-1.4 1.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function IconLogout({ size = 18, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" fill="none" className={className} aria-hidden="true">
+      <path d="M6 16H3a1 1 0 01-1-1V3a1 1 0 011-1h3M12 13l4-4-4-4M16 9H7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function IconHelp({ size = 18, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" fill="none" className={className} aria-hidden="true">
+      <circle cx="9" cy="9" r="7.5" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M7 7a2 2 0 013.87.7c0 1.3-2 1.8-2 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="9" cy="13" r="0.5" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function IconClose({ size = 18, className }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 18 18" fill="none" className={className} aria-hidden="true">
