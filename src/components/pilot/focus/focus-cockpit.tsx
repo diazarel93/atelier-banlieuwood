@@ -265,6 +265,15 @@ export function FocusCockpit() {
                   const idx = displayIndex;
                   if (idx < moduleFlags.maxSituations - 1) setPreviewIndex(idx + 1);
                 }}
+                allSituations={state.allSituations}
+                liveIndex={currentQIndex}
+                onGoToSituation={(i) => {
+                  if (i === currentQIndex) {
+                    setPreviewIndex(null);
+                  } else {
+                    setPreviewIndex(i);
+                  }
+                }}
               />
             </motion.div>
           </AnimatePresence>

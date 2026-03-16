@@ -3,8 +3,10 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { StatRing } from "@/components/v2/stat-ring";
+import { MiniClassroomGrid } from "@/components/pilot/mini-classroom-grid";
 import type { Student } from "@/hooks/use-pilot-session";
 import type { StuckLevel } from "@/hooks/use-stuck-detection";
+import type { StudentState } from "@/components/pilot/pulse-ring";
 
 // ═══════════════════════════════════════════════════════════════
 // CLASSE SIDEBAR — Left panel: quick class scan
@@ -78,6 +80,24 @@ export function ClasseSidebar({
 
     return { responded, thinking, blocked, absent };
   }, [activeStudents, allStudents, respondedStudentIds, stuckLevels]);
+
+  // Build MiniClassroomGrid student states
+  const miniStudentStates = useMemo(() => {
+    return activeStudents.map((s) => {
+      const responded = respondedStudentIds.has(s.id);
+      const level = stuckLevels.get(s.id) || "ok";
+      let state: StudentState = "active";
+      if (responded) state = "responded";
+      else if (level === "stuck" || level === "slow") state = "stuck";
+      return {
+        id: s.id,
+        state,
+        display_name: s.display_name,
+        avatar: s.avatar || "👤",
+        hand_raised_at: s.hand_raised_at,
+      };
+    });
+  }, [activeStudents, respondedStudentIds, stuckLevels]);
 
   const isResponding = sessionStatus === "responding";
 
@@ -231,30 +251,13 @@ export function ClasseSidebar({
                 transition={{ duration: 0.15 }}
                 className="overflow-hidden"
               >
-                <div className="px-3 pb-3 grid grid-cols-5 gap-1">
-                  {activeStudents.map((s) => {
-                    const responded = respondedStudentIds.has(s.id);
-                    const level = stuckLevels.get(s.id) || "ok";
-                    const bg = responded ? "#DCFCE7" : level === "stuck" ? "#FEE2E2" : level === "slow" ? "#FFEDD5" : "#F3F4F6";
-                    const initials = s.display_name
-                      .split(" ")
-                      .map((w) => w[0])
-                      .join("")
-                      .slice(0, 2)
-                      .toUpperCase();
-
-                    return (
-                      <div
-                        key={s.id}
-                        className="w-8 h-8 rounded flex items-center justify-center text-[9px] font-bold"
-                        style={{ background: bg, color: "#6B7280" }}
-                        title={s.display_name}
-                      >
-                        {initials}
-                      </div>
-                    );
-                  })}
-                </div>
+                <MiniClassroomGrid
+                  studentStates={miniStudentStates}
+                  onStudentClick={(id) => {
+                    const s = activeStudents.find(st => st.id === id);
+                    if (s) onSelectStudent(s);
+                  }}
+                />
               </motion.div>
             )}
           </AnimatePresence>

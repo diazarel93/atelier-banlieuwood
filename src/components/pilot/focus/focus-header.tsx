@@ -7,6 +7,7 @@ import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
 import { CountdownTimer } from "@/components/countdown-timer";
 import { ROUTES } from "@/lib/routes";
 import { useScreenConnection } from "@/hooks/use-screen-connection";
+import { useCockpitActions } from "@/components/pilot/cockpit-context";
 
 interface FocusHeaderProps {
   sessionId: string;
@@ -44,6 +45,7 @@ export function FocusHeader({
   const router = useRouter();
   const [expanded, setExpanded] = useState(false);
   const isScreenConnected = useScreenConnection();
+  const { onOpenModules } = useCockpitActions();
 
   const qLabel = maxSituations > 1 ? `Q${currentQIndex + 1}/${maxSituations}` : null;
 
@@ -66,6 +68,21 @@ export function FocusHeader({
         className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none"
         onClick={() => setExpanded(!expanded)}
       >
+        {/* Module menu button */}
+        {onOpenModules && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onOpenModules(); }}
+            className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+            title="Menu des modules"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        )}
+
         {/* Back button */}
         <button
           onClick={(e) => { e.stopPropagation(); router.push(ROUTES.seanceDetail(sessionId)); }}
