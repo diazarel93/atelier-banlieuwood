@@ -97,8 +97,8 @@ export default function ScreenPage() {
       if (!res.ok) return { totalVotes: 0, results: [] };
       return res.json();
     },
-    refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
-    staleTime: 2_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 8_000, 30_000),
+    staleTime: 3_000,
     enabled: !!data?.situation?.id && (data?.session?.status === "voting" || data?.session?.status === "reviewing"),
   });
 
@@ -112,12 +112,12 @@ export default function ScreenPage() {
       if (!res.ok) return [];
       return res.json() as Promise<HighlightedResponse[]>;
     },
-    refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
-    staleTime: 2_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 8_000, 30_000),
+    staleTime: 3_000,
     enabled: !!data?.session && data.session.status !== "done" && !!currentSituationId,
   });
 
-  // Word cloud — fetch response texts while responding OR when screen mode is wordcloud
+  // Word cloud — staggered: 10s / 35s
   const { data: wordCloudTexts } = useQuery<string[]>({
     queryKey: ["screen-wordcloud", sessionId, currentSituationId],
     queryFn: async () => {
@@ -127,13 +127,13 @@ export default function ScreenPage() {
       const all: { text: string }[] = await res.json();
       return all.map((r) => r.text).filter(Boolean);
     },
-    refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
-    staleTime: 2_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 10_000, 35_000),
+    staleTime: 4_000,
     refetchOnWindowFocus: true,
     enabled: !!data?.session && (data.session.status === "responding" || data?.session?.broadcastMessage === "__SCREEN_MODE:wordcloud") && !!currentSituationId,
   });
 
-  // Reveal mode — fetch full responses with student info when reveal is active
+  // Reveal mode — staggered: 9s / 30s
   const revealPhase = data?.session?.revealPhase;
   const { data: revealResponses } = useQuery<{ id: string; text: string; studentName: string; avatar: string }[]>({
     queryKey: ["screen-reveal", sessionId, currentSituationId],
@@ -149,13 +149,13 @@ export default function ScreenPage() {
         avatar: r.students?.avatar || "🎭",
       }));
     },
-    refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
-    staleTime: 2_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 9_000, 30_000),
+    staleTime: 3_000,
     refetchOnWindowFocus: true,
     enabled: !!data?.session && data.session.status === "reviewing" && revealPhase != null && !!currentSituationId,
   });
 
-  // Reaction counts for vote results
+  // Reaction counts — staggered: 12s / 35s
   const { data: screenReactions } = useQuery<Record<string, Record<string, { count: number; studentIds: string[] }>>>({
     queryKey: ["screen-reactions", sessionId, currentSituationId],
     queryFn: async () => {
@@ -165,8 +165,8 @@ export default function ScreenPage() {
       const json = await res.json();
       return json.reactions || {};
     },
-    refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
-    staleTime: 2_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 12_000, 35_000),
+    staleTime: 5_000,
     refetchOnWindowFocus: true,
     enabled: !!data?.session && ["voting", "reviewing", "results"].includes(data.session.status) && !!currentSituationId,
   });
@@ -221,8 +221,8 @@ export default function ScreenPage() {
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: getPollingInterval(realtimeStatus, 5_000, 30_000),
-    staleTime: 2_000,
+    refetchInterval: getPollingInterval(realtimeStatus, 15_000, 40_000),
+    staleTime: 8_000,
     refetchOnWindowFocus: true,
     enabled: !!data?.session && data.session.status !== "done",
   });

@@ -92,7 +92,7 @@ export function CockpitProvider({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }), []);
 
-  const data: CockpitDataValue = {
+  const data = useMemo<CockpitDataValue>(() => ({
     session: value.session,
     sessionId: value.sessionId,
     responses: value.responses,
@@ -103,7 +103,11 @@ export function CockpitProvider({
     oieScores: value.oieScores,
     teams: value.teams,
     studentWarnings: value.studentWarnings,
-  };
+  }), [
+    value.session, value.sessionId, value.responses, value.activeStudents,
+    value.voteData, value.collectiveChoices, value.situationData,
+    value.oieScores, value.teams, value.studentWarnings,
+  ]);
 
   return (
     <CockpitActionsContext.Provider value={actions}>

@@ -277,14 +277,15 @@ function CockpitContent({
     averages: Record<string, number>;
     count: number;
   }>({
-    queryKey: ["budget", sessionId],
+    queryKey: ["budget", sessionId, session.current_situation_index],
     queryFn: async () => {
       const res = await fetch(`/api/sessions/${sessionId}/budget`);
       if (!res.ok) throw new Error("Failed to fetch budgets");
       return res.json();
     },
     enabled: session.current_module === 9 && (session.current_seance || 1) === 2,
-    refetchInterval: session.current_module === 9 && (session.current_seance || 1) === 2 ? 10_000 : false,
+    refetchInterval: session.current_module === 9 && (session.current_seance || 1) === 2 ? 12_000 : false,
+    staleTime: 5_000,
   });
 
   // Fetch all scenes for Module 2 EC (séances 2-3)
@@ -302,14 +303,15 @@ function CockpitContent({
   }
   const isM2ECWithScenes = session.current_module === 2 && ((session.current_seance || 1) === 2 || (session.current_seance || 1) === 3);
   const { data: scenesData } = useQuery<{ scenes: M2ECScene[]; emotionDistribution: Record<string, number>; count: number }>({
-    queryKey: ["m2ec-scenes", sessionId],
+    queryKey: ["m2ec-scenes", sessionId, session.current_situation_index],
     queryFn: async () => {
       const res = await fetch(`/api/sessions/${sessionId}/scene`);
       if (!res.ok) return { scenes: [], emotionDistribution: {}, count: 0 };
       return res.json();
     },
     enabled: isM2ECWithScenes,
-    refetchInterval: isM2ECWithScenes ? 10_000 : false,
+    refetchInterval: isM2ECWithScenes ? 14_000 : false,
+    staleTime: 5_000,
   });
 
   const selectComparison = useMutation({

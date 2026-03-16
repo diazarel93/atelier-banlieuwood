@@ -1,8 +1,11 @@
 "use client";
 
+import { useState, useMemo, useCallback } from "react";
 import { AnimatePresence } from "motion/react";
 import { ResponseCard, type ResponseCardResponse } from "./response-card";
 import { useCockpit } from "./cockpit-context";
+
+const PAGE_SIZE = 20;
 
 interface ResponseStreamProps {
   responses: ResponseCardResponse[];
@@ -25,10 +28,19 @@ export function ResponseStream({
   } = useCockpit();
 
   const sessionStatus = session.status;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   // Pin selected responses at top
-  const selected = responses.filter((r) => r.is_vote_option && !r.is_hidden);
-  const rest = responses.filter((r) => !(r.is_vote_option && !r.is_hidden));
+  const selected = useMemo(() => responses.filter((r) => r.is_vote_option && !r.is_hidden), [responses]);
+  const rest = useMemo(() => responses.filter((r) => !(r.is_vote_option && !r.is_hidden)), [responses]);
+
+  // Paginate the "rest" list (selected are always shown)
+  const displayedRest = useMemo(() => rest.slice(0, visibleCount), [rest, visibleCount]);
+  const displayedAll = useMemo(() => responses.slice(0, visibleCount), [responses, visibleCount]);
+  const hasMore = sessionStatus === "responding" ? rest.length > visibleCount : responses.length > visibleCount;
+  const remaining = sessionStatus === "responding" ? rest.length - visibleCount : responses.length - visibleCount;
+
+  const showMore = useCallback(() => setVisibleCount((v) => v + PAGE_SIZE), []);
 
   const renderCard = (r: ResponseCardResponse) => {
     let state: "default" | "selected" | "hidden" | "winner" = "default";
@@ -87,9 +99,19 @@ export function ResponseStream({
             )}
           </>
         )}
-        {/* Rest of responses */}
-        {sessionStatus === "responding" ? rest.map(renderCard) : responses.map(renderCard)}
+        {/* Rest of responses (paginated) */}
+        {sessionStatus === "responding" ? displayedRest.map(renderCard) : displayedAll.map(renderCard)}
       </AnimatePresence>
+
+      {/* Show more button */}
+      {hasMore && (
+        <button
+          onClick={showMore}
+          className="w-full py-2 rounded-xl text-xs font-medium text-bw-muted hover:text-bw-text bg-bw-elevated border border-black/[0.06] hover:bg-black/[0.03] cursor-pointer transition-colors"
+        >
+          Voir {Math.min(remaining, PAGE_SIZE)} de plus ({remaining} restantes)
+        </button>
+      )}
     </div>
   );
 }

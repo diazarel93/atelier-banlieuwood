@@ -83,6 +83,7 @@ export function usePilotSession(
       return res.json();
     },
     refetchInterval: getPollingInterval(realtimeStatus, 10_000, 30_000),
+    staleTime: 5_000,
     enabled: !checkingAuth,
   });
 
@@ -95,7 +96,8 @@ export function usePilotSession(
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: getPollingInterval(realtimeStatus, 15_000, 60_000),
+    refetchInterval: getPollingInterval(realtimeStatus, 20_000, 60_000),
+    staleTime: 15_000,
     enabled: !checkingAuth && !!session,
   });
 
@@ -103,7 +105,7 @@ export function usePilotSession(
   const activeModule = session ? getModuleByDb(session.current_module, session.current_seance || 1) : undefined;
   const hasActiveModule = !!activeModule && !activeModule.disabled;
 
-  // Current situation
+  // Current situation — staggered: 13s / 35s to avoid sync with session query
   const { data: situationData } = useQuery({
     queryKey: ["pilot-situation", sessionId, session?.current_module, session?.current_seance, session?.current_situation_index],
     queryFn: async () => {
@@ -111,7 +113,8 @@ export function usePilotSession(
       if (!res.ok) return null;
       return res.json();
     },
-    refetchInterval: getPollingInterval(realtimeStatus, 10_000, 30_000),
+    refetchInterval: getPollingInterval(realtimeStatus, 13_000, 35_000),
+    staleTime: 5_000,
     enabled: !checkingAuth && !!session && hasActiveModule,
   });
 
@@ -150,11 +153,12 @@ export function usePilotSession(
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: getPollingInterval(realtimeStatus, 10_000, 30_000),
+    refetchInterval: getPollingInterval(realtimeStatus, 12_000, 30_000),
+    staleTime: 3_000,
     enabled: !checkingAuth && (!!situation || (isModule1 && m1SituationIds.length > 0)) && hasActiveModule,
   });
 
-  // Vote results
+  // Vote results — staggered: 15s / 35s
   const { data: voteData } = useQuery<{ totalVotes: number; results: VoteResult[] }>({
     queryKey: ["pilot-votes", sessionId, situation?.id],
     queryFn: async () => {
@@ -163,11 +167,12 @@ export function usePilotSession(
       if (!res.ok) return { totalVotes: 0, results: [] };
       return res.json();
     },
-    refetchInterval: getPollingInterval(realtimeStatus, 10_000, 30_000),
+    refetchInterval: getPollingInterval(realtimeStatus, 15_000, 35_000),
+    staleTime: 5_000,
     enabled: !checkingAuth && !!situation && hasActiveModule && (session?.status === "voting" || session?.status === "reviewing"),
   });
 
-  // Collective choices (Module 3/4)
+  // Collective choices (Module 3/4) — staggered: 17s / 40s
   const { data: collectiveChoices = [] } = useQuery<CollectiveChoice[]>({
     queryKey: ["pilot-choices", sessionId],
     queryFn: async () => {
@@ -175,7 +180,8 @@ export function usePilotSession(
       if (!res.ok) return [];
       return res.json();
     },
-    refetchInterval: getPollingInterval(realtimeStatus, 10_000, 30_000),
+    refetchInterval: getPollingInterval(realtimeStatus, 17_000, 40_000),
+    staleTime: 10_000,
     enabled: !checkingAuth && !!session && hasActiveModule && (session?.current_module === 3 || session?.current_module === 4),
   });
 
@@ -188,6 +194,7 @@ export function usePilotSession(
       return res.json();
     },
     refetchInterval: getPollingInterval(realtimeStatus, 30_000, 60_000),
+    staleTime: 15_000,
     enabled: !checkingAuth && !!session,
   });
 
