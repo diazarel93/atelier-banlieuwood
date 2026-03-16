@@ -120,16 +120,11 @@ export function ClassroomPlanCompact({ students, onStudentClick }: ClassroomPlan
 
   return (
     <div className="space-y-3">
-      {/* Teacher desk */}
-      <div className="flex justify-center">
-        <div className="px-6 py-1 rounded-lg bg-gray-100 border border-dashed border-gray-300">
-          <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">Tableau</span>
-        </div>
-      </div>
-
-      {/* Rows of desks */}
+      {/* Rows of desks — front row (closest to board) at bottom */}
       <div className="space-y-2">
-        {rows.map((row, rowIdx) => (
+        {[...rows].reverse().map((row, revIdx) => {
+          const rowIdx = rows.length - 1 - revIdx;
+          return (
           <div key={rowIdx} className="flex items-center gap-1">
             {/* Row label */}
             <span className="w-4 text-[9px] font-bold text-gray-300 text-right shrink-0 tabular-nums select-none">
@@ -152,7 +147,15 @@ export function ClassroomPlanCompact({ students, onStudentClick }: ClassroomPlan
               ))}
             </div>
           </div>
-        ))}
+          );
+        })}
+      </div>
+
+      {/* Teacher desk — at bottom (prof's point of view) */}
+      <div className="flex justify-center">
+        <div className="px-6 py-1 rounded-lg bg-gray-100 border border-dashed border-gray-300">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">Tableau</span>
+        </div>
       </div>
 
       {/* Legend */}
