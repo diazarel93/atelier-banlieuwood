@@ -65,10 +65,12 @@ export function usePilotKeyboardShortcuts({
             onNextAction();
           }
           break;
-        case "f": // F = toggle focus mode
-          if (onToggleFocus) {
-            e.preventDefault();
-            onToggleFocus();
+        case "f": // F = toggle fullscreen
+          e.preventDefault();
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          } else {
+            document.documentElement.requestFullscreen();
           }
           break;
         case "h": // H = toggle intervention/help mode
