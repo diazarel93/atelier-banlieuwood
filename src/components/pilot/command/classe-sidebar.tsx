@@ -1,0 +1,234 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { StatRing } from "@/components/v2/stat-ring";
+import type { Student } from "@/hooks/use-pilot-session";
+import type { StuckLevel } from "@/hooks/use-stuck-detection";
+
+// ═══════════════════════════════════════════════════════════════
+// CLASSE SIDEBAR — Left panel: quick class scan
+// Donut progress + student list sorted by status
+// ═══════════════════════════════════════════════════════════════
+
+const STUCK_DOT_COLORS: Record<StuckLevel, string> = {
+  ok: "#D1D5DB",       // gray-300
+  nudge: "#FBBF24",    // amber-400
+  slow: "#F97316",     // orange-500
+  stuck: "#EF4444",    // red-500
+};
+
+interface ClasseSidebarProps {
+  activeStudents: Student[];
+  allStudents: Student[];
+  respondedStudentIds: Set<string>;
+  stuckLevels: Map<string, StuckLevel>;
+  sessionStatus: string;
+  onSelectStudent: (student: Student) => void;
+}
+
+export function ClasseSidebar({
+  activeStudents,
+  allStudents,
+  respondedStudentIds,
+  stuckLevels,
+  sessionStatus,
+  onSelectStudent,
+}: ClasseSidebarProps) {
+  const [showPlan, setShowPlan] = useState(false);
+
+  const respondedCount = useMemo(() => {
+    return activeStudents.filter((s) => respondedStudentIds.has(s.id)).length;
+  }, [activeStudents, respondedStudentIds]);
+
+  const pct = activeStudents.length > 0 ? Math.round((respondedCount / activeStudents.length) * 100) : 0;
+
+  // Sort: stuck first, then not responded, then responded
+  const sortedStudents = useMemo(() => {
+    return [...activeStudents].sort((a, b) => {
+      const aResponded = respondedStudentIds.has(a.id);
+      const bResponded = respondedStudentIds.has(b.id);
+      const aLevel = stuckLevels.get(a.id) || "ok";
+      const bLevel = stuckLevels.get(b.id) || "ok";
+
+      // Stuck/slow/nudge at top (priority order)
+      const priority: Record<StuckLevel, number> = { stuck: 0, slow: 1, nudge: 2, ok: 3 };
+      if (!aResponded && !bResponded) return priority[aLevel] - priority[bLevel];
+      if (aResponded && !bResponded) return 1;
+      if (!aResponded && bResponded) return -1;
+      return 0;
+    });
+  }, [activeStudents, respondedStudentIds, stuckLevels]);
+
+  // Legend counts
+  const counts = useMemo(() => {
+    let responded = 0, thinking = 0, blocked = 0, absent = 0;
+    const allIds = new Set(allStudents.map((s) => s.id));
+    const activeIds = new Set(activeStudents.map((s) => s.id));
+
+    for (const s of activeStudents) {
+      if (respondedStudentIds.has(s.id)) responded++;
+      else {
+        const level = stuckLevels.get(s.id) || "ok";
+        if (level === "stuck" || level === "slow") blocked++;
+        else thinking++;
+      }
+    }
+    absent = allStudents.filter((s) => s.is_active && !activeIds.has(s.id)).length;
+
+    return { responded, thinking, blocked, absent };
+  }, [activeStudents, allStudents, respondedStudentIds, stuckLevels]);
+
+  const isResponding = sessionStatus === "responding";
+
+  return (
+    <div className="flex flex-col h-full bg-white/60">
+      {/* ── Header ── */}
+      <div className="px-3 py-3 border-b border-gray-100">
+        <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+          Classe
+        </h3>
+      </div>
+
+      {/* ── Donut ── */}
+      <div className="px-3 py-4 flex flex-col items-center border-b border-gray-100">
+        <StatRing
+          value={pct}
+          label={`${respondedCount}/${activeStudents.length} reponses`}
+          color={pct >= 100 ? "#22C55E" : pct >= 50 ? "#F59E0B" : "#6B8CFF"}
+          size={72}
+          strokeWidth={5}
+        />
+
+        {/* Legend dots */}
+        <div className="grid grid-cols-2 gap-x-3 gap-y-1 mt-3 w-full">
+          <LegendDot color="#22C55E" label="Repondu" count={counts.responded} />
+          <LegendDot color="#D1D5DB" label="Reflexion" count={counts.thinking} />
+          <LegendDot color="#EF4444" label="Bloque" count={counts.blocked} />
+          <LegendDot color="#9CA3AF" label="Absent" count={counts.absent} dashed />
+        </div>
+      </div>
+
+      {/* ── Student list ── */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="py-1">
+          {sortedStudents.map((student) => {
+            const responded = respondedStudentIds.has(student.id);
+            const level = stuckLevels.get(student.id) || "ok";
+            const dotColor = responded ? "#22C55E" : STUCK_DOT_COLORS[level];
+
+            return (
+              <button
+                key={student.id}
+                onClick={() => onSelectStudent(student)}
+                className="w-full flex items-center gap-2 px-3 py-1.5 hover:bg-gray-50 transition-colors cursor-pointer text-left"
+              >
+                {/* Avatar */}
+                <span className="text-base flex-shrink-0">{student.avatar || "👤"}</span>
+
+                {/* Name */}
+                <span className="text-[12px] font-medium text-gray-700 truncate flex-1">
+                  {student.display_name}
+                </span>
+
+                {/* Status dot */}
+                <span
+                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  style={{ background: dotColor }}
+                />
+
+                {/* Checkmark if responded */}
+                {responded && (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" className="flex-shrink-0">
+                    <path d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </button>
+            );
+          })}
+
+          {activeStudents.length === 0 && (
+            <p className="text-[11px] text-gray-400 text-center py-4 px-3">
+              Aucun eleve connecte
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* ── Plan de classe (collapsible) ── */}
+      {activeStudents.length > 0 && (
+        <div className="border-t border-gray-100">
+          <button
+            onClick={() => setShowPlan(!showPlan)}
+            className="w-full flex items-center justify-between px-3 py-2 hover:bg-gray-50 transition-colors cursor-pointer"
+          >
+            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+              Plan de classe
+            </span>
+            <svg
+              width="10" height="10" viewBox="0 0 24 24"
+              fill="none" stroke="#9CA3AF" strokeWidth="2"
+              className={`transition-transform duration-200 ${showPlan ? "rotate-180" : ""}`}
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+
+          <AnimatePresence>
+            {showPlan && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="overflow-hidden"
+              >
+                <div className="px-3 pb-3 grid grid-cols-5 gap-1">
+                  {activeStudents.map((s) => {
+                    const responded = respondedStudentIds.has(s.id);
+                    const level = stuckLevels.get(s.id) || "ok";
+                    const bg = responded ? "#DCFCE7" : level === "stuck" ? "#FEE2E2" : level === "slow" ? "#FFEDD5" : "#F3F4F6";
+                    const initials = s.display_name
+                      .split(" ")
+                      .map((w) => w[0])
+                      .join("")
+                      .slice(0, 2)
+                      .toUpperCase();
+
+                    return (
+                      <div
+                        key={s.id}
+                        className="w-8 h-8 rounded flex items-center justify-center text-[9px] font-bold"
+                        style={{ background: bg, color: "#6B7280" }}
+                        title={s.display_name}
+                      >
+                        {initials}
+                      </div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Legend dot component ──
+function LegendDot({ color, label, count, dashed }: { color: string; label: string; count: number; dashed?: boolean }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <span
+        className="w-2 h-2 rounded-full flex-shrink-0"
+        style={{
+          background: dashed ? "transparent" : color,
+          border: dashed ? `1.5px dashed ${color}` : "none",
+        }}
+      />
+      <span className="text-[10px] text-gray-500 truncate">{label}</span>
+      <span className="text-[10px] font-bold text-gray-600 tabular-nums ml-auto">{count}</span>
+    </div>
+  );
+}

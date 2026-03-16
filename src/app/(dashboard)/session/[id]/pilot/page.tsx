@@ -123,7 +123,7 @@ import { OnboardingHints } from "@/components/pilot/onboarding-hints";
 import { usePilotOnboarding } from "@/hooks/use-pilot-onboarding";
 import { CockpitProvider, useCockpit } from "@/components/pilot/cockpit-context";
 import { useCockpitModals } from "@/hooks/use-cockpit-modals";
-const FocusCockpit = dynamic(() => import("@/components/pilot/focus/focus-cockpit").then(m => ({ default: m.FocusCockpit })), { ssr: false });
+const CommandCockpit = dynamic(() => import("@/components/pilot/command/command-cockpit").then(m => ({ default: m.CommandCockpit })), { ssr: false });
 import { useCockpitDarkMode } from "@/hooks/use-cockpit-dark-mode";
 
 import type { Session, Student, Response, VoteResult } from "@/hooks/use-pilot-session";
@@ -2559,7 +2559,7 @@ export default function PilotPage() {
             onOpenScreen: () => window.open(ROUTES.screen(sessionId), "_blank"),
             studentWarnings: Object.fromEntries((session.students || []).map(s => [s.id, s.warnings || 0])),
           }}>
-          <FocusCockpit />
+          <CommandCockpit />
           {/* Legacy CockpitContent — kept for rollback
           <CockpitContent
             commentingResponse={commentingResponse}
