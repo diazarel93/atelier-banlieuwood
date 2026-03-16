@@ -13,6 +13,8 @@ interface SelectionBarProps {
   actionDisabled?: boolean;
   isPending?: boolean;
   pulse?: boolean;
+  /** "compact" renders a single full-width button (h-12 rounded-2xl) for Focus Mode */
+  variant?: "default" | "compact";
 }
 
 export function SelectionBar({
@@ -26,6 +28,7 @@ export function SelectionBar({
   actionDisabled,
   isPending,
   pulse,
+  variant = "default",
 }: SelectionBarProps) {
   let leftText = "";
   let ctaLabel = "";
@@ -55,6 +58,28 @@ export function SelectionBar({
 
   const disabled = actionDisabled || isPending || (status === "responding" && selectedCount < 2);
   const showQuickVote = onQuickVote && status === "responding" && selectedCount < 2 && responsesCount >= 2;
+
+  // ── Compact variant: single full-width button ──
+  if (variant === "compact") {
+    return (
+      <motion.button
+        onClick={onAction}
+        disabled={disabled}
+        className="w-full h-12 rounded-2xl text-[14px] font-bold cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+        style={{
+          backgroundColor: disabled ? "#E8DFD2" : ctaColor,
+          color: disabled ? "#B0A99E" : "white",
+          boxShadow: disabled ? undefined : "0 4px 16px rgba(0,0,0,0.12)",
+        }}
+        whileTap={disabled ? {} : { scale: 0.97 }}
+        animate={pulse && !disabled ? { scale: [1, 1.01, 1] } : {}}
+        transition={pulse && !disabled ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : {}}
+      >
+        {isPending ? "..." : ctaLabel}
+        {!disabled && <kbd className="inline-flex items-center justify-center w-5 h-5 ml-2 rounded bg-white/[0.15] text-[10px] font-mono">{shortcutKey}</kbd>}
+      </motion.button>
+    );
+  }
 
   return (
     <div className="flex items-center justify-between gap-3">
