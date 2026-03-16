@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { useFocusCockpitState } from "@/hooks/use-focus-cockpit-state";
@@ -23,6 +23,9 @@ import { BulkResponseToolbar } from "@/components/pilot/bulk-response-toolbar";
 import { ResponseStreamSection } from "@/components/pilot/response-stream-section";
 import { VotingResults } from "@/components/pilot/voting-results";
 import { InlineReformulation } from "@/components/pilot/inline-reformulation";
+import { MiniClassroomGrid } from "@/components/pilot/mini-classroom-grid";
+import { useStuckDetection } from "@/hooks/use-stuck-detection";
+import type { StudentState } from "@/components/pilot/pulse-ring";
 import type { ResponseCardResponse } from "@/components/pilot/response-card";
 import type { Response } from "@/hooks/use-pilot-session";
 
@@ -60,6 +63,33 @@ export function FocusCockpit() {
   } = useCockpitActions();
 
   const { studentWarnings, oieScores } = useCockpitData();
+
+  // ── Plan de classe ──
+  const [showPlan, setShowPlan] = useState(false);
+
+  const activeStudentIds = useMemo(() => new Set(activeStudents.map(s => s.id)), [activeStudents]);
+  const stuckLevels = useStuckDetection({
+    respondedStudentIds: state.respondedStudentIds,
+    activeStudentIds,
+    respondingOpenedAt: session.status === "responding" ? respondingOpenedAt : null,
+  });
+
+  const miniStudentStates = useMemo(() => {
+    return activeStudents.map((s) => {
+      const responded = state.respondedStudentIds.has(s.id);
+      const level = stuckLevels.get(s.id) || "ok";
+      let st: StudentState = "active";
+      if (responded) st = "responded";
+      else if (level === "stuck" || level === "slow") st = "stuck";
+      return {
+        id: s.id,
+        state: st,
+        display_name: s.display_name,
+        avatar: s.avatar || "\u{1F464}",
+        hand_raised_at: s.hand_raised_at,
+      };
+    });
+  }, [activeStudents, state.respondedStudentIds, stuckLevels]);
 
   // ── Student fiche slide-over ──
   const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
@@ -237,6 +267,7 @@ export function FocusCockpit() {
         timerEndsAt={session.timer_ends_at}
         currentScreenMode={currentScreenMode}
         onOpenStudents={() => setShowStudentSheet(true)}
+        onOpenPlan={() => setShowPlan(true)}
       />
 
       {/* ── SCROLLABLE CENTER ── */}
@@ -583,6 +614,27 @@ export function FocusCockpit() {
             <p className="text-center text-sm text-gray-400 py-4">Aucun élève connecté</p>
           )}
         </div>
+      </BottomSheet>
+
+      {/* ── PLAN DE CLASSE BOTTOM SHEET ── */}
+      <BottomSheet open={showPlan} onClose={() => setShowPlan(false)} title="Plan de classe">
+        {activeStudents.length > 0 ? (
+          <MiniClassroomGrid
+            studentStates={miniStudentStates}
+            onStudentClick={(id) => {
+              const s = activeStudents.find(st => st.id === id);
+              if (s) {
+                setShowPlan(false);
+                handleSelectStudent(s);
+              }
+            }}
+          />
+        ) : (
+          <div className="text-center py-8 space-y-2">
+            <div className="text-3xl">📡</div>
+            <p className="text-sm text-gray-400">Aucun élève connecté</p>
+          </div>
+        )}
       </BottomSheet>
 
       {/* ── STUDENT FICHE SLIDE-OVER ── */}

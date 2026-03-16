@@ -24,6 +24,7 @@ interface FocusHeaderProps {
   timerEndsAt?: string | null;
   currentScreenMode?: string;
   onOpenStudents: () => void;
+  onOpenPlan?: () => void;
 }
 
 export function FocusHeader({
@@ -41,6 +42,7 @@ export function FocusHeader({
   timerEndsAt,
   currentScreenMode,
   onOpenStudents,
+  onOpenPlan,
 }: FocusHeaderProps) {
   const router = useRouter();
   const [expanded, setExpanded] = useState(false);
@@ -145,6 +147,22 @@ export function FocusHeader({
             <path d="M12 6V2M7 2h10" />
           </svg>
         </button>
+
+        {/* Plan de classe button */}
+        {onOpenPlan && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onOpenPlan(); }}
+            className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+            title="Plan de classe"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+            </svg>
+          </button>
+        )}
 
         {/* Student chip */}
         <button
