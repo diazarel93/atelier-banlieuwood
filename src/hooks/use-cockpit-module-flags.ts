@@ -39,6 +39,7 @@ export function useCockpitModuleFlags(session: Session) {
     const isM6Any = mod === 6 && seance === 1;
     const isM7Any = mod === 7 && seance === 1;
     const isM8Any = mod === 8 && seance === 1;
+    const isM11Any = mod === 11;
     const isQAModule = mod === 3 || mod === 4 || isM1Positioning || mod === 9 || (mod === 2 && !isM2ECSpecial && !isM2ECComparison) || (isM10Any && !isM10SpecialPosition) || (isM13Any && sitIdx >= 5);
 
     const maxSituations = isM1Positioning ? 8
@@ -46,8 +47,8 @@ export function useCockpitModuleFlags(session: Session) {
       : mod === 4 ? 8
       : getSeanceMax(mod, seance);
 
-    const canGoNext = (isQAModule || isM2ECAny || isM10Any || isM12Any || isM13Any || isM6Any || isM7Any || isM8Any) && sitIdx < maxSituations - 1;
-    const canGoPrev = (isQAModule || isM2ECAny || isM10Any || isM12Any || isM13Any || isM6Any || isM7Any || isM8Any) && sitIdx > 0;
+    const canGoNext = (isQAModule || isM2ECAny || isM10Any || isM11Any || isM12Any || isM13Any || isM6Any || isM7Any || isM8Any) && sitIdx < maxSituations - 1;
+    const canGoPrev = (isQAModule || isM2ECAny || isM10Any || isM11Any || isM12Any || isM13Any || isM6Any || isM7Any || isM8Any) && sitIdx > 0;
 
     return {
       isBudgetQuiz,
@@ -70,6 +71,7 @@ export function useCockpitModuleFlags(session: Session) {
       isM6Any,
       isM7Any,
       isM8Any,
+      isM11Any,
       isQAModule,
       maxSituations,
       canGoNext,

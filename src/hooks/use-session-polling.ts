@@ -26,6 +26,10 @@ export interface Module1Data {
   existingText?: string;
   suggestions?: string[];
   encouragement?: string;
+  // Two-phase observation (séances 2-4)
+  twoPhase?: boolean;
+  currentPhase?: number;
+  phase1Text?: string | null;
   // Common
   totalSeances: number;
   currentSeance: number;
