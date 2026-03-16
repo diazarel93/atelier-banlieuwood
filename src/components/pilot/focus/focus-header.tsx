@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
 import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
+import { CountdownTimer } from "@/components/countdown-timer";
 import { ROUTES } from "@/lib/routes";
 import { useScreenConnection } from "@/hooks/use-screen-connection";
 
@@ -20,6 +21,7 @@ interface FocusHeaderProps {
   totalStudents: number;
   sessionStatus: string;
   timerEndsAt?: string | null;
+  currentScreenMode?: string;
   onOpenStudents: () => void;
 }
 
@@ -36,6 +38,7 @@ export function FocusHeader({
   totalStudents,
   sessionStatus,
   timerEndsAt,
+  currentScreenMode,
   onOpenStudents,
 }: FocusHeaderProps) {
   const router = useRouter();
@@ -46,6 +49,15 @@ export function FocusHeader({
 
   // Timer countdown
   const timerActive = !!timerEndsAt;
+
+  // Screen mode label
+  const SCREEN_MODE_LABELS: Record<string, string> = {
+    default: "",
+    responses: "Rep",
+    spotlight: "Spot",
+    wordcloud: "Nuage",
+    blank: "Noir",
+  };
 
   return (
     <div className="shrink-0">
@@ -78,23 +90,30 @@ export function FocusHeader({
           )}
         </div>
 
-        {/* Timer */}
-        {sessionStatus === "responding" && (
+        {/* Timer — countdown takes priority, then elapsed */}
+        {timerActive ? (
+          <div className="shrink-0 px-2.5 py-1 rounded-full bg-orange-50 border border-orange-200">
+            <CountdownTimer endsAt={timerEndsAt!} size="sm" />
+          </div>
+        ) : sessionStatus === "responding" ? (
           <div className="shrink-0">
             <ElapsedTimer startedAt={respondingOpenedAt} variant="pill" />
           </div>
-        )}
+        ) : null}
 
-        {/* Screen + Play buttons */}
+        {/* Screen button with mode indicator */}
         <button
           onClick={(e) => { e.stopPropagation(); window.open(ROUTES.screen(sessionId), "bw-screen"); }}
-          className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+          className="relative flex items-center justify-center gap-1 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer px-2"
           title={isScreenConnected ? "Écran connecté — cliquer pour ouvrir" : "Ouvrir l'écran de projection"}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="2" y="3" width="20" height="14" rx="2" />
             <path d="M8 21h8M12 17v4" />
           </svg>
+          {currentScreenMode && SCREEN_MODE_LABELS[currentScreenMode] && (
+            <span className="text-[9px] font-bold text-gray-500 uppercase">{SCREEN_MODE_LABELS[currentScreenMode]}</span>
+          )}
           {isScreenConnected && (
             <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
           )}

@@ -8,6 +8,7 @@ import { useCockpitActions } from "@/components/pilot/cockpit-context";
 import { RemoteControlView } from "./remote-control-view";
 import { usePilotKeyboardShortcuts } from "@/hooks/use-pilot-keyboard-shortcuts";
 import { TIMER_PRESETS } from "@/components/pilot/pilot-settings";
+import { ROUTES } from "@/lib/routes";
 import { FocusHeader } from "./focus-header";
 import { FocusFooter } from "./focus-footer";
 import { FocusQuestionCard } from "./focus-question-card";
@@ -60,7 +61,7 @@ export function FocusCockpit() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleNextActionCb = useCallback(() => handleNextAction(), [nextAction, moduleFlags.canGoNext, updateSession]);
 
-  const [timerMode, setTimerMode] = [false, () => {}]; // simplified — timer via Plus menu
+  const [timerMode, setTimerMode] = useState(false);
 
   const handleSetTimerPreset = useCallback((n: number) => {
     const seconds = TIMER_PRESETS[n - 1];
@@ -68,6 +69,7 @@ export function FocusCockpit() {
     const endsAt = new Date(Date.now() + seconds * 1000).toISOString();
     updateSession.mutate({ timer_ends_at: endsAt });
     toast.success(`Timer ${seconds >= 60 ? `${seconds / 60}min` : `${seconds}s`} lancé`);
+    setTimerMode(false);
   }, [updateSession]);
 
   usePilotKeyboardShortcuts({
@@ -81,8 +83,15 @@ export function FocusCockpit() {
     onCloseAll: modals.closeAllModals,
     onNextAction: handleNextActionCb,
     onToggleFocus: useCallback(() => {}, []), // already in focus mode
-    onToggleIntervention: useCallback(() => {}, []),
-    onTimerShortcut: useCallback(() => {}, []),
+    onToggleIntervention: useCallback(() => {
+      toast("Mode intervention (bientôt)", { icon: "🖐️" });
+    }, []),
+    onTimerShortcut: useCallback(() => {
+      setTimerMode(v => {
+        if (!v) toast("Timer : appuyez 1-5 pour choisir", { icon: "⏱️", duration: 2000 });
+        return !v;
+      });
+    }, []),
     onSetTimerPreset: handleSetTimerPreset,
     timerModeActive: timerMode,
   });
@@ -200,28 +209,39 @@ export function FocusCockpit() {
         totalStudents={session.students?.length || 0}
         sessionStatus={session.status}
         timerEndsAt={session.timer_ends_at}
+        currentScreenMode={currentScreenMode}
         onOpenStudents={() => setShowStudentSheet(true)}
       />
 
       {/* ── SCROLLABLE CENTER ── */}
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
-          {/* Question card */}
-          <FocusQuestionCard
-            questionText={universalQuestionText}
-            categoryLabel={universalCategoryLabel}
-            currentIndex={displayIndex}
-            maxSituations={moduleFlags.maxSituations}
-            isPreviewing={isPreviewing}
-            onPrev={() => {
-              const idx = displayIndex;
-              if (idx > 0) setPreviewIndex(idx - 1);
-            }}
-            onNext={() => {
-              const idx = displayIndex;
-              if (idx < moduleFlags.maxSituations - 1) setPreviewIndex(idx + 1);
-            }}
-          />
+          {/* Question card — animate on change */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`q-${currentQIndex}-${isPreviewing ? "preview" : "live"}`}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <FocusQuestionCard
+                questionText={universalQuestionText}
+                categoryLabel={universalCategoryLabel}
+                currentIndex={displayIndex}
+                maxSituations={moduleFlags.maxSituations}
+                isPreviewing={isPreviewing}
+                onPrev={() => {
+                  const idx = displayIndex;
+                  if (idx > 0) setPreviewIndex(idx - 1);
+                }}
+                onNext={() => {
+                  const idx = displayIndex;
+                  if (idx < moduleFlags.maxSituations - 1) setPreviewIndex(idx + 1);
+                }}
+              />
+            </motion.div>
+          </AnimatePresence>
 
           {/* Progress indicator */}
           {session.status === "responding" && (
@@ -238,6 +258,38 @@ export function FocusCockpit() {
                 {unifiedRespondedCount}/{activeStudents.length}
               </span>
             </div>
+          )}
+
+          {/* Empty state — waiting for responses */}
+          {session.status === "responding" && unifiedRespondedCount === 0 && activeStudents.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="bg-white rounded-2xl border border-gray-100 p-6 text-center space-y-3"
+            >
+              <motion.div
+                animate={{ y: [0, -4, 0] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                className="text-4xl"
+              >
+                ✏️
+              </motion.div>
+              <p className="text-[14px] font-medium text-gray-700">Les élèves réfléchissent...</p>
+              <p className="text-[12px] text-gray-400">Les réponses apparaîtront ici</p>
+            </motion.div>
+          )}
+
+          {/* Empty state — no students connected */}
+          {session.status === "responding" && activeStudents.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="bg-white rounded-2xl border border-dashed border-gray-200 p-6 text-center space-y-3"
+            >
+              <div className="text-4xl">📡</div>
+              <p className="text-[14px] font-medium text-gray-700">Aucun élève connecté</p>
+              <p className="text-[12px] text-gray-400">Projetez le QR code pour qu&apos;ils rejoignent</p>
+            </motion.div>
           )}
 
           {/* Auto-advance countdown */}
@@ -267,11 +319,34 @@ export function FocusCockpit() {
             />
           )}
 
-          {/* Vote empty state */}
-          {isStandardQA && (session.status === "voting" || session.status === "reviewing") && (!voteData || voteData.totalVotes === 0) && (
+          {/* Vote progress — live counter */}
+          {isStandardQA && session.status === "voting" && (
+            <div className="bg-white rounded-2xl border border-gray-100 p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-bold text-gray-700 flex items-center gap-2">
+                  <motion.span animate={{ scale: [1, 1.15, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>🗳️</motion.span>
+                  Vote en cours
+                </span>
+                <span className="text-[13px] font-bold text-orange-600 tabular-nums">
+                  {voteData?.totalVotes || 0}/{activeStudents.length}
+                </span>
+              </div>
+              <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full bg-orange-400"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${activeStudents.length > 0 ? ((voteData?.totalVotes || 0) / activeStudents.length) * 100 : 0}%` }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Vote empty state (reviewing with no votes) */}
+          {isStandardQA && session.status === "reviewing" && (!voteData || voteData.totalVotes === 0) && (
             <div className="bg-white rounded-2xl border border-gray-100 p-6 text-center space-y-2">
-              <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }} className="text-3xl">🗳️</motion.div>
-              <p className="text-sm text-gray-500">Vote en cours...</p>
+              <p className="text-3xl">🗳️</p>
+              <p className="text-sm text-gray-500">Aucun vote enregistré</p>
             </div>
           )}
 
@@ -334,13 +409,52 @@ export function FocusCockpit() {
             </div>
           )}
 
-          {/* Done state */}
+          {/* Done state — session recap */}
           {session.status === "done" && (
-            <div className="text-center py-12 space-y-3">
-              <div className="text-4xl">🎬</div>
-              <p className="text-lg font-bold text-gray-900">Module terminé</p>
-              <p className="text-sm text-gray-500">Retournez au tableau de bord pour continuer</p>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-4"
+            >
+              {/* Hero */}
+              <div className="text-center py-6 space-y-2">
+                <motion.div
+                  initial={{ scale: 0.5 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                  className="text-5xl"
+                >
+                  🎬
+                </motion.div>
+                <h3 className="text-xl font-bold text-gray-900">C&apos;est dans la boîte !</h3>
+              </div>
+
+              {/* Stats cards */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+                  <p className="text-2xl font-bold text-emerald-600 tabular-nums">{activeStudents.length}</p>
+                  <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Élèves</p>
+                </div>
+                <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+                  <p className="text-2xl font-bold text-orange-500 tabular-nums">{responses.length}</p>
+                  <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Réponses</p>
+                </div>
+                <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+                  <p className="text-2xl font-bold text-purple-500 tabular-nums">
+                    {responses.filter(r => r.is_highlighted).length}
+                  </p>
+                  <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Mises en avant</p>
+                </div>
+              </div>
+
+              {/* Back to dashboard */}
+              <button
+                onClick={() => window.location.href = ROUTES.seanceDetail(sessionId)}
+                className="w-full py-3 rounded-xl bg-gray-900 text-white text-[14px] font-bold hover:bg-gray-800 transition-colors cursor-pointer"
+              >
+                Retour au tableau de bord
+              </button>
+            </motion.div>
           )}
         </div>
       </div>
@@ -423,6 +537,7 @@ export function FocusCockpit() {
               >
                 <span className="text-2xl">{s.avatar}</span>
                 <span className="flex-1 text-[14px] font-medium text-gray-900 truncate">{s.display_name}</span>
+                {s.hand_raised_at && <span className="text-sm" title="Main levée">✋</span>}
                 <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
                   hasResponded ? "bg-emerald-500" : "bg-gray-300"
                 }`} />

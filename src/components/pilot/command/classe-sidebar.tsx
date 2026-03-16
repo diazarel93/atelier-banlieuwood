@@ -84,10 +84,20 @@ export function ClasseSidebar({
   return (
     <div className="flex flex-col h-full bg-white/60">
       {/* ── Header ── */}
-      <div className="px-3 py-3 border-b border-gray-100">
+      <div className="px-3 py-3 border-b border-gray-100 flex items-center justify-between">
         <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
           Classe
         </h3>
+        {counts.blocked > 0 && (
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-50 text-[10px] font-bold text-red-600 border border-red-100"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+            {counts.blocked}
+          </motion.span>
+        )}
       </div>
 
       {/* ── Donut ── */}
@@ -131,6 +141,18 @@ export function ClasseSidebar({
                   {student.display_name}
                 </span>
 
+                {/* Hand raised indicator */}
+                {student.hand_raised_at && (
+                  <motion.span
+                    className="text-sm flex-shrink-0"
+                    animate={{ y: [0, -2, 0], rotate: [0, 15, -15, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                    title="Main levée"
+                  >
+                    ✋
+                  </motion.span>
+                )}
+
                 {/* Status dot — animated */}
                 <motion.span
                   className="w-2 h-2 rounded-full flex-shrink-0"
@@ -165,9 +187,18 @@ export function ClasseSidebar({
           })}
 
           {activeStudents.length === 0 && (
-            <p className="text-[11px] text-gray-400 text-center py-4 px-3">
-              Aucun eleve connecte
-            </p>
+            <div className="text-center py-6 px-3 space-y-2">
+              <motion.div
+                animate={{ opacity: [0.4, 1, 0.4] }}
+                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                className="text-2xl"
+              >
+                📡
+              </motion.div>
+              <p className="text-[11px] text-gray-400">
+                En attente des eleves...
+              </p>
+            </div>
           )}
         </div>
       </div>

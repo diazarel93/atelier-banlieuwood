@@ -49,6 +49,7 @@ export function useCockpitModals() {
     setShowDebate(false);
     setShowWordCloud(false);
     setSpotlightResponse(null);
+    setKickTarget(null);
   }, []);
 
   return {

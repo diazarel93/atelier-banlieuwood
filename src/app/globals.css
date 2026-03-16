@@ -1805,6 +1805,40 @@ html, body {
 }
 
 
+/* Focus cockpit dark overrides */
+.cockpit-dark .bg-gray-50,
+.cockpit-dark .bg-gray-50\/50 {
+  background: var(--cockpit-surface) !important;
+}
+.cockpit-dark .bg-gray-100 {
+  background: var(--cockpit-elevated) !important;
+}
+.cockpit-dark .border-gray-100 {
+  border-color: var(--cockpit-border) !important;
+}
+.cockpit-dark .border-gray-200 {
+  border-color: var(--cockpit-border-light) !important;
+}
+.cockpit-dark .text-gray-900 {
+  color: var(--cockpit-heading) !important;
+}
+.cockpit-dark .text-gray-700 {
+  color: var(--cockpit-text) !important;
+}
+.cockpit-dark .text-gray-500,
+.cockpit-dark .text-gray-400 {
+  color: var(--cockpit-muted) !important;
+}
+.cockpit-dark .hover\:bg-gray-50:hover {
+  background: var(--cockpit-elevated) !important;
+}
+.cockpit-dark .hover\:bg-gray-100:hover {
+  background: var(--cockpit-border) !important;
+}
+.cockpit-dark .hover\:bg-gray-200:hover {
+  background: var(--cockpit-border-light) !important;
+}
+
 /* Reduced motion — respect user preferences */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
