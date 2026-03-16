@@ -1,15 +1,18 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { useFocusCockpitState } from "@/hooks/use-focus-cockpit-state";
-import { useCockpitActions } from "@/components/pilot/cockpit-context";
+import { useCockpitActions, useCockpitData } from "@/components/pilot/cockpit-context";
 import { RemoteControlView } from "./remote-control-view";
 import { usePilotKeyboardShortcuts } from "@/hooks/use-pilot-keyboard-shortcuts";
 import { TIMER_PRESETS } from "@/components/pilot/pilot-settings";
+import dynamic from "next/dynamic";
 import { ROUTES } from "@/lib/routes";
 import { FocusHeader } from "./focus-header";
+
+const StudentFiche = dynamic(() => import("@/components/pilot/student-fiche").then(m => ({ default: m.StudentFiche })), { ssr: false });
 import { FocusFooter } from "./focus-footer";
 import { FocusQuestionCard } from "./focus-question-card";
 import { FocusModuleContent } from "./focus-module-content";
@@ -50,7 +53,30 @@ export function FocusCockpit() {
     handleHighlightAllVisible, handleClearAllHighlights, handleHighlightBoth,
   } = state;
 
-  const { updateSession, validateChoice, toggleHide, aiEvaluate, onSelectStudent } = useCockpitActions();
+  const {
+    updateSession, validateChoice, toggleHide, aiEvaluate, onSelectStudent,
+    toggleVoteOption, commentResponse, highlightResponse, scoreResponse,
+    resetResponse, nudgeStudent, warnStudent, toggleStudentActive,
+  } = useCockpitActions();
+
+  const { studentWarnings, oieScores } = useCockpitData();
+
+  // ── Student fiche slide-over ──
+  const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
+  const handleSelectStudent = useCallback((s: { id: string }) => {
+    setFicheStudentId(s.id);
+    setShowStudentSheet(false);
+  }, [setShowStudentSheet]);
+
+  // Listen for student selection from sidebar (CommandCockpit dispatches this)
+  useEffect(() => {
+    function onSelect(e: Event) {
+      const detail = (e as CustomEvent<{ studentId: string }>).detail;
+      if (detail?.studentId) setFicheStudentId(detail.studentId);
+    }
+    window.addEventListener("pilot-select-student", onSelect);
+    return () => window.removeEventListener("pilot-select-student", onSelect);
+  }, []);
 
   // ── Keyboard shortcuts ──
   const handlePauseToggle = useCallback(() => {
@@ -532,7 +558,7 @@ export function FocusCockpit() {
             return (
               <button
                 key={s.id}
-                onClick={() => { onSelectStudent(s as Parameters<typeof onSelectStudent>[0]); setShowStudentSheet(false); }}
+                onClick={() => handleSelectStudent(s)}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer text-left"
               >
                 <span className="text-2xl">{s.avatar}</span>
@@ -549,6 +575,64 @@ export function FocusCockpit() {
           )}
         </div>
       </BottomSheet>
+
+      {/* ── STUDENT FICHE SLIDE-OVER ── */}
+      <AnimatePresence>
+        {ficheStudentId && (() => {
+          const raw = (session.students || []).find((s) => s.id === ficheStudentId);
+          if (!raw) return null;
+          const studentResponses = responses.filter((r) => r.student_id === ficheStudentId) as ResponseCardResponse[];
+          const hasResponded = state.respondedStudentIds.has(ficheStudentId);
+          const studentState = hasResponded ? "responded" : "active";
+          return (
+            <motion.div
+              key="student-fiche-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex justify-end"
+              onClick={() => setFicheStudentId(null)}
+            >
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="w-full max-w-md h-full bg-white shadow-2xl overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <StudentFiche
+                  studentId={ficheStudentId}
+                  student={raw}
+                  state={studentState}
+                  responses={studentResponses}
+                  sessionStatus={session.status}
+                  respondingOpenedAt={respondingOpenedAt}
+                  onBack={() => setFicheStudentId(null)}
+                  onNudge={(sid, text) => {
+                    const r = responses.find((r) => r.student_id === sid);
+                    if (r) nudgeStudent.mutate({ responseId: r.id, nudgeText: text });
+                  }}
+                  onWarn={(sid) => warnStudent.mutate(sid)}
+                  onBroadcast={modals.openBroadcast}
+                  toggleHide={toggleHide}
+                  toggleVoteOption={toggleVoteOption}
+                  commentResponse={commentResponse}
+                  highlightResponse={highlightResponse}
+                  scoreResponse={scoreResponse}
+                  resetResponse={resetResponse}
+                  nudgeStudent={nudgeStudent}
+                  warnStudent={warnStudent}
+                  studentWarnings={studentWarnings}
+                  oieScores={oieScores?.[ficheStudentId] ?? null}
+                  onToggleActive={(studentId, isActive) => toggleStudentActive.mutate({ studentId, isActive })}
+                  isToggleActivePending={toggleStudentActive.isPending}
+                />
+              </motion.div>
+            </motion.div>
+          );
+        })()}
+      </AnimatePresence>
 
       {/* ── MODALS (reused unchanged) ── */}
       <CockpitModals

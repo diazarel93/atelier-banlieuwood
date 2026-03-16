@@ -198,6 +198,11 @@ export function CommandCockpit() {
   const sidebarData = useCommandSidebarData();
   const handleAlertAction = useAlertActions();
 
+  // Dispatch student selection to FocusCockpit via custom event
+  const handleSidebarSelectStudent = useCallback((student: { id: string }) => {
+    window.dispatchEvent(new CustomEvent("pilot-select-student", { detail: { studentId: student.id } }));
+  }, []);
+
   return (
     <div className="flex-1 flex overflow-hidden">
       {/* ── Left: Classe sidebar (visible ≥ lg / 1024px) ── */}
@@ -208,7 +213,7 @@ export function CommandCockpit() {
           respondedStudentIds={sidebarData.respondedStudentIds}
           stuckLevels={sidebarData.stuckLevels}
           sessionStatus={sidebarData.session.status}
-          onSelectStudent={sidebarData.onSelectStudent}
+          onSelectStudent={handleSidebarSelectStudent}
         />
       </aside>
 
