@@ -131,17 +131,34 @@ export function ClasseSidebar({
                   {student.display_name}
                 </span>
 
-                {/* Status dot */}
-                <span
+                {/* Status dot — animated */}
+                <motion.span
                   className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ background: dotColor }}
+                  animate={
+                    !responded && (level === "stuck" || level === "slow")
+                      ? { scale: [1, 1.4, 1], opacity: [1, 0.7, 1] }
+                      : responded
+                      ? { scale: [0, 1.2, 1] }
+                      : {}
+                  }
+                  transition={
+                    !responded && (level === "stuck" || level === "slow")
+                      ? { repeat: Infinity, duration: 2, ease: "easeInOut" }
+                      : { duration: 0.3, type: "spring" }
+                  }
                 />
 
                 {/* Checkmark if responded */}
                 {responded && (
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" className="flex-shrink-0">
+                  <motion.svg
+                    width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" className="flex-shrink-0"
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                  >
                     <path d="M5 13l4 4L19 7" />
-                  </svg>
+                  </motion.svg>
                 )}
               </button>
             );

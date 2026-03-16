@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
 import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
 import { ROUTES } from "@/lib/routes";
+import { useScreenConnection } from "@/hooks/use-screen-connection";
 
 interface FocusHeaderProps {
   sessionId: string;
@@ -39,6 +40,7 @@ export function FocusHeader({
 }: FocusHeaderProps) {
   const router = useRouter();
   const [expanded, setExpanded] = useState(false);
+  const isScreenConnected = useScreenConnection();
 
   const qLabel = maxSituations > 1 ? `Q${currentQIndex + 1}/${maxSituations}` : null;
 
@@ -82,6 +84,31 @@ export function FocusHeader({
             <ElapsedTimer startedAt={respondingOpenedAt} variant="pill" />
           </div>
         )}
+
+        {/* Screen + Play buttons */}
+        <button
+          onClick={(e) => { e.stopPropagation(); window.open(ROUTES.screen(sessionId), "bw-screen"); }}
+          className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+          title={isScreenConnected ? "Écran connecté — cliquer pour ouvrir" : "Ouvrir l'écran de projection"}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <path d="M8 21h8M12 17v4" />
+          </svg>
+          {isScreenConnected && (
+            <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
+          )}
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); window.open(ROUTES.play(sessionId), "bw-play"); }}
+          className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+          title="Tester la vue élève"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="6" width="20" height="12" rx="2" />
+            <path d="M12 6V2M7 2h10" />
+          </svg>
+        </button>
 
         {/* Student chip */}
         <button

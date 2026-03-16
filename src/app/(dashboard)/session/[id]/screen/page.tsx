@@ -65,6 +65,7 @@ import { ObjectiveBanner } from "@/components/screen/objective-banner";
 import { FloatingReactions } from "@/components/screen/floating-reactions";
 import { WordCloud } from "@/components/screen/word-cloud";
 import { RevealMode } from "@/components/screen/reveal-mode";
+import { useScreenHeartbeat } from "@/hooks/use-screen-connection";
 import { ApplauseMeter } from "@/components/screen/applause-meter";
 import { ReactionBar } from "@/components/reaction-bar";
 import { ErrorBoundary } from "@/components/error-boundary";
@@ -85,6 +86,7 @@ import type { HighlightedResponse } from "@/components/screen/highlighted-panel"
 
 export default function ScreenPage() {
   const { id: sessionId } = useParams<{ id: string }>();
+  useScreenHeartbeat(); // Send heartbeat to cockpit via BroadcastChannel
   const { status: realtimeStatus } = useRealtimeInvalidation(sessionId);
   const { data, error, refetch } = useSessionPolling(sessionId, null, { skipStudentCheck: true, realtimeStatus });
 

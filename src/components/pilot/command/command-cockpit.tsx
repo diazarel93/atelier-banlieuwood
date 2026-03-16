@@ -115,6 +115,31 @@ function useCommandSidebarData() {
     prevResponseCountRef.current = count;
   }, [responses.length, activeStudents.length, session.status, addEvent]);
 
+  // Track broadcast messages
+  const prevBroadcastRef = useRef<string | null>(null);
+  const broadcastMsg = (session as unknown as Record<string, unknown>).broadcast_at as string | null | undefined;
+  useEffect(() => {
+    if (!broadcastMsg || broadcastMsg === prevBroadcastRef.current) return;
+    prevBroadcastRef.current = broadcastMsg;
+    const msg = (session as unknown as Record<string, unknown>).broadcast_message as string | null;
+    if (msg && !msg.startsWith("__SCREEN_")) {
+      addEvent("broadcast_sent", "Message envoye", msg.slice(0, 40), "info");
+    }
+  }, [broadcastMsg, session, addEvent]);
+
+  // Track stuck detection
+  const prevStuckCountRef = useRef(0);
+  useEffect(() => {
+    let stuckCount = 0;
+    for (const level of stuckLevels.values()) {
+      if (level === "stuck") stuckCount++;
+    }
+    if (stuckCount >= 3 && prevStuckCountRef.current < 3) {
+      addEvent("stuck_detected", `${stuckCount} eleves bloques`, undefined, "warning");
+    }
+    prevStuckCountRef.current = stuckCount;
+  }, [stuckLevels, addEvent]);
+
   return {
     session,
     responses,
@@ -130,12 +155,12 @@ function useCommandSidebarData() {
 
 // ── Alert action handler ──
 function useAlertActions() {
-  const { updateSession } = useCockpitActions();
+  const { updateSession, onSelectStudent } = useCockpitActions();
+  const { activeStudents } = useCockpitData();
 
   return useCallback((actionId: string) => {
     switch (actionId) {
       case "broadcast":
-        // Trigger broadcast via update (FocusCockpit handles the modal)
         updateSession.mutate({
           broadcast_message: "N'oubliez pas de repondre a la question !",
           broadcast_at: new Date().toISOString(),
@@ -151,17 +176,22 @@ function useAlertActions() {
         break;
       case "vote":
         updateSession.mutate({ status: "voting", timer_ends_at: null });
+        toast.success("Vote lance");
         break;
       case "debate":
         toast("Lancez le debat a l'oral !", { icon: "🎭" });
         break;
-      case "see-hand":
+      case "see-hand": {
+        // Select the first student with hand raised
+        const handStudent = activeStudents.find(s => s.hand_raised_at);
+        if (handStudent) onSelectStudent(handStudent);
+        break;
+      }
       case "see-alerts":
-        // These are handled by existing UI — just toast for now
         toast("Consultez la liste des eleves", { icon: "👀" });
         break;
     }
-  }, [updateSession]);
+  }, [updateSession, activeStudents, onSelectStudent]);
 }
 
 export function CommandCockpit() {

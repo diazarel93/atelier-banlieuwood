@@ -30,6 +30,15 @@ interface PlusMenuContentProps {
   onClearTimer: () => void;
   timerActive: boolean;
 
+  // Screen controls
+  onSetScreenMode?: (mode: string) => void;
+  onToggleFreeze?: () => void;
+  currentScreenMode?: string;
+  screenFrozen?: boolean;
+
+  // Remote mode
+  onToggleRemote?: () => void;
+
   // Close
   onClose: () => void;
 }
@@ -85,6 +94,8 @@ export function PlusMenuContent({
   autoAdvance, onToggleAutoAdvance,
   isDarkMode, onToggleDarkMode,
   onSetTimer, onClearTimer, timerActive,
+  onSetScreenMode, onToggleFreeze, currentScreenMode, screenFrozen,
+  onToggleRemote,
   onClose,
 }: PlusMenuContentProps) {
   function doAndClose(fn: () => void) {
@@ -131,8 +142,43 @@ export function PlusMenuContent({
         <div className="space-y-2">
           <ToggleItem icon="⚡" label="Auto-avance" active={autoAdvance} onToggle={onToggleAutoAdvance} />
           <ToggleItem icon="🌙" label="Mode sombre" active={isDarkMode} onToggle={onToggleDarkMode} />
+          {onToggleRemote && (
+            <MenuItem icon="📱" label="Mode tablette" onClick={() => doAndClose(onToggleRemote)} />
+          )}
         </div>
       </div>
+
+      {/* Écran projeté */}
+      {onSetScreenMode && (
+        <div>
+          <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Écran projeté</h4>
+          <div className="grid grid-cols-4 gap-2 mb-2">
+            {([
+              { mode: "default", icon: "📋", label: "Question" },
+              { mode: "responses", icon: "💬", label: "Réponses" },
+              { mode: "wordcloud", icon: "☁️", label: "Nuage" },
+              { mode: "blank", icon: "⬛", label: "Noir" },
+            ] as const).map(({ mode, icon, label }) => (
+              <motion.button
+                key={mode}
+                onClick={() => doAndClose(() => onSetScreenMode(mode))}
+                whileTap={{ scale: 0.95 }}
+                className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl transition-colors cursor-pointer ${
+                  (currentScreenMode || "default") === mode
+                    ? "bg-orange-100 text-orange-700 ring-1 ring-orange-300"
+                    : "bg-gray-50 hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <span className="text-xl">{icon}</span>
+                <span className="text-[11px] font-medium leading-tight text-center">{label}</span>
+              </motion.button>
+            ))}
+          </div>
+          {onToggleFreeze && (
+            <ToggleItem icon="❄️" label="Geler l'écran" active={!!screenFrozen} onToggle={onToggleFreeze} />
+          )}
+        </div>
+      )}
 
       {/* Timer */}
       <div>

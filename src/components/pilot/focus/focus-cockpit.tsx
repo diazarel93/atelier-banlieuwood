@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { useFocusCockpitState } from "@/hooks/use-focus-cockpit-state";
 import { useCockpitActions } from "@/components/pilot/cockpit-context";
+import { RemoteControlView } from "./remote-control-view";
 import { usePilotKeyboardShortcuts } from "@/hooks/use-pilot-keyboard-shortcuts";
 import { TIMER_PRESETS } from "@/components/pilot/pilot-settings";
 import { FocusHeader } from "./focus-header";
@@ -22,6 +23,7 @@ import type { ResponseCardResponse } from "@/components/pilot/response-card";
 import type { Response } from "@/hooks/use-pilot-session";
 
 export function FocusCockpit() {
+  const [remoteMode, setRemoteMode] = useState(false);
   const state = useFocusCockpitState();
   const {
     session, sessionId, responses, activeStudents, voteData,
@@ -107,6 +109,79 @@ export function FocusCockpit() {
   function handleClearTimer() {
     updateSession.mutate({ timer_ends_at: null });
     toast.success("Timer arrêté");
+  }
+
+  // Screen control handlers
+  const broadcastMsg = (session as unknown as Record<string, unknown>).broadcast_message as string | null | undefined;
+  const currentScreenMode = typeof broadcastMsg === "string" && broadcastMsg.startsWith("__SCREEN_MODE:")
+    ? broadcastMsg.replace("__SCREEN_MODE:", "")
+    : "default";
+  const screenFrozen = broadcastMsg === "__SCREEN_FROZEN";
+
+  function handleSetScreenMode(mode: string) {
+    updateSession.mutate({ broadcast_message: `__SCREEN_MODE:${mode}`, broadcast_at: new Date().toISOString() });
+    const labels: Record<string, string> = { default: "Question", responses: "Réponses", wordcloud: "Nuage de mots", blank: "Écran noir" };
+    toast.success(`Écran : ${labels[mode] || mode}`);
+  }
+
+  function handleToggleFreeze() {
+    if (screenFrozen) {
+      updateSession.mutate({ broadcast_message: null, broadcast_at: null });
+      toast.success("Écran dégelé");
+    } else {
+      updateSession.mutate({ broadcast_message: "__SCREEN_FROZEN", broadcast_at: new Date().toISOString() });
+      toast.success("Écran gelé");
+    }
+  }
+
+  // ── Remote Control Mode ──
+  if (remoteMode) {
+    return (
+      <div className={`flex-1 flex flex-col overflow-hidden bg-gray-50/50 relative ${isDarkMode ? "cockpit-dark" : ""}`}>
+        <RemoteControlView
+          questionText={universalQuestionText}
+          respondedCount={unifiedRespondedCount}
+          onOpenBroadcast={modals.openBroadcast}
+          onNextAction={handleNextAction}
+          onQuickVote={handleQuickVote}
+          onExit={() => setRemoteMode(false)}
+        />
+        <CockpitModals
+          spotlightResponse={modals.spotlightResponse}
+          setSpotlightResponse={modals.setSpotlightResponse}
+          showWordCloud={modals.showWordCloud}
+          setShowWordCloud={modals.setShowWordCloud}
+          showDebate={modals.showDebate}
+          setShowDebate={modals.setShowDebate}
+          showBroadcast={modals.showBroadcast}
+          setShowBroadcast={modals.setShowBroadcast}
+          handleBroadcast={handleBroadcast}
+          broadcastHistory={broadcastHistory}
+          broadcastPrefill={modals.broadcastPrefill}
+          broadcastTitle={modals.broadcastTitle}
+          broadcastIcon={modals.broadcastIcon}
+          updateSessionPending={updateSession.isPending}
+          showCompare={modals.showCompare}
+          setShowCompare={modals.setShowCompare}
+          handleHighlightBoth={handleHighlightBoth}
+          handleClearAllHighlights={handleClearAllHighlights}
+          showExport={modals.showExport}
+          setShowExport={modals.setShowExport}
+          sessionTitle={session.title || "Session"}
+          level={session.level || ""}
+          moduleLabel={moduleLabel}
+          questionPrompt={situation?.prompt || ""}
+          activeStudentCount={activeStudents.length}
+          sessionId={sessionId}
+          showShortcuts={modals.showShortcuts}
+          setShowShortcuts={modals.setShowShortcuts}
+          kickTarget={modals.kickTarget}
+          setKickTarget={modals.setKickTarget}
+          responses={responses}
+          visibleResponses={visibleResponses}
+        />
+      </div>
+    );
   }
 
   return (
@@ -326,6 +401,11 @@ export function FocusCockpit() {
           onSetTimer={handleSetTimer}
           onClearTimer={handleClearTimer}
           timerActive={!!session.timer_ends_at}
+          onSetScreenMode={handleSetScreenMode}
+          onToggleFreeze={handleToggleFreeze}
+          currentScreenMode={currentScreenMode}
+          screenFrozen={screenFrozen}
+          onToggleRemote={() => setRemoteMode(true)}
           onClose={() => setPlusOpen(false)}
         />
       </BottomSheet>
