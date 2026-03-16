@@ -57,14 +57,22 @@ export function BroadcastMessageOverlay({ broadcastMsg }: BroadcastMessageOverla
         </motion.div>
       )}
 
-      {/* Screen blank mode (#15) */}
+      {/* Screen blank mode — subtle watermark (#15 enhanced) */}
       {broadcastMsg === "__SCREEN_MODE:blank" && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] bg-black"
-        />
+          className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
+        >
+          <div className="text-center space-y-3 opacity-[0.06]">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" className="mx-auto">
+              <rect x="2" y="2" width="20" height="20" rx="2.18" />
+              <path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 7h5M17 17h5" />
+            </svg>
+            <p className="text-white text-sm tracking-[0.3em] uppercase font-medium">Banlieuwood</p>
+          </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );

@@ -73,6 +73,7 @@ import { HelpButton } from "@/components/help-button";
 import { SafeImage } from "@/components/safe-image";
 import { FlipCounter } from "@/components/screen/flip-counter";
 import { TicketReveal } from "@/components/screen/ticket-reveal";
+import { SpotlightView } from "@/components/screen/spotlight-view";
 
 interface VoteResult {
   response: { id: string; text: string; students: { display_name: string; avatar: string } };
@@ -254,16 +255,25 @@ export default function ScreenPage() {
     prevSituationIndex.current = idx;
   }, [data?.session?.currentSituationIndex, data?.session?.currentModule, data?.session]);
 
-  // Done phase sequencing
+  // Done phase sequencing — enhanced celebration
   useEffect(() => {
     if (data?.session?.status !== "done") {
       setDonePhase("clap");
       return;
     }
-    // Phase 1: clap + confetti
-    import("canvas-confetti").then(mod => mod.default({ particleCount: 120, spread: 80, origin: { y: 0.6 } }));
-    const t1 = setTimeout(() => setDonePhase("title"), 2000);
-    const t2 = setTimeout(() => setDonePhase("credits"), 5000);
+    // Phase 1: big confetti burst
+    import("canvas-confetti").then(mod => {
+      mod.default({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ["#FF6B35", "#F59E0B", "#8B5CF6", "#22C55E"] });
+      // Second burst slightly delayed for a richer effect
+      setTimeout(() => mod.default({ particleCount: 80, spread: 120, origin: { y: 0.4, x: 0.3 } }), 300);
+      setTimeout(() => mod.default({ particleCount: 80, spread: 120, origin: { y: 0.4, x: 0.7 } }), 600);
+    });
+    const t1 = setTimeout(() => setDonePhase("title"), 2500);
+    const t2 = setTimeout(() => {
+      setDonePhase("credits");
+      // Final confetti shower for credits
+      import("canvas-confetti").then(mod => mod.default({ particleCount: 60, spread: 160, origin: { y: 0 }, gravity: 0.6, ticks: 200 }));
+    }, 6000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [data?.session?.status]);
 
@@ -402,6 +412,13 @@ export default function ScreenPage() {
               <WordCloud texts={wordCloudTexts} accentColor={moduleColor} />
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Screen mode: Spotlight — single highlighted response large (#Phase4) */}
+      <AnimatePresence>
+        {screenModeFromBroadcast === "spotlight" && highlightedResponses && highlightedResponses.length > 0 && (
+          <SpotlightView responses={highlightedResponses} moduleColor={moduleColor} />
         )}
       </AnimatePresence>
 
@@ -2050,7 +2067,7 @@ export default function ScreenPage() {
                 </motion.div>
               )}
 
-              {/* Phase 2: Title card */}
+              {/* Phase 2: Title card with stats */}
               {donePhase === "title" && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -2071,14 +2088,29 @@ export default function ScreenPage() {
                       {templateInfo}
                     </motion.span>
                   )}
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
-                    className="text-2xl text-bw-teal"
+                    className="flex items-center justify-center gap-8"
                   >
-                    {connectedCount} cinéaste{connectedCount > 1 ? "s" : ""}
-                  </motion.p>
+                    <div className="text-center">
+                      <p className="text-3xl font-bold text-bw-teal">{connectedCount}</p>
+                      <p className="text-xs text-bw-muted uppercase tracking-wider mt-1">cinéaste{connectedCount > 1 ? "s" : ""}</p>
+                    </div>
+                    {responsesCount > 0 && (
+                      <div className="text-center">
+                        <p className="text-3xl font-bold text-bw-primary">{responsesCount}</p>
+                        <p className="text-xs text-bw-muted uppercase tracking-wider mt-1">réponse{responsesCount > 1 ? "s" : ""}</p>
+                      </div>
+                    )}
+                    {allChoices && allChoices.length > 0 && (
+                      <div className="text-center">
+                        <p className="text-3xl font-bold text-purple-400">{allChoices.length}</p>
+                        <p className="text-xs text-bw-muted uppercase tracking-wider mt-1">choix collectif{allChoices.length > 1 ? "s" : ""}</p>
+                      </div>
+                    )}
+                  </motion.div>
                 </motion.div>
               )}
 

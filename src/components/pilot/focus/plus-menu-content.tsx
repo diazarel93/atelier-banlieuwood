@@ -156,6 +156,7 @@ export function PlusMenuContent({
             {([
               { mode: "default", icon: "📋", label: "Question" },
               { mode: "responses", icon: "💬", label: "Réponses" },
+              { mode: "spotlight", icon: "🔦", label: "Spotlight" },
               { mode: "wordcloud", icon: "☁️", label: "Nuage" },
               { mode: "blank", icon: "⬛", label: "Noir" },
             ] as const).map(({ mode, icon, label }) => (
