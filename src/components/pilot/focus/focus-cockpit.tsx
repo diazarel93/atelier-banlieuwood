@@ -23,7 +23,7 @@ import { BulkResponseToolbar } from "@/components/pilot/bulk-response-toolbar";
 import { ResponseStreamSection } from "@/components/pilot/response-stream-section";
 import { VotingResults } from "@/components/pilot/voting-results";
 import { InlineReformulation } from "@/components/pilot/inline-reformulation";
-import { MiniClassroomGrid } from "@/components/pilot/mini-classroom-grid";
+import { ClassroomPlanCompact } from "@/components/pilot/classroom-plan-compact";
 import { useStuckDetection } from "@/hooks/use-stuck-detection";
 import type { StudentState } from "@/components/pilot/pulse-ring";
 import type { ResponseCardResponse } from "@/components/pilot/response-card";
@@ -358,8 +358,8 @@ export function FocusCockpit() {
                     className="overflow-hidden border-t border-gray-100"
                   >
                     <div className="p-3">
-                      <MiniClassroomGrid
-                        studentStates={miniStudentStates}
+                      <ClassroomPlanCompact
+                        students={miniStudentStates}
                         onStudentClick={(id) => {
                           const s = activeStudents.find(st => st.id === id);
                           if (s) handleSelectStudent(s);
