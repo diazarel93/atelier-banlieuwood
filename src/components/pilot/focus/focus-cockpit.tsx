@@ -64,9 +64,7 @@ export function FocusCockpit() {
 
   const { studentWarnings, oieScores } = useCockpitData();
 
-  // ── Plan de classe ──
-  const [showPlan, setShowPlan] = useState(false);
-
+  // ── Plan de classe (student states for grid) ──
   const activeStudentIds = useMemo(() => new Set(activeStudents.map(s => s.id)), [activeStudents]);
   const stuckLevels = useStuckDetection({
     respondedStudentIds: state.respondedStudentIds,
@@ -267,7 +265,6 @@ export function FocusCockpit() {
         timerEndsAt={session.timer_ends_at}
         currentScreenMode={currentScreenMode}
         onOpenStudents={() => setShowStudentSheet(true)}
-        onOpenPlan={() => setShowPlan(true)}
       />
 
       {/* ── SCROLLABLE CENTER ── */}
@@ -590,51 +587,49 @@ export function FocusCockpit() {
         />
       </BottomSheet>
 
-      {/* ── STUDENTS BOTTOM SHEET ── */}
+      {/* ── STUDENTS BOTTOM SHEET (with plan de classe) ── */}
       <BottomSheet open={showStudentSheet} onClose={() => setShowStudentSheet(false)} title={`Élèves (${activeStudents.length})`}>
-        <div className="space-y-1.5">
-          {studentList.map((s) => {
-            const hasResponded = state.respondedStudentIds.has(s.id);
-            return (
-              <button
-                key={s.id}
-                onClick={() => handleSelectStudent(s)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer text-left"
-              >
-                <span className="text-2xl">{s.avatar}</span>
-                <span className="flex-1 text-[14px] font-medium text-gray-900 truncate">{s.display_name}</span>
-                {s.hand_raised_at && <span className="text-sm" title="Main levée">✋</span>}
-                <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                  hasResponded ? "bg-emerald-500" : "bg-gray-300"
-                }`} />
-              </button>
-            );
-          })}
-          {studentList.length === 0 && (
-            <p className="text-center text-sm text-gray-400 py-4">Aucun élève connecté</p>
+        <div className="space-y-4">
+          {/* Plan de classe grid */}
+          {activeStudents.length > 0 && (
+            <div>
+              <MiniClassroomGrid
+                studentStates={miniStudentStates}
+                onStudentClick={(id) => {
+                  const s = activeStudents.find(st => st.id === id);
+                  if (s) {
+                    setShowStudentSheet(false);
+                    handleSelectStudent(s);
+                  }
+                }}
+              />
+            </div>
           )}
-        </div>
-      </BottomSheet>
 
-      {/* ── PLAN DE CLASSE BOTTOM SHEET ── */}
-      <BottomSheet open={showPlan} onClose={() => setShowPlan(false)} title="Plan de classe">
-        {activeStudents.length > 0 ? (
-          <MiniClassroomGrid
-            studentStates={miniStudentStates}
-            onStudentClick={(id) => {
-              const s = activeStudents.find(st => st.id === id);
-              if (s) {
-                setShowPlan(false);
-                handleSelectStudent(s);
-              }
-            }}
-          />
-        ) : (
-          <div className="text-center py-8 space-y-2">
-            <div className="text-3xl">📡</div>
-            <p className="text-sm text-gray-400">Aucun élève connecté</p>
+          {/* Student list */}
+          <div className="space-y-1.5">
+            {studentList.map((s) => {
+              const hasResponded = state.respondedStudentIds.has(s.id);
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => handleSelectStudent(s)}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer text-left"
+                >
+                  <span className="text-2xl">{s.avatar}</span>
+                  <span className="flex-1 text-[14px] font-medium text-gray-900 truncate">{s.display_name}</span>
+                  {s.hand_raised_at && <span className="text-sm" title="Main levée">✋</span>}
+                  <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                    hasResponded ? "bg-emerald-500" : "bg-gray-300"
+                  }`} />
+                </button>
+              );
+            })}
+            {studentList.length === 0 && (
+              <p className="text-center text-sm text-gray-400 py-4">Aucun élève connecté</p>
+            )}
           </div>
-        )}
+        </div>
       </BottomSheet>
 
       {/* ── STUDENT FICHE SLIDE-OVER ── */}
