@@ -1,12 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useMemo } from "react";
+import { motion } from "motion/react";
 import { StatRing } from "@/components/v2/stat-ring";
-import { MiniClassroomGrid } from "@/components/pilot/mini-classroom-grid";
 import type { Student } from "@/hooks/use-pilot-session";
 import type { StuckLevel } from "@/hooks/use-stuck-detection";
-import type { StudentState } from "@/components/pilot/pulse-ring";
 
 // ═══════════════════════════════════════════════════════════════
 // CLASSE SIDEBAR — Left panel: quick class scan
@@ -37,8 +35,6 @@ export function ClasseSidebar({
   sessionStatus,
   onSelectStudent,
 }: ClasseSidebarProps) {
-  const [showPlan, setShowPlan] = useState(false);
-
   const respondedCount = useMemo(() => {
     return activeStudents.filter((s) => respondedStudentIds.has(s.id)).length;
   }, [activeStudents, respondedStudentIds]);
@@ -80,24 +76,6 @@ export function ClasseSidebar({
 
     return { responded, thinking, blocked, absent };
   }, [activeStudents, allStudents, respondedStudentIds, stuckLevels]);
-
-  // Build MiniClassroomGrid student states
-  const miniStudentStates = useMemo(() => {
-    return activeStudents.map((s) => {
-      const responded = respondedStudentIds.has(s.id);
-      const level = stuckLevels.get(s.id) || "ok";
-      let state: StudentState = "active";
-      if (responded) state = "responded";
-      else if (level === "stuck" || level === "slow") state = "stuck";
-      return {
-        id: s.id,
-        state,
-        display_name: s.display_name,
-        avatar: s.avatar || "👤",
-        hand_raised_at: s.hand_raised_at,
-      };
-    });
-  }, [activeStudents, respondedStudentIds, stuckLevels]);
 
   const isResponding = sessionStatus === "responding";
 
@@ -223,46 +201,6 @@ export function ClasseSidebar({
         </div>
       </div>
 
-      {/* ── Plan de classe (collapsible) ── */}
-      {activeStudents.length > 0 && (
-        <div className="border-t border-gray-100">
-          <button
-            onClick={() => setShowPlan(!showPlan)}
-            className="w-full flex items-center justify-between px-3 py-2 hover:bg-gray-50 transition-colors cursor-pointer"
-          >
-            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-              Plan de classe
-            </span>
-            <svg
-              width="10" height="10" viewBox="0 0 24 24"
-              fill="none" stroke="#9CA3AF" strokeWidth="2"
-              className={`transition-transform duration-200 ${showPlan ? "rotate-180" : ""}`}
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
-
-          <AnimatePresence>
-            {showPlan && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                className="overflow-hidden"
-              >
-                <MiniClassroomGrid
-                  studentStates={miniStudentStates}
-                  onStudentClick={(id) => {
-                    const s = activeStudents.find(st => st.id === id);
-                    if (s) onSelectStudent(s);
-                  }}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      )}
     </div>
   );
 }

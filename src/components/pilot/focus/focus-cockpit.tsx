@@ -270,61 +270,64 @@ export function FocusCockpit() {
 
       {/* ── SCROLLABLE CENTER ── */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
-          {/* Question card — animate on change */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`q-${currentQIndex}-${isPreviewing ? "preview" : "live"}`}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-            >
-              <FocusQuestionCard
-                questionText={universalQuestionText}
-                categoryLabel={universalCategoryLabel}
-                currentIndex={displayIndex}
-                maxSituations={moduleFlags.maxSituations}
-                isPreviewing={isPreviewing}
-                onPrev={() => {
-                  const idx = displayIndex;
-                  if (idx > 0) setPreviewIndex(idx - 1);
-                }}
-                onNext={() => {
-                  const idx = displayIndex;
-                  if (idx < moduleFlags.maxSituations - 1) setPreviewIndex(idx + 1);
-                }}
-                allSituations={state.allSituations}
-                liveIndex={currentQIndex}
-                onGoToSituation={(i) => {
-                  if (i === currentQIndex) {
-                    setPreviewIndex(null);
-                  } else {
-                    setPreviewIndex(i);
-                  }
-                }}
-              />
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Progress indicator */}
-          {session.status === "responding" && (
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-2 rounded-full bg-gray-200 overflow-hidden">
-                <motion.div
-                  className="h-full rounded-full bg-emerald-500"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${activeStudents.length > 0 ? (unifiedRespondedCount / activeStudents.length) * 100 : 0}%` }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
+        <div className="px-4 py-4 space-y-4">
+          {/* Question + progress — constrained width */}
+          <div className="max-w-2xl mx-auto space-y-4">
+            {/* Question card — animate on change */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`q-${currentQIndex}-${isPreviewing ? "preview" : "live"}`}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.2 }}
+              >
+                <FocusQuestionCard
+                  questionText={universalQuestionText}
+                  categoryLabel={universalCategoryLabel}
+                  currentIndex={displayIndex}
+                  maxSituations={moduleFlags.maxSituations}
+                  isPreviewing={isPreviewing}
+                  onPrev={() => {
+                    const idx = displayIndex;
+                    if (idx > 0) setPreviewIndex(idx - 1);
+                  }}
+                  onNext={() => {
+                    const idx = displayIndex;
+                    if (idx < moduleFlags.maxSituations - 1) setPreviewIndex(idx + 1);
+                  }}
+                  allSituations={state.allSituations}
+                  liveIndex={currentQIndex}
+                  onGoToSituation={(i) => {
+                    if (i === currentQIndex) {
+                      setPreviewIndex(null);
+                    } else {
+                      setPreviewIndex(i);
+                    }
+                  }}
                 />
-              </div>
-              <span className="text-[13px] font-bold text-gray-500 tabular-nums shrink-0">
-                {unifiedRespondedCount}/{activeStudents.length}
-              </span>
-            </div>
-          )}
+              </motion.div>
+            </AnimatePresence>
 
-          {/* Plan de classe — collapsible section */}
+            {/* Progress indicator */}
+            {session.status === "responding" && (
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-2 rounded-full bg-gray-200 overflow-hidden">
+                  <motion.div
+                    className="h-full rounded-full bg-emerald-500"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${activeStudents.length > 0 ? (unifiedRespondedCount / activeStudents.length) * 100 : 0}%` }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                  />
+                </div>
+                <span className="text-[13px] font-bold text-gray-500 tabular-nums shrink-0">
+                  {unifiedRespondedCount}/{activeStudents.length}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Plan de classe — FULL WIDTH collapsible section */}
           {activeStudents.length > 0 && (
             <div className="rounded-2xl bg-white border border-gray-100 overflow-hidden">
               <button
@@ -357,7 +360,7 @@ export function FocusCockpit() {
                     transition={{ duration: 0.2 }}
                     className="overflow-hidden border-t border-gray-100"
                   >
-                    <div className="p-3">
+                    <div className="p-4">
                       <ClassroomPlanCompact
                         students={miniStudentStates}
                         onStudentClick={(id) => {
@@ -372,6 +375,8 @@ export function FocusCockpit() {
             </div>
           )}
 
+          {/* Remaining content — constrained width */}
+          <div className="max-w-2xl mx-auto space-y-4">
           {/* Empty state — waiting for responses */}
           {session.status === "responding" && unifiedRespondedCount === 0 && activeStudents.length > 0 && (
             <motion.div
@@ -568,6 +573,7 @@ export function FocusCockpit() {
               </button>
             </motion.div>
           )}
+          </div>{/* close max-w-2xl */}
         </div>
       </div>
 
