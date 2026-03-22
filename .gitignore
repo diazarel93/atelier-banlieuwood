@@ -48,3 +48,6 @@ public/avatar-gallery.html
 
 # Google OAuth secrets
 client_secret_*.json
+
+# Scraper output (PDF téléchargés)
+scripts/scraper/output/
