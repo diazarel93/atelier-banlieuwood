@@ -59,7 +59,7 @@ export const PRODUCTION_CATEGORIES: ProductionCategory[] = [
     storyCategory: "personnage",
     options: [
       { label: "Figurants (toi seul face caméra)", cost: 5 },
-      { label: "Amateurs (ton groupe de potes)", cost: 20 },
+      { label: "Amateurs (ton groupe de potes)", cost: 15 },
       { label: "Stars (toute la classe + un adulte)", cost: 40 },
     ],
   },
@@ -69,9 +69,9 @@ export const PRODUCTION_CATEGORIES: ProductionCategory[] = [
     color: "#4ECDC4",
     storyCategory: "environnement",
     options: [
-      { label: "Huis clos (une seule salle)", cost: 5 },
-      { label: "Lieu simple (2-3 endroits dans l'école)", cost: 20 },
-      { label: "Lieu exceptionnel (accès partout, même dehors)", cost: 35 },
+      { label: "Gratuit (une seule salle)", cost: 0 },
+      { label: "Lieu simple (2-3 endroits dans l'école)", cost: 10 },
+      { label: "Lieu exceptionnel (accès partout, même dehors)", cost: 30 },
     ],
   },
   {
@@ -81,8 +81,8 @@ export const PRODUCTION_CATEGORIES: ProductionCategory[] = [
     storyCategory: null,
     options: [
       { label: "Aucun (on garde le réel tel quel)", cost: 0 },
-      { label: "Simples (filtres, ralenti, accéléré)", cost: 15 },
-      { label: "Cinéma (trucages, fond vert, effets sonores)", cost: 30 },
+      { label: "Basiques (filtres, ralenti, accéléré)", cost: 15 },
+      { label: "Impressionnants (trucages, fond vert, effets sonores)", cost: 40 },
     ],
   },
   {
@@ -92,8 +92,8 @@ export const PRODUCTION_CATEGORIES: ProductionCategory[] = [
     storyCategory: null,
     options: [
       { label: "Silence (pas de musique)", cost: 0 },
-      { label: "Libre de droits (musique gratuite)", cost: 10 },
-      { label: "Originale (composée pour le film)", cost: 25 },
+      { label: "Libre de droits (musique gratuite)", cost: 5 },
+      { label: "Compositeur (musique originale pour le film)", cost: 25 },
     ],
   },
   {
@@ -102,9 +102,9 @@ export const PRODUCTION_CATEGORIES: ProductionCategory[] = [
     color: "#EC4899",
     storyCategory: null,
     options: [
-      { label: "Court (1-2 minutes)", cost: 5 },
-      { label: "Moyen (3-5 minutes)", cost: 15 },
-      { label: "Long (6-10 minutes)", cost: 30 },
+      { label: "Court (3 minutes)", cost: 0 },
+      { label: "Moyen (10 minutes)", cost: 10 },
+      { label: "Long (25 minutes)", cost: 25 },
     ],
   },
 ];
