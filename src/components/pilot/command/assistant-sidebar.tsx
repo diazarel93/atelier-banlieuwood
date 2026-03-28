@@ -127,10 +127,10 @@ export function AssistantSidebar({
   }, [session.status, respondedStudentIds.size, activeStudents.length]);
 
   return (
-    <div className="flex flex-col h-full bg-white/60">
+    <div className="flex flex-col h-full bg-[#0c0c18]">
       {/* ── Header ── */}
-      <div className="px-3 py-3 border-b border-gray-100">
-        <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Assistant</h3>
+      <div className="px-3 py-3 border-b border-[#2a2a50]">
+        <h3 className="text-[11px] font-bold uppercase tracking-wider text-[#64748b]">Assistant</h3>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -140,13 +140,13 @@ export function AssistantSidebar({
             <div
               className="rounded-xl px-3.5 py-3"
               style={{
-                background: "rgba(107,140,255,0.04)",
-                border: "1px solid rgba(107,140,255,0.12)",
+                background: "rgba(139,92,246,0.08)",
+                border: "1px solid rgba(139,92,246,0.2)",
               }}
             >
               <div className="flex items-start gap-2.5">
                 <span className="text-base flex-shrink-0">{suggestion.icon}</span>
-                <p className="text-[12px] leading-relaxed text-gray-600">{suggestion.text}</p>
+                <p className="text-[12px] leading-relaxed text-[#94a3b8]">{suggestion.text}</p>
               </div>
             </div>
           )}

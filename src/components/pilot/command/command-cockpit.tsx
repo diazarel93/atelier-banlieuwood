@@ -217,7 +217,7 @@ export function CommandCockpit() {
   return (
     <div className="flex-1 flex overflow-hidden">
       {/* ── Left: Classe sidebar (visible ≥ lg / 1024px) ── */}
-      <aside className="hidden lg:flex w-60 flex-col border-r border-gray-100 overflow-y-auto flex-shrink-0">
+      <aside className="hidden lg:flex w-60 flex-col border-r border-[#2a2a50] overflow-y-auto flex-shrink-0">
         <ClasseSidebar
           activeStudents={sidebarData.activeStudents}
           allStudents={sidebarData.session.students || []}
@@ -234,7 +234,7 @@ export function CommandCockpit() {
       </div>
 
       {/* ── Right: Assistant sidebar (visible ≥ xl / 1280px) ── */}
-      <aside className="hidden xl:flex w-[260px] flex-col border-l border-gray-100 overflow-y-auto flex-shrink-0">
+      <aside className="hidden xl:flex w-[260px] flex-col border-l border-[#2a2a50] overflow-y-auto flex-shrink-0">
         <AssistantSidebar
           session={sidebarData.session}
           responses={sidebarData.responses}

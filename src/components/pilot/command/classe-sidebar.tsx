@@ -91,24 +91,24 @@ export function ClasseSidebar({
   const isResponding = sessionStatus === "responding";
 
   return (
-    <div className="flex flex-col h-full bg-white/60">
+    <div className="flex flex-col h-full bg-[#0c0c18]">
       {/* ── Header ── */}
-      <div className="px-3 py-3 border-b border-gray-100 flex items-center justify-between">
-        <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Classe</h3>
+      <div className="px-3 py-3 border-b border-[#2a2a50] flex items-center justify-between">
+        <h3 className="text-[11px] font-bold uppercase tracking-wider text-[#64748b]">Classe</h3>
         {counts.blocked > 0 && (
           <motion.span
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-50 text-[10px] font-bold text-red-600 border border-red-100"
+            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-900/20 text-[10px] font-bold text-red-400 border border-red-500/30"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-red-900/200 animate-pulse" />
             {counts.blocked}
           </motion.span>
         )}
       </div>
 
       {/* ── Donut ── */}
-      <div className="px-3 py-4 flex flex-col items-center border-b border-gray-100">
+      <div className="px-3 py-4 flex flex-col items-center border-b border-[#2a2a50]">
         <StatRing
           value={pct}
           label={`${respondedCount}/${activeStudents.length} reponses`}
@@ -127,7 +127,7 @@ export function ClasseSidebar({
       </div>
 
       {/* ── Filter + Search ── */}
-      <div className="px-3 py-2 border-b border-gray-100 space-y-2">
+      <div className="px-3 py-2 border-b border-[#2a2a50] space-y-2">
         <div className="relative">
           <svg
             width="12"
@@ -137,7 +137,7 @@ export function ClasseSidebar({
             stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
-            className="absolute left-2 top-[7px] text-gray-400"
+            className="absolute left-2 top-[7px] text-[#64748b]"
           >
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.3-4.3" />
@@ -146,7 +146,7 @@ export function ClasseSidebar({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Chercher..."
-            className="w-full pl-7 pr-2 py-1.5 text-[11px] rounded-lg border border-gray-200 bg-gray-50 text-gray-700 outline-none focus:border-blue-300"
+            className="w-full pl-7 pr-2 py-1.5 text-[11px] rounded-lg border border-[#2a2a50] bg-[#1a1a35] text-[#c4b5fd] outline-none focus:border-blue-300"
           />
         </div>
         <div className="flex gap-1 overflow-x-auto">
@@ -162,8 +162,8 @@ export function ClasseSidebar({
               onClick={() => setFilter(f.id)}
               className={`text-[9px] font-semibold px-2 py-1 rounded-md whitespace-nowrap cursor-pointer transition-colors border ${
                 filter === f.id
-                  ? "bg-blue-50 text-blue-600 border-blue-200"
-                  : "bg-transparent text-gray-400 border-transparent hover:text-gray-600"
+                  ? "bg-[#8b5cf6]/10 text-[#8b5cf6] border-[#8b5cf6]/30"
+                  : "bg-transparent text-[#64748b] border-transparent hover:text-[#94a3b8]"
               }`}
             >
               {f.label}
@@ -200,13 +200,13 @@ export function ClasseSidebar({
                 <button
                   key={student.id}
                   onClick={() => onSelectStudent(student)}
-                  className="w-full flex items-center gap-2 px-3 py-1.5 hover:bg-gray-50 transition-colors cursor-pointer text-left"
+                  className="w-full flex items-center gap-2 px-3 py-1.5 hover:bg-[#1a1a35] transition-colors cursor-pointer text-left"
                 >
                   {/* Avatar */}
                   <span className="text-base flex-shrink-0">{student.avatar || "👤"}</span>
 
                   {/* Name */}
-                  <span className="text-[12px] font-medium text-gray-700 truncate flex-1">{student.display_name}</span>
+                  <span className="text-[12px] font-medium text-[#c4b5fd] truncate flex-1">{student.display_name}</span>
 
                   {/* Hand raised indicator */}
                   {student.hand_raised_at && (
@@ -263,7 +263,7 @@ export function ClasseSidebar({
                         e.stopPropagation();
                         onNudgeStudent(student.id);
                       }}
-                      className="text-[9px] px-1.5 py-0.5 rounded bg-orange-50 text-orange-500 border border-orange-200 hover:bg-orange-100 cursor-pointer flex-shrink-0 transition-colors"
+                      className="text-[9px] px-1.5 py-0.5 rounded bg-orange-900/20 text-orange-400 border border-orange-500/30 hover:bg-orange-100 cursor-pointer flex-shrink-0 transition-colors"
                       title="Relancer"
                     >
                       🔔
@@ -275,7 +275,7 @@ export function ClasseSidebar({
                         e.stopPropagation();
                         onEncourageStudent(student.id);
                       }}
-                      className="text-[9px] px-1.5 py-0.5 rounded bg-green-50 text-green-500 border border-green-200 hover:bg-green-100 cursor-pointer flex-shrink-0 transition-colors"
+                      className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-900/20 text-emerald-400 border border-emerald-500/30 hover:bg-green-100 cursor-pointer flex-shrink-0 transition-colors"
                       title="Encourager"
                     >
                       👏
@@ -294,7 +294,7 @@ export function ClasseSidebar({
               >
                 📡
               </motion.div>
-              <p className="text-[11px] text-gray-400">En attente des eleves...</p>
+              <p className="text-[11px] text-[#64748b]">En attente des eleves...</p>
             </div>
           )}
         </div>
@@ -314,8 +314,8 @@ function LegendDot({ color, label, count, dashed }: { color: string; label: stri
           border: dashed ? `1.5px dashed ${color}` : "none",
         }}
       />
-      <span className="text-[10px] text-gray-500 truncate">{label}</span>
-      <span className="text-[10px] font-bold text-gray-600 tabular-nums ml-auto">{count}</span>
+      <span className="text-[10px] text-[#94a3b8] truncate">{label}</span>
+      <span className="text-[10px] font-bold text-[#94a3b8] tabular-nums ml-auto">{count}</span>
     </div>
   );
 }
