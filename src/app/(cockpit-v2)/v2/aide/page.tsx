@@ -107,9 +107,9 @@ const GUIDE_ITEMS: GuideItem[] = [
     ),
   },
   {
-    title: "Bibliotheque de modules",
+    title: "Biblioth\u00e8que de modules",
     description:
-      "Parcourez les modules pedagogiques disponibles : Le Regard, La Scene, Et si..., Le Pitch, Construction Collective, etc. Lancez une seance directement depuis un module.",
+      "Parcourez les modules p\u00e9dagogiques disponibles : Le Regard, G\u00e9n\u00e9rer l'id\u00e9e, Le Pitch, Le R\u00e9cit, Le Sc\u00e9nario, La Mise en sc\u00e8ne, L'\u00c9quipe. Lancez une s\u00e9ance directement depuis un module.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <path d="M2 3h5l2 2h7v10H2V3z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
