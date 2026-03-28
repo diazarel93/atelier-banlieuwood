@@ -465,6 +465,90 @@ export default function ScreenPage() {
           )}
         </AnimatePresence>
 
+        {/* Screen mode: Consigne — full-screen text */}
+        <AnimatePresence>
+          {screenModeFromBroadcast?.startsWith("consigne:") && (
+            <motion.div
+              key="screen-mode-consigne"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[90] bg-gradient-to-b from-[#1a1a2e] to-[#16213e] flex items-center justify-center p-12"
+            >
+              <h1 className="text-5xl sm:text-7xl font-bold text-white text-center leading-tight max-w-4xl">
+                {screenModeFromBroadcast.replace("consigne:", "")}
+              </h1>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Screen mode: Waiting — preparation animation */}
+        <AnimatePresence>
+          {screenModeFromBroadcast === "waiting" && (
+            <motion.div
+              key="screen-mode-waiting"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[90] bg-gradient-to-b from-[#1a1a2e] to-[#16213e] flex flex-col items-center justify-center"
+            >
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                className="text-[120px] mb-8"
+              >
+                🎬
+              </motion.div>
+              <h1 className="text-4xl sm:text-6xl font-bold text-white mb-4">Preparez-vous...</h1>
+              <p className="text-lg text-white/50">La suite arrive bientot</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Screen mode: Black — freeze screens */}
+        <AnimatePresence>
+          {screenModeFromBroadcast === "black" && (
+            <motion.div
+              key="screen-mode-black"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[90] bg-black"
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Screen mode: Debate — options side by side */}
+        <AnimatePresence>
+          {screenModeFromBroadcast === "debate" && highlightedResponses && highlightedResponses.length >= 2 && (
+            <motion.div
+              key="screen-mode-debate"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[90] bg-gradient-to-b from-[#1a1a2e] to-[#16213e] flex flex-col items-center justify-center p-8"
+            >
+              <p className="text-sm text-white/50 uppercase tracking-[0.2em] font-semibold mb-8">
+                A debattre
+              </p>
+              <div className="flex gap-8 max-w-5xl w-full">
+                {highlightedResponses.slice(0, 3).map((r, i) => (
+                  <motion.div
+                    key={r.id || i}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.2 }}
+                    className="flex-1 p-8 rounded-2xl bg-white/10 border border-white/10 backdrop-blur-sm text-center"
+                  >
+                    <div className="text-6xl mb-4">{["🅰️", "🅱️", "🅲️"][i]}</div>
+                    <p className="text-xl text-white leading-relaxed">{r.text}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Ambient colored light spots — follow module color */}
         <AmbientGradients moduleColor={moduleColor} />
 
