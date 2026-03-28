@@ -10,6 +10,8 @@ export interface MancheConfig {
   label: string;
   maxCards: number;
   description: string;
+  /** B5_6 optional manches — not core, can be skipped */
+  optional?: boolean;
 }
 
 export interface PoolCard {
@@ -33,9 +35,9 @@ export const MANCHES: MancheConfig[] = [
   { key: "personnages", label: "Les Personnages",   maxCards: 6, description: "Quels personnages ?" },
   { key: "objectif",    label: "L'Objectif",        maxCards: 4, description: "Quel objectif pour le héros ?" },
   { key: "obstacle",    label: "L'Obstacle",        maxCards: 4, description: "Quel obstacle principal ?" },
-  { key: "scene",       label: "La Première Scène", maxCards: 4, description: "Comment commence le film ?" },
-  { key: "relation",    label: "La Relation",       maxCards: 4, description: "Quelle relation est au cœur de l'histoire ?" },
-  { key: "moment_fort", label: "Le Moment Fort",    maxCards: 4, description: "Quel sera le moment le plus intense du film ?" },
+  { key: "scene",       label: "La Première Scène", maxCards: 4, description: "Comment commence le film ?", optional: true },
+  { key: "relation",    label: "La Relation",       maxCards: 4, description: "Quelle relation est au cœur de l'histoire ?", optional: true },
+  { key: "moment_fort", label: "Le Moment Fort",    maxCards: 4, description: "Quel sera le moment le plus intense du film ?", optional: true },
 ];
 
 export function getMancheConfig(manche: number): MancheConfig | undefined {

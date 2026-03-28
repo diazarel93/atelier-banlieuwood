@@ -116,25 +116,31 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
       {/* Progress dots + manche info */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-white/50">Manche {module12.manche}/8</p>
+          <p className="text-sm text-white/50">
+            Manche {module12.manche}/{mancheConfig?.optional ? "bonus" : "5"}
+            {mancheConfig?.optional && <span className="ml-1.5 text-xs text-amber-400 font-semibold">BONUS</span>}
+          </p>
           <h3 className="text-lg font-bold text-white">{module12.mancheLabel}</h3>
           {mancheConfig && (
             <p className="text-xs text-white/40 mt-1">{mancheConfig.description}</p>
           )}
         </div>
-        <div className="flex gap-1.5">
+        <div className="flex items-center gap-1.5">
           {Array.from({ length: 8 }, (_, i) => {
             const m = i + 1;
             const won = module12.allWinners.some((w) => w.manche === m);
             const isCurrent = m === module12.manche;
+            const isOptional = m > 5;
             return (
-              <div
-                key={m}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  won ? "bg-emerald-400" : isCurrent ? "bg-yellow-400 animate-pulse" : "bg-white/15"
-                }`}
-                title={`Manche ${m}${won ? " (validee)" : isCurrent ? " (en cours)" : ""}`}
-              />
+              <span key={m} className="contents">
+                {m === 6 && <div className="w-px h-3 bg-white/20 mx-0.5" />}
+                <div
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    won ? "bg-emerald-400" : isCurrent ? "bg-yellow-400 animate-pulse" : isOptional ? "bg-white/8 ring-1 ring-white/15" : "bg-white/15"
+                  }`}
+                  title={`Manche ${m}${isOptional ? " (bonus)" : ""}${won ? " — validee" : isCurrent ? " — en cours" : ""}`}
+                />
+              </span>
             );
           })}
         </div>

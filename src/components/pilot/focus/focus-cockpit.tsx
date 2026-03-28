@@ -468,6 +468,22 @@ export function FocusCockpit() {
             </div>
           )}
 
+          {/* B2b — Décadrage oral marker for M1 image seances */}
+          {moduleFlags.isM1Image && session.status === "reviewing" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-violet-50 border border-violet-200 rounded-2xl p-5 text-center space-y-2"
+            >
+              <p className="text-2xl">🎤</p>
+              <p className="text-sm font-bold text-violet-800">Moment de decadrage oral</p>
+              <p className="text-xs text-violet-600 leading-relaxed max-w-sm mx-auto">
+                C&apos;est le moment de reformuler la lecon cle : &laquo; Mon regard n&apos;est pas une erreur. Il est une matiere. &raquo;
+                Commentez les 2 reponses projetees — montrez la richesse des points de vue differents.
+              </p>
+            </motion.div>
+          )}
+
           {/* Inline reformulation */}
           <AnimatePresence>
             {reformulating && (
