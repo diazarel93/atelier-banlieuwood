@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { motion } from "motion/react";
-import { BrandMark, BrandStyles } from "@/components/brand-logo";
+import { BrandStyles } from "@/components/brand-logo";
 import { ROUTES } from "@/lib/routes";
+import { PublicLayout } from "@/components/public-layout";
 
 // ═══════════════════════════════════════════════════════════════
 // LANDING PAGE V2 — Banlieuwood Site
@@ -122,61 +123,8 @@ export default function Home() {
   }, []);
 
   return (
-    <div
-      className="min-h-dvh bg-[#0a0a16] text-[#f0f0f8] antialiased"
-      style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
-    >
+    <PublicLayout>
       <BrandStyles />
-
-      {/* ══════════ NAVBAR ══════════ */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 transition-all duration-300"
-        style={{
-          padding: scrolled ? "8px 24px" : "12px 24px",
-          background: scrolled ? "rgba(10,10,22,0.95)" : "rgba(10,10,22,0.85)",
-          backdropFilter: "blur(20px)",
-          borderBottom: "1px solid #252550",
-          boxShadow: scrolled ? "0 4px 30px rgba(0,0,0,0.3)" : "none",
-        }}
-      >
-        <Link href="/" className="flex items-center gap-2.5">
-          <span className="text-2xl">🎬</span>
-          <span className="text-base font-extrabold bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] bg-clip-text text-transparent">
-            BANLIEUWOOD
-          </span>
-        </Link>
-        <div className="hidden md:flex items-center gap-1.5">
-          {[
-            { label: "Accueil", href: "/" },
-            { label: "A Propos", href: "/projet" },
-            { label: "Festival", href: "/festival" },
-            { label: "Ressources", href: "/docs" },
-            { label: "Contact", href: "/contact" },
-          ].map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="px-4 py-2 rounded-lg text-[13px] font-medium text-[#94a3b8] hover:text-[#f0f0f8] transition-colors relative"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href={ROUTES.login}
-            className="px-4 py-2 rounded-lg text-[13px] font-medium text-[#f0f0f8] bg-[#181838] border border-[#252550] hover:border-[#8b5cf6] transition-all"
-          >
-            Connexion
-          </Link>
-          <Link
-            href={ROUTES.requestAccess}
-            className="px-5 py-2 rounded-lg text-[13px] font-bold text-white bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] shadow-[0_4px_16px_rgba(139,92,246,0.3)] hover:shadow-[0_6px_24px_rgba(139,92,246,0.4)] hover:scale-[1.03] transition-all"
-          >
-            S&apos;inscrire
-          </Link>
-        </div>
-      </nav>
 
       {/* ══════════ HERO — Video Background ══════════ */}
       <section className="relative overflow-hidden min-h-svh flex items-center">
@@ -627,72 +575,6 @@ export default function Home() {
           </Reveal>
         </div>
       </section>
-
-      {/* ══════════ FOOTER ══════════ */}
-      <footer className="bg-[#111127] border-t border-[#252550] pt-16 pb-6">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-2xl">🎬</span>
-                <span className="text-base font-extrabold bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] bg-clip-text text-transparent">
-                  BANLIEUWOOD
-                </span>
-              </div>
-              <p className="text-[13px] text-[#64748b] leading-relaxed mb-4">
-                Atelier de cinema collaboratif pour les ecoles. Chaque eleve est un createur.
-              </p>
-              <p className="text-[11px] text-[#64748b]">
-                Aligne sur le PEAC, le Socle Commun et les programmes d&apos;Arts Plastiques Cycles 3-4.
-              </p>
-            </div>
-            {[
-              {
-                title: "Produit",
-                links: [
-                  { label: "A Propos", href: "/projet" },
-                  { label: "Festival", href: "/festival" },
-                  { label: "Ressources", href: "/docs" },
-                  { label: "Contact", href: "/contact" },
-                ],
-              },
-              {
-                title: "Legal",
-                links: [
-                  { label: "Mentions legales", href: "/legal/mentions" },
-                  { label: "Confidentialite", href: "/legal/privacy" },
-                  { label: "CGU", href: "/legal/mentions" },
-                ],
-              },
-              {
-                title: "Communaute",
-                links: [
-                  { label: "Twitter", href: "#" },
-                  { label: "Instagram", href: "#" },
-                  { label: "GitHub", href: "#" },
-                ],
-              },
-            ].map((col) => (
-              <div key={col.title}>
-                <h4 className="text-[13px] font-bold mb-4">{col.title}</h4>
-                {col.links.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    className="block text-[13px] text-[#64748b] mb-2 hover:text-[#c4b5fd] transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-between items-center pt-6 border-t border-[#252550] text-[12px] text-[#64748b]">
-            <span>&copy; 2026 Banlieuwood. Tous droits reserves.</span>
-            <span>Fait avec 💜 pour les ecoles de France</span>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </PublicLayout>
   );
 }

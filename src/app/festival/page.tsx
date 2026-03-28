@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
+import { SiteNavbar } from "@/components/site-navbar";
+import { SiteFooter } from "@/components/site-footer";
 
 // ═══════════════════════════════════════════════════════════════
 // FESTIVAL V2 — Film gallery dark theme
@@ -66,6 +68,7 @@ export default function FestivalPage() {
       className="min-h-dvh bg-[#0a0a16] text-[#f0f0f8]"
       style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
     >
+      <SiteNavbar />
       <section className="pt-28 pb-20 px-6">
         <div className="max-w-[1200px] mx-auto">
           {/* Header */}
@@ -151,6 +154,7 @@ export default function FestivalPage() {
           </div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }

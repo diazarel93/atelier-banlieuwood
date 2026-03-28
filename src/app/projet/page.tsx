@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
+import { SiteNavbar } from "@/components/site-navbar";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
   title: "Le Projet — Banlieuwood",
@@ -73,6 +75,7 @@ export default function ProjetPage() {
       className="min-h-dvh bg-[#0a0a16] text-[#f0f0f8]"
       style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
     >
+      <SiteNavbar />
       {/* ══ Hero ══ */}
       <section className="pt-28 pb-20 px-6">
         <div className="max-w-[800px] mx-auto text-center">
@@ -345,6 +348,7 @@ export default function ProjetPage() {
           </div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }
