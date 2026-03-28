@@ -10,6 +10,7 @@ import { usePilotKeyboardShortcuts } from "@/hooks/use-pilot-keyboard-shortcuts"
 import { TIMER_PRESETS } from "@/components/pilot/pilot-settings";
 import dynamic from "next/dynamic";
 import { ROUTES } from "@/lib/routes";
+import { FacilitatorFeedbackForm } from "@/components/pilot/facilitator-feedback-form";
 import { FocusHeader } from "./focus-header";
 
 const StudentFiche = dynamic(() => import("@/components/pilot/student-fiche").then(m => ({ default: m.StudentFiche })), { ssr: false });
@@ -564,13 +565,12 @@ export function FocusCockpit() {
                 </div>
               </div>
 
-              {/* Back to dashboard */}
-              <button
-                onClick={() => window.location.href = ROUTES.seanceDetail(sessionId)}
-                className="w-full py-3 rounded-xl bg-gray-900 text-white text-[14px] font-bold hover:bg-gray-800 transition-colors cursor-pointer"
-              >
-                Retour au tableau de bord
-              </button>
+              {/* Post-session facilitator feedback */}
+              <FacilitatorFeedbackForm
+                sessionId={sessionId}
+                onComplete={() => window.location.href = ROUTES.seanceDetail(sessionId)}
+                onSkip={() => window.location.href = ROUTES.seanceDetail(sessionId)}
+              />
             </motion.div>
           )}
           </div>{/* close max-w-2xl */}
