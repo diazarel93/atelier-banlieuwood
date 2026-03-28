@@ -156,7 +156,7 @@ function JoinForm() {
   }
 
   return (
-    <div className="min-h-dvh bg-studio flex flex-col items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-dvh bg-[#0a0a16] flex flex-col items-center justify-center px-4 relative overflow-hidden">
       {/* Ambient teal glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-bw-teal/[0.05] blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] rounded-full bg-bw-teal/[0.03] blur-[80px] pointer-events-none" />
@@ -436,7 +436,7 @@ export default function JoinPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-dvh bg-studio flex items-center justify-center">
+        <div className="min-h-dvh bg-[#0a0a16] flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-bw-teal border-t-transparent rounded-full animate-spin" />
         </div>
       }
