@@ -27,7 +27,7 @@ import { ErrorBoundary } from "@/components/error-boundary";
 import { ConfirmModal } from "@/components/confirm-modal";
 // V6: ModuleSidebar/SidebarDrawer removed — module selection via header rail
 import { WelcomePanel } from "@/components/pilot/welcome-panel";
-import { ModuleBriefing } from "@/components/pilot/module-briefing";
+// R4: ModuleBriefing removed — direct launch, no briefing step
 // V6: ContextPanel removed — context info in V6Sidebar tabs
 import { getNextAction, type NextAction } from "@/lib/cockpit-next-action";
 const TeamManager = dynamic(() => import("@/components/pilot/team-manager").then((m) => ({ default: m.TeamManager })), {
@@ -199,13 +199,9 @@ export default function PilotPage() {
     setTimeout(() => setCodeCopied(false), 2000);
   }, [session]);
 
-  // Module selection — shows briefing (does NOT touch session)
+  // R4: Module selection — directly launches module (no briefing)
   function handleSelectModule(moduleId: string) {
-    const mod = MODULES.find((m) => m.id === moduleId);
-    if (!mod || mod.disabled) return;
-    setSelectedModuleId(moduleId);
-    setModuleView("briefing");
-    setSidebarOpen(false);
+    doLaunchModule(moduleId, true);
   }
 
   // Actually perform the module switch
@@ -238,28 +234,11 @@ export default function PilotPage() {
     setModuleView("cockpit");
   }
 
-  // Launch module — actually switches the session
-  function handleLaunchModule() {
-    if (!selectedModuleId) return;
-    if (session?.status === "responding") {
-      setPendingModuleSwitch({ moduleId: selectedModuleId, isQuickLaunch: false });
-      return;
-    }
-    doLaunchModule(selectedModuleId, false);
-  }
+  // R4: handleLaunchModule/handleResumeModule removed — direct launch only
 
-  // Resume module — back to cockpit without reset
-  function handleResumeModule() {
-    setModuleView("cockpit");
-  }
-
-  // Quick-browse module — opens briefing view (NOT launch)
+  // R4: Quick launch module — directly launches
   function handleQuickLaunchModule(moduleId: string) {
-    const mod = MODULES.find((m) => m.id === moduleId);
-    if (!mod || mod.disabled) return;
-    setSelectedModuleId(moduleId);
-    setModuleView("briefing");
-    setSidebarOpen(false);
+    doLaunchModule(moduleId, true);
   }
 
   // Marks the current module as completed when switching away
@@ -419,20 +398,9 @@ export default function PilotPage() {
       <div className="flex-1 flex overflow-hidden">
         {/* V6: Module sidebar removed — selection via header module rail */}
 
-        {/* Centre — contenu principal (full width) */}
+        {/* Centre — contenu principal (R4: 1 mode cockpit, plus de briefing) */}
         <div className="flex-1 overflow-hidden flex flex-col">
-          {selectedModuleId && moduleView === "briefing" ? (
-            <ModuleBriefing
-              module={MODULES.find((m) => m.id === selectedModuleId)!}
-              phase={getPhaseForModule(selectedModuleId)}
-              moduleGuide={getModuleGuide(selectedModuleId)}
-              isInProgress={!!session && !!activeModule && activeModule.id === selectedModuleId}
-              isCompleted={session.completed_modules?.includes(selectedModuleId) || false}
-              sessionId={sessionId}
-              onLaunch={handleLaunchModule}
-              onResume={handleResumeModule}
-            />
-          ) : hasActiveModule ? (
+          {hasActiveModule ? (
             <ErrorBoundary>
               <CockpitProvider
                 value={{
