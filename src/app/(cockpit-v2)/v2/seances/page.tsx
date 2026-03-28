@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/lib/routes";
@@ -119,6 +119,19 @@ export default function SeancesPage() {
     queryFn: fetchArchivedSessions,
     enabled: tab === "archived",
   });
+
+  // Auto-switch to "active" tab if there are active sessions on first load
+  const autoSwitched = useRef(false);
+  useEffect(() => {
+    if (autoSwitched.current || isLoading) return;
+    const activeCount = sessions.filter(
+      (s) => s.status === "responding" || s.status === "voting" || s.status === "waiting",
+    ).length;
+    if (activeCount > 0 && tab === "upcoming") {
+      setTab("active");
+    }
+    autoSwitched.current = true;
+  }, [sessions, isLoading, tab]);
 
   const filtered = useMemo(() => {
     // For the archived tab, use the separate archived query
