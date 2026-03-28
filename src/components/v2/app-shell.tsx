@@ -82,23 +82,23 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         Aller au contenu principal
       </a>
 
-      {/* Top navigation bar */}
-      <header className="sticky top-0 z-40 w-full bg-card/80 backdrop-blur-xl border-b border-[var(--color-bw-border)] relative">
-        {/* Subtle cinema accent — warm gradient top-line */}
+      {/* Top navigation bar — V6 dark */}
+      <header className="sticky top-0 z-40 w-full bg-[var(--color-bw-bg)]/85 backdrop-blur-2xl border-b border-[var(--color-bw-border)] relative">
+        {/* V6 cinema accent — violet gradient top-line */}
         <div
-          className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--color-bw-primary)]/20 to-transparent"
+          className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--color-bw-violet)]/30 to-transparent"
           aria-hidden="true"
         />
         <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-6 px-4 sm:px-6">
-          {/* Logo */}
+          {/* Logo — V6 violet accent */}
           <Link href={ROUTES.dashboard} className="flex items-center gap-2.5 shrink-0 group">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-bw-primary text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-bw-violet)] text-white text-xs font-bold shadow-[0_0_12px_rgba(139,92,246,0.3)] group-hover:shadow-[0_0_20px_rgba(139,92,246,0.45)] transition-shadow">
               BW
             </div>
             <span className="text-heading-xs text-bw-heading hidden sm:inline">Banlieuwood</span>
           </Link>
 
-          {/* Desktop nav links */}
+          {/* Desktop nav links — V6 */}
           <nav aria-label="Navigation principale" className="hidden md:flex items-center gap-0.5 h-14">
             {visibleNavItems.map((item) => {
               const isActive =
@@ -112,31 +112,30 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                   aria-label={item.label}
                   className={cn(
                     "relative flex items-center gap-1.5 px-3 h-14 text-sm font-medium transition-colors",
-                    isActive ? "text-bw-heading" : "text-bw-muted hover:text-bw-heading",
+                    isActive ? "text-[var(--color-bw-violet-200)]" : "text-bw-muted hover:text-bw-heading",
                   )}
                 >
                   <span
-                    className={cn(
-                      "transition-colors",
-                      isActive ? "text-bw-primary" : "text-bw-muted group-hover:text-bw-heading",
-                    )}
+                    className={cn("transition-colors", isActive ? "text-[var(--color-bw-violet)]" : "text-bw-muted")}
                     aria-hidden="true"
                   >
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
-                  {/* Active indicator — bottom bar */}
-                  {isActive && <span className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-bw-primary" />}
+                  {/* Active indicator — V6 violet glow bar */}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-[var(--color-bw-violet)] shadow-[0_0_8px_rgba(139,92,246,0.4)]" />
+                  )}
                 </Link>
               );
             })}
           </nav>
 
-          {/* Search button — desktop only */}
+          {/* Search button — V6 dark */}
           <button
             type="button"
             onClick={() => setCommandPaletteOpen(true)}
-            className="hidden lg:flex items-center gap-2 rounded-lg border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/50 px-3 py-1.5 text-sm text-bw-muted hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+            className="hidden lg:flex items-center gap-2 rounded-lg border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/40 px-3 py-1.5 text-sm text-bw-muted hover:bg-[var(--color-bw-surface-dim)] hover:border-[var(--color-bw-violet)]/20 transition-colors"
           >
             <IconSearch size={14} className="shrink-0" />
             Rechercher...
@@ -160,7 +159,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
                   pathname.startsWith("/v2/admin")
-                    ? "bg-bw-primary/10 text-bw-primary"
+                    ? "bg-[var(--color-bw-violet)]/10 text-[var(--color-bw-violet)]"
                     : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
                 )}
               >
@@ -174,7 +173,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
               className={cn(
                 "inline-flex items-center justify-center rounded-xl p-2 transition-colors",
                 pathname.startsWith("/v2/aide")
-                  ? "bg-bw-primary/10 text-bw-primary"
+                  ? "bg-[var(--color-bw-violet)]/10 text-[var(--color-bw-violet)]"
                   : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
               )}
             >
@@ -186,7 +185,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
               className={cn(
                 "inline-flex items-center justify-center rounded-xl p-2 transition-colors",
                 pathname.startsWith("/v2/settings")
-                  ? "bg-bw-primary/10 text-bw-primary"
+                  ? "bg-[var(--color-bw-violet)]/10 text-[var(--color-bw-violet)]"
                   : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
               )}
             >
@@ -195,7 +194,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             <Link
               href={ROUTES.seanceNew}
               aria-label="Créer une nouvelle séance"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 hover:shadow-md active:scale-[0.97] transition-all duration-150"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--color-bw-violet)] px-3.5 py-2 text-sm font-semibold text-white shadow-[0_0_12px_rgba(139,92,246,0.25)] hover:bg-[var(--color-bw-violet-500)] hover:shadow-[0_0_20px_rgba(139,92,246,0.35)] active:scale-[0.97] transition-all duration-150"
             >
               <IconPlus />
               <span className="hidden sm:inline">Nouvelle séance</span>
@@ -224,10 +223,10 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         />
       )}
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer — V6 dark */}
       <div
         className={cn(
-          "md:hidden fixed top-0 left-0 bottom-0 z-50 w-[280px] bg-card shadow-2xl flex flex-col transition-transform duration-300 ease-out",
+          "md:hidden fixed top-0 left-0 bottom-0 z-50 w-[280px] bg-[var(--color-bw-bg)] shadow-2xl border-r border-[var(--color-bw-border)] flex flex-col transition-transform duration-300 ease-out",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         )}
         aria-hidden={!mobileOpen}
@@ -237,7 +236,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         {/* Drawer header */}
         <div className="flex items-center justify-between px-5 h-16 border-b border-[var(--color-bw-border)] shrink-0">
           <Link href={ROUTES.dashboard} onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-bw-primary text-white text-xs font-bold shadow-sm">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-bw-violet)] text-white text-xs font-bold shadow-[0_0_12px_rgba(139,92,246,0.3)]">
               BW
             </div>
             <span className="text-base font-bold text-bw-heading">Banlieuwood</span>
@@ -270,7 +269,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                   className={cn(
                     "flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-all",
                     isActive
-                      ? "bg-bw-primary/10 text-bw-heading shadow-sm"
+                      ? "bg-[var(--color-bw-violet)]/10 text-bw-heading shadow-sm"
                       : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
                   )}
                 >
@@ -278,7 +277,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                     className={cn(
                       "flex items-center justify-center w-8 h-8 rounded-lg transition-colors",
                       isActive
-                        ? "bg-bw-primary text-white shadow-sm"
+                        ? "bg-[var(--color-bw-violet)] text-white shadow-[0_0_8px_rgba(139,92,246,0.3)]"
                         : "bg-[var(--color-bw-surface-dim)] text-bw-muted",
                     )}
                     aria-hidden="true"
@@ -286,7 +285,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                     {item.icon}
                   </span>
                   {item.label}
-                  {isActive && <span className="ml-auto h-2 w-2 rounded-full bg-bw-primary" />}
+                  {isActive && <span className="ml-auto h-2 w-2 rounded-full bg-[var(--color-bw-violet)]" />}
                 </Link>
               );
             })}
@@ -312,7 +311,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                   className={cn(
                     "flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-all",
                     isActive
-                      ? "bg-bw-primary/10 text-bw-heading shadow-sm"
+                      ? "bg-[var(--color-bw-violet)]/10 text-bw-heading shadow-sm"
                       : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
                   )}
                 >
@@ -320,7 +319,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                     className={cn(
                       "flex items-center justify-center w-8 h-8 rounded-lg transition-colors",
                       isActive
-                        ? "bg-bw-primary text-white shadow-sm"
+                        ? "bg-[var(--color-bw-violet)] text-white shadow-[0_0_8px_rgba(139,92,246,0.3)]"
                         : "bg-[var(--color-bw-surface-dim)] text-bw-muted",
                     )}
                     aria-hidden="true"
@@ -334,12 +333,12 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           </div>
         </nav>
 
-        {/* Drawer footer — CTA */}
+        {/* Drawer footer — CTA V6 */}
         <div className="shrink-0 px-3 pb-5 pt-3 border-t border-[var(--color-bw-border)]">
           <Link
             href={ROUTES.seanceNew}
             onClick={() => setMobileOpen(false)}
-            className="flex items-center justify-center gap-2 w-full rounded-xl bg-bw-primary px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 active:scale-[0.97] transition-all"
+            className="flex items-center justify-center gap-2 w-full rounded-xl bg-[var(--color-bw-violet)] px-4 py-3 text-sm font-semibold text-white shadow-[0_0_12px_rgba(139,92,246,0.25)] hover:bg-[var(--color-bw-violet-500)] active:scale-[0.97] transition-all"
           >
             <IconPlus />
             Nouvelle séance
@@ -355,7 +354,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       {/* Mobile bottom nav */}
       <nav
         aria-label="Navigation rapide"
-        className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/90 backdrop-blur-xl border-t border-[var(--color-bw-border)]"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--color-bw-bg)]/90 backdrop-blur-2xl border-t border-[var(--color-bw-border)]"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         {/* Subtle film-strip perforation line above nav */}
@@ -372,7 +371,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
                   "flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg transition-colors",
-                  isActive ? "text-bw-primary" : "text-bw-muted hover:text-bw-heading",
+                  isActive ? "text-[var(--color-bw-violet)]" : "text-bw-muted hover:text-bw-heading",
                 )}
               >
                 <span aria-hidden="true">{item.icon}</span>
