@@ -877,7 +877,7 @@ export function ModuleBriefing({
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-bw-surface rounded-xl border border-dashed border-[#DDD7EC] p-4 text-center"
+              className="bg-bw-surface rounded-xl border border-dashed border-[#2a2a50] p-4 text-center"
             >
               <p className="text-xs text-bw-muted">Guide pédagogique à venir</p>
             </motion.div>

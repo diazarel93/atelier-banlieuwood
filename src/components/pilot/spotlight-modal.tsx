@@ -59,7 +59,7 @@ export function SpotlightModal({
                 background: isHighlighted
                   ? "linear-gradient(135deg, #FFF8F0, #FFFAF5)"
                   : "linear-gradient(135deg, #FFFFFF, #FAF8F5)",
-                border: `2px solid ${isHighlighted ? "#F5A45B" : "#E8DFD2"}`,
+                border: `2px solid ${isHighlighted ? "#F5A45B" : "#2a2a50"}`,
                 boxShadow: "0 24px 80px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.15)",
               }}
               onClick={(e) => e.stopPropagation()}
@@ -70,7 +70,7 @@ export function SpotlightModal({
                   className="w-14 h-14 rounded-full flex items-center justify-center text-2xl"
                   style={{
                     background: "#FAF6EE",
-                    border: "3px solid #E8DFD2",
+                    border: "3px solid #2a2a50",
                   }}
                 >
                   {studentAvatar}
@@ -85,7 +85,7 @@ export function SpotlightModal({
                     {isHighlighted && (
                       <span
                         className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                        style={{ background: "#FFF0E0", color: "#F5A45B" }}
+                        style={{ background: "rgba(251,146,60,0.1)", color: "#F5A45B" }}
                       >
                         Mis en avant
                       </span>
@@ -123,7 +123,7 @@ export function SpotlightModal({
               {/* Separator */}
               <div
                 className="mx-8 h-px"
-                style={{ background: "linear-gradient(to right, transparent, #E8DFD2, transparent)" }}
+                style={{ background: "linear-gradient(to right, transparent, #2a2a50, transparent)" }}
               />
 
               {/* Response text — Issue 8: Courier Prime screenplay font */}

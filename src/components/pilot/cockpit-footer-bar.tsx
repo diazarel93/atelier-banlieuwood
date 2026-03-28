@@ -311,7 +311,7 @@ export function CockpitFooterBar({
                 onClick={prevSituation}
                 disabled={updateSession.isPending}
                 title="Question précédente"
-                className="h-11 px-3.5 rounded-[12px] flex items-center justify-center text-bw-text bg-white border border-[#E6DBCF] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0 text-[13px] font-medium gap-1.5"
+                className="h-11 px-3.5 rounded-[12px] flex items-center justify-center text-bw-text bg-white border border-[#2a2a50] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0 text-[13px] font-medium gap-1.5"
               >
                 <svg
                   width="14"

@@ -92,7 +92,7 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
           <span className="text-[12px] font-bold text-bw-heading">Timeline de seance</span>
           <span
             className="text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full"
-            style={{ background: "#EFE8DD", color: "#7A7A7A" }}
+            style={{ background: "#2a2a50", color: "#7A7A7A" }}
           >
             {events.length}
           </span>
@@ -139,7 +139,7 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
                       >
                         {style.icon}
                       </div>
-                      {!isLast && <div className="w-px flex-1 min-h-[12px] mt-0.5" style={{ background: "#E8DFD2" }} />}
+                      {!isLast && <div className="w-px flex-1 min-h-[12px] mt-0.5" style={{ background: "#2a2a50" }} />}
                     </div>
 
                     {/* Content */}

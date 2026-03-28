@@ -226,7 +226,7 @@ function ResponseCardInner({
               className={`h-7 px-2.5 text-[12px] rounded-[9px] cursor-pointer transition-all duration-200 font-semibold focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none ${
                 state === "selected"
                   ? "bg-[#6B8CFF] text-white border border-[#6B8CFF]"
-                  : "hover:bg-[#EEF2FF] hover:text-[#6B8CFF] text-[#7A7A7A] border border-[#E8DFD2]"
+                  : "hover:bg-[rgba(139,92,246,0.1)] hover:text-[#6B8CFF] text-[#7A7A7A] border border-[#2a2a50]"
               }`}
             >
               {state === "selected" ? "Au vote" : "Select."}
@@ -237,7 +237,7 @@ function ResponseCardInner({
               onClick={onHide}
               disabled={isPending}
               aria-label={state === "hidden" ? "Montrer la réponse" : "Masquer la réponse"}
-              className="h-7 px-2.5 text-[12px] rounded-[9px] hover:bg-[#F7F3EA] hover:text-bw-heading cursor-pointer transition-all duration-200 text-[#B0A99E] border border-[#E8DFD2] font-medium focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none active:scale-95"
+              className="h-7 px-2.5 text-[12px] rounded-[9px] hover:bg-[#1a1a35] hover:text-bw-heading cursor-pointer transition-all duration-200 text-[#B0A99E] border border-[#2a2a50] font-medium focus-visible:ring-2 focus-visible:ring-[#6B8CFF] focus-visible:outline-none active:scale-95"
             >
               {state === "hidden" ? "Montrer" : "Masquer"}
             </button>
@@ -257,7 +257,7 @@ function ResponseCardInner({
             <button
               onClick={onSpotlight}
               aria-label="Projeter cette réponse"
-              className="h-7 px-2 text-[12px] rounded-[9px] hover:bg-[#FFF0E0] hover:text-[#F5A45B] cursor-pointer transition-all duration-200 text-[#B0A99E] border border-[#E8DFD2] font-medium focus-visible:ring-2 focus-visible:ring-[#F5A45B] focus-visible:outline-none active:scale-95"
+              className="h-7 px-2 text-[12px] rounded-[9px] hover:bg-[rgba(251,146,60,0.1)] hover:text-[#F5A45B] cursor-pointer transition-all duration-200 text-[#B0A99E] border border-[#2a2a50] font-medium focus-visible:ring-2 focus-visible:ring-[#F5A45B] focus-visible:outline-none active:scale-95"
               title="Projeter en grand"
             >
               🔦

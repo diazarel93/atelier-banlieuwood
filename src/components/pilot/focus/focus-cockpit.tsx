@@ -336,175 +336,93 @@ export function FocusCockpit() {
         onOpenStudents={() => setShowStudentSheet(true)}
       />
 
-      {/* ── SCROLLABLE CENTER ── */}
+      {/* ── V6 SCROLLABLE CENTER ── */}
       <div className="flex-1 overflow-y-auto">
-        <div className="px-4 py-4 space-y-4">
-          {/* Question + progress — constrained width */}
-          <div className="max-w-2xl mx-auto space-y-4">
-            {/* Question card — animate on change */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`q-${currentQIndex}-${isPreviewing ? "preview" : "live"}`}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.2 }}
-              >
-                <FocusQuestionCard
-                  questionText={universalQuestionText}
-                  categoryLabel={universalCategoryLabel}
-                  currentIndex={displayIndex}
-                  maxSituations={moduleFlags.maxSituations}
-                  isPreviewing={isPreviewing}
-                  onPrev={() => {
-                    const idx = displayIndex;
-                    if (idx > 0) setPreviewIndex(idx - 1);
-                  }}
-                  onNext={() => {
-                    const idx = displayIndex;
-                    if (idx < moduleFlags.maxSituations - 1) setPreviewIndex(idx + 1);
-                  }}
-                  allSituations={state.allSituations}
-                  liveIndex={currentQIndex}
-                  onGoToSituation={(i) => {
-                    if (i === currentQIndex) {
-                      setPreviewIndex(null);
-                    } else {
-                      setPreviewIndex(i);
-                    }
-                  }}
-                />
-              </motion.div>
-            </AnimatePresence>
+        <div className="px-5 py-5 space-y-4">
+          {/* ═══ MODULE SECTION CARD ═══ */}
+          <section className="rounded-2xl border border-[#2a2a50] bg-[#161633] overflow-hidden">
+            {/* Top accent bar */}
+            <div className="h-1" style={{ background: `linear-gradient(90deg, ${moduleColor}, ${moduleColor}66)` }} />
 
-            {/* Progress indicator */}
-            {session.status === "responding" && (
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-2 rounded-full bg-[#1a1a35] overflow-hidden">
-                  <motion.div
-                    className="h-full rounded-full bg-emerald-500"
-                    initial={{ width: 0 }}
-                    animate={{
-                      width: `${activeStudents.length > 0 ? (unifiedRespondedCount / activeStudents.length) * 100 : 0}%`,
-                    }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                  />
+            {/* Module header */}
+            <div className="px-5 pt-5 pb-3">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: moduleColor }}>
+                  Phase — Q{currentQIndex + 1}/{moduleFlags.maxSituations}
                 </div>
-                <span className="text-[13px] font-bold text-[#94a3b8] tabular-nums shrink-0">
-                  {unifiedRespondedCount}/{activeStudents.length}
-                </span>
               </div>
-            )}
-          </div>
+              <h1 className="text-lg font-extrabold text-[#f0f0f8] mb-1">{moduleLabel}</h1>
 
-          {/* Plan de classe — FULL WIDTH collapsible section */}
-          {activeStudents.length > 0 && (
-            <div className="rounded-2xl bg-[#161633] border border-[#2a2a50] overflow-hidden">
-              <button
-                onClick={() => setShowPlan(!showPlan)}
-                className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-[#1a1a35] transition-colors cursor-pointer"
-              >
-                <span className="flex items-center gap-2 text-[12px] font-bold text-[#94a3b8]">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect x="3" y="3" width="7" height="7" />
-                    <rect x="14" y="3" width="7" height="7" />
-                    <rect x="3" y="14" width="7" height="7" />
-                    <rect x="14" y="14" width="7" height="7" />
-                  </svg>
-                  Plan de classe
-                </span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#9CA3AF"
-                  strokeWidth="2"
-                  className={`transition-transform duration-200 ${showPlan ? "rotate-180" : ""}`}
+              {/* Progress bar */}
+              {session.status === "responding" && activeStudents.length > 0 && (
+                <div className="flex items-center gap-3 mt-3">
+                  <span className="text-[11px] font-semibold text-[#64748b]">
+                    {unifiedRespondedCount}/{activeStudents.length} ont repondu
+                  </span>
+                  <div className="flex-1 h-2 rounded-full bg-[#1a1a35] overflow-hidden">
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{ backgroundColor: moduleColor }}
+                      initial={{ width: 0 }}
+                      animate={{
+                        width: `${(unifiedRespondedCount / activeStudents.length) * 100}%`,
+                      }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Question card inside module section */}
+            <div className="px-5 pb-4">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`q-${currentQIndex}-${isPreviewing ? "preview" : "live"}`}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </button>
-              <AnimatePresence>
-                {showPlan && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden border-t border-[#2a2a50]"
-                  >
-                    <div className="p-4">
-                      <ClassroomPlanCompact
-                        students={miniStudentStates}
-                        onStudentClick={(id) => {
-                          const s = activeStudents.find((st) => st.id === id);
-                          if (s) handleSelectStudent(s);
-                        }}
-                      />
-                    </div>
-                  </motion.div>
-                )}
+                  <FocusQuestionCard
+                    questionText={universalQuestionText}
+                    categoryLabel={universalCategoryLabel}
+                    currentIndex={displayIndex}
+                    maxSituations={moduleFlags.maxSituations}
+                    isPreviewing={isPreviewing}
+                    onPrev={() => {
+                      const idx = displayIndex;
+                      if (idx > 0) setPreviewIndex(idx - 1);
+                    }}
+                    onNext={() => {
+                      const idx = displayIndex;
+                      if (idx < moduleFlags.maxSituations - 1) setPreviewIndex(idx + 1);
+                    }}
+                    allSituations={state.allSituations}
+                    liveIndex={currentQIndex}
+                    onGoToSituation={(i) => {
+                      if (i === currentQIndex) {
+                        setPreviewIndex(null);
+                      } else {
+                        setPreviewIndex(i);
+                      }
+                    }}
+                  />
+                </motion.div>
               </AnimatePresence>
             </div>
-          )}
 
-          {/* Remaining content — constrained width */}
-          <div className="max-w-2xl mx-auto space-y-4">
-            {/* Empty state — waiting for responses */}
-            {session.status === "responding" && unifiedRespondedCount === 0 && activeStudents.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="bg-[#161633] rounded-2xl border border-[#2a2a50] p-6 text-center space-y-3"
-              >
-                <motion.div
-                  animate={{ y: [0, -4, 0] }}
-                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                  className="text-4xl"
-                >
-                  ✏️
-                </motion.div>
-                <p className="text-[14px] font-medium text-[#f0f0f8]">Les élèves réfléchissent...</p>
-                <p className="text-[12px] text-[#64748b]">Les réponses apparaîtront ici</p>
-              </motion.div>
-            )}
+            {/* Module-specific content inside card */}
+            <div className="px-5 pb-5">
+              <FocusModuleContent isPreviewing={isPreviewing} currentQIndex={currentQIndex} />
+            </div>
+          </section>
 
-            {/* Empty state — no students connected */}
-            {session.status === "responding" && activeStudents.length === 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="bg-[#161633] rounded-2xl border border-dashed border-[#2a2a50] p-6 text-center space-y-3"
-              >
-                <div className="text-4xl">📡</div>
-                <p className="text-[14px] font-medium text-[#f0f0f8]">Aucun élève connecté</p>
-                <p className="text-[12px] text-[#64748b]">Projetez le QR code pour qu&apos;ils rejoignent</p>
-              </motion.div>
-            )}
+          {/* Empty states */}
+          <div className="space-y-4">
+            {/* Plan de classe removed — V6 uses sidebar for student overview */}
 
-            {/* Auto-advance countdown */}
-            {autoAdvanceCountdown > 0 && (
-              <div className="text-center py-2">
-                <span className="text-sm font-medium text-emerald-600">
-                  Auto-avance dans {autoAdvanceCountdown}s...
-                </span>
-              </div>
-            )}
-
-            {/* Module-specific content */}
-            <FocusModuleContent isPreviewing={isPreviewing} currentQIndex={currentQIndex} />
-
-            {/* Vote results (Standard QA) */}
+            {/* V6: Vote results (kept — shows vote bars) */}
             {isStandardQA &&
               (session.status === "voting" || session.status === "reviewing") &&
               voteData &&
@@ -530,59 +448,7 @@ export function FocusCockpit() {
                 />
               )}
 
-            {/* Vote progress — live counter */}
-            {isStandardQA && session.status === "voting" && (
-              <div className="bg-[#161633] rounded-2xl border border-[#2a2a50] p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[13px] font-bold text-[#f0f0f8] flex items-center gap-2">
-                    <motion.span animate={{ scale: [1, 1.15, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-                      🗳️
-                    </motion.span>
-                    Vote en cours
-                  </span>
-                  <span className="text-[13px] font-bold text-orange-600 tabular-nums">
-                    {voteData?.totalVotes || 0}/{activeStudents.length}
-                  </span>
-                </div>
-                <div className="h-2 rounded-full bg-[#1a1a35] overflow-hidden">
-                  <motion.div
-                    className="h-full rounded-full bg-orange-400"
-                    initial={{ width: 0 }}
-                    animate={{
-                      width: `${activeStudents.length > 0 ? ((voteData?.totalVotes || 0) / activeStudents.length) * 100 : 0}%`,
-                    }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Vote empty state (reviewing with no votes) */}
-            {isStandardQA && session.status === "reviewing" && (!voteData || voteData.totalVotes === 0) && (
-              <div className="bg-[#161633] rounded-2xl border border-[#2a2a50] p-6 text-center space-y-2">
-                <p className="text-3xl">🗳️</p>
-                <p className="text-sm text-[#64748b]">Aucun vote enregistré</p>
-              </div>
-            )}
-
-            {/* B2b — Décadrage oral marker for M1 image seances */}
-            {moduleFlags.isM1Image && session.status === "reviewing" && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-violet-50 border border-violet-200 rounded-2xl p-5 text-center space-y-2"
-              >
-                <p className="text-2xl">🎤</p>
-                <p className="text-sm font-bold text-violet-800">Moment de decadrage oral</p>
-                <p className="text-xs text-violet-600 leading-relaxed max-w-sm mx-auto">
-                  C&apos;est le moment de reformuler la lecon cle : &laquo; Mon regard n&apos;est pas une erreur. Il est
-                  une matiere. &raquo; Commentez les 2 reponses projetees — montrez la richesse des points de vue
-                  differents.
-                </p>
-              </motion.div>
-            )}
-
-            {/* Inline reformulation */}
+            {/* V6: Inline reformulation */}
             <AnimatePresence>
               {reformulating && (
                 <InlineReformulation
@@ -596,60 +462,7 @@ export function FocusCockpit() {
               )}
             </AnimatePresence>
 
-            {/* Response stream (Standard QA + M1 Image/Notebook) */}
-            {(isStandardQA || moduleFlags.isM1Image || moduleFlags.isM1Notebook) &&
-              session.status !== "done" &&
-              session.status !== "paused" &&
-              !(session.status === "voting" || session.status === "reviewing") && (
-                <ResponseStreamSection
-                  filteredResponses={filteredResponses as ResponseCardResponse[]}
-                  respondedCount={respondedCount}
-                  highlightedCount={highlightedCount}
-                  respondingOpenedAt={respondingOpenedAt}
-                  winnerResponseId={winnerResponseId}
-                  stuckStudents={stuckStudents}
-                  questionGuide={questionGuide}
-                  situation={situation}
-                  responseFilter={responseFilter}
-                  setResponseFilter={setResponseFilter}
-                  responseSortMode={responseSortMode}
-                  setResponseSortMode={setResponseSortMode}
-                  onShowBroadcast={modals.openBroadcast}
-                  onShowCompare={() => modals.setShowCompare(true)}
-                  onShowExport={() => modals.setShowExport(true)}
-                  showRevealAnswer={modals.showRevealAnswer}
-                  onToggleRevealAnswer={() => modals.setShowRevealAnswer((v: boolean) => !v)}
-                  onClearAllHighlights={handleClearAllHighlights}
-                  onNudgeAllStuck={handleNudgeAllStuck}
-                  onReformulate={(r) => setReformulating(r as unknown as Response)}
-                  onSpotlight={(r) =>
-                    modals.setSpotlightResponse({
-                      studentName: r.students?.display_name || "",
-                      studentAvatar: r.students?.avatar || "",
-                      text: r.text,
-                      score: r.teacher_score,
-                      highlighted: r.is_highlighted,
-                    })
-                  }
-                  onHighlightAllVisible={handleHighlightAllVisible}
-                  onHideAllVisible={handleHideAllVisible}
-                />
-              )}
-
-            {/* Not responded students */}
-            {session.status === "responding" && notRespondedStudents.length > 0 && notRespondedStudents.length <= 5 && (
-              <div className="flex flex-wrap gap-1.5 pt-2">
-                <span className="text-[11px] text-[#64748b] font-medium self-center mr-1">En attente :</span>
-                {notRespondedStudents.map((s) => (
-                  <span
-                    key={s.id}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[11px] font-medium"
-                  >
-                    {s.display_name?.split(" ")[0]}
-                  </span>
-                ))}
-              </div>
-            )}
+            {/* Not responded — now shown in V6 sidebar Eleves tab */}
 
             {/* Done state — session recap */}
             {session.status === "done" && (
@@ -741,41 +554,8 @@ export function FocusCockpit() {
         </div>
       </div>
 
-      {/* ── FOOTER ── */}
-      <FocusFooter
-        sessionStatus={session.status}
-        isStandardQA={isStandardQA}
-        respondedCount={unifiedRespondedCount}
-        totalStudents={activeStudents.length}
-        voteOptionCount={voteOptionCount}
-        totalVotes={voteData?.totalVotes}
-        allResponded={allResponded}
-        nextAction={nextAction}
-        onNextAction={handleNextAction}
-        isPending={updateSession.isPending}
-        onSelectionBarAction={handleSelectionBarAction}
-        onQuickVote={handleQuickVote}
-        onOpenPlus={() => setPlusOpen(true)}
-        onProjectResponses={handleHighlightAllVisible}
-      />
-
-      {/* ── BULK RESPONSE TOOLBAR ── */}
-      <BulkResponseToolbar
-        selectedCount={selectedResponseIds.size}
-        totalCount={responses.length}
-        onHideUnselected={() => {
-          const toHide = responses.filter((r) => !selectedResponseIds.has(r.id) && !r.is_hidden);
-          for (const r of toHide) toggleHide.mutate({ responseId: r.id, is_hidden: true });
-          toast.success(`${toHide.length} masquée${toHide.length > 1 ? "s" : ""}`);
-          setSelectedResponseIds(new Set());
-        }}
-        onAiEvaluate={() => {
-          aiEvaluate.mutate(Array.from(selectedResponseIds));
-          setSelectedResponseIds(new Set());
-        }}
-        onDeselectAll={() => setSelectedResponseIds(new Set())}
-        isEvaluating={aiEvaluate.isPending}
-      />
+      {/* V6: Footer removed — vote controls are now inline above */}
+      {/* V6: Bulk toolbar removed — responses are in sidebar tab */}
 
       {/* ── PLUS MENU BOTTOM SHEET ── */}
       <BottomSheet open={plusOpen} onClose={() => setPlusOpen(false)} title="Actions">
@@ -861,7 +641,7 @@ export function FocusCockpit() {
                   animate={{ x: 0 }}
                   exit={{ x: "100%" }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="w-full max-w-md h-full bg-white shadow-2xl overflow-y-auto"
+                  className="w-full max-w-md h-full bg-[#161633] border-l border-[#2a2a50] shadow-2xl overflow-y-auto"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <StudentFiche

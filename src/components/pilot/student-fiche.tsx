@@ -285,7 +285,7 @@ export function StudentFiche({
                 if (e.key === "Escape") setShowNudgeInput(false);
               }}
               placeholder="Message personnalisé..."
-              className="flex-1 bg-bw-bg border border-[#DDD7EC] rounded-lg px-3 py-2 text-sm text-bw-text placeholder:text-bw-muted/50 outline-none focus:border-bw-primary/40 transition-colors"
+              className="flex-1 bg-bw-bg border border-[#2a2a50] rounded-lg px-3 py-2 text-sm text-bw-text placeholder:text-bw-muted/50 outline-none focus:border-bw-primary/40 transition-colors"
             />
             <button
               onClick={() => handleSendNudge()}
@@ -309,7 +309,7 @@ export function StudentFiche({
                 if (e.key === "Escape") setShowHintInput(false);
               }}
               placeholder="Indice prive pour cet eleve..."
-              className="flex-1 bg-bw-bg border border-[#DDD7EC] rounded-lg px-3 py-2 text-sm text-bw-text placeholder:text-bw-muted/50 outline-none focus:border-[#F5A45B]/40 transition-colors"
+              className="flex-1 bg-bw-bg border border-[#2a2a50] rounded-lg px-3 py-2 text-sm text-bw-text placeholder:text-bw-muted/50 outline-none focus:border-[#F5A45B]/40 transition-colors"
             />
             <button
               onClick={handleSendHint}

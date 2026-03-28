@@ -334,7 +334,7 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
               </div>
               <div className="flex items-center gap-2">
                 {/* View toggle */}
-                <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid #E8DFD2" }}>
+                <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid #2a2a50" }}>
                   <button
                     onClick={() => setViewMode("ideas")}
                     className="px-2.5 py-1 text-[11px] font-semibold cursor-pointer transition-colors"
@@ -394,7 +394,7 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                             style={{
                               background:
                                 expandedCluster === cluster.id ? `${cluster.color}10` : "rgba(255,255,255,0.7)",
-                              border: `1px solid ${expandedCluster === cluster.id ? `${cluster.color}30` : "#E8DFD2"}`,
+                              border: `1px solid ${expandedCluster === cluster.id ? `${cluster.color}30` : "#2a2a50"}`,
                             }}
                           >
                             <div className="flex items-center justify-between">
