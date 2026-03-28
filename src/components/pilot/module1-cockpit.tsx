@@ -137,19 +137,19 @@ export function Module1Cockpit({
         <>
           {module1Data.image ? (
             <div className="space-y-2">
-              <div className="rounded-xl overflow-hidden border border-black/[0.06] bg-bw-surface">
+              <div className="rounded-xl overflow-hidden border border-[#2a2a50] bg-[#1a1a35]">
                 <SafeImage
                   src={module1Data.image.url}
                   alt={module1Data.image.title}
-                  width={800}
-                  height={500}
+                  width={1200}
+                  height={750}
                   className="w-full aspect-[16/10] object-cover"
                 />
               </div>
               <p className="text-xs text-bw-muted text-center">{module1Data.image.title}</p>
             </div>
           ) : (
-            <div className="rounded-xl bg-bw-surface border border-black/[0.06] aspect-[16/10] flex items-center justify-center">
+            <div className="rounded-xl bg-[#1a1a35] border border-[#2a2a50] aspect-[16/10] flex items-center justify-center">
               <p className="text-sm text-bw-muted">Image non disponible</p>
             </div>
           )}
