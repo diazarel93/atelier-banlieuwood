@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   },
   robots: { index: false, follow: false },
   other: {
-    "theme-color": "#EEEAF6",
+    "theme-color": "#0c0c18",
   },
 };
 
@@ -19,7 +19,7 @@ export default function CockpitV2Layout({ children }: { children: React.ReactNod
       {/* Prevent dark-mode flash: apply stored theme before first paint */}
       <script
         dangerouslySetInnerHTML={{
-          __html: `try{if(localStorage.getItem("bw-theme")==="dark"||(!localStorage.getItem("bw-theme")&&window.matchMedia("(prefers-color-scheme:dark)").matches)){document.currentScript.parentElement.setAttribute("data-theme","dark");var m=document.querySelector('meta[name="theme-color"]');if(m)m.content="#1a1a2e"}}catch(e){}`,
+          __html: `try{var s=localStorage.getItem("bw-theme");if(s==="dark"||(!s&&window.matchMedia("(prefers-color-scheme:dark)").matches)||!s){document.currentScript.parentElement.setAttribute("data-theme","dark");var m=document.querySelector('meta[name="theme-color"]');if(m)m.content="#0c0c18";if(!s)localStorage.setItem("bw-theme","dark")}}catch(e){}`,
         }}
       />
       <AppShellV2>
