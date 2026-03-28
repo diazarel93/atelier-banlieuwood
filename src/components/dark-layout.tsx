@@ -1,10 +1,11 @@
 export function DarkLayout({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="dark min-h-dvh text-bw-heading"
+      className="theme-lavande dark min-h-dvh text-bw-heading"
+      data-theme="dark"
       style={{
-        backgroundColor: "#08090E",
-        background: "linear-gradient(145deg, #08090E 0%, #0A0C12 35%, #08090E 100%)",
+        backgroundColor: "#0c0c18",
+        background: "linear-gradient(145deg, #0c0c18 0%, #0a0a16 35%, #0c0c18 100%)",
       }}
     >
       {/* Cinematic ambient glow spots */}
