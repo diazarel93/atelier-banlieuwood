@@ -156,7 +156,7 @@ function FreeStudentChip({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
             className="absolute z-30 bottom-full mb-2 left-1/2 -translate-x-1/2 w-[200px] rounded-[12px] p-3 pointer-events-none"
-            style={{ background: "#FFFFFF", border: "1px solid #E8DFD2", boxShadow: "0 8px 24px rgba(61,43,16,0.12)" }}
+            style={{ background: "#FFFFFF", border: "1px solid #2a2a50", boxShadow: "0 8px 24px rgba(61,43,16,0.12)" }}
           >
             <p className="text-[12px] text-[#5B5B5B] leading-snug line-clamp-3">{response}</p>
           </motion.div>
@@ -353,7 +353,7 @@ export function ClassroomMap({
           </div>
           {/* Center: teacher area marker */}
           <div className="flex-1 min-w-[60px] flex items-center justify-center">
-            <div className="px-3 py-1 rounded-[8px]" style={{ background: "#EFE8DD", border: "1px dashed #D9CFC0" }}>
+            <div className="px-3 py-1 rounded-[8px]" style={{ background: "#2a2a50", border: "1px dashed #D9CFC0" }}>
               <span className="text-[9px] font-bold uppercase tracking-widest text-[#B0A99E]">Prof</span>
             </div>
           </div>
@@ -400,7 +400,7 @@ export function ClassroomMap({
           <div
             key={idx}
             className="flex flex-col gap-1.5 p-2.5 rounded-[16px]"
-            style={{ background: "#F3ECE3", border: "1px solid #E8DFD2", boxShadow: "0 1px 4px rgba(61,43,16,0.04)" }}
+            style={{ background: "#1a1a35", border: "1px solid #2a2a50", boxShadow: "0 1px 4px rgba(61,43,16,0.04)" }}
           >
             {island.map(([left, right], pairIdx) => (
               <div key={`is-${left.id}-${pairIdx}`} style={pairIdx === 1 ? { transform: "scaleY(-1)" } : undefined}>
@@ -484,7 +484,7 @@ export function ClassroomMap({
         style={{
           borderRadius: 16,
           background: "#FAF6EE",
-          border: "1px solid #E8DFD2",
+          border: "1px solid #2a2a50",
           boxShadow: "0 2px 8px rgba(61,43,16,0.04), inset 0 1px 2px rgba(61,43,16,0.02)",
         }}
       >
@@ -504,7 +504,7 @@ export function ClassroomMap({
               style={{
                 borderRadius: 10,
                 background: "#FFFFFF",
-                border: "1px solid #E8DFD2",
+                border: "1px solid #2a2a50",
                 boxShadow: "0 1px 3px rgba(61,43,16,0.04)",
               }}
             >
@@ -515,7 +515,7 @@ export function ClassroomMap({
           {/* Separator */}
           <div
             className="h-px"
-            style={{ background: "linear-gradient(to right, transparent, #E8DFD2, transparent)" }}
+            style={{ background: "linear-gradient(to right, transparent, #2a2a50, transparent)" }}
           />
 
           {/* Desk layout — animated layout transitions */}
@@ -556,7 +556,7 @@ export function ClassroomMap({
                               <span className="text-[12px] font-semibold uppercase tracking-wider text-[#5B5B5B]">
                                 {group.teamName}
                               </span>
-                              <div className="flex-1 h-px" style={{ background: "#EFE4D8" }} />
+                              <div className="flex-1 h-px" style={{ background: "#2a2a50" }} />
                               <span className="text-[12px] text-[#B0A99E] tabular-nums font-medium">
                                 {group.pairs.reduce(
                                   (n, [l, r]) =>

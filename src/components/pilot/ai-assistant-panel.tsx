@@ -589,7 +589,7 @@ function AIAssistantPanelInner({
                 const voters = qcmVoteData.votesByOption[opt.key] || [];
                 if (voters.length === 0) return null;
                 const color = VOTE_COLORS[opt.key] || "#7A7A7A";
-                const bg = VOTE_BG[opt.key] || "#F7F3EA";
+                const bg = VOTE_BG[opt.key] || "#1a1a35";
                 return (
                   <div key={opt.key}>
                     <div className="flex items-center gap-2 mb-1.5">

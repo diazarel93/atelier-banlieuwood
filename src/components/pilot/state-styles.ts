@@ -22,7 +22,7 @@ export const STATE_STYLE: Record<string, StateStyle> = {
 
 export const DEFAULT_STYLE: StateStyle = {
   dot: "#C4BDB2",
-  bg: "#F7F5F2",
+  bg: "#1a1a35",
   border: "#E8E2D8",
   text: "#B0A99E",
 };

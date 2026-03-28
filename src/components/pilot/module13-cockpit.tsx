@@ -137,7 +137,7 @@ export function Module13Cockpit({ sessionId, module13, connectedCount }: Module1
 
       {/* Results history */}
       {module13.allResults.length > 0 && (
-        <div className="mt-6 pt-4 border-t border-[#DDD7EC]">
+        <div className="mt-6 pt-4 border-t border-[#2a2a50]">
           <p className="text-xs text-white/40 uppercase tracking-wider mb-3">
             Décisions finales ({module13.allResults.length}/8)
           </p>

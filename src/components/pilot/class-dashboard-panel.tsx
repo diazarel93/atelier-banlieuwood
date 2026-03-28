@@ -224,7 +224,7 @@ function ClassDashboardPanelInner({
               aria-label={`Participation ${stats.respondedN}/${stats.online}`}
             >
               <svg width="100%" height="100%" viewBox="0 0 100 100" className="transform -rotate-90">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#EFE8DD" strokeWidth="8" />
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#2a2a50" strokeWidth="8" />
                 {donutSegments.map((seg, i) => {
                   if (seg.pct <= 0) return null;
                   return (

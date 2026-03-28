@@ -86,7 +86,7 @@ function EnergyDonut({
 
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" className="-rotate-90 flex-shrink-0">
-      <circle cx="10" cy="10" r={r} fill="none" stroke="#EFE8DD" strokeWidth="3" />
+      <circle cx="10" cy="10" r={r} fill="none" stroke="#2a2a50" strokeWidth="3" />
       {segments.map((seg, i) => {
         if (seg.pct <= 0) return null;
         const dash = seg.pct * c;

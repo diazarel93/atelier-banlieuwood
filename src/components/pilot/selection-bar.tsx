@@ -67,7 +67,7 @@ export function SelectionBar({
         disabled={disabled}
         className="w-full h-12 rounded-2xl text-[14px] font-bold cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed"
         style={{
-          backgroundColor: disabled ? "#E8DFD2" : ctaColor,
+          backgroundColor: disabled ? "#2a2a50" : ctaColor,
           color: disabled ? "#B0A99E" : "white",
           boxShadow: disabled ? undefined : "0 4px 16px rgba(0,0,0,0.12)",
         }}
@@ -126,7 +126,7 @@ export function SelectionBar({
             pulse && !disabled ? "ring-2 ring-[#57C4B6]/40" : ""
           }`}
           style={{
-            backgroundColor: disabled ? "#E8DFD2" : ctaColor,
+            backgroundColor: disabled ? "#2a2a50" : ctaColor,
             color: disabled ? "#B0A99E" : "white",
             boxShadow: disabled ? undefined : "0 4px 12px rgba(0,0,0,0.15)",
           }}

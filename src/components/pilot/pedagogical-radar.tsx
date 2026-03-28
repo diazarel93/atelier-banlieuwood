@@ -127,7 +127,7 @@ export function EmotionalRadar({ axes, size = 160, animated = true }: EmotionalR
           cy={CY}
           r={MAX_R * pct}
           fill="none"
-          stroke="#E8DFD2"
+          stroke="#2a2a50"
           strokeWidth={0.5}
           opacity={0.5}
         />
@@ -141,7 +141,7 @@ export function EmotionalRadar({ axes, size = 160, animated = true }: EmotionalR
           y1={CY}
           x2={v.x}
           y2={v.y}
-          stroke="#E8DFD2"
+          stroke="#2a2a50"
           strokeWidth={0.5}
           opacity={0.3}
         />

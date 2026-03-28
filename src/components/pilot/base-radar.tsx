@@ -38,7 +38,7 @@ export interface BaseRadarProps {
   showValues?: boolean;
   /** Show axis labels (default true) */
   showLabels?: boolean;
-  /** Grid/ring stroke color (default "#E8DFD2") */
+  /** Grid/ring stroke color (default "#2a2a50") */
   gridColor?: string;
   /** Axis label font size (default 9) */
   labelFontSize?: number;
@@ -64,7 +64,7 @@ export function BaseRadar({
   animated = true,
   showValues = false,
   showLabels = true,
-  gridColor = "#E8DFD2",
+  gridColor = "#2a2a50",
   labelFontSize = 9,
   padding = 24,
   dotRadius = 3.5,

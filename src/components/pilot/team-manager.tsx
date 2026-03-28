@@ -147,7 +147,7 @@ export function TeamManager({ sessionId, teams, students }: TeamManagerProps) {
                       initial={{ opacity: 0, scale: 0.9, y: -4 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      className="absolute top-full left-0 mt-1 z-10 bg-bw-bg border border-[#DDD7EC] rounded-xl p-1 shadow-xl min-w-[120px]"
+                      className="absolute top-full left-0 mt-1 z-10 bg-bw-bg border border-[#2a2a50] rounded-xl p-1 shadow-xl min-w-[120px]"
                     >
                       {teams.map((t) => (
                         <button

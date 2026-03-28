@@ -21,8 +21,8 @@ interface DebatePanelProps {
 }
 
 const CAMP_COLORS = [
-  { bg: "#EEF2FF", border: "#6B8CFF", text: "#4A6AE8", label: "Camp A" },
-  { bg: "#FFF0E0", border: "#F5A45B", text: "#D4842F", label: "Camp B" },
+  { bg: "rgba(139,92,246,0.1)", border: "#6B8CFF", text: "#4A6AE8", label: "Camp A" },
+  { bg: "rgba(251,146,60,0.1)", border: "#F5A45B", text: "#D4842F", label: "Camp B" },
   { bg: "#F0FAF4", border: "#4CAF50", text: "#2E7D32", label: "Camp C" },
   { bg: "#FFF5F5", border: "#EB5757", text: "#C62828", label: "Camp D" },
 ];

@@ -43,17 +43,17 @@ export function BottomSheet({ open, onClose, title, children }: BottomSheetProps
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 400 }}
-            className="fixed inset-x-0 bottom-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-[20px] bg-white shadow-[0_-8px_40px_rgba(0,0,0,0.12)]"
+            className="fixed inset-x-0 bottom-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-[20px] bg-[#161633] border-t border-[#2a2a50] shadow-[0_-8px_40px_rgba(0,0,0,0.4)]"
             style={{ paddingBottom: "env(safe-area-inset-bottom, 16px)" }}
           >
             {/* Drag handle */}
-            <div className="sticky top-0 z-10 flex justify-center pt-3 pb-1 bg-white rounded-t-[20px]">
-              <div className="w-10 h-1 rounded-full bg-gray-300" />
+            <div className="sticky top-0 z-10 flex justify-center pt-3 pb-1 bg-[#161633] rounded-t-[20px]">
+              <div className="w-10 h-1 rounded-full bg-[#2a2a50]" />
             </div>
 
             {title && (
               <div className="px-5 pt-1 pb-3">
-                <h3 className="text-[15px] font-bold text-gray-900">{title}</h3>
+                <h3 className="text-[15px] font-bold text-[#f0f0f8]">{title}</h3>
               </div>
             )}
 

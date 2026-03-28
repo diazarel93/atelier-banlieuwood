@@ -157,7 +157,7 @@ function DraggableFreeChip({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
             className="absolute z-40 bottom-full mb-2 left-1/2 -translate-x-1/2 w-[180px] rounded-[10px] p-2.5 pointer-events-none"
-            style={{ background: "#FFFFFF", border: "1px solid #E8DFD2", boxShadow: "0 8px 24px rgba(61,43,16,0.12)" }}
+            style={{ background: "#FFFFFF", border: "1px solid #2a2a50", boxShadow: "0 8px 24px rgba(61,43,16,0.12)" }}
           >
             <p className="text-[11px] text-[#5B5B5B] leading-snug line-clamp-3">{response}</p>
           </motion.div>
@@ -375,7 +375,7 @@ export function FreeGridEditor({ sessionId, students, responseMap, onStudentClic
 
       {/* Unplaced tray */}
       {(unplacedStudents.length > 0 || placedStudentIds.length > 0) && (
-        <div className="rounded-[12px] p-3 space-y-2" style={{ background: "#F7F5F2", border: "1px solid #E8DFD2" }}>
+        <div className="rounded-[12px] p-3 space-y-2" style={{ background: "#1a1a35", border: "1px solid #2a2a50" }}>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-[#B0A99E] uppercase tracking-wider">
               {unplacedStudents.length > 0 ? `Non places (${unplacedStudents.length})` : "Tous places"}
@@ -394,7 +394,7 @@ export function FreeGridEditor({ sessionId, students, responseMap, onStudentClic
                 <button
                   onClick={clearAll}
                   className="text-[11px] font-semibold px-2.5 py-1 rounded-[8px] transition-colors cursor-pointer"
-                  style={{ background: "#FFFFFF", color: "#7A7A7A", border: "1px solid #E8DFD2" }}
+                  style={{ background: "#FFFFFF", color: "#7A7A7A", border: "1px solid #2a2a50" }}
                 >
                   Tout retirer
                 </button>
