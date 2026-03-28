@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function LegalLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-bw-bg">
+    <div className="min-h-screen bg-[#0a0a16] text-[#f0f0f8]">
       {/* Sticky mini-nav */}
       <nav
         className="sticky top-0 z-40 h-14 flex items-center px-6 border-b border-white/[0.06]"
