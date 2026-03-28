@@ -32,6 +32,7 @@ export const createSessionSchema = z.object({
     .nullable(),
   scheduled_at: z.string().optional().nullable(),
   class_label: z.string().max(60).optional().nullable(),
+  formula: z.enum(["F0", "F1", "F2"]).optional().default("F0"),
 });
 
 export type CreateSessionInput = z.infer<typeof createSessionSchema>;
@@ -97,7 +98,7 @@ const VALID_MODULE_IDS = [
 export const patchSessionSchema = z
   .object({
     status: z.enum(VALID_STATUSES).optional(),
-    current_module: z.number().int().min(1).max(12).optional(),
+    current_module: z.number().int().min(1).max(13).optional(),
     current_seance: z.number().int().min(1).max(5).optional(),
     current_situation_index: z.number().int().min(0).optional(),
     title: z.string().min(1).max(100).optional(),
@@ -117,6 +118,7 @@ export const patchSessionSchema = z
     thematique: z.string().max(200).nullable().optional(),
     teacher_notes: z.string().nullable().optional(),
     deleted_at: z.string().nullable().optional(),
+    modules_enabled: z.array(z.enum(["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"])).nullable().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, {
     message: "Rien a mettre a jour",
