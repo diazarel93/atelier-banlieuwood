@@ -35,6 +35,7 @@ const TeamManager = dynamic(() => import("@/components/pilot/team-manager").then
 });
 import { ROUTES } from "@/lib/routes";
 import { CockpitProvider, useCockpit } from "@/components/pilot/cockpit-context";
+import { CommandPalette } from "@/components/pilot/command-palette";
 const CommandCockpit = dynamic(
   () => import("@/components/pilot/command/command-cockpit").then((m) => ({ default: m.CommandCockpit })),
   { ssr: false },
@@ -61,6 +62,7 @@ export default function PilotPage() {
   const [showStudents, setShowStudents] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileContextOpen, setMobileContextOpen] = useState(false);
+  const [cmdOpen, setCmdOpen] = useState(false);
   const [pendingModuleSwitch, setPendingModuleSwitch] = useState<{ moduleId: string; isQuickLaunch: boolean } | null>(
     null,
   );
@@ -98,6 +100,18 @@ export default function PilotPage() {
     }
     check();
   }, [router]);
+
+  // ⌘K shortcut for command palette
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setCmdOpen((o) => !o);
+      }
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
 
   // ── All queries + mutations extracted to usePilotSession ──
   const {
@@ -597,7 +611,21 @@ export default function PilotPage() {
         )}
       </AnimatePresence>
 
-      {/* HelpButton removed — was blocking footer toggles on pilot view */}
+      {/* Command Palette ⌘K */}
+      <CommandPalette
+        open={cmdOpen}
+        onClose={() => setCmdOpen(false)}
+        sessionOn={session?.status === "responding" || session?.status === "voting"}
+        onToggleSession={() => {
+          if (session?.status === "responding") updateSession.mutate({ status: "paused" });
+          else updateSession.mutate({ status: "responding" });
+        }}
+        onEndSession={() => updateSession.mutate({ status: "done" })}
+        onToggleDarkMode={() => {}}
+        isDarkMode={false}
+        onOpenStudents={() => setShowStudents(true)}
+        onOpenModules={() => setSidebarOpen(true)}
+      />
     </div>
   );
 }
