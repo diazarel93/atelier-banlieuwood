@@ -10,7 +10,7 @@ const STEPS = [
   {
     title: "Bienvenue sur Banlieuwood !",
     description:
-      "La plateforme d'\u00e9criture cin\u00e9matographique collaborative. Pilotez des s\u00e9ances interactives o\u00f9 5 \u00e0 30 \u00e9l\u00e8ves cr\u00e9ent un court-m\u00e9trage ensemble.",
+      "La plateforme d'écriture cinématographique collaborative. Pilotez des séances interactives où 5 à 30 élèves créent un court-métrage ensemble.",
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
         <rect x="6" y="20" width="36" height="20" rx="3" fill="#F3F4F6" stroke="#FF6B35" strokeWidth="1.5" />
@@ -83,7 +83,7 @@ const STEPS = [
     cta: { label: "Voir les modules", href: ROUTES.bibliotheque },
   },
   {
-    title: "Cr\u00e9ez votre premi\u00e8re s\u00e9ance",
+    title: "Créez votre première séance",
     description:
       "Choisissez un niveau, un module, et lancez ! Un code unique est genere pour que vos eleves rejoignent la session depuis leur appareil.",
     icon: (

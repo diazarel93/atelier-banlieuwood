@@ -131,10 +131,10 @@ export function SessionCreateWizard() {
       }
 
       if (count > 1) {
-        toast.success(`${count} s\u00e9ances cr\u00e9\u00e9es !`);
+        toast.success(`${count} séances créées !`);
         router.push(ROUTES.seances);
       } else {
-        toast.success("S\u00e9ance cr\u00e9\u00e9e !");
+        toast.success("Séance créée !");
         router.push(ROUTES.seancePrepare(firstSessionId!));
       }
     } catch {
@@ -450,7 +450,7 @@ export function SessionCreateWizard() {
                       label="Repetition"
                       value={data.repeatFrequency === "biweekly" ? "Toutes les 2 semaines" : "Chaque semaine"}
                     />
-                    <Row label="Nombre de s\u00e9ances" value={String(data.repeatCount)} />
+                    <Row label="Nombre de séances" value={String(data.repeatCount)} />
                   </>
                 )}
               </div>
@@ -494,10 +494,10 @@ export function SessionCreateWizard() {
               className="rounded-lg bg-bw-primary px-4 py-2 text-sm font-semibold text-white hover:bg-bw-primary-500 disabled:opacity-50 transition-colors btn-glow"
             >
               {saving
-                ? "Cr\u00e9ation..."
+                ? "Création..."
                 : data.repeat && data.scheduledAt
-                  ? `Cr\u00e9er ${data.repeatCount} s\u00e9ances`
-                  : "Cr\u00e9er la s\u00e9ance"}
+                  ? `Créer ${data.repeatCount} séances`
+                  : "Créer la séance"}
             </button>
           )}
         </div>
