@@ -57,7 +57,7 @@ export function ActionRequiredWidget({ todaySessions, tomorrowSessions, recentSe
     <GlassCardV2 className="p-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="label-caps text-bw-muted">Actions requises</h3>
-        <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-bw-primary text-white text-[10px] font-bold px-1.5">
+        <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-[var(--color-bw-violet)] text-white text-[10px] font-bold px-1.5 shadow-[0_0_8px_rgba(139,92,246,0.25)]">
           {actions.length}
         </span>
       </div>
@@ -68,7 +68,9 @@ export function ActionRequiredWidget({ todaySessions, tomorrowSessions, recentSe
             href={action.href}
             className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors hover:bg-[var(--color-bw-surface-dim)] group"
           >
-            <span className={`shrink-0 ${action.priority === "high" ? "text-bw-primary" : "text-bw-muted"}`}>
+            <span
+              className={`shrink-0 ${action.priority === "high" ? "text-[var(--color-bw-violet)]" : "text-bw-muted"}`}
+            >
               {action.icon}
             </span>
             <span className="flex-1 text-bw-heading font-medium truncate text-sm">{action.label}</span>

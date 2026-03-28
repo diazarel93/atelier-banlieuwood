@@ -128,7 +128,7 @@ export default function DashboardV2Page() {
             value={classLabel ?? ""}
             onChange={(e) => setClassLabel(e.target.value || null)}
             aria-label="Filtrer par classe"
-            className="rounded-lg border border-[var(--color-bw-border)] bg-card px-3 py-1.5 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+            className="rounded-lg border border-[var(--color-bw-border)] bg-card px-3 py-1.5 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-[var(--color-bw-violet)]/30"
           >
             <option value="">Toutes les classes</option>
             {data.classLabels.map((cl) => (
@@ -310,7 +310,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
           <button
             type="button"
             onClick={onRetry}
-            className="rounded-lg bg-bw-primary px-4 py-2 text-sm font-medium text-white hover:bg-bw-primary-500 transition-colors"
+            className="rounded-lg bg-[var(--color-bw-violet)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--color-bw-violet-500)] shadow-[0_0_8px_rgba(139,92,246,0.2)] transition-colors"
           >
             Réessayer
           </button>
