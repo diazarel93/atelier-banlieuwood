@@ -17,14 +17,16 @@ describe("SPEC_MODULES", () => {
     ]);
   });
 
-  it("every spec module has at least one dbMapping", () => {
+  it("every spec module except M2 has at least one dbMapping", () => {
     for (const sm of SPEC_MODULES) {
+      if (sm.specId === "M2") continue; // M2 = B_QCM, embedded in M3
       expect(sm.dbMappings.length).toBeGreaterThan(0);
     }
   });
 
-  it("every spec module has at least one moduleId", () => {
+  it("every spec module except M2 has at least one moduleId", () => {
     for (const sm of SPEC_MODULES) {
+      if (sm.specId === "M2") continue; // M2 = B_QCM, embedded in M3
       expect(sm.moduleIds.length).toBeGreaterThan(0);
     }
   });
@@ -35,8 +37,17 @@ describe("getSpecModuleFromDb", () => {
     expect(getSpecModuleFromDb(1)?.specId).toBe("M1");
   });
 
-  it("maps dbModule 2 to M2", () => {
-    expect(getSpecModuleFromDb(2)?.specId).toBe("M2");
+  it("M2 has no dbModule (B_QCM embedded in M3 flow)", () => {
+    // M2 = B_QCM only, embedded in M3's etsi-writer
+    // dbModule 2 ("Émotion Cachée") is legacy bonus
+    const m2 = getSpecModule("M2");
+    expect(m2?.dbMappings).toEqual([]);
+    expect(m2?.moduleIds).toEqual([]);
+  });
+
+  it("dbModule 2 is a bonus module (not spec M2)", () => {
+    expect(isExtraModule(2)).toBe(true);
+    expect(getSpecModuleFromDb(2)).toBeUndefined();
   });
 
   it("maps dbModule 10 seance 1 to M3", () => {
@@ -64,6 +75,7 @@ describe("getSpecModuleFromDb", () => {
   });
 
   it("returns undefined for bonus modules", () => {
+    expect(getSpecModuleFromDb(2)).toBeUndefined(); // "Émotion Cachée" = bonus
     expect(getSpecModuleFromDb(3)).toBeUndefined();
     expect(getSpecModuleFromDb(9)).toBeUndefined();
     expect(getSpecModuleFromDb(11)).toBeUndefined();
@@ -85,6 +97,7 @@ describe("getDbMappingsForSpec", () => {
 
 describe("isExtraModule", () => {
   it("identifies bonus dbModules", () => {
+    expect(isExtraModule(2)).toBe(true); // "Émotion Cachée" = bonus
     expect(isExtraModule(3)).toBe(true);
     expect(isExtraModule(4)).toBe(true);
     expect(isExtraModule(9)).toBe(true);
@@ -94,7 +107,6 @@ describe("isExtraModule", () => {
 
   it("returns false for spec modules", () => {
     expect(isExtraModule(1)).toBe(false);
-    expect(isExtraModule(2)).toBe(false);
     expect(isExtraModule(5)).toBe(false);
     expect(isExtraModule(7)).toBe(false);
     expect(isExtraModule(8)).toBe(false);
