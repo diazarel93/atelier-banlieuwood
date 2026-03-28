@@ -12,7 +12,7 @@
 | Module | Conformite | Verdict |
 |---|---|---|
 | **M1 Le Regard** | 60% | B2b manquant, m1e hors spec |
-| **M2 Le Mecanisme** | 20% | Ecart structurel majeur — code ≠ spec |
+| **M2 Le Mecanisme** | ✅ Resolu | "Emotion Cachee" reclasse bonus. B_QCM = vrai M2, integre dans M3. |
 | **M3 Generer l'idee** | 95% | Conforme, B3a/B3b implicites |
 | **M4 Le Pitch** | 95% | Conforme, B4_1 implicite |
 | **M5 Le Recit** | 70% | 8 manches au lieu de 5+1 optionnel |
@@ -61,12 +61,12 @@ Le code implemente un module "Emotion Cachee" complet qui n'existe pas dans la s
 - Debat collectif
 - Cloture thematique
 
-### Action requise
-- **Decision Banlieuwood** : est-ce que "Emotion Cachee" (u2a-u2d) est :
-  1. Une elaboration de M2 (mettre a jour la spec)
-  2. Un module bonus/legacy (renommer, sortir de M2)
-  3. Partiellement M2 + partiellement autre chose (splitter)
-- **En attendant** : documenter l'ecart, ne pas modifier le code
+### Resolution (28 mars 2026)
+- **Confirme par Module Designer V2** : M2 = B_QCM seulement
+- dbModule 2 (u2a-u2d "Emotion Cachee") reclasse comme **bonus**
+- M2 spec n'a pas de dbModule propre — B_QCM integre dans M3 (etsi-writer)
+- Phase "scene" deplacee dans les bonus, renommee "Emotion Cachee"
+- MAIN_PHASE_IDS mis a jour
 
 ---
 
