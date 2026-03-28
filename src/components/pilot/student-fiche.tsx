@@ -3,8 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "motion/react";
 import { ResponseCard, type ResponseCardResponse } from "./response-card";
-import { OIERadar } from "./oie-radar";
-import type { OIEScores, OIESignal } from "@/lib/oie-profile";
 
 const STATE_LABEL: Record<string, { label: string; color: string; bg: string }> = {
   responded: { label: "A répondu", color: "#4ECDC4", bg: "rgba(78,205,196,0.06)" },
@@ -51,7 +49,6 @@ interface StudentFicheProps {
   nudgeStudent: { mutate: (args: { responseId: string; nudgeText: string }) => void; isPending: boolean };
   warnStudent: { mutate: (args: string) => void; isPending: boolean };
   studentWarnings: Record<string, number>;
-  oieScores?: OIEScores | null;
   // #24 — Pause / reactivate student
   onToggleActive?: (studentId: string, isActive: boolean) => void;
   isToggleActivePending?: boolean;
@@ -78,7 +75,6 @@ export function StudentFiche({
   nudgeStudent,
   warnStudent,
   studentWarnings,
-  oieScores,
   onToggleActive,
   isToggleActivePending,
 }: StudentFicheProps) {
@@ -178,11 +174,6 @@ export function StudentFiche({
             {isToggleActivePending ? "..." : "Réactiver"}
           </button>
         </div>
-      )}
-
-      {/* O-I-E Creative profile radar + synthesis + debug */}
-      {oieScores && (
-        <OIEProfilePanel scores={oieScores} />
       )}
 
       {/* Response time indicator */}
@@ -391,112 +382,3 @@ export function StudentFiche({
   );
 }
 
-// ═══════════════════════════════════════════════════════
-// O-I-E Profile Panel — Radar + Textual synthesis + Debug
-// ═══════════════════════════════════════════════════════
-
-const DOMINANT_SYNTHESIS: Record<string, { title: string; description: string; color: string }> = {
-  O: {
-    title: "Profil observateur",
-    description: "Prend le temps d'analyser avant de répondre. Approche méthodique et réfléchie.",
-    color: "#8B5CF6",
-  },
-  I: {
-    title: "Profil imaginatif",
-    description: "Développe des idées riches et des textes détaillés. Forte créativité narrative.",
-    color: "#06B6D4",
-  },
-  E: {
-    title: "Profil expressif",
-    description: "Ses idées sont souvent reprises par le groupe. À l'aise pour partager et convaincre.",
-    color: "#F59E0B",
-  },
-};
-
-const SIGNAL_AXIS_COLORS: Record<string, string> = { O: "#8B5CF6", I: "#06B6D4", E: "#F59E0B" };
-
-function OIEProfilePanel({ scores }: { scores: OIEScores }) {
-  const [showDebug, setShowDebug] = useState(false);
-  const synthesis = DOMINANT_SYNTHESIS[scores.dominant];
-  const signals = scores.signals;
-
-  // Group signals by axis for debug view
-  const groupedSignals = signals?.reduce<Record<string, OIESignal[]>>((acc, s) => {
-    if (!acc[s.axis]) acc[s.axis] = [];
-    acc[s.axis].push(s);
-    return acc;
-  }, {});
-
-  return (
-    <div className="glass-card p-3 space-y-2">
-      <OIERadar scores={scores} size={140} />
-
-      {/* Textual synthesis — always shown */}
-      {synthesis && (
-        <div
-          className="px-3 py-2 rounded-[10px]"
-          style={{ background: `${synthesis.color}08`, border: `1px solid ${synthesis.color}15` }}
-        >
-          <p className="text-[11px] font-semibold" style={{ color: synthesis.color }}>
-            {synthesis.title}
-          </p>
-          <p className="text-[10px] text-bw-text leading-snug mt-0.5">
-            {synthesis.description}
-          </p>
-        </div>
-      )}
-
-      {/* Secondary axes hint */}
-      {scores.isReliable && (() => {
-        const axes = [
-          { key: "O" as const, label: "Observation", val: scores.O },
-          { key: "I" as const, label: "Imagination", val: scores.I },
-          { key: "E" as const, label: "Expression", val: scores.E },
-        ].filter((a) => a.key !== scores.dominant).sort((a, b) => b.val - a.val);
-        const secondary = axes[0];
-        const weak = axes[1];
-        if (secondary.val > 40 && weak.val < 30) {
-          return (
-            <p className="text-[10px] text-bw-muted px-1">
-              Aussi {secondary.label.toLowerCase()} ({secondary.val}), mais peu d&apos;{weak.label.toLowerCase()} ({weak.val}).
-            </p>
-          );
-        }
-        return null;
-      })()}
-
-      {/* Debug toggle — signal breakdown */}
-      {signals && signals.length > 0 && (
-        <div>
-          <button
-            onClick={() => setShowDebug(!showDebug)}
-            className="text-[9px] text-bw-muted hover:text-[#8894A0] cursor-pointer transition-colors"
-          >
-            {showDebug ? "Masquer le détail" : "Voir le détail des signaux"}
-          </button>
-
-          {showDebug && groupedSignals && (
-            <div className="mt-1.5 space-y-1.5 max-h-40 overflow-y-auto">
-              {(["O", "I", "E"] as const).map((axis) => {
-                const axisSignals = groupedSignals[axis];
-                if (!axisSignals || axisSignals.length === 0) return null;
-                return (
-                  <div key={axis}>
-                    <p className="text-[9px] font-bold" style={{ color: SIGNAL_AXIS_COLORS[axis] }}>
-                      {axis === "O" ? "Observation" : axis === "I" ? "Imagination" : "Expression"} ({scores[axis]})
-                    </p>
-                    {axisSignals.map((s, i) => (
-                      <p key={i} className="text-[9px] text-[#8894A0] pl-2">
-                        +{s.value.toFixed(2)} {s.reason}
-                      </p>
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}

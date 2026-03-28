@@ -4,18 +4,17 @@
  * Types:
  *   - "prepare" : sessions in "waiting" status that need preparation
  *   - "results"  : sessions in "done" status with results available
- *   - "at-risk"  : students flagged at risk
  */
 
 import { ROUTES } from "./routes";
 
 export interface NotificationItem {
   id: string;
-  type: "prepare" | "results" | "at-risk";
+  type: "prepare" | "results";
   title: string;
   description: string;
   href: string;
-  severity: "info" | "warning" | "alert";
+  severity: "info" | "warning";
 }
 
 interface SessionSummary {
@@ -24,17 +23,9 @@ interface SessionSummary {
   status: string;
 }
 
-interface AtRiskStudent {
-  profileId: string;
-  displayName: string;
-  severity: "warning" | "alert";
-  reasons: string[];
-}
-
 interface NotificationInput {
   todaySessions: SessionSummary[];
   tomorrowSessions: SessionSummary[];
-  atRiskStudents?: AtRiskStudent[];
 }
 
 export function computeNotifications(data: NotificationInput): NotificationItem[] {
@@ -74,22 +65,8 @@ export function computeNotifications(data: NotificationInput): NotificationItem[
     });
   }
 
-  // At-risk students
-  if (data.atRiskStudents) {
-    for (const student of data.atRiskStudents) {
-      notifications.push({
-        id: `at-risk-${student.profileId}`,
-        type: "at-risk",
-        title: "Élève à surveiller",
-        description: `${student.displayName} — ${student.reasons[0]}`,
-        href: ROUTES.eleveDetail(student.profileId),
-        severity: student.severity === "alert" ? "alert" : "warning",
-      });
-    }
-  }
-
-  // Sort: alerts first, then warnings, then info
-  const severityOrder = { alert: 0, warning: 1, info: 2 };
+  // Sort: warnings first, then info
+  const severityOrder = { warning: 0, info: 1 };
   notifications.sort(
     (a, b) => severityOrder[a.severity] - severityOrder[b.severity]
   );

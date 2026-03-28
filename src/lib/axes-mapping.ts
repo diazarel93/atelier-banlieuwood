@@ -1,103 +1,46 @@
 /**
- * Axes Mapping — O-I-E → 4 axes pédagogiques UI
- *
- * Backend keeps O-I-E as its scoring engine.
- * UI displays 4 learner-friendly axes:
- *   Compréhension = O (Observation)
- *   Créativité    = I (Imagination)
- *   Expression    = E (Expression)
- *   Engagement    = participation rate (responseCount / maxPossible)
+ * Competency axes display framework.
+ * Previously derived from OIE scores — OIE has been removed (R2 doctrine compliance).
+ * Axes types and definitions are kept for V2 dashboard structure.
+ * Data source will need to be replaced by a curriculum-based system.
  */
 
-import type { OIEScores } from "./oie-profile";
-
-// ── Types ──
+export type AxisKey = "comprehension" | "creativite" | "expression" | "engagement";
 
 export interface AxesScores {
-  comprehension: number; // 0-100
-  creativite: number;    // 0-100
-  expression: number;    // 0-100
-  engagement: number;    // 0-100
+  comprehension: number;
+  creativite: number;
+  expression: number;
+  engagement: number;
 }
-
-export type AxisKey = keyof AxesScores;
 
 export interface AxisDef {
   key: AxisKey;
   label: string;
   shortLabel: string;
   color: string;
-  cssVar: string;
+  description: string;
 }
-
-// ── Axis definitions ──
 
 export const AXES: AxisDef[] = [
-  {
-    key: "comprehension",
-    label: "Compréhension",
-    shortLabel: "Compréhension",
-    color: "#6366F1",
-    cssVar: "var(--color-axis-comprehension)",
-  },
-  {
-    key: "creativite",
-    label: "Créativité",
-    shortLabel: "Créativité",
-    color: "#8B5CF6",
-    cssVar: "var(--color-axis-creativite)",
-  },
-  {
-    key: "expression",
-    label: "Expression",
-    shortLabel: "Expression",
-    color: "#EC4899",
-    cssVar: "var(--color-axis-expression)",
-  },
-  {
-    key: "engagement",
-    label: "Engagement",
-    shortLabel: "Engagement",
-    color: "#F59E0B",
-    cssVar: "var(--color-axis-engagement)",
-  },
+  { key: "comprehension", label: "Compréhension", shortLabel: "Comp.", color: "#4ECDC4", description: "Capacité d'observation et d'analyse" },
+  { key: "creativite", label: "Créativité", shortLabel: "Créa.", color: "#8B5CF6", description: "Imagination et originalité" },
+  { key: "expression", label: "Expression", shortLabel: "Expr.", color: "#FF6B35", description: "Formulation et communication" },
+  { key: "engagement", label: "Engagement", shortLabel: "Eng.", color: "#10B981", description: "Participation et implication" },
 ];
 
-// ── Mapping functions ──
-
-/**
- * Convert O-I-E scores to 4-axes scores.
- * @param oie        — O-I-E scores from computeOIE()
- * @param maxResponses — max possible responses for engagement calc (default 20)
- */
-export function oieToAxes(oie: OIEScores, maxResponses = 20): AxesScores {
-  return {
-    comprehension: Math.round(oie.O),
-    creativite: Math.round(oie.I),
-    expression: Math.round(oie.E),
-    engagement: Math.round(
-      Math.min(100, (oie.responseCount / maxResponses) * 100)
-    ),
-  };
-}
-
-/**
- * Aggregate multiple students' axes scores into class averages.
- */
-export function aggregateAxes(students: AxesScores[]): AxesScores {
-  if (students.length === 0) {
+export function aggregateAxes(studentAxes: AxesScores[]): AxesScores {
+  if (studentAxes.length === 0) {
     return { comprehension: 0, creativite: 0, expression: 0, engagement: 0 };
   }
-  const sum = students.reduce(
-    (acc, s) => ({
-      comprehension: acc.comprehension + s.comprehension,
-      creativite: acc.creativite + s.creativite,
-      expression: acc.expression + s.expression,
-      engagement: acc.engagement + s.engagement,
-    }),
-    { comprehension: 0, creativite: 0, expression: 0, engagement: 0 }
-  );
-  const n = students.length;
+  const sum: AxesScores = { comprehension: 0, creativite: 0, expression: 0, engagement: 0 };
+  for (const s of studentAxes) {
+    sum.comprehension += s.comprehension;
+    sum.creativite += s.creativite;
+    sum.expression += s.expression;
+    sum.engagement += s.engagement;
+  }
+  const n = studentAxes.length;
   return {
     comprehension: Math.round(sum.comprehension / n),
     creativite: Math.round(sum.creativite / n),
@@ -106,9 +49,6 @@ export function aggregateAxes(students: AxesScores[]): AxesScores {
   };
 }
 
-/**
- * Get axis definition by key.
- */
-export function getAxisDef(key: AxisKey): AxisDef {
-  return AXES.find((a) => a.key === key)!;
+export function getAxisDef(key: AxisKey): AxisDef | undefined {
+  return AXES.find((a) => a.key === key);
 }

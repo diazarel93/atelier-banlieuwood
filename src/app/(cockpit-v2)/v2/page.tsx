@@ -12,7 +12,6 @@ import { TodaySessions } from "@/components/v2/today-sessions";
 import { QuickStats } from "@/components/v2/quick-stats";
 import { MiniCalendar } from "@/components/v2/mini-calendar";
 import { GlassCardV2 } from "@/components/v2/glass-card";
-import { AtRiskWidget } from "@/components/v2/at-risk-widget";
 import { FacilitatorTimeline } from "@/components/v2/facilitator-timeline";
 import { OnboardingWizard } from "@/components/v2/onboarding-wizard";
 import { ActionRequiredWidget } from "@/components/v2/action-required-widget";
@@ -185,7 +184,7 @@ export default function DashboardV2Page() {
             </div>
           </motion.div>
 
-          {/* Right column — Actions + Modules progression + at-risk */}
+          {/* Right column — Actions + Modules progression */}
           <motion.div
             custom={2}
             variants={columnVariants}
@@ -206,16 +205,10 @@ export default function DashboardV2Page() {
               <ActionRequiredWidget
                 todaySessions={data.todaySessions}
                 tomorrowSessions={data.tomorrowSessions}
-                atRiskStudents={data.atRiskStudents}
                 recentSessions={data.recentSessions}
               />
             </ErrorBoundary>
 
-            {data.atRiskStudents && data.atRiskStudents.length > 0 && (
-              <ErrorBoundary variant="compact">
-                <AtRiskWidget students={data.atRiskStudents} />
-              </ErrorBoundary>
-            )}
             <ErrorBoundary variant="compact">
             <GlassCardV2 className="p-4">
               <h3 className="label-caps text-bw-muted mb-3">

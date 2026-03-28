@@ -4,12 +4,11 @@ import Link from "next/link";
 import { GlassCardV2 } from "./glass-card";
 import { ROUTES } from "@/lib/routes";
 import { IconCheck, IconChevronRight } from "./icons";
-import type { SessionSummary, AtRiskStudent } from "@/hooks/use-dashboard-v2";
+import type { SessionSummary } from "@/hooks/use-dashboard-v2";
 
 interface ActionRequiredWidgetProps {
   todaySessions: SessionSummary[];
   tomorrowSessions: SessionSummary[];
-  atRiskStudents?: AtRiskStudent[];
   recentSessions: SessionSummary[];
 }
 
@@ -24,7 +23,6 @@ interface ActionItem {
 export function ActionRequiredWidget({
   todaySessions,
   tomorrowSessions,
-  atRiskStudents,
   recentSessions,
 }: ActionRequiredWidgetProps) {
   const actions: ActionItem[] = [];
@@ -56,23 +54,6 @@ export function ActionRequiredWidget({
       label: `Résultats "${s.title}"`,
       href: ROUTES.seanceResults(s.id),
       priority: "medium",
-    });
-  }
-
-  // At-risk students
-  if (atRiskStudents && atRiskStudents.length > 0) {
-    actions.push({
-      id: "at-risk",
-      icon: (
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M7 1L1 13h12L7 1z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
-          <path d="M7 5.5v3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-          <circle cx="7" cy="10.5" r="0.5" fill="currentColor" />
-        </svg>
-      ),
-      label: `${atRiskStudents.length} élève${atRiskStudents.length > 1 ? "s" : ""} à surveiller`,
-      href: ROUTES.eleves,
-      priority: "high",
     });
   }
 

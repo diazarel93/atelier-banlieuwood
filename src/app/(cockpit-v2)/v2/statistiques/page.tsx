@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
@@ -9,7 +9,6 @@ import { StatsDistributionChart } from "@/components/v2/stats-distribution-chart
 import { SessionSelector } from "@/components/v2/session-selector";
 import { QuestionAnalyticsTable } from "@/components/v2/question-analytics-table";
 import { GlassCardV2 } from "@/components/v2/glass-card";
-import { Avatar } from "@/components/v2/avatar";
 import { EmptyState } from "@/components/v2/empty-state";
 import { useQuestionAnalytics } from "@/hooks/use-question-analytics";
 import { ClassComparisonChart } from "@/components/v2/class-comparison-chart";
@@ -86,26 +85,6 @@ export default function StatistiquesPage() {
 
   const hasStudents = data && data.students.length > 0;
 
-  // Podium: top 3 students by totalResponses (fallback to sum of scores)
-  const podium = useMemo(() => {
-    if (!data || data.students.length < 3) return null;
-    const sorted = [...data.students].sort((a, b) => {
-      const aResp =
-        a.totalResponses ??
-        a.scores.comprehension +
-          a.scores.creativite +
-          a.scores.expression +
-          a.scores.engagement;
-      const bResp =
-        b.totalResponses ??
-        b.scores.comprehension +
-          b.scores.creativite +
-          b.scores.expression +
-          b.scores.engagement;
-      return bResp - aResp;
-    });
-    return sorted.slice(0, 3);
-  }, [data]);
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
@@ -235,46 +214,6 @@ export default function StatistiquesPage() {
             sessionCount={data.sessionCount}
             studentCount={data.students.length}
           />
-
-          {/* Podium — top 3 most active students */}
-          {podium && (
-            <GlassCardV2 className="p-5">
-              <h2 className="label-caps mb-4">Podium</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {podium.map((s, i) => {
-                  const medal = ["🥇", "🥈", "🥉"][i];
-                  const responses =
-                    s.totalResponses ??
-                    s.scores.comprehension +
-                      s.scores.creativite +
-                      s.scores.expression +
-                      s.scores.engagement;
-                  const ringColor = [
-                    "ring-amber-200 bg-amber-50/50",
-                    "ring-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/50",
-                    "ring-orange-200 bg-orange-50/40",
-                  ][i];
-                  return (
-                    <div
-                      key={s.id}
-                      className={`flex items-center gap-3 rounded-xl px-4 py-3 ring-1 ring-inset ${ringColor} transition-colors duration-150`}
-                    >
-                      <span className="text-xl shrink-0">{medal}</span>
-                      <Avatar name={s.displayName} emoji={s.avatar} />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-heading-xs text-bw-heading truncate">
-                          {s.displayName}
-                        </p>
-                        <p className="text-body-xs text-bw-muted tabular-nums">
-                          {responses} réponse{responses !== 1 ? "s" : ""}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </GlassCardV2>
-          )}
 
           {/* Class comparison */}
           <ClassComparisonChart />

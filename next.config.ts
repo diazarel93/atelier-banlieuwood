@@ -64,7 +64,7 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: blob: https://image.tmdb.org https://images.unsplash.com https://image.pollinations.ai",
               "media-src 'self' assets.mixkit.co",
               "font-src 'self'",
-              `connect-src 'self' *.supabase.co generativelanguage.googleapis.com eu.i.posthog.com *.i.posthog.com${isDev ? " localhost:11434" : ""} *.sentry.io *.ingest.sentry.io`,
+              `connect-src 'self' *.supabase.co generativelanguage.googleapis.com${isDev ? " localhost:11434" : ""} *.sentry.io *.ingest.sentry.io`,
               "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",

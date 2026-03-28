@@ -9,13 +9,11 @@ import { computeNotifications, type NotificationItem } from "@/lib/notifications
 const TYPE_ICONS: Record<NotificationItem["type"], string> = {
   prepare: "\u{1F4CB}",
   results: "\u{1F4CA}",
-  "at-risk": "\u26A0\uFE0F",
 };
 
 const SEVERITY_COLORS: Record<NotificationItem["severity"], string> = {
   info: "bg-[var(--color-bw-primary)]/10 text-bw-primary",
   warning: "bg-[var(--color-bw-amber-100)] text-[var(--color-bw-amber)]",
-  alert: "bg-[var(--color-bw-danger-100)] text-[var(--color-bw-danger)]",
 };
 
 export function NotificationBell() {
@@ -27,7 +25,6 @@ export function NotificationBell() {
     ? computeNotifications({
         todaySessions: data.todaySessions,
         tomorrowSessions: data.tomorrowSessions,
-        atRiskStudents: data.atRiskStudents,
       })
     : [];
 

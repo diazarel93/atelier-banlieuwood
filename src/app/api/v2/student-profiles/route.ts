@@ -59,12 +59,6 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     return NextResponse.json({ error: studError.message }, { status: 500 });
   }
 
-  // Get scores for response counts
-  const { data: scores } = await supabase
-    .from("session_oie_scores")
-    .select("student_id, response_count")
-    .in("session_id", sessionIds);
-
   // Group by profile_id (or student id if no profile)
   const profileMap = new Map<
     string,
@@ -79,25 +73,14 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     }
   >();
 
-  // Pre-index scores by student_id (replaces O(n*m) filter loop)
-  const scoresByStudent = new Map<string, typeof scores>();
-  for (const sc of scores || []) {
-    const arr = scoresByStudent.get(sc.student_id);
-    if (arr) arr.push(sc);
-    else scoresByStudent.set(sc.student_id, [sc]);
-  }
-
   for (const student of students || []) {
     const profileId = student.profile_id || student.id;
     const existing = profileMap.get(profileId);
     const joinedAt = student.joined_at || new Date().toISOString();
     const studentClassLabel = sessionClassMap.get(student.session_id) ?? null;
 
-    const studentScores = scoresByStudent.get(student.id) || [];
-    const totalResponses = studentScores.reduce(
-      (sum, sc) => sum + (sc.response_count || 0),
-      0
-    );
+    // OIE scoring removed — totalResponses set to 0
+    const totalResponses = 0;
 
     if (existing) {
       existing.sessionCount += 1;

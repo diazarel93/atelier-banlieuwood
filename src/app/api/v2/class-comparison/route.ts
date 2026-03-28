@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { oieToAxes, aggregateAxes, type AxesScores } from "@/lib/axes-mapping";
 import { withErrorHandler } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/class-comparison
  * Compare scores across all classes for the facilitator.
- * Returns per-class averages and per-class student counts.
+ * OIE scoring has been removed — returns empty comparison data with student counts.
  */
 export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
@@ -36,94 +35,20 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
 
   const sessionIds = sessions.map((s) => s.id as string);
 
-  // Fetch OIE scores + student counts in parallel
-  const [oieResult, studentsResult] = await Promise.all([
-    supabase
-      .from("session_oie_scores")
-      .select("session_id, student_id, observation, imagination, expression, response_count")
-      .in("session_id", sessionIds),
-    supabase
-      .from("students")
-      .select("id, session_id, display_name")
-      .in("session_id", sessionIds)
-      .eq("is_active", true),
-  ]);
+  // Fetch student counts
+  const { data: allStudents } = await supabase
+    .from("students")
+    .select("id, session_id, display_name")
+    .in("session_id", sessionIds)
+    .eq("is_active", true);
 
-  const oieScores = oieResult.data || [];
-  const allStudents = studentsResult.data || [];
+  const studentsList = allStudents || [];
 
-  // Build session → class label map
-  const sessionClassMap = new Map<string, string>();
-  for (const s of sessions) {
-    sessionClassMap.set(s.id, s.class_label || "Sans classe");
-  }
-
-  // Group OIE scores by class
-  const classScoresMap = new Map<string, AxesScores[]>();
-  const classStudentIds = new Map<string, Set<string>>();
-
-  for (const row of oieScores) {
-    const classLabel = sessionClassMap.get(row.session_id) || "Sans classe";
-    const axes = oieToAxes(
-      {
-        O: row.observation ?? 0,
-        I: row.imagination ?? 0,
-        E: row.expression ?? 0,
-        dominant: "O",
-        responseCount: row.response_count ?? 0,
-        isReliable: true,
-      },
-      20
-    );
-
-    if (!classScoresMap.has(classLabel)) {
-      classScoresMap.set(classLabel, []);
-      classStudentIds.set(classLabel, new Set());
-    }
-    classScoresMap.get(classLabel)!.push(axes);
-    classStudentIds.get(classLabel)!.add(row.student_id);
-  }
-
-  // Count students per class (from students table, not just scored ones)
-  const classStudentCounts = new Map<string, number>();
-  for (const s of allStudents) {
-    const classLabel = sessionClassMap.get(s.session_id) || "Sans classe";
-    classStudentCounts.set(classLabel, (classStudentCounts.get(classLabel) || 0) + 1);
-  }
-
-  // Count sessions per class
-  const classSessionCounts = new Map<string, number>();
-  for (const s of sessions) {
-    const classLabel = s.class_label || "Sans classe";
-    classSessionCounts.set(classLabel, (classSessionCounts.get(classLabel) || 0) + 1);
-  }
-
-  // Build comparison array
-  const classes = [...classScoresMap.entries()].map(([classLabel, scores]) => {
-    const studentCount = classStudentCounts.get(classLabel) || 0;
-    const scoredStudentCount = classStudentIds.get(classLabel)?.size || 0;
-    const participationRate =
-      studentCount > 0
-        ? Math.round((scoredStudentCount / studentCount) * 100)
-        : 0;
-    return {
-      classLabel,
-      averageScores: aggregateAxes(scores),
-      studentCount,
-      scoredStudentCount,
-      sessionCount: classSessionCounts.get(classLabel) || 0,
-      participationRate,
-    };
-  });
-
-  // Global average
-  const allScores = [...classScoresMap.values()].flat();
-  const globalAverage = aggregateAxes(allScores);
-
+  // OIE scoring removed — return empty comparison data
   return NextResponse.json({
-    classes,
-    globalAverage,
-    totalStudents: allStudents.length,
+    classes: [],
+    globalAverage: { comprehension: 0, creativite: 0, expression: 0, engagement: 0 },
+    totalStudents: studentsList.length,
     totalSessions: sessions.length,
   });
 });

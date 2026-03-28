@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { oieToAxes, aggregateAxes, type AxesScores } from "@/lib/axes-mapping";
+import type { AxesScores } from "@/lib/axes-mapping";
 import { getAuthUser } from "@/lib/auth-helpers";
 import { log } from "@/lib/logger";
 import { withErrorHandler } from "@/lib/api-utils";
 
 /**
  * GET /api/v2/stats?classLabel=X&sessionId=Y&dateFrom=YYYY-MM-DD&dateTo=YYYY-MM-DD
- * Aggregate OIE scores → 4 axes for the V2 Statistiques page.
+ * Competency axes for the V2 Statistiques page.
+ * OIE scoring has been removed (R2 doctrine compliance) — data source pending replacement.
  */
 export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
@@ -69,63 +70,9 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     });
   }
 
-  // Fetch OIE scores
-  const { data: oieScores, error: oieErr } = await supabase
-    .from("session_oie_scores")
-    .select("student_id, observation, imagination, expression, response_count")
-    .in("session_id", sessionIds)
-    .limit(1000);
-
-  if (oieErr) {
-    log.error("OIE scores query failed", { route: "/api/v2/stats", error: oieErr.message });
-    return NextResponse.json({ error: `OIE query failed: ${oieErr.message}` }, { status: 500 });
-  }
-
-  // Fetch student names
-  const studentIds = [
-    ...new Set((oieScores || []).map((s) => s.student_id)),
-  ];
-
-  const { data: studentRows } = studentIds.length > 0
-    ? await supabase
-        .from("students")
-        .select("id, display_name, avatar")
-        .in("id", studentIds)
-    : { data: [] };
-
-  const studentMap = new Map(
-    (studentRows || []).map((s) => [s.id, s])
-  );
-
-  // Aggregate per student (latest score)
-  const perStudent = new Map<string, AxesScores>();
-  for (const row of oieScores || []) {
-    const axes = oieToAxes(
-      {
-        O: row.observation ?? 0,
-        I: row.imagination ?? 0,
-        E: row.expression ?? 0,
-        dominant: "O",
-        responseCount: row.response_count ?? 0,
-        isReliable: true,
-      },
-      20
-    );
-    // Keep latest (or best) per student
-    perStudent.set(row.student_id, axes);
-  }
-
-  const studentsList = [...perStudent.entries()].map(([id, scores]) => {
-    const info = studentMap.get(id);
-    return {
-      id,
-      displayName: info?.display_name || "Élève",
-      avatar: info?.avatar || null,
-      scores,
-    };
-  });
-
-  const classAverage = aggregateAxes(studentsList.map((s) => s.scores));
+  // OIE scoring removed (R2) — return empty student/axes data
+  const studentsList: { id: string; displayName: string; avatar: string | null; scores: AxesScores; totalResponses?: number }[] = [];
+  const classAverage: AxesScores = { comprehension: 0, creativite: 0, expression: 0, engagement: 0 };
 
   // Unique class labels for the selector (class_label may not exist yet)
   const classLabels = [

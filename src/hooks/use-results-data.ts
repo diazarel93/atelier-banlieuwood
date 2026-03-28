@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { OIEScores } from "@/lib/oie-profile";
 import type { PosterChoice, PosterStudent } from "@/components/film-poster";
 import type { FilmData } from "@/app/api/sessions/[id]/film/route";
 import { CATEGORY_LABELS } from "@/lib/constants";
@@ -145,15 +144,6 @@ export function useResultsData(sessionId: string) {
     queryFn: async () => {
       const res = await fetch(`/api/sessions/${sessionId}/feedback`);
       if (!res.ok) return null;
-      return res.json();
-    },
-  });
-
-  const oieQuery = useQuery<{ scores: Record<string, OIEScores> }>({
-    queryKey: ["oie-profile", sessionId],
-    queryFn: async () => {
-      const res = await fetch(`/api/sessions/${sessionId}/oie-profile`);
-      if (!res.ok) return { scores: {} };
       return res.json();
     },
   });
@@ -424,7 +414,6 @@ export function useResultsData(sessionId: string) {
     budgetData: budgetQuery.data ?? null,
     pitchData: pitchQuery.data ?? null,
     feedback: feedbackQuery.data ?? null,
-    oieData: oieData(oieQuery),
     sessionDetail: sessionDetailQuery.data ?? null,
     posterData,
     filmData: filmQuery.data ?? null,
@@ -469,6 +458,3 @@ function downloadFile(content: string, filename: string, type: string) {
   URL.revokeObjectURL(url);
 }
 
-function oieData(query: { data?: { scores: Record<string, OIEScores> } }) {
-  return query.data ?? { scores: {} };
-}

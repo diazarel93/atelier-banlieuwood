@@ -137,6 +137,6 @@ describe("Level tier progression", () => {
     const result = getLevel(xp);
     // 500 + 100 + 125 = 725 XP => should be level 3 (500-849)
     expect(result.level).toBe(3);
-    expect(result.name).toBe("Cadreur");
+    expect(result.name).toBe("Cameraman");
   });
 });

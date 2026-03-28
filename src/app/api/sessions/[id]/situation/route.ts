@@ -20,7 +20,7 @@ import {
 // This endpoint is polled by every student every 3-5s. With 30 students that's
 // 6-10 req/s, each triggering ~12 Supabase queries. The cache deduplicates
 // session-level queries so only 1 request per 2s actually hits the DB.
-// Student-specific data (response check, warnings, team, hasVoted, currentRank)
+// Student-specific data (response check, warnings, team, hasVoted)
 // is always computed fresh per request.
 //
 // NOTE: RLS policies for module tables currently use permissive USING(true).
@@ -57,8 +57,6 @@ interface SessionCacheData {
   connectedCount: number;
   responsesCount: number;
   budgetStats: { averages: Record<string, number>; submittedCount: number } | null;
-  topStudents: { id: string; displayName: string; avatar: string; xp: number }[];
-  topStudentsRaw: { id: string; display_name: string; avatar: string; xp: number }[];
   situationPayload: Record<string, unknown> | null;
   sessionPayload: Record<string, unknown>;
 }
@@ -186,7 +184,6 @@ export const GET = withErrorHandler(async function GET(
       connectedCountResult,
       responsesCountResult,
       budgetResult,
-      topStudentsResult,
     ] = await Promise.all([
       // Q6: Vote options (session-level — same for all students)
       session.status === "voting" && situation
@@ -229,14 +226,6 @@ export const GET = withErrorHandler(async function GET(
             .select("choices")
             .eq("session_id", sessionId)
         : Promise.resolve({ data: null }),
-      // Q12: Top students by XP (for live leaderboard)
-      admin
-        .from("students")
-        .select("id, display_name, avatar, xp")
-        .eq("session_id", sessionId)
-        .eq("is_active", true)
-        .order("xp", { ascending: false })
-        .limit(5),
     ]);
 
     // Unpack session-level results
@@ -248,7 +237,7 @@ export const GET = withErrorHandler(async function GET(
     let budgetStats: { averages: Record<string, number>; submittedCount: number } | null = null;
     const budgets = Array.isArray(budgetResult.data) ? budgetResult.data : null;
     if (budgets && budgets.length > 0) {
-      const budgetKeys = ["acteurs", "decors", "technique", "son", "montage"];
+      const budgetKeys = ["acteurs", "decors", "effets", "musique", "duree"];
       const averages: Record<string, number> = {};
       for (const cat of budgetKeys) {
         const values = budgets.map((b: { choices: unknown }) => ((b.choices as Record<string, number>)?.[cat] || 0));
@@ -258,14 +247,6 @@ export const GET = withErrorHandler(async function GET(
     } else if (session.current_module === 9 && ((session.current_seance as number) || 1) === 2) {
       budgetStats = { averages: {}, submittedCount: 0 };
     }
-
-    const topStudentsRaw = Array.isArray(topStudentsResult.data) ? topStudentsResult.data : [];
-    const topStudents = topStudentsRaw.map((s: { id: string; display_name: string; avatar: string; xp: number }) => ({
-      id: s.id,
-      displayName: s.display_name,
-      avatar: s.avatar,
-      xp: s.xp ?? 0,
-    }));
 
     // Build prompt from situation + level
     let prompt = "";
@@ -317,8 +298,6 @@ export const GET = withErrorHandler(async function GET(
       connectedCount,
       responsesCount,
       budgetStats,
-      topStudents,
-      topStudentsRaw,
       situationPayload,
       sessionPayload,
     };
@@ -383,19 +362,6 @@ export const GET = withErrorHandler(async function GET(
 
   const hasVoted = !!hasVotedResult.data;
 
-  // Compute current student rank (1-indexed) — from cached topStudents
-  let currentRank: number | null = null;
-  if (studentId && cached.topStudentsRaw.length > 0) {
-    const idx = cached.topStudentsRaw.findIndex((s: { id: string }) => s.id === studentId);
-    if (idx >= 0) {
-      currentRank = idx + 1;
-    }
-    // If not in top 5, we need a count of students with more XP
-    if (currentRank === null) {
-      currentRank = cached.topStudentsRaw.length + 1; // at least after the top 5
-    }
-  }
-
   return NextResponse.json({
     session: cached.sessionPayload,
     situation: cached.situationPayload,
@@ -411,7 +377,5 @@ export const GET = withErrorHandler(async function GET(
     studentWarnings,
     studentKicked,
     team: studentTeam,
-    topStudents: cached.topStudents,
-    currentRank,
   }, { headers: { "Cache-Control": "private, no-store" } });
 });

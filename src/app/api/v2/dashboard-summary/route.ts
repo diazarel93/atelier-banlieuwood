@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { detectAtRiskStudents, type StudentForRisk } from "@/lib/at-risk-detection";
 import { getAuthUser } from "@/lib/auth-helpers";
 import { withErrorHandler } from "@/lib/api-utils";
 
@@ -107,75 +106,6 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     ),
   ];
 
-  // At-risk detection: fetch OIE scores for students in done sessions
-  let atRiskStudents: ReturnType<typeof detectAtRiskStudents> = [];
-  const doneSessionIds = allSessions
-    .filter((s) => s.status === "done")
-    .map((s) => s.id);
-
-  if (doneSessionIds.length > 0) {
-    const { data: students } = await supabase
-      .from("students")
-      .select("id, display_name, avatar, profile_id, session_id, joined_at")
-      .in("session_id", doneSessionIds);
-
-    const studentIds = (students || []).map((s) => s.id);
-
-    if (studentIds.length > 0) {
-      const { data: scores } = await supabase
-        .from("session_oie_scores")
-        .select("student_id, session_id, observation, imagination, expression, response_count, computed_at")
-        .in("student_id", studentIds)
-        .order("computed_at", { ascending: true });
-
-      // Build per-profile risk data (pre-indexed Map replaces O(n*m) filter loop)
-      const scoresByStudent = new Map<string, typeof scores>();
-      for (const sc of scores || []) {
-        const arr = scoresByStudent.get(sc.student_id);
-        if (arr) arr.push(sc);
-        else scoresByStudent.set(sc.student_id, [sc]);
-      }
-
-      const profileMap = new Map<string, StudentForRisk>();
-      for (const student of students || []) {
-        const pid = student.profile_id || student.id;
-        const joinedAt = student.joined_at || new Date().toISOString();
-        const studentScores = scoresByStudent.get(student.id) || [];
-
-        if (studentScores.length === 0) continue;
-
-        const latest = studentScores[studentScores.length - 1];
-        const previous = studentScores.length > 1 ? studentScores[studentScores.length - 2] : null;
-
-        const existing = profileMap.get(pid);
-        if (!existing || joinedAt > existing.lastActiveAt) {
-          profileMap.set(pid, {
-            profileId: pid,
-            displayName: student.display_name,
-            avatar: student.avatar,
-            scores: {
-              comprehension: Math.round(latest.observation ?? 0),
-              creativite: Math.round(latest.imagination ?? 0),
-              expression: Math.round(latest.expression ?? 0),
-              engagement: Math.min(100, Math.round(((latest.response_count || 0) / 20) * 100)),
-            },
-            lastActiveAt: joinedAt,
-            previousScores: previous
-              ? {
-                  comprehension: Math.round(previous.observation ?? 0),
-                  creativite: Math.round(previous.imagination ?? 0),
-                  expression: Math.round(previous.expression ?? 0),
-                  engagement: Math.min(100, Math.round(((previous.response_count || 0) / 20) * 100)),
-                }
-              : null,
-          });
-        }
-      }
-
-      atRiskStudents = detectAtRiskStudents([...profileMap.values()]).slice(0, 5);
-    }
-  }
-
   // Recent sessions for the timeline (last 15, descending)
   const recentSessions = allSessions.slice(0, 15).map(summarize);
 
@@ -230,7 +160,6 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
       sessionDates,
       completedModuleIds,
       classLabels,
-      atRiskStudents,
     },
     { headers: { "Cache-Control": "private, max-age=10, stale-while-revalidate=20" } }
   );
