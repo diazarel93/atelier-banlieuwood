@@ -45,7 +45,7 @@ export default function RequestAccessPage() {
 
   if (sent) {
     return (
-      <div className="min-h-dvh bg-bw-bg flex items-center justify-center px-4">
+      <div className="min-h-dvh bg-[#0a0a16] flex items-center justify-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -78,7 +78,7 @@ export default function RequestAccessPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-bw-bg flex items-center justify-center px-4">
+    <div className="min-h-dvh bg-[#0a0a16] flex items-center justify-center px-4">
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm space-y-8">
         <div className="text-center space-y-4">
           <div className="flex justify-center">
