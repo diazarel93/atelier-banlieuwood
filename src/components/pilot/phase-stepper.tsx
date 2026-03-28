@@ -98,14 +98,12 @@ export function PhaseStepper({
                     className="relative flex items-center justify-center rounded-full w-7 h-7 md:w-[44px] md:h-[44px] glow-breathe"
                     style={{
                       background: phase.color,
-                      boxShadow: `0 0 0 3px white, 0 0 20px ${phase.color}40`,
+                      boxShadow: `0 0 0 3px #0c0c18, 0 0 20px ${phase.color}40`,
                     }}
                   >
-                    {/* Act number in Bebas Neue */}
                     <span className="font-cinema text-white text-[10px] md:text-[15px] font-normal tracking-wider">
                       {idx + 1}
                     </span>
-                    {/* Pulse ring */}
                     <span
                       className="absolute inset-[-4px] rounded-full border-2 animate-ping pointer-events-none"
                       style={{ borderColor: `${phase.color}30` }}
@@ -114,7 +112,7 @@ export function PhaseStepper({
                 ) : status === "completed" ? (
                   <div
                     className="flex items-center justify-center rounded-full w-7 h-7 md:w-[44px] md:h-[44px]"
-                    style={{ background: phase.color, boxShadow: "0 0 0 3px white" }}
+                    style={{ background: phase.color, boxShadow: "0 0 0 3px #0c0c18" }}
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -131,13 +129,13 @@ export function PhaseStepper({
                   <div
                     className="flex items-center justify-center rounded-full w-7 h-7 md:w-[44px] md:h-[44px]"
                     style={{
-                      border: "2px dashed #D9CFC0",
-                      background: "rgba(255,255,255,0.3)",
-                      boxShadow: "0 0 0 2px white",
+                      border: "2px dashed #2a2a50",
+                      background: "rgba(26,26,53,0.5)",
+                      boxShadow: "0 0 0 2px #0c0c18",
                       opacity: 0.5,
                     }}
                   >
-                    <span className="font-cinema text-[#C4BDB2] text-[10px] md:text-[14px] tracking-wider">
+                    <span className="font-cinema text-[#64748b] text-[10px] md:text-[14px] tracking-wider">
                       {idx + 1}
                     </span>
                   </div>
@@ -149,7 +147,7 @@ export function PhaseStepper({
                   <span
                     className="font-cinema uppercase text-center truncate transition-colors leading-tight"
                     style={{
-                      color: status === "active" ? phase.color : status === "completed" ? phase.color : "#C4BDB2",
+                      color: status === "active" ? phase.color : status === "completed" ? phase.color : "#64748b",
                       fontSize: 11,
                       letterSpacing: "0.06em",
                       opacity: status === "upcoming" ? 0.6 : 1,
@@ -168,8 +166,8 @@ export function PhaseStepper({
                             key={i}
                             className="w-2 h-1 rounded-sm transition-colors"
                             style={{
-                              background: i < progress.done ? phase.color : "#E0D8CC",
-                              opacity: i < progress.done ? 0.8 : 0.4,
+                              background: i < progress.done ? phase.color : "#2a2a50",
+                              opacity: i < progress.done ? 0.8 : 0.5,
                             }}
                           />
                         ))}
@@ -206,7 +204,7 @@ export function PhaseStepper({
                   ) : lineActive ? (
                     <div
                       className="flex-1 h-[3px] hidden md:block rounded-sm overflow-hidden"
-                      style={{ background: "#E0D8CC" }}
+                      style={{ background: "#2a2a50" }}
                     >
                       <div
                         className="h-full rounded-sm"
@@ -227,8 +225,8 @@ export function PhaseStepper({
                       background:
                         lineCompleted || lineActive
                           ? `linear-gradient(to right, ${phase.color}, ${nextPhase.color})`
-                          : "#E0D8CC",
-                      opacity: lineCompleted || lineActive ? 0.5 : 0.3,
+                          : "#2a2a50",
+                      opacity: lineCompleted || lineActive ? 0.5 : 0.4,
                     }}
                   />
                 </div>

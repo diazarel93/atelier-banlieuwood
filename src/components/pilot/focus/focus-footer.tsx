@@ -44,23 +44,23 @@ export function FocusFooter({
 
   // CTA logic
   let ctaLabel = "";
-  let ctaGradient = "from-gray-800 to-gray-900";
+  let ctaGradient = "from-[#2a2a50] to-[#1a1a35]";
   let ctaAction = onNextAction;
   let ctaDisabled = false;
   let showCountChip = false;
   let countChipText = "";
-  let countChipColor = "bg-gray-100 text-gray-700";
+  let countChipColor = "bg-[#1a1a35] text-[#94a3b8] border border-[#2a2a50]";
   let showQuickVote = false;
 
   if (isStandardQA && sessionStatus === "responding") {
     showCountChip = true;
     countChipText = `${respondedCount}/${totalStudents}`;
     countChipColor = allResponded
-      ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
       : "bg-[#1a1a35] text-[#94a3b8] border border-[#2a2a50]";
     if (voteOptionCount < 2) {
       ctaLabel = `${voteOptionCount}/2 min — selectionner`;
-      ctaGradient = "from-gray-300 to-gray-400";
+      ctaGradient = "from-[#2a2a50] to-[#1a1a35]";
       ctaDisabled = true;
       ctaAction = onSelectionBarAction;
       showQuickVote = respondedCount >= 2;
@@ -72,7 +72,7 @@ export function FocusFooter({
   } else if (isStandardQA && sessionStatus === "voting") {
     showCountChip = true;
     countChipText = `${totalVotes}/${totalStudents} votes`;
-    countChipColor = "bg-orange-50 text-orange-700 border border-orange-200";
+    countChipColor = "bg-orange-500/10 text-orange-400 border border-orange-500/30";
     ctaLabel = "VOIR RESULTATS";
     ctaGradient = "from-purple-500 to-purple-600";
     ctaAction = onSelectionBarAction;
@@ -83,7 +83,7 @@ export function FocusFooter({
     ctaAction = onSelectionBarAction;
   } else if (nextAction?.action) {
     ctaLabel = nextAction.label;
-    ctaGradient = "from-gray-800 to-gray-900";
+    ctaGradient = "from-[#2a2a50] to-[#1a1a35]";
     ctaDisabled = !!nextAction.disabled;
     showCountChip = sessionStatus === "responding";
     countChipText = `${respondedCount}/${totalStudents}`;
