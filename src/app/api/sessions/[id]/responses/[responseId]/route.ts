@@ -7,7 +7,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // PATCH — update response flags (is_hidden, is_vote_option) — facilitator only
 export const PATCH = withErrorHandler<{ id: string; responseId: string }>(async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string; responseId: string }> }
+  { params }: { params: Promise<{ id: string; responseId: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "response-flags", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -23,11 +23,7 @@ export const PATCH = withErrorHandler<{ id: string; responseId: string }>(async 
   }
 
   // Verify facilitator owns this session (RLS ensures this, but be explicit)
-  const { data: session } = await supabase
-    .from("sessions")
-    .select("id")
-    .eq("id", sessionId)
-    .single();
+  const { data: session } = await supabase.from("sessions").select("id").eq("id", sessionId).single();
 
   if (!session) {
     return NextResponse.json({ error: "Session introuvable" }, { status: 404 });
@@ -84,14 +80,10 @@ export const PATCH = withErrorHandler<{ id: string; responseId: string }>(async 
     updates.is_highlighted = body.is_highlighted;
   }
   if (body.teacher_comment !== undefined) {
-    updates.teacher_comment = body.teacher_comment
-      ? String(body.teacher_comment).trim().slice(0, 500)
-      : null;
+    updates.teacher_comment = body.teacher_comment ? String(body.teacher_comment).trim().slice(0, 500) : null;
   }
   if (body.teacher_nudge !== undefined) {
-    updates.teacher_nudge = body.teacher_nudge
-      ? String(body.teacher_nudge).trim().slice(0, 300)
-      : null;
+    updates.teacher_nudge = body.teacher_nudge ? String(body.teacher_nudge).trim().slice(0, 300) : null;
   }
   if (typeof body.teacher_score === "number") {
     updates.teacher_score = Math.max(0, Math.min(5, Math.round(body.teacher_score)));
@@ -100,16 +92,11 @@ export const PATCH = withErrorHandler<{ id: string; responseId: string }>(async 
     updates.ai_score = Math.max(0, Math.min(5, Math.round(body.ai_score)));
   }
   if (body.ai_feedback !== undefined) {
-    updates.ai_feedback = body.ai_feedback
-      ? String(body.ai_feedback).trim().slice(0, 500)
-      : null;
+    updates.ai_feedback = body.ai_feedback ? String(body.ai_feedback).trim().slice(0, 500) : null;
   }
 
   if (Object.keys(updates).length === 0) {
-    return NextResponse.json(
-      { error: "Aucun champ valide fourni" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Aucun champ valide fourni" }, { status: 400 });
   }
 
   // Update response — verify it belongs to this session
@@ -122,10 +109,7 @@ export const PATCH = withErrorHandler<{ id: string; responseId: string }>(async 
     .single();
 
   if (error || !data) {
-    return NextResponse.json(
-      { error: "Réponse introuvable dans cette session" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Réponse introuvable dans cette session" }, { status: 404 });
   }
 
   // Log highlight event (fire-and-forget)

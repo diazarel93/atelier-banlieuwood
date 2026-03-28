@@ -6,7 +6,7 @@ import { safeJson, withErrorHandler } from "@/lib/api-utils";
 // POST — submit assembled pitch
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "pitch", { max: 15, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -17,18 +17,17 @@ export const POST = withErrorHandler(async function POST(
   const { studentId, objectif, obstacle, objectifReason, pitchText, chronoSeconds } = parsed.data;
 
   if (!studentId || !objectif || !obstacle) {
-    return NextResponse.json(
-      { error: "studentId, objectif et obstacle requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "studentId, objectif et obstacle requis" }, { status: 400 });
   }
 
   // pitchText is optional at the objectif step, required at the pitch assembly step
-  if (pitchText != null && typeof pitchText === "string" && pitchText.trim().length > 0 && pitchText.trim().length < 10) {
-    return NextResponse.json(
-      { error: "Le pitch doit faire au moins 10 caractères" },
-      { status: 400 }
-    );
+  if (
+    pitchText != null &&
+    typeof pitchText === "string" &&
+    pitchText.trim().length > 0 &&
+    pitchText.trim().length < 10
+  ) {
+    return NextResponse.json({ error: "Le pitch doit faire au moins 10 caractères" }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -42,17 +41,11 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!session || session.current_module !== 10 || (session.current_seance || 1) !== 2) {
-    return NextResponse.json(
-      { error: "Le pitch n'est pas disponible pour cette séance" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Le pitch n'est pas disponible pour cette séance" }, { status: 400 });
   }
 
   if (session.status !== "responding") {
-    return NextResponse.json(
-      { error: "Les réponses ne sont pas ouvertes" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Les réponses ne sont pas ouvertes" }, { status: 400 });
   }
 
   // Verify student
@@ -64,10 +57,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!student) {
-    return NextResponse.json(
-      { error: "Joueur introuvable dans cette partie" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Joueur introuvable dans cette partie" }, { status: 404 });
   }
 
   // Upsert pitch — pitchText may be null at the objectif step
@@ -102,14 +92,17 @@ export const POST = withErrorHandler(async function POST(
     .select()
     .single();
 
-  if (error) { console.error("[pitch POST]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[pitch POST]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
   return NextResponse.json(data);
 });
 
 // GET — get student's pitch or all pitchs
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const studentId = req.nextUrl.searchParams.get("studentId");
@@ -123,7 +116,10 @@ export const GET = withErrorHandler(async function GET(
       .eq("student_id", studentId)
       .maybeSingle();
 
-    if (error) { console.error("[pitch GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+    if (error) {
+      console.error("[pitch GET]", error.message);
+      return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    }
     return NextResponse.json({ pitch: data });
   }
 
@@ -134,14 +130,17 @@ export const GET = withErrorHandler(async function GET(
     .eq("session_id", sessionId)
     .order("submitted_at", { ascending: true });
 
-  if (error) { console.error("[pitch GET all]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[pitch GET all]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
   return NextResponse.json({ pitchs: data || [], count: data?.length || 0 });
 });
 
 // PATCH — update chrono seconds only
 export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "pitch-chrono", { max: 10, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -152,10 +151,7 @@ export const PATCH = withErrorHandler(async function PATCH(
   const { studentId, chronoSeconds } = parsed.data;
 
   if (!studentId || chronoSeconds == null) {
-    return NextResponse.json(
-      { error: "studentId et chronoSeconds requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "studentId et chronoSeconds requis" }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -168,6 +164,9 @@ export const PATCH = withErrorHandler(async function PATCH(
     .select()
     .single();
 
-  if (error) { console.error("[pitch PATCH]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[pitch PATCH]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
   return NextResponse.json(data);
 });

@@ -6,7 +6,9 @@ import { withErrorHandler } from "@/lib/api-utils";
 export const GET = withErrorHandler<Record<string, never>>(async function GET() {
   const supabase = await createServerSupabase();
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
   }
@@ -74,10 +76,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET() 
       .eq("session_id", s.id)
       .eq("kicked", false);
 
-    const { data: respondents } = await supabase
-      .from("responses")
-      .select("student_id")
-      .eq("session_id", s.id);
+    const { data: respondents } = await supabase.from("responses").select("student_id").eq("session_id", s.id);
 
     const uniqueRespondents = new Set((respondents || []).map((r) => r.student_id)).size;
     if (sStudents && sStudents > 0) {
@@ -85,9 +84,10 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET() 
     }
   }
 
-  const avgParticipation = participationRates.length > 0
-    ? Math.round(participationRates.reduce((a, b) => a + b, 0) / participationRates.length)
-    : 0;
+  const avgParticipation =
+    participationRates.length > 0
+      ? Math.round(participationRates.reduce((a, b) => a + b, 0) / participationRates.length)
+      : 0;
 
   // Module usage distribution
   const moduleCounts: Record<number, number> = {};
@@ -155,9 +155,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET() 
     const day = new Date(now);
     day.setDate(day.getDate() - i);
     const dayStr = day.toISOString().slice(0, 10);
-    const count = sessions.filter(
-      (s) => s.created_at.slice(0, 10) === dayStr
-    ).length;
+    const count = sessions.filter((s) => s.created_at.slice(0, 10) === dayStr).length;
     dailyActivity.push({ date: dayStr, count });
   }
 

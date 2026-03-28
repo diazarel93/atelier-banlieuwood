@@ -16,10 +16,12 @@ export function ClapperboardIllustration({ size = 120, className = "" }: Illustr
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" className={className}>
       <defs>
         <linearGradient id="clap-arm-g" x1="18" y1="18" x2="102" y2="38">
-          <stop stopColor="#FF6B35" /><stop offset="1" stopColor="#D4A843" />
+          <stop stopColor="#FF6B35" />
+          <stop offset="1" stopColor="#D4A843" />
         </linearGradient>
         <linearGradient id="clap-body-g" x1="18" y1="42" x2="102" y2="100">
-          <stop stopColor="#FF6B35" stopOpacity="0.9" /><stop offset="1" stopColor="#D4A843" stopOpacity="0.8" />
+          <stop stopColor="#FF6B35" stopOpacity="0.9" />
+          <stop offset="1" stopColor="#D4A843" stopOpacity="0.8" />
         </linearGradient>
         <clipPath id="clap-arm-c">
           <rect x="18" y="16" width="84" height="22" rx="4" />
@@ -50,7 +52,17 @@ export function ClapperboardIllustration({ size = 120, className = "" }: Illustr
       <rect x="24" y="48" width="72" height="46" rx="4" fill="#08090E" />
 
       {/* ── Minimal "BW" text inside frame ── */}
-      <text x="60" y="78" textAnchor="middle" fontSize="22" fontWeight="800" fontFamily="system-ui, sans-serif" letterSpacing="-0.04em" fill="url(#clap-arm-g)" opacity="0.15">
+      <text
+        x="60"
+        y="78"
+        textAnchor="middle"
+        fontSize="22"
+        fontWeight="800"
+        fontFamily="system-ui, sans-serif"
+        letterSpacing="-0.04em"
+        fill="url(#clap-arm-g)"
+        opacity="0.15"
+      >
         BW
       </text>
     </svg>
@@ -62,7 +74,8 @@ export function FilmReelIllustration({ size = 120, className = "" }: Illustratio
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" className={className}>
       <defs>
         <linearGradient id="reel-ring" x1="12" y1="12" x2="108" y2="108">
-          <stop stopColor="#FF6B35" /><stop offset="1" stopColor="#D4A843" />
+          <stop stopColor="#FF6B35" />
+          <stop offset="1" stopColor="#D4A843" />
         </linearGradient>
       </defs>
       {/* Ambient glow */}
@@ -88,22 +101,35 @@ export function CameraIllustration({ size = 120, className = "" }: IllustrationP
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" className={className}>
       <defs>
         <linearGradient id="cam-body" x1="20" y1="35" x2="85" y2="85">
-          <stop stopColor="#0E1017" /><stop offset="1" stopColor="#15181F" />
+          <stop stopColor="#0E1017" />
+          <stop offset="1" stopColor="#15181F" />
         </linearGradient>
         <linearGradient id="cam-border" x1="20" y1="35" x2="85" y2="85">
-          <stop stopColor="rgba(78,205,196,0.35)" /><stop offset="1" stopColor="rgba(139,92,246,0.25)" />
+          <stop stopColor="rgba(78,205,196,0.35)" />
+          <stop offset="1" stopColor="rgba(139,92,246,0.25)" />
         </linearGradient>
         <linearGradient id="cam-lens" x1="34" y1="42" x2="70" y2="78">
-          <stop stopColor="#4ECDC4" /><stop offset="1" stopColor="#2B9A93" />
+          <stop stopColor="#4ECDC4" />
+          <stop offset="1" stopColor="#2B9A93" />
         </linearGradient>
         <linearGradient id="cam-flash" x1="30" y1="28" x2="50" y2="38">
-          <stop stopColor="#D4A843" /><stop offset="1" stopColor="#FF6B35" />
+          <stop stopColor="#D4A843" />
+          <stop offset="1" stopColor="#FF6B35" />
         </linearGradient>
       </defs>
       {/* Ambient glow */}
       <ellipse cx="55" cy="60" rx="38" ry="30" fill="rgba(78,205,196,0.04)" />
       {/* Camera body */}
-      <rect x="20" y="35" width="65" height="50" rx="8" fill="url(#cam-body)" stroke="url(#cam-border)" strokeWidth="1.5" />
+      <rect
+        x="20"
+        y="35"
+        width="65"
+        height="50"
+        rx="8"
+        fill="url(#cam-body)"
+        stroke="url(#cam-border)"
+        strokeWidth="1.5"
+      />
       {/* Lens — teal tones */}
       <circle cx="52" cy="60" r="18" fill="#08090E" stroke="url(#cam-lens)" strokeWidth="2" />
       <circle cx="52" cy="60" r="12" fill="rgba(78,205,196,0.08)" stroke="rgba(78,205,196,0.3)" strokeWidth="1" />
@@ -145,10 +171,12 @@ export function PopcornIllustration({ size = 120, className = "" }: Illustration
       <circle cx="72" cy="37" r="3" fill="rgba(255,255,255,0.4)" />
       <defs>
         <linearGradient id="pop-bucket" x1="35" y1="50" x2="85" y2="100">
-          <stop stopColor="#EF4444" /><stop offset="1" stopColor="#DC2626" />
+          <stop stopColor="#EF4444" />
+          <stop offset="1" stopColor="#DC2626" />
         </linearGradient>
         <linearGradient id="pop-bucket-stroke" x1="35" y1="50" x2="85" y2="100">
-          <stop stopColor="#F87171" /><stop offset="1" stopColor="#B91C1C" />
+          <stop stopColor="#F87171" />
+          <stop offset="1" stopColor="#B91C1C" />
         </linearGradient>
       </defs>
     </svg>
@@ -159,22 +187,33 @@ export function StarIllustration({ size = 120, className = "" }: IllustrationPro
   return (
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" className={className}>
       {/* Outer glow halo for depth on dark */}
-      <path d="M60 15L72 45L105 48L80 72L87 105L60 88L33 105L40 72L15 48L48 45L60 15Z"
-        fill="url(#star-glow)" filter="url(#star-blur)" opacity="0.35" />
-      <path d="M60 15L72 45L105 48L80 72L87 105L60 88L33 105L40 72L15 48L48 45L60 15Z"
-        fill="url(#star-fill)" stroke="url(#star-stroke)" strokeWidth="2" strokeLinejoin="round" />
+      <path
+        d="M60 15L72 45L105 48L80 72L87 105L60 88L33 105L40 72L15 48L48 45L60 15Z"
+        fill="url(#star-glow)"
+        filter="url(#star-blur)"
+        opacity="0.35"
+      />
+      <path
+        d="M60 15L72 45L105 48L80 72L87 105L60 88L33 105L40 72L15 48L48 45L60 15Z"
+        fill="url(#star-fill)"
+        stroke="url(#star-stroke)"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
       {/* Inner glow */}
-      <path d="M60 30L68 50L90 52L73 67L78 90L60 78L42 90L47 67L30 52L52 50L60 30Z"
-        fill="rgba(255,255,255,0.12)" />
+      <path d="M60 30L68 50L90 52L73 67L78 90L60 78L42 90L47 67L30 52L52 50L60 30Z" fill="rgba(255,255,255,0.12)" />
       <defs>
         <linearGradient id="star-fill" x1="15" y1="15" x2="105" y2="105">
-          <stop stopColor="#D4A843" /><stop offset="1" stopColor="#FF6B35" />
+          <stop stopColor="#D4A843" />
+          <stop offset="1" stopColor="#FF6B35" />
         </linearGradient>
         <linearGradient id="star-stroke" x1="15" y1="15" x2="105" y2="105">
-          <stop stopColor="#FFD166" /><stop offset="1" stopColor="#FF6B35" />
+          <stop stopColor="#FFD166" />
+          <stop offset="1" stopColor="#FF6B35" />
         </linearGradient>
         <linearGradient id="star-glow" x1="15" y1="15" x2="105" y2="105">
-          <stop stopColor="#D4A843" /><stop offset="1" stopColor="#FF6B35" />
+          <stop stopColor="#D4A843" />
+          <stop offset="1" stopColor="#FF6B35" />
         </linearGradient>
         <filter id="star-blur">
           <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
@@ -188,8 +227,12 @@ export function TicketIllustration({ size = 120, className = "" }: IllustrationP
   return (
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" className={className}>
       {/* Ticket body */}
-      <path d="M15 35H50C50 35 50 42 55 42C60 42 60 35 60 35H105V85H60C60 85 60 78 55 78C50 78 50 85 50 85H15V35Z"
-        fill="url(#ticket-fill)" stroke="url(#ticket-stroke)" strokeWidth="1.5" />
+      <path
+        d="M15 35H50C50 35 50 42 55 42C60 42 60 35 60 35H105V85H60C60 85 60 78 55 78C50 78 50 85 50 85H15V35Z"
+        fill="url(#ticket-fill)"
+        stroke="url(#ticket-stroke)"
+        strokeWidth="1.5"
+      />
       {/* Perforated line */}
       {[40, 47, 54, 61, 68, 75].map((y) => (
         <rect key={y} x="53" y={y} width="4" height="2" rx="1" fill="rgba(255,255,255,0.18)" />
@@ -199,14 +242,15 @@ export function TicketIllustration({ size = 120, className = "" }: IllustrationP
       <rect x="25" y="56" width="12" height="2" rx="1" fill="rgba(255,255,255,0.2)" />
       <rect x="25" y="63" width="15" height="2" rx="1" fill="rgba(255,255,255,0.15)" />
       {/* Star on right side */}
-      <path d="M82 55L85 61L92 62L87 67L88 74L82 70L76 74L77 67L72 62L79 61L82 55Z"
-        fill="#D4A843" />
+      <path d="M82 55L85 61L92 62L87 67L88 74L82 70L76 74L77 67L72 62L79 61L82 55Z" fill="#D4A843" />
       <defs>
         <linearGradient id="ticket-fill" x1="15" y1="35" x2="105" y2="85">
-          <stop stopColor="#8B5CF6" /><stop offset="1" stopColor="#6D28D9" />
+          <stop stopColor="#8B5CF6" />
+          <stop offset="1" stopColor="#6D28D9" />
         </linearGradient>
         <linearGradient id="ticket-stroke" x1="15" y1="35" x2="105" y2="85">
-          <stop stopColor="#A78BFA" /><stop offset="1" stopColor="#7C3AED" />
+          <stop stopColor="#A78BFA" />
+          <stop offset="1" stopColor="#7C3AED" />
         </linearGradient>
       </defs>
     </svg>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   motion,
@@ -8,25 +8,20 @@ import {
   useInView,
   AnimatePresence,
   type Variants,
-} from "motion/react"
-import {
-  useRef,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react"
-import { cn } from "@/lib/utils"
+} from "motion/react";
+import { useRef, useEffect, useState, type ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 /* ═══════════════════════════════════════════════════════════════
    FADE IN — fade + directional slide, triggered on scroll
    ═══════════════════════════════════════════════════════════════ */
 
 interface FadeInProps {
-  children: ReactNode
-  delay?: number
-  duration?: number
-  direction?: "up" | "down" | "left" | "right" | "none"
-  className?: string
+  children: ReactNode;
+  delay?: number;
+  duration?: number;
+  direction?: "up" | "down" | "left" | "right" | "none";
+  className?: string;
 }
 
 const directionOffsets: Record<string, { x: number; y: number }> = {
@@ -35,41 +30,27 @@ const directionOffsets: Record<string, { x: number; y: number }> = {
   left: { x: 24, y: 0 },
   right: { x: -24, y: 0 },
   none: { x: 0, y: 0 },
-}
+};
 
-export function FadeIn({
-  children,
-  delay = 0,
-  duration = 0.5,
-  direction = "up",
-  className,
-}: FadeInProps) {
-  const reduced = useReducedMotion()
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-48px" })
-  const offset = directionOffsets[direction]
+export function FadeIn({ children, delay = 0, duration = 0.5, direction = "up", className }: FadeInProps) {
+  const reduced = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-48px" });
+  const offset = directionOffsets[direction];
 
   return (
     <motion.div
       ref={ref}
       initial={reduced ? { opacity: 1 } : { opacity: 0, x: offset.x, y: offset.y }}
       animate={
-        isInView
-          ? { opacity: 1, x: 0, y: 0 }
-          : reduced
-            ? { opacity: 1 }
-            : { opacity: 0, x: offset.x, y: offset.y }
+        isInView ? { opacity: 1, x: 0, y: 0 } : reduced ? { opacity: 1 } : { opacity: 0, x: offset.x, y: offset.y }
       }
-      transition={
-        reduced
-          ? { duration: 0 }
-          : { duration, delay, ease: [0.4, 0, 0.2, 1] }
-      }
+      transition={reduced ? { duration: 0 } : { duration, delay, ease: [0.4, 0, 0.2, 1] }}
       className={className}
     >
       {children}
     </motion.div>
-  )
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -77,9 +58,9 @@ export function FadeIn({
    ═══════════════════════════════════════════════════════════════ */
 
 interface StaggerContainerProps {
-  children: ReactNode
-  staggerDelay?: number
-  className?: string
+  children: ReactNode;
+  staggerDelay?: number;
+  className?: string;
 }
 
 const containerVariants = (staggerDelay: number, reduced: boolean): Variants => ({
@@ -89,27 +70,21 @@ const containerVariants = (staggerDelay: number, reduced: boolean): Variants => 
       staggerChildren: reduced ? 0 : staggerDelay,
     },
   },
-})
+});
 
 const itemVariants = (reduced: boolean): Variants => ({
   hidden: reduced ? { opacity: 1 } : { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: reduced
-      ? { duration: 0 }
-      : { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
+    transition: reduced ? { duration: 0 } : { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
   },
-})
+});
 
-export function StaggerContainer({
-  children,
-  staggerDelay = 0.1,
-  className,
-}: StaggerContainerProps) {
-  const reduced = useReducedMotion()
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-32px" })
+export function StaggerContainer({ children, staggerDelay = 0.1, className }: StaggerContainerProps) {
+  const reduced = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-32px" });
 
   return (
     <motion.div
@@ -121,22 +96,22 @@ export function StaggerContainer({
     >
       {children}
     </motion.div>
-  )
+  );
 }
 
 interface StaggerItemProps {
-  children: ReactNode
-  className?: string
+  children: ReactNode;
+  className?: string;
 }
 
 export function StaggerItem({ children, className }: StaggerItemProps) {
-  const reduced = useReducedMotion()
+  const reduced = useReducedMotion();
 
   return (
     <motion.div variants={itemVariants(!!reduced)} className={className}>
       {children}
     </motion.div>
-  )
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -144,43 +119,28 @@ export function StaggerItem({ children, className }: StaggerItemProps) {
    ═══════════════════════════════════════════════════════════════ */
 
 interface ScaleRevealProps {
-  children: ReactNode
-  delay?: number
-  duration?: number
-  className?: string
+  children: ReactNode;
+  delay?: number;
+  duration?: number;
+  className?: string;
 }
 
-export function ScaleReveal({
-  children,
-  delay = 0,
-  duration = 0.45,
-  className,
-}: ScaleRevealProps) {
-  const reduced = useReducedMotion()
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-32px" })
+export function ScaleReveal({ children, delay = 0, duration = 0.45, className }: ScaleRevealProps) {
+  const reduced = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-32px" });
 
   return (
     <motion.div
       ref={ref}
       initial={reduced ? { opacity: 1 } : { opacity: 0, scale: 0.92 }}
-      animate={
-        isInView
-          ? { opacity: 1, scale: 1 }
-          : reduced
-            ? { opacity: 1 }
-            : { opacity: 0, scale: 0.92 }
-      }
-      transition={
-        reduced
-          ? { duration: 0 }
-          : { duration, delay, ease: [0.4, 0, 0.2, 1] }
-      }
+      animate={isInView ? { opacity: 1, scale: 1 } : reduced ? { opacity: 1 } : { opacity: 0, scale: 0.92 }}
+      transition={reduced ? { duration: 0 } : { duration, delay, ease: [0.4, 0, 0.2, 1] }}
       className={className}
     >
       {children}
     </motion.div>
-  )
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -188,33 +148,29 @@ export function ScaleReveal({
    ═══════════════════════════════════════════════════════════════ */
 
 interface ParallaxLayerProps {
-  children: ReactNode
+  children: ReactNode;
   /** Speed percentage: negative = slower, positive = faster. Range: -50 to 50. */
-  speed?: number
-  className?: string
+  speed?: number;
+  className?: string;
 }
 
-export function ParallaxLayer({
-  children,
-  speed = 10,
-  className,
-}: ParallaxLayerProps) {
-  const reduced = useReducedMotion()
-  const ref = useRef<HTMLDivElement>(null)
+export function ParallaxLayer({ children, speed = 10, className }: ParallaxLayerProps) {
+  const reduced = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
-  })
+  });
 
-  const clampedSpeed = Math.max(-50, Math.min(50, speed))
-  const yRange = reduced ? 0 : clampedSpeed
-  const y = useTransform(scrollYProgress, [0, 1], [`${yRange}%`, `${-yRange}%`])
+  const clampedSpeed = Math.max(-50, Math.min(50, speed));
+  const yRange = reduced ? 0 : clampedSpeed;
+  const y = useTransform(scrollYProgress, [0, 1], [`${yRange}%`, `${-yRange}%`]);
 
   return (
     <motion.div ref={ref} style={{ y }} className={className}>
       {children}
     </motion.div>
-  )
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -222,59 +178,53 @@ export function ParallaxLayer({
    ═══════════════════════════════════════════════════════════════ */
 
 interface CountUpProps {
-  from?: number
-  to: number
-  duration?: number
-  suffix?: string
-  className?: string
+  from?: number;
+  to: number;
+  duration?: number;
+  suffix?: string;
+  className?: string;
 }
 
-export function CountUp({
-  from = 0,
-  to,
-  duration = 1.5,
-  suffix = "",
-  className,
-}: CountUpProps) {
-  const reduced = useReducedMotion()
-  const [value, setValue] = useState(reduced ? to : from)
-  const ref = useRef<HTMLSpanElement>(null)
-  const isInView = useInView(ref, { once: true })
-  const hasStarted = useRef(false)
+export function CountUp({ from = 0, to, duration = 1.5, suffix = "", className }: CountUpProps) {
+  const reduced = useReducedMotion();
+  const [value, setValue] = useState(reduced ? to : from);
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true });
+  const hasStarted = useRef(false);
 
   useEffect(() => {
-    if (!isInView || hasStarted.current) return
-    hasStarted.current = true
+    if (!isInView || hasStarted.current) return;
+    hasStarted.current = true;
 
     if (reduced) {
-      setValue(to)
-      return
+      setValue(to);
+      return;
     }
 
-    const startTime = performance.now()
-    const startValue = from
+    const startTime = performance.now();
+    const startValue = from;
 
     function tick(now: number) {
-      const elapsed = (now - startTime) / 1000
-      const progress = Math.min(elapsed / duration, 1)
+      const elapsed = (now - startTime) / 1000;
+      const progress = Math.min(elapsed / duration, 1);
       // Ease out cubic
-      const eased = 1 - Math.pow(1 - progress, 3)
-      const current = Math.round(startValue + (to - startValue) * eased)
-      setValue(current)
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(startValue + (to - startValue) * eased);
+      setValue(current);
       if (progress < 1) {
-        requestAnimationFrame(tick)
+        requestAnimationFrame(tick);
       }
     }
 
-    requestAnimationFrame(tick)
-  }, [isInView, from, to, duration, reduced])
+    requestAnimationFrame(tick);
+  }, [isInView, from, to, duration, reduced]);
 
   return (
     <span ref={ref} className={className}>
       {value}
       {suffix}
     </span>
-  )
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -282,51 +232,45 @@ export function CountUp({
    ═══════════════════════════════════════════════════════════════ */
 
 interface TypeWriterProps {
-  text: string
-  speed?: number
-  delay?: number
-  className?: string
+  text: string;
+  speed?: number;
+  delay?: number;
+  className?: string;
   /** Called when typing finishes */
-  onComplete?: () => void
+  onComplete?: () => void;
 }
 
-export function TypeWriter({
-  text,
-  speed = 40,
-  delay = 0,
-  className,
-  onComplete,
-}: TypeWriterProps) {
-  const reduced = useReducedMotion()
-  const [displayed, setDisplayed] = useState(reduced ? text : "")
-  const ref = useRef<HTMLSpanElement>(null)
-  const isInView = useInView(ref, { once: true })
-  const hasStarted = useRef(false)
+export function TypeWriter({ text, speed = 40, delay = 0, className, onComplete }: TypeWriterProps) {
+  const reduced = useReducedMotion();
+  const [displayed, setDisplayed] = useState(reduced ? text : "");
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true });
+  const hasStarted = useRef(false);
 
   useEffect(() => {
-    if (!isInView || hasStarted.current) return
-    hasStarted.current = true
+    if (!isInView || hasStarted.current) return;
+    hasStarted.current = true;
 
     if (reduced) {
-      setDisplayed(text)
-      onComplete?.()
-      return
+      setDisplayed(text);
+      onComplete?.();
+      return;
     }
 
-    let index = 0
+    let index = 0;
     const delayTimeout = setTimeout(() => {
       const interval = setInterval(() => {
-        index++
-        setDisplayed(text.slice(0, index))
+        index++;
+        setDisplayed(text.slice(0, index));
         if (index >= text.length) {
-          clearInterval(interval)
-          onComplete?.()
+          clearInterval(interval);
+          onComplete?.();
         }
-      }, speed)
-    }, delay)
+      }, speed);
+    }, delay);
 
-    return () => clearTimeout(delayTimeout)
-  }, [isInView, text, speed, delay, reduced, onComplete])
+    return () => clearTimeout(delayTimeout);
+  }, [isInView, text, speed, delay, reduced, onComplete]);
 
   return (
     <span ref={ref} className={className}>
@@ -339,7 +283,7 @@ export function TypeWriter({
         />
       )}
     </span>
-  )
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -347,26 +291,21 @@ export function TypeWriter({
    ═══════════════════════════════════════════════════════════════ */
 
 interface GlowPulseProps {
-  children: ReactNode
-  color?: string
-  intensity?: "subtle" | "medium" | "strong"
-  className?: string
+  children: ReactNode;
+  color?: string;
+  intensity?: "subtle" | "medium" | "strong";
+  className?: string;
 }
 
 const glowConfig: Record<string, { blur: number; opacity: [number, number] }> = {
   subtle: { blur: 20, opacity: [0.15, 0.25] },
   medium: { blur: 32, opacity: [0.2, 0.4] },
   strong: { blur: 48, opacity: [0.3, 0.55] },
-}
+};
 
-export function GlowPulse({
-  children,
-  color = "#FF6B35",
-  intensity = "medium",
-  className,
-}: GlowPulseProps) {
-  const reduced = useReducedMotion()
-  const config = glowConfig[intensity]
+export function GlowPulse({ children, color = "#FF6B35", intensity = "medium", className }: GlowPulseProps) {
+  const reduced = useReducedMotion();
+  const config = glowConfig[intensity];
 
   return (
     <div className={cn("relative inline-flex", className)}>
@@ -389,7 +328,7 @@ export function GlowPulse({
       )}
       {children}
     </div>
-  )
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -397,25 +336,20 @@ export function GlowPulse({
    ═══════════════════════════════════════════════════════════════ */
 
 interface CinemaRevealProps {
-  children: ReactNode
-  delay?: number
-  duration?: number
-  className?: string
+  children: ReactNode;
+  delay?: number;
+  duration?: number;
+  className?: string;
 }
 
-export function CinemaReveal({
-  children,
-  delay = 0,
-  duration = 0.8,
-  className,
-}: CinemaRevealProps) {
-  const reduced = useReducedMotion()
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-48px" })
-  const id = useRef(`iris-${Math.random().toString(36).slice(2, 9)}`).current
+export function CinemaReveal({ children, delay = 0, duration = 0.8, className }: CinemaRevealProps) {
+  const reduced = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-48px" });
+  const id = useRef(`iris-${Math.random().toString(36).slice(2, 9)}`).current;
 
   if (reduced) {
-    return <div className={className}>{children}</div>
+    return <div className={className}>{children}</div>;
   }
 
   return (
@@ -445,7 +379,7 @@ export function CinemaReveal({
         {children}
       </div>
     </div>
-  )
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -453,12 +387,12 @@ export function CinemaReveal({
    ═══════════════════════════════════════════════════════════════ */
 
 interface SlidePanelProps {
-  children: ReactNode
-  from?: "left" | "right" | "bottom" | "top"
-  isOpen: boolean
-  className?: string
+  children: ReactNode;
+  from?: "left" | "right" | "bottom" | "top";
+  isOpen: boolean;
+  className?: string;
   /** Overlay click handler */
-  onClose?: () => void
+  onClose?: () => void;
 }
 
 const slideOffsets: Record<string, { x?: string; y?: string }> = {
@@ -466,17 +400,11 @@ const slideOffsets: Record<string, { x?: string; y?: string }> = {
   right: { x: "100%" },
   top: { y: "-100%" },
   bottom: { y: "100%" },
-}
+};
 
-export function SlidePanel({
-  children,
-  from = "right",
-  isOpen,
-  className,
-  onClose,
-}: SlidePanelProps) {
-  const reduced = useReducedMotion()
-  const offset = slideOffsets[from]
+export function SlidePanel({ children, from = "right", isOpen, className, onClose }: SlidePanelProps) {
+  const reduced = useReducedMotion();
+  const offset = slideOffsets[from];
 
   return (
     <AnimatePresence>
@@ -511,7 +439,7 @@ export function SlidePanel({
               from === "right" && "inset-y-0 right-0",
               from === "top" && "inset-x-0 top-0",
               from === "bottom" && "inset-x-0 bottom-0",
-              className
+              className,
             )}
           >
             {children}
@@ -519,5 +447,5 @@ export function SlidePanel({
         </>
       )}
     </AnimatePresence>
-  )
+  );
 }

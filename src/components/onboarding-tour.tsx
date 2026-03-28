@@ -39,8 +39,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     target: "step-4",
     title: "Projette sur grand ecran",
-    description:
-      "Affiche le code et le QR en grand pour que toute la classe puisse rejoindre facilement.",
+    description: "Affiche le code et le QR en grand pour que toute la classe puisse rejoindre facilement.",
     position: "bottom",
   },
 ];
@@ -69,13 +68,7 @@ function computeTooltipPos(
   let top = 0;
   let left = 0;
   const arrowSide =
-    position === "top"
-      ? "bottom"
-      : position === "bottom"
-        ? "top"
-        : position === "left"
-          ? "right"
-          : "left";
+    position === "top" ? "bottom" : position === "bottom" ? "top" : position === "left" ? "right" : "left";
 
   switch (position) {
     case "bottom":
@@ -123,7 +116,9 @@ export function OnboardingTour() {
         const timer = setTimeout(() => setActive(true), 800);
         return () => clearTimeout(timer);
       }
-    } catch { /* iPad Private Browsing */ }
+    } catch {
+      /* iPad Private Browsing */
+    }
   }, []);
 
   // Locate the target element for the current step
@@ -155,7 +150,9 @@ export function OnboardingTour() {
 
   function finish() {
     setActive(false);
-    try { localStorage.setItem(STORAGE_KEY, "true"); } catch {}
+    try {
+      localStorage.setItem(STORAGE_KEY, "true");
+    } catch {}
   }
 
   function next() {
@@ -175,9 +172,7 @@ export function OnboardingTour() {
   const current = TOUR_STEPS[step];
   const tooltipW = 340;
   const tooltipH = 200; // approximate; actual may vary
-  const pos = targetRect
-    ? computeTooltipPos(targetRect, current.position, tooltipW, tooltipH)
-    : null;
+  const pos = targetRect ? computeTooltipPos(targetRect, current.position, tooltipW, tooltipH) : null;
 
   // Spotlight cutout dimensions (with padding around target)
   const spotPad = 8;
@@ -196,10 +191,7 @@ export function OnboardingTour() {
           style={{ pointerEvents: "auto" }}
         >
           {/* ── Dark backdrop with spotlight cutout ── */}
-          <svg
-            className="absolute inset-0 w-full h-full"
-            style={{ pointerEvents: "none" }}
-          >
+          <svg className="absolute inset-0 w-full h-full" style={{ pointerEvents: "none" }}>
             <defs>
               <mask id="tour-spotlight-mask">
                 {/* White = visible (dark backdrop shows) */}
@@ -218,12 +210,7 @@ export function OnboardingTour() {
                 )}
               </mask>
             </defs>
-            <rect
-              width="100%"
-              height="100%"
-              fill="rgba(0,0,0,0.72)"
-              mask="url(#tour-spotlight-mask)"
-            />
+            <rect width="100%" height="100%" fill="rgba(0,0,0,0.72)" mask="url(#tour-spotlight-mask)" />
           </svg>
 
           {/* ── Spotlight ring glow ── */}
@@ -241,25 +228,24 @@ export function OnboardingTour() {
                 height: targetRect.height + (spotPad + 2) * 2,
                 borderRadius: spotRadius + 2,
                 border: "2px solid rgba(255,107,53,0.5)",
-                boxShadow:
-                  "0 0 24px rgba(255,107,53,0.25), inset 0 0 12px rgba(255,107,53,0.08)",
+                boxShadow: "0 0 24px rgba(255,107,53,0.25), inset 0 0 12px rgba(255,107,53,0.08)",
               }}
             />
           )}
 
           {/* ── Clickable backdrop area (to dismiss) ── */}
-          <div
-            className="absolute inset-0"
-            style={{ pointerEvents: "auto" }}
-            onClick={skip}
-          />
+          <div className="absolute inset-0" style={{ pointerEvents: "auto" }} onClick={skip} />
 
           {/* ── Tooltip Card ── */}
           {pos && (
             <motion.div
               ref={tooltipRef}
               key={`tooltip-${step}`}
-              initial={{ opacity: 0, y: pos.arrowSide === "top" ? -12 : pos.arrowSide === "bottom" ? 12 : 0, x: pos.arrowSide === "left" ? -12 : pos.arrowSide === "right" ? 12 : 0 }}
+              initial={{
+                opacity: 0,
+                y: pos.arrowSide === "top" ? -12 : pos.arrowSide === "bottom" ? 12 : 0,
+                x: pos.arrowSide === "left" ? -12 : pos.arrowSide === "right" ? 12 : 0,
+              }}
               animate={{ opacity: 1, y: 0, x: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
@@ -276,19 +262,16 @@ export function OnboardingTour() {
               <div
                 className="relative rounded-2xl overflow-hidden"
                 style={{
-                  background:
-                    "linear-gradient(145deg, rgba(24,24,27,0.98), rgba(15,15,18,0.98))",
+                  background: "linear-gradient(145deg, rgba(24,24,27,0.98), rgba(15,15,18,0.98))",
                   border: "1px solid rgba(255,255,255,0.08)",
-                  boxShadow:
-                    "0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(255,107,53,0.08)",
+                  boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(255,107,53,0.08)",
                 }}
               >
                 {/* Orange accent top bar */}
                 <div
                   className="absolute top-0 inset-x-0 h-[2px]"
                   style={{
-                    background:
-                      "linear-gradient(90deg, transparent, #FF6B35, transparent)",
+                    background: "linear-gradient(90deg, transparent, #FF6B35, transparent)",
                   }}
                 />
 
@@ -330,17 +313,12 @@ export function OnboardingTour() {
                   </div>
 
                   {/* Title */}
-                  <h3
-                    className="text-[15px] font-bold text-white"
-                    style={{ letterSpacing: "-0.01em" }}
-                  >
+                  <h3 className="text-[15px] font-bold text-white" style={{ letterSpacing: "-0.01em" }}>
                     {current.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-[13px] text-bw-muted leading-relaxed">
-                    {current.description}
-                  </p>
+                  <p className="text-[13px] text-bw-muted leading-relaxed">{current.description}</p>
 
                   {/* Progress dots */}
                   <div className="flex items-center gap-1.5 pt-1">
@@ -351,11 +329,7 @@ export function OnboardingTour() {
                         style={{
                           width: i === step ? 20 : 8,
                           backgroundColor:
-                            i === step
-                              ? "#FF6B35"
-                              : i < step
-                                ? "rgba(255,107,53,0.4)"
-                                : "rgba(255,255,255,0.1)",
+                            i === step ? "#FF6B35" : i < step ? "rgba(255,107,53,0.4)" : "rgba(255,255,255,0.1)",
                         }}
                       />
                     ))}
@@ -373,10 +347,8 @@ export function OnboardingTour() {
                       onClick={next}
                       className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-semibold text-white cursor-pointer transition-all duration-200"
                       style={{
-                        background:
-                          "linear-gradient(135deg, #FF6B35, #E85D26)",
-                        boxShadow:
-                          "0 0 16px rgba(255,107,53,0.2), inset 0 1px 0 rgba(255,255,255,0.1)",
+                        background: "linear-gradient(135deg, #FF6B35, #E85D26)",
+                        boxShadow: "0 0 16px rgba(255,107,53,0.2), inset 0 1px 0 rgba(255,255,255,0.1)",
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.boxShadow =
@@ -438,18 +410,15 @@ export function OnboardingTour() {
               <div
                 className="relative rounded-2xl overflow-hidden p-5 space-y-3"
                 style={{
-                  background:
-                    "linear-gradient(145deg, rgba(24,24,27,0.98), rgba(15,15,18,0.98))",
+                  background: "linear-gradient(145deg, rgba(24,24,27,0.98), rgba(15,15,18,0.98))",
                   border: "1px solid rgba(255,255,255,0.08)",
-                  boxShadow:
-                    "0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(255,107,53,0.08)",
+                  boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(255,107,53,0.08)",
                 }}
               >
                 <div
                   className="absolute top-0 inset-x-0 h-[2px]"
                   style={{
-                    background:
-                      "linear-gradient(90deg, transparent, #FF6B35, transparent)",
+                    background: "linear-gradient(90deg, transparent, #FF6B35, transparent)",
                   }}
                 />
                 <div className="flex items-center justify-between">
@@ -474,15 +443,9 @@ export function OnboardingTour() {
                     </svg>
                   </button>
                 </div>
-                <h3 className="text-[15px] font-bold text-white">
-                  {current.title}
-                </h3>
-                <p className="text-[13px] text-bw-muted leading-relaxed">
-                  {current.description}
-                </p>
-                <p className="text-xs text-bw-muted/60 italic">
-                  Cet element apparaitra apres avoir cree une partie.
-                </p>
+                <h3 className="text-[15px] font-bold text-white">{current.title}</h3>
+                <p className="text-[13px] text-bw-muted leading-relaxed">{current.description}</p>
+                <p className="text-xs text-bw-muted/60 italic">Cet element apparaitra apres avoir cree une partie.</p>
                 <div className="flex items-center justify-between pt-1">
                   <button
                     onClick={skip}
@@ -494,10 +457,8 @@ export function OnboardingTour() {
                     onClick={next}
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-semibold text-white cursor-pointer transition-all duration-200"
                     style={{
-                      background:
-                        "linear-gradient(135deg, #FF6B35, #E85D26)",
-                      boxShadow:
-                        "0 0 16px rgba(255,107,53,0.2), inset 0 1px 0 rgba(255,255,255,0.1)",
+                      background: "linear-gradient(135deg, #FF6B35, #E85D26)",
+                      boxShadow: "0 0 16px rgba(255,107,53,0.2), inset 0 1px 0 rgba(255,255,255,0.1)",
                     }}
                   >
                     {step < TOUR_STEPS.length - 1 ? "Suivant" : "Compris !"}

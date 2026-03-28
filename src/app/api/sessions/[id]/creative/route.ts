@@ -47,7 +47,7 @@ Règles :
 
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "creative", { max: 15, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -58,10 +58,7 @@ export const POST = withErrorHandler(async function POST(
   const { studentId, mode, input, context } = parsed.data;
 
   if (!studentId || !mode || !input) {
-    return NextResponse.json(
-      { error: "studentId, mode et input requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "studentId, mode et input requis" }, { status: 400 });
   }
 
   if (!CREATIVE_PROMPTS[mode]) {
@@ -86,7 +83,7 @@ export const POST = withErrorHandler(async function POST(
   if (used >= MAX_USES_PER_SESSION) {
     return NextResponse.json(
       { error: `Maximum ${MAX_USES_PER_SESSION} utilisations par session`, remaining: 0 },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -107,21 +104,30 @@ export const POST = withErrorHandler(async function POST(
   } catch {
     // Fallback responses
     if (mode === "dialogue") {
-      text = "Le mentor est occupé, mais voici un conseil : commence par définir ce que chaque personnage veut dans cette scène. Un bon dialogue naît du conflit entre deux désirs opposés !";
+      text =
+        "Le mentor est occupé, mais voici un conseil : commence par définir ce que chaque personnage veut dans cette scène. Un bon dialogue naît du conflit entre deux désirs opposés !";
     } else if (mode === "scene") {
-      text = "Le mentor est occupé, mais voici un conseil : ferme les yeux et imagine la scène. Que vois-tu en premier ? Commence par ça. Décris le lieu, la lumière, puis le mouvement.";
+      text =
+        "Le mentor est occupé, mais voici un conseil : ferme les yeux et imagine la scène. Que vois-tu en premier ? Commence par ça. Décris le lieu, la lumière, puis le mouvement.";
     } else {
-      text = "Le mentor est occupé, mais ton idée a du potentiel ! Demande-toi : qu'est-ce qui rend ton personnage unique ? Quel est l'obstacle le plus inattendu qu'il pourrait rencontrer ?";
+      text =
+        "Le mentor est occupé, mais ton idée a du potentiel ! Demande-toi : qu'est-ce qui rend ton personnage unique ? Quel est l'obstacle le plus inattendu qu'il pourrait rencontrer ?";
     }
   }
 
   // Log usage (store as creative:{mode} in responses for tracking)
-  await admin.from("responses").insert({
-    session_id: sessionId,
-    student_id: studentId,
-    situation_id: `creative-${mode}`,
-    text: `creative:${mode}:${input.slice(0, 100)}`,
-  }).then(() => {}, () => {});
+  await admin
+    .from("responses")
+    .insert({
+      session_id: sessionId,
+      student_id: studentId,
+      situation_id: `creative-${mode}`,
+      text: `creative:${mode}:${input.slice(0, 100)}`,
+    })
+    .then(
+      () => {},
+      () => {},
+    );
 
   const remaining = MAX_USES_PER_SESSION - used - 1;
 

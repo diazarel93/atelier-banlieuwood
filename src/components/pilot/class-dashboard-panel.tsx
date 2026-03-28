@@ -87,10 +87,10 @@ function ClassDashboardPanelInner({
 
   // Compute engagement stats
   const stats = useMemo(() => {
-    const respondedN = studentStates.filter(s => s.state === "responded").length;
-    const thinkingN = studentStates.filter(s => s.state === "active").length;
-    const stuckN = studentStates.filter(s => s.state === "stuck").length;
-    const offN = studentStates.filter(s => s.state === "disconnected").length;
+    const respondedN = studentStates.filter((s) => s.state === "responded").length;
+    const thinkingN = studentStates.filter((s) => s.state === "active").length;
+    const stuckN = studentStates.filter((s) => s.state === "stuck").length;
+    const offN = studentStates.filter((s) => s.state === "disconnected").length;
     const total = respondedN + thinkingN + stuckN + offN;
     const engagementPct = total > 0 ? Math.round(((respondedN + thinkingN) / total) * 100) : 0;
     const online = respondedN + thinkingN + stuckN;
@@ -101,29 +101,56 @@ function ClassDashboardPanelInner({
   // Suggestion logic
   const suggestion = useMemo(() => {
     const { stuckN, thinkingN, respondedN, online } = stats;
-    if (stuckN >= 3) return { icon: "💡", text: `${stuckN} bloques — Donnez un exemple`, color: "#C62828", bg: "rgba(255,245,245,0.8)" };
-    if (stuckN > 0) return { icon: "👀", text: `${stuckN} bloque${stuckN > 1 ? "s" : ""} — Coup de pouce ?`, color: "#E65100", bg: "rgba(255,248,225,0.8)" };
-    if (thinkingN > 0 && respondedN === 0) return { icon: "⏳", text: "Tous reflechissent — Laissez du temps", color: "#F57F17", bg: "rgba(255,252,245,0.8)" };
-    if (respondedN > 0 && respondedN === online && online > 0) return { icon: "🚀", text: "Tous ont repondu !", color: "#2E7D32", bg: "rgba(240,250,244,0.8)" };
-    if (respondedN > online * 0.7) return { icon: "📢", text: "Plus de 70% — Lancez la discussion ?", color: "#1565C0", bg: "rgba(238,242,255,0.8)" };
+    if (stuckN >= 3)
+      return {
+        icon: "💡",
+        text: `${stuckN} bloques — Donnez un exemple`,
+        color: "#C62828",
+        bg: "rgba(255,245,245,0.8)",
+      };
+    if (stuckN > 0)
+      return {
+        icon: "👀",
+        text: `${stuckN} bloque${stuckN > 1 ? "s" : ""} — Coup de pouce ?`,
+        color: "#E65100",
+        bg: "rgba(255,248,225,0.8)",
+      };
+    if (thinkingN > 0 && respondedN === 0)
+      return {
+        icon: "⏳",
+        text: "Tous reflechissent — Laissez du temps",
+        color: "#F57F17",
+        bg: "rgba(255,252,245,0.8)",
+      };
+    if (respondedN > 0 && respondedN === online && online > 0)
+      return { icon: "🚀", text: "Tous ont repondu !", color: "#2E7D32", bg: "rgba(240,250,244,0.8)" };
+    if (respondedN > online * 0.7)
+      return {
+        icon: "📢",
+        text: "Plus de 70% — Lancez la discussion ?",
+        color: "#1565C0",
+        bg: "rgba(238,242,255,0.8)",
+      };
     return null;
   }, [stats]);
 
   // Hands raised (sorted oldest first = most urgent)
-  const hands = useMemo(() =>
-    (session.students || [])
-      .filter(s => s.hand_raised_at && s.is_active && !s.kicked)
-      .sort((a, b) => new Date(a.hand_raised_at!).getTime() - new Date(b.hand_raised_at!).getTime()),
-    [session.students]
+  const hands = useMemo(
+    () =>
+      (session.students || [])
+        .filter((s) => s.hand_raised_at && s.is_active && !s.kicked)
+        .sort((a, b) => new Date(a.hand_raised_at!).getTime() - new Date(b.hand_raised_at!).getTime()),
+    [session.students],
   );
 
   // Stuck students with avatar info
-  const stuckWithAvatars = useMemo(() =>
-    stuckStudents.map(s => {
-      const raw = studentMap.get(s.id);
-      return { ...s, avatar: raw?.avatar || "👤", display_name: raw?.display_name || s.name };
-    }),
-    [stuckStudents, studentMap]
+  const stuckWithAvatars = useMemo(
+    () =>
+      stuckStudents.map((s) => {
+        const raw = studentMap.get(s.id);
+        return { ...s, avatar: raw?.avatar || "👤", display_name: raw?.display_name || s.name };
+      }),
+    [stuckStudents, studentMap],
   );
 
   // Emotional radar — derived from student states
@@ -142,18 +169,19 @@ function ClassDashboardPanelInner({
   }, [stats]);
 
   // Enriched student states for grid/constellation (memoized, O(n) via Map)
-  const enrichedStates = useMemo(() =>
-    studentStates.map(s => {
-      const raw = studentMap.get(s.id);
-      return {
-        id: s.id,
-        state: s.state,
-        display_name: raw?.display_name || s.display_name,
-        avatar: raw?.avatar || s.avatar,
-        hand_raised_at: raw?.hand_raised_at,
-      };
-    }),
-    [studentStates, studentMap]
+  const enrichedStates = useMemo(
+    () =>
+      studentStates.map((s) => {
+        const raw = studentMap.get(s.id);
+        return {
+          id: s.id,
+          state: s.state,
+          display_name: raw?.display_name || s.display_name,
+          avatar: raw?.avatar || s.avatar,
+          hand_raised_at: raw?.hand_raised_at,
+        };
+      }),
+    [studentStates, studentMap],
   );
 
   // Donut SVG data
@@ -186,13 +214,15 @@ function ClassDashboardPanelInner({
 
       {/* ── Scrollable content ── */}
       <div className="flex-1 overflow-y-auto min-h-0 px-2 lg:px-3 pb-2 lg:pb-3 space-y-2">
-
         {/* ── DONUT + LEGEND ── */}
         <GlassCard>
           <div className="flex items-center gap-2 sm:gap-4">
             {/* SVG Donut — responsive size */}
-            <div className="relative flex-shrink-0 w-[72px] h-[72px] sm:w-[88px] sm:h-[88px] lg:w-[100px] lg:h-[100px]"
-              role="img" aria-label={`Participation ${stats.respondedN}/${stats.online}`}>
+            <div
+              className="relative flex-shrink-0 w-[72px] h-[72px] sm:w-[88px] sm:h-[88px] lg:w-[100px] lg:h-[100px]"
+              role="img"
+              aria-label={`Participation ${stats.respondedN}/${stats.online}`}
+            >
               <svg width="100%" height="100%" viewBox="0 0 100 100" className="transform -rotate-90">
                 <circle cx="50" cy="50" r="40" fill="none" stroke="#EFE8DD" strokeWidth="8" />
                 {donutSegments.map((seg, i) => {
@@ -200,7 +230,9 @@ function ClassDashboardPanelInner({
                   return (
                     <motion.circle
                       key={i}
-                      cx="50" cy="50" r="40"
+                      cx="50"
+                      cy="50"
+                      r="40"
                       fill="none"
                       stroke={seg.color}
                       strokeWidth="8"
@@ -229,7 +261,9 @@ function ClassDashboardPanelInner({
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 15 }}
                   className="text-[14px] sm:text-[16px] lg:text-[18px] font-extrabold tabular-nums leading-none"
-                  style={{ color: stats.responsePct >= 70 ? "#4CAF50" : stats.responsePct >= 30 ? "#F2C94C" : "#B0A99E" }}
+                  style={{
+                    color: stats.responsePct >= 70 ? "#4CAF50" : stats.responsePct >= 30 ? "#F2C94C" : "#B0A99E",
+                  }}
                 >
                   {stats.respondedN}/{stats.online}
                 </motion.span>
@@ -250,21 +284,28 @@ function ClassDashboardPanelInner({
                 { color: "#F2C94C", label: "Reflexion", count: stats.thinkingN, alwaysShow: true },
                 { color: "#EB5757", label: "Bloque", count: stats.stuckN, alwaysShow: false },
                 { color: "#C4BDB2", label: "Absent", count: stats.offN, alwaysShow: false },
-              ].filter(item => item.alwaysShow || item.count > 0).map(item => (
-                <div key={item.label} className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full flex-shrink-0" style={{ background: item.color }} />
-                  <span className="text-[10px] sm:text-[11px] lg:text-[12px] font-semibold text-bw-text flex-1 truncate">{item.label}</span>
-                  <motion.span
-                    key={`${item.label}-${item.count}`}
-                    initial={{ scale: 1.2 }}
-                    animate={{ scale: 1 }}
-                    className="text-[11px] sm:text-[12px] lg:text-[13px] font-bold tabular-nums"
-                    style={{ color: item.color }}
-                  >
-                    {item.count}
-                  </motion.span>
-                </div>
-              ))}
+              ]
+                .filter((item) => item.alwaysShow || item.count > 0)
+                .map((item) => (
+                  <div key={item.label} className="flex items-center gap-1.5">
+                    <span
+                      className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full flex-shrink-0"
+                      style={{ background: item.color }}
+                    />
+                    <span className="text-[10px] sm:text-[11px] lg:text-[12px] font-semibold text-bw-text flex-1 truncate">
+                      {item.label}
+                    </span>
+                    <motion.span
+                      key={`${item.label}-${item.count}`}
+                      initial={{ scale: 1.2 }}
+                      animate={{ scale: 1 }}
+                      className="text-[11px] sm:text-[12px] lg:text-[13px] font-bold tabular-nums"
+                      style={{ color: item.color }}
+                    >
+                      {item.count}
+                    </motion.span>
+                  </div>
+                ))}
             </div>
           </div>
 
@@ -272,9 +313,14 @@ function ClassDashboardPanelInner({
 
           {/* Suggestion banner */}
           {suggestion && (
-            <div className="flex items-center gap-2 px-2.5 py-2 mt-2.5 rounded-[10px]" style={{ background: suggestion.bg, border: `1px solid ${suggestion.color}20` }}>
+            <div
+              className="flex items-center gap-2 px-2.5 py-2 mt-2.5 rounded-[10px]"
+              style={{ background: suggestion.bg, border: `1px solid ${suggestion.color}20` }}
+            >
               <span className="text-xs flex-shrink-0">{suggestion.icon}</span>
-              <p className="text-[11px] font-medium leading-snug" style={{ color: suggestion.color }}>{suggestion.text}</p>
+              <p className="text-[11px] font-medium leading-snug" style={{ color: suggestion.color }}>
+                {suggestion.text}
+              </p>
             </div>
           )}
         </GlassCard>
@@ -282,7 +328,10 @@ function ClassDashboardPanelInner({
         {/* ── EN ATTENTE — Issue 4: students who haven't responded, visible only during responding ── */}
         {session.status === "responding" && notRespondedStudents.length > 0 && (
           <GlassCard className="!p-0 overflow-hidden">
-            <div className="flex items-center justify-between px-3.5 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}>
+            <div
+              className="flex items-center justify-between px-3.5 py-2.5"
+              style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}
+            >
               <span className="text-[12px] font-bold text-bw-primary flex items-center gap-1.5">
                 <span className="text-sm">&#9203;</span> En attente ({notRespondedStudents.length})
               </span>
@@ -311,18 +360,21 @@ function ClassDashboardPanelInner({
         {/* ── CLASS COGNITIVE STATE — one-liner ── */}
         <ClassCognitiveState
           studentStates={studentStates}
-          optionDistribution={cognitiveOptions
-            ? Object.fromEntries(cognitiveOptions.map(o => [o.key, o.count]))
-            : undefined}
-          optionLabels={cognitiveOptions
-            ? Object.fromEntries(cognitiveOptions.map(o => [o.key, o.label]))
-            : undefined}
+          optionDistribution={
+            cognitiveOptions ? Object.fromEntries(cognitiveOptions.map((o) => [o.key, o.count])) : undefined
+          }
+          optionLabels={
+            cognitiveOptions ? Object.fromEntries(cognitiveOptions.map((o) => [o.key, o.label])) : undefined
+          }
         />
 
         {/* ── MAINS LEVEES — individual cards with avatar, duration, chevron ── */}
         {hands.length > 0 && (
           <GlassCard className="!p-0 overflow-hidden">
-            <div className="flex items-center justify-between px-3.5 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}>
+            <div
+              className="flex items-center justify-between px-3.5 py-2.5"
+              style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}
+            >
               <span className="text-[12px] font-bold text-[#E88D2A] flex items-center gap-1.5">
                 <span className="text-sm">✋</span> Mains levees ({hands.length})
               </span>
@@ -332,7 +384,7 @@ function ClassDashboardPanelInner({
                 const raisedMs = s.hand_raised_at ? Date.now() - new Date(s.hand_raised_at).getTime() : 0;
                 const raisedMin = Math.floor(raisedMs / 60000);
                 const durationLabel = raisedMin >= 1 ? `${raisedMin}min` : "<1min";
-                const st = studentStates.find(ss => ss.id === s.id); // small list (hands only), OK
+                const st = studentStates.find((ss) => ss.id === s.id); // small list (hands only), OK
                 return (
                   <button
                     key={s.id}
@@ -357,7 +409,10 @@ function ClassDashboardPanelInner({
                     </div>
                     {/* Lower hand button */}
                     <button
-                      onClick={(e) => { e.stopPropagation(); lowerHand.mutate(s.id); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        lowerHand.mutate(s.id);
+                      }}
                       disabled={lowerHand.isPending}
                       title="Baisser la main"
                       className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] text-[#B0A99E] hover:text-[#4CAF50] hover:bg-[#F0FAF4] cursor-pointer transition-colors disabled:opacity-40 flex-shrink-0 opacity-0 group-hover:opacity-100"
@@ -365,7 +420,16 @@ function ClassDashboardPanelInner({
                       ✓
                     </button>
                     {/* Chevron */}
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4BDB2" strokeWidth="2" strokeLinecap="round" className="flex-shrink-0">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#C4BDB2"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      className="flex-shrink-0"
+                    >
                       <path d="M9 18l6-6-6-6" />
                     </svg>
                   </button>
@@ -379,9 +443,7 @@ function ClassDashboardPanelInner({
         {stats.respondedN > 0 && (
           <GlassCard>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-bw-muted">
-                Pouls de classe
-              </span>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-bw-muted">Pouls de classe</span>
             </div>
             <div className="flex justify-center">
               <EmotionalRadar axes={radarAxes} size={140} />
@@ -393,15 +455,19 @@ function ClassDashboardPanelInner({
         <GlassCard className="!p-0 overflow-hidden">
           <div className="flex items-center justify-between px-3.5 py-2.5">
             <button
-              onClick={() => setMapExpanded(v => !v)}
+              onClick={() => setMapExpanded((v) => !v)}
               className="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
             >
               <span className="text-[11px] font-bold uppercase tracking-wider text-bw-muted">
                 {mapView === "grid" ? "Plan de classe" : "Constellation"}
               </span>
               <svg
-                width="12" height="12" viewBox="0 0 24 24"
-                fill="none" stroke="#B0A99E" strokeWidth="2"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#B0A99E"
+                strokeWidth="2"
                 className={`transition-transform duration-200 ${mapExpanded ? "rotate-180" : ""}`}
               >
                 <path d="M6 9l6 6 6-6" />
@@ -421,7 +487,9 @@ function ClassDashboardPanelInner({
               <button
                 onClick={() => setMapView("constellation")}
                 className={`px-2 py-1 text-[10px] font-semibold rounded-md cursor-pointer transition-all ${
-                  mapView === "constellation" ? "bg-white text-bw-heading shadow-sm" : "text-bw-muted hover:text-bw-text"
+                  mapView === "constellation"
+                    ? "bg-white text-bw-heading shadow-sm"
+                    : "text-bw-muted hover:text-bw-text"
                 }`}
                 title="Constellation"
               >
@@ -459,7 +527,10 @@ function ClassDashboardPanelInner({
         {/* ── ELEVES EN DIFFICULTÉ — individual clickable cards ── */}
         {stuckWithAvatars.length > 0 && (
           <GlassCard className="!p-0 overflow-hidden">
-            <div className="flex items-center justify-between px-3.5 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}>
+            <div
+              className="flex items-center justify-between px-3.5 py-2.5"
+              style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}
+            >
               <span className="text-[12px] font-bold text-[#C62828] flex items-center gap-1.5">
                 <span className="text-sm">⚠️</span> En difficulte ({stuckWithAvatars.length})
               </span>
@@ -482,7 +553,16 @@ function ClassDashboardPanelInner({
                     <p className="text-[12px] font-semibold text-bw-heading truncate">{s.display_name}</p>
                     <p className="text-[10px] text-[#C62828]">Bloque</p>
                   </div>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4BDB2" strokeWidth="2" strokeLinecap="round" className="flex-shrink-0">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#C4BDB2"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    className="flex-shrink-0"
+                  >
                     <path d="M9 18l6-6-6-6" />
                   </svg>
                 </button>
@@ -512,9 +592,11 @@ function ClassDashboardPanelInner({
       {/* ── Stuck action — bottom pinned ── */}
       {stuckStudents.length > 0 && (
         <div className="px-3 py-2 flex-shrink-0">
-          <button onClick={handleNudgeAllStuck}
+          <button
+            onClick={handleNudgeAllStuck}
             className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-[12px] font-semibold cursor-pointer transition-all hover:shadow-sm active:scale-[0.98]"
-            style={{ background: "rgba(235,87,87,0.1)", border: "1px solid rgba(235,87,87,0.2)", color: "#C62828" }}>
+            style={{ background: "rgba(235,87,87,0.1)", border: "1px solid rgba(235,87,87,0.2)", color: "#C62828" }}
+          >
             🚀 Relancer {stuckStudents.length} bloque{stuckStudents.length > 1 ? "s" : ""}
           </button>
         </div>

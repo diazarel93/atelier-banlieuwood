@@ -31,33 +31,18 @@ let voteResult: { data: unknown; error: unknown | null } = {
 
 let querySequence: string[] = [];
 
-function makeChain(
-  resolveWith: () => { data: unknown; error: unknown | null }
-) {
+function makeChain(resolveWith: () => { data: unknown; error: unknown | null }) {
   const chain: Record<string, unknown> = {};
-  const methods = [
-    "select",
-    "insert",
-    "update",
-    "upsert",
-    "eq",
-    "is",
-    "single",
-    "order",
-  ];
+  const methods = ["select", "insert", "update", "upsert", "eq", "is", "single", "order"];
   for (const m of methods) {
     chain[m] = vi.fn().mockReturnValue(chain);
   }
-  chain.single = vi
-    .fn()
-    .mockImplementation(() => Promise.resolve(resolveWith()));
+  chain.single = vi.fn().mockImplementation(() => Promise.resolve(resolveWith()));
   // Support .then() for fire-and-forget patterns (e.g. logSessionEvent)
-  chain.then = vi
-    .fn()
-    .mockImplementation((onFulfilled?: () => void, onRejected?: () => void) => {
-      if (onFulfilled) onFulfilled();
-      return Promise.resolve();
-    });
+  chain.then = vi.fn().mockImplementation((onFulfilled?: () => void, onRejected?: () => void) => {
+    if (onFulfilled) onFulfilled();
+    return Promise.resolve();
+  });
   return chain;
 }
 
@@ -90,7 +75,10 @@ const VALID_UUID3 = "770e8400-e29b-41d4-a716-446655440002";
 describe("POST /api/sessions/[id]/vote", () => {
   beforeEach(() => {
     querySequence = [];
-    sessionResult = { data: { status: "voting", current_module: 3, current_seance: 1, current_situation_index: 0 }, error: null };
+    sessionResult = {
+      data: { status: "voting", current_module: 3, current_seance: 1, current_situation_index: 0 },
+      error: null,
+    };
     situationResult = { data: { position: 0, module: 3, seance: 1 }, error: null };
     studentResult = { data: { id: "stu-001" }, error: null };
     responseResult = { data: { id: "resp-001" }, error: null };
@@ -107,39 +95,27 @@ describe("POST /api/sessions/[id]/vote", () => {
   });
 
   function makeReq(body: Record<string, unknown>) {
-    return new NextRequest(
-      "http://localhost/api/sessions/sess-001/vote",
-      {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(body),
-      }
-    );
+    return new NextRequest("http://localhost/api/sessions/sess-001/vote", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
   }
 
   const params = Promise.resolve({ id: "sess-001" });
 
   it("returns 400 when studentId is missing", async () => {
-    const res = await POST(
-      makeReq({ situationId: VALID_UUID2, chosenResponseId: VALID_UUID3 }),
-      { params }
-    );
+    const res = await POST(makeReq({ situationId: VALID_UUID2, chosenResponseId: VALID_UUID3 }), { params });
     expect(res.status).toBe(400);
   });
 
   it("returns 400 when situationId is missing", async () => {
-    const res = await POST(
-      makeReq({ studentId: VALID_UUID, chosenResponseId: VALID_UUID3 }),
-      { params }
-    );
+    const res = await POST(makeReq({ studentId: VALID_UUID, chosenResponseId: VALID_UUID3 }), { params });
     expect(res.status).toBe(400);
   });
 
   it("returns 400 when chosenResponseId is missing", async () => {
-    const res = await POST(
-      makeReq({ studentId: VALID_UUID, situationId: VALID_UUID2 }),
-      { params }
-    );
+    const res = await POST(makeReq({ studentId: VALID_UUID, situationId: VALID_UUID2 }), { params });
     expect(res.status).toBe(400);
   });
 
@@ -150,7 +126,7 @@ describe("POST /api/sessions/[id]/vote", () => {
         situationId: VALID_UUID2,
         chosenResponseId: VALID_UUID3,
       }),
-      { params }
+      { params },
     );
     expect(res.status).toBe(400);
     const json = await res.json();
@@ -165,7 +141,7 @@ describe("POST /api/sessions/[id]/vote", () => {
         situationId: VALID_UUID2,
         chosenResponseId: VALID_UUID3,
       }),
-      { params }
+      { params },
     );
     expect(res.status).toBe(400);
     const json = await res.json();
@@ -180,7 +156,7 @@ describe("POST /api/sessions/[id]/vote", () => {
         situationId: VALID_UUID2,
         chosenResponseId: VALID_UUID3,
       }),
-      { params }
+      { params },
     );
     expect(res.status).toBe(404);
   });
@@ -193,7 +169,7 @@ describe("POST /api/sessions/[id]/vote", () => {
         situationId: VALID_UUID2,
         chosenResponseId: VALID_UUID3,
       }),
-      { params }
+      { params },
     );
     expect(res.status).toBe(400);
   });
@@ -205,7 +181,7 @@ describe("POST /api/sessions/[id]/vote", () => {
         situationId: VALID_UUID2,
         chosenResponseId: VALID_UUID3,
       }),
-      { params }
+      { params },
     );
     const json = await res.json();
     expect(json.id).toBe("vote-001");

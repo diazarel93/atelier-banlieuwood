@@ -43,7 +43,12 @@ interface PlusMenuContentProps {
   onClose: () => void;
 }
 
-function MenuItem({ icon, label, onClick, variant = "default" }: {
+function MenuItem({
+  icon,
+  label,
+  onClick,
+  variant = "default",
+}: {
   icon: string;
   label: string;
   onClick: () => void;
@@ -54,9 +59,7 @@ function MenuItem({ icon, label, onClick, variant = "default" }: {
       onClick={onClick}
       whileTap={{ scale: 0.95 }}
       className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl transition-colors cursor-pointer ${
-        variant === "danger"
-          ? "bg-red-50 hover:bg-red-100 text-red-600"
-          : "bg-gray-50 hover:bg-gray-100 text-gray-700"
+        variant === "danger" ? "bg-red-50 hover:bg-red-100 text-red-600" : "bg-gray-50 hover:bg-gray-100 text-gray-700"
       }`}
     >
       <span className="text-xl">{icon}</span>
@@ -65,7 +68,12 @@ function MenuItem({ icon, label, onClick, variant = "default" }: {
   );
 }
 
-function ToggleItem({ icon, label, active, onToggle }: {
+function ToggleItem({
+  icon,
+  label,
+  active,
+  onToggle,
+}: {
   icon: string;
   label: string;
   active: boolean;
@@ -81,20 +89,36 @@ function ToggleItem({ icon, label, active, onToggle }: {
         <span className="text-[13px] font-medium text-gray-700">{label}</span>
       </div>
       <div className={`w-10 h-6 rounded-full transition-colors relative ${active ? "bg-emerald-500" : "bg-gray-300"}`}>
-        <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${active ? "translate-x-4" : "translate-x-0.5"}`} />
+        <div
+          className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${active ? "translate-x-4" : "translate-x-0.5"}`}
+        />
       </div>
     </button>
   );
 }
 
 export function PlusMenuContent({
-  onNudge, onBroadcast, onHint, onExample,
-  onDebate, onFreeQuestion, onWordCloud, onCompare,
-  onExport, onShortcuts,
-  autoAdvance, onToggleAutoAdvance,
-  isDarkMode, onToggleDarkMode,
-  onSetTimer, onClearTimer, timerActive,
-  onSetScreenMode, onToggleFreeze, currentScreenMode, screenFrozen,
+  onNudge,
+  onBroadcast,
+  onHint,
+  onExample,
+  onDebate,
+  onFreeQuestion,
+  onWordCloud,
+  onCompare,
+  onExport,
+  onShortcuts,
+  autoAdvance,
+  onToggleAutoAdvance,
+  isDarkMode,
+  onToggleDarkMode,
+  onSetTimer,
+  onClearTimer,
+  timerActive,
+  onSetScreenMode,
+  onToggleFreeze,
+  currentScreenMode,
+  screenFrozen,
   onToggleRemote,
   onClose,
 }: PlusMenuContentProps) {
@@ -142,9 +166,7 @@ export function PlusMenuContent({
         <div className="space-y-2">
           <ToggleItem icon="⚡" label="Auto-avance" active={autoAdvance} onToggle={onToggleAutoAdvance} />
           <ToggleItem icon="🌙" label="Mode sombre" active={isDarkMode} onToggle={onToggleDarkMode} />
-          {onToggleRemote && (
-            <MenuItem icon="📱" label="Mode tablette" onClick={() => doAndClose(onToggleRemote)} />
-          )}
+          {onToggleRemote && <MenuItem icon="📱" label="Mode tablette" onClick={() => doAndClose(onToggleRemote)} />}
         </div>
       </div>
 
@@ -153,13 +175,15 @@ export function PlusMenuContent({
         <div>
           <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Écran projeté</h4>
           <div className="grid grid-cols-4 gap-2 mb-2">
-            {([
-              { mode: "default", icon: "📋", label: "Question" },
-              { mode: "responses", icon: "💬", label: "Réponses" },
-              { mode: "spotlight", icon: "🔦", label: "Spotlight" },
-              { mode: "wordcloud", icon: "☁️", label: "Nuage" },
-              { mode: "blank", icon: "⬛", label: "Noir" },
-            ] as const).map(({ mode, icon, label }) => (
+            {(
+              [
+                { mode: "default", icon: "📋", label: "Question" },
+                { mode: "responses", icon: "💬", label: "Réponses" },
+                { mode: "spotlight", icon: "🔦", label: "Spotlight" },
+                { mode: "wordcloud", icon: "☁️", label: "Nuage" },
+                { mode: "blank", icon: "⬛", label: "Noir" },
+              ] as const
+            ).map(({ mode, icon, label }) => (
               <motion.button
                 key={mode}
                 onClick={() => doAndClose(() => onSetScreenMode(mode))}

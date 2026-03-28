@@ -21,12 +21,7 @@ export interface ResultStateProps {
  */
 type RevealPhase = "blackout" | "fade" | "slide" | "celebrate";
 
-export function ResultState({
-  collectiveChoice,
-  isMyResponseChosen,
-  comboCount,
-  onReveal,
-}: ResultStateProps) {
+export function ResultState({ collectiveChoice, isMyResponseChosen, comboCount, onReveal }: ResultStateProps) {
   const categoryColor = CATEGORY_COLORS[collectiveChoice.category] || "#FF6B35";
   const [phase, setPhase] = useState<RevealPhase>("blackout");
 
@@ -84,13 +79,19 @@ export function ResultState({
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
               className="w-14 h-14 rounded-full bg-gradient-to-br from-bw-violet to-bw-primary flex items-center justify-center"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
               </svg>
             </motion.div>
-            <h2 className="text-xl sm:text-2xl tracking-wider font-cinema">
-              LE CHOIX DU GROUPE
-            </h2>
+            <h2 className="text-xl sm:text-2xl tracking-wider font-cinema">LE CHOIX DU GROUPE</h2>
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
@@ -111,13 +112,19 @@ export function ResultState({
             {/* Title (instant) */}
             <div className="text-center space-y-2">
               <div className="w-14 h-14 rounded-full bg-gradient-to-br from-bw-violet to-bw-violet/60 mx-auto flex items-center justify-center">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                 </svg>
               </div>
-              <h2 className="text-xl sm:text-2xl tracking-wider font-cinema">
-                LE CHOIX DU GROUPE
-              </h2>
+              <h2 className="text-xl sm:text-2xl tracking-wider font-cinema">LE CHOIX DU GROUPE</h2>
             </div>
 
             {/* Chosen text — slides up */}
@@ -181,16 +188,12 @@ export function ResultState({
                   transition={{ repeat: 2, duration: 0.4 }}
                   className="text-sm font-bold text-bw-amber"
                 >
-                  {(comboCount ?? 0) >= 2
-                    ? "Encore ton idee choisie par le groupe !"
-                    : "Le groupe a choisi ton idee !"}
+                  {(comboCount ?? 0) >= 2 ? "Encore ton idee choisie par le groupe !" : "Le groupe a choisi ton idee !"}
                 </motion.p>
               </motion.div>
             )}
 
-            <p className="text-sm text-bw-muted">
-              En attente de la prochaine situation...
-            </p>
+            <p className="text-sm text-bw-muted">En attente de la prochaine situation...</p>
           </motion.div>
         )}
       </AnimatePresence>

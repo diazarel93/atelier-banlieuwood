@@ -18,11 +18,17 @@ interface StudentListCardProps {
   hasDemoStudents: boolean;
   activateDemo: UseMutationResult<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    any, Error, void, unknown
+    any,
+    Error,
+    void,
+    unknown
   >;
   deactivateDemo: UseMutationResult<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    any, Error, void, unknown
+    any,
+    Error,
+    void,
+    unknown
   >;
 }
 
@@ -37,9 +43,7 @@ export function StudentListCard({
   return (
     <GlassCardV2 className="p-5">
       <div className="flex items-center gap-2 mb-4">
-        <p className="text-sm font-semibold text-bw-heading uppercase tracking-wide">
-          Élèves
-        </p>
+        <p className="text-sm font-semibold text-bw-heading uppercase tracking-wide">Élèves</p>
         <span className="text-xs font-bold text-bw-muted bg-[var(--color-bw-surface-dim)] px-2 py-0.5 rounded-full">
           {activeStudents.length}
         </span>
@@ -69,9 +73,7 @@ export function StudentListCard({
             </svg>
           </div>
           <p className="text-sm text-bw-muted">En attente des élèves...</p>
-          <p className="text-xs text-bw-muted mt-1">
-            Partagez le code pour commencer
-          </p>
+          <p className="text-xs text-bw-muted mt-1">Partagez le code pour commencer</p>
           <button
             className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-purple-200 dark:border-purple-800 px-3 py-1.5 text-xs font-medium text-purple-600 dark:text-purple-400 hover:bg-[var(--color-bw-surface-dim)] transition-colors cursor-pointer disabled:opacity-50"
             disabled={activateDemo.isPending}
@@ -79,7 +81,10 @@ export function StudentListCard({
             onClick={() => activateDemo.mutate()}
           >
             {activateDemo.isPending ? (
-              <span className="inline-block w-3.5 h-3.5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+              <span
+                className="inline-block w-3.5 h-3.5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"
+                aria-hidden="true"
+              />
             ) : (
               <span aria-hidden="true">🎮</span>
             )}
@@ -100,14 +105,8 @@ export function StudentListCard({
                 }`}
               >
                 <span className="text-lg">{s.avatar}</span>
-                <span className="text-sm font-medium text-bw-heading">
-                  {s.display_name}
-                </span>
-                {isDemo && (
-                  <span className="text-[10px] text-purple-500 font-medium">
-                    virtuel
-                  </span>
-                )}
+                <span className="text-sm font-medium text-bw-heading">{s.display_name}</span>
+                {isDemo && <span className="text-[10px] text-purple-500 font-medium">virtuel</span>}
                 <span
                   className={`ml-auto w-2 h-2 rounded-full animate-pulse ${
                     isDemo ? "bg-purple-400" : "bg-emerald-500"
@@ -124,19 +123,14 @@ export function StudentListCard({
         <div className="mt-4 pt-3 border-t border-[var(--color-bw-border)] flex items-center justify-between">
           <span className="text-xs text-bw-muted">
             {demoStudents.length} virtuel{demoStudents.length > 1 ? "s" : ""}
-            {realStudents.length > 0 &&
-              ` + ${realStudents.length} réel${
-                realStudents.length > 1 ? "s" : ""
-              }`}
+            {realStudents.length > 0 && ` + ${realStudents.length} réel${realStudents.length > 1 ? "s" : ""}`}
           </span>
           <button
             className="text-xs font-medium text-red-500 hover:text-red-600 hover:bg-red-50 px-2 py-1 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
             disabled={deactivateDemo.isPending}
             onClick={() => deactivateDemo.mutate()}
           >
-            {deactivateDemo.isPending
-              ? "Suppression..."
-              : "Supprimer les démos"}
+            {deactivateDemo.isPending ? "Suppression..." : "Supprimer les démos"}
           </button>
         </div>
       )}
@@ -149,10 +143,7 @@ export function StudentListCard({
             disabled={activateDemo.isPending}
             onClick={() => activateDemo.mutate()}
           >
-            <span aria-hidden="true">🎮</span>{" "}
-            {activateDemo.isPending
-              ? "Ajout..."
-              : "Ajouter des élèves virtuels"}
+            <span aria-hidden="true">🎮</span> {activateDemo.isPending ? "Ajout..." : "Ajouter des élèves virtuels"}
           </button>
         </div>
       )}

@@ -20,17 +20,11 @@ interface ActionItem {
   priority: "high" | "medium";
 }
 
-export function ActionRequiredWidget({
-  todaySessions,
-  tomorrowSessions,
-  recentSessions,
-}: ActionRequiredWidgetProps) {
+export function ActionRequiredWidget({ todaySessions, tomorrowSessions, recentSessions }: ActionRequiredWidgetProps) {
   const actions: ActionItem[] = [];
 
   // Sessions to prepare (draft, scheduled within 48h)
-  const draftSoon = [...todaySessions, ...tomorrowSessions].filter(
-    (s) => s.status === "draft"
-  );
+  const draftSoon = [...todaySessions, ...tomorrowSessions].filter((s) => s.status === "draft");
   for (const s of draftSoon) {
     actions.push({
       id: `prepare-${s.id}`,
@@ -74,18 +68,10 @@ export function ActionRequiredWidget({
             href={action.href}
             className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors hover:bg-[var(--color-bw-surface-dim)] group"
           >
-            <span
-              className={`shrink-0 ${
-                action.priority === "high"
-                  ? "text-bw-primary"
-                  : "text-bw-muted"
-              }`}
-            >
+            <span className={`shrink-0 ${action.priority === "high" ? "text-bw-primary" : "text-bw-muted"}`}>
               {action.icon}
             </span>
-            <span className="flex-1 text-bw-heading font-medium truncate text-sm">
-              {action.label}
-            </span>
+            <span className="flex-1 text-bw-heading font-medium truncate text-sm">{action.label}</span>
             <IconChevronRight className="text-bw-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
           </Link>
         ))}

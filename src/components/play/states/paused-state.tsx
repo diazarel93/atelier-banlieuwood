@@ -16,11 +16,7 @@ export function PausedState() {
           <div className="w-2 h-7 bg-white rounded-sm" />
         </div>
       </div>
-      <h2
-        className="text-xl sm:text-2xl tracking-wider text-bw-amber font-cinema"
-      >
-        PAUSE
-      </h2>
+      <h2 className="text-xl sm:text-2xl tracking-wider text-bw-amber font-cinema">PAUSE</h2>
       <p className="text-bw-muted text-sm">Le facilitateur a mis la partie en pause</p>
     </motion.div>
   );

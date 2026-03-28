@@ -9,11 +9,7 @@ interface TeacherNotesCardProps {
   isSaving: boolean;
 }
 
-export function TeacherNotesCard({
-  notes,
-  onSave,
-  isSaving,
-}: TeacherNotesCardProps) {
+export function TeacherNotesCard({ notes, onSave, isSaving }: TeacherNotesCardProps) {
   const [open, setOpen] = useState(!!notes);
   const [value, setValue] = useState(notes || "");
   const [saved, setSaved] = useState(false);
@@ -41,7 +37,7 @@ export function TeacherNotesCard({
       onSave(text);
       setSaved(true);
     },
-    [onSave]
+    [onSave],
   );
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -97,21 +93,13 @@ export function TeacherNotesCard({
             <line x1="16" y1="17" x2="8" y2="17" />
             <polyline points="10 9 9 9 8 9" />
           </svg>
-          <span className="text-xs font-medium text-bw-muted">
-            Notes enseignant
-          </span>
+          <span className="text-xs font-medium text-bw-muted">Notes enseignant</span>
         </span>
         <span className="flex items-center gap-2">
           {saved && (
-            <span className="text-[10px] font-medium text-emerald-500 animate-in fade-in duration-300">
-              Enregistre
-            </span>
+            <span className="text-[10px] font-medium text-emerald-500 animate-in fade-in duration-300">Enregistre</span>
           )}
-          {isSaving && (
-            <span className="text-[10px] font-medium text-bw-muted">
-              ...
-            </span>
-          )}
+          {isSaving && <span className="text-[10px] font-medium text-bw-muted">...</span>}
           <svg
             width="12"
             height="12"

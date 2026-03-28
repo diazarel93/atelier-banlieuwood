@@ -69,7 +69,7 @@ export function usePilotSession(
   sessionId: string,
   checkingAuth: boolean,
   actorId: string = "system",
-  realtimeStatus?: import("./use-realtime-invalidation").ConnectionStatus
+  realtimeStatus?: import("./use-realtime-invalidation").ConnectionStatus,
 ) {
   const queryClient = useQueryClient();
 
@@ -88,7 +88,13 @@ export function usePilotSession(
   });
 
   const { data: teams } = useQuery<
-    { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[]
+    {
+      id: string;
+      team_name: string;
+      team_color: string;
+      team_number: number;
+      students: { id: string; display_name: string; avatar: string }[];
+    }[]
   >({
     queryKey: ["pilot-teams", sessionId],
     queryFn: async () => {
@@ -107,7 +113,13 @@ export function usePilotSession(
 
   // Current situation — staggered: 13s / 35s to avoid sync with session query
   const { data: situationData } = useQuery({
-    queryKey: ["pilot-situation", sessionId, session?.current_module, session?.current_seance, session?.current_situation_index],
+    queryKey: [
+      "pilot-situation",
+      sessionId,
+      session?.current_module,
+      session?.current_seance,
+      session?.current_situation_index,
+    ],
     queryFn: async () => {
       const res = await fetch(`/api/sessions/${sessionId}/situation`);
       if (!res.ok) return null;
@@ -124,7 +136,15 @@ export function usePilotSession(
   const isModule1 = session?.current_module === 1;
   const m1SituationIds = isModule1
     ? (() => {
-        const m1 = (situationData as { module1?: { type: string; questions?: { situationId: string | null }[]; question?: { situationId: string } } })?.module1;
+        const m1 = (
+          situationData as {
+            module1?: {
+              type: string;
+              questions?: { situationId: string | null }[];
+              question?: { situationId: string };
+            };
+          }
+        )?.module1;
         if (!m1) return [];
         if (m1.type === "positioning" && m1.questions) {
           return m1.questions.map((q) => q.situationId).filter((id): id is string => !!id);
@@ -169,7 +189,11 @@ export function usePilotSession(
     },
     refetchInterval: getPollingInterval(realtimeStatus, 15_000, 35_000),
     staleTime: 5_000,
-    enabled: !checkingAuth && !!situation && hasActiveModule && (session?.status === "voting" || session?.status === "reviewing"),
+    enabled:
+      !checkingAuth &&
+      !!situation &&
+      hasActiveModule &&
+      (session?.status === "voting" || session?.status === "reviewing"),
   });
 
   // Collective choices (Module 3/4) — staggered: 17s / 40s
@@ -182,9 +206,9 @@ export function usePilotSession(
     },
     refetchInterval: getPollingInterval(realtimeStatus, 17_000, 40_000),
     staleTime: 10_000,
-    enabled: !checkingAuth && !!session && hasActiveModule && (session?.current_module === 3 || session?.current_module === 4),
+    enabled:
+      !checkingAuth && !!session && hasActiveModule && (session?.current_module === 3 || session?.current_module === 4),
   });
-
 
   // ── Mutations ──
 
@@ -204,7 +228,8 @@ export function usePilotSession(
       const status = updates.status as string | undefined;
       const prevStatus = responseData?.previousStatus ?? session?.status;
       if (status === "paused") logAudit({ action: "session_pause", actor: actorId, sessionId });
-      else if (status === "responding" && prevStatus === "paused") logAudit({ action: "session_resume", actor: actorId, sessionId });
+      else if (status === "responding" && prevStatus === "paused")
+        logAudit({ action: "session_resume", actor: actorId, sessionId });
       else if (status === "voting") logAudit({ action: "vote_start", actor: actorId, sessionId });
       else if (status === "done") logAudit({ action: "session_end", actor: actorId, sessionId });
     },
@@ -226,13 +251,19 @@ export function usePilotSession(
   });
 
   const validateChoice = useMutation({
-    mutationFn: async ({ response, text, situationSnapshot }: {
+    mutationFn: async ({
+      response,
+      text,
+      situationSnapshot,
+    }: {
       response: Response;
       text: string;
       situationSnapshot?: { id: string; category: string; restitutionLabel: string };
     }) => {
       // Use snapshot passed at call time to avoid stale closure on situationData
-      const sit = situationSnapshot ?? (situationData as { situation?: { id: string; category: string; restitutionLabel: string } })?.situation;
+      const sit =
+        situationSnapshot ??
+        (situationData as { situation?: { id: string; category: string; restitutionLabel: string } })?.situation;
       if (!sit?.id) throw new Error("Aucune situation active");
       const res = await fetch(`/api/sessions/${sessionId}/collective-choice`, {
         method: "POST",
@@ -250,10 +281,7 @@ export function usePilotSession(
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pilot-choices", sessionId] });
-      updateSession.mutate(
-        { status: "reviewing" },
-        { onError: () => toast.error("Erreur lors du passage en revue") }
-      );
+      updateSession.mutate({ status: "reviewing" }, { onError: () => toast.error("Erreur lors du passage en revue") });
       toast.success("Choix collectif validé !");
     },
     onError: () => toast.error("Erreur de validation"),
@@ -351,7 +379,12 @@ export function usePilotSession(
       } else {
         toast("Avertissement envoyé (" + data.warnings + "/3)", { icon: "⚠️" });
       }
-      logAudit({ action: "student_warn", actor: actorId, sessionId, details: { studentId, warnings: data.warnings, kicked: data.kicked } });
+      logAudit({
+        action: "student_warn",
+        actor: actorId,
+        sessionId,
+        details: { studentId, warnings: data.warnings, kicked: data.kicked },
+      });
     },
     onError: () => toast.error("Erreur"),
   });
@@ -370,7 +403,12 @@ export function usePilotSession(
     onSuccess: (data: { is_active: boolean }, { studentId, isActive }) => {
       queryClient.invalidateQueries({ queryKey: ["pilot-session", sessionId] });
       toast.success(isActive ? "Élève réactivé" : "Élève mis en pause");
-      logAudit({ action: "student_toggle_active" as AuditAction, actor: actorId, sessionId, details: { studentId, is_active: isActive } });
+      logAudit({
+        action: "student_toggle_active" as AuditAction,
+        actor: actorId,
+        sessionId,
+        details: { studentId, is_active: isActive },
+      });
     },
     onError: () => toast.error("Erreur"),
   });
@@ -458,7 +496,12 @@ export function usePilotSession(
       queryClient.invalidateQueries({ queryKey: ["pilot-responses", sessionId] });
       queryClient.invalidateQueries({ queryKey: ["pilot-session", sessionId] });
       toast.success(`Question relancée pour ${data.resetCount} élève${data.resetCount > 1 ? "s" : ""}`);
-      logAudit({ action: "response_reset_all", actor: actorId, sessionId, details: { situationId, resetCount: data.resetCount } });
+      logAudit({
+        action: "response_reset_all",
+        actor: actorId,
+        sessionId,
+        details: { situationId, resetCount: data.resetCount },
+      });
     },
     onError: () => toast.error("Erreur de relance"),
   });

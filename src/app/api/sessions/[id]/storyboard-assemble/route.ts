@@ -7,7 +7,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // POST — Facilitator assembles storyboard from student decoupages (facilitator only)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "storyboard", { max: 10, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -43,9 +43,7 @@ export const POST = withErrorHandler(async function POST(
 
   // Select top 3 scenes by narrative tension
   const ACT_PRIORITY: Record<string, number> = { confrontation: 3, resolution: 2, setup: 1 };
-  const keyScenes = [...scenes]
-    .sort((a, b) => (ACT_PRIORITY[b.act] || 0) - (ACT_PRIORITY[a.act] || 0))
-    .slice(0, 3);
+  const keyScenes = [...scenes].sort((a, b) => (ACT_PRIORITY[b.act] || 0) - (ACT_PRIORITY[a.act] || 0)).slice(0, 3);
 
   // Fetch all student decoupages
   const { data: decoupages } = await admin
@@ -56,7 +54,9 @@ export const POST = withErrorHandler(async function POST(
   // Aggregate: for each scene, find most-voted planType per position
   const assembledScenes = keyScenes.map((scene) => {
     const sceneDecoupages = (decoupages || []).filter((d) => d.scene_id === scene.id);
-    const plans = sceneDecoupages[0]?.plans as { position: number; planType: string; description: string; intention: string }[] | undefined;
+    const plans = sceneDecoupages[0]?.plans as
+      | { position: number; planType: string; description: string; intention: string }[]
+      | undefined;
     const positionCount = plans?.length || 3;
 
     const assembledPlans = [];
@@ -64,7 +64,12 @@ export const POST = withErrorHandler(async function POST(
       // Collect all student plans at this position
       const plansAtPos = sceneDecoupages
         .map((d) => {
-          const studentPlans = d.plans as { position: number; planType: string; description: string; intention: string }[];
+          const studentPlans = d.plans as {
+            position: number;
+            planType: string;
+            description: string;
+            intention: string;
+          }[];
           return studentPlans?.find((p) => p.position === pos);
         })
         .filter(Boolean) as { position: number; planType: string; description: string; intention: string }[];
@@ -106,17 +111,15 @@ export const POST = withErrorHandler(async function POST(
   });
 
   // Upsert into module7_storyboard
-  const { error: upsertError } = await admin
-    .from("module7_storyboard")
-    .upsert(
-      {
-        session_id: sessionId,
-        scenes: assembledScenes,
-        validated: false,
-        validated_at: null,
-      },
-      { onConflict: "session_id" }
-    );
+  const { error: upsertError } = await admin.from("module7_storyboard").upsert(
+    {
+      session_id: sessionId,
+      scenes: assembledScenes,
+      validated: false,
+      validated_at: null,
+    },
+    { onConflict: "session_id" },
+  );
 
   if (upsertError) {
     console.error("[storyboard-assemble POST]", upsertError.message);
@@ -129,7 +132,7 @@ export const POST = withErrorHandler(async function POST(
 // PATCH — Validate storyboard (facilitator only)
 export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "storyboard", { max: 10, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });

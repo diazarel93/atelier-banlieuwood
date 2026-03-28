@@ -8,7 +8,7 @@ import { verifyStudentToken } from "@/lib/student-token";
 // POST — toggle emoji reaction on a response
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "reaction", { max: 60, windowSec: 60 });
   if (rl) {
@@ -21,10 +21,7 @@ export const POST = withErrorHandler(async function POST(
 
   const validated = reactionSchema.safeParse(parsed.data);
   if (!validated.success) {
-    return NextResponse.json(
-      { error: formatZodError(validated.error) },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: formatZodError(validated.error) }, { status: 400 });
   }
 
   let { responseId, studentId, emoji } = validated.data;
@@ -51,10 +48,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!session || !["reviewing", "voting", "results"].includes(session.status)) {
-    return NextResponse.json(
-      { error: "Les réactions ne sont pas ouvertes" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Les réactions ne sont pas ouvertes" }, { status: 400 });
   }
 
   // Verify student belongs to this session
@@ -66,10 +60,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!student) {
-    return NextResponse.json(
-      { error: "Joueur introuvable" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Joueur introuvable" }, { status: 404 });
   }
 
   // Toggle: check if reaction already exists
@@ -106,16 +97,13 @@ export const POST = withErrorHandler(async function POST(
 // GET — reaction counts for a situation's responses
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const situationId = req.nextUrl.searchParams.get("situationId");
 
   if (!situationId) {
-    return NextResponse.json(
-      { error: "situationId requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "situationId requis" }, { status: 400 });
   }
 
   const admin = createAdminClient();

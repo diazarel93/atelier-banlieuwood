@@ -17,11 +17,7 @@ const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "Banlieuwood <noreply@banlie
  * Send an email via Resend. No-op if RESEND_API_KEY is not set.
  * Fire-and-forget — never throws, logs errors.
  */
-export async function sendEmail(
-  to: string,
-  subject: string,
-  html: string
-): Promise<void> {
+export async function sendEmail(to: string, subject: string, html: string): Promise<void> {
   const resend = getResend();
   if (!resend) return;
 

@@ -12,12 +12,7 @@ export interface BudgetStateProps {
   onDone: () => void;
 }
 
-export function BudgetState({
-  sessionId,
-  studentId,
-  storyContext,
-  onDone,
-}: BudgetStateProps) {
+export function BudgetState({ sessionId, studentId, storyContext, onDone }: BudgetStateProps) {
   // choices = { acteurs: 15, decors: 0, effets: 40, ... } (cost values, not indices)
   const [choices, setChoices] = useState<Record<string, number>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -65,8 +60,12 @@ export function BudgetState({
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="flex flex-col gap-5 w-full">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="flex flex-col gap-5 w-full"
+    >
       <div className="text-center space-y-2">
         <motion.div
           initial={{ scale: 0 }}
@@ -75,21 +74,32 @@ export function BudgetState({
           className="w-16 h-16 rounded-full mx-auto flex items-center justify-center"
           style={{ background: "linear-gradient(135deg, rgba(245,158,11,0.3), rgba(255,107,53,0.2))" }}
         >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#F59E0B"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
             <circle cx="12" cy="12" r="10" />
             <path d="M12 6v12M8 10h8M8 14h8" />
           </svg>
         </motion.div>
         <h2 className="text-xl font-bold font-cinema tracking-wide">Ton film, tes choix</h2>
         <p className="text-sm text-bw-muted">
-          Tu as <strong className="text-white">{BUDGET_TOTAL} crédits</strong> d&apos;énergie créative. Chaque choix coûte — impossible de tout avoir.
+          Tu as <strong className="text-white">{BUDGET_TOTAL} crédits</strong> d&apos;énergie créative. Chaque choix
+          coûte — impossible de tout avoir.
         </p>
       </div>
 
       {/* Credits remaining */}
       <div className="bg-bw-elevated rounded-xl px-5 py-3 flex items-center justify-between border border-white/[0.06]">
         <span className="text-sm text-bw-muted">Crédits restants</span>
-        <span className={`text-2xl font-bold ${!reserveOk ? "text-bw-danger" : remaining <= BUDGET_RESERVE_MIN ? "text-bw-amber" : "text-white"}`}>
+        <span
+          className={`text-2xl font-bold ${!reserveOk ? "text-bw-danger" : remaining <= BUDGET_RESERVE_MIN ? "text-bw-amber" : "text-white"}`}
+        >
           {remaining}
         </span>
       </div>
@@ -104,18 +114,19 @@ export function BudgetState({
           // Show story context if available for this category
           const contextText = cat.storyCategory && storyContext?.[cat.storyCategory];
           return (
-            <motion.div key={cat.key}
+            <motion.div
+              key={cat.key}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: catIdx * 0.06 }}
               className="bg-bw-elevated rounded-xl p-4 border border-white/[0.06]"
             >
-              <p className="text-sm font-semibold mb-1" style={{ color: cat.color }}>{cat.label}</p>
+              <p className="text-sm font-semibold mb-1" style={{ color: cat.color }}>
+                {cat.label}
+              </p>
               {/* Narrative context from Module 3 */}
               {contextText && (
-                <p className="text-xs text-bw-muted italic mb-3 line-clamp-2">
-                  &laquo; {contextText} &raquo;
-                </p>
+                <p className="text-xs text-bw-muted italic mb-3 line-clamp-2">&laquo; {contextText} &raquo;</p>
               )}
               <div className="grid grid-cols-3 gap-2">
                 {cat.options.map((opt) => {
@@ -130,9 +141,15 @@ export function BudgetState({
                           ? "border-current bg-current/10"
                           : "border-white/[0.06] bg-bw-bg hover:border-white/20"
                       }`}
-                      style={isSelected ? { color: cat.color, borderColor: cat.color, backgroundColor: `${cat.color}15` } : {}}
+                      style={
+                        isSelected
+                          ? { color: cat.color, borderColor: cat.color, backgroundColor: `${cat.color}15` }
+                          : {}
+                      }
                     >
-                      <span className={`text-xs font-medium block ${isSelected ? "" : "text-bw-text"}`}>{opt.label}</span>
+                      <span className={`text-xs font-medium block ${isSelected ? "" : "text-bw-text"}`}>
+                        {opt.label}
+                      </span>
                       <span className={`text-xs block mt-0.5 ${isSelected ? "" : "text-bw-muted"}`}>
                         {opt.cost === 0 ? "Gratuit" : `${opt.cost} cr.`}
                       </span>
@@ -157,12 +174,20 @@ export function BudgetState({
         </motion.div>
       )}
 
-      <motion.button whileTap={{ scale: 0.95 }} whileHover={canSubmit ? { scale: 1.02 } : undefined} onClick={handleSubmit}
+      <motion.button
+        whileTap={{ scale: 0.95 }}
+        whileHover={canSubmit ? { scale: 1.02 } : undefined}
+        onClick={handleSubmit}
         disabled={!canSubmit}
         className={`btn-glow w-full py-4 rounded-xl font-bold transition-all ${
           canSubmit ? "text-white cursor-pointer shadow-lg" : "bg-bw-elevated text-bw-muted cursor-not-allowed"
         }`}
-        style={canSubmit ? { background: "linear-gradient(135deg, #FF6B35, #D4A843)", boxShadow: "0 4px 15px rgba(255,107,53,0.3)" } : undefined}>
+        style={
+          canSubmit
+            ? { background: "linear-gradient(135deg, #FF6B35, #D4A843)", boxShadow: "0 4px 15px rgba(255,107,53,0.3)" }
+            : undefined
+        }
+      >
         {submitting ? "Envoi..." : "Valider mes choix"}
       </motion.button>
     </motion.div>

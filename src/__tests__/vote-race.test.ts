@@ -11,7 +11,7 @@ describe("Vote race condition guard", () => {
   // Simulates the server-side check logic from vote/route.ts
   function isVoteStale(
     voteSituation: { position: number; module: number; seance: number },
-    session: { current_module: number; current_seance: number; current_situation_index: number }
+    session: { current_module: number; current_seance: number; current_situation_index: number },
   ): boolean {
     return (
       voteSituation.module !== session.current_module ||
@@ -51,24 +51,30 @@ describe("Vote race condition guard", () => {
   });
 
   it("should detect stale when only module differs", () => {
-    expect(isVoteStale(
-      { position: 3, module: 2, seance: 1 },
-      { current_module: 3, current_seance: 1, current_situation_index: 3 }
-    )).toBe(true);
+    expect(
+      isVoteStale(
+        { position: 3, module: 2, seance: 1 },
+        { current_module: 3, current_seance: 1, current_situation_index: 3 },
+      ),
+    ).toBe(true);
   });
 
   it("should detect stale when only seance differs", () => {
-    expect(isVoteStale(
-      { position: 3, module: 3, seance: 1 },
-      { current_module: 3, current_seance: 2, current_situation_index: 3 }
-    )).toBe(true);
+    expect(
+      isVoteStale(
+        { position: 3, module: 3, seance: 1 },
+        { current_module: 3, current_seance: 2, current_situation_index: 3 },
+      ),
+    ).toBe(true);
   });
 
   it("should handle high position numbers", () => {
-    expect(isVoteStale(
-      { position: 99, module: 10, seance: 5 },
-      { current_module: 10, current_seance: 5, current_situation_index: 99 }
-    )).toBe(false);
+    expect(
+      isVoteStale(
+        { position: 99, module: 10, seance: 5 },
+        { current_module: 10, current_seance: 5, current_situation_index: 99 },
+      ),
+    ).toBe(false);
   });
 });
 
@@ -76,7 +82,7 @@ describe("Respond race condition guard", () => {
   // Simulates the server-side check logic from respond/route.ts
   function isResponseStale(
     responseSituation: { position: number; module: number; seance: number },
-    session: { current_module: number; current_seance: number; current_situation_index: number }
+    session: { current_module: number; current_seance: number; current_situation_index: number },
   ): boolean {
     return (
       responseSituation.module !== session.current_module ||
@@ -89,8 +95,8 @@ describe("Respond race condition guard", () => {
     expect(
       isResponseStale(
         { position: 1, module: 3, seance: 1 },
-        { current_module: 3, current_seance: 1, current_situation_index: 5 }
-      )
+        { current_module: 3, current_seance: 1, current_situation_index: 5 },
+      ),
     ).toBe(true);
   });
 
@@ -98,8 +104,8 @@ describe("Respond race condition guard", () => {
     expect(
       isResponseStale(
         { position: 5, module: 3, seance: 1 },
-        { current_module: 3, current_seance: 1, current_situation_index: 5 }
-      )
+        { current_module: 3, current_seance: 1, current_situation_index: 5 },
+      ),
     ).toBe(false);
   });
 });

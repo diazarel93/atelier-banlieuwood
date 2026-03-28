@@ -90,14 +90,8 @@ export default function SessionDetailPage() {
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
         <BreadcrumbV2 items={[{ label: "Séances", href: ROUTES.seances }]} />
         <GlassCardV2 className="p-8 text-center mt-4">
-          <p className="text-bw-muted text-sm mb-4">
-            Session introuvable ou erreur de chargement
-          </p>
-          {error && (
-            <p className="text-xs text-red-400 mb-4 font-mono">
-              {error.message}
-            </p>
-          )}
+          <p className="text-bw-muted text-sm mb-4">Session introuvable ou erreur de chargement</p>
+          {error && <p className="text-xs text-red-400 mb-4 font-mono">{error.message}</p>}
           <Link
             href={ROUTES.seances}
             className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
@@ -123,12 +117,7 @@ export default function SessionDetailPage() {
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
-      <BreadcrumbV2
-        items={[
-          { label: "Séances", href: ROUTES.seances },
-          { label: session.title },
-        ]}
-      />
+      <BreadcrumbV2 items={[{ label: "Séances", href: ROUTES.seances }, { label: session.title }]} />
 
       <div className="space-y-6 mt-4">
         {/* Hero strip */}
@@ -146,7 +135,8 @@ export default function SessionDetailPage() {
           sessionState={sessionState}
           onProjection={() => setProjectionMode(true)}
           onDuplicate={() =>
-            duplicateSession.mutateAsync()
+            duplicateSession
+              .mutateAsync()
               .then((newSession) => router.push(ROUTES.seanceDetail(newSession.id)))
               .catch(() => {})
           }
@@ -180,9 +170,10 @@ export default function SessionDetailPage() {
             {sessionState.phase === "live" && (
               <LiveParticipationCard
                 respondedCount={
-                  activeStudents.filter((s) =>
-                    // rough heuristic: students with recent activity
-                    s.is_active
+                  activeStudents.filter(
+                    (s) =>
+                      // rough heuristic: students with recent activity
+                      s.is_active,
                   ).length
                 }
                 totalStudents={activeStudents.length}
@@ -198,10 +189,7 @@ export default function SessionDetailPage() {
             {guide && <PedagogicalObjectivesCard guide={guide} />}
 
             {/* Module progression */}
-            <ModuleProgressionCard
-              completedModules={session.completed_modules || []}
-              currentModule={currentModule}
-            />
+            <ModuleProgressionCard completedModules={session.completed_modules || []} currentModule={currentModule} />
 
             {/* Facilitator tips */}
             {guide && <FacilitatorTipsCard guide={guide} />}
@@ -228,9 +216,7 @@ export default function SessionDetailPage() {
             {/* Thematique */}
             {session.thematique && (
               <GlassCardV2 variant="flat" className="p-4">
-                <p className="text-xs text-bw-muted font-medium mb-1">
-                  Thematique
-                </p>
+                <p className="text-xs text-bw-muted font-medium mb-1">Thematique</p>
                 <p className="text-sm text-bw-heading">{session.thematique}</p>
               </GlassCardV2>
             )}
@@ -261,7 +247,8 @@ export default function SessionDetailPage() {
         open={editOpen}
         onClose={() => setEditOpen(false)}
         onSave={(payload) => {
-          updateSession.mutateAsync(payload)
+          updateSession
+            .mutateAsync(payload)
             .then(() => setEditOpen(false))
             .catch(() => {});
         }}

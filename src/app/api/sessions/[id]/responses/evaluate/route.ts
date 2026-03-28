@@ -28,11 +28,7 @@ Critères :
 Réponds UNIQUEMENT en JSON strict, sans code fences :
 {"score": <1-5>, "feedback": "<1 phrase courte justifiant la note>"}`;
 
-function buildEvalUserPrompt(
-  question: string,
-  answer: string,
-  level: string
-): string {
+function buildEvalUserPrompt(question: string, answer: string, level: string): string {
   return `Niveau: ${level}
 Question posée: "${question}"
 Réponse de l'élève: "${answer}"
@@ -42,7 +38,7 @@ Réponse de l'élève: "${answer}"
 
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "responses-evaluate", { max: 5, windowSec: 60 });
   if (rl) {
@@ -68,11 +64,7 @@ export const POST = withErrorHandler(async function POST(
   }
 
   // Fetch session info (level)
-  const { data: session } = await auth.supabase
-    .from("sessions")
-    .select("level")
-    .eq("id", sessionId)
-    .single();
+  const { data: session } = await auth.supabase.from("sessions").select("level").eq("id", sessionId).single();
 
   const level = session?.level || "college";
 
@@ -130,7 +122,7 @@ export const POST = withErrorHandler(async function POST(
           .eq("session_id", sessionId);
 
         return { responseId: resp.id, ai_score: score, ai_feedback: feedback };
-      })
+      }),
     );
     results.push(...batchResults);
   }

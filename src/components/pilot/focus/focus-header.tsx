@@ -88,11 +88,23 @@ export function FocusHeader({
         {/* Module menu button */}
         {onOpenModules && (
           <button
-            onClick={(e) => { e.stopPropagation(); onOpenModules(); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenModules();
+            }}
             className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
             title="Menu des modules"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <line x1="3" y1="6" x2="21" y2="6" />
               <line x1="3" y1="12" x2="21" y2="12" />
               <line x1="3" y1="18" x2="21" y2="18" />
@@ -102,11 +114,23 @@ export function FocusHeader({
 
         {/* Back button */}
         <button
-          onClick={(e) => { e.stopPropagation(); router.push(ROUTES.seanceDetail(sessionId)); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push(ROUTES.seanceDetail(sessionId));
+          }}
           className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
           title="Retour"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
@@ -119,9 +143,7 @@ export function FocusHeader({
           >
             {moduleLabel}
           </span>
-          {qLabel && (
-            <span className="text-[13px] font-bold text-gray-500 tabular-nums">{qLabel}</span>
-          )}
+          {qLabel && <span className="text-[13px] font-bold text-gray-500 tabular-nums">{qLabel}</span>}
         </div>
 
         {/* Timer — countdown takes priority, then elapsed */}
@@ -137,27 +159,53 @@ export function FocusHeader({
 
         {/* Screen button with mode indicator */}
         <button
-          onClick={(e) => { e.stopPropagation(); window.open(ROUTES.screen(sessionId), "bw-screen"); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(ROUTES.screen(sessionId), "bw-screen");
+          }}
           className="relative flex items-center justify-center gap-1 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer px-2"
           title={isScreenConnected ? "Écran connecté — cliquer pour ouvrir" : "Ouvrir l'écran de projection"}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <rect x="2" y="3" width="20" height="14" rx="2" />
             <path d="M8 21h8M12 17v4" />
           </svg>
           {currentScreenMode && SCREEN_MODE_LABELS[currentScreenMode] && (
-            <span className="text-[9px] font-bold text-gray-500 uppercase">{SCREEN_MODE_LABELS[currentScreenMode]}</span>
+            <span className="text-[9px] font-bold text-gray-500 uppercase">
+              {SCREEN_MODE_LABELS[currentScreenMode]}
+            </span>
           )}
           {isScreenConnected && (
             <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
           )}
         </button>
         <button
-          onClick={(e) => { e.stopPropagation(); window.open(ROUTES.play(sessionId), "bw-play"); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(ROUTES.play(sessionId), "bw-play");
+          }}
           className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
           title="Tester la vue élève"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <rect x="2" y="6" width="20" height="12" rx="2" />
             <path d="M12 6V2M7 2h10" />
           </svg>
@@ -165,11 +213,23 @@ export function FocusHeader({
 
         {/* Student chip */}
         <button
-          onClick={(e) => { e.stopPropagation(); onOpenStudents(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpenStudents();
+          }}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-[13px] font-medium cursor-pointer"
           title="Voir les élèves"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
             <circle cx="9" cy="7" r="4" />
             <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
@@ -180,19 +240,40 @@ export function FocusHeader({
 
         {/* Fullscreen toggle */}
         <button
-          onClick={(e) => { e.stopPropagation(); toggleFullscreen(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleFullscreen();
+          }}
           className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
           title={isFullscreen ? "Quitter le plein écran" : "Plein écran"}
         >
           {isFullscreen ? (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M8 3v3a2 2 0 0 1-2 2H3" />
               <path d="M21 8h-3a2 2 0 0 1-2-2V3" />
               <path d="M3 16h3a2 2 0 0 1 2 2v3" />
               <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
             </svg>
           ) : (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M8 3H5a2 2 0 0 0-2 2v3" />
               <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
               <path d="M3 16v3a2 2 0 0 0 2 2h3" />
@@ -203,8 +284,14 @@ export function FocusHeader({
 
         {/* Expand chevron */}
         <motion.svg
-          width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999"
-          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#999"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           animate={{ rotate: expanded ? 180 : 0 }}
           transition={{ duration: 0.2 }}
         >
@@ -232,28 +319,41 @@ export function FocusHeader({
 
               {/* Status pill */}
               <div className="flex items-center gap-2">
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold ${
-                  sessionStatus === "responding" ? "bg-emerald-100 text-emerald-700" :
-                  sessionStatus === "voting" ? "bg-orange-100 text-orange-700" :
-                  sessionStatus === "reviewing" ? "bg-purple-100 text-purple-700" :
-                  sessionStatus === "waiting" ? "bg-gray-100 text-gray-600" :
-                  "bg-gray-100 text-gray-600"
-                }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${
-                    sessionStatus === "responding" ? "bg-emerald-500" :
-                    sessionStatus === "voting" ? "bg-orange-500" :
-                    sessionStatus === "reviewing" ? "bg-purple-500" :
-                    "bg-gray-400"
-                  }`} />
-                  {sessionStatus === "responding" ? "Réponses ouvertes" :
-                   sessionStatus === "voting" ? "Vote en cours" :
-                   sessionStatus === "reviewing" ? "Résultats" :
-                   sessionStatus === "waiting" ? "En attente" :
-                   sessionStatus}
+                <span
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                    sessionStatus === "responding"
+                      ? "bg-emerald-100 text-emerald-700"
+                      : sessionStatus === "voting"
+                        ? "bg-orange-100 text-orange-700"
+                        : sessionStatus === "reviewing"
+                          ? "bg-purple-100 text-purple-700"
+                          : sessionStatus === "waiting"
+                            ? "bg-gray-100 text-gray-600"
+                            : "bg-gray-100 text-gray-600"
+                  }`}
+                >
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      sessionStatus === "responding"
+                        ? "bg-emerald-500"
+                        : sessionStatus === "voting"
+                          ? "bg-orange-500"
+                          : sessionStatus === "reviewing"
+                            ? "bg-purple-500"
+                            : "bg-gray-400"
+                    }`}
+                  />
+                  {sessionStatus === "responding"
+                    ? "Réponses ouvertes"
+                    : sessionStatus === "voting"
+                      ? "Vote en cours"
+                      : sessionStatus === "reviewing"
+                        ? "Résultats"
+                        : sessionStatus === "waiting"
+                          ? "En attente"
+                          : sessionStatus}
                 </span>
-                {timerActive && (
-                  <span className="text-[11px] text-gray-500 tabular-nums">Timer actif</span>
-                )}
+                {timerActive && <span className="text-[11px] text-gray-500 tabular-nums">Timer actif</span>}
               </div>
             </div>
           </motion.div>

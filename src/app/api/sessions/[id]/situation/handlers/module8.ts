@@ -10,7 +10,7 @@ export async function handleModule8(
   req: NextRequest,
   session: Record<string, unknown>,
   sessionId: string,
-  admin: AdminClient
+  admin: AdminClient,
 ) {
   const currentIndex = (session.current_situation_index as number) || 0;
   const position = currentIndex + 1; // 1-5
@@ -166,7 +166,9 @@ export async function handleModule8(
 
     // Current turn: first student without a role
     const takenStudentIds = new Set((takenRoles || []).map((r: Record<string, unknown>) => r.student_id));
-    const nextStudent = (allPoints || []).find((p: Record<string, unknown>) => !takenStudentIds.has(p.student_id as string));
+    const nextStudent = (allPoints || []).find(
+      (p: Record<string, unknown>) => !takenStudentIds.has(p.student_id as string),
+    );
 
     if (studentId && nextStudent) {
       isMyTurn = (nextStudent.student_id as string) === studentId;
@@ -192,10 +194,7 @@ export async function handleModule8(
 
       // Get student names
       const studentIds = (fullPoints || []).map((p: Record<string, unknown>) => p.student_id);
-      const { data: students } = await admin
-        .from("students")
-        .select("id, display_name")
-        .in("id", studentIds);
+      const { data: students } = await admin.from("students").select("id, display_name").in("id", studentIds);
 
       const nameMap: Record<string, string> = {};
       for (const s of students || []) {
@@ -326,7 +325,12 @@ export async function handleModule8(
           strengths: card.strengths || [],
           isVeto: roleData?.is_veto || false,
           creativeProfile: resolvedProfile
-            ? { key: resolvedProfile.key, label: resolvedProfile.label, emoji: resolvedProfile.emoji, color: resolvedProfile.color }
+            ? {
+                key: resolvedProfile.key,
+                label: resolvedProfile.label,
+                emoji: resolvedProfile.emoji,
+                color: resolvedProfile.color,
+              }
             : null,
         };
       }
@@ -354,7 +358,7 @@ export async function handleModule8(
     lycee: "prompt_14_18",
   };
   const field = levelMap[session.level as string] || "prompt_10_13";
-  const prompt = situation?.[field as keyof typeof situation] as string || "";
+  const prompt = (situation?.[field as keyof typeof situation] as string) || "";
 
   return NextResponse.json({
     session: sessionBase,

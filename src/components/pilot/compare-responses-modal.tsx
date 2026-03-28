@@ -44,7 +44,9 @@ export function CompareResponsesModal({
       {open && (
         <>
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
@@ -61,7 +63,9 @@ export function CompareResponsesModal({
                 <h3 className="text-sm font-semibold">Comparer 2 réponses</h3>
                 <span className="text-xs text-bw-muted">{selectedIds.length}/2 sélectionnées</span>
               </div>
-              <button onClick={onClose} className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">✕</button>
+              <button onClick={onClose} className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">
+                ✕
+              </button>
             </div>
 
             {/* Comparison view (when 2 selected) */}
@@ -69,7 +73,13 @@ export function CompareResponsesModal({
               <div className="px-5 py-3 border-b border-black/[0.04] flex-shrink-0">
                 <div className="grid grid-cols-2 gap-3">
                   {[selectedA, selectedB].map((r, i) => (
-                    <div key={r.id} className="p-3 rounded-xl border border-bw-primary/20" style={{ background: `linear-gradient(135deg, rgba(255,107,53,${0.06 + i * 0.02}), transparent)` }}>
+                    <div
+                      key={r.id}
+                      className="p-3 rounded-xl border border-bw-primary/20"
+                      style={{
+                        background: `linear-gradient(135deg, rgba(255,107,53,${0.06 + i * 0.02}), transparent)`,
+                      }}
+                    >
                       <div className="flex items-center gap-1.5 mb-2">
                         <span className="text-sm">{r.studentAvatar}</span>
                         <span className="text-xs font-medium">{r.studentName}</span>
@@ -80,14 +90,20 @@ export function CompareResponsesModal({
                 </div>
                 <div className="flex justify-center gap-2 mt-3">
                   <button
-                    onClick={() => { onHighlightBoth(selectedA.id, selectedB.id); onClose(); }}
+                    onClick={() => {
+                      onHighlightBoth(selectedA.id, selectedB.id);
+                      onClose();
+                    }}
                     className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110"
                     style={{ backgroundColor: "#F5A45B", color: "white" }}
                   >
                     Projeter les 2 →
                   </button>
                   <button
-                    onClick={() => { onClearHighlights(); onClose(); }}
+                    onClick={() => {
+                      onClearHighlights();
+                      onClose();
+                    }}
                     className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors"
                   >
                     Tout dé-projeter
@@ -116,8 +132,14 @@ export function CompareResponsesModal({
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-sm">{r.studentAvatar}</span>
                       <span className="text-xs font-medium">{r.studentName}</span>
-                      {isSelected && <span className="text-xs px-1.5 py-0.5 rounded bg-bw-primary/15 text-bw-primary font-bold">✓</span>}
-                      {r.is_highlighted && <span className="text-xs px-1.5 py-0.5 rounded bg-bw-teal/15 text-bw-teal">Projeté</span>}
+                      {isSelected && (
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-bw-primary/15 text-bw-primary font-bold">
+                          ✓
+                        </span>
+                      )}
+                      {r.is_highlighted && (
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-bw-teal/15 text-bw-teal">Projeté</span>
+                      )}
                     </div>
                     <p className="text-xs text-bw-text leading-relaxed line-clamp-2">{r.text}</p>
                   </button>

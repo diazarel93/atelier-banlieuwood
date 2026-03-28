@@ -52,13 +52,22 @@ export default function RequestAccessPage() {
           className="w-full max-w-sm rounded-2xl bg-white border border-bw-border p-8 text-center space-y-6 shadow-sm"
         >
           <div className="w-16 h-16 rounded-full bg-green-50 mx-auto flex items-center justify-center">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#22c55e"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
           <h2 className="text-xl font-bold text-bw-heading">Demande envoyee</h2>
           <p className="text-sm text-bw-muted">
-            Nous avons bien recu votre demande d&apos;acces. Un administrateur l&apos;examinera dans les plus brefs delais.
+            Nous avons bien recu votre demande d&apos;acces. Un administrateur l&apos;examinera dans les plus brefs
+            delais.
           </p>
           <Link href={ROUTES.login} className="text-sm text-bw-primary hover:underline font-medium">
             Retour a la connexion
@@ -70,18 +79,12 @@ export default function RequestAccessPage() {
 
   return (
     <div className="min-h-dvh bg-bw-bg flex items-center justify-center px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-sm space-y-8"
-      >
+      <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm space-y-8">
         <div className="text-center space-y-4">
           <div className="flex justify-center">
             <BrandLogo size="lg" color="cinema" />
           </div>
-          <p className="text-sm text-bw-muted">
-            Demander un acces etablissement
-          </p>
+          <p className="text-sm text-bw-muted">Demander un acces etablissement</p>
         </div>
 
         <div className="rounded-2xl bg-white border border-bw-border p-6 space-y-5 shadow-sm">

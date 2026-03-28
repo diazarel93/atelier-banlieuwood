@@ -30,12 +30,25 @@ export interface ScreenHeaderProps {
   noModuleSelected: boolean;
 }
 
-export function ScreenHeader({ session, seanceIntro, moduleColor, maxSituations, progressPct, connectedCount, noModuleSelected }: ScreenHeaderProps) {
+export function ScreenHeader({
+  session,
+  seanceIntro,
+  moduleColor,
+  maxSituations,
+  progressPct,
+  connectedCount,
+  noModuleSelected,
+}: ScreenHeaderProps) {
   const templateInfo = session.template ? TEMPLATE_LABELS[session.template] : null;
 
   return (
-    <header className="px-6 py-2.5 flex justify-between items-center flex-shrink-0 relative z-10 backdrop-blur-sm"
-      style={{ background: "linear-gradient(90deg, rgba(18,20,24,0.85), rgba(18,20,24,0.6) 50%, rgba(18,20,24,0.85))", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+    <header
+      className="px-6 py-2.5 flex justify-between items-center flex-shrink-0 relative z-10 backdrop-blur-sm"
+      style={{
+        background: "linear-gradient(90deg, rgba(18,20,24,0.85), rgba(18,20,24,0.6) 50%, rgba(18,20,24,0.85))",
+        borderBottom: "1px solid rgba(255,255,255,0.04)",
+      }}
+    >
       <div className="flex items-center gap-4">
         <h1 className="text-2xl font-bold tracking-[0.2em] uppercase font-cinema">
           <BrandLogo />
@@ -45,7 +58,14 @@ export function ScreenHeader({ session, seanceIntro, moduleColor, maxSituations,
           <div className="flex items-center gap-2 ml-2">
             <span className="text-xs text-bw-muted">{session.title}</span>
             {templateInfo && (
-              <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)" }}>
+              <span
+                className="text-xs px-2 py-0.5 rounded-full"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  color: "rgba(255,255,255,0.5)",
+                }}
+              >
                 {templateInfo}
               </span>
             )}
@@ -65,13 +85,18 @@ export function ScreenHeader({ session, seanceIntro, moduleColor, maxSituations,
         )}
         {/* Step dots */}
         {!noModuleSelected && session.status !== "done" && maxSituations > 1 && (
-          <div className="flex items-center gap-1.5" role="group" aria-label={`Étape ${(session.currentSituationIndex ?? 0) + 1} sur ${maxSituations}`}>
+          <div
+            className="flex items-center gap-1.5"
+            role="group"
+            aria-label={`Étape ${(session.currentSituationIndex ?? 0) + 1} sur ${maxSituations}`}
+          >
             {Array.from({ length: maxSituations }).map((_, i) => (
               <motion.div
                 key={i}
-                animate={i === (session.currentSituationIndex ?? 0)
-                  ? { scale: [1, 1.3, 1], opacity: 1 }
-                  : { scale: 1, opacity: i < (session.currentSituationIndex ?? 0) ? 1 : 0.3 }
+                animate={
+                  i === (session.currentSituationIndex ?? 0)
+                    ? { scale: [1, 1.3, 1], opacity: 1 }
+                    : { scale: 1, opacity: i < (session.currentSituationIndex ?? 0) ? 1 : 0.3 }
                 }
                 transition={i === (session.currentSituationIndex ?? 0) ? { repeat: Infinity, duration: 1.5 } : {}}
                 className="w-2 h-2 rounded-full"
@@ -84,7 +109,15 @@ export function ScreenHeader({ session, seanceIntro, moduleColor, maxSituations,
         )}
         {/* Progress bar */}
         {!noModuleSelected && session.status !== "done" && progressPct > 0 && (
-          <div className="w-24 h-1.5 rounded-full overflow-hidden" role="progressbar" aria-valuenow={progressPct} aria-valuemin={0} aria-valuemax={100} aria-label="Progression du module" style={{ background: "rgba(255,255,255,0.06)" }}>
+          <div
+            className="w-24 h-1.5 rounded-full overflow-hidden"
+            role="progressbar"
+            aria-valuenow={progressPct}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Progression du module"
+            style={{ background: "rgba(255,255,255,0.06)" }}
+          >
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progressPct}%` }}
@@ -94,7 +127,11 @@ export function ScreenHeader({ session, seanceIntro, moduleColor, maxSituations,
             />
           </div>
         )}
-        <div className="flex items-center gap-2" role="status" aria-label={`${connectedCount} élève${connectedCount > 1 ? "s" : ""} en ligne`}>
+        <div
+          className="flex items-center gap-2"
+          role="status"
+          aria-label={`${connectedCount} élève${connectedCount > 1 ? "s" : ""} en ligne`}
+        >
           <motion.div
             animate={{ opacity: [1, 0.3, 1] }}
             transition={{ repeat: Infinity, duration: 1.5 }}

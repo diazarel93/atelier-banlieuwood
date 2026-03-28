@@ -39,7 +39,7 @@ export function computeNarrativeScores(
   totalModules: number,
   currentPhaseId: string | null,
   responsePct: number, // 0-100, current question response rate
-  stuckPct: number,    // 0-100, percentage stuck
+  stuckPct: number, // 0-100, percentage stuck
 ): NarrativeScores {
   // Phase → competency mapping (M1–M8 + bonus)
   const phaseCompetencies: Record<string, (keyof NarrativeScores)[]> = {
@@ -59,17 +59,25 @@ export function computeNarrativeScores(
 
   // Count how many completed modules contribute to each competency
   const competencyHits: Record<keyof NarrativeScores, number> = {
-    imagination: 0, emotion: 0, observation: 0, construction: 0, expression: 0,
+    imagination: 0,
+    emotion: 0,
+    observation: 0,
+    construction: 0,
+    expression: 0,
   };
   const competencyTotal: Record<keyof NarrativeScores, number> = {
-    imagination: 0, emotion: 0, observation: 0, construction: 0, expression: 0,
+    imagination: 0,
+    emotion: 0,
+    observation: 0,
+    construction: 0,
+    expression: 0,
   };
 
   for (const [phaseId, comps] of Object.entries(phaseCompetencies)) {
     for (const comp of comps) {
       competencyTotal[comp]++;
       const phaseModuleIds = getPhaseModuleIds(phaseId);
-      const completedFromPhase = phaseModuleIds.filter(id => completedModules.includes(id));
+      const completedFromPhase = phaseModuleIds.filter((id) => completedModules.includes(id));
       if (completedFromPhase.length > 0) {
         competencyHits[comp] += completedFromPhase.length / phaseModuleIds.length;
       }
@@ -78,13 +86,15 @@ export function computeNarrativeScores(
 
   // Compute base scores (0-100) from completion
   const scores: NarrativeScores = {
-    imagination: 0, emotion: 0, observation: 0, construction: 0, expression: 0,
+    imagination: 0,
+    emotion: 0,
+    observation: 0,
+    construction: 0,
+    expression: 0,
   };
 
   for (const key of Object.keys(scores) as (keyof NarrativeScores)[]) {
-    const base = competencyTotal[key] > 0
-      ? (competencyHits[key] / competencyTotal[key]) * 70
-      : 0;
+    const base = competencyTotal[key] > 0 ? (competencyHits[key] / competencyTotal[key]) * 70 : 0;
     const engagementBoost = responsePct > 0 ? Math.min(responsePct * 0.3, 30) : 0;
     const stuckPenalty = stuckPct > 20 ? (stuckPct - 20) * 0.3 : 0;
     const currentBoost = currentPhaseId && phaseCompetencies[currentPhaseId]?.includes(key) ? 10 : 0;

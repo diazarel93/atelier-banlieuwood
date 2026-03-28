@@ -6,5 +6,5 @@ export default function PlayLoading() {
         <p className="text-sm text-bw-muted animate-pulse">Chargement…</p>
       </div>
     </div>
-  )
+  );
 }

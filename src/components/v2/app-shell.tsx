@@ -52,9 +52,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
   const isIntervenant = authUser?.role === "intervenant";
 
   // R4(2b): filter nav items based on role
-  const visibleNavItems = NAV_ITEMS.filter((item) =>
-    !item.professeurOnly || !isIntervenant
-  );
+  const visibleNavItems = NAV_ITEMS.filter((item) => !item.professeurOnly || !isIntervenant);
   const bottomNavItems = visibleNavItems.slice(0, 4);
 
   // Close mobile drawer on route change
@@ -87,25 +85,24 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       {/* Top navigation bar */}
       <header className="sticky top-0 z-40 w-full bg-card/80 backdrop-blur-xl border-b border-[var(--color-bw-border)] relative">
         {/* Subtle cinema accent — warm gradient top-line */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--color-bw-primary)]/20 to-transparent" aria-hidden="true" />
+        <div
+          className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--color-bw-primary)]/20 to-transparent"
+          aria-hidden="true"
+        />
         <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-6 px-4 sm:px-6">
           {/* Logo */}
           <Link href={ROUTES.dashboard} className="flex items-center gap-2.5 shrink-0 group">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-bw-primary text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">
               BW
             </div>
-            <span className="text-heading-xs text-bw-heading hidden sm:inline">
-              Banlieuwood
-            </span>
+            <span className="text-heading-xs text-bw-heading hidden sm:inline">Banlieuwood</span>
           </Link>
 
           {/* Desktop nav links */}
           <nav aria-label="Navigation principale" className="hidden md:flex items-center gap-0.5 h-14">
             {visibleNavItems.map((item) => {
               const isActive =
-                item.href === ROUTES.dashboard
-                  ? pathname === ROUTES.dashboard
-                  : pathname.startsWith(item.href);
+                item.href === ROUTES.dashboard ? pathname === ROUTES.dashboard : pathname.startsWith(item.href);
 
               return (
                 <Link
@@ -115,22 +112,21 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                   aria-label={item.label}
                   className={cn(
                     "relative flex items-center gap-1.5 px-3 h-14 text-sm font-medium transition-colors",
-                    isActive
-                      ? "text-bw-heading"
-                      : "text-bw-muted hover:text-bw-heading"
+                    isActive ? "text-bw-heading" : "text-bw-muted hover:text-bw-heading",
                   )}
                 >
-                  <span className={cn(
-                    "transition-colors",
-                    isActive ? "text-bw-primary" : "text-bw-muted group-hover:text-bw-heading"
-                  )} aria-hidden="true">
+                  <span
+                    className={cn(
+                      "transition-colors",
+                      isActive ? "text-bw-primary" : "text-bw-muted group-hover:text-bw-heading",
+                    )}
+                    aria-hidden="true"
+                  >
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
                   {/* Active indicator — bottom bar */}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-bw-primary" />
-                  )}
+                  {isActive && <span className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-bw-primary" />}
                 </Link>
               );
             })}
@@ -165,7 +161,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                   "inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
                   pathname.startsWith("/v2/admin")
                     ? "bg-bw-primary/10 text-bw-primary"
-                    : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                    : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
                 )}
               >
                 <IconAdmin size={16} />
@@ -179,7 +175,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                 "inline-flex items-center justify-center rounded-xl p-2 transition-colors",
                 pathname.startsWith("/v2/aide")
                   ? "bg-bw-primary/10 text-bw-primary"
-                  : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                  : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
               )}
             >
               <IconHelp size={18} />
@@ -191,7 +187,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                 "inline-flex items-center justify-center rounded-xl p-2 transition-colors",
                 pathname.startsWith("/v2/settings")
                   ? "bg-bw-primary/10 text-bw-primary"
-                  : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                  : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
               )}
             >
               <IconSettings size={18} />
@@ -217,7 +213,6 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             </button>
           </div>
         </div>
-
       </header>
 
       {/* Mobile drawer overlay */}
@@ -233,7 +228,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       <div
         className={cn(
           "md:hidden fixed top-0 left-0 bottom-0 z-50 w-[280px] bg-card shadow-2xl flex flex-col transition-transform duration-300 ease-out",
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
         )}
         aria-hidden={!mobileOpen}
         // @ts-expect-error -- inert is valid HTML but not yet in React's types
@@ -264,9 +259,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           <div className="flex flex-col gap-1">
             {visibleNavItems.map((item) => {
               const isActive =
-                item.href === ROUTES.dashboard
-                  ? pathname === ROUTES.dashboard
-                  : pathname.startsWith(item.href);
+                item.href === ROUTES.dashboard ? pathname === ROUTES.dashboard : pathname.startsWith(item.href);
 
               return (
                 <Link
@@ -278,21 +271,22 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                     "flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-all",
                     isActive
                       ? "bg-bw-primary/10 text-bw-heading shadow-sm"
-                      : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                      : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
                   )}
                 >
-                  <span className={cn(
-                    "flex items-center justify-center w-8 h-8 rounded-lg transition-colors",
-                    isActive
-                      ? "bg-bw-primary text-white shadow-sm"
-                      : "bg-[var(--color-bw-surface-dim)] text-bw-muted"
-                  )} aria-hidden="true">
+                  <span
+                    className={cn(
+                      "flex items-center justify-center w-8 h-8 rounded-lg transition-colors",
+                      isActive
+                        ? "bg-bw-primary text-white shadow-sm"
+                        : "bg-[var(--color-bw-surface-dim)] text-bw-muted",
+                    )}
+                    aria-hidden="true"
+                  >
                     {item.icon}
                   </span>
                   {item.label}
-                  {isActive && (
-                    <span className="ml-auto h-2 w-2 rounded-full bg-bw-primary" />
-                  )}
+                  {isActive && <span className="ml-auto h-2 w-2 rounded-full bg-bw-primary" />}
                 </Link>
               );
             })}
@@ -319,15 +313,18 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                     "flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-all",
                     isActive
                       ? "bg-bw-primary/10 text-bw-heading shadow-sm"
-                      : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                      : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
                   )}
                 >
-                  <span className={cn(
-                    "flex items-center justify-center w-8 h-8 rounded-lg transition-colors",
-                    isActive
-                      ? "bg-bw-primary text-white shadow-sm"
-                      : "bg-[var(--color-bw-surface-dim)] text-bw-muted"
-                  )} aria-hidden="true">
+                  <span
+                    className={cn(
+                      "flex items-center justify-center w-8 h-8 rounded-lg transition-colors",
+                      isActive
+                        ? "bg-bw-primary text-white shadow-sm"
+                        : "bg-[var(--color-bw-surface-dim)] text-bw-muted",
+                    )}
+                    aria-hidden="true"
+                  >
                     {item.icon}
                   </span>
                   {item.label}
@@ -351,7 +348,9 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Content */}
-      <main id="main-content" className="flex-1 pb-20 md:pb-0">{children}</main>
+      <main id="main-content" className="flex-1 pb-20 md:pb-0">
+        {children}
+      </main>
 
       {/* Mobile bottom nav */}
       <nav
@@ -364,9 +363,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         <div className="flex items-center justify-around h-14">
           {bottomNavItems.map((item) => {
             const isActive =
-              item.href === ROUTES.dashboard
-                ? pathname === ROUTES.dashboard
-                : pathname.startsWith(item.href);
+              item.href === ROUTES.dashboard ? pathname === ROUTES.dashboard : pathname.startsWith(item.href);
 
             return (
               <Link
@@ -375,9 +372,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
                   "flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg transition-colors",
-                  isActive
-                    ? "text-bw-primary"
-                    : "text-bw-muted hover:text-bw-heading"
+                  isActive ? "text-bw-primary" : "text-bw-muted hover:text-bw-heading",
                 )}
               >
                 <span aria-hidden="true">{item.icon}</span>

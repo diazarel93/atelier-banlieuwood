@@ -32,16 +32,11 @@ export function BreadcrumbV2({ items }: BreadcrumbV2Props) {
           <span key={i} className="flex items-center gap-1.5">
             {i > 0 && <span>/</span>}
             {item.href && !isLast ? (
-              <Link
-                href={item.href}
-                className="hover:text-bw-heading transition-colors truncate max-w-[180px]"
-              >
+              <Link href={item.href} className="hover:text-bw-heading transition-colors truncate max-w-[180px]">
                 {item.label}
               </Link>
             ) : (
-              <span className={isLast ? "text-bw-heading font-medium truncate max-w-[200px]" : ""}>
-                {item.label}
-              </span>
+              <span className={isLast ? "text-bw-heading font-medium truncate max-w-[200px]" : ""}>{item.label}</span>
             )}
           </span>
         );

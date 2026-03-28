@@ -43,9 +43,7 @@ export function TabBar({ active, onChange }: TabBarProps) {
             onClick={() => onChange(tab.key)}
             className={cn(
               "relative flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer",
-              isActive
-                ? "text-bw-heading"
-                : "text-bw-muted hover:text-bw-heading"
+              isActive ? "text-bw-heading" : "text-bw-muted hover:text-bw-heading",
             )}
           >
             <svg
@@ -61,9 +59,7 @@ export function TabBar({ active, onChange }: TabBarProps) {
               <path d={tab.icon} />
             </svg>
             {tab.label}
-            {isActive && (
-              <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-bw-primary" />
-            )}
+            {isActive && <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-bw-primary" />}
           </button>
         );
       })}

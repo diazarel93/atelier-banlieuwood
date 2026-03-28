@@ -20,8 +20,17 @@ const LEVELS = [
 const SOLO_FEATURES = [
   {
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round">
-        <polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" />
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#8B5CF6"
+        strokeWidth="2"
+        strokeLinecap="round"
+      >
+        <polygon points="23 7 16 12 23 17 23 7" />
+        <rect x="1" y="5" width="15" height="14" rx="2" />
       </svg>
     ),
     title: "Cree ton film",
@@ -29,7 +38,15 @@ const SOLO_FEATURES = [
   },
   {
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#8B5CF6"
+        strokeWidth="2"
+        strokeLinecap="round"
+      >
         <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
       </svg>
     ),
@@ -38,8 +55,17 @@ const SOLO_FEATURES = [
   },
   {
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round">
-        <circle cx="12" cy="12" r="10" /><polygon points="10 8 16 12 10 16 10 8" />
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#8B5CF6"
+        strokeWidth="2"
+        strokeLinecap="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <polygon points="10 8 16 12 10 16 10 8" />
       </svg>
     ),
     title: "Joue a ton rythme",
@@ -82,7 +108,7 @@ export default function FreePage() {
       // Store student info for play page
       localStorage.setItem(
         `bw-student-${data.sessionId}`,
-        JSON.stringify({ studentId: data.studentId, displayName: name, avatar })
+        JSON.stringify({ studentId: data.studentId, displayName: name, avatar }),
       );
       // Store free mode flag
       localStorage.setItem(`bw-free-${data.sessionId}`, "true");
@@ -113,7 +139,10 @@ export default function FreePage() {
           transition={{ delay: 0.05 }}
           className="text-center"
         >
-          <Link href="/" className="text-sm text-bw-muted hover:text-bw-ink transition-colors cursor-pointer inline-block">
+          <Link
+            href="/"
+            className="text-sm text-bw-muted hover:text-bw-ink transition-colors cursor-pointer inline-block"
+          >
             ← Retour
           </Link>
         </motion.div>
@@ -134,7 +163,10 @@ export default function FreePage() {
             transition={{ delay: 0.2 }}
             className="bw-display text-4xl sm:text-5xl tracking-[0.15em] uppercase"
           >
-            <span className="bg-gradient-to-r from-bw-violet to-bw-violet-500 bg-clip-text" style={{ WebkitTextFillColor: "transparent" }}>
+            <span
+              className="bg-gradient-to-r from-bw-violet to-bw-violet-500 bg-clip-text"
+              style={{ WebkitTextFillColor: "transparent" }}
+            >
               Jouer Seul
             </span>
           </motion.h1>
@@ -189,9 +221,7 @@ export default function FreePage() {
         >
           {/* Name */}
           <div className="space-y-2">
-            <label className="text-sm text-bw-muted block text-center">
-              Ton prenom
-            </label>
+            <label className="text-sm text-bw-muted block text-center">Ton prenom</label>
             <Input
               type="text"
               placeholder="Entre ton prenom..."
@@ -204,9 +234,7 @@ export default function FreePage() {
 
           {/* Avatar picker */}
           <div className="space-y-2">
-            <label className="text-sm text-bw-muted block text-center">
-              Choisis ton emoji
-            </label>
+            <label className="text-sm text-bw-muted block text-center">Choisis ton emoji</label>
             <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 justify-items-center">
               {AVATARS.map((emoji, i) => (
                 <motion.button
@@ -243,9 +271,7 @@ export default function FreePage() {
 
           {/* Level picker */}
           <div className="space-y-2">
-            <label className="text-sm text-bw-muted block text-center">
-              Ton age
-            </label>
+            <label className="text-sm text-bw-muted block text-center">Ton age</label>
             <div className="grid grid-cols-3 gap-2">
               {LEVELS.map((l, i) => (
                 <motion.button
@@ -290,10 +316,7 @@ export default function FreePage() {
             }`}
             disabled={!canSubmit || loading}
           >
-            <motion.button
-              whileTap={canSubmit ? { scale: 0.97 } : {}}
-              onClick={handleStart}
-            >
+            <motion.button whileTap={canSubmit ? { scale: 0.97 } : {}} onClick={handleStart}>
               {loading ? "Creation..." : "C'est parti"}
             </motion.button>
           </Button>

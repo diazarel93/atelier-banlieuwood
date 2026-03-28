@@ -6,7 +6,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // GET — fetch all collective choices for a session (facilitator only)
 export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
@@ -18,14 +18,17 @@ export const GET = withErrorHandler(async function GET(
     .eq("session_id", sessionId)
     .order("validated_at", { ascending: true });
 
-  if (error) { console.error("[collective-choice GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[collective-choice GET]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
   return NextResponse.json(data || []);
 });
 
 // POST — facilitator validates a collective choice
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "collective-choice", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -36,8 +39,7 @@ export const POST = withErrorHandler(async function POST(
 
   const parsed = await safeJson(req);
   if ("error" in parsed) return parsed.error;
-  const { situationId, category, restitutionLabel, chosenText, sourceResponseId } =
-    parsed.data;
+  const { situationId, category, restitutionLabel, chosenText, sourceResponseId } = parsed.data;
 
   if (!situationId || !isValidUUID(situationId)) {
     return NextResponse.json({ error: "situationId requis et valide" }, { status: 400 });
@@ -69,7 +71,7 @@ export const POST = withErrorHandler(async function POST(
         chosen_text: cleanText,
         source_response_id: sourceResponseId || null,
       },
-      { onConflict: "session_id,situation_id" }
+      { onConflict: "session_id,situation_id" },
     )
     .select()
     .single();

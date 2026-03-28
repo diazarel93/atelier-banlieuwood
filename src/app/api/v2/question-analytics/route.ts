@@ -21,10 +21,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   const classLabelFilter = req.nextUrl.searchParams.get("classLabel");
 
   // Get facilitator's sessions
-  let sessionsQuery = supabase
-    .from("sessions")
-    .select("id")
-    .eq("facilitator_id", user.id);
+  let sessionsQuery = supabase.from("sessions").select("id").eq("facilitator_id", user.id);
 
   if (sessionIdFilter) {
     sessionsQuery = sessionsQuery.eq("id", sessionIdFilter);
@@ -71,15 +68,10 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     .select("id, label, category, module")
     .in("id", situationIds);
 
-  const situationMap = new Map(
-    (situations || []).map((s) => [s.id, s])
-  );
+  const situationMap = new Map((situations || []).map((s) => [s.id, s]));
 
   // Aggregate per situation
-  const grouped = new Map<
-    string,
-    { scores: number[]; times: number[]; count: number }
-  >();
+  const grouped = new Map<string, { scores: number[]; times: number[]; count: number }>();
 
   for (const r of responses) {
     if (!r.situation_id) continue;
@@ -103,17 +95,10 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
       const sit = situationMap.get(situationId);
       const avgScore =
         data.scores.length > 0
-          ? Math.round(
-              (data.scores.reduce((a, b) => a + b, 0) / data.scores.length) *
-                10
-            ) / 10
+          ? Math.round((data.scores.reduce((a, b) => a + b, 0) / data.scores.length) * 10) / 10
           : null;
       const avgTimeMs =
-        data.times.length > 0
-          ? Math.round(
-              data.times.reduce((a, b) => a + b, 0) / data.times.length
-            )
-          : null;
+        data.times.length > 0 ? Math.round(data.times.reduce((a, b) => a + b, 0) / data.times.length) : null;
 
       return {
         situationId,

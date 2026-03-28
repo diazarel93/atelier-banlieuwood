@@ -16,10 +16,10 @@ import { getSeanceMax } from "@/lib/constants";
 import dynamic from "next/dynamic";
 import { getModuleGuide, getQuestionGuide, type QuestionGuide } from "@/lib/guide-data";
 
-const QRCodeSVG = dynamic(
-  () => import("qrcode.react").then(mod => ({ default: mod.QRCodeSVG })),
-  { ssr: false, loading: () => <div className="w-full h-full bg-white/5 rounded animate-pulse" /> }
-);
+const QRCodeSVG = dynamic(() => import("qrcode.react").then((mod) => ({ default: mod.QRCodeSVG })), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-white/5 rounded animate-pulse" />,
+});
 import { MODULES, PHASES, getModuleByDb, getPhaseForModule } from "@/lib/modules-data";
 import type { StudentState } from "@/components/pilot/pulse-ring";
 import { useSound } from "@/hooks/use-sound";
@@ -30,13 +30,17 @@ import { WelcomePanel } from "@/components/pilot/welcome-panel";
 import { ModuleBriefing } from "@/components/pilot/module-briefing";
 import { ContextPanel } from "@/components/pilot/teacher-docks";
 import { getNextAction, type NextAction } from "@/lib/cockpit-next-action";
-const TeamManager = dynamic(() => import("@/components/pilot/team-manager").then(m => ({ default: m.TeamManager })), { ssr: false });
+const TeamManager = dynamic(() => import("@/components/pilot/team-manager").then((m) => ({ default: m.TeamManager })), {
+  ssr: false,
+});
 import { ROUTES } from "@/lib/routes";
 import { CockpitProvider, useCockpit } from "@/components/pilot/cockpit-context";
-const CommandCockpit = dynamic(() => import("@/components/pilot/command/command-cockpit").then(m => ({ default: m.CommandCockpit })), { ssr: false });
+const CommandCockpit = dynamic(
+  () => import("@/components/pilot/command/command-cockpit").then((m) => ({ default: m.CommandCockpit })),
+  { ssr: false },
+);
 
 import type { Session, Student, Response } from "@/hooks/use-pilot-session";
-
 
 // ——————————————————————————————————————————————————————
 // MAIN PAGE — Unified layout with sidebar
@@ -57,7 +61,9 @@ export default function PilotPage() {
   const [showStudents, setShowStudents] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileContextOpen, setMobileContextOpen] = useState(false);
-  const [pendingModuleSwitch, setPendingModuleSwitch] = useState<{ moduleId: string; isQuickLaunch: boolean } | null>(null);
+  const [pendingModuleSwitch, setPendingModuleSwitch] = useState<{ moduleId: string; isQuickLaunch: boolean } | null>(
+    null,
+  );
   const { play: playSound } = useSound();
 
   // Confirmation dialog for destructive actions (#1)
@@ -75,13 +81,18 @@ export default function PilotPage() {
   const sidebarWidth = 0; // Sidebar is now overlay, no offset needed
 
   // Effective connection status: combine navigator.onLine + channel status (#2)
-  const effectiveConnectionStatus = !isOnline ? "disconnected" as const : connectionStatus;
+  const effectiveConnectionStatus = !isOnline ? ("disconnected" as const) : connectionStatus;
 
   useEffect(() => {
     async function check() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push(ROUTES.login); return; }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        router.push(ROUTES.login);
+        return;
+      }
       setActorId(user.id);
       setCheckingAuth(false);
     }
@@ -90,53 +101,78 @@ export default function PilotPage() {
 
   // ── All queries + mutations extracted to usePilotSession ──
   const {
-    session, sessionLoading,
-    teams, situationData, situation,
-    responses, voteData, collectiveChoices,
-    activeModule, hasActiveModule,
-    updateSession, removeStudent, validateChoice,
-    toggleHide, toggleVoteOption, commentResponse,
-    highlightResponse, nudgeStudent, warnStudent,
-    toggleStudentActive, lowerHand, scoreResponse, aiEvaluate,
-    resetResponse, resetAllResponses,
+    session,
+    sessionLoading,
+    teams,
+    situationData,
+    situation,
+    responses,
+    voteData,
+    collectiveChoices,
+    activeModule,
+    hasActiveModule,
+    updateSession,
+    removeStudent,
+    validateChoice,
+    toggleHide,
+    toggleVoteOption,
+    commentResponse,
+    highlightResponse,
+    nudgeStudent,
+    warnStudent,
+    toggleStudentActive,
+    lowerHand,
+    scoreResponse,
+    aiEvaluate,
+    resetResponse,
+    resetAllResponses,
   } = usePilotSession(sessionId, checkingAuth, actorId, effectiveConnectionStatus);
 
   // Undo-aware wrappers for reversible mutations (#13)
-  const undoableToggleHide = useMemo(() => ({
-    ...toggleHide,
-    mutate: (args: { responseId: string; is_hidden: boolean }) => {
-      undoStack.push({
-        label: args.is_hidden ? "Réponse masquée" : "Réponse affichée",
-        undo: () => toggleHide.mutate({ responseId: args.responseId, is_hidden: !args.is_hidden }),
-        redo: () => toggleHide.mutate(args),
-      });
-      toggleHide.mutate(args);
-    },
-  }), [toggleHide, undoStack]);
+  const undoableToggleHide = useMemo(
+    () => ({
+      ...toggleHide,
+      mutate: (args: { responseId: string; is_hidden: boolean }) => {
+        undoStack.push({
+          label: args.is_hidden ? "Réponse masquée" : "Réponse affichée",
+          undo: () => toggleHide.mutate({ responseId: args.responseId, is_hidden: !args.is_hidden }),
+          redo: () => toggleHide.mutate(args),
+        });
+        toggleHide.mutate(args);
+      },
+    }),
+    [toggleHide, undoStack],
+  );
 
-  const undoableHighlight = useMemo(() => ({
-    ...highlightResponse,
-    mutate: (args: { responseId: string; highlighted: boolean }) => {
-      undoStack.push({
-        label: args.highlighted ? "Réponse projetée" : "Projection retirée",
-        undo: () => highlightResponse.mutate({ responseId: args.responseId, highlighted: !args.highlighted }),
-        redo: () => highlightResponse.mutate(args),
-      });
-      highlightResponse.mutate(args);
-    },
-  }), [highlightResponse, undoStack]);
+  const undoableHighlight = useMemo(
+    () => ({
+      ...highlightResponse,
+      mutate: (args: { responseId: string; highlighted: boolean }) => {
+        undoStack.push({
+          label: args.highlighted ? "Réponse projetée" : "Projection retirée",
+          undo: () => highlightResponse.mutate({ responseId: args.responseId, highlighted: !args.highlighted }),
+          redo: () => highlightResponse.mutate(args),
+        });
+        highlightResponse.mutate(args);
+      },
+    }),
+    [highlightResponse, undoStack],
+  );
 
-  const undoableToggleVote = useMemo(() => ({
-    ...toggleVoteOption,
-    mutate: (args: { responseId: string; is_vote_option: boolean }) => {
-      undoStack.push({
-        label: args.is_vote_option ? "Option de vote ajoutée" : "Option de vote retirée",
-        undo: () => toggleVoteOption.mutate({ responseId: args.responseId, is_vote_option: !args.is_vote_option }),
-        redo: () => toggleVoteOption.mutate(args),
-      });
-      toggleVoteOption.mutate(args);
-    },
-  }), [toggleVoteOption, undoStack]);
+  const undoableToggleVote = useMemo(
+    () => ({
+      ...toggleVoteOption,
+      mutate: (args: { responseId: string; is_vote_option: boolean }) => {
+        undoStack.push({
+          label: args.is_vote_option ? "Option de vote ajoutée" : "Option de vote retirée",
+          undo: () => toggleVoteOption.mutate({ responseId: args.responseId, is_vote_option: !args.is_vote_option }),
+          redo: () => toggleVoteOption.mutate(args),
+        });
+        toggleVoteOption.mutate(args);
+      },
+    }),
+    [toggleVoteOption, undoStack],
+  );
 
   // State for comment popover
   const [commentingResponse, setCommentingResponse] = useState<string | null>(null);
@@ -163,9 +199,8 @@ export default function PilotPage() {
     const mod = MODULES.find((m) => m.id === moduleId);
     if (!mod || mod.disabled) return;
 
-    const isAlreadyCurrent = session &&
-      session.current_module === mod.dbModule &&
-      (session.current_seance || 1) === mod.dbSeance;
+    const isAlreadyCurrent =
+      session && session.current_module === mod.dbModule && (session.current_seance || 1) === mod.dbSeance;
 
     if (!isAlreadyCurrent) {
       markCurrentModuleCompleted();
@@ -175,7 +210,12 @@ export default function PilotPage() {
         current_situation_index: 0,
         status: "responding",
       });
-      logAudit({ action: "module_switch", actor: actorId, sessionId, details: { moduleId, dbModule: mod.dbModule, dbSeance: mod.dbSeance } });
+      logAudit({
+        action: "module_switch",
+        actor: actorId,
+        sessionId,
+        details: { moduleId, dbModule: mod.dbModule, dbSeance: mod.dbSeance },
+      });
     }
     if (isQuickLaunch) {
       setSelectedModuleId(moduleId);
@@ -215,10 +255,14 @@ export default function PilotPage() {
     const currentMod = getModuleByDb(session.current_module, session.current_seance || 1);
     if (currentMod) {
       const s = session.current_seance || 1;
-      const maxSit = (session.current_module === 1 && s === 1) ? 8
-        : (session.current_module === 1 && s >= 2) ? 1
-        : session.current_module === 4 ? 8
-        : getSeanceMax(session.current_module, s);
+      const maxSit =
+        session.current_module === 1 && s === 1
+          ? 8
+          : session.current_module === 1 && s >= 2
+            ? 1
+            : session.current_module === 4
+              ? 8
+              : getSeanceMax(session.current_module, s);
       const isLastQ = (session.current_situation_index || 0) >= maxSit - 1;
       const isBudgetDone = session.current_module === 9 && s === 2 && session.status === "reviewing";
 
@@ -238,9 +282,13 @@ export default function PilotPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
-      }).then((res) => {
-        if (res.ok) toast.success("Cartes collect\u00E9es pour la Construction Collective");
-      }).catch(() => { /* pools can be generated manually from M12 */ });
+      })
+        .then((res) => {
+          if (res.ok) toast.success("Cartes collect\u00E9es pour la Construction Collective");
+        })
+        .catch(() => {
+          /* pools can be generated manually from M12 */
+        });
     }
     // Reset status so the sidebar shows completion, but don't change view
     updateSession.mutate({ status: "waiting", current_situation_index: 0 });
@@ -250,13 +298,12 @@ export default function PilotPage() {
   const questionCounter = useMemo(() => {
     if (!session || !activeModule) return null;
     const isM1Pos = session.current_module === 1 && (session.current_seance || 1) === 1;
-    const isM1Image = session.current_module === 1 && (session.current_seance || 1) >= 2 && (session.current_seance || 1) <= 4;
+    const isM1Image =
+      session.current_module === 1 && (session.current_seance || 1) >= 2 && (session.current_seance || 1) <= 4;
     const isM1Notebook = session.current_module === 1 && (session.current_seance || 1) === 5;
     if (isM1Image || isM1Notebook) return null;
     const s = session.current_seance || 1;
-    const maxSit = isM1Pos ? 8
-      : session.current_module === 4 ? 8
-      : getSeanceMax(session.current_module, s);
+    const maxSit = isM1Pos ? 8 : session.current_module === 4 ? 8 : getSeanceMax(session.current_module, s);
     return `Q${(session.current_situation_index || 0) + 1}/${maxSit}`;
   }, [session, activeModule]);
 
@@ -272,11 +319,12 @@ export default function PilotPage() {
   }, [session?.students, responses]);
 
   // Question index & total for top bar dots
-  const currentQuestionIndex = (session?.current_situation_index) || 0;
+  const currentQuestionIndex = session?.current_situation_index || 0;
   const totalQuestions = useMemo(() => {
     if (!session || !activeModule) return 0;
     const isM1Pos = session.current_module === 1 && (session.current_seance || 1) === 1;
-    const isM1Image = session.current_module === 1 && (session.current_seance || 1) >= 2 && (session.current_seance || 1) <= 4;
+    const isM1Image =
+      session.current_module === 1 && (session.current_seance || 1) >= 2 && (session.current_seance || 1) <= 4;
     const isM1Notebook = session.current_module === 1 && (session.current_seance || 1) === 5;
     if (isM1Image || isM1Notebook) return 0;
     const s = session.current_seance || 1;
@@ -297,8 +345,11 @@ export default function PilotPage() {
   if (checkingAuth || sessionLoading) {
     return (
       <div className="min-h-dvh flex items-center justify-center bg-bw-bg">
-        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-          className="w-8 h-8 border-2 border-bw-primary border-t-transparent rounded-full" />
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          className="w-8 h-8 border-2 border-bw-primary border-t-transparent rounded-full"
+        />
       </div>
     );
   }
@@ -308,7 +359,12 @@ export default function PilotPage() {
       <div className="min-h-dvh flex items-center justify-center bg-bw-bg">
         <div className="text-center space-y-3">
           <p className="text-bw-muted">Session introuvable</p>
-          <button onClick={() => router.push(ROUTES.legacyDashboard)} className="text-bw-primary text-sm cursor-pointer">← Dashboard</button>
+          <button
+            onClick={() => router.push(ROUTES.legacyDashboard)}
+            className="text-bw-primary text-sm cursor-pointer"
+          >
+            ← Dashboard
+          </button>
         </div>
       </div>
     );
@@ -320,7 +376,6 @@ export default function PilotPage() {
   // ——— Unified Layout ———
   return (
     <div className="h-dvh flex flex-col" style={{ background: "#F7F3EA" }}>
-
       {/* ── QR Panel ── */}
       <AnimatePresence>
         {showQR && (
@@ -337,7 +392,9 @@ export default function PilotPage() {
               <div className="space-y-2">
                 <p className="text-sm text-bw-text">Les élèves scannent ce QR</p>
                 <p className="font-mono font-bold text-3xl tracking-[0.3em]">{session.join_code}</p>
-                <p className="text-xs text-bw-muted">ou vont sur <span className="text-bw-primary">banlieuwood.app/join</span></p>
+                <p className="text-xs text-bw-muted">
+                  ou vont sur <span className="text-bw-primary">banlieuwood.app/join</span>
+                </p>
               </div>
             </div>
           </motion.div>
@@ -354,8 +411,14 @@ export default function PilotPage() {
             activeModuleId={activeModule?.id || null}
             selectedModuleId={moduleView === "briefing" ? selectedModuleId : null}
             completedModules={session.completed_modules || []}
-            onSelectModule={(id) => { handleSelectModule(id); setSidebarOpen(false); }}
-            onQuickLaunch={(id) => { handleQuickLaunchModule(id); setSidebarOpen(false); }}
+            onSelectModule={(id) => {
+              handleSelectModule(id);
+              setSidebarOpen(false);
+            }}
+            onQuickLaunch={(id) => {
+              handleQuickLaunchModule(id);
+              setSidebarOpen(false);
+            }}
             responsesCount={responses?.length || 0}
             moduleStartedAt={moduleStartedAt}
             sessionStatus={session.status}
@@ -366,77 +429,75 @@ export default function PilotPage() {
 
         {/* Centre — contenu principal (full width) */}
         <div className="flex-1 overflow-hidden flex flex-col">
-        {selectedModuleId && moduleView === "briefing" ? (
-          <ModuleBriefing
-            module={MODULES.find((m) => m.id === selectedModuleId)!}
-            phase={getPhaseForModule(selectedModuleId)}
-            moduleGuide={getModuleGuide(selectedModuleId)}
-            isInProgress={
-              !!session && !!activeModule &&
-              activeModule.id === selectedModuleId
-            }
-            isCompleted={session.completed_modules?.includes(selectedModuleId) || false}
-            sessionId={sessionId}
-            onLaunch={handleLaunchModule}
-            onResume={handleResumeModule}
-          />
-        ) : hasActiveModule ? (
-          <ErrorBoundary>
-          <CockpitProvider value={{
-            session,
-            sessionId,
-            responses,
-            activeStudents,
-            voteData,
-            collectiveChoices,
-            situationData,
-            teams: teams || [],
-            updateSession,
-            toggleHide: undoableToggleHide,
-            toggleVoteOption: undoableToggleVote,
-            validateChoice,
-            removeStudent,
-            commentResponse,
-            highlightResponse: undoableHighlight,
-            nudgeStudent,
-            warnStudent,
-            toggleStudentActive,
-            lowerHand,
-            scoreResponse,
-            aiEvaluate,
-            resetResponse,
-            resetAllResponses,
-            onModuleComplete: handleModuleComplete,
-            onSelectStudent: (s) => { setSelectedStudentId(s.id); setShowStudents(false); },
-            onOpenModules: () => setSidebarOpen(!sidebarOpen),
-            onOpenScreen: () => window.open(ROUTES.screen(sessionId), "_blank"),
-            studentWarnings: Object.fromEntries((session.students || []).map(s => [s.id, s.warnings || 0])),
-          }}>
-          <CommandCockpit />
-          </CockpitProvider>
-          </ErrorBoundary>
-        ) : (
-          <div className="flex-1 overflow-y-auto">
-            <WelcomePanel
-              sessionTitle={session.title || "Session"}
-              level={session.level || ""}
-              joinCode={session.join_code}
-              activeStudents={activeStudents}
-              onOpenQR={() => setShowQR(!showQR)}
-              onCopyCode={copyCode}
+          {selectedModuleId && moduleView === "briefing" ? (
+            <ModuleBriefing
+              module={MODULES.find((m) => m.id === selectedModuleId)!}
+              phase={getPhaseForModule(selectedModuleId)}
+              moduleGuide={getModuleGuide(selectedModuleId)}
+              isInProgress={!!session && !!activeModule && activeModule.id === selectedModuleId}
+              isCompleted={session.completed_modules?.includes(selectedModuleId) || false}
+              sessionId={sessionId}
+              onLaunch={handleLaunchModule}
+              onResume={handleResumeModule}
             />
-            {/* Team Manager — visible in waiting state */}
-            <div className="max-w-lg mx-auto px-4 pb-6">
-              <TeamManager
-                sessionId={sessionId}
-                teams={teams || []}
-                students={activeStudents}
+          ) : hasActiveModule ? (
+            <ErrorBoundary>
+              <CockpitProvider
+                value={{
+                  session,
+                  sessionId,
+                  responses,
+                  activeStudents,
+                  voteData,
+                  collectiveChoices,
+                  situationData,
+                  teams: teams || [],
+                  updateSession,
+                  toggleHide: undoableToggleHide,
+                  toggleVoteOption: undoableToggleVote,
+                  validateChoice,
+                  removeStudent,
+                  commentResponse,
+                  highlightResponse: undoableHighlight,
+                  nudgeStudent,
+                  warnStudent,
+                  toggleStudentActive,
+                  lowerHand,
+                  scoreResponse,
+                  aiEvaluate,
+                  resetResponse,
+                  resetAllResponses,
+                  onModuleComplete: handleModuleComplete,
+                  onSelectStudent: (s) => {
+                    setSelectedStudentId(s.id);
+                    setShowStudents(false);
+                  },
+                  onOpenModules: () => setSidebarOpen(!sidebarOpen),
+                  onOpenScreen: () => window.open(ROUTES.screen(sessionId), "_blank"),
+                  studentWarnings: Object.fromEntries((session.students || []).map((s) => [s.id, s.warnings || 0])),
+                }}
+              >
+                <CommandCockpit />
+              </CockpitProvider>
+            </ErrorBoundary>
+          ) : (
+            <div className="flex-1 overflow-y-auto">
+              <WelcomePanel
+                sessionTitle={session.title || "Session"}
+                level={session.level || ""}
+                joinCode={session.join_code}
+                activeStudents={activeStudents}
+                onOpenQR={() => setShowQR(!showQR)}
+                onCopyCode={copyCode}
               />
+              {/* Team Manager — visible in waiting state */}
+              <div className="max-w-lg mx-auto px-4 pb-6">
+                <TeamManager sessionId={sessionId} teams={teams || []} students={activeStudents} />
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* ContextDocks removed — info redistributed to split panel + header */}
+          {/* ContextDocks removed — info redistributed to split panel + header */}
         </div>
       </div>
 
@@ -488,13 +549,28 @@ export default function PilotPage() {
             >
               <div className="flex items-center justify-between px-4 py-3 border-b border-black/[0.06]">
                 <span className="text-sm font-semibold">Contexte</span>
-                <button onClick={() => setMobileContextOpen(false)} className="text-bw-muted hover:text-bw-heading cursor-pointer text-sm">✕</button>
+                <button
+                  onClick={() => setMobileContextOpen(false)}
+                  className="text-bw-muted hover:text-bw-heading cursor-pointer text-sm"
+                >
+                  ✕
+                </button>
               </div>
               <ContextPanel
                 moduleGuide={activeModule ? getModuleGuide(activeModule.id) : undefined}
                 questionGuide={
-                  session && activeModule && (session.current_module === 3 || session.current_module === 4 || session.current_module === 9 || session.current_module === 2 || session.current_module === 10)
-                    ? getQuestionGuide(session.current_seance || 1, (session.current_situation_index || 0) + 1, session.current_module)
+                  session &&
+                  activeModule &&
+                  (session.current_module === 3 ||
+                    session.current_module === 4 ||
+                    session.current_module === 9 ||
+                    session.current_module === 2 ||
+                    session.current_module === 10)
+                    ? getQuestionGuide(
+                        session.current_seance || 1,
+                        (session.current_situation_index || 0) + 1,
+                        session.current_module,
+                      )
                     : undefined
                 }
                 responsesCount={responses?.length || 0}

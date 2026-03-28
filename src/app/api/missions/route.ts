@@ -50,21 +50,14 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
   const { missionId, profileId, content } = body as { missionId?: string; profileId?: string; content?: string };
 
   if (!missionId || !profileId || !content || !isValidUUID(missionId) || !isValidUUID(profileId)) {
-    return NextResponse.json(
-      { error: "missionId, profileId, et content requis" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "missionId, profileId, et content requis" }, { status: 400 });
   }
   if (typeof content === "string" && content.length > 5000) {
     return NextResponse.json({ error: "Contenu trop long (max 5000 caractères)" }, { status: 400 });
   }
 
   // Get mission for XP reward
-  const { data: mission } = await supabase
-    .from("missions")
-    .select("xp_reward")
-    .eq("id", missionId)
-    .single();
+  const { data: mission } = await supabase.from("missions").select("xp_reward").eq("id", missionId).single();
 
   if (!mission) {
     return NextResponse.json({ error: "Mission introuvable" }, { status: 404 });

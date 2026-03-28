@@ -31,9 +31,7 @@ interface DashboardSummary {
   trends?: Record<string, { value: number; label?: string }>;
 }
 
-async function fetchDashboardSummary(
-  classLabel?: string | null
-): Promise<DashboardSummary> {
+async function fetchDashboardSummary(classLabel?: string | null): Promise<DashboardSummary> {
   const params = new URLSearchParams();
   if (classLabel) params.set("classLabel", classLabel);
   const qs = params.toString();
@@ -51,8 +49,4 @@ export function useDashboardSummary(classLabel?: string | null) {
   });
 }
 
-export type {
-  SessionSummary,
-  DashboardStats,
-  DashboardSummary,
-};
+export type { SessionSummary, DashboardStats, DashboardSummary };

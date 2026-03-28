@@ -15,7 +15,7 @@ const MAX_NOTEBOOK_LENGTH = 2000;
 // POST — student submits a response
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "respond", { max: 20, windowSec: 60 });
   if (rl) {
@@ -28,10 +28,7 @@ export const POST = withErrorHandler(async function POST(
 
   const validated = respondSchema.safeParse(parsed.data);
   if (!validated.success) {
-    return NextResponse.json(
-      { error: formatZodError(validated.error) },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: formatZodError(validated.error) }, { status: 400 });
   }
 
   // Prefer token-based auth over body studentId
@@ -66,20 +63,14 @@ export const POST = withErrorHandler(async function POST(
     cleanText = text.trim().toLowerCase();
     const validKeys = ((situationRow?.options || []) as { key: string }[]).map((o) => o.key);
     if (!validKeys.includes(cleanText)) {
-      return NextResponse.json(
-        { error: "Option invalide" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Option invalide" }, { status: 400 });
     }
   } else {
     // Open or notebook questions (notebook allows longer text)
     const maxLen = questionType === "notebook" ? MAX_NOTEBOOK_LENGTH : MAX_RESPONSE_LENGTH;
     cleanText = text.trim().slice(0, maxLen);
     if (cleanText.length < 2) {
-      return NextResponse.json(
-        { error: "Réponse trop courte (2 caractères minimum)" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Réponse trop courte (2 caractères minimum)" }, { status: 400 });
     }
   }
 
@@ -92,10 +83,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!session || session.status !== "responding") {
-    return NextResponse.json(
-      { error: "Les réponses ne sont pas ouvertes" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Les réponses ne sont pas ouvertes" }, { status: 400 });
   }
 
   // Race condition guard: verify the response's situation matches the current question.
@@ -119,17 +107,14 @@ export const POST = withErrorHandler(async function POST(
     if (isStale) {
       return NextResponse.json(
         { error: "La session a déjà avancé à une nouvelle question", code: "SITUATION_ADVANCED" },
-        { status: 409 }
+        { status: 409 },
       );
     }
   }
 
   // Reject responses after timer has expired (server-side enforcement)
   if (session.timer_ends_at && new Date(session.timer_ends_at).getTime() < Date.now()) {
-    return NextResponse.json(
-      { error: "Le temps est écoulé" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Le temps est écoulé" }, { status: 400 });
   }
 
   // Verify student belongs to this session
@@ -141,10 +126,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!student) {
-    return NextResponse.json(
-      { error: "Joueur introuvable dans cette partie" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Joueur introuvable dans cette partie" }, { status: 404 });
   }
 
   // Upsert response (allows re-submission, clears reset flag if set)
@@ -158,7 +140,7 @@ export const POST = withErrorHandler(async function POST(
         text: cleanText,
         reset_at: null,
       },
-      { onConflict: "session_id,student_id,situation_id" }
+      { onConflict: "session_id,student_id,situation_id" },
     )
     .select()
     .single();
@@ -191,10 +173,7 @@ export const POST = withErrorHandler(async function POST(
   }
 
   // Update student last_seen
-  await admin
-    .from("students")
-    .update({ last_seen_at: new Date().toISOString() })
-    .eq("id", studentId);
+  await admin.from("students").update({ last_seen_at: new Date().toISOString() }).eq("id", studentId);
 
   // Broadcast update so pilot/screen get instant notification
   broadcastSessionUpdate(sessionId);
@@ -210,19 +189,17 @@ export const POST = withErrorHandler(async function POST(
 
     if (sit) {
       // Auto-create collective choice (response = choice in solo)
-      await admin
-        .from("collective_choices")
-        .upsert(
-          {
-            session_id: sessionId,
-            situation_id: situationId,
-            category: sit.category,
-            restitution_label: sit.restitution_label,
-            chosen_text: cleanText,
-            source_response_id: data.id,
-          },
-          { onConflict: "session_id,situation_id" }
-        );
+      await admin.from("collective_choices").upsert(
+        {
+          session_id: sessionId,
+          situation_id: situationId,
+          category: sit.category,
+          restitution_label: sit.restitution_label,
+          chosen_text: cleanText,
+          source_response_id: data.id,
+        },
+        { onConflict: "session_id,situation_id" },
+      );
 
       // Auto-advance to next situation (module-aware séance map)
       const seanceMap = MODULE_SEANCE_SITUATIONS[session.current_module];
@@ -231,10 +208,7 @@ export const POST = withErrorHandler(async function POST(
 
       if (nextIndex < seanceMax) {
         // Next question in same séance
-        await admin
-          .from("sessions")
-          .update({ current_situation_index: nextIndex })
-          .eq("id", sessionId);
+        await admin.from("sessions").update({ current_situation_index: nextIndex }).eq("id", sessionId);
       } else {
         // Check next séance
         const nextSeance = session.current_seance + 1;
@@ -249,10 +223,7 @@ export const POST = withErrorHandler(async function POST(
             .eq("id", sessionId);
         } else {
           // All done
-          await admin
-            .from("sessions")
-            .update({ status: "done" })
-            .eq("id", sessionId);
+          await admin.from("sessions").update({ status: "done" }).eq("id", sessionId);
         }
       }
       // Broadcast auto-advance to all clients

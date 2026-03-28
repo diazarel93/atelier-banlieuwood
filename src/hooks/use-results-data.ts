@@ -101,10 +101,28 @@ export interface M10Pitch {
 }
 
 export interface ReplayData {
-  events: { id: string; event_type: string; student_id: string | null; situation_id: string | null; payload: Record<string, unknown>; occurred_at: string; offsetMs: number; seq: number }[];
+  events: {
+    id: string;
+    event_type: string;
+    student_id: string | null;
+    situation_id: string | null;
+    payload: Record<string, unknown>;
+    occurred_at: string;
+    offsetMs: number;
+    seq: number;
+  }[];
   totalDurationMs: number;
   students: { id: string; display_name: string; avatar: string }[];
-  responses: { id: string; student_id: string; situation_id: string; text: string; response_time_ms: number | null; ai_score: number | null; is_highlighted: boolean; submitted_at: string }[];
+  responses: {
+    id: string;
+    student_id: string;
+    situation_id: string;
+    text: string;
+    response_time_ms: number | null;
+    ai_score: number | null;
+    is_highlighted: boolean;
+    submitted_at: string;
+  }[];
 }
 
 // ── Hook ──
@@ -198,17 +216,32 @@ export function useResultsData(sessionId: string) {
 
     fetch(`/api/sessions/${sessionId}/bilan`, { signal })
       .then((r) => (r.ok ? r.json() : null))
-      .then((data) => { if (data?.bilan) { setBilan(data.bilan); setBilanProvider(data.provider); } })
+      .then((data) => {
+        if (data?.bilan) {
+          setBilan(data.bilan);
+          setBilanProvider(data.provider);
+        }
+      })
       .catch(() => {});
 
     fetch(`/api/sessions/${sessionId}/fiche-cours`, { signal })
       .then((r) => (r.ok ? r.json() : null))
-      .then((data) => { if (data?.fiche) { setFiche(data.fiche); setFicheProvider(data.provider); } })
+      .then((data) => {
+        if (data?.fiche) {
+          setFiche(data.fiche);
+          setFicheProvider(data.provider);
+        }
+      })
       .catch(() => {});
 
     fetch(`/api/sessions/${sessionId}/bible`, { signal })
       .then((r) => (r.ok ? r.json() : null))
-      .then((data) => { if (data?.bible) { setBible(data.bible); setBibleProvider(data.provider); } })
+      .then((data) => {
+        if (data?.bible) {
+          setBible(data.bible);
+          setBibleProvider(data.provider);
+        }
+      })
       .catch(() => {});
 
     return () => controller.abort();
@@ -254,29 +287,30 @@ export function useResultsData(sessionId: string) {
     }
   }, [sessionId]);
 
-  const generateBible = useCallback(async (force = false) => {
-    setBibleLoading(true);
-    try {
-      const url = force
-        ? `/api/sessions/${sessionId}/bible?force=true`
-        : `/api/sessions/${sessionId}/bible`;
-      const res = await fetch(url, { method: "POST" });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Erreur");
+  const generateBible = useCallback(
+    async (force = false) => {
+      setBibleLoading(true);
+      try {
+        const url = force ? `/api/sessions/${sessionId}/bible?force=true` : `/api/sessions/${sessionId}/bible`;
+        const res = await fetch(url, { method: "POST" });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || "Erreur");
+        }
+        const data = await res.json();
+        if (data?.bible) {
+          setBible(data.bible);
+          setBibleProvider(data.provider);
+          toast.success("Bible du film générée !");
+        }
+      } catch {
+        toast.error("Erreur lors de la génération");
+      } finally {
+        setBibleLoading(false);
       }
-      const data = await res.json();
-      if (data?.bible) {
-        setBible(data.bible);
-        setBibleProvider(data.provider);
-        toast.success("Bible du film générée !");
-      }
-    } catch {
-      toast.error("Erreur lors de la génération");
-    } finally {
-      setBibleLoading(false);
-    }
-  }, [sessionId]);
+    },
+    [sessionId],
+  );
 
   // ── Derived data ──
 
@@ -289,10 +323,7 @@ export function useResultsData(sessionId: string) {
         const match = line.match(/^- \*\*(.+?)\*\* : (.+)$/);
         if (!match) return null;
         const [, label, text] = match;
-        const category =
-          Object.keys(CATEGORY_LABELS).find((c) =>
-            label.toLowerCase().includes(c)
-          ) || "personnage";
+        const category = Object.keys(CATEGORY_LABELS).find((c) => label.toLowerCase().includes(c)) || "personnage";
         return { category, text } as PosterChoice;
       })
       .filter((c): c is PosterChoice => c !== null);
@@ -316,11 +347,7 @@ export function useResultsData(sessionId: string) {
   const handleDownloadMarkdown = useCallback(() => {
     const exp = exportQuery.data;
     if (!exp) return;
-    downloadFile(
-      exp.markdown,
-      `${exp.session.title.replace(/\s+/g, "-")}-histoire.md`,
-      "text/markdown"
-    );
+    downloadFile(exp.markdown, `${exp.session.title.replace(/\s+/g, "-")}-histoire.md`, "text/markdown");
   }, [exportQuery.data]);
 
   const handleExportCsv = useCallback(() => {
@@ -335,13 +362,11 @@ export function useResultsData(sessionId: string) {
       String(s.avgLength),
       String(s.chosenCount),
     ]);
-    const csv = [headers, ...rows]
-      .map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(","))
-      .join("\n");
+    const csv = [headers, ...rows].map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
     downloadFile(
       "\uFEFF" + csv,
       `${exp?.session.title.replace(/\s+/g, "-") || "session"}-eleves.csv`,
-      "text/csv;charset=utf-8"
+      "text/csv;charset=utf-8",
     );
     toast.success("CSV exporté !");
   }, [feedbackQuery.data, exportQuery.data]);
@@ -363,7 +388,9 @@ export function useResultsData(sessionId: string) {
     // KPIs
     lines.push("## Chiffres cles");
     lines.push(`- ${exp.studentsCount} eleve${exp.studentsCount !== 1 ? "s" : ""}`);
-    lines.push(`- ${fb?.stats.totalResponses ?? exp.choicesCount} reponse${(fb?.stats.totalResponses ?? exp.choicesCount) !== 1 ? "s" : ""}`);
+    lines.push(
+      `- ${fb?.stats.totalResponses ?? exp.choicesCount} reponse${(fb?.stats.totalResponses ?? exp.choicesCount) !== 1 ? "s" : ""}`,
+    );
     if (fb) {
       lines.push(`- ${fb.stats.participationRate}% de participation`);
       lines.push(`- Score global : ${fb.overallScore}%`);
@@ -457,4 +484,3 @@ function downloadFile(content: string, filename: string, type: string) {
   a.click();
   URL.revokeObjectURL(url);
 }
-

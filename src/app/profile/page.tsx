@@ -95,9 +95,7 @@ const HIDDEN_ACHIEVEMENT_IDS = [
   "critique",
 ] as const;
 
-const VISIBLE_ACHIEVEMENTS = ACHIEVEMENTS.filter(
-  (a) => !(HIDDEN_ACHIEVEMENT_IDS as readonly string[]).includes(a.id)
-);
+const VISIBLE_ACHIEVEMENTS = ACHIEVEMENTS.filter((a) => !(HIDDEN_ACHIEVEMENT_IDS as readonly string[]).includes(a.id));
 
 // ── Category filter ──
 
@@ -135,7 +133,13 @@ export default function ProfilePage() {
 
   if (error || !data) {
     return (
-      <main className="min-h-dvh flex items-center justify-center px-4" style={{ backgroundColor: "#08090E", background: "linear-gradient(145deg, #08090E 0%, #0A0C12 35%, #08090E 100%)" }}>
+      <main
+        className="min-h-dvh flex items-center justify-center px-4"
+        style={{
+          backgroundColor: "#08090E",
+          background: "linear-gradient(145deg, #08090E 0%, #0A0C12 35%, #08090E 100%)",
+        }}
+      >
         <div className="text-center space-y-4">
           <p className="text-4xl">😕</p>
           <p className="text-[#9898aa]">{error || "Impossible de charger le profil"}</p>
@@ -156,43 +160,46 @@ export default function ProfilePage() {
   for (const a of achievements) {
     const existing = unlockedMap.get(a.id);
     // Keep the highest tier
-    if (
-      !existing ||
-      tierRank(a.tier) > tierRank(existing.tier)
-    ) {
+    if (!existing || tierRank(a.tier) > tierRank(existing.tier)) {
       unlockedMap.set(a.id, a);
     }
   }
 
   // Filter achievements by category (already excludes hidden/impossible ones)
   const filteredAchievements =
-    badgeFilter === "all"
-      ? VISIBLE_ACHIEVEMENTS
-      : VISIBLE_ACHIEVEMENTS.filter((a) => a.category === badgeFilter);
+    badgeFilter === "all" ? VISIBLE_ACHIEVEMENTS : VISIBLE_ACHIEVEMENTS.filter((a) => a.category === badgeFilter);
 
   // Check if any visible achievement is unlocked (for empty state)
   const hasAnyUnlocked = filteredAchievements.some((a) => unlockedMap.has(a.id));
 
   return (
-    <main className="min-h-dvh pb-12 text-[#f0f0f5]" style={{ backgroundColor: "#08090E", background: "linear-gradient(145deg, #08090E 0%, #0A0C12 35%, #08090E 100%)" }}>
+    <main
+      className="min-h-dvh pb-12 text-[#f0f0f5]"
+      style={{
+        backgroundColor: "#08090E",
+        background: "linear-gradient(145deg, #08090E 0%, #0A0C12 35%, #08090E 100%)",
+      }}
+    >
       {/* Cinematic ambient glow */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full" style={{ background: "radial-gradient(ellipse at center, rgba(255,107,53,0.045) 0%, transparent 70%)" }} />
-        <div className="absolute -bottom-48 -right-48 w-[600px] h-[600px] rounded-full" style={{ background: "radial-gradient(ellipse at center, rgba(78,205,196,0.03) 0%, transparent 70%)" }} />
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[400px]" style={{ background: "radial-gradient(ellipse at center, rgba(139,92,246,0.02) 0%, transparent 60%)" }} />
+        <div
+          className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full"
+          style={{ background: "radial-gradient(ellipse at center, rgba(255,107,53,0.045) 0%, transparent 70%)" }}
+        />
+        <div
+          className="absolute -bottom-48 -right-48 w-[600px] h-[600px] rounded-full"
+          style={{ background: "radial-gradient(ellipse at center, rgba(78,205,196,0.03) 0%, transparent 70%)" }}
+        />
+        <div
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[400px]"
+          style={{ background: "radial-gradient(ellipse at center, rgba(139,92,246,0.02) 0%, transparent 60%)" }}
+        />
       </div>
 
       <div className="relative z-10 max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Back link */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.05 }}
-        >
-          <Link
-            href="/"
-            className="text-sm text-[#9898aa] hover:text-[#D4A843] transition-colors"
-          >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }}>
+          <Link href="/" className="text-sm text-[#9898aa] hover:text-[#D4A843] transition-colors">
             ← Retour
           </Link>
         </motion.div>
@@ -232,24 +239,14 @@ export default function ProfilePage() {
 
           {/* Name + Title */}
           <div>
-            <h1 className="font-cinema text-2xl tracking-wider text-[#D4A843] uppercase">
-              {profile.displayName}
-            </h1>
-            {profile.customTitle && (
-              <p className="text-sm text-[#9898aa] mt-0.5">
-                {profile.customTitle}
-              </p>
-            )}
+            <h1 className="font-cinema text-2xl tracking-wider text-[#D4A843] uppercase">{profile.displayName}</h1>
+            {profile.customTitle && <p className="text-sm text-[#9898aa] mt-0.5">{profile.customTitle}</p>}
           </div>
 
           {/* Level badge */}
           <div className="inline-flex items-center gap-2 bg-[#D4A843]/15 px-3 py-1.5 rounded-full border border-[#D4A843]/20">
-            <span className="text-xs font-bold text-[#D4A843]">
-              Nv.{level.level}
-            </span>
-            <span className="text-sm font-cinema tracking-wider text-[#D4A843] uppercase">
-              {level.name}
-            </span>
+            <span className="text-xs font-bold text-[#D4A843]">Nv.{level.level}</span>
+            <span className="text-sm font-cinema tracking-wider text-[#D4A843] uppercase">{level.name}</span>
           </div>
 
           {/* XP Bar */}
@@ -257,12 +254,17 @@ export default function ProfilePage() {
             <div className="flex items-center justify-between text-xs">
               <span className="text-[#9898aa]">{profile.totalXp} XP</span>
               <span className="text-[#9898aa] tabular-nums">
-                {xpToNext > 0
-                  ? `${xpToNext} XP avant niveau ${level.level + 1}`
-                  : "Niveau max !"}
+                {xpToNext > 0 ? `${xpToNext} XP avant niveau ${level.level + 1}` : "Niveau max !"}
               </span>
             </div>
-            <div className="h-3 rounded-full bg-white/[0.08] overflow-hidden relative" role="progressbar" aria-valuenow={Math.round(level.progress * 100)} aria-valuemin={0} aria-valuemax={100} aria-label={`Progression vers le prochain niveau : ${Math.round(level.progress * 100)}%`}>
+            <div
+              className="h-3 rounded-full bg-white/[0.08] overflow-hidden relative"
+              role="progressbar"
+              aria-valuenow={Math.round(level.progress * 100)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`Progression vers le prochain niveau : ${Math.round(level.progress * 100)}%`}
+            >
               <motion.div
                 className="h-full rounded-full relative"
                 style={{
@@ -282,8 +284,7 @@ export default function ProfilePage() {
               <motion.div
                 className="absolute inset-0 rounded-full"
                 style={{
-                  background:
-                    "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
+                  background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
                 }}
                 initial={{ x: "-100%" }}
                 animate={{ x: "200%" }}
@@ -302,9 +303,7 @@ export default function ProfilePage() {
               🔥 {profile.currentStreak} session{profile.currentStreak > 1 ? "s" : ""} d&apos;affilee
             </p>
           ) : (
-            <p className="text-xs text-[#9898aa]">
-              Pas de streak actif
-            </p>
+            <p className="text-xs text-[#9898aa]">Pas de streak actif</p>
           )}
 
           {/* Profile code */}
@@ -323,30 +322,10 @@ export default function ProfilePage() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="grid grid-cols-2 gap-3"
         >
-          <StatCard
-            icon="🎬"
-            label="Sessions"
-            value={profile.sessionsPlayed}
-            delay={0.15}
-          />
-          <StatCard
-            icon="✍️"
-            label="Reponses"
-            value={profile.totalResponses}
-            delay={0.2}
-          />
-          <StatCard
-            icon="🏆"
-            label="Retenues"
-            value={profile.retainedCount}
-            delay={0.25}
-          />
-          <StatCard
-            icon="🔥"
-            label="Meilleur Streak"
-            value={profile.bestStreak}
-            delay={0.3}
-          />
+          <StatCard icon="🎬" label="Sessions" value={profile.sessionsPlayed} delay={0.15} />
+          <StatCard icon="✍️" label="Reponses" value={profile.totalResponses} delay={0.2} />
+          <StatCard icon="🏆" label="Retenues" value={profile.retainedCount} delay={0.25} />
+          <StatCard icon="🔥" label="Meilleur Streak" value={profile.bestStreak} delay={0.3} />
         </motion.section>
 
         {/* ── Badges Gallery ── */}
@@ -356,17 +335,11 @@ export default function ProfilePage() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="space-y-4"
         >
-          <h2 className="font-cinema text-xl tracking-wider text-[#D4A843] uppercase">
-            Mes Badges
-          </h2>
+          <h2 className="font-cinema text-xl tracking-wider text-[#D4A843] uppercase">Mes Badges</h2>
 
           {/* Category tabs */}
           <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-            <FilterTab
-              label="Tous"
-              active={badgeFilter === "all"}
-              onClick={() => setBadgeFilter("all")}
-            />
+            <FilterTab label="Tous" active={badgeFilter === "all"} onClick={() => setBadgeFilter("all")} />
             {CATEGORIES.map((cat) => (
               <FilterTab
                 key={cat.id}
@@ -397,14 +370,7 @@ export default function ProfilePage() {
             <AnimatePresence mode="popLayout">
               {filteredAchievements.map((def, i) => {
                 const unlocked = unlockedMap.get(def.id);
-                return (
-                  <AchievementCard
-                    key={def.id}
-                    def={def}
-                    unlocked={unlocked ?? null}
-                    index={i}
-                  />
-                );
+                return <AchievementCard key={def.id} def={def} unlocked={unlocked ?? null} index={i} />;
               })}
             </AnimatePresence>
           </div>
@@ -417,11 +383,20 @@ export default function ProfilePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.25 }}
           >
-            <div className="rounded-2xl border border-white/[0.08] p-4 border-l-4 border-l-[#4ECDC4]" style={{ background: "rgba(255,255,255,0.04)" }}>
+            <div
+              className="rounded-2xl border border-white/[0.08] p-4 border-l-4 border-l-[#4ECDC4]"
+              style={{ background: "rgba(255,255,255,0.04)" }}
+            >
               <p className="text-xs text-[#4ECDC4] font-cinema tracking-wider uppercase">Prochaine session</p>
               <p className="font-semibold text-[#f0f0f5] mt-1">{nextSession.title}</p>
               <p className="text-sm text-[#9898aa]">
-                {new Date(nextSession.scheduledAt).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}
+                {new Date(nextSession.scheduledAt).toLocaleDateString("fr-FR", {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </p>
             </div>
           </motion.section>
@@ -435,9 +410,7 @@ export default function ProfilePage() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="space-y-3"
           >
-            <h2 className="font-cinema text-xl tracking-wider text-[#D4A843] uppercase">
-              Mes Sessions
-            </h2>
+            <h2 className="font-cinema text-xl tracking-wider text-[#D4A843] uppercase">Mes Sessions</h2>
             <div className="space-y-2">
               {sessionHistory.map((s, i) => (
                 <motion.div
@@ -452,9 +425,7 @@ export default function ProfilePage() {
                     🎬
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#D4A843] truncate">
-                      {s.title}
-                    </p>
+                    <p className="text-sm font-medium text-[#D4A843] truncate">{s.title}</p>
                     <div className="flex items-center gap-2 text-xs text-[#9898aa]">
                       <span>{formatDate(s.date)}</span>
                       {s.classLabel && (
@@ -470,7 +441,6 @@ export default function ProfilePage() {
             </div>
           </motion.section>
         )}
-
       </div>
     </main>
   );
@@ -478,17 +448,7 @@ export default function ProfilePage() {
 
 // ── Sub-components ──
 
-function StatCard({
-  icon,
-  label,
-  value,
-  delay,
-}: {
-  icon: string;
-  label: string;
-  value: number;
-  delay: number;
-}) {
+function StatCard({ icon, label, value, delay }: { icon: string; label: string; value: number; delay: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -498,9 +458,7 @@ function StatCard({
       style={{ background: "rgba(255,255,255,0.04)" }}
     >
       <span className="text-2xl">{icon}</span>
-      <p className="text-2xl font-bold text-[#D4A843] tabular-nums">
-        {value}
-      </p>
+      <p className="text-2xl font-bold text-[#D4A843] tabular-nums">{value}</p>
       <p className="text-xs text-[#9898aa]">{label}</p>
     </motion.div>
   );
@@ -516,12 +474,8 @@ function AchievementCard({
   index: number;
 }) {
   const isUnlocked = !!unlocked;
-  const currentTier = unlocked
-    ? getCurrentTier(def, unlocked.progress)
-    : null;
-  const nextTier = unlocked
-    ? getNextTier(def, unlocked.progress)
-    : def.tiers[0]; // first tier for locked achievements
+  const currentTier = unlocked ? getCurrentTier(def, unlocked.progress) : null;
+  const nextTier = unlocked ? getNextTier(def, unlocked.progress) : def.tiers[0]; // first tier for locked achievements
 
   const progress = unlocked?.progress ?? 0;
   const targetThreshold = nextTier?.threshold ?? def.tiers[0]?.threshold ?? 1;
@@ -534,9 +488,7 @@ function AchievementCard({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3, delay: index * 0.03 }}
-      className={`rounded-2xl border border-white/[0.08] p-3 space-y-2 ${
-        !isUnlocked ? "opacity-40" : ""
-      }`}
+      className={`rounded-2xl border border-white/[0.08] p-3 space-y-2 ${!isUnlocked ? "opacity-40" : ""}`}
       style={{ background: "rgba(255,255,255,0.04)" }}
     >
       {/* Icon + tier badge */}
@@ -554,14 +506,10 @@ function AchievementCard({
       </div>
 
       {/* Name */}
-      <p className="text-sm font-semibold text-[#D4A843] leading-tight">
-        {def.name}
-      </p>
+      <p className="text-sm font-semibold text-[#D4A843] leading-tight">{def.name}</p>
 
       {/* Description */}
-      <p className="text-[11px] text-[#9898aa] leading-snug">
-        {def.description}
-      </p>
+      <p className="text-[11px] text-[#9898aa] leading-snug">{def.description}</p>
 
       {/* Progress bar */}
       <div className="space-y-1">
@@ -588,15 +536,7 @@ function AchievementCard({
   );
 }
 
-function FilterTab({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
+function FilterTab({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
@@ -614,7 +554,13 @@ function FilterTab({
 
 function NoProfile() {
   return (
-    <main className="min-h-dvh flex items-center justify-center px-4 text-[#f0f0f5]" style={{ backgroundColor: "#08090E", background: "linear-gradient(145deg, #08090E 0%, #0A0C12 35%, #08090E 100%)" }}>
+    <main
+      className="min-h-dvh flex items-center justify-center px-4 text-[#f0f0f5]"
+      style={{
+        backgroundColor: "#08090E",
+        background: "linear-gradient(145deg, #08090E 0%, #0A0C12 35%, #08090E 100%)",
+      }}
+    >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -622,9 +568,7 @@ function NoProfile() {
       >
         <div className="text-6xl">🎬</div>
         <div className="space-y-2">
-          <h1 className="font-cinema text-2xl tracking-wider text-[#D4A843] uppercase">
-            Profil Joueur
-          </h1>
+          <h1 className="font-cinema text-2xl tracking-wider text-[#D4A843] uppercase">Profil Joueur</h1>
           <p className="text-sm text-[#9898aa] leading-relaxed">
             Joue ta premiere session pour creer ton profil et debloquer des badges !
           </p>
@@ -642,10 +586,19 @@ function NoProfile() {
 
 function ProfileSkeleton() {
   return (
-    <main className="min-h-dvh" style={{ backgroundColor: "#08090E", background: "linear-gradient(145deg, #08090E 0%, #0A0C12 35%, #08090E 100%)" }}>
+    <main
+      className="min-h-dvh"
+      style={{
+        backgroundColor: "#08090E",
+        background: "linear-gradient(145deg, #08090E 0%, #0A0C12 35%, #08090E 100%)",
+      }}
+    >
       <div className="max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Hero skeleton */}
-        <div className="rounded-2xl border border-white/[0.08] p-6 space-y-4 animate-pulse" style={{ background: "rgba(255,255,255,0.04)" }}>
+        <div
+          className="rounded-2xl border border-white/[0.08] p-6 space-y-4 animate-pulse"
+          style={{ background: "rgba(255,255,255,0.04)" }}
+        >
           <div className="w-24 h-24 rounded-full bg-white/[0.08] mx-auto" />
           <div className="h-6 w-32 bg-white/[0.08] rounded mx-auto" />
           <div className="h-4 w-24 bg-white/[0.08] rounded mx-auto" />
@@ -655,7 +608,11 @@ function ProfileSkeleton() {
         {/* Stats skeleton */}
         <div className="grid grid-cols-2 gap-3">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="rounded-2xl border border-white/[0.08] p-4 space-y-2 animate-pulse" style={{ background: "rgba(255,255,255,0.04)" }}>
+            <div
+              key={i}
+              className="rounded-2xl border border-white/[0.08] p-4 space-y-2 animate-pulse"
+              style={{ background: "rgba(255,255,255,0.04)" }}
+            >
               <div className="w-8 h-8 bg-white/[0.08] rounded mx-auto" />
               <div className="h-6 w-12 bg-white/[0.08] rounded mx-auto" />
               <div className="h-3 w-16 bg-white/[0.08] rounded mx-auto" />
@@ -673,7 +630,11 @@ function ProfileSkeleton() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="rounded-2xl border border-white/[0.08] p-3 space-y-2" style={{ background: "rgba(255,255,255,0.04)" }}>
+              <div
+                key={i}
+                className="rounded-2xl border border-white/[0.08] p-3 space-y-2"
+                style={{ background: "rgba(255,255,255,0.04)" }}
+              >
                 <div className="h-8 w-8 bg-white/[0.08] rounded" />
                 <div className="h-4 w-20 bg-white/[0.08] rounded" />
                 <div className="h-3 w-full bg-white/[0.08] rounded" />

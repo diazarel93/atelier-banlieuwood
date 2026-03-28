@@ -20,10 +20,7 @@ interface ComparisonData {
   totalSessions: number;
 }
 
-const CLASS_COLORS = [
-  "#6366F1", "#EC4899", "#F59E0B", "#10B981", "#8B5CF6",
-  "#EF4444", "#06B6D4", "#F97316",
-];
+const CLASS_COLORS = ["#6366F1", "#EC4899", "#F59E0B", "#10B981", "#8B5CF6", "#EF4444", "#06B6D4", "#F97316"];
 
 export function ClassComparisonChart() {
   const { data, isLoading } = useQuery<ComparisonData>({
@@ -43,9 +40,7 @@ export function ClassComparisonChart() {
   if (!data || data.classes.length < 2) {
     return (
       <GlassCardV2 className="p-5 text-center">
-        <p className="text-sm text-bw-muted">
-          Comparaison disponible avec 2+ classes
-        </p>
+        <p className="text-sm text-bw-muted">Comparaison disponible avec 2+ classes</p>
       </GlassCardV2>
     );
   }
@@ -79,13 +74,7 @@ export function ClassComparisonChart() {
             return (
               <g key={axis.key}>
                 {/* Axis label */}
-                <text
-                  x={0}
-                  y={yBase + 16}
-                  fontSize={13}
-                  fontWeight={600}
-                  fill="var(--color-bw-heading)"
-                >
+                <text x={0} y={yBase + 16} fontSize={13} fontWeight={600} fill="var(--color-bw-heading)">
                   {axis.label}
                 </text>
 
@@ -126,9 +115,7 @@ export function ClassComparisonChart() {
                         fill="var(--color-bw-muted)"
                         textAnchor="end"
                       >
-                        {cls.classLabel.length > 14
-                          ? cls.classLabel.slice(0, 14) + "…"
-                          : cls.classLabel}
+                        {cls.classLabel.length > 14 ? cls.classLabel.slice(0, 14) + "…" : cls.classLabel}
                       </text>
                       {/* Score value */}
                       <text
@@ -146,8 +133,7 @@ export function ClassComparisonChart() {
 
                 {/* Global average line */}
                 {(() => {
-                  const avgX =
-                    labelWidth + (data.globalAverage[axis.key] / maxScore) * barWidth;
+                  const avgX = labelWidth + (data.globalAverage[axis.key] / maxScore) * barWidth;
                   const yStart = yBase + 24;
                   const yEnd = yBase + 28 + classCount * (barHeight + gap);
                   return (
@@ -172,28 +158,19 @@ export function ClassComparisonChart() {
       {/* Legend + stats per class */}
       <div className="space-y-2 mt-4">
         {data.classes.map((cls, ci) => (
-          <div
-            key={cls.classLabel}
-            className="flex items-center gap-2 text-xs text-bw-muted"
-          >
+          <div key={cls.classLabel} className="flex items-center gap-2 text-xs text-bw-muted">
             <div
               className="w-3 h-3 rounded-sm shrink-0"
               style={{
                 backgroundColor: CLASS_COLORS[ci % CLASS_COLORS.length],
               }}
             />
-            <span className="font-medium text-bw-heading">
-              {cls.classLabel}
-            </span>
-            <span className="opacity-60">
-              {cls.studentCount} él.
-            </span>
+            <span className="font-medium text-bw-heading">{cls.classLabel}</span>
+            <span className="opacity-60">{cls.studentCount} él.</span>
             <span className="opacity-60">
               {cls.sessionCount} séance{cls.sessionCount > 1 ? "s" : ""}
             </span>
-            <span className="opacity-60">
-              {cls.participationRate}% participation
-            </span>
+            <span className="opacity-60">{cls.participationRate}% participation</span>
           </div>
         ))}
         <div className="flex items-center gap-1.5 text-xs text-bw-muted">

@@ -45,14 +45,10 @@ export function DebriefView({ module8 }: DebriefViewProps) {
               </div>
 
               {/* Common belief */}
-              <p className="text-sm text-white/40 italic mb-2 line-through">
-                {c.commonBelief}
-              </p>
+              <p className="text-sm text-white/40 italic mb-2 line-through">{c.commonBelief}</p>
 
               {/* Reality */}
-              <p className="text-sm text-bw-teal">
-                {c.reality}
-              </p>
+              <p className="text-sm text-bw-teal">{c.reality}</p>
 
               {/* Class results bar */}
               {totalAnswers > 0 && (
@@ -63,9 +59,7 @@ export function DebriefView({ module8 }: DebriefViewProps) {
                       style={{ width: `${correctPct}%` }}
                     />
                   </div>
-                  <span className="text-xs text-white/40">
-                    {correctPct}% correct
-                  </span>
+                  <span className="text-xs text-white/40">{correctPct}% correct</span>
                 </div>
               )}
             </motion.div>
@@ -88,9 +82,7 @@ export function DebriefView({ module8 }: DebriefViewProps) {
                   <span className="text-sm">{f.emoji}</span>
                   <span className="text-xs font-bold text-white">{f.label}</span>
                 </div>
-                <p className="text-xs text-white/50 leading-snug line-clamp-2">
-                  {f.description}
-                </p>
+                <p className="text-xs text-white/50 leading-snug line-clamp-2">{f.description}</p>
               </div>
             ))}
           </div>

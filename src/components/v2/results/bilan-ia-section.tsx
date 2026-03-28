@@ -13,7 +13,7 @@ const COLLAB_COLORS: Record<string, string> = {
 const TREND_LABELS: Record<string, { label: string; icon: string }> = {
   croissant: { label: "Croissant", icon: "↗" },
   stable: { label: "Stable", icon: "→" },
-  "décroissant": { label: "Décroissant", icon: "↘" },
+  décroissant: { label: "Décroissant", icon: "↘" },
 };
 
 const DEPTH_COLORS: Record<string, string> = {
@@ -24,7 +24,7 @@ const DEPTH_COLORS: Record<string, string> = {
 
 const MOMENT_COLORS: Record<string, string> = {
   tournant: "#FF6B35",
-  "créatif": "#8B5CF6",
+  créatif: "#8B5CF6",
   collectif: "#4ECDC4",
   tension: "#EF4444",
 };
@@ -37,24 +37,13 @@ interface BilanIaSectionProps {
   onDownload: () => void;
 }
 
-export function BilanIaSection({
-  bilan,
-  loading,
-  provider,
-  onGenerate,
-  onDownload,
-}: BilanIaSectionProps) {
+export function BilanIaSection({ bilan, loading, provider, onGenerate, onDownload }: BilanIaSectionProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide">
-          Bilan IA
-        </h3>
+        <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide">Bilan IA</h3>
         {bilan && (
-          <button
-            onClick={onDownload}
-            className="text-xs text-bw-muted hover:text-bw-heading transition-colors"
-          >
+          <button onClick={onDownload} className="text-xs text-bw-muted hover:text-bw-heading transition-colors">
             Télécharger .md
           </button>
         )}
@@ -86,9 +75,7 @@ export function BilanIaSection({
 
           {/* Narrative summary */}
           <GlassCardV2 className="p-5 border-l-4 border-l-bw-primary">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-bw-primary">
-              Résumé narratif
-            </span>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-bw-primary">Résumé narratif</span>
             <p className="text-sm leading-relaxed mt-2 italic text-bw-heading">
               &ldquo;{bilan.narrativeSummary}&rdquo;
             </p>
@@ -97,9 +84,7 @@ export function BilanIaSection({
           {/* Group dynamics */}
           <GlassCardV2 className="p-5">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">
-                Dynamique de groupe
-              </span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Dynamique de groupe</span>
               <span
                 className="text-xs font-semibold uppercase px-2 py-0.5 rounded-full"
                 style={{
@@ -110,9 +95,7 @@ export function BilanIaSection({
                 {bilan.groupDynamics.collaborationLevel}
               </span>
             </div>
-            <p className="text-sm text-bw-heading mb-3">
-              {bilan.groupDynamics.summary}
-            </p>
+            <p className="text-sm text-bw-heading mb-3">{bilan.groupDynamics.summary}</p>
             {bilan.groupDynamics.influencers.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {bilan.groupDynamics.influencers.map((inf, i) => (
@@ -130,22 +113,13 @@ export function BilanIaSection({
           {/* Key moments */}
           {bilan.keyMoments.length > 0 && (
             <GlassCardV2 className="p-5">
-              <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-                Moments clés
-              </p>
+              <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Moments clés</p>
               <div className="space-y-2">
                 {bilan.keyMoments.map((m, i) => {
                   const color = MOMENT_COLORS[m.category] || "#888";
                   return (
-                    <div
-                      key={i}
-                      className="pl-4 border-l-2 py-1"
-                      style={{ borderLeftColor: color }}
-                    >
-                      <span
-                        className="text-xs font-semibold uppercase"
-                        style={{ color }}
-                      >
+                    <div key={i} className="pl-4 border-l-2 py-1" style={{ borderLeftColor: color }}>
+                      <span className="text-xs font-semibold uppercase" style={{ color }}>
                         {m.category}
                       </span>
                       <p className="text-sm text-bw-heading">{m.description}</p>
@@ -158,17 +132,12 @@ export function BilanIaSection({
 
           {/* Engagement */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-2">
-              Engagement
-            </p>
-            <p className="text-sm text-bw-heading mb-3">
-              {bilan.engagement.summary}
-            </p>
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-2">Engagement</p>
+            <p className="text-sm text-bw-heading mb-3">{bilan.engagement.summary}</p>
             <div className="flex items-center gap-3">
               <span className="text-xs rounded-md bg-[var(--color-bw-surface-dim)] px-1.5 py-0.5 text-bw-muted">
                 {TREND_LABELS[bilan.engagement.participationTrend]?.icon || ""}{" "}
-                {TREND_LABELS[bilan.engagement.participationTrend]?.label ||
-                  bilan.engagement.participationTrend}
+                {TREND_LABELS[bilan.engagement.participationTrend]?.label || bilan.engagement.participationTrend}
               </span>
               <span
                 className="text-xs px-2 py-0.5 rounded-full"

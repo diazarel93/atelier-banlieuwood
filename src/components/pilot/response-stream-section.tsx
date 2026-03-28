@@ -88,10 +88,20 @@ export function ResponseStreamSection({
 }: ResponseStreamSectionProps) {
   // ── Mutations & data from context (no more prop drilling) ──
   const {
-    session, responses, activeStudents, studentWarnings,
-    toggleVoteOption, toggleHide, commentResponse, highlightResponse,
-    nudgeStudent, warnStudent, scoreResponse, resetResponse,
-    aiEvaluate, resetAllResponses,
+    session,
+    responses,
+    activeStudents,
+    studentWarnings,
+    toggleVoteOption,
+    toggleHide,
+    commentResponse,
+    highlightResponse,
+    nudgeStudent,
+    warnStudent,
+    scoreResponse,
+    resetResponse,
+    aiEvaluate,
+    resetAllResponses,
   } = useCockpit();
 
   const sessionStatus = session.status;
@@ -105,7 +115,7 @@ export function ResponseStreamSection({
     if (!searchQuery.trim()) return filteredResponses;
     const q = searchQuery.toLowerCase();
     return filteredResponses.filter(
-      (r) => r.text.toLowerCase().includes(q) || r.students.display_name.toLowerCase().includes(q)
+      (r) => r.text.toLowerCase().includes(q) || r.students.display_name.toLowerCase().includes(q),
     );
   }, [filteredResponses, searchQuery]);
 
@@ -120,46 +130,74 @@ export function ResponseStreamSection({
           </span>
           <div className="flex flex-col">
             <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">Reponses</span>
-            <span className="text-[12px] font-semibold tabular-nums"
+            <span
+              className="text-[12px] font-semibold tabular-nums"
               style={{
-                color: respondedCount >= activeStudents.length && activeStudents.length > 0 ? "#4CAF50" : "var(--color-bw-muted)",
-              }}>
+                color:
+                  respondedCount >= activeStudents.length && activeStudents.length > 0
+                    ? "#4CAF50"
+                    : "var(--color-bw-muted)",
+              }}
+            >
               sur {activeStudents.length}
             </span>
           </div>
           <ElapsedTimer startedAt={respondingOpenedAt} />
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={onShowBroadcast} title="Message classe (B)"
-            className="flex items-center gap-1 px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-black/[0.06]">
+          <button
+            onClick={onShowBroadcast}
+            title="Message classe (B)"
+            className="flex items-center gap-1 px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10 cursor-pointer transition-colors bg-bw-elevated border border-black/[0.06]"
+          >
             📢
-            <kbd className="w-4 h-4 rounded bg-black/[0.05] text-[9px] font-mono flex items-center justify-center text-bw-muted">B</kbd>
+            <kbd className="w-4 h-4 rounded bg-black/[0.05] text-[9px] font-mono flex items-center justify-center text-bw-muted">
+              B
+            </kbd>
           </button>
           {responses.length >= 2 && (
-            <button onClick={onShowCompare} title="Comparer (C)"
-              className="flex items-center gap-1 px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-violet hover:bg-bw-violet/10 cursor-pointer transition-colors bg-bw-elevated border border-black/[0.06]">
+            <button
+              onClick={onShowCompare}
+              title="Comparer (C)"
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-violet hover:bg-bw-violet/10 cursor-pointer transition-colors bg-bw-elevated border border-black/[0.06]"
+            >
               ⚖️
-              <kbd className="w-4 h-4 rounded bg-black/[0.05] text-[9px] font-mono flex items-center justify-center text-bw-muted">C</kbd>
+              <kbd className="w-4 h-4 rounded bg-black/[0.05] text-[9px] font-mono flex items-center justify-center text-bw-muted">
+                C
+              </kbd>
             </button>
           )}
           {highlightedCount > 0 && (
-            <button onClick={onClearAllHighlights} title="Tout dé-projeter"
-              className="px-2 py-1 rounded-lg text-xs text-bw-amber hover:bg-bw-amber/10 cursor-pointer transition-colors bg-bw-elevated border border-black/[0.06]">
+            <button
+              onClick={onClearAllHighlights}
+              title="Tout dé-projeter"
+              className="px-2 py-1 rounded-lg text-xs text-bw-amber hover:bg-bw-amber/10 cursor-pointer transition-colors bg-bw-elevated border border-black/[0.06]"
+            >
               ✖️ {highlightedCount}
             </button>
           )}
           {questionGuide && (
-            <button onClick={onToggleRevealAnswer} title="Réponse attendue"
+            <button
+              onClick={onToggleRevealAnswer}
+              title="Réponse attendue"
               className={`px-2 py-1 rounded-lg text-sm cursor-pointer transition-colors bg-bw-elevated border border-black/[0.06] ${
-                showRevealAnswer ? "text-green-400 bg-green-500/10 border-green-500/30" : "text-bw-muted hover:text-green-400 hover:bg-green-500/10"
-              }`}>
+                showRevealAnswer
+                  ? "text-green-400 bg-green-500/10 border-green-500/30"
+                  : "text-bw-muted hover:text-green-400 hover:bg-green-500/10"
+              }`}
+            >
               💡
             </button>
           )}
-          <button onClick={onShowExport} title="Export (E)"
-            className="flex items-center gap-1 px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-black/[0.06]">
+          <button
+            onClick={onShowExport}
+            title="Export (E)"
+            className="flex items-center gap-1 px-2 py-1 rounded-lg text-sm text-bw-muted hover:text-bw-teal hover:bg-bw-teal/10 cursor-pointer transition-colors bg-bw-elevated border border-black/[0.06]"
+          >
             📋
-            <kbd className="w-4 h-4 rounded bg-black/[0.05] text-[9px] font-mono flex items-center justify-center text-bw-muted">E</kbd>
+            <kbd className="w-4 h-4 rounded bg-black/[0.05] text-[9px] font-mono flex items-center justify-center text-bw-muted">
+              E
+            </kbd>
           </button>
         </div>
       </div>
@@ -176,11 +214,21 @@ export function ResponseStreamSection({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="p-3 rounded-xl border border-green-500/20" style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.06), transparent)" }}>
+            <div
+              className="p-3 rounded-xl border border-green-500/20"
+              style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.06), transparent)" }}
+            >
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-xs uppercase tracking-wider text-green-400 font-semibold">Réponse attendue</span>
-                <button onClick={() => { navigator.clipboard.writeText(questionGuide.whatToExpect); toast.success("Copié !"); }}
-                  className="text-xs text-bw-muted hover:text-green-400 cursor-pointer">Copier</button>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(questionGuide.whatToExpect);
+                    toast.success("Copié !");
+                  }}
+                  className="text-xs text-bw-muted hover:text-green-400 cursor-pointer"
+                >
+                  Copier
+                </button>
               </div>
               <p className="text-sm text-bw-text leading-relaxed">{questionGuide.whatToExpect}</p>
             </div>
@@ -193,9 +241,18 @@ export function ResponseStreamSection({
         <div className="flex items-center gap-1.5 flex-wrap">
           {/* Search input */}
           <div className="relative">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
-              className="absolute left-2 top-1/2 -translate-y-1/2 text-bw-muted pointer-events-none">
-              <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              className="absolute left-2 top-1/2 -translate-y-1/2 text-bw-muted pointer-events-none"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
             </svg>
             <input
               type="text"
@@ -205,11 +262,11 @@ export function ResponseStreamSection({
               className="w-28 focus:w-40 transition-all duration-200 pl-7 pr-2 py-1 rounded-full text-xs bg-bw-elevated border border-black/[0.06] text-bw-text placeholder:text-bw-muted outline-none focus:border-bw-teal/40"
             />
           </div>
-          {([
+          {[
             { key: "all" as const, label: `Toutes (${responses.length})` },
             { key: "visible" as const, label: `Visibles (${visibleResponses.length})` },
             { key: "highlighted" as const, label: `En avant (${highlightedCount})` },
-          ]).map((f) => (
+          ].map((f) => (
             <button
               key={f.key}
               onClick={() => setResponseFilter(f.key)}
@@ -254,7 +311,11 @@ export function ResponseStreamSection({
                     <button
                       onClick={() => {
                         const ids = visibleResponses.filter((r) => !r.ai_score).map((r) => r.id);
-                        if (ids.length === 0) { toast("Toutes les réponses sont déjà évaluées"); setOverflowOpen(false); return; }
+                        if (ids.length === 0) {
+                          toast("Toutes les réponses sont déjà évaluées");
+                          setOverflowOpen(false);
+                          return;
+                        }
                         aiEvaluate.mutate(ids.slice(0, 20));
                         setOverflowOpen(false);
                       }}
@@ -267,7 +328,11 @@ export function ResponseStreamSection({
                     {sessionStatus === "responding" && situation && (
                       <button
                         onClick={() => {
-                          if (confirm("Relancer la question pour toute la classe ? Les réponses précédentes seront conservées.")) {
+                          if (
+                            confirm(
+                              "Relancer la question pour toute la classe ? Les réponses précédentes seront conservées.",
+                            )
+                          ) {
                             resetAllResponses.mutate(situation!.id);
                           }
                           setOverflowOpen(false);
@@ -281,7 +346,10 @@ export function ResponseStreamSection({
                     )}
                     {visibleResponses.length > 2 && onHighlightAllVisible && (
                       <button
-                        onClick={() => { onHighlightAllVisible(); setOverflowOpen(false); }}
+                        onClick={() => {
+                          onHighlightAllVisible();
+                          setOverflowOpen(false);
+                        }}
                         className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-black/[0.05] cursor-pointer transition-colors flex items-center gap-2"
                       >
                         <span className="w-5 text-center text-sm">⭐</span>
@@ -290,7 +358,10 @@ export function ResponseStreamSection({
                     )}
                     {visibleResponses.length > 2 && onHideAllVisible && (
                       <button
-                        onClick={() => { onHideAllVisible(); setOverflowOpen(false); }}
+                        onClick={() => {
+                          onHideAllVisible();
+                          setOverflowOpen(false);
+                        }}
                         className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-black/[0.05] cursor-pointer transition-colors flex items-center gap-2"
                       >
                         <span className="w-5 text-center text-sm">👁</span>
@@ -309,14 +380,20 @@ export function ResponseStreamSection({
         <ResponseStream
           responses={searchedResponses}
           winnerResponseId={winnerResponseId}
-          onValidate={sessionStatus === "reviewing" ? (r) => {
-            onReformulate(r);
-          } : undefined}
+          onValidate={
+            sessionStatus === "reviewing"
+              ? (r) => {
+                  onReformulate(r);
+                }
+              : undefined
+          }
           onSpotlight={onSpotlight}
         />
       ) : responses.length > 0 && searchedResponses.length === 0 ? (
         <div className="bg-bw-surface rounded-xl border border-black/[0.06] p-4 text-center">
-          <p className="text-xs text-bw-muted">{searchQuery.trim() ? `Aucune réponse pour "${searchQuery}"` : "Aucune réponse dans ce filtre"}</p>
+          <p className="text-xs text-bw-muted">
+            {searchQuery.trim() ? `Aucune réponse pour "${searchQuery}"` : "Aucune réponse dans ce filtre"}
+          </p>
         </div>
       ) : sessionStatus === "responding" ? (
         <div
@@ -331,8 +408,13 @@ export function ResponseStreamSection({
             <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
               <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(0,0,0,0.04)" strokeWidth="3" />
               <motion.circle
-                cx="32" cy="32" r="28" fill="none"
-                stroke="url(#waitGradient)" strokeWidth="3" strokeLinecap="round"
+                cx="32"
+                cy="32"
+                r="28"
+                fill="none"
+                stroke="url(#waitGradient)"
+                strokeWidth="3"
+                strokeLinecap="round"
                 strokeDasharray={`${2 * Math.PI * 28}`}
                 animate={{ strokeDashoffset: [2 * Math.PI * 28, 0] }}
                 transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
@@ -361,8 +443,10 @@ export function ResponseStreamSection({
           <p className="text-xs text-bw-muted/70">Les reponses apparaitront ici au fur et a mesure.</p>
           {/* Quick actions */}
           <div className="flex items-center justify-center gap-2">
-            <button onClick={onShowBroadcast}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors">
+            <button
+              onClick={onShowBroadcast}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bg-bw-elevated border border-black/[0.06] text-bw-muted hover:text-bw-primary hover:border-bw-primary/30 cursor-pointer transition-colors"
+            >
               📢 Message classe
             </button>
           </div>
@@ -371,33 +455,37 @@ export function ResponseStreamSection({
       ) : null}
 
       {/* Pas encore répondu */}
-      {sessionStatus === "responding" && (() => {
-        const respondedIds = new Set(responses.map((r) => r.student_id));
-        const notResponded = activeStudents.filter((s) => !respondedIds.has(s.id));
-        if (notResponded.length === 0) return null;
-        return (
-          <div
-            className="rounded-xl border border-black/[0.06] p-3 mt-2"
-            style={{
-              background: "linear-gradient(135deg, rgba(136,148,160,0.04), transparent)",
-              boxShadow: "inset 0 1px 0 rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.12)",
-            }}
-          >
-            <p className="text-xs uppercase tracking-wider font-semibold text-bw-muted mb-2 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-bw-muted/50" />
-              Pas encore répondu ({notResponded.length})
-            </p>
-            <div className="flex flex-wrap gap-1.5">
-              {notResponded.map((s) => (
-                <div key={s.id} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-black/[0.03] border border-black/[0.06] hover:bg-black/[0.05] hover:border-black/[0.08] transition-all duration-200">
-                  <span className="text-sm">{s.avatar || "🎭"}</span>
-                  <span className="text-xs text-bw-muted font-medium">{s.display_name || "Élève"}</span>
-                </div>
-              ))}
+      {sessionStatus === "responding" &&
+        (() => {
+          const respondedIds = new Set(responses.map((r) => r.student_id));
+          const notResponded = activeStudents.filter((s) => !respondedIds.has(s.id));
+          if (notResponded.length === 0) return null;
+          return (
+            <div
+              className="rounded-xl border border-black/[0.06] p-3 mt-2"
+              style={{
+                background: "linear-gradient(135deg, rgba(136,148,160,0.04), transparent)",
+                boxShadow: "inset 0 1px 0 rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.12)",
+              }}
+            >
+              <p className="text-xs uppercase tracking-wider font-semibold text-bw-muted mb-2 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-bw-muted/50" />
+                Pas encore répondu ({notResponded.length})
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {notResponded.map((s) => (
+                  <div
+                    key={s.id}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-black/[0.03] border border-black/[0.06] hover:bg-black/[0.05] hover:border-black/[0.08] transition-all duration-200"
+                  >
+                    <span className="text-sm">{s.avatar || "🎭"}</span>
+                    <span className="text-xs text-bw-muted font-medium">{s.display_name || "Élève"}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        );
-      })()}
+          );
+        })()}
     </div>
   );
 }

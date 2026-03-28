@@ -52,7 +52,7 @@ function starPath(outerR: number, innerR: number): string {
   const points: string[] = [];
   for (let i = 0; i < 10; i++) {
     const r = i % 2 === 0 ? outerR : innerR;
-    const angle = (Math.PI / 2) + (i * Math.PI) / 5; // start from top
+    const angle = Math.PI / 2 + (i * Math.PI) / 5; // start from top
     const x = Math.cos(angle) * r;
     const y = -Math.sin(angle) * r;
     points.push(`${x.toFixed(2)},${y.toFixed(2)}`);
@@ -62,10 +62,7 @@ function starPath(outerR: number, innerR: number): string {
 
 /* ── Positioning: golden-angle spiral with seeded jitter ── */
 
-function computePositions(
-  students: StudentConstellationProps["studentStates"],
-  viewSize: number,
-) {
+function computePositions(students: StudentConstellationProps["studentStates"], viewSize: number) {
   const cx = viewSize / 2;
   const cy = viewSize / 2;
   const maxRadius = viewSize / 2 - 24; // leave margin for labels
@@ -89,20 +86,13 @@ function computePositions(
 
 /* ── Component ── */
 
-function StudentConstellationInner({
-  studentStates,
-  onStudentClick,
-  teams,
-}: StudentConstellationProps) {
+function StudentConstellationInner({ studentStates, onStudentClick, teams }: StudentConstellationProps) {
   const viewSize = useMemo(
     () => Math.max(MIN_SIZE, Math.ceil(Math.sqrt(studentStates.length) * 55)),
     [studentStates.length],
   );
 
-  const positioned = useMemo(
-    () => computePositions(studentStates, viewSize),
-    [studentStates, viewSize],
-  );
+  const positioned = useMemo(() => computePositions(studentStates, viewSize), [studentStates, viewSize]);
 
   // Team lines: connect all team members pairwise
   const teamLines = useMemo(() => {
@@ -111,9 +101,7 @@ function StudentConstellationInner({
     const lines: { x1: number; y1: number; x2: number; y2: number; color: string }[] = [];
 
     for (const team of teams) {
-      const members = team.students
-        .map((s) => posMap.get(s.id))
-        .filter(Boolean) as (typeof positioned)[number][];
+      const members = team.students.map((s) => posMap.get(s.id)).filter(Boolean) as (typeof positioned)[number][];
       for (let i = 0; i < members.length; i++) {
         for (let j = i + 1; j < members.length; j++) {
           lines.push({
@@ -132,9 +120,7 @@ function StudentConstellationInner({
   const starD = useMemo(() => starPath(STAR_RADIUS, STAR_RADIUS * 0.4), []);
 
   if (studentStates.length === 0) {
-    return (
-      <p className="text-sm text-bw-muted text-center py-4">Aucun joueur</p>
-    );
+    return <p className="text-sm text-bw-muted text-center py-4">Aucun joueur</p>;
   }
 
   return (
@@ -222,8 +208,7 @@ function StudentConstellationInner({
           const isDisconnected = student.state === "disconnected";
           const style = STATE_STYLE[student.state] ?? STATE_STYLE.disconnected;
           const fillColor = style.dot;
-          const labelColor =
-            student.state === "disconnected" ? "#B0A99E" : style.dot;
+          const labelColor = student.state === "disconnected" ? "#B0A99E" : style.dot;
           const filter =
             student.state === "responded"
               ? "url(#constellation-glow-responded)"
@@ -233,9 +218,7 @@ function StudentConstellationInner({
 
           // Truncate display name
           const label =
-            student.display_name.length > 10
-              ? student.display_name.slice(0, 9) + "\u2026"
-              : student.display_name;
+            student.display_name.length > 10 ? student.display_name.slice(0, 9) + "\u2026" : student.display_name;
 
           return (
             <g

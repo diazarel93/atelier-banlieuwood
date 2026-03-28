@@ -18,16 +18,22 @@ interface MiniCalendarProps {
 
 const DAYS = ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"];
 const MONTHS = [
-  "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
-  "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre",
+  "Janvier",
+  "Février",
+  "Mars",
+  "Avril",
+  "Mai",
+  "Juin",
+  "Juillet",
+  "Août",
+  "Septembre",
+  "Octobre",
+  "Novembre",
+  "Décembre",
 ];
 
 function isSameDay(a: Date, b: Date) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
 export function MiniCalendar({
@@ -107,10 +113,7 @@ export function MiniCalendar({
       {/* Day headers */}
       <div className="grid grid-cols-7 gap-0.5 mb-1">
         {DAYS.map((d, i) => (
-          <div
-            key={i}
-            className="text-center text-body-xs font-medium text-bw-muted"
-          >
+          <div key={i} className="text-center text-body-xs font-medium text-bw-muted">
             {d}
           </div>
         ))}
@@ -125,9 +128,7 @@ export function MiniCalendar({
 
           const isToday = isSameDay(date, now);
           const isSelected = selectedDate && isSameDay(date, selectedDate);
-          const hasSession = sessionSet.has(
-            `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
-          );
+          const hasSession = sessionSet.has(`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`);
 
           const dateLabel = `${date.getDate()} ${MONTHS[monthIdx]} ${year}${hasSession ? " — séance prévue" : ""}`;
 
@@ -143,7 +144,7 @@ export function MiniCalendar({
                   ? "bg-bw-primary text-white font-semibold"
                   : isToday
                     ? "bg-[var(--color-bw-surface-dim)] font-semibold text-bw-heading"
-                    : "text-bw-text hover:bg-[var(--color-bw-surface-dim)]"
+                    : "text-bw-text hover:bg-[var(--color-bw-surface-dim)]",
               )}
             >
               {date.getDate()}

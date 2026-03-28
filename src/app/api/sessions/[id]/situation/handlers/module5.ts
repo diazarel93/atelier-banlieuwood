@@ -134,7 +134,11 @@ export async function handleStandardWithModule5(
     hasVoted,
     voteOptions,
     collectiveChoice,
-    isMyResponseChosen: !!(collectiveChoice && studentResponseId && collectiveChoice.source_response_id === studentResponseId),
+    isMyResponseChosen: !!(
+      collectiveChoice &&
+      studentResponseId &&
+      collectiveChoice.source_response_id === studentResponseId
+    ),
     connectedCount,
     responsesCount,
     budgetStats: null,

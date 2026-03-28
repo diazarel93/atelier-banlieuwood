@@ -55,10 +55,21 @@ export function PositioningState({
 
   if (allAnswered) {
     return (
-      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center justify-center gap-4 text-center w-full">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex flex-col items-center justify-center gap-4 text-center w-full"
+      >
         <div className="w-16 h-16 rounded-full bg-bw-teal/20 flex items-center justify-center">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#4ECDC4"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <path d="M5 13l4 4L19 7" />
           </svg>
         </div>
@@ -73,12 +84,18 @@ export function PositioningState({
   const isAnswered = module1.answeredQuestions?.[currentSituationIndex + 1];
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="flex flex-col gap-5 w-full">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="flex flex-col gap-5 w-full"
+    >
       {/* Progress */}
       <div className="space-y-2">
         <div className="flex justify-between items-center text-xs text-bw-muted">
-          <span>Question {currentSituationIndex + 1}/{totalQ}</span>
+          <span>
+            Question {currentSituationIndex + 1}/{totalQ}
+          </span>
           <span className="text-bw-violet">{currentQ.measure}</span>
         </div>
         <div className="w-full h-1.5 bg-bw-elevated rounded-full overflow-hidden">

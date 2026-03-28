@@ -16,7 +16,8 @@ const PLAN_ALT_TEXTS: Record<string, string> = {
   "plan-large": "Illustration plan large : une cour d\u2019\u00e9cole vue de loin avec des \u00e9l\u00e8ves",
   "plan-moyen": "Illustration plan moyen : deux \u00e9l\u00e8ves assis \u00e0 une table, visibles de la taille",
   "gros-plan": "Illustration gros plan : un visage expressif qui remplit le cadre",
-  "plan-reaction": "Illustration plan r\u00e9action : par-dessus l\u2019\u00e9paule, on voit le visage surpris d\u2019un personnage",
+  "plan-reaction":
+    "Illustration plan r\u00e9action : par-dessus l\u2019\u00e9paule, on voit le visage surpris d\u2019un personnage",
 };
 
 const PLAN_COLORS: Record<string, string> = {
@@ -41,9 +42,7 @@ export function PlanTypesGallery({ module7 }: PlanTypesGalleryProps) {
     >
       <div className="text-center">
         <h2 className="text-2xl font-bold text-white">Les 4 Plans</h2>
-        <p className="text-sm text-white/50 mt-1">
-          Chaque plan raconte quelque chose de diff\u00e9rent
-        </p>
+        <p className="text-sm text-white/50 mt-1">Chaque plan raconte quelque chose de diff\u00e9rent</p>
       </div>
 
       <div className="grid grid-cols-1 gap-3 w-full">
@@ -63,13 +62,7 @@ export function PlanTypesGallery({ module7 }: PlanTypesGalleryProps) {
               {/* Plan illustration */}
               {imageUrl && (
                 <div className="w-full border-b border-white/5">
-                  <Image
-                    src={imageUrl}
-                    alt={altText}
-                    width={600}
-                    height={400}
-                    className="w-full h-auto rounded-t-xl"
-                  />
+                  <Image src={imageUrl} alt={altText} width={600} height={400} className="w-full h-auto rounded-t-xl" />
                 </div>
               )}
 
@@ -83,9 +76,7 @@ export function PlanTypesGallery({ module7 }: PlanTypesGalleryProps) {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-sm font-bold text-white">{plan.label}</h3>
-                    <p className={`text-xs mt-0.5 ${colorClasses.split(" ").slice(1).join(" ")}`}>
-                      {plan.question}
-                    </p>
+                    <p className={`text-xs mt-0.5 ${colorClasses.split(" ").slice(1).join(" ")}`}>{plan.question}</p>
                     <p className="text-xs text-white/50 mt-1">{plan.description}</p>
                     <p className="text-xs text-white/30 mt-1 italic">Ex : {plan.example}</p>
                   </div>

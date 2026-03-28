@@ -63,7 +63,10 @@ export function SafeImage({
   const shouldUnoptimize = unoptimized ?? (isExternal && src.includes("pollinations.ai"));
 
   return (
-    <span className="relative inline-block" style={fill ? { display: "block", width: "100%", height: "100%" } : undefined}>
+    <span
+      className="relative inline-block"
+      style={fill ? { display: "block", width: "100%", height: "100%" } : undefined}
+    >
       {/* Shimmer placeholder — visible until image loads */}
       {!loaded && (
         <span

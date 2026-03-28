@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireFacilitator, withErrorHandler } from "@/lib/api-utils";
 import { createAdminClient } from "@/lib/supabase/admin";
-import {
-  DEMO_STUDENTS,
-  DEMO_STUDENT_NAMES,
-  getDemoResponsesForStudents,
-} from "@/lib/demo-data";
+import { DEMO_STUDENTS, DEMO_STUDENT_NAMES, getDemoResponsesForStudents } from "@/lib/demo-data";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 // POST — activate demo mode: create 5 virtual students + responses for current situation
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "demo", { max: 10, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -30,10 +26,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!session) {
-    return NextResponse.json(
-      { error: "Session introuvable" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Session introuvable" }, { status: 404 });
   }
 
   // Check if demo students already exist
@@ -44,10 +37,7 @@ export const POST = withErrorHandler(async function POST(
     .in("display_name", DEMO_STUDENT_NAMES);
 
   if (existingDemo && existingDemo.length > 0) {
-    return NextResponse.json(
-      { error: "Le mode démo est déjà activé pour cette session" },
-      { status: 409 }
-    );
+    return NextResponse.json({ error: "Le mode démo est déjà activé pour cette session" }, { status: 409 });
   }
 
   // Create 5 demo students
@@ -65,10 +55,7 @@ export const POST = withErrorHandler(async function POST(
     .select("id, display_name, avatar");
 
   if (studentError || !createdStudents) {
-    return NextResponse.json(
-      { error: "Erreur lors de la création des élèves virtuels" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erreur lors de la création des élèves virtuels" }, { status: 500 });
   }
 
   // Find current situation to create responses
@@ -77,7 +64,7 @@ export const POST = withErrorHandler(async function POST(
     sessionId,
     session.current_module,
     session.current_seance,
-    session.current_situation_index
+    session.current_situation_index,
   );
 
   let responsesCreated = 0;
@@ -85,19 +72,14 @@ export const POST = withErrorHandler(async function POST(
   if (situation) {
     // Get category for appropriate demo responses
     const category = situation.category || "personnage";
-    const demoTexts = getDemoResponsesForStudents(
-      category,
-      createdStudents.length
-    );
+    const demoTexts = getDemoResponsesForStudents(category, createdStudents.length);
 
-    const responseInserts = createdStudents.map(
-      (student: { id: string }, i: number) => ({
-        session_id: sessionId,
-        student_id: student.id,
-        situation_id: situation.id,
-        text: demoTexts[i],
-      })
-    );
+    const responseInserts = createdStudents.map((student: { id: string }, i: number) => ({
+      session_id: sessionId,
+      student_id: student.id,
+      situation_id: situation.id,
+      text: demoTexts[i],
+    }));
 
     const { data: createdResponses, error: responseError } = await admin
       .from("responses")
@@ -111,13 +93,11 @@ export const POST = withErrorHandler(async function POST(
 
   return NextResponse.json({
     ok: true,
-    students: createdStudents.map(
-      (s: { id: string; display_name: string; avatar: string }) => ({
-        id: s.id,
-        displayName: s.display_name,
-        avatar: s.avatar,
-      })
-    ),
+    students: createdStudents.map((s: { id: string; display_name: string; avatar: string }) => ({
+      id: s.id,
+      displayName: s.display_name,
+      avatar: s.avatar,
+    })),
     responsesCreated,
   });
 });
@@ -125,7 +105,7 @@ export const POST = withErrorHandler(async function POST(
 // DELETE — remove demo students and all their responses
 export const DELETE = withErrorHandler(async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "demo", { max: 10, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -150,18 +130,10 @@ export const DELETE = withErrorHandler(async function DELETE(
   const demoStudentIds = demoStudents.map((s: { id: string }) => s.id);
 
   // Delete responses from demo students first (FK constraint)
-  await admin
-    .from("responses")
-    .delete()
-    .eq("session_id", sessionId)
-    .in("student_id", demoStudentIds);
+  await admin.from("responses").delete().eq("session_id", sessionId).in("student_id", demoStudentIds);
 
   // Delete votes from demo students
-  await admin
-    .from("votes")
-    .delete()
-    .eq("session_id", sessionId)
-    .in("student_id", demoStudentIds);
+  await admin.from("votes").delete().eq("session_id", sessionId).in("student_id", demoStudentIds);
 
   // Delete the demo students themselves
   const { error: deleteError } = await admin
@@ -171,10 +143,7 @@ export const DELETE = withErrorHandler(async function DELETE(
     .in("id", demoStudentIds);
 
   if (deleteError) {
-    return NextResponse.json(
-      { error: "Erreur lors de la suppression" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erreur lors de la suppression" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, deleted: demoStudentIds.length });
@@ -182,13 +151,12 @@ export const DELETE = withErrorHandler(async function DELETE(
 
 // ── Helper: find the current situation for the session ──
 
- 
 async function getCurrentSituation(
   admin: ReturnType<typeof createAdminClient>,
   sessionId: string,
   currentModule: number,
   currentSeance: number,
-  currentSituationIndex: number
+  currentSituationIndex: number,
 ): Promise<{ id: string; category: string } | null> {
   // Query the situations table to find the situation at the current position
   const { data: variants } = await admin
@@ -203,9 +171,7 @@ async function getCurrentSituation(
   // Pick a variant deterministically (same logic as situation/route.ts)
   if (variants.length === 1) return variants[0];
 
-  const hash = sessionId
-    .split("")
-    .reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  const hash = sessionId.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
   const variantIndex = (hash + currentSituationIndex) % variants.length;
   return variants[variantIndex];
 }

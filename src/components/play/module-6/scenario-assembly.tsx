@@ -87,11 +87,7 @@ export function ScenarioAssembly({ module6 }: ScenarioAssemblyProps) {
                       }`}
                     >
                       <span className="font-medium">{m.role}</span>
-                      {m.content ? (
-                        <p className="mt-1">{m.content}</p>
-                      ) : (
-                        <p className="mt-1 italic">En attente...</p>
-                      )}
+                      {m.content ? <p className="mt-1">{m.content}</p> : <p className="mt-1 italic">En attente...</p>}
                     </div>
                   ))}
                 </div>

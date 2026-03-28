@@ -61,7 +61,7 @@ export function computeCognitiveState(
       const secondPct = Math.round((secondCount / totalVotes) * 100);
 
       // ~50/50 split
-      if (topPct >= 30 && secondPct >= 30 && (topPct - secondPct) < 15) {
+      if (topPct >= 30 && secondPct >= 30 && topPct - secondPct < 15) {
         const topLabel = optionLabels?.[topKey] || topKey.toUpperCase();
         const secondLabel = optionLabels?.[secondKey] || secondKey.toUpperCase();
         return {
@@ -85,7 +85,11 @@ export function computeCognitiveState(
 
   // Priority 4: Some stuck
   if (stuckN > 0) {
-    return { text: `${stuckN} eleve${stuckN > 1 ? "s" : ""} bloque${stuckN > 1 ? "s" : ""}`, severity: "warn", icon: "⚠️" };
+    return {
+      text: `${stuckN} eleve${stuckN > 1 ? "s" : ""} bloque${stuckN > 1 ? "s" : ""}`,
+      severity: "warn",
+      icon: "⚠️",
+    };
   }
 
   // Priority 5: All thinking (0 responses)

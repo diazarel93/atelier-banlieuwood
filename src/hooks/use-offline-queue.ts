@@ -3,13 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { toast } from "sonner";
 import { useOnlineStatus } from "@/hooks/use-online-status";
-import {
-  enqueue,
-  flush,
-  count as queueCount,
-  clearStale,
-  type QueuedAction,
-} from "@/lib/offline-queue";
+import { enqueue, flush, count as queueCount, clearStale, type QueuedAction } from "@/lib/offline-queue";
 
 let idCounter = 0;
 
@@ -52,11 +46,7 @@ export function useOfflineQueue() {
     flush(executeAction).then(({ sent, failed }) => {
       setPendingCount(queueCount());
       if (sent > 0) {
-        toast.success(
-          sent === 1
-            ? "Réponse envoyée !"
-            : `${sent} réponses envoyées !`
-        );
+        toast.success(sent === 1 ? "Réponse envoyée !" : `${sent} réponses envoyées !`);
       }
       if (failed > 0) {
         toast.error(`${failed} réponse(s) n'ont pas pu être envoyées`, {
@@ -78,11 +68,7 @@ export function useOfflineQueue() {
         flush(executeAction).then(({ sent, failed }) => {
           setPendingCount(queueCount());
           if (sent > 0) {
-            toast.success(
-              sent === 1
-                ? "Réponse envoyée !"
-                : `${sent} réponses envoyées !`
-            );
+            toast.success(sent === 1 ? "Réponse envoyée !" : `${sent} réponses envoyées !`);
           }
           if (failed > 0) {
             toast.error(`${failed} réponse(s) n'ont pas pu être envoyées`, {
@@ -103,7 +89,7 @@ export function useOfflineQueue() {
     async (
       url: string,
       body: Record<string, unknown>,
-      type: "respond" | "vote"
+      type: "respond" | "vote",
     ): Promise<{ ok: boolean; data?: unknown }> => {
       const jsonBody = JSON.stringify(body);
 
@@ -175,7 +161,7 @@ export function useOfflineQueue() {
         return { ok: true };
       }
     },
-    []
+    [],
   );
 
   return { submitWithQueue, pendingCount };

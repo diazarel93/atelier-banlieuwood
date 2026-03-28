@@ -85,12 +85,8 @@ function CompetencyReportInner({ students, sessionTitle }: CompetencyReportProps
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-bw-heading flex items-center gap-2">
-            📊 Bilan par Competences
-          </h2>
-          {sessionTitle && (
-            <p className="text-sm text-bw-muted mt-0.5">{sessionTitle}</p>
-          )}
+          <h2 className="text-lg font-bold text-bw-heading flex items-center gap-2">📊 Bilan par Competences</h2>
+          {sessionTitle && <p className="text-sm text-bw-muted mt-0.5">{sessionTitle}</p>}
         </div>
         <button className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-bw-primary/10 text-bw-primary hover:bg-bw-primary/20 transition-colors cursor-pointer">
           Exporter PDF
@@ -99,9 +95,7 @@ function CompetencyReportInner({ students, sessionTitle }: CompetencyReportProps
 
       {/* LSU Grid */}
       {students.length === 0 ? (
-        <p className="text-sm text-bw-muted text-center py-8">
-          Pas assez de donnees pour generer un bilan.
-        </p>
+        <p className="text-sm text-bw-muted text-center py-8">Pas assez de donnees pour generer un bilan.</p>
       ) : (
         <div className="space-y-4">
           {students.map((student, si) => (
@@ -154,17 +148,15 @@ function CompetencyReportInner({ students, sessionTitle }: CompetencyReportProps
                               className="flex items-center justify-between px-2.5 py-1.5 rounded-lg"
                               style={{ background: levelInfo.bg }}
                             >
-                              <span className="text-xs text-bw-text truncate flex-1">
-                                {comp.name}
-                              </span>
-                              <span
-                                className="text-xs font-bold ml-2 flex-shrink-0"
-                                style={{ color: levelInfo.color }}
-                              >
-                                {level === "non_atteint" ? "○"
-                                  : level === "partiellement" ? "◐"
-                                  : level === "atteint" ? "●"
-                                  : "★"}
+                              <span className="text-xs text-bw-text truncate flex-1">{comp.name}</span>
+                              <span className="text-xs font-bold ml-2 flex-shrink-0" style={{ color: levelInfo.color }}>
+                                {level === "non_atteint"
+                                  ? "○"
+                                  : level === "partiellement"
+                                    ? "◐"
+                                    : level === "atteint"
+                                      ? "●"
+                                      : "★"}
                               </span>
                             </div>
                           );

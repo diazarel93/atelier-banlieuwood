@@ -5,7 +5,12 @@ import { handleStandardWithModule5 } from "./module5";
 import type { AdminClient } from "./types";
 
 // ── MODULE 2 handler — Émotion Cachée ──
-export async function handleModule2EC(req: NextRequest, session: Record<string, unknown>, sessionId: string, admin: AdminClient) {
+export async function handleModule2EC(
+  req: NextRequest,
+  session: Record<string, unknown>,
+  sessionId: string,
+  admin: AdminClient,
+) {
   const currentSeance = (session.current_seance as number) || 1;
   const currentIndex = (session.current_situation_index as number) || 0;
   const studentId = req.nextUrl.searchParams.get("studentId");
@@ -140,10 +145,7 @@ export async function handleModule2EC(req: NextRequest, session: Record<string, 
       .eq("session_id", sessionId);
 
     // Emotion distribution
-    const { data: allScenes } = await admin
-      .from("module5_scenes")
-      .select("emotion")
-      .eq("session_id", sessionId);
+    const { data: allScenes } = await admin.from("module5_scenes").select("emotion").eq("session_id", sessionId);
 
     const emotionDistribution: Record<string, number> = {};
     for (const s of allScenes || []) {

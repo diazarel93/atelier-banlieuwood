@@ -14,15 +14,7 @@ interface HeroStripProps {
   onShare: () => void;
 }
 
-export function HeroStrip({
-  exportData,
-  feedback,
-  onCopy,
-  onCsv,
-  onPdf,
-  onDownloadMd,
-  onShare,
-}: HeroStripProps) {
+export function HeroStrip({ exportData, feedback, onCopy, onCsv, onPdf, onDownloadMd, onShare }: HeroStripProps) {
   const { session, studentsCount, choicesCount } = exportData;
   const stats = feedback?.stats;
 
@@ -56,9 +48,7 @@ export function HeroStrip({
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         {/* Title block */}
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold text-bw-heading truncate">
-            {session.title}
-          </h1>
+          <h1 className="text-2xl font-bold text-bw-heading truncate">{session.title}</h1>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-bw-muted">
             <span>{session.date}</span>
             <span className="inline-block w-1 h-1 rounded-full bg-bw-muted" />
@@ -94,29 +84,15 @@ export function HeroStrip({
       {/* KPI row */}
       <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4">
         {kpis.map((kpi) => (
-          <div
-            key={kpi.label}
-            className="flex flex-col items-center gap-1"
-          >
+          <div key={kpi.label} className="flex flex-col items-center gap-1">
             {kpi.isPercent ? (
-              <StatRing
-                value={kpi.value}
-                label={kpi.label}
-                color={kpi.color}
-                size={64}
-                strokeWidth={4}
-              />
+              <StatRing value={kpi.value} label={kpi.label} color={kpi.color} size={64} strokeWidth={4} />
             ) : (
               <div className="flex flex-col items-center gap-1">
-                <span
-                  className="text-2xl font-bold tabular-nums"
-                  style={{ color: kpi.color }}
-                >
+                <span className="text-2xl font-bold tabular-nums" style={{ color: kpi.color }}>
                   {kpi.value}
                 </span>
-                <span className="text-xs font-medium text-bw-muted">
-                  {kpi.label}
-                </span>
+                <span className="text-xs font-medium text-bw-muted">{kpi.label}</span>
               </div>
             )}
           </div>

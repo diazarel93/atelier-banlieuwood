@@ -5,7 +5,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // POST — assign or unassign students to/from a team
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "teams-assign", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -26,7 +26,10 @@ export const POST = withErrorHandler(async function POST(
     .in("id", studentIds)
     .eq("session_id", sessionId);
 
-  if (error) { console.error("[teams assign]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[teams assign]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true });
 });

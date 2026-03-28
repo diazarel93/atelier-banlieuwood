@@ -9,9 +9,30 @@ export type DeskSize = "xs" | "sm" | "md";
 
 /** Dimension presets */
 const SIZE = {
-  xs: { seat: "w-[72px]", empty: "w-[72px]", avatar: "w-6 h-6 text-xs", name: "text-[11px] max-w-[38px]", px: "px-1.5 py-1.5", gap: "gap-1.5" },
-  sm: { seat: "w-[90px]", empty: "w-[90px]", avatar: "w-7 h-7 text-sm", name: "text-[12px] max-w-[48px]", px: "px-2.5 py-2", gap: "gap-2" },
-  md: { seat: "w-[120px]", empty: "w-[120px]", avatar: "w-9 h-9 text-base", name: "text-[13px] max-w-[68px]", px: "px-3 py-2.5", gap: "gap-2.5" },
+  xs: {
+    seat: "w-[72px]",
+    empty: "w-[72px]",
+    avatar: "w-6 h-6 text-xs",
+    name: "text-[11px] max-w-[38px]",
+    px: "px-1.5 py-1.5",
+    gap: "gap-1.5",
+  },
+  sm: {
+    seat: "w-[90px]",
+    empty: "w-[90px]",
+    avatar: "w-7 h-7 text-sm",
+    name: "text-[12px] max-w-[48px]",
+    px: "px-2.5 py-2",
+    gap: "gap-2",
+  },
+  md: {
+    seat: "w-[120px]",
+    empty: "w-[120px]",
+    avatar: "w-9 h-9 text-base",
+    name: "text-[13px] max-w-[68px]",
+    px: "px-3 py-2.5",
+    gap: "gap-2.5",
+  },
 } as const;
 
 /** A single desk with 1-2 students sitting side by side */
@@ -46,16 +67,9 @@ function DeskPairInner({
         style={{
           borderRadius: 14,
           border: `1px solid ${
-            anyHand ? "#F5C4C4"
-            : allResponded ? "#C6E9D0"
-            : teamColor ? `${teamColor}30`
-            : "#E8DFD2"
+            anyHand ? "#F5C4C4" : allResponded ? "#C6E9D0" : teamColor ? `${teamColor}30` : "#E8DFD2"
           }`,
-          background: allResponded
-            ? "#F7FDF9"
-            : anyNeedsHelp
-              ? "#FFFAFA"
-              : "#FFFFFF",
+          background: allResponded ? "#F7FDF9" : anyNeedsHelp ? "#FFFAFA" : "#FFFFFF",
           boxShadow: anyHand
             ? "0 2px 12px rgba(235,87,87,0.12), 0 1px 3px rgba(61,43,16,0.06)"
             : allResponded
@@ -63,10 +77,20 @@ function DeskPairInner({
               : "0 2px 8px rgba(61,43,16,0.05), 0 1px 2px rgba(61,43,16,0.03)",
         }}
       >
-        <DeskSeat student={left} response={responseMap.get(left.id) || null} onClick={() => onStudentClick(left.id)} size={size} />
+        <DeskSeat
+          student={left}
+          response={responseMap.get(left.id) || null}
+          onClick={() => onStudentClick(left.id)}
+          size={size}
+        />
         <div className="w-px my-2.5" style={{ background: "#EFE4D8" }} />
         {right ? (
-          <DeskSeat student={right} response={responseMap.get(right.id) || null} onClick={() => onStudentClick(right.id)} size={size} />
+          <DeskSeat
+            student={right}
+            response={responseMap.get(right.id) || null}
+            onClick={() => onStudentClick(right.id)}
+            size={size}
+          />
         ) : (
           <div className={`${SIZE[size].empty} flex items-center justify-center`} style={{ opacity: 0.3 }}>
             <div className="w-5 h-5 rounded-full" style={{ border: "1.5px dashed #D3CAB8" }} />
@@ -93,7 +117,14 @@ function DeskSeat({
   const s = STATE_STYLE[student.state] || DEFAULT_STYLE;
   const dim = SIZE[size];
 
-  const stateLabel = student.state === "responded" ? "a repondu" : student.state === "stuck" ? "bloque" : student.state === "active" ? "en reflexion" : "absent";
+  const stateLabel =
+    student.state === "responded"
+      ? "a repondu"
+      : student.state === "stuck"
+        ? "bloque"
+        : student.state === "active"
+          ? "en reflexion"
+          : "absent";
 
   return (
     <motion.button
@@ -114,7 +145,12 @@ function DeskSeat({
           style={{
             background: s.bg,
             border: `2.5px solid ${s.dot}`,
-            boxShadow: student.state === "stuck" ? `0 0 10px ${s.dot}40` : student.state === "responded" ? `0 0 6px ${s.dot}25` : undefined,
+            boxShadow:
+              student.state === "stuck"
+                ? `0 0 10px ${s.dot}40`
+                : student.state === "responded"
+                  ? `0 0 6px ${s.dot}25`
+                  : undefined,
           }}
         >
           {student.avatar}
@@ -150,7 +186,15 @@ function DeskSeat({
             className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center"
             style={{ background: "#4CAF50", boxShadow: "0 1px 3px rgba(76,175,80,0.4)" }}
           >
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round">
+            <svg
+              width="8"
+              height="8"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+            >
               <path d="M5 12l5 5L20 7" />
             </svg>
           </motion.span>
@@ -170,17 +214,17 @@ function DeskSeat({
 
         {/* Warning badge */}
         {(student.warnings ?? 0) > 0 && (
-          <span className="absolute -top-1 -left-1 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold text-white" style={{ background: "#F5A45B", boxShadow: "0 1px 2px rgba(245,164,91,0.4)" }}>
+          <span
+            className="absolute -top-1 -left-1 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold text-white"
+            style={{ background: "#F5A45B", boxShadow: "0 1px 2px rgba(245,164,91,0.4)" }}
+          >
             {student.warnings}
           </span>
         )}
       </div>
 
       {/* Name — PRIMARY element */}
-      <span
-        className={`${dim.name} leading-tight truncate font-semibold`}
-        style={{ color: s.text }}
-      >
+      <span className={`${dim.name} leading-tight truncate font-semibold`} style={{ color: s.text }}>
         {student.display_name}
       </span>
 
@@ -205,7 +249,10 @@ function DeskSeat({
             </div>
             <p className="text-[13px] text-[#5B5B5B] leading-snug line-clamp-4">{response}</p>
             {/* Arrow */}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 w-2.5 h-2.5 rotate-45 -mt-1.5" style={{ background: "#FFFFFF", borderRight: "1px solid #E8DFD2", borderBottom: "1px solid #E8DFD2" }} />
+            <div
+              className="absolute top-full left-1/2 -translate-x-1/2 w-2.5 h-2.5 rotate-45 -mt-1.5"
+              style={{ background: "#FFFFFF", borderRight: "1px solid #E8DFD2", borderBottom: "1px solid #E8DFD2" }}
+            />
           </motion.div>
         )}
       </AnimatePresence>

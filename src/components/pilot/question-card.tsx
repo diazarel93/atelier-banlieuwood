@@ -13,18 +13,15 @@ interface QuestionCardProps {
   questionGuide: QuestionGuide | undefined;
 }
 
-function QuestionCardInner({
-  position,
-  category,
-  restitutionLabel,
-  prompt,
-  questionGuide,
-}: QuestionCardProps) {
+function QuestionCardInner({ position, category, restitutionLabel, prompt, questionGuide }: QuestionCardProps) {
   const [guideExpanded, setGuideExpanded] = useState(false);
   const color = CATEGORY_COLORS[category] || "#F5A45B";
 
   return (
-    <div className="glass-card overflow-hidden" style={{ borderColor: `${color}20`, background: `linear-gradient(135deg, ${color}08, rgba(26,29,34,0.6) 60%)` }}>
+    <div
+      className="glass-card overflow-hidden"
+      style={{ borderColor: `${color}20`, background: `linear-gradient(135deg, ${color}08, rgba(26,29,34,0.6) 60%)` }}
+    >
       {/* Color accent bar */}
       <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${color}, ${color}60)` }} />
       {/* Question header */}
@@ -32,7 +29,11 @@ function QuestionCardInner({
         <div className="flex items-center gap-2 mb-2">
           <span
             className="text-xs font-bold uppercase px-2.5 py-1 rounded-full"
-            style={{ background: `linear-gradient(135deg, ${color}25, ${color}10)`, color, border: `1px solid ${color}30` }}
+            style={{
+              background: `linear-gradient(135deg, ${color}25, ${color}10)`,
+              color,
+              border: `1px solid ${color}30`,
+            }}
           >
             {restitutionLabel || category}
           </span>
@@ -49,7 +50,10 @@ function QuestionCardInner({
             className="w-full px-4 py-2.5 flex items-center justify-between cursor-pointer hover:bg-black/[0.03] transition-colors"
           >
             <div className="flex items-center gap-3 text-xs text-bw-muted min-w-0">
-              <span className="text-xs uppercase tracking-wider font-bold flex-shrink-0 px-1.5 py-0.5 rounded" style={{ color: "#F5A45B", background: "rgba(255,107,53,0.1)" }}>
+              <span
+                className="text-xs uppercase tracking-wider font-bold flex-shrink-0 px-1.5 py-0.5 rounded"
+                style={{ color: "#F5A45B", background: "rgba(255,107,53,0.1)" }}
+              >
                 Guide
               </span>
               <span className="truncate">
@@ -81,20 +85,12 @@ function QuestionCardInner({
               >
                 <div className="px-5 pb-4 space-y-3">
                   <div>
-                    <p className="text-xs uppercase tracking-wider text-bw-muted mb-0.5">
-                      Ce qu&apos;on attend
-                    </p>
-                    <p className="text-xs text-bw-text leading-relaxed">
-                      {questionGuide.whatToExpect}
-                    </p>
+                    <p className="text-xs uppercase tracking-wider text-bw-muted mb-0.5">Ce qu&apos;on attend</p>
+                    <p className="text-xs text-bw-text leading-relaxed">{questionGuide.whatToExpect}</p>
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-wider text-bw-muted mb-0.5">
-                      Pièges fréquents
-                    </p>
-                    <p className="text-xs text-bw-amber leading-relaxed">
-                      {questionGuide.commonPitfalls}
-                    </p>
+                    <p className="text-xs uppercase tracking-wider text-bw-muted mb-0.5">Pièges fréquents</p>
+                    <p className="text-xs text-bw-amber leading-relaxed">{questionGuide.commonPitfalls}</p>
                   </div>
                 </div>
               </motion.div>

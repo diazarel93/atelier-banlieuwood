@@ -5,11 +5,27 @@ import { useCallback, useEffect, useRef } from "react";
 // Lightweight sound effects using Web Audio API — no external files needed
 // Each sound is generated procedurally
 
-export type SoundName = "send" | "success" | "vote" | "reveal" | "jingle" | "drumroll" | "cardReveal" | "tick" | "fanfare" | "levelUp" | "tap" | "type" | "streakLost" | "xpGain";
+export type SoundName =
+  | "send"
+  | "success"
+  | "vote"
+  | "reveal"
+  | "jingle"
+  | "drumroll"
+  | "cardReveal"
+  | "tick"
+  | "fanfare"
+  | "levelUp"
+  | "tap"
+  | "type"
+  | "streakLost"
+  | "xpGain";
 
 function createAudioContext(): AudioContext | null {
   try {
-    return new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    return new (
+      window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+    )();
   } catch {
     return null;
   }
@@ -322,7 +338,9 @@ const SOUNDS: Record<SoundName, (ctx: AudioContext) => void> = {
 export function useSound(opts?: { muted?: boolean }) {
   const ctxRef = useRef<AudioContext | null>(null);
   const mutedRef = useRef(opts?.muted ?? false);
-  useEffect(() => { mutedRef.current = opts?.muted ?? false; }, [opts?.muted]);
+  useEffect(() => {
+    mutedRef.current = opts?.muted ?? false;
+  }, [opts?.muted]);
 
   const play = useCallback((name: SoundName) => {
     if (mutedRef.current) return;

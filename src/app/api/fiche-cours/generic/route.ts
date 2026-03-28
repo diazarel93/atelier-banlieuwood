@@ -10,7 +10,9 @@ const VALID_LEVELS = ["primaire", "college", "lycee"];
 // POST — generate a generic (pre-session) fiche de cours
 export const POST = withErrorHandler<Record<string, never>>(async function POST(req: NextRequest) {
   const supabase = await createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
@@ -25,10 +27,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
   const template = (body.template as string) || null;
 
   if (!level || !VALID_LEVELS.includes(level)) {
-    return NextResponse.json(
-      { error: "Niveau requis : primaire, college, lycee" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Niveau requis : primaire, college, lycee" }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -54,7 +53,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
           provider: match.ai_provider,
           generatedAt: match.generated_at,
         },
-        { headers: { "Cache-Control": "public, max-age=3600, stale-while-revalidate=7200" } }
+        { headers: { "Cache-Control": "public, max-age=3600, stale-while-revalidate=7200" } },
       );
     }
   }
@@ -70,7 +69,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
       ai_provider: provider,
       generated_at: new Date().toISOString(),
     },
-    { onConflict: "level,COALESCE(template, '__none__')" }
+    { onConflict: "level,COALESCE(template, '__none__')" },
   );
 
   return NextResponse.json(
@@ -79,6 +78,6 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
       provider,
       generatedAt: new Date().toISOString(),
     },
-    { headers: { "Cache-Control": "public, max-age=3600, stale-while-revalidate=7200" } }
+    { headers: { "Cache-Control": "public, max-age=3600, stale-while-revalidate=7200" } },
   );
 });

@@ -26,7 +26,9 @@ function canFullscreen(): boolean {
 
 function isIOS(): boolean {
   if (typeof navigator === "undefined") return false;
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+  return (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+  );
 }
 
 export function FullscreenToggle() {
@@ -87,12 +89,24 @@ export function FullscreenToggle() {
         {isFullscreen ? (
           // Minimize icon
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M6 2v4H2M10 14v-4h4M14 6h-4V2M2 10h4v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M6 2v4H2M10 14v-4h4M14 6h-4V2M2 10h4v4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         ) : (
           // Maximize icon
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M2 6V2h4M14 10v4h-4M10 2h4v4M6 14H2v-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M2 6V2h4M14 10v4h-4M10 2h4v4M6 14H2v-4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         )}
       </button>
@@ -115,18 +129,29 @@ export function FullscreenToggle() {
                   <>
                     Sur iPad/iPhone, appuyez sur{" "}
                     <span className="inline-flex items-center gap-1 font-medium text-bw-heading">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        aria-hidden="true"
+                      >
                         <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
                         <polyline points="16 6 12 2 8 6" />
                         <line x1="12" y1="2" x2="12" y2="15" />
                       </svg>
                       Partager
                     </span>{" "}
-                    puis <strong>&quot;Sur l&apos;ecran d&apos;accueil&quot;</strong> pour ouvrir Banlieuwood en plein ecran sans barre de navigation.
+                    puis <strong>&quot;Sur l&apos;ecran d&apos;accueil&quot;</strong> pour ouvrir Banlieuwood en plein
+                    ecran sans barre de navigation.
                   </>
                 ) : (
                   <>
-                    Votre navigateur ne supporte pas le plein ecran. Utilisez <strong>F11</strong> ou installez l&apos;app depuis le menu du navigateur.
+                    Votre navigateur ne supporte pas le plein ecran. Utilisez <strong>F11</strong> ou installez
+                    l&apos;app depuis le menu du navigateur.
                   </>
                 )}
               </p>

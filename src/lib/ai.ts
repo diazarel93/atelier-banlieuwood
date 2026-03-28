@@ -67,7 +67,7 @@ async function callGemini(
   userPrompt: string,
   maxTokens: number,
   timeout: number,
-  temperature: number
+  temperature: number,
 ): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("no_key");
@@ -87,7 +87,7 @@ async function callGemini(
           generationConfig: { maxOutputTokens: maxTokens, temperature },
         }),
         signal: controller.signal,
-      }
+      },
     );
 
     if (!res.ok) {
@@ -106,7 +106,7 @@ async function callOllama(
   systemPrompt: string,
   userPrompt: string,
   maxTokens: number,
-  timeout: number
+  timeout: number,
 ): Promise<string> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
@@ -195,7 +195,7 @@ export async function generateRelance(opts: {
 // ——— BILAN DE SESSION ———
 
 export async function generateBilanSession(
-  data: SessionFullData
+  data: SessionFullData,
 ): Promise<{ bilan: BilanResult; provider: AIProvider }> {
   const userPrompt = buildBilanUserPrompt(data);
 
@@ -254,9 +254,7 @@ export async function generateFicheCours(opts: {
 
 // ——— BIBLE DU FILM ———
 
-export async function generateBibleFilm(
-  data: SessionFullData
-): Promise<{ bible: BibleResult; provider: AIProvider }> {
+export async function generateBibleFilm(data: SessionFullData): Promise<{ bible: BibleResult; provider: AIProvider }> {
   const userPrompt = buildBibleUserPrompt(data);
 
   const { text, provider } = await generateAIText({

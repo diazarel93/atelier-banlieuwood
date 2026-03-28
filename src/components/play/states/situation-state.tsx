@@ -14,12 +14,7 @@ export interface SituationStateProps {
   playSound?: (name: SoundName) => void;
 }
 
-export function SituationState({
-  situation,
-  onSubmit,
-  submitting,
-  playSound,
-}: SituationStateProps) {
+export function SituationState({ situation, onSubmit, submitting, playSound }: SituationStateProps) {
   const [text, setText] = useState("");
   const { displayed, done, skip } = useTypewriter(situation.prompt);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -59,7 +54,9 @@ export function SituationState({
   function handleSubmit() {
     if (!text.trim() || submitting || submitGuard.current) return;
     submitGuard.current = true;
-    setTimeout(() => { submitGuard.current = false; }, 400);
+    setTimeout(() => {
+      submitGuard.current = false;
+    }, 400);
     playSound?.("tap");
     onSubmit(text.trim());
   }
@@ -96,7 +93,12 @@ export function SituationState({
         className="rounded-xl p-3 sm:p-5 min-h-[80px] sm:min-h-[120px] text-base sm:text-lg leading-relaxed cursor-pointer border border-white/[0.06]"
         style={{ background: `linear-gradient(135deg, ${catColor}08, rgba(26,26,26,0.8))` }}
         onClick={() => !done && skip()}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); !done && skip(); } }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            !done && skip();
+          }
+        }}
       >
         <p>{displayed}</p>
         {!done && (
@@ -138,9 +140,11 @@ export function SituationState({
 
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <span className={`text-xs transition-colors ${
-              text.length >= 480 ? "text-bw-danger" : text.length >= 400 ? "text-bw-amber" : "text-bw-muted"
-            }`}>
+            <span
+              className={`text-xs transition-colors ${
+                text.length >= 480 ? "text-bw-danger" : text.length >= 400 ? "text-bw-amber" : "text-bw-muted"
+              }`}
+            >
               {text.length}/500
             </span>
             <span className="text-xs text-bw-muted tabular-nums">
@@ -159,7 +163,14 @@ export function SituationState({
                 ? "text-white cursor-pointer shadow-lg"
                 : "bg-bw-elevated text-bw-muted cursor-not-allowed"
             }`}
-            style={text.trim() && !submitting ? { background: "linear-gradient(135deg, #FF6B35, #D4A843)", boxShadow: "0 4px 15px rgba(255,107,53,0.3)" } : undefined}
+            style={
+              text.trim() && !submitting
+                ? {
+                    background: "linear-gradient(135deg, #FF6B35, #D4A843)",
+                    boxShadow: "0 4px 15px rgba(255,107,53,0.3)",
+                  }
+                : undefined
+            }
           >
             {submitting ? "Envoi..." : text.length > 100 ? "Envoyer ta super réponse !" : "Envoyer"}
           </motion.button>
@@ -174,8 +185,18 @@ export function SituationState({
           transition={{ delay: 1 }}
           className="glass-card border-bw-teal/20 px-4 py-3 flex items-start gap-2"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" strokeWidth="2" strokeLinecap="round" className="mt-0.5 flex-shrink-0">
-            <circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" />
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#4ECDC4"
+            strokeWidth="2"
+            strokeLinecap="round"
+            className="mt-0.5 flex-shrink-0"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 16v-4M12 8h.01" />
           </svg>
           <p className="text-sm text-bw-teal italic">{situation.nudgeText}</p>
         </motion.div>

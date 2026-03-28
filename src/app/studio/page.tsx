@@ -112,11 +112,7 @@ export default function StudioPage() {
 
       {/* ── Hero Section ── */}
       <section className="max-w-5xl mx-auto px-4 pt-8 pb-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-6"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex items-start gap-6">
           {/* Avatar */}
           <div className="relative">
             <motion.div
@@ -213,9 +209,7 @@ export default function StudioPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 py-2.5 px-3 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
-                activeTab === tab.id
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                activeTab === tab.id ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
               }`}
             >
               <span className="mr-1.5">{tab.icon}</span>
@@ -228,18 +222,10 @@ export default function StudioPage() {
       {/* ── Tab Content ── */}
       <div className="max-w-5xl mx-auto px-4 py-6">
         <AnimatePresence mode="wait">
-          {activeTab === "overview" && (
-            <OverviewTab key="overview" profile={profile} achievements={achievements} />
-          )}
-          {activeTab === "badges" && (
-            <BadgesTab key="badges" achievements={achievements} />
-          )}
-          {activeTab === "missions" && (
-            <MissionsTab key="missions" profileId={profile.id} />
-          )}
-          {activeTab === "portfolio" && (
-            <PortfolioTab key="portfolio" profileId={profile.id} />
-          )}
+          {activeTab === "overview" && <OverviewTab key="overview" profile={profile} achievements={achievements} />}
+          {activeTab === "badges" && <BadgesTab key="badges" achievements={achievements} />}
+          {activeTab === "missions" && <MissionsTab key="missions" profileId={profile.id} />}
+          {activeTab === "portfolio" && <PortfolioTab key="portfolio" profileId={profile.id} />}
         </AnimatePresence>
       </div>
     </div>
@@ -317,7 +303,10 @@ function OverviewTab({ profile, achievements }: { profile: StudentProfile; achie
       )}
 
       {/* Activity Summary */}
-      <div className="bg-white rounded-2xl p-5 border border-black/[0.06]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+      <div
+        className="bg-white rounded-2xl p-5 border border-black/[0.06]"
+        style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+      >
         <h3 className="text-sm font-bold uppercase tracking-wider mb-4" style={{ color: "#6B7280" }}>
           Ta Carriere Cinema
         </h3>
@@ -325,29 +314,45 @@ function OverviewTab({ profile, achievements }: { profile: StudentProfile; achie
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center text-lg">✍️</div>
             <div>
-              <p className="text-lg font-black" style={{ color: "#4ECDC4" }}>{profile.total_responses}</p>
-              <p className="text-xs" style={{ color: "#6B7280" }}>Reponses ecrites</p>
+              <p className="text-lg font-black" style={{ color: "#4ECDC4" }}>
+                {profile.total_responses}
+              </p>
+              <p className="text-xs" style={{ color: "#6B7280" }}>
+                Reponses ecrites
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center text-lg">🗳️</div>
             <div>
-              <p className="text-lg font-black" style={{ color: "#8B5CF6" }}>{profile.total_votes}</p>
-              <p className="text-xs" style={{ color: "#6B7280" }}>Votes donnes</p>
+              <p className="text-lg font-black" style={{ color: "#8B5CF6" }}>
+                {profile.total_votes}
+              </p>
+              <p className="text-xs" style={{ color: "#6B7280" }}>
+                Votes donnes
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-lg">🏆</div>
             <div>
-              <p className="text-lg font-black" style={{ color: "#D4A843" }}>{profile.retained_count}</p>
-              <p className="text-xs" style={{ color: "#6B7280" }}>Reponses retenues</p>
+              <p className="text-lg font-black" style={{ color: "#D4A843" }}>
+                {profile.retained_count}
+              </p>
+              <p className="text-xs" style={{ color: "#6B7280" }}>
+                Reponses retenues
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-lg">🔥</div>
             <div>
-              <p className="text-lg font-black" style={{ color: "#FF6B35" }}>{profile.best_streak}</p>
-              <p className="text-xs" style={{ color: "#6B7280" }}>Meilleure serie</p>
+              <p className="text-lg font-black" style={{ color: "#FF6B35" }}>
+                {profile.best_streak}
+              </p>
+              <p className="text-xs" style={{ color: "#6B7280" }}>
+                Meilleure serie
+              </p>
             </div>
           </div>
         </div>
@@ -376,7 +381,10 @@ function BadgesTab({ achievements }: { achievements: UnlockedAchievement[] }) {
         const catAchievements = ACHIEVEMENTS.filter((a) => a.category === cat.id);
         return (
           <div key={cat.id}>
-            <h3 className="text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color: "#6B7280" }}>
+            <h3
+              className="text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2"
+              style={{ color: "#6B7280" }}
+            >
               <span>{cat.icon}</span>
               {cat.label}
               <span className="text-xs font-normal">
@@ -398,9 +406,7 @@ function BadgesTab({ achievements }: { achievements: UnlockedAchievement[] }) {
                     key={def.id}
                     whileHover={{ scale: 1.05 }}
                     className={`rounded-2xl p-4 text-center border transition-all ${
-                      bestTier
-                        ? "bg-white border-black/[0.08]"
-                        : "bg-black/[0.02] border-black/[0.04] opacity-50"
+                      bestTier ? "bg-white border-black/[0.08]" : "bg-black/[0.02] border-black/[0.04] opacity-50"
                     }`}
                     style={{
                       boxShadow: bestTier ? "0 2px 8px rgba(0,0,0,0.06)" : undefined,
@@ -438,7 +444,17 @@ function BadgesTab({ achievements }: { achievements: UnlockedAchievement[] }) {
 
 // ── Missions Tab ──
 function MissionsTab({ profileId }: { profileId: string }) {
-  const [missions, setMissions] = useState<Array<{ id: string; title: string; description: string; mission_type: string; difficulty: string; xp_reward: number; time_limit_minutes: number }>>([]);
+  const [missions, setMissions] = useState<
+    Array<{
+      id: string;
+      title: string;
+      description: string;
+      mission_type: string;
+      difficulty: string;
+      xp_reward: number;
+      time_limit_minutes: number;
+    }>
+  >([]);
   const [submissions, setSubmissions] = useState<Array<{ mission_id: string; score?: number; xp_earned: number }>>([]);
   const [loading, setLoading] = useState(true);
 
@@ -553,7 +569,9 @@ function MissionsTab({ profileId }: { profileId: string }) {
 
 // ── Portfolio Tab ──
 function PortfolioTab({ profileId }: { profileId: string }) {
-  const [entries, setEntries] = useState<Array<{ id: string; title: string; content: string; entry_type: string; vote_count: number; created_at: string }>>([]);
+  const [entries, setEntries] = useState<
+    Array<{ id: string; title: string; content: string; entry_type: string; vote_count: number; created_at: string }>
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -572,11 +590,7 @@ function PortfolioTab({ profileId }: { profileId: string }) {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -12 }}
-    >
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
       {entries.length === 0 ? (
         <div className="text-center py-16">
           <span className="text-5xl">📁</span>
@@ -656,8 +670,12 @@ function QuickAction({
         style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
       >
         <span className="text-2xl">{icon}</span>
-        <p className="font-bold mt-2" style={{ color }}>{title}</p>
-        <p className="text-xs" style={{ color: "#9CA3AF" }}>{subtitle}</p>
+        <p className="font-bold mt-2" style={{ color }}>
+          {title}
+        </p>
+        <p className="text-xs" style={{ color: "#9CA3AF" }}>
+          {subtitle}
+        </p>
       </motion.div>
     </Link>
   );
@@ -687,11 +705,7 @@ function GuestStudio() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ background: "#FAFAF8" }}>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-md w-full">
         <div className="text-center mb-8">
           <motion.span
             className="text-6xl inline-block"

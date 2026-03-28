@@ -49,7 +49,12 @@ export const BONUS_TRIVIA: BonusQuestion[] = [
   // — Technique —
   {
     question: "Que signifie un plan en 'plongée' ?",
-    options: ["La caméra est sous l'eau", "La caméra filme de haut en bas", "La caméra fait un zoom", "La caméra tourne sur elle-même"],
+    options: [
+      "La caméra est sous l'eau",
+      "La caméra filme de haut en bas",
+      "La caméra fait un zoom",
+      "La caméra tourne sur elle-même",
+    ],
     correct: 1,
     explanation: "La plongée écrase le sujet, suggérant la vulnérabilité ou la domination.",
     category: "technique",
@@ -63,14 +68,24 @@ export const BONUS_TRIVIA: BonusQuestion[] = [
   },
   {
     question: "La 'profondeur de champ' fait référence à...",
-    options: ["La longueur d'un plan", "La zone de netteté de l'image", "L'éclairage de la scène", "Le nombre de personnages"],
+    options: [
+      "La longueur d'un plan",
+      "La zone de netteté de l'image",
+      "L'éclairage de la scène",
+      "Le nombre de personnages",
+    ],
     correct: 1,
     explanation: "Une grande profondeur de champ garde tout net, une faible isole le sujet.",
     category: "technique",
   },
   {
     question: "Qu'est-ce que le 'champ / contre-champ' ?",
-    options: ["Filmer un paysage", "Alterner entre deux personnages qui se parlent", "Un plan large suivi d'un gros plan", "Filmer dehors puis dedans"],
+    options: [
+      "Filmer un paysage",
+      "Alterner entre deux personnages qui se parlent",
+      "Un plan large suivi d'un gros plan",
+      "Filmer dehors puis dedans",
+    ],
     correct: 1,
     explanation: "Le champ/contre-champ est la base du dialogue filmé : on voit tour à tour chaque interlocuteur.",
     category: "technique",
@@ -84,7 +99,12 @@ export const BONUS_TRIVIA: BonusQuestion[] = [
   },
   {
     question: "Que fait un 'jump cut' ?",
-    options: ["Il zoome brusquement", "Il coupe un plan pour créer un saut temporel", "Il change la couleur", "Il inverse l'image"],
+    options: [
+      "Il zoome brusquement",
+      "Il coupe un plan pour créer un saut temporel",
+      "Il change la couleur",
+      "Il inverse l'image",
+    ],
     correct: 1,
     explanation: "Le jump cut crée une ellipse brutale, popularisé par Godard dans À bout de souffle.",
     category: "technique",
@@ -95,7 +115,8 @@ export const BONUS_TRIVIA: BonusQuestion[] = [
     question: "Que fait le/la 'scripte' sur un tournage ?",
     options: ["Écrit le scénario", "Vérifie la continuité entre les plans", "Dirige les acteurs", "Gère le budget"],
     correct: 1,
-    explanation: "Le/la scripte veille à ce que les raccords (vêtements, gestes, lumière) soient cohérents entre les prises.",
+    explanation:
+      "Le/la scripte veille à ce que les raccords (vêtements, gestes, lumière) soient cohérents entre les prises.",
     category: "metier",
   },
   {
@@ -107,14 +128,24 @@ export const BONUS_TRIVIA: BonusQuestion[] = [
   },
   {
     question: "Quel rôle joue le 'perchiste' ?",
-    options: ["Il porte la caméra", "Il tient le micro-perche au-dessus des acteurs", "Il construit les décors", "Il gère les cascades"],
+    options: [
+      "Il porte la caméra",
+      "Il tient le micro-perche au-dessus des acteurs",
+      "Il construit les décors",
+      "Il gère les cascades",
+    ],
     correct: 1,
     explanation: "Le perchiste capture le son en direct en suivant les acteurs sans entrer dans le cadre.",
     category: "metier",
   },
   {
     question: "Que fait un 'color grader' (étalonneur) ?",
-    options: ["Il peint les décors", "Il ajuste les couleurs du film en post-production", "Il choisit les costumes", "Il écrit la musique"],
+    options: [
+      "Il peint les décors",
+      "Il ajuste les couleurs du film en post-production",
+      "Il choisit les costumes",
+      "Il écrit la musique",
+    ],
     correct: 1,
     explanation: "L'étalonnage donne au film son identité visuelle finale (tons chauds, froids, contrastés...).",
     category: "metier",
@@ -139,7 +170,8 @@ export const BONUS_TRIVIA: BonusQuestion[] = [
     question: "Combien d'images par seconde pour un film standard ?",
     options: ["12 images", "24 images", "48 images", "60 images"],
     correct: 1,
-    explanation: "24 images/seconde est le standard depuis les années 1920. Le cerveau les perçoit comme du mouvement fluide.",
+    explanation:
+      "24 images/seconde est le standard depuis les années 1920. Le cerveau les perçoit comme du mouvement fluide.",
     category: "culture",
   },
   {

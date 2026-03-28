@@ -29,13 +29,9 @@ export const CATEGORIES = [
   { key: "postprod", label: "Post-prod", color: "#06B6D4" },
 ] as const;
 
-export const CATEGORY_COLORS: Record<string, string> = Object.fromEntries(
-  CATEGORIES.map((c) => [c.key, c.color])
-);
+export const CATEGORY_COLORS: Record<string, string> = Object.fromEntries(CATEGORIES.map((c) => [c.key, c.color]));
 
-export const CATEGORY_LABELS: Record<string, string> = Object.fromEntries(
-  CATEGORIES.map((c) => [c.key, c.label])
-);
+export const CATEGORY_LABELS: Record<string, string> = Object.fromEntries(CATEGORIES.map((c) => [c.key, c.label]));
 
 // Module 2 — Production categories with 3 options each
 // storyCategory links to narrative categories from Module 3 collective_choices
@@ -160,11 +156,9 @@ export const THEMATIQUES = [
   { key: "courage", label: "Courage", color: "#14B8A6" },
 ] as const;
 
-export const THEMATIQUE_LABELS: Record<string, string> =
-  Object.fromEntries(THEMATIQUES.map((t) => [t.key, t.label]));
+export const THEMATIQUE_LABELS: Record<string, string> = Object.fromEntries(THEMATIQUES.map((t) => [t.key, t.label]));
 
-export const TEMPLATE_LABELS: Record<string, string> =
-  Object.fromEntries(TEMPLATES.map((t) => [t.key, t.label]));
+export const TEMPLATE_LABELS: Record<string, string> = Object.fromEntries(TEMPLATES.map((t) => [t.key, t.label]));
 
 // Séance structure: number of situations per séance (Module 3)
 // Also used for Module 4 via MODULE_SITUATIONS
@@ -176,18 +170,18 @@ export const MODULE_SITUATIONS: Record<number, number> = { 4: 8 };
 
 // Per-module séance structure (canonical source for all modules with séances)
 export const MODULE_SEANCE_SITUATIONS: Record<number, Record<number, number>> = {
-  1: { 1: 8, 2: 1, 3: 1, 4: 1, 5: 1 },  // Positionnement (8), Image 1 (1), Image 2 (1), Image 3 (1), Carnet (1)
-  2: { 1: 3, 2: 2, 3: 2, 4: 2 },   // Émotion Cachée: Mise en bain (3), Émotion (2), Collectif (2), Clôture (2)
-  3: { 1: 8, 2: 8, 3: 5 },          // Le Héros (8), Le Conflit (8), Le Sens (5)
-  4: { 1: 8 },                       // Vis ma vie (8 situations, 1 séance)
-  9: { 1: 8, 2: 5, 3: 8, 4: 8 },  // Old cinema (was Module 2): Le Cinéma (8), Les Choix/budget (5), Les Imprévus (8), Le Plan (8)
-  10: { 1: 2, 2: 5 },             // Et si... complet (image + écriture + QCMs intégrés) (1), Idea-bank (2)
+  1: { 1: 8, 2: 1, 3: 1, 4: 1, 5: 1 }, // Positionnement (8), Image 1 (1), Image 2 (1), Image 3 (1), Carnet (1)
+  2: { 1: 3, 2: 2, 3: 2, 4: 2 }, // Émotion Cachée: Mise en bain (3), Émotion (2), Collectif (2), Clôture (2)
+  3: { 1: 8, 2: 8, 3: 5 }, // Le Héros (8), Le Conflit (8), Le Sens (5)
+  4: { 1: 8 }, // Vis ma vie (8 situations, 1 séance)
+  9: { 1: 8, 2: 5, 3: 8, 4: 8 }, // Old cinema (was Module 2): Le Cinéma (8), Les Choix/budget (5), Les Imprévus (8), Le Plan (8)
+  10: { 1: 2, 2: 5 }, // Et si... complet (image + écriture + QCMs intégrés) (1), Idea-bank (2)
   11: { 1: 6, 2: 6, 3: 6, 4: 6 }, // Ciné-Débat: L'Art de Raconter (6), Émotions (6), Héros (6), Coulisses (6)
   12: { 1: 8 }, // Construction Collective: 8 manches de vote
   13: { 1: 8 }, // Post-prod: 8 étapes de finalisation
-  5: { 1: 5 },  // Le Scénario: Frise (1), Scènes V0 (2), Mission (3), Écriture (4), Assemblage (5)
-  7: { 1: 4 },  // Mise en scène: Plans (1), Comparaison (2), Découpage (3), Storyboard (4)
-  8: { 1: 5 },  // L'Équipe: Quiz (1), Débrief (2), Choix de rôle (3), Récap (4), Carte talent (5)
+  5: { 1: 5 }, // Le Scénario: Frise (1), Scènes V0 (2), Mission (3), Écriture (4), Assemblage (5)
+  7: { 1: 4 }, // Mise en scène: Plans (1), Comparaison (2), Découpage (3), Storyboard (4)
+  8: { 1: 5 }, // L'Équipe: Quiz (1), Débrief (2), Choix de rôle (3), Récap (4), Carte talent (5)
 };
 
 /** Helper: get max situations for a module + séance combo */

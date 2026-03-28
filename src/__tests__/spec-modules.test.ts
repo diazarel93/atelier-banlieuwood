@@ -12,9 +12,7 @@ import { MODULES } from "@/lib/modules-data";
 describe("SPEC_MODULES", () => {
   it("defines exactly 8 spec modules M1-M8", () => {
     expect(SPEC_MODULES).toHaveLength(8);
-    expect(SPEC_MODULES.map((m) => m.specId)).toEqual([
-      "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8",
-    ]);
+    expect(SPEC_MODULES.map((m) => m.specId)).toEqual(["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"]);
   });
 
   it("every spec module except M2 has at least one dbMapping", () => {

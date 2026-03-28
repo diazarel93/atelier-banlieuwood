@@ -11,7 +11,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
  */
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "postprod", { max: 20, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -48,50 +48,57 @@ export const POST = withErrorHandler(async function POST(
       if (!Array.isArray(sceneOrder)) {
         return NextResponse.json({ error: "sceneOrder requis" }, { status: 400 });
       }
-      await admin.from("module13_montages").upsert(
-        { session_id: sessionId, student_id: studentId, scene_order: sceneOrder },
-        { onConflict: "session_id,student_id" }
-      );
+      await admin
+        .from("module13_montages")
+        .upsert(
+          { session_id: sessionId, student_id: studentId, scene_order: sceneOrder },
+          { onConflict: "session_id,student_id" },
+        );
     } else if (position === 2) {
       // Musique
       const { genre, mood, justification } = data || {};
       if (!genre || !mood) {
         return NextResponse.json({ error: "genre et mood requis" }, { status: 400 });
       }
-      await admin.from("module13_musiques").upsert(
-        { session_id: sessionId, student_id: studentId, genre, mood, justification: justification || null },
-        { onConflict: "session_id,student_id" }
-      );
+      await admin
+        .from("module13_musiques")
+        .upsert(
+          { session_id: sessionId, student_id: studentId, genre, mood, justification: justification || null },
+          { onConflict: "session_id,student_id" },
+        );
     } else if (position === 3) {
       // Titre
       const titre = data?.titre?.trim();
       if (!titre) {
         return NextResponse.json({ error: "titre requis" }, { status: 400 });
       }
-      await admin.from("module13_titres").upsert(
-        { session_id: sessionId, student_id: studentId, titre },
-        { onConflict: "session_id,student_id" }
-      );
+      await admin
+        .from("module13_titres")
+        .upsert({ session_id: sessionId, student_id: studentId, titre }, { onConflict: "session_id,student_id" });
     } else if (position === 4) {
       // Affiche
       const { style, description, tagline } = data || {};
       if (!style || !description) {
         return NextResponse.json({ error: "style et description requis" }, { status: 400 });
       }
-      await admin.from("module13_affiches").upsert(
-        { session_id: sessionId, student_id: studentId, style, description, tagline: tagline || null },
-        { onConflict: "session_id,student_id" }
-      );
+      await admin
+        .from("module13_affiches")
+        .upsert(
+          { session_id: sessionId, student_id: studentId, style, description, tagline: tagline || null },
+          { onConflict: "session_id,student_id" },
+        );
     } else if (position === 5) {
       // Bande-annonce
       const { moments, voixOff } = data || {};
       if (!Array.isArray(moments) || moments.length === 0) {
         return NextResponse.json({ error: "moments requis" }, { status: 400 });
       }
-      await admin.from("module13_trailers").upsert(
-        { session_id: sessionId, student_id: studentId, moments, voix_off: voixOff || null },
-        { onConflict: "session_id,student_id" }
-      );
+      await admin
+        .from("module13_trailers")
+        .upsert(
+          { session_id: sessionId, student_id: studentId, moments, voix_off: voixOff || null },
+          { onConflict: "session_id,student_id" },
+        );
     }
 
     return NextResponse.json({ ok: true });
@@ -108,7 +115,7 @@ export const POST = withErrorHandler(async function POST(
  */
 export const PUT = withErrorHandler(async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "postprod", { max: 20, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -132,7 +139,7 @@ export const PUT = withErrorHandler(async function PUT(
       result_type: resultType || `step-${position}`,
       result_data: resultData || {},
     },
-    { onConflict: "session_id,position" }
+    { onConflict: "session_id,position" },
   );
 
   return NextResponse.json({ ok: true });
@@ -144,7 +151,7 @@ export const PUT = withErrorHandler(async function PUT(
  */
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);

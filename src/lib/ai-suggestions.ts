@@ -50,9 +50,10 @@ export function generateSuggestions(ctx: SessionContext): AISuggestion[] {
     suggestions.push({
       id: "stuck-alert",
       type: "alert",
-      message: ctx.stuckCount === 1
-        ? `${nameStr} semble bloque. Donnez un exemple ou reformulez.`
-        : `${nameStr} semblent bloques. Envisagez un indice ou une reformulation.`,
+      message:
+        ctx.stuckCount === 1
+          ? `${nameStr} semble bloque. Donnez un exemple ou reformulez.`
+          : `${nameStr} semblent bloques. Envisagez un indice ou une reformulation.`,
       priority: ctx.stuckCount >= 3 ? "high" : "medium",
       group: "stimulation",
       actionLabel: "Envoyer un indice",
@@ -64,7 +65,8 @@ export function generateSuggestions(ctx: SessionContext): AISuggestion[] {
     suggestions.push({
       id: "slow-responses",
       type: "insight",
-      message: "Peu de reponses apres 2 min. Reformulez la question ou donnez un exemple concret pour debloquer la classe.",
+      message:
+        "Peu de reponses apres 2 min. Reformulez la question ou donnez un exemple concret pour debloquer la classe.",
       priority: "medium",
       group: "stimulation",
       actionLabel: "Reformuler la question",
@@ -72,7 +74,12 @@ export function generateSuggestions(ctx: SessionContext): AISuggestion[] {
   }
 
   // Send example
-  if (ctx.status === "responding" && ctx.responsesCount > 0 && ctx.responsesCount < ctx.totalStudents * 0.5 && ctx.elapsedSeconds > 60) {
+  if (
+    ctx.status === "responding" &&
+    ctx.responsesCount > 0 &&
+    ctx.responsesCount < ctx.totalStudents * 0.5 &&
+    ctx.elapsedSeconds > 60
+  ) {
     suggestions.push({
       id: "send-example",
       type: "tip",
@@ -116,7 +123,7 @@ export function generateSuggestions(ctx: SessionContext): AISuggestion[] {
       const [secondKey, secondCount] = counts[1];
       const topPct = (topCount / totalVotes) * 100;
       const secondPct = (secondCount / totalVotes) * 100;
-      if (topPct >= 30 && secondPct >= 30 && (topPct - secondPct) < 15) {
+      if (topPct >= 30 && secondPct >= 30 && topPct - secondPct < 15) {
         suggestions.push({
           id: "classe-partagee",
           type: "insight",

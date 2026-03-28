@@ -9,10 +9,7 @@ interface StatusBadgeProps {
   size?: "sm" | "md";
 }
 
-const STATUS_CONFIG: Record<
-  SessionStatus,
-  { label: string; style: string; dot: string; pulse: boolean }
-> = {
+const STATUS_CONFIG: Record<SessionStatus, { label: string; style: string; dot: string; pulse: boolean }> = {
   draft: {
     label: "Brouillon",
     style: "bg-[var(--color-bw-surface-dim)] text-bw-muted ring-1 ring-inset ring-[var(--color-bw-border)]",
@@ -53,7 +50,7 @@ export function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full font-medium",
         cfg.style,
-        size === "sm" ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-0.5 text-[11px]"
+        size === "sm" ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-0.5 text-[11px]",
       )}
     >
       <span
@@ -61,7 +58,7 @@ export function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
           "rounded-full shrink-0",
           cfg.dot,
           cfg.pulse && "animate-pulse",
-          size === "sm" ? "h-1.5 w-1.5" : "h-2 w-2"
+          size === "sm" ? "h-1.5 w-1.5" : "h-2 w-2",
         )}
       />
       {cfg.label}

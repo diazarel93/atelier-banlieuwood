@@ -5,7 +5,12 @@ import type { AdminClient } from "./types";
 
 // ── MODULE 1 handler — Redesign Adrian ──
 // Handles 5 séances: positioning (QCM), 3 images, notebook
-export async function handleModule1(req: NextRequest, session: Record<string, unknown>, sessionId: string, admin: AdminClient) {
+export async function handleModule1(
+  req: NextRequest,
+  session: Record<string, unknown>,
+  sessionId: string,
+  admin: AdminClient,
+) {
   const currentSeance = (session.current_seance as number) || 1;
   const studentId = req.nextUrl.searchParams.get("studentId");
   if (studentId && !isValidUUID(studentId)) {
@@ -43,7 +48,9 @@ export async function handleModule1(req: NextRequest, session: Record<string, un
   if (currentSeance === 1) {
     const { data: situations } = await admin
       .from("situations")
-      .select("id, position, category, restitution_label, prompt_6_9, prompt_10_13, prompt_14_18, options, question_type")
+      .select(
+        "id, position, category, restitution_label, prompt_6_9, prompt_10_13, prompt_14_18, options, question_type",
+      )
       .eq("module", 1)
       .eq("seance", 1)
       .order("position");
@@ -75,7 +82,9 @@ export async function handleModule1(req: NextRequest, session: Record<string, un
         .eq("student_id", studentId)
         .in("situation_id", sitIds)
         .is("reset_at", null);
-      const respMap = new Map<string, string>((studentResponses || []).map((r: { situation_id: string; text: string }) => [r.situation_id, r.text]));
+      const respMap = new Map<string, string>(
+        (studentResponses || []).map((r: { situation_id: string; text: string }) => [r.situation_id, r.text]),
+      );
       for (let i = 0; i < sitIds.length; i++) {
         answeredQuestions[i + 1] = respMap.has(sitIds[i]);
         if (respMap.has(sitIds[i])) answeredOptions[i + 1] = respMap.get(sitIds[i])!;
@@ -131,7 +140,9 @@ export async function handleModule1(req: NextRequest, session: Record<string, un
         currentSeance,
       },
       situation: null,
-      hasResponded: Object.values(answeredQuestions).length === (situations?.length || 8) && Object.values(answeredQuestions).every(Boolean),
+      hasResponded:
+        Object.values(answeredQuestions).length === (situations?.length || 8) &&
+        Object.values(answeredQuestions).every(Boolean),
       hasVoted: false,
       voteOptions: [],
       collectiveChoice: null,
@@ -146,16 +157,14 @@ export async function handleModule1(req: NextRequest, session: Record<string, un
     const imagePosition = currentSeance - 1; // seance 2 → image 1, seance 3 → image 2, seance 4 → image 3
 
     // Fetch image
-    const { data: image } = await admin
-      .from("module1_images")
-      .select("*")
-      .eq("position", imagePosition)
-      .single();
+    const { data: image } = await admin.from("module1_images").select("*").eq("position", imagePosition).single();
 
     // Fetch the single situation for this séance
     const { data: situation } = await admin
       .from("situations")
-      .select("id, position, category, restitution_label, prompt_6_9, prompt_10_13, prompt_14_18, nudge_text, image_position")
+      .select(
+        "id, position, category, restitution_label, prompt_6_9, prompt_10_13, prompt_14_18, nudge_text, image_position",
+      )
       .eq("module", 1)
       .eq("seance", currentSeance)
       .eq("position", 1)
@@ -253,28 +262,34 @@ export async function handleModule1(req: NextRequest, session: Record<string, un
       session: sessionBase,
       module1: {
         type: "image" as const,
-        image: image ? {
-          position: image.position,
-          title: image.title,
-          description: image.description,
-          url: image.image_url,
-        } : null,
-        question: situation ? {
-          situationId: situation.id,
-          text: questionText,
-          relance: relance?.relance_text || situation.nudge_text || "",
-          measure: situation.restitution_label,
-        } : null,
+        image: image
+          ? {
+              position: image.position,
+              title: image.title,
+              description: image.description,
+              url: image.image_url,
+            }
+          : null,
+        question: situation
+          ? {
+              situationId: situation.id,
+              text: questionText,
+              relance: relance?.relance_text || situation.nudge_text || "",
+              measure: situation.restitution_label,
+            }
+          : null,
         hasResponded,
         responsesCount,
         confrontation,
         totalSeances: 5,
         currentSeance,
-        ...(isTwoPhase ? {
-          twoPhase: true,
-          currentPhase,
-          phase1Text,
-        } : {}),
+        ...(isTwoPhase
+          ? {
+              twoPhase: true,
+              currentPhase,
+              phase1Text,
+            }
+          : {}),
       },
       situation: null,
       hasResponded,
@@ -339,22 +354,19 @@ export async function handleModule1(req: NextRequest, session: Record<string, un
       session: sessionBase,
       module1: {
         type: "notebook" as const,
-        question: situation ? {
-          situationId: situation.id,
-          text: situation[promptField as keyof typeof situation] as string,
-          relance: situation.nudge_text || "",
-          measure: situation.restitution_label,
-        } : null,
+        question: situation
+          ? {
+              situationId: situation.id,
+              text: situation[promptField as keyof typeof situation] as string,
+              relance: situation.nudge_text || "",
+              measure: situation.restitution_label,
+            }
+          : null,
         existingText,
         responsesCount,
         totalSeances: 5,
         currentSeance,
-        suggestions: [
-          "une dispute",
-          "un moment gênant",
-          "un moment drôle",
-          "une injustice",
-        ],
+        suggestions: ["une dispute", "un moment gênant", "un moment drôle", "une injustice"],
         encouragement: "Les meilleurs films racontent souvent des choses qui existent vraiment.",
       },
       situation: null,

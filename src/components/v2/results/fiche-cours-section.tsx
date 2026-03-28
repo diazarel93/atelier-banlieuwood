@@ -14,27 +14,16 @@ interface FicheCoursSectionProps {
   onDownload: () => void;
 }
 
-export function FicheCoursSection({
-  fiche,
-  loading,
-  provider,
-  onGenerate,
-  onDownload,
-}: FicheCoursSectionProps) {
+export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDownload }: FicheCoursSectionProps) {
   const [ficheTab, setFicheTab] = useState<"primaire" | "college" | "lycee">("college");
   const [openDomaine, setOpenDomaine] = useState<string | null>(null);
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide">
-          Fiche de cours
-        </h3>
+        <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide">Fiche de cours</h3>
         {fiche && (
-          <button
-            onClick={onDownload}
-            className="text-xs text-bw-muted hover:text-bw-heading transition-colors"
-          >
+          <button onClick={onDownload} className="text-xs text-bw-muted hover:text-bw-heading transition-colors">
             Télécharger .md
           </button>
         )}
@@ -66,17 +55,13 @@ export function FicheCoursSection({
 
           {/* Title + Duration */}
           <GlassCardV2 className="p-5 border-l-4 border-l-purple-500">
-            <h4 className="text-base font-semibold text-bw-heading">
-              {fiche.title}
-            </h4>
+            <h4 className="text-base font-semibold text-bw-heading">{fiche.title}</h4>
             <p className="text-sm text-bw-muted mt-1">{fiche.duration}</p>
           </GlassCardV2>
 
           {/* Objectives */}
           <GlassCardV2 className="p-5 space-y-2">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">
-              Objectifs
-            </p>
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">Objectifs</p>
             {fiche.objectives.map((obj, i) => (
               <div key={i} className="flex items-start gap-3">
                 <span
@@ -104,17 +89,9 @@ export function FicheCoursSection({
               const domaine = fiche.competencies[key];
               if (!domaine) return null;
               const isOpen = openDomaine === key;
-              const color =
-                key === "domaine1"
-                  ? "#3B82F6"
-                  : key === "domaine3"
-                  ? "#10B981"
-                  : "#8B5CF6";
+              const color = key === "domaine1" ? "#3B82F6" : key === "domaine3" ? "#10B981" : "#8B5CF6";
               return (
-                <div
-                  key={key}
-                  className="border-t border-[var(--color-bw-border)]"
-                >
+                <div key={key} className="border-t border-[var(--color-bw-border)]">
                   <button
                     onClick={() => setOpenDomaine(isOpen ? null : key)}
                     className="w-full flex items-center justify-between px-5 py-3 hover:bg-[var(--color-bw-surface-dim)] transition-colors cursor-pointer"
@@ -122,9 +99,7 @@ export function FicheCoursSection({
                     <span className="text-sm font-medium" style={{ color }}>
                       {domaine.title}
                     </span>
-                    <span className="text-xs text-bw-muted">
-                      {isOpen ? "▲" : "▼"}
-                    </span>
+                    <span className="text-xs text-bw-muted">{isOpen ? "▲" : "▼"}</span>
                   </button>
                   {isOpen && (
                     <div className="px-5 pb-4 space-y-1">
@@ -146,18 +121,14 @@ export function FicheCoursSection({
 
           {/* Animation tips */}
           <GlassCardV2 className="p-5 space-y-3">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">
-              Conseils d&apos;animation
-            </p>
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">Conseils d&apos;animation</p>
             {fiche.animationTips.map((tip, i) => (
               <div key={i} className="flex items-start gap-3">
                 <span className="text-xs font-mono text-purple-600 border border-purple-200 rounded-md px-1.5 py-0.5 shrink-0 mt-0.5">
                   {tip.timing}
                 </span>
                 <div>
-                  <span className="text-sm font-medium text-bw-heading">
-                    {tip.phase}
-                  </span>
+                  <span className="text-sm font-medium text-bw-heading">{tip.phase}</span>
                   <p className="text-sm text-bw-muted mt-0.5">{tip.tip}</p>
                 </div>
               </div>
@@ -166,15 +137,10 @@ export function FicheCoursSection({
 
           {/* Relaunch tips */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-              Relancer les élèves
-            </p>
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Relancer les élèves</p>
             <ul className="space-y-2">
               {fiche.relaunchTips.map((tip, i) => (
-                <li
-                  key={i}
-                  className="text-sm text-bw-heading pl-3 border-l-2 border-amber-400"
-                >
+                <li key={i} className="text-sm text-bw-heading pl-3 border-l-2 border-amber-400">
                   {tip}
                 </li>
               ))}
@@ -183,9 +149,7 @@ export function FicheCoursSection({
 
           {/* Level adaptation tabs */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-              Adaptation par niveau
-            </p>
+            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Adaptation par niveau</p>
             <div className="flex gap-1 mb-3">
               {(["primaire", "college", "lycee"] as const).map((lvl) => (
                 <button
@@ -197,17 +161,11 @@ export function FicheCoursSection({
                       : "text-bw-muted hover:bg-[var(--color-bw-surface-dim)]"
                   }`}
                 >
-                  {lvl === "primaire"
-                    ? "Primaire"
-                    : lvl === "college"
-                    ? "Collège"
-                    : "Lycée"}
+                  {lvl === "primaire" ? "Primaire" : lvl === "college" ? "Collège" : "Lycée"}
                 </button>
               ))}
             </div>
-            <p className="text-sm text-bw-heading">
-              {fiche.adaptationByLevel[ficheTab]}
-            </p>
+            <p className="text-sm text-bw-heading">{fiche.adaptationByLevel[ficheTab]}</p>
           </GlassCardV2>
 
           {/* Evaluation criteria */}
@@ -217,18 +175,9 @@ export function FicheCoursSection({
             </p>
             <ul className="space-y-2">
               {fiche.evaluation.map((crit, i) => (
-                <li
-                  key={i}
-                  className="flex items-start gap-2 text-sm text-bw-heading"
-                >
-                  <span className="text-emerald-500 shrink-0 mt-0.5">
-                    &#10003;
-                  </span>
-                  {typeof crit === "string"
-                    ? crit
-                    : Object.values(crit as Record<string, string>).join(
-                        " — "
-                      )}
+                <li key={i} className="flex items-start gap-2 text-sm text-bw-heading">
+                  <span className="text-emerald-500 shrink-0 mt-0.5">&#10003;</span>
+                  {typeof crit === "string" ? crit : Object.values(crit as Record<string, string>).join(" — ")}
                 </li>
               ))}
             </ul>
@@ -240,9 +189,7 @@ export function FicheCoursSection({
               <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600">
                 Résumé de session
               </span>
-              <p className="text-sm text-bw-heading mt-2">
-                {fiche.sessionRecap}
-              </p>
+              <p className="text-sm text-bw-heading mt-2">{fiche.sessionRecap}</p>
             </GlassCardV2>
           )}
         </div>

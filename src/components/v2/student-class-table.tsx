@@ -27,20 +27,16 @@ function getActivityBadge(lastActiveAt: string): {
   label: string;
   tier: ActivityTier;
 } {
-  const diffDays =
-    (Date.now() - new Date(lastActiveAt).getTime()) / (1000 * 60 * 60 * 24);
+  const diffDays = (Date.now() - new Date(lastActiveAt).getTime()) / (1000 * 60 * 60 * 24);
   if (diffDays < 7) return { label: "Actif", tier: "active" };
   if (diffDays < 30) return { label: "Récent", tier: "recent" };
   return { label: "Inactif", tier: "inactive" };
 }
 
 const BADGE_STYLES: Record<ActivityTier, string> = {
-  active:
-    "bg-[var(--color-bw-green-100)] text-emerald-700 dark:text-emerald-300 ring-1 ring-inset ring-emerald-600/20",
-  recent:
-    "bg-[var(--color-bw-amber-100)] text-amber-700 dark:text-amber-300 ring-1 ring-inset ring-amber-600/20",
-  inactive:
-    "bg-[var(--color-bw-surface-dim)] text-bw-muted ring-1 ring-inset ring-[var(--color-bw-border)]",
+  active: "bg-[var(--color-bw-green-100)] text-emerald-700 dark:text-emerald-300 ring-1 ring-inset ring-emerald-600/20",
+  recent: "bg-[var(--color-bw-amber-100)] text-amber-700 dark:text-amber-300 ring-1 ring-inset ring-amber-600/20",
+  inactive: "bg-[var(--color-bw-surface-dim)] text-bw-muted ring-1 ring-inset ring-[var(--color-bw-border)]",
 };
 
 const DOT_STYLES: Record<ActivityTier, string> = {
@@ -56,10 +52,7 @@ function formatShortDate(iso: string) {
   });
 }
 
-export function StudentClassTable({
-  students,
-  className,
-}: StudentClassTableProps) {
+export function StudentClassTable({ students, className }: StudentClassTableProps) {
   const groups = useMemo(() => {
     const map = new Map<string, Student[]>();
     for (const s of students) {
@@ -103,9 +96,7 @@ export function StudentClassTable({
               className="w-full flex items-center justify-between px-5 py-3.5 bg-[var(--color-bw-surface-dim)]/60 hover:bg-[var(--color-bw-surface-dim)] transition-colors duration-150 cursor-pointer"
             >
               <div className="flex items-center gap-3">
-                <span className="text-heading-xs text-bw-heading">
-                  {groupLabel}
-                </span>
+                <span className="text-heading-xs text-bw-heading">{groupLabel}</span>
                 <span className="inline-flex items-center rounded-full bg-[var(--color-bw-border)] px-2 py-0.5 text-[11px] font-medium text-bw-muted tabular-nums">
                   {groupStudents.length}
                 </span>
@@ -187,9 +178,7 @@ export function StudentClassTable({
                               <span
                                 className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${BADGE_STYLES[badge.tier]}`}
                               >
-                                <span
-                                  className={`h-1.5 w-1.5 rounded-full ${DOT_STYLES[badge.tier]}`}
-                                />
+                                <span className={`h-1.5 w-1.5 rounded-full ${DOT_STYLES[badge.tier]}`} />
                                 {badge.label}
                               </span>
                             </div>

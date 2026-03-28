@@ -7,11 +7,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 // ── Session queries ──
 
-export async function fetchSessionById(
-  client: SupabaseClient,
-  sessionId: string,
-  opts?: { withStudents?: boolean }
-) {
+export async function fetchSessionById(client: SupabaseClient, sessionId: string, opts?: { withStudents?: boolean }) {
   const select = opts?.withStudents ? "*, students(*)" : "*";
   const { data, error } = await client
     .from("sessions")
@@ -28,14 +24,12 @@ export async function fetchSessionsByFacilitator(
   opts?: {
     select?: string;
     classLabel?: string;
-  }
+  },
 ) {
-  const select = opts?.select || "id, title, status, level, template, created_at, scheduled_at, class_label, completed_modules, students(id)";
-  let query = client
-    .from("sessions")
-    .select(select)
-    .is("deleted_at", null)
-    .order("created_at", { ascending: false });
+  const select =
+    opts?.select ||
+    "id, title, status, level, template, created_at, scheduled_at, class_label, completed_modules, students(id)";
+  let query = client.from("sessions").select(select).is("deleted_at", null).order("created_at", { ascending: false });
 
   if (facilitatorId) {
     query = query.eq("facilitator_id", facilitatorId);
@@ -53,20 +47,14 @@ export async function fetchSessionsByFacilitator(
 export async function fetchStudentsBySessionIds(
   client: SupabaseClient,
   sessionIds: string[],
-  opts?: { select?: string }
+  opts?: { select?: string },
 ) {
   const select = opts?.select || "id, display_name, avatar, profile_id, session_id, is_active, joined_at";
-  const { data, error } = await client
-    .from("students")
-    .select(select)
-    .in("session_id", sessionIds);
+  const { data, error } = await client.from("students").select(select).in("session_id", sessionIds);
   return { data: data || [], error };
 }
 
-export async function fetchActiveStudentCount(
-  client: SupabaseClient,
-  sessionId: string
-) {
+export async function fetchActiveStudentCount(client: SupabaseClient, sessionId: string) {
   const { count } = await client
     .from("students")
     .select("*", { count: "exact", head: true })
@@ -77,11 +65,7 @@ export async function fetchActiveStudentCount(
 
 // ── Response queries ──
 
-export async function fetchResponses(
-  client: SupabaseClient,
-  sessionId: string,
-  situationId: string
-) {
+export async function fetchResponses(client: SupabaseClient, sessionId: string, situationId: string) {
   const { data, error } = await client
     .from("responses")
     .select("*, students(display_name, avatar)")
@@ -92,11 +76,7 @@ export async function fetchResponses(
   return { data: data || [], error };
 }
 
-export async function fetchVoteOptions(
-  client: SupabaseClient,
-  sessionId: string,
-  situationId: string
-) {
+export async function fetchVoteOptions(client: SupabaseClient, sessionId: string, situationId: string) {
   const { data, error } = await client
     .from("responses")
     .select("id, text")
@@ -109,11 +89,7 @@ export async function fetchVoteOptions(
 
 // ── Collective choices ──
 
-export async function fetchCollectiveChoice(
-  client: SupabaseClient,
-  sessionId: string,
-  situationId: string
-) {
+export async function fetchCollectiveChoice(client: SupabaseClient, sessionId: string, situationId: string) {
   const { data, error } = await client
     .from("collective_choices")
     .select("*")

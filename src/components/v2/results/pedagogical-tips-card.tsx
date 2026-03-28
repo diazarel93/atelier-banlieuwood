@@ -4,7 +4,7 @@ import { GlassCardV2 } from "@/components/v2/glass-card";
 
 const MOMENT_COLORS: Record<string, string> = {
   tournant: "#FF6B35",
-  "créatif": "#8B5CF6",
+  créatif: "#8B5CF6",
   collectif: "#4ECDC4",
   tension: "#EF4444",
 };
@@ -22,9 +22,7 @@ export function PedagogicalTipsCard({ recommendations, keyMoments }: Pedagogical
 
   return (
     <GlassCardV2 className="p-5">
-      <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-4">
-        Pistes pédagogiques
-      </h3>
+      <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-4">Pistes pédagogiques</h3>
 
       {topRecs.length > 0 && (
         <ol className="space-y-1.5 list-decimal list-inside mb-4">
@@ -38,21 +36,12 @@ export function PedagogicalTipsCard({ recommendations, keyMoments }: Pedagogical
 
       {topMoments.length > 0 && (
         <div className="space-y-2">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-bw-muted">
-            Moments clés
-          </p>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-bw-muted">Moments clés</p>
           {topMoments.map((m, i) => {
             const color = MOMENT_COLORS[m.category] || "#888";
             return (
-              <div
-                key={i}
-                className="pl-4 border-l-2 py-1"
-                style={{ borderLeftColor: color }}
-              >
-                <span
-                  className="text-xs font-semibold uppercase"
-                  style={{ color }}
-                >
+              <div key={i} className="pl-4 border-l-2 py-1" style={{ borderLeftColor: color }}>
+                <span className="text-xs font-semibold uppercase" style={{ color }}>
                   {m.category}
                 </span>
                 <p className="text-sm text-bw-heading">{m.description}</p>

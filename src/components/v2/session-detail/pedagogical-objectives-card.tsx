@@ -9,14 +9,10 @@ interface PedagogicalObjectivesCardProps {
 
 import { SOCLE_COLORS } from "@/lib/socle-colors";
 
-export function PedagogicalObjectivesCard({
-  guide,
-}: PedagogicalObjectivesCardProps) {
+export function PedagogicalObjectivesCard({ guide }: PedagogicalObjectivesCardProps) {
   return (
     <GlassCardV2 className="p-5">
-      <p className="text-sm font-semibold text-bw-heading uppercase tracking-wide mb-4">
-        Objectifs pédagogiques
-      </p>
+      <p className="text-sm font-semibold text-bw-heading uppercase tracking-wide mb-4">Objectifs pédagogiques</p>
 
       <div className="flex flex-wrap gap-2 mb-4">
         {guide.socleCommun.map((code) => {
@@ -36,16 +32,11 @@ export function PedagogicalObjectivesCard({
         })}
       </div>
 
-      <p className="text-sm text-bw-heading leading-relaxed mb-4">
-        {guide.objectifPedagogique}
-      </p>
+      <p className="text-sm text-bw-heading leading-relaxed mb-4">{guide.objectifPedagogique}</p>
 
       <ul className="space-y-2">
         {guide.competences.map((comp, i) => (
-          <li
-            key={i}
-            className="flex items-start gap-2 text-sm text-bw-heading"
-          >
+          <li key={i} className="flex items-start gap-2 text-sm text-bw-heading">
             <span className="text-emerald-500 mt-0.5 shrink-0">&#10003;</span>
             {comp}
           </li>

@@ -47,11 +47,11 @@ export function AmbientGradients({ moduleColor }: AmbientGradientsProps) {
             width: 2 + (i % 3),
             height: 2 + (i % 3),
             left: `${15 + i * 14}%`,
-            top: `${10 + (i * 17) % 80}%`,
+            top: `${10 + ((i * 17) % 80)}%`,
           }}
           animate={{
             y: [0, -30 - i * 10, 0],
-            x: [0, (i % 2 === 0 ? 15 : -15), 0],
+            x: [0, i % 2 === 0 ? 15 : -15, 0],
             opacity: [0.3, 0.6, 0.3],
           }}
           transition={{

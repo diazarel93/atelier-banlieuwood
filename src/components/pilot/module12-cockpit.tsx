@@ -88,8 +88,8 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
         <div className="text-center">
           <h3 className="text-lg font-semibold text-white">Preparation inter-seance</h3>
           <p className="text-sm text-white/60 mt-2 max-w-md">
-            Generez les cartes a partir des idees du Module 10 (Et si... + Pitch).
-            Les contributions des eleves seront anonymisees et melangees.
+            Generez les cartes a partir des idees du Module 10 (Et si... + Pitch). Les contributions des eleves seront
+            anonymisees et melangees.
           </p>
         </div>
         <button
@@ -121,9 +121,7 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
             {mancheConfig?.optional && <span className="ml-1.5 text-xs text-amber-400 font-semibold">BONUS</span>}
           </p>
           <h3 className="text-lg font-bold text-white">{module12.mancheLabel}</h3>
-          {mancheConfig && (
-            <p className="text-xs text-white/40 mt-1">{mancheConfig.description}</p>
-          )}
+          {mancheConfig && <p className="text-xs text-white/40 mt-1">{mancheConfig.description}</p>}
         </div>
         <div className="flex items-center gap-1.5">
           {Array.from({ length: 8 }, (_, i) => {
@@ -136,7 +134,13 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
                 {m === 6 && <div className="w-px h-3 bg-white/20 mx-0.5" />}
                 <div
                   className={`w-3 h-3 rounded-full transition-all ${
-                    won ? "bg-emerald-400" : isCurrent ? "bg-yellow-400 animate-pulse" : isOptional ? "bg-white/8 ring-1 ring-white/15" : "bg-white/15"
+                    won
+                      ? "bg-emerald-400"
+                      : isCurrent
+                        ? "bg-yellow-400 animate-pulse"
+                        : isOptional
+                          ? "bg-white/8 ring-1 ring-white/15"
+                          : "bg-white/15"
                   }`}
                   title={`Manche ${m}${isOptional ? " (bonus)" : ""}${won ? " — validee" : isCurrent ? " — en cours" : ""}`}
                 />
@@ -148,10 +152,10 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
 
       {/* Vote toolbar */}
       <div className="flex items-center gap-4 text-sm text-white/60">
-        <span>Votes : {totalVotes}/{connectedCount}</span>
-        {module12.winner && (
-          <span className="text-emerald-400 font-semibold">Choix retenu</span>
-        )}
+        <span>
+          Votes : {totalVotes}/{connectedCount}
+        </span>
+        {module12.winner && <span className="text-emerald-400 font-semibold">Choix retenu</span>}
       </div>
 
       {/* Cards with vote bars */}
@@ -166,9 +170,7 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
               key={card.cardId}
               layout
               className={`relative p-4 rounded-xl border transition-all ${
-                isWinner
-                  ? "bg-emerald-500/20 border-emerald-400"
-                  : "bg-[#EDE9F7] border-[#DDD7EC]"
+                isWinner ? "bg-emerald-500/20 border-emerald-400" : "bg-[#EDE9F7] border-[#DDD7EC]"
               }`}
             >
               {/* Vote progress bar */}
@@ -184,9 +186,7 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
               <div className="relative flex items-center justify-between gap-4">
                 <div className="flex-1">
                   <p className="text-white text-sm">{card.text}</p>
-                  {card.isBanlieuwood && (
-                    <span className="text-xs text-white/30 mt-1">Banlieuwood</span>
-                  )}
+                  {card.isBanlieuwood && <span className="text-xs text-white/30 mt-1">Banlieuwood</span>}
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-mono text-white/60">

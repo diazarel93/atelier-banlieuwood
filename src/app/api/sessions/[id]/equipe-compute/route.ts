@@ -7,7 +7,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // POST — Facilitateur computes points & rankings for M8
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "equipe-compute", { max: 10, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -44,26 +44,17 @@ export const POST = withErrorHandler(async function POST(
   }
 
   // Count creative contributions (M10: etsi + personnages + pitchs + idea bank)
-  const { data: etsi } = await admin
-    .from("module10_etsi")
-    .select("student_id")
-    .eq("session_id", sessionId);
+  const { data: etsi } = await admin.from("module10_etsi").select("student_id").eq("session_id", sessionId);
 
   const { data: personnages } = await admin
     .from("module10_personnages")
     .select("student_id")
     .eq("session_id", sessionId);
 
-  const { data: pitchs } = await admin
-    .from("module10_pitchs")
-    .select("student_id")
-    .eq("session_id", sessionId);
+  const { data: pitchs } = await admin.from("module10_pitchs").select("student_id").eq("session_id", sessionId);
 
   // Adrian: "le carnet d'idées a un poids important" — count idea bank contributions
-  const { data: ideaBank } = await admin
-    .from("module10_idea_bank")
-    .select("student_id")
-    .eq("session_id", sessionId);
+  const { data: ideaBank } = await admin.from("module10_idea_bank").select("student_id").eq("session_id", sessionId);
 
   const creativityCounts: Record<string, number> = {};
   for (const item of [...(etsi || []), ...(personnages || []), ...(pitchs || [])]) {
@@ -88,25 +79,23 @@ export const POST = withErrorHandler(async function POST(
   }
 
   // Count M12 votes (additional engagement)
-  const { data: votes } = await admin
-    .from("module12_votes")
-    .select("student_id")
-    .eq("session_id", sessionId);
+  const { data: votes } = await admin.from("module12_votes").select("student_id").eq("session_id", sessionId);
 
   for (const v of votes || []) {
     engagementCounts[v.student_id] = (engagementCounts[v.student_id] || 0) + 1;
   }
 
   // Adrian: "observations de l'intervenant" — facilitator tags feed into engagement
-  const { data: tags } = await admin
-    .from("facilitator_tags")
-    .select("student_id, tag")
-    .eq("session_id", sessionId);
+  const { data: tags } = await admin.from("facilitator_tags").select("student_id, tag").eq("session_id", sessionId);
 
   // Positive tags add points, negative tags are neutral (no penalty — Adrian: "pas de punition")
   const POSITIVE_TAGS = new Set([
-    "tres_creatif", "force_de_proposition", "bonne_ecoute",
-    "tres_investi", "bonne_cooperation", "leadership",
+    "tres_creatif",
+    "force_de_proposition",
+    "bonne_ecoute",
+    "tres_investi",
+    "bonne_cooperation",
+    "leadership",
   ]);
   for (const t of tags || []) {
     if (POSITIVE_TAGS.has(t.tag)) {
@@ -140,7 +129,7 @@ export const POST = withErrorHandler(async function POST(
         engagement_score: p.engagementScore,
         rank: p.rank,
       },
-      { onConflict: "session_id,student_id" }
+      { onConflict: "session_id,student_id" },
     );
   }
 
@@ -167,7 +156,7 @@ export const POST = withErrorHandler(async function POST(
 // PATCH — Facilitateur assigns a role via veto (override)
 export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "equipe-compute", { max: 10, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -186,17 +175,15 @@ export const PATCH = withErrorHandler(async function PATCH(
   }
 
   // Upsert role with veto flag
-  const { error } = await admin
-    .from("module8_roles")
-    .upsert(
-      {
-        session_id: sessionId,
-        student_id: studentId,
-        role_key: roleKey,
-        is_veto: true,
-      },
-      { onConflict: "session_id,student_id" }
-    );
+  const { error } = await admin.from("module8_roles").upsert(
+    {
+      session_id: sessionId,
+      student_id: studentId,
+      role_key: roleKey,
+      is_veto: true,
+    },
+    { onConflict: "session_id,student_id" },
+  );
 
   if (error) {
     console.error("[equipe-compute PATCH]", error.message);
@@ -209,7 +196,7 @@ export const PATCH = withErrorHandler(async function PATCH(
 // PUT — generate talent cards after roles are assigned
 export const PUT = withErrorHandler(async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "equipe-compute", { max: 10, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -223,10 +210,7 @@ export const PUT = withErrorHandler(async function PUT(
   const admin = createAdminClient();
 
   // Get all roles assigned
-  const { data: roles } = await admin
-    .from("module8_roles")
-    .select("student_id, role_key")
-    .eq("session_id", sessionId);
+  const { data: roles } = await admin.from("module8_roles").select("student_id, role_key").eq("session_id", sessionId);
 
   if (!roles || roles.length === 0) {
     return NextResponse.json({ error: "Aucun rôle assigné" }, { status: 400 });
@@ -238,7 +222,8 @@ export const PUT = withErrorHandler(async function PUT(
     .select("student_id, participation_score, creativity_score, engagement_score")
     .eq("session_id", sessionId);
 
-  const pointsMap: Record<string, { participationScore: number; creativityScore: number; engagementScore: number }> = {};
+  const pointsMap: Record<string, { participationScore: number; creativityScore: number; engagementScore: number }> =
+    {};
   for (const p of points || []) {
     pointsMap[p.student_id] = {
       participationScore: p.participation_score,
@@ -251,11 +236,7 @@ export const PUT = withErrorHandler(async function PUT(
   let count = 0;
   for (const role of roles) {
     const scores = pointsMap[role.student_id] || { participationScore: 5, creativityScore: 5, engagementScore: 5 };
-    const card = generateTalentCard(
-      { id: role.student_id },
-      scores,
-      role.role_key
-    );
+    const card = generateTalentCard({ id: role.student_id }, scores, role.role_key);
 
     await admin.from("module8_talent_cards").upsert(
       {
@@ -265,7 +246,7 @@ export const PUT = withErrorHandler(async function PUT(
         strengths: card.strengths,
         role_key: card.roleKey,
       },
-      { onConflict: "session_id,student_id" }
+      { onConflict: "session_id,student_id" },
     );
     count++;
   }

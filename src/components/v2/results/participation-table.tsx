@@ -12,19 +12,12 @@ export function ParticipationTable({ students }: ParticipationTableProps) {
 
   return (
     <GlassCardV2 className="p-5">
-      <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-        Participation des élèves
-      </p>
+      <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Participation des élèves</p>
       <div className="space-y-2">
         {students.slice(0, 15).map((s) => (
-          <div
-            key={s.id}
-            className="flex items-center gap-3 px-3 py-2 rounded-xl bg-[var(--color-bw-surface-dim)]"
-          >
+          <div key={s.id} className="flex items-center gap-3 px-3 py-2 rounded-xl bg-[var(--color-bw-surface-dim)]">
             <span className="text-lg">{s.avatar}</span>
-            <span className="text-sm text-bw-heading flex-1 truncate">
-              {s.name}
-            </span>
+            <span className="text-sm text-bw-heading flex-1 truncate">{s.name}</span>
             <span className="text-xs text-bw-muted tabular-nums border border-[var(--color-bw-border)] rounded-md px-1.5 py-0.5">
               {s.responses} rép.
             </span>

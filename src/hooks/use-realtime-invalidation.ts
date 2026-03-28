@@ -11,11 +11,7 @@ export type ConnectionStatus = "connected" | "connecting" | "disconnected";
  * Returns the appropriate polling interval based on realtime connection status.
  * When connected, use a slow interval (heartbeat). When disconnected, poll faster.
  */
-export function getPollingInterval(
-  status: ConnectionStatus | undefined,
-  fastMs: number,
-  slowMs: number
-): number {
+export function getPollingInterval(status: ConnectionStatus | undefined, fastMs: number, slowMs: number): number {
   return status === "connected" ? slowMs : fastMs;
 }
 
@@ -46,26 +42,52 @@ const TABLE_INVALIDATION_MAP: Record<string, (sessionId: string) => string[][]> 
     ["screen-all-choices", sid],
     ["pilot-choices", sid],
   ],
-  module2_budgets: (sid) => [
-    ["budget", sid],
-  ],
-  response_reactions: (sid) => [
-    ["screen-reactions", sid],
-  ],
+  module2_budgets: (sid) => [["budget", sid]],
+  response_reactions: (sid) => [["screen-reactions", sid]],
   teams: (sid) => [
     ["pilot-teams", sid],
     ["session-state", sid],
   ],
-  module6_scenes: (sid) => [["session-state", sid], ["m6-scenes", sid]],
-  module6_missions: (sid) => [["session-state", sid], ["m6-missions", sid]],
-  module6_scenario: (sid) => [["session-state", sid], ["m6-scenario", sid]],
-  module7_comparisons: (sid) => [["session-state", sid], ["m7-comparisons", sid]],
-  module7_decoupages: (sid) => [["session-state", sid], ["m7-decoupages", sid]],
-  module7_storyboard: (sid) => [["session-state", sid], ["m7-storyboard", sid]],
-  module8_quiz: (sid) => [["session-state", sid], ["m8-quiz", sid]],
-  module8_roles: (sid) => [["session-state", sid], ["m8-roles", sid]],
-  module8_points: (sid) => [["session-state", sid], ["m8-points", sid]],
-  module8_talent_cards: (sid) => [["session-state", sid], ["m8-talent-cards", sid]],
+  module6_scenes: (sid) => [
+    ["session-state", sid],
+    ["m6-scenes", sid],
+  ],
+  module6_missions: (sid) => [
+    ["session-state", sid],
+    ["m6-missions", sid],
+  ],
+  module6_scenario: (sid) => [
+    ["session-state", sid],
+    ["m6-scenario", sid],
+  ],
+  module7_comparisons: (sid) => [
+    ["session-state", sid],
+    ["m7-comparisons", sid],
+  ],
+  module7_decoupages: (sid) => [
+    ["session-state", sid],
+    ["m7-decoupages", sid],
+  ],
+  module7_storyboard: (sid) => [
+    ["session-state", sid],
+    ["m7-storyboard", sid],
+  ],
+  module8_quiz: (sid) => [
+    ["session-state", sid],
+    ["m8-quiz", sid],
+  ],
+  module8_roles: (sid) => [
+    ["session-state", sid],
+    ["m8-roles", sid],
+  ],
+  module8_points: (sid) => [
+    ["session-state", sid],
+    ["m8-points", sid],
+  ],
+  module8_talent_cards: (sid) => [
+    ["session-state", sid],
+    ["m8-talent-cards", sid],
+  ],
 };
 
 const CHILD_TABLES = Object.keys(TABLE_INVALIDATION_MAP).filter((t) => t !== "sessions");
@@ -130,7 +152,7 @@ export function useRealtimeInvalidation(sessionId: string): { status: Connection
           for (const key of keys) {
             queryClient.invalidateQueries({ queryKey: key });
           }
-        }
+        },
       );
     }
 
@@ -147,18 +169,11 @@ export function useRealtimeInvalidation(sessionId: string): { status: Connection
         if (channelStatus === "SUBSCRIBED") {
           setStatus("connected");
           retryRef.current = 0;
-        } else if (
-          channelStatus === "CLOSED" ||
-          channelStatus === "CHANNEL_ERROR" ||
-          channelStatus === "TIMED_OUT"
-        ) {
+        } else if (channelStatus === "CLOSED" || channelStatus === "CHANNEL_ERROR" || channelStatus === "TIMED_OUT") {
           setStatus("disconnected");
           // Schedule reconnect with exponential backoff
           if (retryRef.current < MAX_RETRIES) {
-            const delay = Math.min(
-              BACKOFF_BASE_MS * Math.pow(2, retryRef.current),
-              BACKOFF_MAX_MS
-            );
+            const delay = Math.min(BACKOFF_BASE_MS * Math.pow(2, retryRef.current), BACKOFF_MAX_MS);
             retryRef.current += 1;
             retryTimerRef.current = setTimeout(() => setEpoch((e) => e + 1), delay);
           }

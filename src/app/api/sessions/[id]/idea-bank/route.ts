@@ -6,7 +6,7 @@ import { safeJson, withErrorHandler } from "@/lib/api-utils";
 // POST — add idea to shared bank
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "idea-bank", { max: 15, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -17,17 +17,11 @@ export const POST = withErrorHandler(async function POST(
   const { studentId, text, category } = parsed.data;
 
   if (!studentId || !text) {
-    return NextResponse.json(
-      { error: "studentId et text requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "studentId et text requis" }, { status: 400 });
   }
 
   if (typeof text !== "string" || text.trim().length < 5) {
-    return NextResponse.json(
-      { error: "L'idée doit faire au moins 5 caractères" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "L'idée doit faire au moins 5 caractères" }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -41,10 +35,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!session || session.current_module !== 10) {
-    return NextResponse.json(
-      { error: "La banque d'idées n'est pas disponible" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "La banque d'idées n'est pas disponible" }, { status: 400 });
   }
 
   // Verify student
@@ -56,10 +47,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!student) {
-    return NextResponse.json(
-      { error: "Joueur introuvable dans cette partie" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Joueur introuvable dans cette partie" }, { status: 404 });
   }
 
   const { data, error } = await admin
@@ -73,14 +61,17 @@ export const POST = withErrorHandler(async function POST(
     .select()
     .single();
 
-  if (error) { console.error("[idea-bank POST]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[idea-bank POST]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
   return NextResponse.json(data);
 });
 
 // GET — list all ideas for session
 export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const admin = createAdminClient();
@@ -91,14 +82,17 @@ export const GET = withErrorHandler(async function GET(
     .eq("session_id", sessionId)
     .order("votes", { ascending: false });
 
-  if (error) { console.error("[idea-bank GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[idea-bank GET]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
   return NextResponse.json({ ideas: data || [], count: data?.length || 0 });
 });
 
 // PATCH — vote on an idea (atomic increment, studentId for dedup)
 export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "idea-vote", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -142,14 +136,13 @@ export const PATCH = withErrorHandler(async function PATCH(
     .select()
     .single();
 
-  if (error) { console.error("[idea-bank PATCH]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[idea-bank PATCH]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
   if (!data) {
     // Race condition: votes changed between read and write, retry once
-    const { data: retry } = await admin
-      .from("module10_idea_bank")
-      .select("votes, voted_by")
-      .eq("id", ideaId)
-      .single();
+    const { data: retry } = await admin.from("module10_idea_bank").select("votes, voted_by").eq("id", ideaId).single();
     if (retry) {
       const retryVotedBy: string[] = (retry.voted_by as string[]) || [];
       if (studentId && retryVotedBy.includes(studentId)) {
@@ -161,7 +154,10 @@ export const PATCH = withErrorHandler(async function PATCH(
         .eq("id", ideaId)
         .select()
         .single();
-      if (e2) { console.error("[idea-bank PATCH retry]", e2.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+      if (e2) {
+        console.error("[idea-bank PATCH retry]", e2.message);
+        return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+      }
       return NextResponse.json(d2);
     }
     return NextResponse.json({ error: "Conflit de votes, réessaye" }, { status: 409 });

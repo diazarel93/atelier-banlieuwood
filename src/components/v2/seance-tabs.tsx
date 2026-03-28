@@ -32,7 +32,7 @@ export function SeanceTabs({ active, counts, onChange, className }: SeanceTabsPr
         onChange(TABS[currentIndex - 1].key);
       }
     },
-    [currentIndex, onChange]
+    [currentIndex, onChange],
   );
 
   const swipeHandlers = useSwipe({ onSwipe });
@@ -41,7 +41,10 @@ export function SeanceTabs({ active, counts, onChange, className }: SeanceTabsPr
     <div
       role="tablist"
       aria-label="Filtrer les seances"
-      className={cn("flex items-center gap-1 rounded-xl bg-[var(--color-bw-surface-dim)] p-1 overflow-x-auto", className)}
+      className={cn(
+        "flex items-center gap-1 rounded-xl bg-[var(--color-bw-surface-dim)] p-1 overflow-x-auto",
+        className,
+      )}
       {...swipeHandlers}
     >
       {TABS.map((tab) => (
@@ -53,9 +56,7 @@ export function SeanceTabs({ active, counts, onChange, className }: SeanceTabsPr
           onClick={() => onChange(tab.key)}
           className={cn(
             "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all whitespace-nowrap",
-            active === tab.key
-              ? "bg-card text-bw-heading shadow-sm"
-              : "text-bw-muted hover:text-bw-heading"
+            active === tab.key ? "bg-card text-bw-heading shadow-sm" : "text-bw-muted hover:text-bw-heading",
           )}
         >
           {tab.label}
@@ -63,9 +64,7 @@ export function SeanceTabs({ active, counts, onChange, className }: SeanceTabsPr
             <span
               className={cn(
                 "inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold tabular-nums",
-                active === tab.key
-                  ? "bg-bw-primary text-white"
-                  : "bg-[var(--color-bw-border-subtle)] text-bw-muted"
+                active === tab.key ? "bg-bw-primary text-white" : "bg-[var(--color-bw-border-subtle)] text-bw-muted",
               )}
             >
               {counts[tab.key]}

@@ -97,7 +97,10 @@ export function StudentActionPopover({
           }}
         >
           {/* Color bar */}
-          <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${stateInfo.color}, ${stateInfo.color}80)` }} />
+          <div
+            className="h-1 w-full"
+            style={{ background: `linear-gradient(90deg, ${stateInfo.color}, ${stateInfo.color}80)` }}
+          />
 
           {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3.5">
@@ -115,13 +118,19 @@ export function StudentActionPopover({
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stateInfo.color }} />
-                  <span className="text-[12px] font-medium" style={{ color: stateInfo.color }}>{stateInfo.label}</span>
+                  <span className="text-[12px] font-medium" style={{ color: stateInfo.color }}>
+                    {stateInfo.label}
+                  </span>
                 </span>
                 {student.hand_raised_at && (
-                  <span className="text-[12px] font-medium" style={{ color: "#F5A45B" }}>✋ Main levee</span>
+                  <span className="text-[12px] font-medium" style={{ color: "#F5A45B" }}>
+                    ✋ Main levee
+                  </span>
                 )}
                 {warnings > 0 && (
-                  <span className="text-[12px] font-medium" style={{ color: "#F5A45B" }}>{warnings}/3 avert.</span>
+                  <span className="text-[12px] font-medium" style={{ color: "#F5A45B" }}>
+                    {warnings}/3 avert.
+                  </span>
                 )}
               </div>
             </div>
@@ -129,10 +138,24 @@ export function StudentActionPopover({
               onClick={onClose}
               className="p-1.5 rounded-[8px] cursor-pointer transition-colors"
               style={{ color: "#B0A99E" }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "#F7F3EA"; e.currentTarget.style.color = "#2C2C2C"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = ""; e.currentTarget.style.color = "#B0A99E"; }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#F7F3EA";
+                e.currentTarget.style.color = "#2C2C2C";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "";
+                e.currentTarget.style.color = "#B0A99E";
+              }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              >
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
             </button>
@@ -140,15 +163,23 @@ export function StudentActionPopover({
 
           {/* Last response */}
           {lastResponse && (
-            <div className="mx-3.5 mb-2.5 rounded-[10px] p-3" style={{ background: "#F0FAF4", border: "1px solid #C6E9D0" }}>
-              <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: "#4CAF50" }}>Reponse</p>
+            <div
+              className="mx-3.5 mb-2.5 rounded-[10px] p-3"
+              style={{ background: "#F0FAF4", border: "1px solid #C6E9D0" }}
+            >
+              <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: "#4CAF50" }}>
+                Reponse
+              </p>
               <p className="text-[13px] text-[#2C2C2C] leading-relaxed">{lastResponse}</p>
             </div>
           )}
 
           {/* No response yet */}
           {!lastResponse && student.state !== "disconnected" && (
-            <div className="mx-3.5 mb-2.5 rounded-[10px] p-3" style={{ background: "#FAF6EE", border: "1px solid #EFE4D8" }}>
+            <div
+              className="mx-3.5 mb-2.5 rounded-[10px] p-3"
+              style={{ background: "#FAF6EE", border: "1px solid #EFE4D8" }}
+            >
               <p className="text-[12px] text-[#B0A99E]">Pas encore de reponse</p>
             </div>
           )}
@@ -168,8 +199,14 @@ export function StudentActionPopover({
                       border: "1px solid #EFE4D8",
                       color: "#5B5B5B",
                     }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = "#F0EBE0"; e.currentTarget.style.borderColor = "#E8DFD2"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = "#FAF6EE"; e.currentTarget.style.borderColor = "#EFE4D8"; }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#F0EBE0";
+                      e.currentTarget.style.borderColor = "#E8DFD2";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "#FAF6EE";
+                      e.currentTarget.style.borderColor = "#EFE4D8";
+                    }}
                   >
                     {text}
                   </button>
@@ -193,7 +230,10 @@ export function StudentActionPopover({
                       ref={inputRef}
                       value={nudgeText}
                       onChange={(e) => setNudgeText(e.target.value.slice(0, 300))}
-                      onKeyDown={(e) => { if (e.key === "Enter") handleSendNudge(); if (e.key === "Escape") setShowNudgeInput(false); }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSendNudge();
+                        if (e.key === "Escape") setShowNudgeInput(false);
+                      }}
                       placeholder="Message personnalise..."
                       className="flex-1 rounded-[8px] px-3 py-2 text-[13px] outline-none transition-colors"
                       style={{
@@ -201,8 +241,12 @@ export function StudentActionPopover({
                         border: "1px solid #EFE4D8",
                         color: "#2C2C2C",
                       }}
-                      onFocus={(e) => { e.currentTarget.style.borderColor = "#6B8CFF"; }}
-                      onBlur={(e) => { e.currentTarget.style.borderColor = "#EFE4D8"; }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = "#6B8CFF";
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = "#EFE4D8";
+                      }}
                     />
                     <button
                       onClick={() => handleSendNudge()}
@@ -213,7 +257,9 @@ export function StudentActionPopover({
                       Envoyer
                     </button>
                   </div>
-                  <p className="text-[11px] mt-1 text-right tabular-nums" style={{ color: "#B0A99E" }}>{nudgeText.length}/300</p>
+                  <p className="text-[11px] mt-1 text-right tabular-nums" style={{ color: "#B0A99E" }}>
+                    {nudgeText.length}/300
+                  </p>
                 </div>
               </motion.div>
             )}
@@ -229,12 +275,23 @@ export function StudentActionPopover({
               grow
             />
             {onBroadcast && (
-              <ActionButton icon="📢" label="Tous" onClick={() => { onBroadcast(student.id); onClose(); }} grow />
+              <ActionButton
+                icon="📢"
+                label="Tous"
+                onClick={() => {
+                  onBroadcast(student.id);
+                  onClose();
+                }}
+                grow
+              />
             )}
             <ActionButton
               icon="⚠️"
               label={warnings > 0 ? `Avertir (${warnings}/3)` : "Avertir"}
-              onClick={() => { onWarn(student.id); onClose(); }}
+              onClick={() => {
+                onWarn(student.id);
+                onClose();
+              }}
               variant="warning"
               grow
             />
@@ -245,7 +302,14 @@ export function StudentActionPopover({
   );
 }
 
-function ActionButton({ icon, label, onClick, variant, active, grow }: {
+function ActionButton({
+  icon,
+  label,
+  onClick,
+  variant,
+  active,
+  grow,
+}: {
   icon: string;
   label: string;
   onClick: () => void;

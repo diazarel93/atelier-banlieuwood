@@ -24,10 +24,7 @@ interface ProgressionChartProps {
 export function ProgressionChart({ studentId }: ProgressionChartProps) {
   const { data, isLoading } = useQuery<ProgressionData>({
     queryKey: ["student-progression", studentId],
-    queryFn: () =>
-      fetch(`/api/v2/student-progression?studentId=${studentId}`).then((r) =>
-        r.json()
-      ),
+    queryFn: () => fetch(`/api/v2/student-progression?studentId=${studentId}`).then((r) => r.json()),
     staleTime: 30_000,
   });
 
@@ -76,13 +73,7 @@ export function ProgressionChart({ studentId }: ProgressionChartProps) {
                 strokeWidth="1"
                 strokeDasharray="4 4"
               />
-              <text
-                x={padding.left - 8}
-                y={y + 4}
-                textAnchor="end"
-                className="fill-bw-muted"
-                fontSize="10"
-              >
+              <text x={padding.left - 8} y={y + 4} textAnchor="end" className="fill-bw-muted" fontSize="10">
                 {tick}
               </text>
             </g>
@@ -96,10 +87,7 @@ export function ProgressionChart({ studentId }: ProgressionChartProps) {
             points={points
               .map((p, i) => {
                 const x = padding.left + (n > 1 ? i * xStep : chartW / 2);
-                const y =
-                  padding.top +
-                  chartH -
-                  (p.axes[axis.key] / 100) * chartH;
+                const y = padding.top + chartH - (p.axes[axis.key] / 100) * chartH;
                 return `${x},${y}`;
               })
               .join(" ")}
@@ -115,8 +103,7 @@ export function ProgressionChart({ studentId }: ProgressionChartProps) {
         {AXES.map((axis) =>
           points.map((p, i) => {
             const x = padding.left + (n > 1 ? i * xStep : chartW / 2);
-            const y =
-              padding.top + chartH - (p.axes[axis.key] / 100) * chartH;
+            const y = padding.top + chartH - (p.axes[axis.key] / 100) * chartH;
             return (
               <circle
                 key={`${axis.key}-${i}`}
@@ -132,7 +119,7 @@ export function ProgressionChart({ studentId }: ProgressionChartProps) {
                 </title>
               </circle>
             );
-          })
+          }),
         )}
 
         {/* X-axis labels */}
@@ -143,14 +130,7 @@ export function ProgressionChart({ studentId }: ProgressionChartProps) {
             month: "short",
           });
           return (
-            <text
-              key={i}
-              x={x}
-              y={height - 6}
-              textAnchor="middle"
-              className="fill-bw-muted"
-              fontSize="10"
-            >
+            <text key={i} x={x} y={height - 6} textAnchor="middle" className="fill-bw-muted" fontSize="10">
               {label}
             </text>
           );
@@ -161,10 +141,7 @@ export function ProgressionChart({ studentId }: ProgressionChartProps) {
       <div className="flex flex-wrap items-center gap-3 mt-2">
         {AXES.map((axis) => (
           <div key={axis.key} className="flex items-center gap-1.5">
-            <div
-              className="h-2 w-2 rounded-full"
-              style={{ backgroundColor: axis.color }}
-            />
+            <div className="h-2 w-2 rounded-full" style={{ backgroundColor: axis.color }} />
             <span className="text-body-xs text-bw-muted">{axis.label}</span>
           </div>
         ))}

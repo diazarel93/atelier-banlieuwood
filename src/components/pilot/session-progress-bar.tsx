@@ -27,24 +27,12 @@ export function SessionProgressBar({ currentIndex, total, getStatus }: SessionPr
           <motion.div
             key={i}
             className={`h-1.5 rounded-full transition-colors duration-300 ${
-              s === "done"
-                ? "bg-bw-teal"
-                : s === "current"
-                  ? "bg-bw-primary"
-                  : "bg-black/[0.08]"
+              s === "done" ? "bg-bw-teal" : s === "current" ? "bg-bw-primary" : "bg-black/[0.08]"
             }`}
             style={{ flex: 1 }}
             initial={false}
-            animate={
-              s === "current"
-                ? { opacity: [1, 0.5, 1] }
-                : { opacity: 1 }
-            }
-            transition={
-              s === "current"
-                ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" }
-                : { duration: 0.3 }
-            }
+            animate={s === "current" ? { opacity: [1, 0.5, 1] } : { opacity: 1 }}
+            transition={s === "current" ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : { duration: 0.3 }}
           />
         );
       })}

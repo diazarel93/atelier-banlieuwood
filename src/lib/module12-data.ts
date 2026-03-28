@@ -30,14 +30,26 @@ export interface BanlieuTemplate {
 // ── 8 Manches Configuration ───────────────────────────────
 
 export const MANCHES: MancheConfig[] = [
-  { key: "ton",         label: "Le Ton",            maxCards: 4, description: "Quel sera le ton du film ?" },
-  { key: "situation",   label: "La Situation",      maxCards: 4, description: "Quelle situation de départ ?" },
-  { key: "personnages", label: "Les Personnages",   maxCards: 6, description: "Quels personnages ?" },
-  { key: "objectif",    label: "L'Objectif",        maxCards: 4, description: "Quel objectif pour le héros ?" },
-  { key: "obstacle",    label: "L'Obstacle",        maxCards: 4, description: "Quel obstacle principal ?" },
-  { key: "scene",       label: "La Première Scène", maxCards: 4, description: "Comment commence le film ?", optional: true },
-  { key: "relation",    label: "La Relation",       maxCards: 4, description: "Quelle relation est au cœur de l'histoire ?", optional: true },
-  { key: "moment_fort", label: "Le Moment Fort",    maxCards: 4, description: "Quel sera le moment le plus intense du film ?", optional: true },
+  { key: "ton", label: "Le Ton", maxCards: 4, description: "Quel sera le ton du film ?" },
+  { key: "situation", label: "La Situation", maxCards: 4, description: "Quelle situation de départ ?" },
+  { key: "personnages", label: "Les Personnages", maxCards: 6, description: "Quels personnages ?" },
+  { key: "objectif", label: "L'Objectif", maxCards: 4, description: "Quel objectif pour le héros ?" },
+  { key: "obstacle", label: "L'Obstacle", maxCards: 4, description: "Quel obstacle principal ?" },
+  { key: "scene", label: "La Première Scène", maxCards: 4, description: "Comment commence le film ?", optional: true },
+  {
+    key: "relation",
+    label: "La Relation",
+    maxCards: 4,
+    description: "Quelle relation est au cœur de l'histoire ?",
+    optional: true,
+  },
+  {
+    key: "moment_fort",
+    label: "Le Moment Fort",
+    maxCards: 4,
+    description: "Quel sera le moment le plus intense du film ?",
+    optional: true,
+  },
 ];
 
 export function getMancheConfig(manche: number): MancheConfig | undefined {
@@ -146,9 +158,12 @@ export function extractCandidates(manche: number, m10: M10Data): Candidate[] {
         .map((p) => {
           // Extract a relationship-oriented sentence from the pitch
           const sentences = p.pitch_text.split(/[.!?]/).filter((s) => s.trim().length > 10);
-          const relSentence = sentences.find((s) =>
-            /ami|frère|sœur|famille|rival|ennemi|confiance|trahis|protég|lien|relation|ensemble/i.test(s)
-          ) || sentences[1] || sentences[0];
+          const relSentence =
+            sentences.find((s) =>
+              /ami|frère|sœur|famille|rival|ennemi|confiance|trahis|protég|lien|relation|ensemble/i.test(s),
+            ) ||
+            sentences[1] ||
+            sentences[0];
           return { text: (relSentence?.trim() || p.pitch_text).slice(0, 120), studentId: p.student_id };
         });
 
@@ -172,7 +187,11 @@ export function extractCandidates(manche: number, m10: M10Data): Candidate[] {
  */
 export function areTooSimilar(a: string, b: string): boolean {
   const normalize = (s: string) =>
-    s.toLowerCase().replace(/[^a-zàâäéèêëïîôùûüÿç0-9\s]/g, "").split(/\s+/).filter((w) => w.length > 2);
+    s
+      .toLowerCase()
+      .replace(/[^a-zàâäéèêëïîôùûüÿç0-9\s]/g, "")
+      .split(/\s+/)
+      .filter((w) => w.length > 2);
   const wordsA = normalize(a);
   const wordsB = normalize(b);
   if (wordsA.length === 0 || wordsB.length === 0) return false;
@@ -263,10 +282,7 @@ export function selectCards(
 /**
  * Get student IDs that haven't contributed to any pool yet.
  */
-export function getUncoveredStudents(
-  existingPools: { cards: PoolCard[] }[],
-  allStudentIds: string[],
-): Set<string> {
+export function getUncoveredStudents(existingPools: { cards: PoolCard[] }[], allStudentIds: string[]): Set<string> {
   const covered = new Set<string>();
   for (const pool of existingPools) {
     for (const card of pool.cards) {

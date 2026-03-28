@@ -23,8 +23,7 @@ export function SessionPrepSidebar({
   status,
   className,
 }: SessionPrepSidebarProps) {
-  const levelLabel =
-    level === "primaire" ? "Primaire" : level === "college" ? "Collège" : "Lycée";
+  const levelLabel = level === "primaire" ? "Primaire" : level === "college" ? "Collège" : "Lycée";
 
   return (
     <GlassCardV2 className={cn("p-4 flex flex-col gap-4", className)}>
@@ -43,9 +42,7 @@ export function SessionPrepSidebar({
         </div>
         <div className="flex items-center justify-between">
           <span className="text-bw-muted">Code</span>
-          <span className="font-mono font-bold text-bw-primary tracking-wider text-base">
-            {joinCode}
-          </span>
+          <span className="font-mono font-bold text-bw-primary tracking-wider text-base">{joinCode}</span>
         </div>
         {scheduledAt && (
           <div className="flex items-center justify-between">

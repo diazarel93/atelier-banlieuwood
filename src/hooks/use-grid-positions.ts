@@ -35,10 +35,13 @@ function saveToStorage(sessionId: string, positions: GridPositions) {
 export function useGridPositions(sessionId: string, cols = DEFAULT_COLS, rows = DEFAULT_ROWS) {
   const [positions, setPositions] = useState<GridPositions>(() => loadFromStorage(sessionId));
 
-  const persist = useCallback((next: GridPositions) => {
-    setPositions(next);
-    saveToStorage(sessionId, next);
-  }, [sessionId]);
+  const persist = useCallback(
+    (next: GridPositions) => {
+      setPositions(next);
+      saveToStorage(sessionId, next);
+    },
+    [sessionId],
+  );
 
   /** Inverse map: "row-col" → studentId */
   const cellToStudent = useMemo(() => {
@@ -49,65 +52,78 @@ export function useGridPositions(sessionId: string, cols = DEFAULT_COLS, rows = 
     return m;
   }, [positions]);
 
-  const placeStudent = useCallback((studentId: string, row: number, col: number) => {
-    setPositions(prev => {
-      const next = { ...prev, [studentId]: { row, col } };
-      saveToStorage(sessionId, next);
-      return next;
-    });
-  }, [sessionId]);
+  const placeStudent = useCallback(
+    (studentId: string, row: number, col: number) => {
+      setPositions((prev) => {
+        const next = { ...prev, [studentId]: { row, col } };
+        saveToStorage(sessionId, next);
+        return next;
+      });
+    },
+    [sessionId],
+  );
 
-  const removeStudent = useCallback((studentId: string) => {
-    setPositions(prev => {
-      const next = { ...prev };
-      delete next[studentId];
-      saveToStorage(sessionId, next);
-      return next;
-    });
-  }, [sessionId]);
+  const removeStudent = useCallback(
+    (studentId: string) => {
+      setPositions((prev) => {
+        const next = { ...prev };
+        delete next[studentId];
+        saveToStorage(sessionId, next);
+        return next;
+      });
+    },
+    [sessionId],
+  );
 
-  const moveStudent = useCallback((studentId: string, row: number, col: number) => {
-    placeStudent(studentId, row, col);
-  }, [placeStudent]);
+  const moveStudent = useCallback(
+    (studentId: string, row: number, col: number) => {
+      placeStudent(studentId, row, col);
+    },
+    [placeStudent],
+  );
 
-  const swapStudents = useCallback((studentA: string, studentB: string) => {
-    setPositions(prev => {
-      const posA = prev[studentA];
-      const posB = prev[studentB];
-      if (!posA || !posB) return prev;
-      const next = { ...prev, [studentA]: posB, [studentB]: posA };
-      saveToStorage(sessionId, next);
-      return next;
-    });
-  }, [sessionId]);
+  const swapStudents = useCallback(
+    (studentA: string, studentB: string) => {
+      setPositions((prev) => {
+        const posA = prev[studentA];
+        const posB = prev[studentB];
+        if (!posA || !posB) return prev;
+        const next = { ...prev, [studentA]: posB, [studentB]: posA };
+        saveToStorage(sessionId, next);
+        return next;
+      });
+    },
+    [sessionId],
+  );
 
   const clearAll = useCallback(() => {
     persist({});
   }, [persist]);
 
   /** Auto-place unplaced students left-to-right, top-to-bottom, skipping occupied cells */
-  const autoPlace = useCallback((studentIds: string[]) => {
-    setPositions(prev => {
-      const next = { ...prev };
-      const occupied = new Set(
-        Object.values(next).map(p => `${p.row}-${p.col}`)
-      );
-      const unplaced = studentIds.filter(id => !next[id]);
-      let idx = 0;
-      for (let r = 0; r < rows && idx < unplaced.length; r++) {
-        for (let c = 0; c < cols && idx < unplaced.length; c++) {
-          const key = `${r}-${c}`;
-          if (!occupied.has(key)) {
-            next[unplaced[idx]] = { row: r, col: c };
-            occupied.add(key);
-            idx++;
+  const autoPlace = useCallback(
+    (studentIds: string[]) => {
+      setPositions((prev) => {
+        const next = { ...prev };
+        const occupied = new Set(Object.values(next).map((p) => `${p.row}-${p.col}`));
+        const unplaced = studentIds.filter((id) => !next[id]);
+        let idx = 0;
+        for (let r = 0; r < rows && idx < unplaced.length; r++) {
+          for (let c = 0; c < cols && idx < unplaced.length; c++) {
+            const key = `${r}-${c}`;
+            if (!occupied.has(key)) {
+              next[unplaced[idx]] = { row: r, col: c };
+              occupied.add(key);
+              idx++;
+            }
           }
         }
-      }
-      saveToStorage(sessionId, next);
-      return next;
-    });
-  }, [sessionId, cols, rows]);
+        saveToStorage(sessionId, next);
+        return next;
+      });
+    },
+    [sessionId, cols, rows],
+  );
 
   return {
     positions,

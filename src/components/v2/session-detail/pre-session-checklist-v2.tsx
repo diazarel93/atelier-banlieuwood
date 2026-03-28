@@ -41,10 +41,7 @@ export function PreSessionChecklistV2({
         id: "students",
         label: "Élèves connectés",
         checked: connectedCount >= 3,
-        statusText:
-          connectedCount >= 3
-            ? `${connectedCount} élèves en ligne`
-            : `${connectedCount}/3 minimum`,
+        statusText: connectedCount >= 3 ? `${connectedCount} élèves en ligne` : `${connectedCount}/3 minimum`,
       },
       {
         id: "code",
@@ -56,12 +53,10 @@ export function PreSessionChecklistV2({
         id: "module",
         label: "Module choisi",
         checked: moduleSelected,
-        statusText: moduleSelected
-          ? moduleName || "Module sélectionné"
-          : "Aucun module sélectionné",
+        statusText: moduleSelected ? moduleName || "Module sélectionné" : "Aucun module sélectionné",
       },
     ],
-    [projectorChecked, connectedCount, joinCode, moduleSelected, moduleName]
+    [projectorChecked, connectedCount, joinCode, moduleSelected, moduleName],
   );
 
   const checkedCount = items.filter((i) => i.checked).length;
@@ -73,9 +68,7 @@ export function PreSessionChecklistV2({
         onClick={() => setMinimized(false)}
         aria-label="Ouvrir la check-list pré-séance"
         className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg cursor-pointer transition-colors ${
-          allChecked
-            ? "bg-emerald-500 text-white"
-            : "bg-card border border-[var(--color-bw-border)] text-bw-heading"
+          allChecked ? "bg-emerald-500 text-white" : "bg-card border border-[var(--color-bw-border)] text-bw-heading"
         }`}
       >
         <span className="text-sm">{allChecked ? "✅" : "📋"}</span>
@@ -93,9 +86,7 @@ export function PreSessionChecklistV2({
         <div className="px-5 pt-5 pb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-base">📋</span>
-            <h3 className="text-sm font-bold text-bw-heading">
-              Check-list pré-séance
-            </h3>
+            <h3 className="text-sm font-bold text-bw-heading">Check-list pré-séance</h3>
           </div>
           <div className="flex items-center gap-1">
             <button
@@ -160,15 +151,10 @@ export function PreSessionChecklistV2({
             >
               {/* Checkbox */}
               {item.id === "projector" ? (
-                <button
-                  onClick={() => setProjectorChecked((v) => !v)}
-                  className="mt-0.5 shrink-0 cursor-pointer"
-                >
+                <button onClick={() => setProjectorChecked((v) => !v)} className="mt-0.5 shrink-0 cursor-pointer">
                   <div
                     className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${
-                      projectorChecked
-                        ? "bg-emerald-500"
-                        : "border-2 border-gray-300"
+                      projectorChecked ? "bg-emerald-500" : "border-2 border-gray-300"
                     }`}
                   >
                     {projectorChecked && (
@@ -191,9 +177,7 @@ export function PreSessionChecklistV2({
                 <div className="mt-0.5 shrink-0">
                   <div
                     className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${
-                      item.checked
-                        ? "bg-emerald-500"
-                        : "border-2 border-gray-300"
+                      item.checked ? "bg-emerald-500" : "border-2 border-gray-300"
                     }`}
                   >
                     {item.checked && (
@@ -222,26 +206,14 @@ export function PreSessionChecklistV2({
                 >
                   {item.label}
                 </p>
-                <p
-                  className={`text-xs mt-0.5 ${
-                    item.checked ? "text-emerald-600" : "text-amber-500"
-                  }`}
-                >
+                <p className={`text-xs mt-0.5 ${item.checked ? "text-emerald-600" : "text-amber-500"}`}>
                   {item.statusText}
                 </p>
-                {item.tip && !item.checked && (
-                  <p className="text-xs text-bw-muted mt-0.5 italic">
-                    {item.tip}
-                  </p>
-                )}
+                {item.tip && !item.checked && <p className="text-xs text-bw-muted mt-0.5 italic">{item.tip}</p>}
               </div>
 
               <div className="mt-1.5 shrink-0">
-                <div
-                  className={`w-2 h-2 rounded-full ${
-                    item.checked ? "bg-emerald-500" : "bg-amber-400"
-                  }`}
-                />
+                <div className={`w-2 h-2 rounded-full ${item.checked ? "bg-emerald-500" : "bg-amber-400"}`} />
               </div>
             </div>
           ))}
@@ -258,9 +230,7 @@ export function PreSessionChecklistV2({
                 : "bg-[var(--color-bw-surface-dim)] text-bw-muted"
             }`}
           >
-            {allChecked
-              ? "C'est parti !"
-              : `${checkedCount}/${items.length} — Encore un effort`}
+            {allChecked ? "C'est parti !" : `${checkedCount}/${items.length} — Encore un effort`}
           </button>
         </div>
       </div>

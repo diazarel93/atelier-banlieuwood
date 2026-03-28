@@ -78,7 +78,9 @@ export function useStuckDetection({
  * Count students at each stuck level.
  */
 export function countStuckLevels(stuckMap: Map<string, StuckLevel>) {
-  let nudge = 0, slow = 0, stuck = 0;
+  let nudge = 0,
+    slow = 0,
+    stuck = 0;
   for (const level of stuckMap.values()) {
     if (level === "nudge") nudge++;
     else if (level === "slow") slow++;

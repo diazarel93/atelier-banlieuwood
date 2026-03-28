@@ -12,25 +12,22 @@ export interface SceneBuilderStateProps {
   onDone: () => void;
 }
 
-export function SceneBuilderState({
-  sessionId,
-  studentId,
-  module5,
-  onDone,
-}: SceneBuilderStateProps) {
+export function SceneBuilderState({ sessionId, studentId, module5, onDone }: SceneBuilderStateProps) {
   const [intention, setIntention] = useState(module5.scene?.intention || "");
   const [obstacle, setObstacle] = useState(module5.scene?.obstacle || "");
   const [changement, setChangement] = useState(module5.scene?.changement || "");
   const [selectedElements, setSelectedElements] = useState<Set<string>>(
-    new Set(module5.scene?.elements?.map((e) => e.key) || [])
+    new Set(module5.scene?.elements?.map((e) => e.key) || []),
   );
   const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{ strengths: string[]; suggestions: string[]; summary: string } | null>(
-    module5.scene?.ai_feedback || null
+    module5.scene?.ai_feedback || null,
   );
 
   // Lazy-load scene elements and emotion
-  const [elements, setElements] = useState<{ key: string; label: string; tier: number; cost: number; slots: number }[]>([]);
+  const [elements, setElements] = useState<{ key: string; label: string; tier: number; cost: number; slots: number }[]>(
+    [],
+  );
   const [emotions, setEmotions] = useState<{ key: string; label: string; color: string }[]>([]);
   const [tierColors, setTierColors] = useState<Record<number, string>>({});
   const [tierLabels, setTierLabels] = useState<Record<number, string>>({});
@@ -81,7 +78,8 @@ export function SceneBuilderState({
     });
   }
 
-  const canSubmit = intention.trim().length >= 5 && obstacle.trim().length >= 5 && changement.trim().length >= 5 && !submitting;
+  const canSubmit =
+    intention.trim().length >= 5 && obstacle.trim().length >= 5 && changement.trim().length >= 5 && !submitting;
 
   async function handleSubmit() {
     if (!canSubmit) return;
@@ -129,11 +127,18 @@ export function SceneBuilderState({
   // If we have feedback, show it
   if (feedback) {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col gap-5 w-full">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-5 w-full">
         <div className="text-center space-y-2">
           <div className="w-14 h-14 rounded-full bg-bw-teal/20 mx-auto flex items-center justify-center">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" strokeWidth="2" strokeLinecap="round">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#4ECDC4"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               <path d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -173,19 +178,33 @@ export function SceneBuilderState({
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="flex flex-col gap-4 w-full">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="flex flex-col gap-4 w-full"
+    >
       <div className="text-center space-y-2">
         <div className="w-14 h-14 rounded-full bg-gradient-to-br from-bw-pink to-bw-pink/60 mx-auto flex items-center justify-center">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
             <rect x="2" y="2" width="20" height="20" rx="2.18" />
             <path d="M7 2v20M17 2v20M2 12h20" />
           </svg>
         </div>
         <h2 className="text-lg font-semibold font-cinema tracking-wider">Construis ta scène</h2>
         {emotionInfo && (
-          <span className="text-xs px-3 py-1 rounded-full inline-block"
-            style={{ backgroundColor: `${emotionInfo.color}20`, color: emotionInfo.color }}>
+          <span
+            className="text-xs px-3 py-1 rounded-full inline-block"
+            style={{ backgroundColor: `${emotionInfo.color}20`, color: emotionInfo.color }}
+          >
             {emotionInfo.label}
           </span>
         )}
@@ -230,13 +249,17 @@ export function SceneBuilderState({
 
       {/* Counters */}
       <div className="flex gap-3">
-        <div className={`flex-1 bg-bw-elevated rounded-xl px-3 py-2 text-center border ${totalSlots >= maxSlots ? "border-bw-amber/40" : "border-white/[0.06]"}`}>
+        <div
+          className={`flex-1 bg-bw-elevated rounded-xl px-3 py-2 text-center border ${totalSlots >= maxSlots ? "border-bw-amber/40" : "border-white/[0.06]"}`}
+        >
           <span className="text-xs text-bw-muted">Emplacements</span>
           <p className={`text-lg font-bold ${totalSlots >= maxSlots ? "text-bw-amber" : "text-white"}`}>
             {totalSlots}/{maxSlots}
           </p>
         </div>
-        <div className={`flex-1 bg-bw-elevated rounded-xl px-3 py-2 text-center border ${totalTokens >= maxTokens ? "border-bw-danger/40" : "border-white/[0.06]"}`}>
+        <div
+          className={`flex-1 bg-bw-elevated rounded-xl px-3 py-2 text-center border ${totalTokens >= maxTokens ? "border-bw-danger/40" : "border-white/[0.06]"}`}
+        >
           <span className="text-xs text-bw-muted">Jetons</span>
           <p className={`text-lg font-bold ${totalTokens >= maxTokens ? "text-bw-danger" : "text-white"}`}>
             {totalTokens}/{maxTokens}
@@ -264,9 +287,7 @@ export function SceneBuilderState({
                       whileTap={{ scale: 0.93 }}
                       onClick={() => toggleElement(el.key)}
                       className={`px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
-                        isSelected
-                          ? "border-current bg-current/10"
-                          : "border-white/[0.06] bg-bw-elevated text-bw-muted"
+                        isSelected ? "border-current bg-current/10" : "border-white/[0.06] bg-bw-elevated text-bw-muted"
                       }`}
                       style={isSelected ? { color, borderColor: color, backgroundColor: `${color}15` } : {}}
                     >

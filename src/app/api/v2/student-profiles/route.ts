@@ -22,10 +22,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   const limit = Math.min(100, Math.max(1, parseInt(req.nextUrl.searchParams.get("limit") || "20", 10)));
 
   // Get all sessions for this facilitator
-  let sessionsQuery = supabase
-    .from("sessions")
-    .select("id, class_label, created_at")
-    .eq("facilitator_id", user.id);
+  let sessionsQuery = supabase.from("sessions").select("id, class_label, created_at").eq("facilitator_id", user.id);
 
   if (classLabelFilter) {
     sessionsQuery = sessionsQuery.eq("class_label", classLabelFilter);

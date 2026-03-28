@@ -64,26 +64,20 @@ export function PortfolioSection({ portfolio }: PortfolioSectionProps) {
           <div className="rounded-xl border border-[var(--color-bw-border-subtle)] p-3.5">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-sm">🧑‍🎤</span>
-              <span className="text-body-sm font-semibold text-bw-heading">
-                {personnage.prenom}
-              </span>
+              <span className="text-body-sm font-semibold text-bw-heading">{personnage.prenom}</span>
               {personnage.traitDominant && (
-                <span className="text-body-xs text-bw-muted">
-                  — {personnage.traitDominant}
-                </span>
+                <span className="text-body-xs text-bw-muted">— {personnage.traitDominant}</span>
               )}
             </div>
             <div className="flex gap-4 text-body-xs text-bw-muted">
               {personnage.force && (
                 <span>
-                  <span className="text-[var(--color-bw-green)] font-medium">Force :</span>{" "}
-                  {personnage.force}
+                  <span className="text-[var(--color-bw-green)] font-medium">Force :</span> {personnage.force}
                 </span>
               )}
               {personnage.faiblesse && (
                 <span>
-                  <span className="text-[var(--color-bw-danger)] font-medium">Faiblesse :</span>{" "}
-                  {personnage.faiblesse}
+                  <span className="text-[var(--color-bw-danger)] font-medium">Faiblesse :</span> {personnage.faiblesse}
                 </span>
               )}
             </div>
@@ -97,14 +91,10 @@ export function PortfolioSection({ portfolio }: PortfolioSectionProps) {
               <span className="text-sm">🎤</span>
               <span className="text-body-sm font-semibold text-bw-heading">Pitch</span>
               {pitch.chronoSeconds != null && (
-                <span className="text-body-xs text-bw-muted tabular-nums">
-                  ({pitch.chronoSeconds}s)
-                </span>
+                <span className="text-body-xs text-bw-muted tabular-nums">({pitch.chronoSeconds}s)</span>
               )}
             </div>
-            <p className="text-body-xs text-bw-heading leading-relaxed line-clamp-3">
-              {pitch.pitchText}
-            </p>
+            <p className="text-body-xs text-bw-heading leading-relaxed line-clamp-3">{pitch.pitchText}</p>
             <div className="flex gap-4 mt-2 text-body-xs text-bw-muted">
               <span>
                 <span className="font-medium">Objectif :</span> {pitch.objectif}
@@ -131,20 +121,21 @@ export function PortfolioSection({ portfolio }: PortfolioSectionProps) {
                   {filmRole.isVeto && " (Véto)"}
                 </span>
               )}
-              {talentCard && (() => {
-                const tc = TALENT_LABELS[talentCard.talentCategory];
-                return (
-                  <span
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-body-xs font-semibold"
-                    style={{
-                      background: `${tc?.color || "#666"}15`,
-                      color: tc?.color || "#666",
-                    }}
-                  >
-                    {tc?.emoji || "🏆"} {tc?.label || talentCard.talentCategory}
-                  </span>
-                );
-              })()}
+              {talentCard &&
+                (() => {
+                  const tc = TALENT_LABELS[talentCard.talentCategory];
+                  return (
+                    <span
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-body-xs font-semibold"
+                      style={{
+                        background: `${tc?.color || "#666"}15`,
+                        color: tc?.color || "#666",
+                      }}
+                    >
+                      {tc?.emoji || "🏆"} {tc?.label || talentCard.talentCategory}
+                    </span>
+                  );
+                })()}
             </div>
             {talentCard && talentCard.strengths.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-2">

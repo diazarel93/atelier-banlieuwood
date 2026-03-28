@@ -24,7 +24,9 @@ export function SpotlightModal({
 }: SpotlightModalProps) {
   useEffect(() => {
     if (!open) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [open, onClose]);
@@ -60,7 +62,7 @@ export function SpotlightModal({
                 border: `2px solid ${isHighlighted ? "#F5A45B" : "#E8DFD2"}`,
                 boxShadow: "0 24px 80px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.15)",
               }}
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
               <div className="flex items-center gap-4 px-8 pt-8 pb-4">
@@ -81,13 +83,20 @@ export function SpotlightModal({
                       PROJECTION
                     </span>
                     {isHighlighted && (
-                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "#FFF0E0", color: "#F5A45B" }}>
+                      <span
+                        className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                        style={{ background: "#FFF0E0", color: "#F5A45B" }}
+                      >
                         Mis en avant
                       </span>
                     )}
                     {teacherScore && (
-                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "#FFF8E6", color: "#D4A017" }}>
-                        {"★".repeat(teacherScore)}{"☆".repeat(5 - teacherScore)}
+                      <span
+                        className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                        style={{ background: "#FFF8E6", color: "#D4A017" }}
+                      >
+                        {"★".repeat(teacherScore)}
+                        {"☆".repeat(5 - teacherScore)}
                       </span>
                     )}
                   </div>
@@ -97,14 +106,25 @@ export function SpotlightModal({
                   className="w-10 h-10 rounded-full flex items-center justify-center text-bw-muted hover:text-bw-heading hover:bg-bw-surface-dim cursor-pointer transition-colors"
                   aria-label="Fermer"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                  >
                     <path d="M18 6L6 18M6 6l12 12" />
                   </svg>
                 </button>
               </div>
 
               {/* Separator */}
-              <div className="mx-8 h-px" style={{ background: "linear-gradient(to right, transparent, #E8DFD2, transparent)" }} />
+              <div
+                className="mx-8 h-px"
+                style={{ background: "linear-gradient(to right, transparent, #E8DFD2, transparent)" }}
+              />
 
               {/* Response text — Issue 8: Courier Prime screenplay font */}
               <div className="px-8 py-8">

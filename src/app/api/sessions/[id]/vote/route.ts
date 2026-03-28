@@ -10,7 +10,7 @@ import { verifyStudentToken } from "@/lib/student-token";
 // POST — student submits a vote
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "vote", { max: 20, windowSec: 60 });
   if (rl) {
@@ -23,10 +23,7 @@ export const POST = withErrorHandler(async function POST(
 
   const validated = voteSchema.safeParse(parsed.data);
   if (!validated.success) {
-    return NextResponse.json(
-      { error: formatZodError(validated.error) },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: formatZodError(validated.error) }, { status: 400 });
   }
 
   // Prefer token-based auth over body studentId
@@ -55,10 +52,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!session || session.status !== "voting") {
-    return NextResponse.json(
-      { error: "Le vote n'est pas ouvert" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Le vote n'est pas ouvert" }, { status: 400 });
   }
 
   // Verify student belongs to this session
@@ -70,10 +64,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!student) {
-    return NextResponse.json(
-      { error: "Joueur introuvable dans cette partie" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Joueur introuvable dans cette partie" }, { status: 404 });
   }
 
   // Race condition guard: verify situation matches current session state
@@ -84,10 +75,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!voteSituation) {
-    return NextResponse.json(
-      { error: "Situation introuvable", code: "SITUATION_NOT_FOUND" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Situation introuvable", code: "SITUATION_NOT_FOUND" }, { status: 400 });
   }
 
   const isStale =
@@ -98,7 +86,7 @@ export const POST = withErrorHandler(async function POST(
   if (isStale) {
     return NextResponse.json(
       { error: "La session a deja avance a une nouvelle question", code: "SITUATION_ADVANCED" },
-      { status: 409 }
+      { status: 409 },
     );
   }
 
@@ -114,10 +102,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!response) {
-    return NextResponse.json(
-      { error: "Option de vote invalide" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Option de vote invalide" }, { status: 400 });
   }
 
   // Upsert vote (student can change their vote)
@@ -130,7 +115,7 @@ export const POST = withErrorHandler(async function POST(
         situation_id: situationId,
         chosen_response_id: chosenResponseId,
       },
-      { onConflict: "session_id,student_id,situation_id" }
+      { onConflict: "session_id,student_id,situation_id" },
     )
     .select()
     .single();

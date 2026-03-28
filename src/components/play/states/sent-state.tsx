@@ -13,9 +13,17 @@ function pickTips(module?: number, seance?: number): CinemaTip[] {
 }
 
 const TYPE_ICONS: Record<string, string> = {
-  technique: "🎬", quote: "💬", fact: "📖", rule: "📏",
-  reflection: "💭", anecdote: "🎪", "métier": "🎥", "réalisateur": "🎬",
-  acteur: "🌟", rappel: "📌", motivation: "💪",
+  technique: "🎬",
+  quote: "💬",
+  fact: "📖",
+  rule: "📏",
+  reflection: "💭",
+  anecdote: "🎪",
+  métier: "🎥",
+  réalisateur: "🎬",
+  acteur: "🌟",
+  rappel: "📌",
+  motivation: "💪",
 };
 
 export interface SentStateProps {
@@ -38,12 +46,15 @@ function BonusTrivia() {
 
   const q: BonusQuestion | undefined = BONUS_TRIVIA[questionIndices[currentIdx]];
 
-  const handleSelect = useCallback((optionIdx: number) => {
-    if (selected !== null) return;
-    setSelected(optionIdx);
-    setTotal((t) => t + 1);
-    if (optionIdx === q.correct) setScore((s) => s + 1);
-  }, [selected, q]);
+  const handleSelect = useCallback(
+    (optionIdx: number) => {
+      if (selected !== null) return;
+      setSelected(optionIdx);
+      setTotal((t) => t + 1);
+      if (optionIdx === q.correct) setScore((s) => s + 1);
+    },
+    [selected, q],
+  );
 
   const handleNext = useCallback(() => {
     if (currentIdx < questionIndices.length - 1) {
@@ -66,16 +77,30 @@ function BonusTrivia() {
       transition={{ delay: 0.2 }}
       className="w-full max-w-[320px]"
     >
-      <div className="rounded-xl overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(139,92,246,0.08), rgba(78,205,196,0.05))", border: "1px solid rgba(139,92,246,0.15)" }}>
+      <div
+        className="rounded-xl overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, rgba(139,92,246,0.08), rgba(78,205,196,0.05))",
+          border: "1px solid rgba(139,92,246,0.15)",
+        }}
+      >
         <div className="px-4 py-2 flex items-center justify-between" style={{ background: "rgba(139,92,246,0.08)" }}>
           <span className="text-xs uppercase tracking-widest text-bw-violet font-bold">Quiz Bonus</span>
           {total > 0 && (
-            <span className="text-xs text-bw-violet font-semibold">{score}/{total}</span>
+            <span className="text-xs text-bw-violet font-semibold">
+              {score}/{total}
+            </span>
           )}
         </div>
         <div className="px-4 py-3 space-y-2.5">
           <AnimatePresence mode="wait">
-            <motion.div key={questionIndices[currentIdx]} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+            <motion.div
+              key={questionIndices[currentIdx]}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
               <p className="text-xs text-bw-text font-medium leading-relaxed mb-2.5">{q.question}</p>
               <div className="grid grid-cols-1 gap-1.5">
                 {q.options.map((opt, i) => {
@@ -103,9 +128,17 @@ function BonusTrivia() {
                 })}
               </div>
               {selected !== null && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2 space-y-2">
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="mt-2 space-y-2"
+                >
                   <p className="text-xs text-bw-muted leading-relaxed">{q.explanation}</p>
-                  <button onClick={handleNext} aria-label="Passer a la question bonus suivante" className="w-full py-1.5 rounded-lg text-xs font-semibold bg-bw-violet/15 text-bw-violet hover:bg-bw-violet/25 cursor-pointer transition-colors">
+                  <button
+                    onClick={handleNext}
+                    aria-label="Passer a la question bonus suivante"
+                    className="w-full py-1.5 rounded-lg text-xs font-semibold bg-bw-violet/15 text-bw-violet hover:bg-bw-violet/25 cursor-pointer transition-colors"
+                  >
                     Question suivante →
                   </button>
                 </motion.div>
@@ -118,7 +151,16 @@ function BonusTrivia() {
   );
 }
 
-export function SentState({ responsesCount, connectedCount, streak, lastXpGain, sessionId, studentId, currentModule, currentSeance }: SentStateProps) {
+export function SentState({
+  responsesCount,
+  connectedCount,
+  streak,
+  lastXpGain,
+  sessionId,
+  studentId,
+  currentModule,
+  currentSeance,
+}: SentStateProps) {
   const tips = useMemo(() => pickTips(currentModule, currentSeance), [currentModule, currentSeance]);
   const [showBonus, setShowBonus] = useState(false);
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * tips.length));
@@ -185,7 +227,11 @@ export function SentState({ responsesCount, connectedCount, streak, lastXpGain, 
             transition={{ type: "spring", stiffness: 400, damping: 15 }}
             className="flex items-center gap-1.5 bg-gradient-to-r from-bw-amber/20 to-bw-primary/20 border border-bw-amber/40 rounded-full px-4 py-1.5"
           >
-            <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="text-base">
+            <motion.span
+              animate={{ scale: [1, 1.3, 1] }}
+              transition={{ repeat: Infinity, duration: 0.8 }}
+              className="text-base"
+            >
               {"\uD83D\uDD25"}
             </motion.span>
             <span className="text-sm font-bold text-bw-amber">x{streak}</span>
@@ -193,7 +239,12 @@ export function SentState({ responsesCount, connectedCount, streak, lastXpGain, 
           </motion.div>
         )}
         {(lastXpGain ?? 0) > 0 && (
-          <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 400, damping: 15, delay: 0.2 }} className="text-sm font-bold text-bw-gold">
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 15, delay: 0.2 }}
+            className="text-sm font-bold text-bw-gold"
+          >
             +{lastXpGain} pts
           </motion.span>
         )}
@@ -201,11 +252,17 @@ export function SentState({ responsesCount, connectedCount, streak, lastXpGain, 
 
       {/* Live counter */}
       {responsesCount != null && connectedCount != null && connectedCount > 0 && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="glass-card px-5 py-3" aria-live="polite" aria-atomic="true">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="glass-card px-5 py-3"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           <p className="text-sm text-bw-muted">
             <span className="text-bw-teal font-semibold">{responsesCount}</span>
-            <span className="text-bw-muted">/{connectedCount}</span>
-            {" "}ont r&eacute;pondu
+            <span className="text-bw-muted">/{connectedCount}</span> ont r&eacute;pondu
           </p>
         </motion.div>
       )}
@@ -213,36 +270,70 @@ export function SentState({ responsesCount, connectedCount, streak, lastXpGain, 
       {/* Contextual cinema tip → then transition to bonus trivia */}
       <AnimatePresence mode="wait">
         {!showBonus ? (
-          <motion.div key="tips" className="max-w-[300px] sm:max-w-xs px-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -10 }} transition={{ delay: 1.5 }}>
+          <motion.div
+            key="tips"
+            className="max-w-[300px] sm:max-w-xs px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ delay: 1.5 }}
+          >
             {currentTip && (
-              <div className="rounded-xl px-4 py-3" style={{ background: "linear-gradient(135deg, rgba(212,168,67,0.08), rgba(139,92,246,0.05))", border: "1px solid rgba(212,168,67,0.12)" }}>
+              <div
+                className="rounded-xl px-4 py-3"
+                style={{
+                  background: "linear-gradient(135deg, rgba(212,168,67,0.08), rgba(139,92,246,0.05))",
+                  border: "1px solid rgba(212,168,67,0.12)",
+                }}
+              >
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-xs uppercase tracking-widest text-bw-gold font-bold">
                     {TYPE_ICONS[currentTip.type] || "🎬"} Le saviez-vous ?
                   </p>
-                  <span className="text-xs text-bw-muted">{tipIndex + 1}/{tips.length}</span>
+                  <span className="text-xs text-bw-muted">
+                    {tipIndex + 1}/{tips.length}
+                  </span>
                 </div>
                 <AnimatePresence mode="wait">
-                  <motion.p key={tipIndex} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }} className="text-xs text-bw-text leading-relaxed">
+                  <motion.p
+                    key={tipIndex}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-xs text-bw-text leading-relaxed"
+                  >
                     {currentTip.text}
                   </motion.p>
                 </AnimatePresence>
-                {currentTip.source && (
-                  <p className="text-xs text-bw-muted mt-1 italic">— {currentTip.source}</p>
-                )}
+                {currentTip.source && <p className="text-xs text-bw-muted mt-1 italic">— {currentTip.source}</p>}
               </div>
             )}
           </motion.div>
         ) : (
-          <motion.div key="bonus" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="w-full flex justify-center px-4">
+          <motion.div
+            key="bonus"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full flex justify-center px-4"
+          >
             <BonusTrivia />
           </motion.div>
         )}
       </AnimatePresence>
 
-      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }} className="flex gap-1">
+      <motion.div
+        animate={{ opacity: [0.3, 1, 0.3] }}
+        transition={{ repeat: Infinity, duration: 2 }}
+        className="flex gap-1"
+      >
         {[0, 1, 2].map((i) => (
-          <motion.div key={i} animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.8, delay: i * 0.15 }} className="w-2 h-2 rounded-full bg-bw-teal" />
+          <motion.div
+            key={i}
+            animate={{ y: [0, -5, 0] }}
+            transition={{ repeat: Infinity, duration: 0.8, delay: i * 0.15 }}
+            className="w-2 h-2 rounded-full bg-bw-teal"
+          />
         ))}
       </motion.div>
     </motion.div>

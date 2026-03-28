@@ -18,7 +18,9 @@ function loadPresets(): Preset[] {
 }
 
 function savePresets(presets: Preset[]) {
-  try { localStorage.setItem(LS_KEY, JSON.stringify(presets)); } catch {}
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(presets));
+  } catch {}
 }
 
 interface BroadcastModalProps {
@@ -35,7 +37,16 @@ interface BroadcastModalProps {
   icon?: string;
 }
 
-export function BroadcastModal({ open, onClose, onSend, isPending, history, prefill, title, icon }: BroadcastModalProps) {
+export function BroadcastModal({
+  open,
+  onClose,
+  onSend,
+  isPending,
+  history,
+  prefill,
+  title,
+  icon,
+}: BroadcastModalProps) {
   const [message, setMessage] = useState("");
   const [presets, setPresets] = useState<Preset[]>(loadPresets);
   const [editMode, setEditMode] = useState(false);
@@ -45,15 +56,24 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history, pref
   const [editEmoji, setEditEmoji] = useState("");
 
   // Sync on open + apply prefill
-  useEffect(() => { if (open) { setPresets(loadPresets()); setEditMode(false); setMessage(prefill || ""); } }, [open, prefill]);
+  useEffect(() => {
+    if (open) {
+      setPresets(loadPresets());
+      setEditMode(false);
+      setMessage(prefill || "");
+    }
+  }, [open, prefill]);
 
-  const startEdit = useCallback((idx: number) => {
-    const p = presets[idx];
-    setEditIdx(idx);
-    setEditEmoji(p.emoji);
-    setEditLabel(p.label);
-    setEditText(p.text);
-  }, [presets]);
+  const startEdit = useCallback(
+    (idx: number) => {
+      const p = presets[idx];
+      setEditIdx(idx);
+      setEditEmoji(p.emoji);
+      setEditLabel(p.label);
+      setEditText(p.text);
+    },
+    [presets],
+  );
 
   const saveEdit = useCallback(() => {
     if (editIdx === null || !editText.trim()) return;
@@ -82,7 +102,9 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history, pref
       {open && (
         <>
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
@@ -98,10 +120,20 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history, pref
             {/* Header */}
             <div className="px-5 py-3 border-b border-black/[0.04] flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-lg" aria-hidden="true">{icon || "📢"}</span>
-                <h3 id="broadcast-title" className="text-sm font-semibold">{title || "Message à toute la classe"}</h3>
+                <span className="text-lg" aria-hidden="true">
+                  {icon || "📢"}
+                </span>
+                <h3 id="broadcast-title" className="text-sm font-semibold">
+                  {title || "Message à toute la classe"}
+                </h3>
               </div>
-              <button onClick={onClose} aria-label="Fermer" className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">✕</button>
+              <button
+                onClick={onClose}
+                aria-label="Fermer"
+                className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer"
+              >
+                ✕
+              </button>
             </div>
 
             {/* Presets */}
@@ -110,39 +142,66 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history, pref
                 <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Messages rapides</p>
                 <div className="flex gap-1.5">
                   {editMode && (
-                    <button onClick={resetPresets} className="text-[10px] text-bw-muted hover:text-red-400 cursor-pointer transition-colors">
+                    <button
+                      onClick={resetPresets}
+                      className="text-[10px] text-bw-muted hover:text-red-400 cursor-pointer transition-colors"
+                    >
                       Reset
                     </button>
                   )}
-                  <button onClick={() => { setEditMode(!editMode); setEditIdx(null); }} className="text-[10px] text-bw-muted hover:text-bw-heading cursor-pointer transition-colors">
+                  <button
+                    onClick={() => {
+                      setEditMode(!editMode);
+                      setEditIdx(null);
+                    }}
+                    className="text-[10px] text-bw-muted hover:text-bw-heading cursor-pointer transition-colors"
+                  >
                     {editMode ? "OK" : "Editer"}
                   </button>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-2">
-                {presets.map((preset, idx) => (
+                {presets.map((preset, idx) =>
                   editMode && editIdx === idx ? (
                     <div key={idx} className="p-2 rounded-lg border border-bw-primary/30 bg-bw-primary/5 space-y-1">
                       <div className="flex gap-1">
-                        <input value={editEmoji} onChange={e => setEditEmoji(e.target.value.slice(0, 2))} className="w-8 text-sm bg-transparent border-b border-bw-muted/30 outline-none text-center" />
-                        <input value={editLabel} onChange={e => setEditLabel(e.target.value.slice(0, 12))} className="flex-1 text-xs bg-transparent border-b border-bw-muted/30 outline-none text-bw-muted" placeholder="Label" />
+                        <input
+                          value={editEmoji}
+                          onChange={(e) => setEditEmoji(e.target.value.slice(0, 2))}
+                          className="w-8 text-sm bg-transparent border-b border-bw-muted/30 outline-none text-center"
+                        />
+                        <input
+                          value={editLabel}
+                          onChange={(e) => setEditLabel(e.target.value.slice(0, 12))}
+                          className="flex-1 text-xs bg-transparent border-b border-bw-muted/30 outline-none text-bw-muted"
+                          placeholder="Label"
+                        />
                       </div>
-                      <input value={editText} onChange={e => setEditText(e.target.value.slice(0, BROADCAST_MAX_CHARS))} className="w-full text-[10px] bg-transparent border-b border-bw-muted/30 outline-none text-bw-text" placeholder="Message..." />
-                      <button onClick={saveEdit} className="text-[10px] font-semibold text-bw-primary cursor-pointer">Sauver</button>
+                      <input
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value.slice(0, BROADCAST_MAX_CHARS))}
+                        className="w-full text-[10px] bg-transparent border-b border-bw-muted/30 outline-none text-bw-text"
+                        placeholder="Message..."
+                      />
+                      <button onClick={saveEdit} className="text-[10px] font-semibold text-bw-primary cursor-pointer">
+                        Sauver
+                      </button>
                     </div>
                   ) : (
                     <button
                       key={idx}
-                      onClick={() => editMode ? startEdit(idx) : handleSend(preset.text)}
+                      onClick={() => (editMode ? startEdit(idx) : handleSend(preset.text))}
                       disabled={!editMode && isPending}
                       className={`text-left p-2 rounded-lg border border-black/[0.06] hover:border-bw-primary/30 hover:bg-bw-primary/5 cursor-pointer transition-colors duration-200 disabled:opacity-40 ${editMode ? "ring-1 ring-dashed ring-bw-muted/20" : ""}`}
                     >
                       <span className="text-sm block">{preset.emoji}</span>
                       <span className="text-xs text-bw-muted">{preset.label}</span>
-                      {editMode && <span className="text-[9px] text-bw-muted/50 block mt-0.5">cliquer pour editer</span>}
+                      {editMode && (
+                        <span className="text-[9px] text-bw-muted/50 block mt-0.5">cliquer pour editer</span>
+                      )}
                     </button>
-                  )
-                ))}
+                  ),
+                )}
               </div>
             </div>
 
@@ -157,7 +216,9 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history, pref
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value.slice(0, BROADCAST_MAX_CHARS))}
-                  onKeyDown={(e) => { if (e.key === "Enter") handleSend(message); }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSend(message);
+                  }}
                   placeholder="Votre message..."
                   aria-label="Message personnalise"
                   maxLength={BROADCAST_MAX_CHARS}
@@ -171,7 +232,9 @@ export function BroadcastModal({ open, onClose, onSend, isPending, history, pref
                   {isPending ? "..." : "Envoyer"}
                 </button>
               </div>
-              <p className="text-xs text-bw-muted text-right">{message.length}/{BROADCAST_MAX_CHARS}</p>
+              <p className="text-xs text-bw-muted text-right">
+                {message.length}/{BROADCAST_MAX_CHARS}
+              </p>
             </div>
 
             {/* History */}

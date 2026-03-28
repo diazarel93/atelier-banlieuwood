@@ -5,7 +5,12 @@ import { getStudentTeam } from "./shared";
 import type { AdminClient } from "./types";
 
 // ── MODULE 12 handler — Construction Collective (8 manches de vote) ──
-export async function handleModule12(req: NextRequest, session: Record<string, unknown>, sessionId: string, admin: AdminClient) {
+export async function handleModule12(
+  req: NextRequest,
+  session: Record<string, unknown>,
+  sessionId: string,
+  admin: AdminClient,
+) {
   const currentIndex = (session.current_situation_index as number) || 0;
   const manche = currentIndex + 1; // 1-8
 
@@ -50,7 +55,12 @@ export async function handleModule12(req: NextRequest, session: Record<string, u
     .single();
 
   const poolReady = !!pool;
-  const rawCards = (pool?.cards || []) as { cardId: string; text: string; isBanlieuwood: boolean; contributorIds: string[] }[];
+  const rawCards = (pool?.cards || []) as {
+    cardId: string;
+    text: string;
+    isBanlieuwood: boolean;
+    contributorIds: string[];
+  }[];
 
   // Strip contributorIds for student view (anonymous cards)
   const cards = rawCards.map((c) => ({
@@ -137,18 +147,20 @@ export async function handleModule12(req: NextRequest, session: Record<string, u
     lycee: "prompt_14_18",
   };
   const field = levelMap[session.level as string] || "prompt_10_13";
-  const prompt = situation?.[field as keyof typeof situation] as string || "";
+  const prompt = (situation?.[field as keyof typeof situation] as string) || "";
 
   return NextResponse.json({
     session: sessionBase,
-    situation: situation ? {
-      id: situation.id,
-      position: situation.position,
-      category: situation.category,
-      restitutionLabel: situation.restitution_label,
-      prompt,
-      nudgeText: situation.nudge_text || null,
-    } : null,
+    situation: situation
+      ? {
+          id: situation.id,
+          position: situation.position,
+          category: situation.category,
+          restitutionLabel: situation.restitution_label,
+          prompt,
+          nudgeText: situation.nudge_text || null,
+        }
+      : null,
     module12: {
       type: "manche-vote" as const,
       manche,

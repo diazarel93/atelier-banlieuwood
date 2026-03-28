@@ -5,7 +5,9 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 
 export const GET = withErrorHandler<Record<string, never>>(async function GET() {
   const supabase = await createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
@@ -28,7 +30,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET() 
           avatar: user.user_metadata?.avatar || "🎬",
           email: user.email,
         },
-        { onConflict: "auth_user_id" }
+        { onConflict: "auth_user_id" },
       )
       .select()
       .single();
@@ -52,7 +54,9 @@ export const PATCH = withErrorHandler<Record<string, never>>(async function PATC
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
 
   const supabase = await createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
@@ -60,8 +64,12 @@ export const PATCH = withErrorHandler<Record<string, never>>(async function PATC
 
   const body = await req.json();
   const allowedFields = [
-    "display_name", "avatar", "avatar_accessories", "avatar_frame",
-    "custom_title", "particle_effect",
+    "display_name",
+    "avatar",
+    "avatar_accessories",
+    "avatar_frame",
+    "custom_title",
+    "particle_effect",
   ];
 
   const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };

@@ -2,7 +2,7 @@ export function invitationEmail(
   email: string,
   token: string,
   baseUrl: string,
-  institution?: string
+  institution?: string,
 ): { subject: string; html: string } {
   const signupUrl = `${baseUrl}/login?token=${token}`;
 

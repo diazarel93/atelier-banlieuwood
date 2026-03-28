@@ -10,8 +10,7 @@ import { useStudentProfiles } from "@/hooks/use-student-profiles";
 import { useDashboardSummary } from "@/hooks/use-dashboard-v2";
 
 function getActivityStatus(lastActiveAt: string) {
-  const diffDays =
-    (Date.now() - new Date(lastActiveAt).getTime()) / (1000 * 60 * 60 * 24);
+  const diffDays = (Date.now() - new Date(lastActiveAt).getTime()) / (1000 * 60 * 60 * 24);
   if (diffDays < 7) return "Actif";
   if (diffDays < 30) return "Récent";
   return "Inactif";
@@ -28,21 +27,12 @@ export default function ElevesPage() {
   const profiles = data?.profiles || [];
 
   const filtered = search
-    ? profiles.filter((p) =>
-        p.displayName.toLowerCase().includes(search.toLowerCase())
-      )
+    ? profiles.filter((p) => p.displayName.toLowerCase().includes(search.toLowerCase()))
     : profiles;
 
   function handleExportCsv() {
     if (filtered.length === 0) return;
-    const header = [
-      "Élève",
-      "Classe",
-      "Séances",
-      "Réponses",
-      "Dernière activité",
-      "Statut",
-    ];
+    const header = ["Élève", "Classe", "Séances", "Réponses", "Dernière activité", "Statut"];
     const rows = filtered.map((p) => [
       p.displayName,
       p.classLabel || "Sans classe",
@@ -79,7 +69,11 @@ export default function ElevesPage() {
           <div className="relative">
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 text-bw-muted"
-              width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              aria-hidden="true"
             >
               <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.5" />
               <path d="M10 10l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -125,7 +119,16 @@ export default function ElevesPage() {
               onClick={handleExportCsv}
               className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-bw-border)] px-3 py-1.5 text-xs font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors cursor-pointer"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
                 <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
               </svg>
               Exporter CSV

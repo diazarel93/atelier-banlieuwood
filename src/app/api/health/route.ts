@@ -18,12 +18,11 @@ export async function GET() {
   const admin = createAdminClient();
 
   try {
-
     // Race the DB query against a timeout to prevent hanging
     const result = await Promise.race([
       admin.from("sessions").select("id").limit(1),
       new Promise<{ error: { message: string } }>((resolve) =>
-        setTimeout(() => resolve({ error: { message: "Health check timeout" } }), HEALTH_TIMEOUT_MS)
+        setTimeout(() => resolve({ error: { message: "Health check timeout" } }), HEALTH_TIMEOUT_MS),
       ),
     ]);
 
@@ -68,6 +67,6 @@ export async function GET() {
     {
       status: dbOk ? 200 : 503,
       headers: { "Cache-Control": "no-store" },
-    }
+    },
   );
 }

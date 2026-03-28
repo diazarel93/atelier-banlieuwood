@@ -133,9 +133,7 @@ export default function SettingsPage() {
         </div>
         <div>
           <h1 className="text-heading-lg text-bw-heading">Reglages</h1>
-          <p className="text-sm text-bw-muted">
-            Gerez votre profil et vos preferences
-          </p>
+          <p className="text-sm text-bw-muted">Gerez votre profil et vos preferences</p>
         </div>
       </div>
 
@@ -145,25 +143,19 @@ export default function SettingsPage() {
           <h2 className="text-heading-xs text-bw-heading mb-4">Profil</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-body-xs font-medium text-bw-muted mb-1">
-                Nom
-              </label>
+              <label className="block text-body-xs font-medium text-bw-muted mb-1">Nom</label>
               <div className="h-9 flex items-center rounded-lg border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/50 px-3 text-sm text-bw-heading">
                 {authUser?.name || "Non renseigne"}
               </div>
             </div>
             <div>
-              <label className="block text-body-xs font-medium text-bw-muted mb-1">
-                Email
-              </label>
+              <label className="block text-body-xs font-medium text-bw-muted mb-1">Email</label>
               <div className="h-9 flex items-center rounded-lg border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/50 px-3 text-sm text-bw-muted">
                 {authUser?.email || ""}
               </div>
             </div>
             <div>
-              <label className="block text-body-xs font-medium text-bw-muted mb-1">
-                Role
-              </label>
+              <label className="block text-body-xs font-medium text-bw-muted mb-1">Role</label>
               <div className="h-9 flex items-center rounded-lg border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/50 px-3 text-sm text-bw-muted capitalize">
                 {authUser?.role || ""}
               </div>
@@ -176,10 +168,7 @@ export default function SettingsPage() {
           <h2 className="text-heading-xs text-bw-heading mb-4">Preferences</h2>
           <div className="space-y-4">
             <div>
-              <label
-                htmlFor="default-level"
-                className="block text-body-xs font-medium text-bw-muted mb-1"
-              >
+              <label htmlFor="default-level" className="block text-body-xs font-medium text-bw-muted mb-1">
                 Niveau par defaut
               </label>
               <select
@@ -196,10 +185,7 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label
-                htmlFor="default-class"
-                className="block text-body-xs font-medium text-bw-muted mb-1"
-              >
+              <label htmlFor="default-class" className="block text-body-xs font-medium text-bw-muted mb-1">
                 Classe par defaut
               </label>
               <input
@@ -220,10 +206,7 @@ export default function SettingsPage() {
           <h2 className="text-heading-xs text-bw-heading mb-4">Securite</h2>
           <div className="space-y-4">
             <div>
-              <label
-                htmlFor="new-password"
-                className="block text-body-xs font-medium text-bw-muted mb-1"
-              >
+              <label htmlFor="new-password" className="block text-body-xs font-medium text-bw-muted mb-1">
                 Nouveau mot de passe
               </label>
               <input
@@ -237,10 +220,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label
-                htmlFor="confirm-password"
-                className="block text-body-xs font-medium text-bw-muted mb-1"
-              >
+              <label htmlFor="confirm-password" className="block text-body-xs font-medium text-bw-muted mb-1">
                 Confirmer le mot de passe
               </label>
               <input

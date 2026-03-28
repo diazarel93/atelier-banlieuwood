@@ -27,7 +27,9 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   // Fetch sessions (admin sees all, others see own)
   let query = supabase
     .from("sessions")
-    .select("id, title, status, level, template, created_at, scheduled_at, class_label, completed_modules, students(id)")
+    .select(
+      "id, title, status, level, template, created_at, scheduled_at, class_label, completed_modules, students(id)",
+    )
     .order("created_at", { ascending: false })
     .limit(500);
 
@@ -45,17 +47,13 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   // Collect all unique class labels before filtering
   const classLabels = [
     ...new Set(
-      (sessions || [])
-        .map((s) => (s as Record<string, unknown>).class_label as string | null)
-        .filter(Boolean)
+      (sessions || []).map((s) => (s as Record<string, unknown>).class_label as string | null).filter(Boolean),
     ),
   ].sort() as string[];
 
   // Apply class label filter if provided
   const allSessions = classLabelFilter
-    ? (sessions || []).filter(
-        (s) => (s as Record<string, unknown>).class_label === classLabelFilter
-      )
+    ? (sessions || []).filter((s) => (s as Record<string, unknown>).class_label === classLabelFilter)
     : sessions || [];
   const now = new Date();
   const todayStr = now.toISOString().slice(0, 10);
@@ -65,44 +63,35 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
 
   // Sessions for today and tomorrow (use scheduled_at if available, fallback to created_at)
   const todaySessions = allSessions.filter((s) => {
-    const d = (s as Record<string, unknown>).scheduled_at as string || s.created_at;
+    const d = ((s as Record<string, unknown>).scheduled_at as string) || s.created_at;
     return d && d.slice(0, 10) === todayStr;
   });
 
   const tomorrowSessions = allSessions.filter((s) => {
-    const d = (s as Record<string, unknown>).scheduled_at as string || s.created_at;
+    const d = ((s as Record<string, unknown>).scheduled_at as string) || s.created_at;
     return d && d.slice(0, 10) === tomorrowStr;
   });
 
   // Quick stats
   const totalSessions = allSessions.length;
   const doneSessions = allSessions.filter((s) => s.status === "done").length;
-  const totalStudents = allSessions.reduce(
-    (acc, s) => acc + ((s.students as { id: string }[])?.length || 0),
-    0
-  );
+  const totalStudents = allSessions.reduce((acc, s) => acc + ((s.students as { id: string }[])?.length || 0), 0);
 
   // Unique modules completed (sessions with status "done")
   const activeStatuses = ["responding", "reviewing", "voting", "waiting"];
-  const activeSessions = allSessions.filter((s) =>
-    activeStatuses.includes(s.status)
-  ).length;
+  const activeSessions = allSessions.filter((s) => activeStatuses.includes(s.status)).length;
 
   // Aggregate completed module IDs across all sessions
   const completedModuleIds = [
-    ...new Set(
-      allSessions.flatMap(
-        (s) => ((s as Record<string, unknown>).completed_modules as string[]) || []
-      )
-    ),
+    ...new Set(allSessions.flatMap((s) => ((s as Record<string, unknown>).completed_modules as string[]) || [])),
   ];
 
   // Dates that have sessions (for calendar dots)
   const sessionDates = [
     ...new Set(
       allSessions
-        .map((s) => ((s as Record<string, unknown>).scheduled_at as string || s.created_at)?.slice(0, 10))
-        .filter(Boolean)
+        .map((s) => (((s as Record<string, unknown>).scheduled_at as string) || s.created_at)?.slice(0, 10))
+        .filter(Boolean),
     ),
   ];
 
@@ -116,22 +105,18 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   d14ago.setDate(d14ago.getDate() - 14);
 
   const sessionsLast7 = allSessions.filter((s) => {
-    const d = (s as Record<string, unknown>).scheduled_at as string || s.created_at;
+    const d = ((s as Record<string, unknown>).scheduled_at as string) || s.created_at;
     return d && d >= d7ago.toISOString();
   });
   const sessionsPrev7 = allSessions.filter((s) => {
-    const d = (s as Record<string, unknown>).scheduled_at as string || s.created_at;
+    const d = ((s as Record<string, unknown>).scheduled_at as string) || s.created_at;
     return d && d >= d14ago.toISOString() && d < d7ago.toISOString();
   });
 
   const doneLast7 = sessionsLast7.filter((s) => s.status === "done").length;
   const donePrev7 = sessionsPrev7.filter((s) => s.status === "done").length;
-  const studentsLast7 = sessionsLast7.reduce(
-    (acc, s) => acc + ((s.students as { id: string }[])?.length || 0), 0
-  );
-  const studentsPrev7 = sessionsPrev7.reduce(
-    (acc, s) => acc + ((s.students as { id: string }[])?.length || 0), 0
-  );
+  const studentsLast7 = sessionsLast7.reduce((acc, s) => acc + ((s.students as { id: string }[])?.length || 0), 0);
+  const studentsPrev7 = sessionsPrev7.reduce((acc, s) => acc + ((s.students as { id: string }[])?.length || 0), 0);
 
   function pctChange(curr: number, prev: number): number {
     if (prev === 0) return curr > 0 ? 100 : 0;
@@ -140,7 +125,14 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
 
   const trends = {
     doneSessions: { value: pctChange(doneLast7, donePrev7), label: "vs 7j préc." },
-    activeSessions: { value: pctChange(activeSessions, sessionsPrev7.filter((s) => s.status === "active" || s.status === "responding" || s.status === "waiting").length), label: "vs 7j préc." },
+    activeSessions: {
+      value: pctChange(
+        activeSessions,
+        sessionsPrev7.filter((s) => s.status === "active" || s.status === "responding" || s.status === "waiting")
+          .length,
+      ),
+      label: "vs 7j préc.",
+    },
     totalSessions: { value: pctChange(sessionsLast7.length, sessionsPrev7.length), label: "vs 7j préc." },
     totalStudents: { value: pctChange(studentsLast7, studentsPrev7), label: "vs 7j préc." },
   };
@@ -161,7 +153,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
       completedModuleIds,
       classLabels,
     },
-    { headers: { "Cache-Control": "private, max-age=10, stale-while-revalidate=20" } }
+    { headers: { "Cache-Control": "private, max-age=10, stale-while-revalidate=20" } },
   );
 });
 

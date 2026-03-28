@@ -88,7 +88,9 @@ function ResponseCardInner({
 
   // Cleanup swipe timeout on unmount
   useEffect(() => {
-    return () => { if (swipeTimerRef.current) clearTimeout(swipeTimerRef.current); };
+    return () => {
+      if (swipeTimerRef.current) clearTimeout(swipeTimerRef.current);
+    };
   }, []);
 
   const handleDragEnd = useCallback(
@@ -104,17 +106,16 @@ function ResponseCardInner({
       if (swipeTimerRef.current) clearTimeout(swipeTimerRef.current);
       swipeTimerRef.current = setTimeout(() => setSwiped(null), 300);
     },
-    [onHide, onSelect]
+    [onHide, onSelect],
   );
 
-  const borderColor =
-    response.is_highlighted
-      ? "#F5A45B"
-      : state === "selected"
-        ? "#6B8CFF"
-        : state === "winner"
-          ? "#57C4B6"
-          : "rgba(255,255,255,0.5)";
+  const borderColor = response.is_highlighted
+    ? "#F5A45B"
+    : state === "selected"
+      ? "#6B8CFF"
+      : state === "winner"
+        ? "#57C4B6"
+        : "rgba(255,255,255,0.5)";
 
   const hasInteractions = !!(onComment && onHighlight && onNudge && onWarn && onScore);
 
@@ -122,11 +123,7 @@ function ResponseCardInner({
   const isNew = Date.now() - new Date(response.submitted_at).getTime() < 3000;
 
   // Issue 6 — Cinema card hierarchy classes
-  const hierarchyClass = state === "winner"
-    ? "poster-card"
-    : response.is_highlighted
-      ? "cinema-accent"
-      : "";
+  const hierarchyClass = state === "winner" ? "poster-card" : response.is_highlighted ? "cinema-accent" : "";
 
   return (
     <motion.article
@@ -157,11 +154,12 @@ function ResponseCardInner({
         x,
         opacity: state === "hidden" ? 0.15 : undefined,
         filter: state === "hidden" ? "grayscale(1)" : undefined,
-        background: state === "winner"
-          ? "rgba(240,250,248,0.75)"
-          : response.is_highlighted
-            ? "rgba(255,248,240,0.75)"
-            : "rgba(255,255,255,0.7)",
+        background:
+          state === "winner"
+            ? "rgba(240,250,248,0.75)"
+            : response.is_highlighted
+              ? "rgba(255,248,240,0.75)"
+              : "rgba(255,255,255,0.7)",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
       }}
@@ -178,20 +176,24 @@ function ResponseCardInner({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2.5 mb-1.5">
             <span className="text-lg">{response.students?.avatar}</span>
-            <span className={`text-[14px] font-semibold ${state === "hidden" ? "line-through text-[#B0A99E]" : "text-bw-heading"}`}>
+            <span
+              className={`text-[14px] font-semibold ${state === "hidden" ? "line-through text-[#B0A99E]" : "text-bw-heading"}`}
+            >
               {response.students?.display_name}
             </span>
             <span className="text-[12px] text-[#B0A99E]">{relativeTime(response.submitted_at)}</span>
             {response.reset_at && (
-              <span className="text-xs px-1.5 py-px rounded-full bg-bw-amber/15 text-bw-amber border border-bw-amber/20">relancé</span>
+              <span className="text-xs px-1.5 py-px rounded-full bg-bw-amber/15 text-bw-amber border border-bw-amber/20">
+                relancé
+              </span>
             )}
           </div>
-          <p className={`text-[14px] leading-relaxed ${state === "hidden" ? "line-through text-[#B0A99E]" : response.reset_at ? "line-through text-[#B0A99E]" : "text-bw-text"}`}>
+          <p
+            className={`text-[14px] leading-relaxed ${state === "hidden" ? "line-through text-[#B0A99E]" : response.reset_at ? "line-through text-[#B0A99E]" : "text-bw-text"}`}
+          >
             {response.text}
           </p>
-          {response.teacher_comment && (
-            <TeacherCommentBadge comment={response.teacher_comment} />
-          )}
+          {response.teacher_comment && <TeacherCommentBadge comment={response.teacher_comment} />}
           {/* Score badges */}
           {((response.teacher_score && response.teacher_score > 0) || (response.ai_score && response.ai_score > 0)) && (
             <div className="mt-1.5 flex items-center gap-2">
@@ -210,9 +212,7 @@ function ResponseCardInner({
             </div>
           )}
           {/* AI feedback inline */}
-          {response.ai_feedback && (
-            <p className="text-xs text-bw-violet leading-snug mt-0.5">{response.ai_feedback}</p>
-          )}
+          {response.ai_feedback && <p className="text-xs text-bw-violet leading-snug mt-0.5">{response.ai_feedback}</p>}
         </div>
 
         {/* Status buttons (select/hide/validate) */}
@@ -294,8 +294,14 @@ function ResponseCardInner({
           onNudge={onNudge!}
           onWarn={onWarn!}
           onScore={onScore!}
-          onStartComment={() => { setIsCommenting(true); setCommentText(response.teacher_comment || ""); }}
-          onCancelComment={() => { setIsCommenting(false); setCommentText(""); }}
+          onStartComment={() => {
+            setIsCommenting(true);
+            setCommentText(response.teacher_comment || "");
+          }}
+          onCancelComment={() => {
+            setIsCommenting(false);
+            setCommentText("");
+          }}
           onChangeComment={setCommentText}
           isNudgePending={isNudgePending}
           isCommentPending={isCommentPending}

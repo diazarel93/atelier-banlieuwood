@@ -118,19 +118,13 @@ export default function AboutPage() {
 
       {/* ── Hero ── */}
       <header className="max-w-4xl mx-auto px-6 pt-16 pb-12 sm:pt-20 sm:pb-16">
-        <p className="text-sm font-medium text-bw-primary mb-3 tracking-wide uppercase">
-          A propos
-        </p>
-        <h1
-          className="text-bw-heading font-bold leading-tight"
-          style={{ fontSize: "clamp(28px, 5vw, 44px)" }}
-        >
+        <p className="text-sm font-medium text-bw-primary mb-3 tracking-wide uppercase">A propos</p>
+        <h1 className="text-bw-heading font-bold leading-tight" style={{ fontSize: "clamp(28px, 5vw, 44px)" }}>
           Le cinema comme outil d&apos;education
         </h1>
         <p className="text-bw-text text-lg leading-relaxed mt-4 max-w-2xl">
-          Banlieuwood est une association qui forme les jeunes au cinema depuis
-          2015. Des ateliers gratuits, encadres par des professionnels, ou les
-          participants creent leurs propres films de A a Z.
+          Banlieuwood est une association qui forme les jeunes au cinema depuis 2015. Des ateliers gratuits, encadres
+          par des professionnels, ou les participants creent leurs propres films de A a Z.
         </p>
       </header>
 
@@ -138,16 +132,9 @@ export default function AboutPage() {
       <section className="max-w-4xl mx-auto px-6 pb-16">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {IMPACT_STATS.map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-bw-surface border border-bw-border rounded-2xl p-5 text-center"
-            >
-              <p className="text-3xl sm:text-4xl font-bold text-bw-heading">
-                {stat.value}
-              </p>
-              <p className="text-sm font-medium text-bw-text mt-1">
-                {stat.label}
-              </p>
+            <div key={stat.label} className="bg-bw-surface border border-bw-border rounded-2xl p-5 text-center">
+              <p className="text-3xl sm:text-4xl font-bold text-bw-heading">{stat.value}</p>
+              <p className="text-sm font-medium text-bw-text mt-1">{stat.label}</p>
               <p className="text-xs text-bw-muted mt-0.5">{stat.detail}</p>
             </div>
           ))}
@@ -161,29 +148,18 @@ export default function AboutPage() {
 
       {/* ── La Methode ── */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <h2 className="text-2xl font-bold text-bw-heading mb-2">
-          La methode
-        </h2>
-        <p className="text-bw-muted mb-10">
-          De l&apos;ecriture a la diffusion : un parcours complet en 4 etapes.
-        </p>
+        <h2 className="text-2xl font-bold text-bw-heading mb-2">La methode</h2>
+        <p className="text-bw-muted mb-10">De l&apos;ecriture a la diffusion : un parcours complet en 4 etapes.</p>
 
         <div className="grid sm:grid-cols-2 gap-6">
           {METHOD_STEPS.map((step) => (
-            <div
-              key={step.step}
-              className="flex gap-4"
-            >
+            <div key={step.step} className="flex gap-4">
               <span className="shrink-0 w-10 h-10 rounded-xl bg-bw-primary/10 text-bw-primary text-sm font-bold flex items-center justify-center">
                 {step.step}
               </span>
               <div>
-                <h3 className="font-semibold text-bw-heading">
-                  {step.title}
-                </h3>
-                <p className="text-sm text-bw-text leading-relaxed mt-1">
-                  {step.desc}
-                </p>
+                <h3 className="font-semibold text-bw-heading">{step.title}</h3>
+                <p className="text-sm text-bw-text leading-relaxed mt-1">{step.desc}</p>
               </div>
             </div>
           ))}
@@ -197,22 +173,13 @@ export default function AboutPage() {
 
       {/* ── Valeurs ── */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <h2 className="text-2xl font-bold text-bw-heading mb-2">
-          Nos valeurs
-        </h2>
-        <p className="text-bw-muted mb-10">
-          Ce qui guide chaque atelier, chaque film, chaque rencontre.
-        </p>
+        <h2 className="text-2xl font-bold text-bw-heading mb-2">Nos valeurs</h2>
+        <p className="text-bw-muted mb-10">Ce qui guide chaque atelier, chaque film, chaque rencontre.</p>
 
         <div className="grid sm:grid-cols-2 gap-6">
           {VALUES.map((v) => (
-            <div
-              key={v.title}
-              className="bg-bw-surface border border-bw-border rounded-2xl p-6"
-            >
-              <h3 className="font-semibold text-bw-heading mb-2">
-                {v.title}
-              </h3>
+            <div key={v.title} className="bg-bw-surface border border-bw-border rounded-2xl p-6">
+              <h3 className="font-semibold text-bw-heading mb-2">{v.title}</h3>
               <p className="text-sm text-bw-text leading-relaxed">{v.desc}</p>
             </div>
           ))}
@@ -226,12 +193,8 @@ export default function AboutPage() {
 
       {/* ── Timeline ── */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <h2 className="text-2xl font-bold text-bw-heading mb-2">
-          Notre parcours
-        </h2>
-        <p className="text-bw-muted mb-10">
-          10 ans de cinema en banlieue.
-        </p>
+        <h2 className="text-2xl font-bold text-bw-heading mb-2">Notre parcours</h2>
+        <p className="text-bw-muted mb-10">10 ans de cinema en banlieue.</p>
 
         <div className="space-y-0">
           {MILESTONES.map((m, i) => (
@@ -239,15 +202,11 @@ export default function AboutPage() {
               {/* Vertical line + dot */}
               <div className="flex flex-col items-center">
                 <div className="w-3 h-3 rounded-full bg-bw-primary shrink-0 mt-1" />
-                {i < MILESTONES.length - 1 && (
-                  <div className="w-px h-12 bg-bw-border" />
-                )}
+                {i < MILESTONES.length - 1 && <div className="w-px h-12 bg-bw-border" />}
               </div>
               {/* Content */}
               <div className="pb-6">
-                <span className="text-sm font-bold text-bw-primary">
-                  {m.year}
-                </span>
+                <span className="text-sm font-bold text-bw-primary">{m.year}</span>
                 <p className="text-bw-text mt-0.5">{m.event}</p>
               </div>
             </div>
@@ -262,19 +221,12 @@ export default function AboutPage() {
 
       {/* ── Labels & Agrements ── */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <h2 className="text-2xl font-bold text-bw-heading mb-2">
-          Labels &amp; agrements
-        </h2>
-        <p className="text-bw-muted mb-10">
-          Reconnaissance institutionnelle de notre action.
-        </p>
+        <h2 className="text-2xl font-bold text-bw-heading mb-2">Labels &amp; agrements</h2>
+        <p className="text-bw-muted mb-10">Reconnaissance institutionnelle de notre action.</p>
 
         <div className="space-y-4">
           {LABELS.map((l) => (
-            <div
-              key={l.name}
-              className="flex items-start gap-3 bg-bw-surface border border-bw-border rounded-xl p-4"
-            >
+            <div key={l.name} className="flex items-start gap-3 bg-bw-surface border border-bw-border rounded-xl p-4">
               <div className="w-2 h-2 rounded-full bg-bw-primary shrink-0 mt-2" />
               <div>
                 <p className="font-medium text-bw-heading">{l.name}</p>
@@ -288,12 +240,9 @@ export default function AboutPage() {
       {/* ── CTA ── */}
       <section className="max-w-4xl mx-auto px-6 pb-20">
         <div className="bg-bw-surface border border-bw-border rounded-2xl p-8 sm:p-12 text-center">
-          <h2 className="text-2xl font-bold text-bw-heading mb-3">
-            Envie de participer ?
-          </h2>
+          <h2 className="text-2xl font-bold text-bw-heading mb-3">Envie de participer ?</h2>
           <p className="text-bw-text mb-8 max-w-md mx-auto">
-            Rejoignez une partie, proposez un partenariat ou contactez-nous pour
-            en savoir plus.
+            Rejoignez une partie, proposez un partenariat ou contactez-nous pour en savoir plus.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
@@ -317,9 +266,15 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <p className="text-xs text-bw-muted">&copy; 2026 Banlieuwood</p>
           <div className="flex gap-4">
-            <Link href="/legal/privacy" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">Confidentialite</Link>
-            <Link href="/legal/cgu" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">CGU</Link>
-            <Link href={ROUTES.contact} className="text-xs text-bw-muted hover:text-bw-heading transition-colors">Contact</Link>
+            <Link href="/legal/privacy" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">
+              Confidentialite
+            </Link>
+            <Link href="/legal/cgu" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">
+              CGU
+            </Link>
+            <Link href={ROUTES.contact} className="text-xs text-bw-muted hover:text-bw-heading transition-colors">
+              Contact
+            </Link>
           </div>
         </div>
       </footer>

@@ -5,11 +5,7 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { BrandMark, BrandLogo, BrandStyles } from "@/components/brand-logo";
 import { ROUTES } from "@/lib/routes";
-import {
-  ClapperboardIllustration,
-  FilmReelIllustration,
-  CameraIllustration,
-} from "@/components/cinema-illustrations";
+import { ClapperboardIllustration, FilmReelIllustration, CameraIllustration } from "@/components/cinema-illustrations";
 
 /* ═══════════════════════════════════════════════════════════════
    TYPEWRITER
@@ -107,15 +103,7 @@ function Reveal({
    BROWSER MOCKUP — reusable mini "app window" frame
    ═══════════════════════════════════════════════════════════════ */
 
-function AppWindow({
-  url,
-  children,
-  className = "",
-}: {
-  url: string;
-  children: React.ReactNode;
-  className?: string;
-}) {
+function AppWindow({ url, children, className = "" }: { url: string; children: React.ReactNode; className?: string }) {
   return (
     <div
       className={`rounded-lg border border-white/[0.08] overflow-hidden ${className}`}
@@ -164,17 +152,13 @@ export default function Home() {
           background: scrolled ? "rgba(15,17,24,0.75)" : "transparent",
           backdropFilter: scrolled ? "blur(12px)" : "none",
           WebkitBackdropFilter: scrolled ? "blur(12px)" : "none",
-          borderBottom: scrolled
-            ? "1px solid rgba(255,255,255,0.06)"
-            : "1px solid transparent",
+          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
         }}
       >
         <div className="max-w-[1080px] mx-auto w-full flex justify-between items-center">
           <Link href="/" className="flex items-center gap-2">
             <BrandMark size="sm" color="cinema" animated={false} />
-            <span className="text-sm font-semibold text-bw-heading tracking-wide hidden sm:block">
-              BANLIEUWOOD
-            </span>
+            <span className="text-sm font-semibold text-bw-heading tracking-wide hidden sm:block">BANLIEUWOOD</span>
           </Link>
           <div className="flex items-center gap-1">
             <Link
@@ -225,8 +209,7 @@ export default function Home() {
         <div
           className="absolute top-[-30%] left-1/2 -translate-x-1/2 w-[80%] h-[60%] pointer-events-none"
           style={{
-            background:
-              "radial-gradient(ellipse at center, rgba(255,107,53,0.08) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse at center, rgba(255,107,53,0.08) 0%, transparent 70%)",
             filter: "blur(80px)",
           }}
         />
@@ -254,8 +237,7 @@ export default function Home() {
               letterSpacing: "0.02em",
             }}
           >
-            Ecrivez un court-metrage.{" "}
-            <span className="text-gradient-cinema">Ensemble.</span>
+            Ecrivez un court-metrage. <span className="text-gradient-cinema">Ensemble.</span>
           </motion.h1>
 
           {/* Sub */}
@@ -266,8 +248,8 @@ export default function Home() {
             className="text-[#8b8b8e] max-w-[480px] mx-auto leading-relaxed"
             style={{ fontSize: "clamp(16px, 2vw, 19px)" }}
           >
-            5 a 30 eleves sur tablette ou ordinateur. 45 minutes. Aucun compte
-            requis. Le jeu collaboratif de creation cinematographique.
+            5 a 30 eleves sur tablette ou ordinateur. 45 minutes. Aucun compte requis. Le jeu collaboratif de creation
+            cinematographique.
           </motion.p>
 
           {/* CTAs */}
@@ -310,10 +292,7 @@ export default function Home() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="relative mt-12 w-full max-w-[580px] mx-auto"
         >
-          <div
-            className="rounded-xl border border-white/[0.06] overflow-hidden"
-            style={{ background: "#111318" }}
-          >
+          <div className="rounded-xl border border-white/[0.06] overflow-hidden" style={{ background: "#111318" }}>
             <div
               className="h-9 flex items-center gap-2 px-4 border-b border-white/[0.06]"
               style={{ background: "#0d0f14" }}
@@ -363,10 +342,7 @@ export default function Home() {
             { value: "0", label: "compte requis", color: "#D4A843" },
           ].map((stat) => (
             <div key={stat.label} className="flex items-center gap-2.5">
-              <span
-                className="text-lg font-bold tabular-nums"
-                style={{ color: stat.color }}
-              >
+              <span className="text-lg font-bold tabular-nums" style={{ color: stat.color }}>
                 {stat.value}
               </span>
               <span className="text-xs text-[#5c5c60]">{stat.label}</span>
@@ -382,9 +358,7 @@ export default function Home() {
         <div className="max-w-[1080px] mx-auto">
           <Reveal>
             <p className="label-caps mb-4">Comment ca marche</p>
-            <h2 className="text-display-md text-bw-heading max-w-[500px]">
-              Trois etapes. Un court-metrage.
-            </h2>
+            <h2 className="text-display-md text-bw-heading max-w-[500px]">Trois etapes. Un court-metrage.</h2>
           </Reveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
@@ -394,37 +368,26 @@ export default function Home() {
               style={{ background: "#111318" }}
             >
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-[13px] font-mono text-[#5c5c60]">
-                  01
-                </span>
+                <span className="text-[13px] font-mono text-[#5c5c60]">01</span>
                 <div className="h-px flex-1 bg-gradient-to-r from-bw-primary/30 to-transparent" />
               </div>
-              <h3 className="text-lg font-semibold text-bw-heading mb-2">
-                Cree ta partie
-              </h3>
+              <h3 className="text-lg font-semibold text-bw-heading mb-2">Cree ta partie</h3>
               <p className="text-sm text-[#8b8b8e] leading-relaxed">
-                Choisis un module, lance la session. Un code unique est genere.
-                Projette-le au tableau.
+                Choisis un module, lance la session. Un code unique est genere. Projette-le au tableau.
               </p>
 
               {/* Dashboard mockup */}
               <AppWindow url="banlieuwood.fr/dashboard" className="mt-6">
                 <div className="px-3 py-2 border-b border-white/[0.04] flex items-center justify-between">
-                  <span className="text-[9px] font-medium text-[#5c5c60] uppercase tracking-wider">
-                    Session active
-                  </span>
+                  <span className="text-[9px] font-medium text-[#5c5c60] uppercase tracking-wider">Session active</span>
                   <span className="flex items-center gap-1 text-[9px] text-bw-teal">
                     <span className="w-1.5 h-1.5 rounded-full bg-bw-teal" />
                     En attente
                   </span>
                 </div>
                 <div className="p-4 text-center">
-                  <div className="font-mono text-2xl font-bold text-bw-heading tracking-[0.12em]">
-                    BW-4821
-                  </div>
-                  <div className="text-[10px] text-[#5c5c60] mt-1">
-                    Module 1 &mdash; L&apos;Oeil
-                  </div>
+                  <div className="font-mono text-2xl font-bold text-bw-heading tracking-[0.12em]">BW-4821</div>
+                  <div className="text-[10px] text-[#5c5c60] mt-1">Module 1 &mdash; L&apos;Oeil</div>
                 </div>
                 <div className="px-3 py-2 border-t border-white/[0.04] flex items-center justify-between">
                   <div className="flex -space-x-1.5">
@@ -433,21 +396,13 @@ export default function Home() {
                         key={i}
                         className="w-4 h-4 rounded-full border-2 border-[#0a0c12]"
                         style={{
-                          background: [
-                            "#FF6B35",
-                            "#4ECDC4",
-                            "#8B5CF6",
-                            "#D4A843",
-                            "#EC4899",
-                          ][i],
+                          background: ["#FF6B35", "#4ECDC4", "#8B5CF6", "#D4A843", "#EC4899"][i],
                           opacity: 0.7,
                         }}
                       />
                     ))}
                   </div>
-                  <span className="text-[9px] text-[#5c5c60]">
-                    12 eleves connectes
-                  </span>
+                  <span className="text-[9px] text-[#5c5c60]">12 eleves connectes</span>
                 </div>
               </AppWindow>
             </Reveal>
@@ -459,54 +414,32 @@ export default function Home() {
               style={{ background: "#111318" }}
             >
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-[13px] font-mono text-[#5c5c60]">
-                  02
-                </span>
+                <span className="text-[13px] font-mono text-[#5c5c60]">02</span>
                 <div className="h-px flex-1 bg-gradient-to-r from-bw-teal/30 to-transparent" />
               </div>
-              <h3 className="text-lg font-semibold text-bw-heading mb-2">
-                Ils rejoignent
-              </h3>
+              <h3 className="text-lg font-semibold text-bw-heading mb-2">Ils rejoignent</h3>
               <p className="text-sm text-[#8b8b8e] leading-relaxed">
-                Code ou QR code. Pas de compte, pas d&apos;app. Sur tablette ou
-                ordinateur en 5 secondes.
+                Code ou QR code. Pas de compte, pas d&apos;app. Sur tablette ou ordinateur en 5 secondes.
               </p>
 
               {/* Join screen mockup */}
               <AppWindow url="banlieuwood.fr/join" className="mt-6">
                 <div className="p-4 space-y-3">
                   <div className="text-center">
-                    <div className="text-xs font-semibold text-bw-heading">
-                      Rejoindre la partie
-                    </div>
-                    <div className="text-[9px] text-[#5c5c60] mt-0.5">
-                      Aucun compte requis
-                    </div>
+                    <div className="text-xs font-semibold text-bw-heading">Rejoindre la partie</div>
+                    <div className="text-[9px] text-[#5c5c60] mt-0.5">Aucun compte requis</div>
                   </div>
                   <div className="h-9 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center px-3 justify-center">
-                    <span className="font-mono text-sm text-bw-heading tracking-wider">
-                      BW-4821
-                    </span>
+                    <span className="font-mono text-sm text-bw-heading tracking-wider">BW-4821</span>
                   </div>
                   <div className="h-9 rounded-lg bg-bw-primary flex items-center justify-center gap-1.5">
-                    <span className="text-xs font-medium text-white">
-                      Rejoindre
-                    </span>
-                    <svg
-                      width="10"
-                      height="10"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="2.5"
-                    >
+                    <span className="text-xs font-medium text-white">Rejoindre</span>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
                       <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                   </div>
                   <div className="text-center">
-                    <span className="text-[9px] text-[#5c5c60]">
-                      ou scanner le QR code au tableau
-                    </span>
+                    <span className="text-[9px] text-[#5c5c60]">ou scanner le QR code au tableau</span>
                   </div>
                 </div>
               </AppWindow>
@@ -519,29 +452,20 @@ export default function Home() {
               style={{ background: "#111318" }}
             >
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-[13px] font-mono text-[#5c5c60]">
-                  03
-                </span>
+                <span className="text-[13px] font-mono text-[#5c5c60]">03</span>
                 <div className="h-px flex-1 bg-gradient-to-r from-bw-violet/30 to-transparent" />
               </div>
-              <h3 className="text-lg font-semibold text-bw-heading mb-2">
-                Jouez ensemble
-              </h3>
+              <h3 className="text-lg font-semibold text-bw-heading mb-2">Jouez ensemble</h3>
               <p className="text-sm text-[#8b8b8e] leading-relaxed">
-                Repondez, votez, debattez. L&apos;histoire prend forme
-                collectivement.
+                Repondez, votez, debattez. L&apos;histoire prend forme collectivement.
               </p>
 
               {/* Gameplay mockup */}
               <AppWindow url="banlieuwood.fr/play" className="mt-6">
                 <div className="p-3 space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-[9px] text-[#5c5c60]">
-                      Question 3 / 8
-                    </span>
-                    <span className="text-[9px] font-mono text-bw-primary tabular-nums">
-                      2:34
-                    </span>
+                    <span className="text-[9px] text-[#5c5c60]">Question 3 / 8</span>
+                    <span className="text-[9px] font-mono text-bw-primary tabular-nums">2:34</span>
                   </div>
                   <div className="text-[11px] font-medium text-bw-heading leading-snug">
                     Quel personnage incarne le conflit central ?
@@ -551,12 +475,8 @@ export default function Home() {
                       Le pere
                     </div>
                     <div className="h-7 rounded-md bg-bw-primary/10 border border-bw-primary/30 flex items-center justify-between px-2.5">
-                      <span className="text-[10px] font-medium text-bw-heading">
-                        La fille
-                      </span>
-                      <span className="text-[10px] font-bold text-bw-primary tabular-nums">
-                        72%
-                      </span>
+                      <span className="text-[10px] font-medium text-bw-heading">La fille</span>
+                      <span className="text-[10px] font-bold text-bw-primary tabular-nums">72%</span>
                     </div>
                     <div className="h-7 rounded-md bg-white/[0.04] border border-white/[0.06] flex items-center px-2.5 text-[10px] text-[#8b8b8e]">
                       Le voisin
@@ -575,17 +495,12 @@ export default function Home() {
       {/* ════════════════════════════════════════════════════════
          3. FEATURES — large illustrations, colored glows
          ════════════════════════════════════════════════════════ */}
-      <section
-        className="px-6 py-20 relative"
-        style={{ background: "#111318" }}
-      >
+      <section className="px-6 py-20 relative" style={{ background: "#111318" }}>
         <div className="absolute inset-0 grid-pattern opacity-40 pointer-events-none" />
         <div className="relative max-w-[1080px] mx-auto">
           <Reveal>
             <p className="label-caps mb-4">Pourquoi Banlieuwood</p>
-            <h2 className="text-display-md text-bw-heading max-w-[560px]">
-              Un outil de creation, pas juste un quiz.
-            </h2>
+            <h2 className="text-display-md text-bw-heading max-w-[560px]">Un outil de creation, pas juste un quiz.</h2>
           </Reveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
@@ -597,21 +512,17 @@ export default function Home() {
               <div
                 className="absolute top-0 right-0 w-[250px] h-[250px] pointer-events-none"
                 style={{
-                  background:
-                    "radial-gradient(circle at 100% 0%, rgba(255,107,53,0.07) 0%, transparent 70%)",
+                  background: "radial-gradient(circle at 100% 0%, rgba(255,107,53,0.07) 0%, transparent 70%)",
                 }}
               />
               <div className="relative">
                 <div className="mb-6 opacity-70 group-hover:opacity-100 transition-opacity duration-300">
                   <ClapperboardIllustration size={140} />
                 </div>
-                <h3 className="text-xl font-semibold text-bw-heading mb-3">
-                  Collaboratif
-                </h3>
+                <h3 className="text-xl font-semibold text-bw-heading mb-3">Collaboratif</h3>
                 <p className="text-sm text-[#8b8b8e] leading-relaxed">
-                  5 a 30 eleves construisent une histoire ensemble. Le prof
-                  projette le dashboard, la classe joue sur tablette ou
-                  ordinateur.
+                  5 a 30 eleves construisent une histoire ensemble. Le prof projette le dashboard, la classe joue sur
+                  tablette ou ordinateur.
                 </p>
               </div>
             </Reveal>
@@ -625,20 +536,17 @@ export default function Home() {
               <div
                 className="absolute top-0 right-0 w-[250px] h-[250px] pointer-events-none"
                 style={{
-                  background:
-                    "radial-gradient(circle at 100% 0%, rgba(139,92,246,0.07) 0%, transparent 70%)",
+                  background: "radial-gradient(circle at 100% 0%, rgba(139,92,246,0.07) 0%, transparent 70%)",
                 }}
               />
               <div className="relative">
                 <div className="mb-6 opacity-70 group-hover:opacity-100 transition-opacity duration-300">
                   <CameraIllustration size={140} />
                 </div>
-                <h3 className="text-xl font-semibold text-bw-heading mb-3">
-                  Guide par l&apos;IA
-                </h3>
+                <h3 className="text-xl font-semibold text-bw-heading mb-3">Guide par l&apos;IA</h3>
                 <p className="text-sm text-[#8b8b8e] leading-relaxed">
-                  L&apos;IA adapte les questions au niveau du groupe. Le
-                  facilitateur pilote, la technologie s&apos;efface.
+                  L&apos;IA adapte les questions au niveau du groupe. Le facilitateur pilote, la technologie
+                  s&apos;efface.
                 </p>
               </div>
             </Reveal>
@@ -652,20 +560,17 @@ export default function Home() {
               <div
                 className="absolute top-0 right-0 w-[250px] h-[250px] pointer-events-none"
                 style={{
-                  background:
-                    "radial-gradient(circle at 100% 0%, rgba(78,205,196,0.07) 0%, transparent 70%)",
+                  background: "radial-gradient(circle at 100% 0%, rgba(78,205,196,0.07) 0%, transparent 70%)",
                 }}
               />
               <div className="relative">
                 <div className="mb-6 opacity-70 group-hover:opacity-100 transition-opacity duration-300">
                   <FilmReelIllustration size={140} />
                 </div>
-                <h3 className="text-xl font-semibold text-bw-heading mb-3">
-                  Programme complet
-                </h3>
+                <h3 className="text-xl font-semibold text-bw-heading mb-3">Programme complet</h3>
                 <p className="text-sm text-[#8b8b8e] leading-relaxed">
-                  De l&apos;observation au scenario. Personnages, conflits,
-                  denouement &mdash; un vrai parcours de creation.
+                  De l&apos;observation au scenario. Personnages, conflits, denouement &mdash; un vrai parcours de
+                  creation.
                 </p>
               </div>
             </Reveal>
@@ -680,9 +585,7 @@ export default function Home() {
         <div className="max-w-[1080px] mx-auto">
           <Reveal>
             <p className="label-caps mb-4">Trois univers</p>
-            <h2 className="text-display-md text-bw-heading max-w-[600px]">
-              En classe. Chez soi. Ensemble.
-            </h2>
+            <h2 className="text-display-md text-bw-heading max-w-[600px]">En classe. Chez soi. Ensemble.</h2>
             <p className="text-sm text-[#8b8b8e] mt-4 max-w-lg leading-relaxed">
               Un ecosysteme complet : le prof pilote en classe, l&apos;eleve progresse seul, la communaute celebre.
             </p>
@@ -725,15 +628,11 @@ export default function Home() {
                 style={{ background: "#111318" }}
               >
                 <span className="text-4xl mb-4">{u.icon}</span>
-                <h3 className="text-xl font-semibold text-bw-heading mb-1">
-                  {u.title}
-                </h3>
+                <h3 className="text-xl font-semibold text-bw-heading mb-1">{u.title}</h3>
                 <p className="text-xs font-medium mb-3" style={{ color: u.color }}>
                   {u.sub}
                 </p>
-                <p className="text-sm text-[#8b8b8e] leading-relaxed flex-1">
-                  {u.desc}
-                </p>
+                <p className="text-sm text-[#8b8b8e] leading-relaxed flex-1">{u.desc}</p>
                 <Link
                   href={u.href}
                   className="mt-5 h-9 px-4 inline-flex items-center justify-center text-sm font-medium rounded-lg transition-all duration-150 hover:-translate-y-px"
@@ -758,12 +657,9 @@ export default function Home() {
         <div className="max-w-[1080px] mx-auto">
           <Reveal>
             <p className="label-caps mb-4">Le parcours</p>
-            <h2 className="text-display-md text-bw-heading max-w-[400px]">
-              Trois phases vers le film.
-            </h2>
+            <h2 className="text-display-md text-bw-heading max-w-[400px]">Trois phases vers le film.</h2>
             <p className="text-sm text-[#8b8b8e] mt-4 max-w-md leading-relaxed">
-              Chaque phase est une etape pedagogique autonome. Un trimestre, un
-              film.
+              Chaque phase est une etape pedagogique autonome. Un trimestre, un film.
             </p>
           </Reveal>
 
@@ -807,17 +703,11 @@ export default function Home() {
                   >
                     {phase.num}
                   </div>
-                  <h3 className="text-lg font-semibold text-bw-heading mb-1">
-                    {phase.title}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-bw-heading mb-1">{phase.title}</h3>
                   <p className="text-sm text-[#8b8b8e] mb-3">{phase.sub}</p>
-                  <p className="text-xs text-[#5c5c60] leading-relaxed">
-                    {phase.desc}
-                  </p>
+                  <p className="text-xs text-[#5c5c60] leading-relaxed">{phase.desc}</p>
                   <div className="mt-4 pt-3 border-t border-white/[0.04]">
-                    <span className="text-xs tabular-nums text-[#5c5c60]">
-                      {phase.modules} modules
-                    </span>
+                    <span className="text-xs tabular-nums text-[#5c5c60]">{phase.modules} modules</span>
                   </div>
                 </div>
               </Reveal>
@@ -843,9 +733,8 @@ export default function Home() {
                       letterSpacing: "-0.02em",
                     }}
                   >
-                    &ldquo;Un vrai outil de formation artistique deguise en jeu.
-                    Mes eleves n&apos;ont pas leve la tete pendant 45
-                    minutes.&rdquo;
+                    &ldquo;Un vrai outil de formation artistique deguise en jeu. Mes eleves n&apos;ont pas leve la tete
+                    pendant 45 minutes.&rdquo;
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -853,12 +742,8 @@ export default function Home() {
                     P
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-bw-heading">
-                      Professeur de francais
-                    </p>
-                    <p className="text-xs text-[#5c5c60]">
-                      College &mdash; Ile-de-France
-                    </p>
+                    <p className="text-sm font-medium text-bw-heading">Professeur de francais</p>
+                    <p className="text-xs text-[#5c5c60]">College &mdash; Ile-de-France</p>
                   </div>
                 </div>
               </div>
@@ -872,10 +757,7 @@ export default function Home() {
                 ].map((n) => (
                   <div key={n.desc}>
                     <div className="text-2xl font-bold text-bw-heading tabular-nums">
-                      {n.value}{" "}
-                      <span className="text-sm font-normal text-[#5c5c60]">
-                        {n.unit}
-                      </span>
+                      {n.value} <span className="text-sm font-normal text-[#5c5c60]">{n.unit}</span>
                     </div>
                     <div className="text-[11px] text-[#5c5c60]">{n.desc}</div>
                   </div>
@@ -887,15 +769,8 @@ export default function Home() {
           {/* Trust badges */}
           <Reveal delay={0.1}>
             <div className="mt-12 pt-8 border-t border-white/[0.06] flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-              {[
-                "Concu avec des enseignants",
-                "Teste en college",
-                "Conforme RGPD",
-              ].map((badge) => (
-                <div
-                  key={badge}
-                  className="flex items-center gap-2 text-xs text-[#5c5c60]"
-                >
+              {["Concu avec des enseignants", "Teste en college", "Conforme RGPD"].map((badge) => (
+                <div key={badge} className="flex items-center gap-2 text-xs text-[#5c5c60]">
                   <svg
                     width="12"
                     height="12"
@@ -945,8 +820,7 @@ export default function Home() {
               Le prochain film se tourne dans ta classe.
             </h2>
             <p className="text-sm text-[#8b8b8e] mt-5 max-w-sm mx-auto leading-relaxed">
-              Gratuit. Pas de compte pour les eleves. Lancez une partie en 30
-              secondes.
+              Gratuit. Pas de compte pour les eleves. Lancez une partie en 30 secondes.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
               <Link
@@ -974,16 +848,10 @@ export default function Home() {
               </Link>
             </div>
             <p className="text-xs text-[#5c5c60] mt-4 space-x-4">
-              <Link
-                href="/free"
-                className="hover:text-bw-heading transition-colors"
-              >
+              <Link href="/free" className="hover:text-bw-heading transition-colors">
                 Jouer seul &rarr;
               </Link>
-              <Link
-                href="/studio"
-                className="hover:text-bw-heading transition-colors"
-              >
+              <Link href="/studio" className="hover:text-bw-heading transition-colors">
                 Le Studio &rarr;
               </Link>
             </p>
@@ -1033,9 +901,7 @@ export default function Home() {
               },
             ].map((col) => (
               <div key={col.title}>
-                <p className="text-xs font-medium text-[#5c5c60] uppercase tracking-wider mb-4">
-                  {col.title}
-                </p>
+                <p className="text-xs font-medium text-[#5c5c60] uppercase tracking-wider mb-4">{col.title}</p>
                 <ul className="space-y-2">
                   {col.links.map((link) => (
                     <li key={link.l}>

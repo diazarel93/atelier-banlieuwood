@@ -33,9 +33,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   const moduleFilter = url.searchParams.get("module"); // dbModule number as string
 
   // Fetch sessions (admin sees all)
-  let sessQuery = supabase
-    .from("sessions")
-    .select("id, title, status, class_label, created_at, current_module");
+  let sessQuery = supabase.from("sessions").select("id, title, status, class_label, created_at, current_module");
 
   if (!isAdmin) {
     sessQuery = sessQuery.eq("facilitator_id", user.id);
@@ -59,9 +57,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     return NextResponse.json({ error: sessErr.message }, { status: 500 });
   }
 
-  const sessionIds = sessionId
-    ? [sessionId]
-    : (sessions || []).map((s) => s.id as string);
+  const sessionIds = sessionId ? [sessionId] : (sessions || []).map((s) => s.id as string);
 
   if (sessionIds.length === 0) {
     return NextResponse.json({
@@ -73,7 +69,13 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   }
 
   // OIE scoring removed (R2) — return empty student/axes data
-  const studentsList: { id: string; displayName: string; avatar: string | null; scores: AxesScores; totalResponses?: number }[] = [];
+  const studentsList: {
+    id: string;
+    displayName: string;
+    avatar: string | null;
+    scores: AxesScores;
+    totalResponses?: number;
+  }[] = [];
   const classAverage: AxesScores = { comprehension: 0, creativite: 0, expression: 0, engagement: 0 };
 
   // Unique class labels for the selector (class_label may not exist yet)
@@ -81,7 +83,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     ...new Set(
       (sessions || [])
         .map((s) => (s as Record<string, unknown>).class_label as string | null)
-        .filter((l): l is string => l !== null && l !== undefined)
+        .filter((l): l is string => l !== null && l !== undefined),
     ),
   ];
 
@@ -97,6 +99,6 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
         classLabel: (s as Record<string, unknown>).class_label || null,
       })),
     },
-    { headers: { "Cache-Control": "private, max-age=15, stale-while-revalidate=30" } }
+    { headers: { "Cache-Control": "private, max-age=15, stale-while-revalidate=30" } },
   );
 });

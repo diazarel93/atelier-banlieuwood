@@ -93,16 +93,16 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
     } else {
       // Fallback: log to console if no API key configured
       log.info("Contact form submitted (no RESEND_API_KEY)", {
-        route: "/api/contact", name, email, type,
+        route: "/api/contact",
+        name,
+        email,
+        type,
       });
     }
 
     return NextResponse.json({ success: true });
   } catch (err) {
     log.error("Contact form error", { route: "/api/contact", error: String(err) });
-    return NextResponse.json(
-      { success: false, errors: ["Erreur serveur. Réessayez plus tard."] },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, errors: ["Erreur serveur. Réessayez plus tard."] }, { status: 500 });
   }
 });

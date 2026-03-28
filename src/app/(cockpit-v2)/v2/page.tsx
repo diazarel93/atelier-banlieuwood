@@ -27,9 +27,7 @@ function getGreeting(): string {
 }
 
 // Static computation — no need to recalculate per render
-const mainPhases = PHASES.filter((p) =>
-  (MAIN_PHASE_IDS as readonly string[]).includes(p.id)
-);
+const mainPhases = PHASES.filter((p) => (MAIN_PHASE_IDS as readonly string[]).includes(p.id));
 
 export default function DashboardV2Page() {
   const [classLabel, setClassLabel] = useState<string | null>(null);
@@ -45,16 +43,20 @@ export default function DashboardV2Page() {
       { key: "n", action: () => router.push(ROUTES.seanceNew), label: "Nouvelle séance" },
       { key: "s", action: () => router.push(ROUTES.seances), label: "Séances" },
       { key: "e", action: () => router.push(ROUTES.eleves), label: "Élèves" },
-      { key: "r", action: () => { refetch(); toast.success("Données actualisées"); }, label: "Rafraîchir" },
+      {
+        key: "r",
+        action: () => {
+          refetch();
+          toast.success("Données actualisées");
+        },
+        label: "Rafraîchir",
+      },
     ],
-    [router, refetch]
+    [router, refetch],
   );
   useKeyboardShortcuts(shortcuts);
 
-  const sessionDates = useMemo(
-    () => (data?.sessionDates || []).map((d) => new Date(d)),
-    [data?.sessionDates]
-  );
+  const sessionDates = useMemo(() => (data?.sessionDates || []).map((d) => new Date(d)), [data?.sessionDates]);
 
   const columnVariants = prefersReducedMotion
     ? { hidden: {}, visible: () => ({}) }
@@ -71,9 +73,8 @@ export default function DashboardV2Page() {
   const completedModuleIds = data?.completedModuleIds || [];
 
   const todayCount = data?.todaySessions?.length || 0;
-  const subtitle = todayCount > 0
-    ? `${todayCount} séance${todayCount > 1 ? "s" : ""} aujourd'hui`
-    : "Aucune séance prévue";
+  const subtitle =
+    todayCount > 0 ? `${todayCount} séance${todayCount > 1 ? "s" : ""} aujourd'hui` : "Aucune séance prévue";
 
   // Milestone celebrations
   useEffect(() => {
@@ -84,12 +85,14 @@ export default function DashboardV2Page() {
     if (reached.length === 0) return;
     const latest = reached[reached.length - 1];
     let seen = 0;
-    try { seen = Number(localStorage.getItem("bw-milestone-seen") || "0"); } catch {}
+    try {
+      seen = Number(localStorage.getItem("bw-milestone-seen") || "0");
+    } catch {}
     if (latest > seen) {
-      try { localStorage.setItem("bw-milestone-seen", String(latest)); } catch {}
-      import("canvas-confetti").then((mod) =>
-        mod.default({ particleCount: 80, spread: 60 })
-      );
+      try {
+        localStorage.setItem("bw-milestone-seen", String(latest));
+      } catch {}
+      import("canvas-confetti").then((mod) => mod.default({ particleCount: 80, spread: 60 }));
       toast.success(`${latest} séances animées !`);
     }
   }, [data?.stats.doneSessions, prefersReducedMotion]);
@@ -103,13 +106,12 @@ export default function DashboardV2Page() {
         <div>
           <h1 className="text-heading-lg text-bw-heading">
             <span className="text-gradient-cinema">
-              {getGreeting()}{firstName ? `, ${firstName}` : ""} !
+              {getGreeting()}
+              {firstName ? `, ${firstName}` : ""} !
             </span>
           </h1>
           <div className="flex items-center gap-3 mt-0.5">
-            <p className="text-sm text-bw-muted">
-              {isLoading ? "Chargement..." : subtitle}
-            </p>
+            <p className="text-sm text-bw-muted">{isLoading ? "Chargement..." : subtitle}</p>
             {data && data.stats.activeSessions > 0 && (
               <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-bw-green)]">
                 <span className="relative flex h-2 w-2">
@@ -155,10 +157,7 @@ export default function DashboardV2Page() {
             className="md:col-span-1 lg:col-span-4"
           >
             <ErrorBoundary variant="compact">
-              <TodaySessions
-                todaySessions={data.todaySessions}
-                tomorrowSessions={data.tomorrowSessions}
-              />
+              <TodaySessions todaySessions={data.todaySessions} tomorrowSessions={data.tomorrowSessions} />
             </ErrorBoundary>
           </motion.div>
 
@@ -175,9 +174,7 @@ export default function DashboardV2Page() {
             </ErrorBoundary>
 
             <div className="flex-1">
-              <h3 className="label-caps text-bw-muted mb-3">
-                Agenda
-              </h3>
+              <h3 className="label-caps text-bw-muted mb-3">Agenda</h3>
               <ErrorBoundary variant="compact">
                 <MiniCalendar sessionDates={sessionDates} />
               </ErrorBoundary>
@@ -210,57 +207,53 @@ export default function DashboardV2Page() {
             </ErrorBoundary>
 
             <ErrorBoundary variant="compact">
-            <GlassCardV2 className="p-4">
-              <h3 className="label-caps text-bw-muted mb-3">
-                Modules
-              </h3>
-              <div className="flex flex-col gap-3">
-                {mainPhases.map((phase) => {
-                  const doneModuleCount = phase.moduleIds.filter((id) => completedModuleIds.includes(id)).length;
-                  const total = phase.moduleIds.length;
-                  const pct = total > 0 ? Math.round((doneModuleCount / total) * 100) : 0;
+              <GlassCardV2 className="p-4">
+                <h3 className="label-caps text-bw-muted mb-3">Modules</h3>
+                <div className="flex flex-col gap-3">
+                  {mainPhases.map((phase) => {
+                    const doneModuleCount = phase.moduleIds.filter((id) => completedModuleIds.includes(id)).length;
+                    const total = phase.moduleIds.length;
+                    const pct = total > 0 ? Math.round((doneModuleCount / total) * 100) : 0;
 
-                  return (
-                    <div key={phase.id} className="flex items-center gap-3">
-                      {/* Emoji in colored circle */}
-                      <div
-                        className="flex h-8 w-8 items-center justify-center rounded-full shrink-0 text-sm"
-                        style={{
-                          background: `linear-gradient(135deg, ${phase.color}33, ${phase.color}14)`,
-                          border: `1px solid ${phase.color}40`,
-                        }}
-                      >
-                        {phase.emoji}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-bw-heading truncate">
-                          {phase.label}
-                        </p>
+                    return (
+                      <div key={phase.id} className="flex items-center gap-3">
+                        {/* Emoji in colored circle */}
                         <div
-                          className="mt-1 h-1.5 w-full rounded-full bg-[var(--color-bw-surface-dim)] overflow-hidden"
-                          role="progressbar"
-                          aria-valuenow={pct}
-                          aria-valuemin={0}
-                          aria-valuemax={100}
-                          aria-label={`${phase.label} : ${pct}%`}
+                          className="flex h-8 w-8 items-center justify-center rounded-full shrink-0 text-sm"
+                          style={{
+                            background: `linear-gradient(135deg, ${phase.color}33, ${phase.color}14)`,
+                            border: `1px solid ${phase.color}40`,
+                          }}
                         >
-                          <div
-                            className="h-full rounded-full transition-all duration-500"
-                            style={{
-                              width: `${pct}%`,
-                              background: `linear-gradient(to right, ${phase.color}, ${phase.color}80)`,
-                            }}
-                          />
+                          {phase.emoji}
                         </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-bw-heading truncate">{phase.label}</p>
+                          <div
+                            className="mt-1 h-1.5 w-full rounded-full bg-[var(--color-bw-surface-dim)] overflow-hidden"
+                            role="progressbar"
+                            aria-valuenow={pct}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            aria-label={`${phase.label} : ${pct}%`}
+                          >
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{
+                                width: `${pct}%`,
+                                background: `linear-gradient(to right, ${phase.color}, ${phase.color}80)`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <span className="text-xs text-bw-muted tabular-nums whitespace-nowrap">
+                          {doneModuleCount}/{total} · {pct}%
+                        </span>
                       </div>
-                      <span className="text-xs text-bw-muted tabular-nums whitespace-nowrap">
-                        {doneModuleCount}/{total} · {pct}%
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </GlassCardV2>
+                    );
+                  })}
+                </div>
+              </GlassCardV2>
             </ErrorBoundary>
 
             {/* Facilitator session history timeline */}
@@ -289,57 +282,46 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
   const isOnline = typeof navigator !== "undefined" ? navigator.onLine : true;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-    >
-    <GlassCardV2 className="p-8 flex flex-col items-center text-center max-w-md mx-auto">
-      {/* Alert triangle SVG */}
-      <div className="mb-4">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-          <path
-            d="M24 6L4 42h40L24 6z"
-            fill="var(--color-bw-amber-100)"
-            stroke="var(--color-bw-amber)"
-            strokeWidth="2"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M24 20v10"
-            stroke="var(--color-bw-amber)"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-          <circle cx="24" cy="35" r="1.5" fill="var(--color-bw-amber)" />
-        </svg>
-      </div>
-      <p className="text-sm font-medium text-bw-heading mb-1">
-        {isOnline
-          ? "Erreur serveur"
-          : "Pas de connexion internet"}
-      </p>
-      <p className="text-sm text-bw-muted mb-4">
-        {isOnline
-          ? "Impossible de charger le tableau de bord. Réessayez dans un instant."
-          : "Vérifiez votre connexion et réessayez."}
-      </p>
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={onRetry}
-          className="rounded-lg bg-bw-primary px-4 py-2 text-sm font-medium text-white hover:bg-bw-primary-500 transition-colors"
-        >
-          Réessayer
-        </button>
-        <a
-          href="mailto:support@banlieuwood.fr"
-          className="text-xs text-bw-muted hover:text-bw-heading transition-colors"
-        >
-          Besoin d&apos;aide ?
-        </a>
-      </div>
-    </GlassCardV2>
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+      <GlassCardV2 className="p-8 flex flex-col items-center text-center max-w-md mx-auto">
+        {/* Alert triangle SVG */}
+        <div className="mb-4">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <path
+              d="M24 6L4 42h40L24 6z"
+              fill="var(--color-bw-amber-100)"
+              stroke="var(--color-bw-amber)"
+              strokeWidth="2"
+              strokeLinejoin="round"
+            />
+            <path d="M24 20v10" stroke="var(--color-bw-amber)" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="24" cy="35" r="1.5" fill="var(--color-bw-amber)" />
+          </svg>
+        </div>
+        <p className="text-sm font-medium text-bw-heading mb-1">
+          {isOnline ? "Erreur serveur" : "Pas de connexion internet"}
+        </p>
+        <p className="text-sm text-bw-muted mb-4">
+          {isOnline
+            ? "Impossible de charger le tableau de bord. Réessayez dans un instant."
+            : "Vérifiez votre connexion et réessayez."}
+        </p>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={onRetry}
+            className="rounded-lg bg-bw-primary px-4 py-2 text-sm font-medium text-white hover:bg-bw-primary-500 transition-colors"
+          >
+            Réessayer
+          </button>
+          <a
+            href="mailto:support@banlieuwood.fr"
+            className="text-xs text-bw-muted hover:text-bw-heading transition-colors"
+          >
+            Besoin d&apos;aide ?
+          </a>
+        </div>
+      </GlassCardV2>
     </motion.div>
   );
 }

@@ -15,9 +15,7 @@ export default function Loading() {
 
           {/* Glass container */}
           <div className="glass-card relative flex h-20 w-20 items-center justify-center rounded-2xl shadow-[0_0_24px_rgba(255,107,53,0.15)]">
-            <span className="bw-display text-gradient-cinema text-3xl tracking-widest select-none">
-              BW
-            </span>
+            <span className="bw-display text-gradient-cinema text-3xl tracking-widest select-none">BW</span>
           </div>
         </div>
 
@@ -34,9 +32,7 @@ export default function Loading() {
           </div>
 
           {/* Text */}
-          <p className="text-xs tracking-[0.2em] uppercase text-bw-muted animate-pulse">
-            Chargement...
-          </p>
+          <p className="text-xs tracking-[0.2em] uppercase text-bw-muted animate-pulse">Chargement...</p>
         </div>
       </div>
 
@@ -49,5 +45,5 @@ export default function Loading() {
         }
       `}</style>
     </div>
-  )
+  );
 }

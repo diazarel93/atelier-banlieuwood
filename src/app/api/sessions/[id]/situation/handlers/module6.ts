@@ -9,7 +9,7 @@ export async function handleModule6(
   req: NextRequest,
   session: Record<string, unknown>,
   sessionId: string,
-  admin: AdminClient
+  admin: AdminClient,
 ) {
   const currentIndex = (session.current_situation_index as number) || 0;
   const position = currentIndex + 1; // 1-5
@@ -66,11 +66,7 @@ export async function handleModule6(
   }
 
   // Fetch scenario assembly
-  const { data: scenario } = await admin
-    .from("module6_scenario")
-    .select("*")
-    .eq("session_id", sessionId)
-    .single();
+  const { data: scenario } = await admin.from("module6_scenario").select("*").eq("session_id", sessionId).single();
 
   // Student-specific data
   let studentMission = null;
@@ -122,7 +118,7 @@ export async function handleModule6(
     lycee: "prompt_14_18",
   };
   const field = levelMap[session.level as string] || "prompt_10_13";
-  const prompt = situation?.[field as keyof typeof situation] as string || "";
+  const prompt = (situation?.[field as keyof typeof situation] as string) || "";
 
   // Build type-specific module6 response
   let module6Data: Record<string, unknown> = { type: "unknown", position };
@@ -236,9 +232,7 @@ export async function handleModule6(
         status: m.status,
         sceneTitle: (m.module6_scenes as Record<string, unknown>)?.title || "",
       })),
-      scenario: scenario
-        ? { fullText: scenario.full_text, validated: scenario.validated }
-        : null,
+      scenario: scenario ? { fullText: scenario.full_text, validated: scenario.validated } : null,
     };
   }
 

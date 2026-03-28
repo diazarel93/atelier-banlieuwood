@@ -31,9 +31,21 @@ const NAV_COMMANDS: Command[] = [
   { id: "seances", label: "Séances", href: ROUTES.seances, icon: <IconSeances size={16} />, section: "nav" },
   { id: "new-seance", label: "Nouvelle séance", href: ROUTES.seanceNew, icon: <IconPlus size={16} />, section: "nav" },
   { id: "eleves", label: "Élèves", href: ROUTES.eleves, icon: <IconEleves size={16} />, section: "nav" },
-  { id: "statistiques", label: "Statistiques", href: ROUTES.statistiques, icon: <IconStatistiques size={16} />, section: "nav" },
+  {
+    id: "statistiques",
+    label: "Statistiques",
+    href: ROUTES.statistiques,
+    icon: <IconStatistiques size={16} />,
+    section: "nav",
+  },
   { id: "modules", label: "Modules", href: ROUTES.bibliotheque, icon: <IconModules size={16} />, section: "nav" },
-  { id: "fiche-cours", label: "Fiche de cours", href: ROUTES.ficheCours, icon: <IconFicheCours size={16} />, section: "nav" },
+  {
+    id: "fiche-cours",
+    label: "Fiche de cours",
+    href: ROUTES.ficheCours,
+    icon: <IconFicheCours size={16} />,
+    section: "nav",
+  },
   { id: "admin", label: "Administration", href: ROUTES.admin, icon: <IconAdmin size={16} />, section: "nav" },
   { id: "settings", label: "Reglages", href: ROUTES.settings, icon: <IconSettings size={16} />, section: "nav" },
 ];
@@ -60,9 +72,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
   // Static command filtering
   const filteredNav = query
-    ? NAV_COMMANDS.filter((c) =>
-        c.label.toLowerCase().includes(query.toLowerCase())
-      )
+    ? NAV_COMMANDS.filter((c) => c.label.toLowerCase().includes(query.toLowerCase()))
     : NAV_COMMANDS;
 
   // Build dynamic commands from search results
@@ -90,8 +100,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
   const allResults = [...filteredNav, ...dynamicCommands];
 
-  const activeDescendant =
-    allResults.length > 0 ? `cmd-option-${allResults[selectedIndex]?.id}` : undefined;
+  const activeDescendant = allResults.length > 0 ? `cmd-option-${allResults[selectedIndex]?.id}` : undefined;
 
   const execute = useCallback(
     (cmd: Command) => {
@@ -101,7 +110,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       if (cmd.href) router.push(cmd.href);
       else if (cmd.action) cmd.action();
     },
-    [onOpenChange, router]
+    [onOpenChange, router],
   );
 
   // Debounced dynamic search
@@ -186,7 +195,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     function handleTab(e: KeyboardEvent) {
       if (e.key !== "Tab" || !paletteRef.current) return;
       const focusable = paletteRef.current.querySelectorAll<HTMLElement>(
-        'input, button, [tabindex]:not([tabindex="-1"])'
+        'input, button, [tabindex]:not([tabindex="-1"])',
       );
       if (focusable.length === 0) return;
 
@@ -232,9 +241,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
             : "text-bw-muted hover:bg-[var(--color-bw-surface-dim)] hover:text-bw-heading"
         }`}
       >
-        <span className={globalIndex === selectedIndex ? "text-bw-primary" : ""}>
-          {cmd.icon}
-        </span>
+        <span className={globalIndex === selectedIndex ? "text-bw-primary" : ""}>{cmd.icon}</span>
         <span className="flex-1 text-left font-medium">{cmd.label}</span>
         {cmd.shortcut && (
           <kbd className="text-[10px] text-bw-muted bg-[var(--color-bw-surface-dim)] rounded px-1.5 py-0.5 border border-[var(--color-bw-border)]">
@@ -292,12 +299,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
         </div>
 
         {/* Results list — ARIA listbox */}
-        <div
-          id="cmd-listbox"
-          role="listbox"
-          aria-label="Résultats"
-          className="max-h-80 overflow-y-auto py-2"
-        >
+        <div id="cmd-listbox" role="listbox" aria-label="Résultats" className="max-h-80 overflow-y-auto py-2">
           {allResults.length === 0 ? (
             <p className="px-4 py-6 text-center text-sm text-bw-muted" role="status">
               Aucun résultat
@@ -307,7 +309,11 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               {/* Navigation section */}
               {navResults.length > 0 && (
                 <>
-                  {query && <p className="px-4 pt-1 pb-1 text-[10px] font-semibold text-bw-muted uppercase tracking-wider">Navigation</p>}
+                  {query && (
+                    <p className="px-4 pt-1 pb-1 text-[10px] font-semibold text-bw-muted uppercase tracking-wider">
+                      Navigation
+                    </p>
+                  )}
                   {navResults.map((cmd) => {
                     const idx = offset++;
                     return renderItem(cmd, idx);
@@ -318,7 +324,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               {/* Sessions section */}
               {sessionResults.length > 0 && (
                 <>
-                  <p className="px-4 pt-3 pb-1 text-[10px] font-semibold text-bw-muted uppercase tracking-wider">Séances</p>
+                  <p className="px-4 pt-3 pb-1 text-[10px] font-semibold text-bw-muted uppercase tracking-wider">
+                    Séances
+                  </p>
                   {sessionResults.map((cmd) => {
                     const idx = offset++;
                     return renderItem(cmd, idx);
@@ -329,7 +337,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               {/* Students section */}
               {studentResults.length > 0 && (
                 <>
-                  <p className="px-4 pt-3 pb-1 text-[10px] font-semibold text-bw-muted uppercase tracking-wider">Élèves</p>
+                  <p className="px-4 pt-3 pb-1 text-[10px] font-semibold text-bw-muted uppercase tracking-wider">
+                    Élèves
+                  </p>
                   {studentResults.map((cmd) => {
                     const idx = offset++;
                     return renderItem(cmd, idx);

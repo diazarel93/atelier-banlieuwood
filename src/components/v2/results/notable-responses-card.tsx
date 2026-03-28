@@ -49,18 +49,12 @@ export function NotableResponsesCard({ data }: NotableResponsesCardProps) {
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide">
-        Réponses marquantes
-      </h3>
+      <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide">Réponses marquantes</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {visible.map((card) => {
           const item = data[card.key]!;
           return (
-            <GlassCardV2
-              key={card.key}
-              className="p-4 border-t-2"
-              style={{ borderTopColor: card.borderColor }}
-            >
+            <GlassCardV2 key={card.key} className="p-4 border-t-2" style={{ borderTopColor: card.borderColor }}>
               <p className="text-xs font-semibold text-bw-muted mb-2">
                 {card.icon} {card.label}
               </p>

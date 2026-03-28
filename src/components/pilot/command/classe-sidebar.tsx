@@ -12,10 +12,10 @@ import type { StuckLevel } from "@/hooks/use-stuck-detection";
 // ═══════════════════════════════════════════════════════════════
 
 const STUCK_DOT_COLORS: Record<StuckLevel, string> = {
-  ok: "#D1D5DB",       // gray-300
-  nudge: "#FBBF24",    // amber-400
-  slow: "#F97316",     // orange-500
-  stuck: "#EF4444",    // red-500
+  ok: "#D1D5DB", // gray-300
+  nudge: "#FBBF24", // amber-400
+  slow: "#F97316", // orange-500
+  stuck: "#EF4444", // red-500
 };
 
 interface ClasseSidebarProps {
@@ -60,7 +60,10 @@ export function ClasseSidebar({
 
   // Legend counts
   const counts = useMemo(() => {
-    let responded = 0, thinking = 0, blocked = 0, absent = 0;
+    let responded = 0,
+      thinking = 0,
+      blocked = 0,
+      absent = 0;
     const allIds = new Set(allStudents.map((s) => s.id));
     const activeIds = new Set(activeStudents.map((s) => s.id));
 
@@ -83,9 +86,7 @@ export function ClasseSidebar({
     <div className="flex flex-col h-full bg-white/60">
       {/* ── Header ── */}
       <div className="px-3 py-3 border-b border-gray-100 flex items-center justify-between">
-        <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
-          Classe
-        </h3>
+        <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Classe</h3>
         {counts.blocked > 0 && (
           <motion.span
             initial={{ scale: 0 }}
@@ -135,9 +136,7 @@ export function ClasseSidebar({
                 <span className="text-base flex-shrink-0">{student.avatar || "👤"}</span>
 
                 {/* Name */}
-                <span className="text-[12px] font-medium text-gray-700 truncate flex-1">
-                  {student.display_name}
-                </span>
+                <span className="text-[12px] font-medium text-gray-700 truncate flex-1">{student.display_name}</span>
 
                 {/* Hand raised indicator */}
                 {student.hand_raised_at && (
@@ -159,8 +158,8 @@ export function ClasseSidebar({
                     !responded && (level === "stuck" || level === "slow")
                       ? { scale: [1, 1.4, 1], opacity: [1, 0.7, 1] }
                       : responded
-                      ? { scale: [0, 1.2, 1] }
-                      : {}
+                        ? { scale: [0, 1.2, 1] }
+                        : {}
                   }
                   transition={
                     !responded && (level === "stuck" || level === "slow")
@@ -172,7 +171,13 @@ export function ClasseSidebar({
                 {/* Checkmark if responded */}
                 {responded && (
                   <motion.svg
-                    width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" className="flex-shrink-0"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#22C55E"
+                    strokeWidth="3"
+                    className="flex-shrink-0"
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ type: "spring", stiffness: 500, damping: 20 }}
@@ -193,14 +198,11 @@ export function ClasseSidebar({
               >
                 📡
               </motion.div>
-              <p className="text-[11px] text-gray-400">
-                En attente des eleves...
-              </p>
+              <p className="text-[11px] text-gray-400">En attente des eleves...</p>
             </div>
           )}
         </div>
       </div>
-
     </div>
   );
 }

@@ -74,13 +74,15 @@ export function computeAttentionQueue(signals: AttentionSignals): PrimaryAttenti
 
   // ── 1. CRITICAL — Urgent hand raised (>2min) or multiple hands ──
   if (handsRaised > 0 && signals.handsRaisedAt) {
-    const handDetails = (signals.handsNames || []).map((name, i) => {
-      const ts = signals.handsRaisedAt?.[i];
-      const ms = ts ? now - new Date(ts).getTime() : 0;
-      return { name, ms, mins: Math.floor(ms / 60000) };
-    }).sort((a, b) => b.ms - a.ms);
+    const handDetails = (signals.handsNames || [])
+      .map((name, i) => {
+        const ts = signals.handsRaisedAt?.[i];
+        const ms = ts ? now - new Date(ts).getTime() : 0;
+        return { name, ms, mins: Math.floor(ms / 60000) };
+      })
+      .sort((a, b) => b.ms - a.ms);
 
-    const urgentHands = handDetails.filter(h => h.ms > 120000);
+    const urgentHands = handDetails.filter((h) => h.ms > 120000);
     const isUrgent = urgentHands.length > 0 || handsRaised >= 2;
 
     if (isUrgent && urgentHands.length > 0) {
@@ -91,7 +93,14 @@ export function computeAttentionQueue(signals: AttentionSignals): PrimaryAttenti
         category: "urgent",
         icon: "✋",
         title: `Main levee depuis ${longest.mins}min`,
-        subtitle: `${longest.name} attend votre attention.${urgentHands.length > 1 ? ` +${urgentHands.length - 1} autre${urgentHands.length > 2 ? "s" : ""} (${urgentHands.slice(1).map(h => h.name).join(", ")})` : ""}`,
+        subtitle: `${longest.name} attend votre attention.${
+          urgentHands.length > 1
+            ? ` +${urgentHands.length - 1} autre${urgentHands.length > 2 ? "s" : ""} (${urgentHands
+                .slice(1)
+                .map((h) => h.name)
+                .join(", ")})`
+            : ""
+        }`,
         action: { label: "Voir l'eleve", actionId: "see-hand" },
         pulse: true,
         dataKey: `hand-${urgentHands.length}-${longest.mins}`,
@@ -103,7 +112,7 @@ export function computeAttentionQueue(signals: AttentionSignals): PrimaryAttenti
         category: "urgent",
         icon: "✋",
         title: `${handsRaised} mains levees`,
-        subtitle: `${handDetails.map(h => h.name).join(", ")} — Repondez-leur avant de continuer.`,
+        subtitle: `${handDetails.map((h) => h.name).join(", ")} — Repondez-leur avant de continuer.`,
         action: { label: "Voir les mains", actionId: "see-hand" },
         pulse: true,
         dataKey: `hands-${handsRaised}`,
@@ -189,7 +198,12 @@ export function computeAttentionQueue(signals: AttentionSignals): PrimaryAttenti
   }
 
   // ── 7. MEDIUM — Mixed needs (some stuck + hands, non-urgent) ──
-  if (stuckCount > 0 && stuckCount < 3 && handsRaised > 0 && !queue.some(q => q.id === "urgent-hand" || q.id === "multiple-hands")) {
+  if (
+    stuckCount > 0 &&
+    stuckCount < 3 &&
+    handsRaised > 0 &&
+    !queue.some((q) => q.id === "urgent-hand" || q.id === "multiple-hands")
+  ) {
     queue.push({
       id: "mixed-needs",
       severity: "medium",
@@ -272,8 +286,8 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
   // Filter out dismissed alerts (with cooldown + dataKey change detection)
   const visible = useMemo(() => {
     const now = Date.now();
-    return queue.filter(alert => {
-      const entry = dismissLog.find(d => d.id === alert.id);
+    return queue.filter((alert) => {
+      const entry = dismissLog.find((d) => d.id === alert.id);
       if (!entry) return true;
       // Show again if data changed significantly (dataKey different)
       if (entry.dataKey !== alert.dataKey) return true;
@@ -287,10 +301,12 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
   const secondary = visible.slice(1);
 
   const dismiss = useCallback((alert: PrimaryAttention) => {
-    setDismissLog(prev => [
-      { id: alert.id, dataKey: alert.dataKey, dismissedAt: Date.now(), title: alert.title, icon: alert.icon },
-      ...prev.filter(d => d.id !== alert.id),
-    ].slice(0, 5));
+    setDismissLog((prev) =>
+      [
+        { id: alert.id, dataKey: alert.dataKey, dismissedAt: Date.now(), title: alert.title, icon: alert.icon },
+        ...prev.filter((d) => d.id !== alert.id),
+      ].slice(0, 5),
+    );
   }, []);
 
   // Track primary changes
@@ -301,16 +317,17 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
   // Recent history (last 3 dismissed, within this session)
   const recentHistory = useMemo(() => {
     const sessionStart = Date.now() - signals.elapsedSeconds * 1000;
-    return dismissLog
-      .filter(d => d.dismissedAt > sessionStart)
-      .slice(0, 3);
+    return dismissLog.filter((d) => d.dismissedAt > sessionStart).slice(0, 3);
   }, [dismissLog, signals.elapsedSeconds]);
 
   if (!primary) {
     // Show history even when no active alert
     if (recentHistory.length > 0) {
       return (
-        <div className="rounded-lg px-3 py-2" style={{ background: "rgba(0,0,0,0.02)", border: "1px solid rgba(0,0,0,0.04)" }}>
+        <div
+          className="rounded-lg px-3 py-2"
+          style={{ background: "rgba(0,0,0,0.02)", border: "1px solid rgba(0,0,0,0.04)" }}
+        >
           <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">Alertes recentes</span>
           <div className="mt-1 space-y-0.5">
             {recentHistory.map((h, i) => {
@@ -384,10 +401,7 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
             <div className="flex items-start gap-2.5">
               <span className="text-lg flex-shrink-0 mt-0.5">{primary.icon}</span>
               <div className="flex-1 min-w-0">
-                <span
-                  className="text-[13px] font-bold leading-tight block"
-                  style={{ color: style.titleColor }}
-                >
+                <span className="text-[13px] font-bold leading-tight block" style={{ color: style.titleColor }}>
                   {primary.title}
                 </span>
                 <p className="text-[11px] leading-relaxed mt-0.5" style={{ color: style.subtitleColor }}>
@@ -423,7 +437,7 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
                   </span>
                 ) : (
                   <div className="flex flex-wrap gap-x-2 gap-y-0.5">
-                    {secondary.map(a => (
+                    {secondary.map((a) => (
                       <span key={a.id} className="text-[10px]" style={{ color: style.subtitleColor }}>
                         {a.icon} {a.title}
                       </span>
@@ -432,8 +446,12 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
                 )}
               </div>
               <svg
-                width="10" height="10" viewBox="0 0 24 24"
-                fill="none" stroke={style.subtitleColor} strokeWidth="2"
+                width="10"
+                height="10"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={style.subtitleColor}
+                strokeWidth="2"
                 className={`flex-shrink-0 transition-transform duration-200 ${showOthers ? "rotate-180" : ""}`}
               >
                 <path d="M6 9l6 6 6-6" />
@@ -445,61 +463,62 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
 
       {/* ═══ SECONDARY ALERTS — expanded detail ═══ */}
       <AnimatePresence>
-        {showOthers && secondary.map((alert, i) => {
-          const s = SEVERITY_STYLES[alert.severity];
-          const cat = CATEGORY_LABELS[alert.category];
-          return (
-            <motion.div
-              key={alert.id}
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="rounded-lg overflow-hidden"
-              style={{ background: s.bg, border: `1px solid ${s.border}` }}
-            >
-              <div className="px-3 py-2 space-y-1">
-                {/* Category + title */}
-                <div className="flex items-center gap-2">
-                  <span className="text-sm flex-shrink-0">{alert.icon}</span>
-                  <span
-                    className="text-[9px] font-bold uppercase tracking-wider px-1 py-px rounded flex-shrink-0"
-                    style={{ color: cat.color, background: `${cat.color}10` }}
-                  >
-                    {cat.label}
-                  </span>
-                  <span className="text-[11px] font-semibold truncate" style={{ color: s.titleColor }}>
-                    {alert.title}
-                  </span>
-                </div>
-                {/* Subtitle + action row */}
-                <div className="flex items-end gap-2 ml-6">
-                  <p className="text-[10px] leading-relaxed flex-1" style={{ color: s.subtitleColor }}>
-                    {alert.subtitle}
-                  </p>
-                  <div className="flex items-center gap-1 flex-shrink-0">
-                    {alert.action && onAction && (
-                      <button
-                        onClick={() => onAction(alert.action!.actionId)}
-                        className="text-[10px] font-semibold px-2 py-1 rounded-md cursor-pointer transition-all hover:brightness-110"
-                        style={{ background: `${s.actionBg}20`, color: s.actionBg }}
-                      >
-                        {alert.action.label}
-                      </button>
-                    )}
-                    <button
-                      onClick={() => dismiss(alert)}
-                      className="text-[10px] opacity-40 hover:opacity-80 cursor-pointer transition-opacity"
-                      style={{ color: s.titleColor }}
+        {showOthers &&
+          secondary.map((alert, i) => {
+            const s = SEVERITY_STYLES[alert.severity];
+            const cat = CATEGORY_LABELS[alert.category];
+            return (
+              <motion.div
+                key={alert.id}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ delay: i * 0.05 }}
+                className="rounded-lg overflow-hidden"
+                style={{ background: s.bg, border: `1px solid ${s.border}` }}
+              >
+                <div className="px-3 py-2 space-y-1">
+                  {/* Category + title */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm flex-shrink-0">{alert.icon}</span>
+                    <span
+                      className="text-[9px] font-bold uppercase tracking-wider px-1 py-px rounded flex-shrink-0"
+                      style={{ color: cat.color, background: `${cat.color}10` }}
                     >
-                      ✕
-                    </button>
+                      {cat.label}
+                    </span>
+                    <span className="text-[11px] font-semibold truncate" style={{ color: s.titleColor }}>
+                      {alert.title}
+                    </span>
+                  </div>
+                  {/* Subtitle + action row */}
+                  <div className="flex items-end gap-2 ml-6">
+                    <p className="text-[10px] leading-relaxed flex-1" style={{ color: s.subtitleColor }}>
+                      {alert.subtitle}
+                    </p>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      {alert.action && onAction && (
+                        <button
+                          onClick={() => onAction(alert.action!.actionId)}
+                          className="text-[10px] font-semibold px-2 py-1 rounded-md cursor-pointer transition-all hover:brightness-110"
+                          style={{ background: `${s.actionBg}20`, color: s.actionBg }}
+                        >
+                          {alert.action.label}
+                        </button>
+                      )}
+                      <button
+                        onClick={() => dismiss(alert)}
+                        className="text-[10px] opacity-40 hover:opacity-80 cursor-pointer transition-opacity"
+                        style={{ color: s.titleColor }}
+                      >
+                        ✕
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          );
-        })}
+              </motion.div>
+            );
+          })}
       </AnimatePresence>
 
       {/* ═══ ALERT HISTORY — last 3 dismissed ═══ */}

@@ -12,11 +12,11 @@ import { AXES, type AxisKey } from "@/lib/axes-mapping";
 interface EmotionalRadarProps {
   axes: {
     comprehension: number; // 0-100
-    creativite: number;    // 0-100
-    expression: number;    // 0-100
-    engagement: number;    // 0-100
+    creativite: number; // 0-100
+    expression: number; // 0-100
+    engagement: number; // 0-100
   };
-  size?: number;     // default 160
+  size?: number; // default 160
   animated?: boolean; // default true
 }
 
@@ -24,9 +24,9 @@ interface EmotionalRadarProps {
 // Angles: 270° (top), 0° (right), 90° (bottom), 180° (left)
 const RADAR_AXES: { key: AxisKey; angle: number }[] = [
   { key: "comprehension", angle: 270 },
-  { key: "expression",    angle: 0 },
-  { key: "engagement",    angle: 90 },
-  { key: "creativite",    angle: 180 },
+  { key: "expression", angle: 0 },
+  { key: "engagement", angle: 90 },
+  { key: "creativite", angle: 180 },
 ];
 
 const CX = 100;
@@ -54,24 +54,20 @@ function getLabelPosition(angle: number): {
   dy: number;
 } {
   if (angle === 270) return { textAnchor: "middle", dominantBaseline: "auto", dx: 0, dy: -6 };
-  if (angle === 0)   return { textAnchor: "start", dominantBaseline: "middle", dx: 6, dy: 0 };
-  if (angle === 90)  return { textAnchor: "middle", dominantBaseline: "hanging", dx: 0, dy: 6 };
-  /* 180 */           return { textAnchor: "end", dominantBaseline: "middle", dx: -6, dy: 0 };
+  if (angle === 0) return { textAnchor: "start", dominantBaseline: "middle", dx: 6, dy: 0 };
+  if (angle === 90) return { textAnchor: "middle", dominantBaseline: "hanging", dx: 0, dy: 6 };
+  /* 180 */ return { textAnchor: "end", dominantBaseline: "middle", dx: -6, dy: 0 };
 }
 
 /** Value text positioned near each dot */
 function getValueOffset(angle: number): { dx: number; dy: number } {
   if (angle === 270) return { dx: 10, dy: -2 };
-  if (angle === 0)   return { dx: 8, dy: -6 };
-  if (angle === 90)  return { dx: 10, dy: 4 };
-  /* 180 */           return { dx: -8, dy: -6 };
+  if (angle === 0) return { dx: 8, dy: -6 };
+  if (angle === 90) return { dx: 10, dy: 4 };
+  /* 180 */ return { dx: -8, dy: -6 };
 }
 
-export function EmotionalRadar({
-  axes,
-  size = 160,
-  animated = true,
-}: EmotionalRadarProps) {
+export function EmotionalRadar({ axes, size = 160, animated = true }: EmotionalRadarProps) {
   // ── Compute data points ──
   const points = useMemo(() => {
     return RADAR_AXES.map(({ key, angle }) => {
@@ -84,34 +80,18 @@ export function EmotionalRadar({
   }, [axes]);
 
   // ── Polygon points string ──
-  const polygonPoints = useMemo(
-    () => points.map((p) => `${p.x},${p.y}`).join(" "),
-    [points],
-  );
+  const polygonPoints = useMemo(() => points.map((p) => `${p.x},${p.y}`).join(" "), [points]);
 
   // ── Vertex positions at max radius (for axis lines + labels) ──
-  const vertices = useMemo(
-    () => RADAR_AXES.map(({ angle }) => polarToXY(angle, MAX_R)),
-    [],
-  );
+  const vertices = useMemo(() => RADAR_AXES.map(({ angle }) => polarToXY(angle, MAX_R)), []);
 
   // ── Label positions (slightly outside max radius) ──
-  const labelVertices = useMemo(
-    () => RADAR_AXES.map(({ angle }) => polarToXY(angle, MAX_R + 4)),
-    [],
-  );
+  const labelVertices = useMemo(() => RADAR_AXES.map(({ angle }) => polarToXY(angle, MAX_R + 4)), []);
 
-  const transitionStyle = animated
-    ? { transition: "all 500ms ease-out" }
-    : undefined;
+  const transitionStyle = animated ? { transition: "all 500ms ease-out" } : undefined;
 
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 200 200"
-      className="overflow-visible"
-    >
+    <svg width={size} height={size} viewBox="0 0 200 200" className="overflow-visible">
       <defs>
         {/* Glow filter for vertex dots */}
         <filter id="emotional-radar-glow" x="-50%" y="-50%" width="200%" height="200%">

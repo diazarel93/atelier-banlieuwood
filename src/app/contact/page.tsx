@@ -6,8 +6,7 @@ import { ContactForm } from "./contact-form";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description:
-    "Contactez l'equipe Banlieuwood pour toute question ou proposition de partenariat.",
+  description: "Contactez l'equipe Banlieuwood pour toute question ou proposition de partenariat.",
 };
 
 const CONTACT_INFO = [
@@ -53,18 +52,13 @@ export default function ContactPage() {
 
       {/* ── Hero ── */}
       <header className="max-w-4xl mx-auto px-6 pt-16 pb-12 sm:pt-20 sm:pb-16">
-        <p className="text-sm font-medium text-bw-primary mb-3 tracking-wide uppercase">
-          Contact
-        </p>
-        <h1
-          className="text-bw-heading font-bold leading-tight"
-          style={{ fontSize: "clamp(28px, 5vw, 44px)" }}
-        >
+        <p className="text-sm font-medium text-bw-primary mb-3 tracking-wide uppercase">Contact</p>
+        <h1 className="text-bw-heading font-bold leading-tight" style={{ fontSize: "clamp(28px, 5vw, 44px)" }}>
           Ecrivez-nous
         </h1>
         <p className="text-bw-text text-lg leading-relaxed mt-4 max-w-2xl">
-          Une question, un projet de partenariat ou une demande presse ?
-          Remplissez le formulaire et nous vous repondons sous 48h.
+          Une question, un projet de partenariat ou une demande presse ? Remplissez le formulaire et nous vous repondons
+          sous 48h.
         </p>
       </header>
 
@@ -80,18 +74,13 @@ export default function ContactPage() {
           <aside className="space-y-8">
             {/* Contact info */}
             <div>
-              <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide mb-4">
-                Coordonnees
-              </h3>
+              <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide mb-4">Coordonnees</h3>
               <div className="space-y-3">
                 {CONTACT_INFO.map((info) => (
                   <div key={info.label}>
                     <p className="text-xs text-bw-muted">{info.label}</p>
                     {info.href ? (
-                      <a
-                        href={info.href}
-                        className="text-sm text-bw-primary hover:underline"
-                      >
+                      <a href={info.href} className="text-sm text-bw-primary hover:underline">
                         {info.value}
                       </a>
                     ) : (
@@ -104,9 +93,7 @@ export default function ContactPage() {
 
             {/* Social */}
             <div>
-              <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide mb-4">
-                Reseaux
-              </h3>
+              <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide mb-4">Reseaux</h3>
               <div className="space-y-2">
                 {SOCIAL_LINKS.map((link) => (
                   <a
@@ -130,9 +117,15 @@ export default function ContactPage() {
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <p className="text-xs text-bw-muted">&copy; 2026 Banlieuwood</p>
           <div className="flex gap-4">
-            <Link href="/legal/privacy" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">Confidentialite</Link>
-            <Link href="/legal/cgu" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">CGU</Link>
-            <Link href={ROUTES.contact} className="text-xs text-bw-muted hover:text-bw-heading transition-colors">Contact</Link>
+            <Link href="/legal/privacy" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">
+              Confidentialite
+            </Link>
+            <Link href="/legal/cgu" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">
+              CGU
+            </Link>
+            <Link href={ROUTES.contact} className="text-xs text-bw-muted hover:text-bw-heading transition-colors">
+              Contact
+            </Link>
           </div>
         </div>
       </footer>

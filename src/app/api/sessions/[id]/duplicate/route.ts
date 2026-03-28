@@ -9,7 +9,7 @@ const nanoid = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 // POST — duplicate a session as a fresh template (same title/level/template, reset state)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "session-duplicate", { max: 10, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });

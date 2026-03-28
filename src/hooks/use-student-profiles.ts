@@ -113,9 +113,7 @@ export function useStudentProfiles(classLabel?: string | null) {
       const params = new URLSearchParams();
       if (classLabel) params.set("classLabel", classLabel);
       const qs = params.toString();
-      const res = await fetch(
-        `/api/v2/student-profiles${qs ? `?${qs}` : ""}`
-      );
+      const res = await fetch(`/api/v2/student-profiles${qs ? `?${qs}` : ""}`);
       if (!res.ok) throw new Error("Erreur chargement élèves");
       return res.json();
     },
@@ -140,11 +138,7 @@ export function useCreateNote(profileId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: {
-      noteType: string;
-      content: string;
-      sessionId?: string;
-    }) => {
+    mutationFn: async (data: { noteType: string; content: string; sessionId?: string }) => {
       const res = await fetch(`/api/v2/student-profiles/${profileId}/notes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -171,10 +165,7 @@ export function useDeleteNote(profileId: string) {
 
   return useMutation({
     mutationFn: async (noteId: string) => {
-      const res = await fetch(
-        `/api/v2/student-profiles/${profileId}/notes?noteId=${noteId}`,
-        { method: "DELETE" }
-      );
+      const res = await fetch(`/api/v2/student-profiles/${profileId}/notes?noteId=${noteId}`, { method: "DELETE" });
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Erreur" }));
         throw new Error(err.error || "Erreur lors de la suppression");

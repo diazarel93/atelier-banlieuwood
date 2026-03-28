@@ -19,16 +19,18 @@ const SHORTCUTS = [
   { key: "Échap", action: "Fermer la fiche élève / modal" },
 ];
 
-export function KeyboardShortcutsModal({
-  showShortcuts,
-  setShowShortcuts,
-}: KeyboardShortcutsModalProps) {
+export function KeyboardShortcutsModal({ showShortcuts, setShowShortcuts }: KeyboardShortcutsModalProps) {
   return (
     <AnimatePresence>
       {showShortcuts && (
         <>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={() => setShowShortcuts(false)} />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowShortcuts(false)}
+          />
           <motion.div
             role="dialog"
             aria-modal="true"
@@ -39,14 +41,24 @@ export function KeyboardShortcutsModal({
             className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] max-w-[90vw] glass-card rounded-2xl border border-black/[0.06] p-5 space-y-3"
           >
             <div className="flex items-center justify-between">
-              <h3 id="shortcuts-title" className="text-sm font-semibold">Raccourcis clavier</h3>
-              <button onClick={() => setShowShortcuts(false)} aria-label="Fermer" className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">✕</button>
+              <h3 id="shortcuts-title" className="text-sm font-semibold">
+                Raccourcis clavier
+              </h3>
+              <button
+                onClick={() => setShowShortcuts(false)}
+                aria-label="Fermer"
+                className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer"
+              >
+                ✕
+              </button>
             </div>
             <div className="space-y-1.5">
               {SHORTCUTS.map(({ key, action }) => (
                 <div key={key} className="flex items-center justify-between">
                   <span className="text-xs text-bw-text">{action}</span>
-                  <kbd className="text-xs px-2 py-0.5 rounded bg-bw-elevated border border-black/[0.04] text-bw-muted font-mono">{key}</kbd>
+                  <kbd className="text-xs px-2 py-0.5 rounded bg-bw-elevated border border-black/[0.04] text-bw-muted font-mono">
+                    {key}
+                  </kbd>
                 </div>
               ))}
             </div>

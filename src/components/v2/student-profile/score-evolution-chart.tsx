@@ -19,12 +19,19 @@ export function ScoreEvolutionChart({ sessions }: ScoreEvolutionChartProps) {
       <GlassCardV2 className="p-5">
         <h3 className="label-caps mb-3">Évolution des scores</h3>
         <div className="flex flex-col items-center py-6 text-center">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-bw-muted mb-2">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            className="text-bw-muted mb-2"
+          >
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
           </svg>
-          <p className="text-body-xs text-bw-muted">
-            L&apos;évolution sera visible après plusieurs séances
-          </p>
+          <p className="text-body-xs text-bw-muted">L&apos;évolution sera visible après plusieurs séances</p>
         </div>
       </GlassCardV2>
     );
@@ -45,11 +52,7 @@ export function ScoreEvolutionChart({ sessions }: ScoreEvolutionChartProps) {
   return (
     <GlassCardV2 className="p-5">
       <h3 className="label-caps mb-3">Évolution des scores</h3>
-      <svg
-        viewBox={`0 0 ${width} ${height}`}
-        className="w-full"
-        preserveAspectRatio="xMidYMid meet"
-      >
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full" preserveAspectRatio="xMidYMid meet">
         {/* Grid lines */}
         {yTicks.map((tick) => {
           const y = padding.top + chartH - (tick / 100) * chartH;
@@ -64,13 +67,7 @@ export function ScoreEvolutionChart({ sessions }: ScoreEvolutionChartProps) {
                 strokeWidth="1"
                 strokeDasharray="4 4"
               />
-              <text
-                x={padding.left - 8}
-                y={y + 4}
-                textAnchor="end"
-                className="fill-bw-muted"
-                fontSize="10"
-              >
+              <text x={padding.left - 8} y={y + 4} textAnchor="end" className="fill-bw-muted" fontSize="10">
                 {tick}
               </text>
             </g>
@@ -84,8 +81,7 @@ export function ScoreEvolutionChart({ sessions }: ScoreEvolutionChartProps) {
             points={sessions
               .map((s, i) => {
                 const x = padding.left + (n > 1 ? i * xStep : chartW / 2);
-                const y =
-                  padding.top + chartH - (s.scores[axis.key] / 100) * chartH;
+                const y = padding.top + chartH - (s.scores[axis.key] / 100) * chartH;
                 return `${x},${y}`;
               })
               .join(" ")}
@@ -101,8 +97,7 @@ export function ScoreEvolutionChart({ sessions }: ScoreEvolutionChartProps) {
         {AXES.map((axis) =>
           sessions.map((s, i) => {
             const x = padding.left + (n > 1 ? i * xStep : chartW / 2);
-            const y =
-              padding.top + chartH - (s.scores[axis.key] / 100) * chartH;
+            const y = padding.top + chartH - (s.scores[axis.key] / 100) * chartH;
             return (
               <circle
                 key={`${axis.key}-${i}`}
@@ -118,7 +113,7 @@ export function ScoreEvolutionChart({ sessions }: ScoreEvolutionChartProps) {
                 </title>
               </circle>
             );
-          })
+          }),
         )}
 
         {/* X-axis labels (session dates) */}
@@ -129,14 +124,7 @@ export function ScoreEvolutionChart({ sessions }: ScoreEvolutionChartProps) {
             month: "short",
           });
           return (
-            <text
-              key={i}
-              x={x}
-              y={height - 6}
-              textAnchor="middle"
-              className="fill-bw-muted"
-              fontSize="10"
-            >
+            <text key={i} x={x} y={height - 6} textAnchor="middle" className="fill-bw-muted" fontSize="10">
               {label}
             </text>
           );
@@ -147,10 +135,7 @@ export function ScoreEvolutionChart({ sessions }: ScoreEvolutionChartProps) {
       <div className="flex flex-wrap items-center gap-3 mt-2">
         {AXES.map((axis) => (
           <div key={axis.key} className="flex items-center gap-1.5">
-            <div
-              className="h-2 w-2 rounded-full"
-              style={{ backgroundColor: axis.color }}
-            />
+            <div className="h-2 w-2 rounded-full" style={{ backgroundColor: axis.color }} />
             <span className="text-body-xs text-bw-muted">{axis.label}</span>
           </div>
         ))}

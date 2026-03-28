@@ -62,28 +62,16 @@ export function useSessionDetail(id: string) {
 
   const session = query.data;
 
-  const currentModule = session
-    ? getModuleByDb(session.current_module, session.current_seance) ?? null
-    : null;
-  const currentPhase = currentModule
-    ? getPhaseForModule(currentModule.id) ?? null
-    : null;
-  const guide = currentModule ? getModuleGuide(currentModule.id) ?? null : null;
+  const currentModule = session ? (getModuleByDb(session.current_module, session.current_seance) ?? null) : null;
+  const currentPhase = currentModule ? (getPhaseForModule(currentModule.id) ?? null) : null;
+  const guide = currentModule ? (getModuleGuide(currentModule.id) ?? null) : null;
   const sessionState = session ? getSessionState(session.status) : null;
   const sessionUrls = session ? getSessionUrls(session.id, session.status) : null;
-  const joinUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/join`
-      : "https://banlieuwood.fr/join";
+  const joinUrl = typeof window !== "undefined" ? `${window.location.origin}/join` : "https://banlieuwood.fr/join";
 
-  const activeStudents =
-    session?.students?.filter((s) => s.is_active) ?? [];
-  const demoStudents = activeStudents.filter((s) =>
-    DEMO_STUDENT_NAMES.includes(s.display_name)
-  );
-  const realStudents = activeStudents.filter(
-    (s) => !DEMO_STUDENT_NAMES.includes(s.display_name)
-  );
+  const activeStudents = session?.students?.filter((s) => s.is_active) ?? [];
+  const demoStudents = activeStudents.filter((s) => DEMO_STUDENT_NAMES.includes(s.display_name));
+  const realStudents = activeStudents.filter((s) => !DEMO_STUDENT_NAMES.includes(s.display_name));
   const hasDemoStudents = demoStudents.length > 0;
 
   const activateDemo = useMutation({

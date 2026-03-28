@@ -16,28 +16,28 @@ interface AvatarSVGProps {
 
 // ── Skin tone palette ──
 const SKIN_COLORS: Record<string, { base: string; shadow: string }> = {
-  clair:  { base: "#FDDCB5", shadow: "#F0C8A0" },
+  clair: { base: "#FDDCB5", shadow: "#F0C8A0" },
   medium: { base: "#D4A574", shadow: "#C49060" },
-  fonce:  { base: "#8B5E3C", shadow: "#7A4F30" },
-  mate:   { base: "#B07D56", shadow: "#9D6B45" },
+  fonce: { base: "#8B5E3C", shadow: "#7A4F30" },
+  mate: { base: "#B07D56", shadow: "#9D6B45" },
 };
 
 // ── Hair color palette ──
 const HAIR_COLORS: Record<string, { main: string; highlight: string }> = {
-  court:  { main: "#3D2314", highlight: "#5A3A2A" },
-  long:   { main: "#3D2314", highlight: "#5A3A2A" },
+  court: { main: "#3D2314", highlight: "#5A3A2A" },
+  long: { main: "#3D2314", highlight: "#5A3A2A" },
   boucle: { main: "#3D2314", highlight: "#6B4530" },
   tresse: { main: "#1A1A2E", highlight: "#2E2E4A" },
-  rase:   { main: "#4A4A4A", highlight: "#6A6A6A" },
+  rase: { main: "#4A4A4A", highlight: "#6A6A6A" },
   colore: { main: "#8B5CF6", highlight: "#A78BFA" },
 };
 
 // ── Eye color palette ──
 const EYE_COLORS: Record<string, { iris: string; pupil: string }> = {
-  ronds:    { iris: "#4A3728", pupil: "#1A1A1A" },
-  amande:   { iris: "#2D5016", pupil: "#1A1A1A" },
+  ronds: { iris: "#4A3728", pupil: "#1A1A1A" },
+  amande: { iris: "#2D5016", pupil: "#1A1A1A" },
   perçants: { iris: "#1E40AF", pupil: "#0F172A" },
-  doux:     { iris: "#78716C", pupil: "#292524" },
+  doux: { iris: "#78716C", pupil: "#292524" },
 };
 
 export function AvatarSVG({ skin, hair, eyes, accessory, size = 120, className }: AvatarSVGProps) {
@@ -46,7 +46,14 @@ export function AvatarSVG({ skin, hair, eyes, accessory, size = 120, className }
   const e = EYE_COLORS[eyes] || EYE_COLORS.ronds;
 
   return (
-    <svg width={size} height={size} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 200 200"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
       {/* Background circle */}
       <circle cx="100" cy="100" r="96" fill="rgba(6,182,212,0.08)" stroke="rgba(6,182,212,0.2)" strokeWidth="2" />
 
@@ -96,35 +103,55 @@ function HairLayer({ style, color, highlight }: { style: string; color: string; 
       return (
         <g>
           {/* Short hair — clean crop */}
-          <path d="M50 90 Q50 42 100 38 Q150 42 150 90 Q148 72 130 60 Q110 52 100 52 Q90 52 70 60 Q52 72 50 90Z"
-            fill={color} />
-          <path d="M58 82 Q60 55 100 48 Q130 52 138 70"
-            stroke={highlight} strokeWidth="2" fill="none" opacity="0.4" />
+          <path
+            d="M50 90 Q50 42 100 38 Q150 42 150 90 Q148 72 130 60 Q110 52 100 52 Q90 52 70 60 Q52 72 50 90Z"
+            fill={color}
+          />
+          <path d="M58 82 Q60 55 100 48 Q130 52 138 70" stroke={highlight} strokeWidth="2" fill="none" opacity="0.4" />
         </g>
       );
     case "long":
       return (
         <g>
           {/* Long hair — flowing down */}
-          <path d="M46 90 Q44 42 100 36 Q156 42 154 90 Q154 72 140 58 Q120 46 100 46 Q80 46 60 58 Q46 72 46 90Z"
-            fill={color} />
+          <path
+            d="M46 90 Q44 42 100 36 Q156 42 154 90 Q154 72 140 58 Q120 46 100 46 Q80 46 60 58 Q46 72 46 90Z"
+            fill={color}
+          />
           {/* Side hair flowing down */}
           <path d="M46 90 Q42 120 44 148 Q46 156 52 152 Q54 130 50 100Z" fill={color} />
           <path d="M154 90 Q158 120 156 148 Q154 156 148 152 Q146 130 150 100Z" fill={color} />
-          <path d="M54 75 Q60 50 100 44 Q135 48 144 68"
-            stroke={highlight} strokeWidth="2.5" fill="none" opacity="0.3" />
+          <path
+            d="M54 75 Q60 50 100 44 Q135 48 144 68"
+            stroke={highlight}
+            strokeWidth="2.5"
+            fill="none"
+            opacity="0.3"
+          />
         </g>
       );
     case "boucle":
       return (
         <g>
           {/* Curly hair — rounded puffs */}
-          <path d="M44 92 Q42 38 100 32 Q158 38 156 92 Q155 70 135 55 Q115 42 100 42 Q85 42 65 55 Q45 70 44 92Z"
-            fill={color} />
+          <path
+            d="M44 92 Q42 38 100 32 Q158 38 156 92 Q155 70 135 55 Q115 42 100 42 Q85 42 65 55 Q45 70 44 92Z"
+            fill={color}
+          />
           {/* Curly texture dots */}
           {[
-            [56, 56], [72, 44], [90, 38], [110, 38], [128, 44], [144, 56],
-            [48, 72], [60, 50], [80, 40], [120, 40], [140, 50], [152, 72],
+            [56, 56],
+            [72, 44],
+            [90, 38],
+            [110, 38],
+            [128, 44],
+            [144, 56],
+            [48, 72],
+            [60, 50],
+            [80, 40],
+            [120, 40],
+            [140, 50],
+            [152, 72],
           ].map(([cx, cy], i) => (
             <circle key={i} cx={cx} cy={cy} r="6" fill={highlight} opacity="0.3" />
           ))}
@@ -134,8 +161,10 @@ function HairLayer({ style, color, highlight }: { style: string; color: string; 
       return (
         <g>
           {/* Braids / cornrows */}
-          <path d="M48 90 Q46 42 100 36 Q154 42 152 90 Q150 70 134 56 Q114 44 100 44 Q86 44 66 56 Q50 70 48 90Z"
-            fill={color} />
+          <path
+            d="M48 90 Q46 42 100 36 Q154 42 152 90 Q150 70 134 56 Q114 44 100 44 Q86 44 66 56 Q50 70 48 90Z"
+            fill={color}
+          />
           {/* Braid lines */}
           <path d="M62 48 L56 100 L52 140" stroke={highlight} strokeWidth="2" fill="none" opacity="0.4" />
           <path d="M80 42 L76 85 L74 130" stroke={highlight} strokeWidth="2" fill="none" opacity="0.4" />
@@ -153,16 +182,21 @@ function HairLayer({ style, color, highlight }: { style: string; color: string; 
       return (
         <g>
           {/* Shaved — very subtle stubble */}
-          <path d="M52 92 Q50 48 100 42 Q150 48 148 92 Q146 74 132 62 Q114 50 100 50 Q86 50 68 62 Q54 74 52 92Z"
-            fill={color} opacity="0.25" />
+          <path
+            d="M52 92 Q50 48 100 42 Q150 48 148 92 Q146 74 132 62 Q114 50 100 50 Q86 50 68 62 Q54 74 52 92Z"
+            fill={color}
+            opacity="0.25"
+          />
         </g>
       );
     case "colore":
       return (
         <g>
           {/* Colored spiky/creative hair */}
-          <path d="M46 92 Q44 38 100 30 Q156 38 154 92 Q152 68 136 54 Q116 40 100 40 Q84 40 64 54 Q48 68 46 92Z"
-            fill={color} />
+          <path
+            d="M46 92 Q44 38 100 30 Q156 38 154 92 Q152 68 136 54 Q116 40 100 40 Q84 40 64 54 Q48 68 46 92Z"
+            fill={color}
+          />
           {/* Spiky top */}
           <path d="M70 46 L64 22 L82 40" fill={color} />
           <path d="M90 38 L86 16 L102 34" fill={color} />
@@ -280,15 +314,29 @@ function AccessoryLayer({ type, skinColor }: { type: string; skinColor: string }
           <path d="M36 78 Q38 72 100 70 Q162 72 164 78 Q162 84 100 82 Q38 84 36 78Z" fill="#0F172A" />
           {/* Cap logo circle */}
           <circle cx="100" cy="62" r="8" fill="none" stroke="#06B6D4" strokeWidth="1.5" opacity="0.7" />
-          <text x="100" y="66" textAnchor="middle" fill="#06B6D4" fontSize="10" fontWeight="bold" opacity="0.7">B</text>
+          <text x="100" y="66" textAnchor="middle" fill="#06B6D4" fontSize="10" fontWeight="bold" opacity="0.7">
+            B
+          </text>
         </g>
       );
     case "ecouteurs":
       return (
         <g>
           {/* Headphones band */}
-          <path d="M44 92 Q44 36 100 30 Q156 36 156 92" stroke="#1E293B" strokeWidth="6" fill="none" strokeLinecap="round" />
-          <path d="M44 92 Q44 36 100 30 Q156 36 156 92" stroke="#334155" strokeWidth="3" fill="none" strokeLinecap="round" />
+          <path
+            d="M44 92 Q44 36 100 30 Q156 36 156 92"
+            stroke="#1E293B"
+            strokeWidth="6"
+            fill="none"
+            strokeLinecap="round"
+          />
+          <path
+            d="M44 92 Q44 36 100 30 Q156 36 156 92"
+            stroke="#334155"
+            strokeWidth="3"
+            fill="none"
+            strokeLinecap="round"
+          />
           {/* Left ear cup */}
           <rect x="34" y="84" width="16" height="24" rx="6" fill="#1E293B" />
           <rect x="36" y="88" width="12" height="16" rx="4" fill="#0F172A" />
@@ -303,7 +351,14 @@ function AccessoryLayer({ type, skinColor }: { type: string; skinColor: string }
       return (
         <g>
           {/* Scar across left eyebrow */}
-          <path d="M62 72 L74 82 L68 78 L80 90" stroke="#CD5C5C" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.6" />
+          <path
+            d="M62 72 L74 82 L68 78 L80 90"
+            stroke="#CD5C5C"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+            opacity="0.6"
+          />
           {/* Small scar marks */}
           <path d="M66 74 L72 76" stroke={skinColor} strokeWidth="1" opacity="0.4" />
           <path d="M70 78 L76 80" stroke={skinColor} strokeWidth="1" opacity="0.4" />
@@ -328,7 +383,5 @@ function AccessoryLayer({ type, skinColor }: { type: string; skinColor: string }
 
 /** Mini version for display in lists/cards (no background circle) */
 export function AvatarSVGMini({ skin, hair, eyes, accessory, size = 40, className }: AvatarSVGProps) {
-  return (
-    <AvatarSVG skin={skin} hair={hair} eyes={eyes} accessory={accessory} size={size} className={className} />
-  );
+  return <AvatarSVG skin={skin} hair={hair} eyes={eyes} accessory={accessory} size={size} className={className} />;
 }

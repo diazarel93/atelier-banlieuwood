@@ -38,7 +38,12 @@ export interface Module1Data {
 export interface Module5Data {
   type: "checklist" | "scene-builder" | "comparison";
   // Checklist (séance 1 index 0)
-  checklist?: { selected_items: string[]; chosen_item: string | null; scene_marquante?: string | null; deeper_reflection?: string | null } | null;
+  checklist?: {
+    selected_items: string[];
+    chosen_item: string | null;
+    scene_marquante?: string | null;
+    deeper_reflection?: string | null;
+  } | null;
   topItems?: { key: string; count: number }[];
   submitted?: boolean;
   submittedCount?: number;
@@ -131,7 +136,15 @@ export interface Module6Data {
   friseSteps?: { key: string; label: string; description: string; winnerManche: number; winnerText: string | null }[];
   winners?: Record<number, string>;
   // Scenes V0
-  scenes?: { id: string; sceneNumber: number; title: string; description: string; act: string; status: string; content: string }[];
+  scenes?: {
+    id: string;
+    sceneNumber: number;
+    title: string;
+    description: string;
+    act: string;
+    status: string;
+    content: string;
+  }[];
   scenesReady?: boolean;
   lectureCollective?: boolean;
   // Mission
@@ -158,7 +171,15 @@ export interface Module7Data {
   type: "plans" | "comparaison" | "decoupage" | "storyboard";
   position: number;
   // Plans
-  plans?: { key: string; label: string; description: string; question: string; example: string; color: string; imageUrl?: string }[];
+  plans?: {
+    key: string;
+    label: string;
+    description: string;
+    question: string;
+    example: string;
+    color: string;
+    imageUrl?: string;
+  }[];
   // Comparaison
   comparisons?: {
     key: string;
@@ -178,7 +199,11 @@ export interface Module7Data {
   planTypes?: { key: string; label: string }[];
   // Storyboard
   storyboard?: {
-    scenes: { sceneId: string; title: string; plans: { position: number; planType: string; description: string; intention?: string; imageUrl?: string }[] }[];
+    scenes: {
+      sceneId: string;
+      title: string;
+      plans: { position: number; planType: string; description: string; intention?: string; imageUrl?: string }[];
+    }[];
     validated: boolean;
   } | null;
   allDecoupages?: { sceneId: string; studentId: string; plans: unknown }[];
@@ -193,7 +218,13 @@ export interface Module8Data {
   studentAnswers?: { metierKey: string; correct: boolean }[];
   hasAnswered?: boolean;
   // Débrief
-  corrections?: { metierKey: string; metierLabel: string; metierEmoji: string; commonBelief: string; reality: string }[];
+  corrections?: {
+    metierKey: string;
+    metierLabel: string;
+    metierEmoji: string;
+    commonBelief: string;
+    reality: string;
+  }[];
   classResults?: Record<string, { correct: number; wrong: number }> | null;
   fiches?: { key: string; label: string; description: string; skills: string[]; emoji: string; color: string }[];
   studentList?: { studentId: string; displayName: string }[];
@@ -202,10 +233,30 @@ export interface Module8Data {
   isMyTurn?: boolean;
   availableRoles?: { key: string; label: string; description: string; emoji: string; color: string; count: number }[];
   takenRoles?: { roleKey: string; studentId: string; isVeto: boolean; roleLabel: string }[];
-  ranking?: { studentId: string; displayName: string; participation: number; creativity: number; engagement: number; total: number; rank: number; hasChosen: boolean }[] | null;
+  ranking?:
+    | {
+        studentId: string;
+        displayName: string;
+        participation: number;
+        creativity: number;
+        engagement: number;
+        total: number;
+        rank: number;
+        hasChosen: boolean;
+      }[]
+    | null;
   pointsComputed?: boolean;
   // Team recap
-  team?: { studentId: string; displayName: string; avatarSeed: string; roleKey: string; roleLabel: string; roleEmoji: string; roleColor: string; isVeto: boolean }[];
+  team?: {
+    studentId: string;
+    displayName: string;
+    avatarSeed: string;
+    roleKey: string;
+    roleLabel: string;
+    roleEmoji: string;
+    roleColor: string;
+    isVeto: boolean;
+  }[];
   formula?: "F2" | "F3";
   // Talent card
   talentCard?: {
@@ -329,7 +380,7 @@ export interface SessionState {
 export function useSessionPolling(
   sessionId: string,
   studentId: string | null,
-  opts?: { skipStudentCheck?: boolean; realtimeStatus?: import("./use-realtime-invalidation").ConnectionStatus }
+  opts?: { skipStudentCheck?: boolean; realtimeStatus?: import("./use-realtime-invalidation").ConnectionStatus },
 ) {
   const interval = opts?.realtimeStatus === "connected" ? 30_000 : 5_000;
   return useQuery<SessionState>({

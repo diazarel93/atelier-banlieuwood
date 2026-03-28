@@ -25,10 +25,12 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
 
   let query = supabase
     .from("team_messages")
-    .select(`
+    .select(
+      `
       *,
       student:students!team_messages_student_id_fkey(id, display_name, avatar)
-    `)
+    `,
+    )
     .eq("session_id", sessionId)
     .eq("flagged", false)
     .order("created_at", { ascending: true })
@@ -57,10 +59,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
   const { sessionId, teamId, studentId, content, messageType } = await req.json();
 
   if (!sessionId || !studentId || !content || !isValidUUID(sessionId) || !isValidUUID(studentId)) {
-    return NextResponse.json(
-      { error: "sessionId, studentId, et content requis" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "sessionId, studentId, et content requis" }, { status: 400 });
   }
 
   if (content.length > 200) {
@@ -80,10 +79,12 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
       is_moderated: true,
       flagged,
     })
-    .select(`
+    .select(
+      `
       *,
       student:students!team_messages_student_id_fkey(id, display_name, avatar)
-    `)
+    `,
+    )
     .single();
 
   if (error) {

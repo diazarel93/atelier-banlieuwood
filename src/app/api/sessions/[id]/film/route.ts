@@ -41,43 +41,28 @@ export interface FilmData {
 // GET — assemble all film data for the "Le Film" tab
 export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const supabase = await createServerSupabase();
 
   // Parallel queries
-  const [sessionRes, choicesRes, personnagesRes, winnersRes, studentsRes, responsesRes] =
-    await Promise.all([
-      supabase
-        .from("sessions")
-        .select("title, level, template, thematique, created_at")
-        .eq("id", sessionId)
-        .single(),
-      supabase
-        .from("collective_choices")
-        .select("category, restitution_label, chosen_text")
-        .eq("session_id", sessionId)
-        .order("validated_at", { ascending: true }),
-      supabase
-        .from("module10_personnages")
-        .select("prenom, trait_dominant, avatar_data, students(display_name)")
-        .eq("session_id", sessionId)
-        .order("submitted_at", { ascending: true }),
-      supabase
-        .from("module12_winners")
-        .select("manche, winning_text")
-        .eq("session_id", sessionId)
-        .order("manche"),
-      supabase
-        .from("students")
-        .select("display_name, avatar")
-        .eq("session_id", sessionId),
-      supabase
-        .from("responses")
-        .select("id, student_id")
-        .eq("session_id", sessionId),
-    ]);
+  const [sessionRes, choicesRes, personnagesRes, winnersRes, studentsRes, responsesRes] = await Promise.all([
+    supabase.from("sessions").select("title, level, template, thematique, created_at").eq("id", sessionId).single(),
+    supabase
+      .from("collective_choices")
+      .select("category, restitution_label, chosen_text")
+      .eq("session_id", sessionId)
+      .order("validated_at", { ascending: true }),
+    supabase
+      .from("module10_personnages")
+      .select("prenom, trait_dominant, avatar_data, students(display_name)")
+      .eq("session_id", sessionId)
+      .order("submitted_at", { ascending: true }),
+    supabase.from("module12_winners").select("manche, winning_text").eq("session_id", sessionId).order("manche"),
+    supabase.from("students").select("display_name, avatar").eq("session_id", sessionId),
+    supabase.from("responses").select("id, student_id").eq("session_id", sessionId),
+  ]);
 
   if (sessionRes.error || !sessionRes.data) {
     return NextResponse.json({ error: "Session introuvable" }, { status: 404 });
@@ -111,8 +96,7 @@ export const GET = withErrorHandler(async function GET(
   // Stats
   const totalStudents = students.length;
   const uniqueStudents = new Set(responses.map((r) => r.student_id)).size;
-  const participationRate =
-    totalStudents > 0 ? Math.round((uniqueStudents / totalStudents) * 100) : 0;
+  const participationRate = totalStudents > 0 ? Math.round((uniqueStudents / totalStudents) * 100) : 0;
 
   const filmData: FilmData = {
     session: {

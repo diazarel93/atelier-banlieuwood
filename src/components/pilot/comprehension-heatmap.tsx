@@ -108,10 +108,7 @@ function ComprehensionHeatmapInner({
                 const wasRetained = response?.was_retained ?? false;
 
                 return (
-                  <div
-                    key={qi}
-                    className="w-8 h-8 flex-shrink-0 flex items-center justify-center relative"
-                  >
+                  <div key={qi} className="w-8 h-8 flex-shrink-0 flex items-center justify-center relative">
                     <motion.div
                       className="w-6 h-6 rounded-md flex items-center justify-center"
                       style={{ background: getHeatColor(score, hasResponse) }}
@@ -122,9 +119,7 @@ function ComprehensionHeatmapInner({
                           : `${student.display_name} Q${qi + 1}: pas repondu`
                       }
                     >
-                      {wasRetained && (
-                        <span className="text-xs">⭐</span>
-                      )}
+                      {wasRetained && <span className="text-xs">⭐</span>}
                     </motion.div>
                   </div>
                 );

@@ -13,16 +13,14 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
 
   // Auth: verify facilitator owns the session
   const supabase = await createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
 
-  const { data: session } = await supabase
-    .from("sessions")
-    .select("id")
-    .eq("id", sessionId)
-    .single();
+  const { data: session } = await supabase.from("sessions").select("id").eq("id", sessionId).single();
 
   if (!session) {
     return NextResponse.json({ error: "Session introuvable" }, { status: 403 });
@@ -31,10 +29,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   const admin = createAdminClient();
 
   // Fetch all votes for this session
-  const { data: votes } = await admin
-    .from("votes")
-    .select("chosen_response_id")
-    .eq("session_id", sessionId);
+  const { data: votes } = await admin.from("votes").select("chosen_response_id").eq("session_id", sessionId);
 
   // Fetch all responses with student info
   const { data: responses } = await admin
@@ -57,8 +52,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     voteCounts[rid] = (voteCounts[rid] || 0) + 1;
   }
 
-  const sortedByVotes = Object.entries(voteCounts)
-    .sort((a, b) => b[1] - a[1]);
+  const sortedByVotes = Object.entries(voteCounts).sort((a, b) => b[1] - a[1]);
 
   let mostVoted = null;
   if (sortedByVotes.length > 0) {

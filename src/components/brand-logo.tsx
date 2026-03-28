@@ -57,12 +57,7 @@ interface BrandMarkProps {
   animated?: boolean;
 }
 
-export function BrandMark({
-  size = "md",
-  color = "cinema",
-  className,
-  animated = true,
-}: BrandMarkProps) {
+export function BrandMark({ size = "md", color = "cinema", className, animated = true }: BrandMarkProps) {
   const px = SIZE_MAP[size];
   const { fill } = getColorProps(color);
 
@@ -121,11 +116,7 @@ interface BrandWordmarkProps {
   className?: string;
 }
 
-export function BrandWordmark({
-  size = "md",
-  color = "cinema",
-  className,
-}: BrandWordmarkProps) {
+export function BrandWordmark({ size = "md", color = "cinema", className }: BrandWordmarkProps) {
   const textClass = cn(
     "bw-display font-bold tracking-wider select-none",
     WORDMARK_SCALE[size],
@@ -161,7 +152,8 @@ export function BrandLogo({
   variant,
 }: BrandLogoProps) {
   // Backward compat: resolve `variant` into `color` if color is not explicitly set
-  const resolvedColor: LogoColor = color ?? (variant === "cinema" ? "cinema" : variant === "primary" ? "primary" : "cinema");
+  const resolvedColor: LogoColor =
+    color ?? (variant === "cinema" ? "cinema" : variant === "primary" ? "primary" : "cinema");
 
   if (iconOnly) {
     return <BrandMark size={size} color={resolvedColor} className={className} animated={animated} />;
@@ -225,18 +217,11 @@ export function BrandStyles() {
 
 /* ── Default export for backward compatibility ── */
 
-export default function BrandLogoDefault({
-  variant = "primary",
-}: {
-  variant?: "primary" | "cinema";
-}) {
+export default function BrandLogoDefault({ variant = "primary" }: { variant?: "primary" | "cinema" }) {
   return (
     <>
       <BrandStyles />
-      <BrandLogo
-        size="md"
-        color={variant === "cinema" ? "cinema" : "primary"}
-      />
+      <BrandLogo size="md" color={variant === "cinema" ? "cinema" : "primary"} />
     </>
   );
 }

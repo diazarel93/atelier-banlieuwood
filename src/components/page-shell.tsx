@@ -14,28 +14,10 @@ interface PageShellProps {
   children: React.ReactNode;
 }
 
-export function PageShell({
-  maxWidth = "lg",
-  withPaper = true,
-  className,
-  children,
-}: PageShellProps) {
+export function PageShell({ maxWidth = "lg", withPaper = true, className, children }: PageShellProps) {
   return (
-    <div
-      className={cn(
-        "min-h-dvh page-enter",
-        withPaper ? "bg-studio" : "bg-bw-bg",
-        className
-      )}
-    >
-      <main
-        className={cn(
-          maxWidthMap[maxWidth],
-          "mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8"
-        )}
-      >
-        {children}
-      </main>
+    <div className={cn("min-h-dvh page-enter", withPaper ? "bg-studio" : "bg-bw-bg", className)}>
+      <main className={cn(maxWidthMap[maxWidth], "mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8")}>{children}</main>
     </div>
   );
 }

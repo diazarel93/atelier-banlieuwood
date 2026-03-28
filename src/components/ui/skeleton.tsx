@@ -1,29 +1,23 @@
-"use client"
+"use client";
 
-import type { CSSProperties, ReactNode } from "react"
-import { cn } from "@/lib/utils"
+import type { CSSProperties, ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 /* ═══════════════════════════════════════════════════════════════
    SKELETON — shimmer animation base
    ═══════════════════════════════════════════════════════════════ */
 
 interface SkeletonProps {
-  className?: string
-  style?: CSSProperties
-  children?: ReactNode
+  className?: string;
+  style?: CSSProperties;
+  children?: ReactNode;
 }
 
 export function Skeleton({ className, style, children }: SkeletonProps) {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: shimmerKeyframes }} />
-      <div
-        className={cn(
-          "relative overflow-hidden rounded-xl bg-bw-elevated/50",
-          className
-        )}
-        style={style}
-      >
+      <div className={cn("relative overflow-hidden rounded-xl bg-bw-elevated/50", className)} style={style}>
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -36,7 +30,7 @@ export function Skeleton({ className, style, children }: SkeletonProps) {
         {children}
       </div>
     </>
-  )
+  );
 }
 
 const shimmerKeyframes = `
@@ -44,26 +38,21 @@ const shimmerKeyframes = `
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
-`
+`;
 
 /* ═══════════════════════════════════════════════════════════════
    SKELETON CARD — card placeholder
    ═══════════════════════════════════════════════════════════════ */
 
 interface SkeletonCardProps {
-  className?: string
+  className?: string;
   /** Show action area at bottom */
-  showActions?: boolean
+  showActions?: boolean;
 }
 
 export function SkeletonCard({ className, showActions = true }: SkeletonCardProps) {
   return (
-    <div
-      className={cn(
-        "glass-card p-5 space-y-4",
-        className
-      )}
-    >
+    <div className={cn("glass-card p-5 space-y-4", className)}>
       {/* Gradient header bar */}
       <Skeleton className="h-3 w-2/3 rounded-lg" />
 
@@ -82,7 +71,7 @@ export function SkeletonCard({ className, showActions = true }: SkeletonCardProp
         </div>
       )}
     </div>
-  )
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -90,22 +79,18 @@ export function SkeletonCard({ className, showActions = true }: SkeletonCardProp
    ═══════════════════════════════════════════════════════════════ */
 
 interface SkeletonAvatarProps {
-  size?: "sm" | "md" | "lg"
-  className?: string
+  size?: "sm" | "md" | "lg";
+  className?: string;
 }
 
 const avatarSizes: Record<string, string> = {
-  sm: "size-8",   // 32px
-  md: "size-10",  // 40px
-  lg: "size-14",  // 56px
-}
+  sm: "size-8", // 32px
+  md: "size-10", // 40px
+  lg: "size-14", // 56px
+};
 
 export function SkeletonAvatar({ size = "md", className }: SkeletonAvatarProps) {
-  return (
-    <Skeleton
-      className={cn("rounded-full shrink-0", avatarSizes[size], className)}
-    />
-  )
+  return <Skeleton className={cn("rounded-full shrink-0", avatarSizes[size], className)} />;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -113,31 +98,27 @@ export function SkeletonAvatar({ size = "md", className }: SkeletonAvatarProps) 
    ═══════════════════════════════════════════════════════════════ */
 
 interface SkeletonTextProps {
-  lines?: number
+  lines?: number;
   /** Width of the last line as percentage */
-  lastLineWidth?: number
-  className?: string
+  lastLineWidth?: number;
+  className?: string;
 }
 
-export function SkeletonText({
-  lines = 3,
-  lastLineWidth = 60,
-  className,
-}: SkeletonTextProps) {
+export function SkeletonText({ lines = 3, lastLineWidth = 60, className }: SkeletonTextProps) {
   return (
     <div className={cn("space-y-2.5", className)}>
       {Array.from({ length: lines }).map((_, i) => {
-        const isLast = i === lines - 1
+        const isLast = i === lines - 1;
         return (
           <Skeleton
             key={i}
             className="h-2.5 rounded-md"
             style={isLast ? { width: `${lastLineWidth}%` } : { width: "100%" }}
           />
-        )
+        );
       })}
     </div>
-  )
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -145,7 +126,7 @@ export function SkeletonText({
    ═══════════════════════════════════════════════════════════════ */
 
 interface SkeletonDashboardProps {
-  className?: string
+  className?: string;
 }
 
 export function SkeletonDashboard({ className }: SkeletonDashboardProps) {
@@ -176,7 +157,7 @@ export function SkeletonDashboard({ className }: SkeletonDashboardProps) {
       {/* Card grid */}
       <SkeletonGrid count={6} columns={3} />
     </div>
-  )
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -184,9 +165,9 @@ export function SkeletonDashboard({ className }: SkeletonDashboardProps) {
    ═══════════════════════════════════════════════════════════════ */
 
 interface SkeletonGridProps {
-  count?: number
-  columns?: number
-  className?: string
+  count?: number;
+  columns?: number;
+  className?: string;
 }
 
 const columnClasses: Record<number, string> = {
@@ -194,14 +175,10 @@ const columnClasses: Record<number, string> = {
   2: "grid-cols-1 sm:grid-cols-2",
   3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
   4: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4",
-}
+};
 
-export function SkeletonGrid({
-  count = 6,
-  columns = 3,
-  className,
-}: SkeletonGridProps) {
-  const colClass = columnClasses[columns] ?? columnClasses[3]
+export function SkeletonGrid({ count = 6, columns = 3, className }: SkeletonGridProps) {
+  const colClass = columnClasses[columns] ?? columnClasses[3];
 
   return (
     <div className={cn("grid gap-4", colClass, className)}>
@@ -209,5 +186,5 @@ export function SkeletonGrid({
         <SkeletonCard key={i} />
       ))}
     </div>
-  )
+  );
 }

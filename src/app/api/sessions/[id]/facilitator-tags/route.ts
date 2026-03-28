@@ -8,15 +8,20 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // These tags feed into M8 points calculation.
 
 const VALID_TAGS = [
-  "tres_creatif", "force_de_proposition", "bonne_ecoute",
-  "tres_investi", "bonne_cooperation", "leadership",
-  "perturbateur", "decrochage",
+  "tres_creatif",
+  "force_de_proposition",
+  "bonne_ecoute",
+  "tres_investi",
+  "bonne_cooperation",
+  "leadership",
+  "perturbateur",
+  "decrochage",
 ] as const;
 
 // GET — List all tags for a session (facilitator only)
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
@@ -49,7 +54,7 @@ export const GET = withErrorHandler(async function GET(
 // POST — Add a tag to a student (facilitator only)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "facilitator-tags", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -69,18 +74,12 @@ export const POST = withErrorHandler(async function POST(
   }
 
   if (!VALID_TAGS.includes(tag)) {
-    return NextResponse.json(
-      { error: `Tag invalide. Tags valides : ${VALID_TAGS.join(", ")}` },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: `Tag invalide. Tags valides : ${VALID_TAGS.join(", ")}` }, { status: 400 });
   }
 
   const { data, error } = await admin
     .from("facilitator_tags")
-    .upsert(
-      { session_id: sessionId, student_id: studentId, tag },
-      { onConflict: "session_id,student_id,tag" }
-    )
+    .upsert({ session_id: sessionId, student_id: studentId, tag }, { onConflict: "session_id,student_id,tag" })
     .select()
     .single();
 
@@ -95,7 +94,7 @@ export const POST = withErrorHandler(async function POST(
 // DELETE — Remove a tag from a student (facilitator only)
 export const DELETE = withErrorHandler(async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "facilitator-tags", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });

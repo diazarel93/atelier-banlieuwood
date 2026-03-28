@@ -14,17 +14,19 @@ interface ResponseStreamProps {
   onSpotlight?: (response: ResponseCardResponse) => void;
 }
 
-export function ResponseStream({
-  responses,
-  winnerResponseId,
-  onValidate,
-  onSpotlight,
-}: ResponseStreamProps) {
+export function ResponseStream({ responses, winnerResponseId, onValidate, onSpotlight }: ResponseStreamProps) {
   // ── Mutations from context (no more prop drilling) ──
   const {
-    session, studentWarnings,
-    toggleVoteOption, toggleHide, commentResponse, highlightResponse,
-    nudgeStudent, warnStudent, scoreResponse, resetResponse,
+    session,
+    studentWarnings,
+    toggleVoteOption,
+    toggleHide,
+    commentResponse,
+    highlightResponse,
+    nudgeStudent,
+    warnStudent,
+    scoreResponse,
+    resetResponse,
   } = useCockpit();
 
   const sessionStatus = session.status;
@@ -79,9 +81,7 @@ export function ResponseStream({
     return (
       <div className="text-center py-12">
         <p className="text-bw-muted text-sm">
-          {sessionStatus === "responding"
-            ? "Les réponses arrivent..."
-            : "Ouvrez les réponses pour commencer."}
+          {sessionStatus === "responding" ? "Les réponses arrivent..." : "Ouvrez les réponses pour commencer."}
         </p>
       </div>
     );
@@ -94,9 +94,7 @@ export function ResponseStream({
         {selected.length > 0 && sessionStatus === "responding" && (
           <>
             {selected.map(renderCard)}
-            {rest.length > 0 && (
-              <div className="border-t border-[#DDD7EC] my-2" />
-            )}
+            {rest.length > 0 && <div className="border-t border-[#DDD7EC] my-2" />}
           </>
         )}
         {/* Rest of responses (paginated) */}

@@ -4,7 +4,7 @@ import { requireFacilitator, isValidUUID, withErrorHandler } from "@/lib/api-uti
 // GET — vote results for a situation (facilitator only)
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
@@ -47,11 +47,14 @@ export const GET = withErrorHandler(async function GET(
   const teamMap = new Map((teams || []).map((t) => [t.id, { team_name: t.team_name, team_color: t.team_color }]));
 
   // Count votes per response
-  const voteCounts: Record<string, {
-    response: { id: string; text: string; students: unknown };
-    count: number;
-    voters: { display_name: string; avatar: string; team_name?: string; team_color?: string }[];
-  }> = {};
+  const voteCounts: Record<
+    string,
+    {
+      response: { id: string; text: string; students: unknown };
+      count: number;
+      voters: { display_name: string; avatar: string; team_name?: string; team_color?: string }[];
+    }
+  > = {};
 
   for (const r of responses || []) {
     voteCounts[r.id] = { response: { id: r.id, text: r.text, students: r.students }, count: 0, voters: [] };

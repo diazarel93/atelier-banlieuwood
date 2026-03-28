@@ -16,7 +16,13 @@ import { useNotableResponses } from "@/hooks/use-notable-responses";
 
 export default function ResultsPageV2() {
   return (
-    <Suspense fallback={<div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8"><div className="h-64 rounded-2xl bg-card shimmer" /></div>}>
+    <Suspense
+      fallback={
+        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
+          <div className="h-64 rounded-2xl bg-card shimmer" />
+        </div>
+      }
+    >
       <ResultsPageInner />
     </Suspense>
   );
@@ -38,12 +44,7 @@ function ResultsPageInner() {
   if (data.isLoading) {
     return (
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
-        <BreadcrumbV2
-          items={[
-            { label: "Séances", href: "/v2/seances" },
-            { label: "..." },
-          ]}
-        />
+        <BreadcrumbV2 items={[{ label: "Séances", href: "/v2/seances" }, { label: "..." }]} />
         <div className="mt-4 space-y-4">
           <div className="h-32 rounded-2xl bg-card shimmer" />
           <div className="h-10 rounded-xl bg-card shimmer w-80" />
@@ -57,16 +58,9 @@ function ResultsPageInner() {
   if (data.isError || !data.exportData) {
     return (
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
-        <BreadcrumbV2
-          items={[
-            { label: "Séances", href: "/v2/seances" },
-            { label: "Résultats" },
-          ]}
-        />
+        <BreadcrumbV2 items={[{ label: "Séances", href: "/v2/seances" }, { label: "Résultats" }]} />
         <GlassCardV2 className="p-8 text-center mt-4">
-          <p className="text-bw-muted text-sm mb-4">
-            Impossible de charger les résultats de cette séance.
-          </p>
+          <p className="text-bw-muted text-sm mb-4">Impossible de charger les résultats de cette séance.</p>
           <Link
             href="/v2/seances"
             className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
@@ -138,11 +132,7 @@ function ResultsPageInner() {
           />
         )}
 
-        {activeTab === "competences" && (
-          <TabCompetences
-            feedback={data.feedback}
-          />
-        )}
+        {activeTab === "competences" && <TabCompetences feedback={data.feedback} />}
 
         {activeTab === "outils-ia" && (
           <TabOutilsIa
@@ -161,9 +151,7 @@ function ResultsPageInner() {
           />
         )}
 
-        {activeTab === "le-film" && (
-          <TabLeFilm filmData={data.filmData} />
-        )}
+        {activeTab === "le-film" && <TabLeFilm filmData={data.filmData} />}
       </div>
     </div>
   );

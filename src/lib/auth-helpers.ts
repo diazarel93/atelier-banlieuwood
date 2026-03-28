@@ -9,9 +9,7 @@ import type { AuthUser } from "./auth";
  * Load the full AuthUser profile for the currently authenticated user.
  * Returns null if not authenticated or no facilitator profile exists.
  */
-export async function getAuthUser(
-  supabase: SupabaseClient
-): Promise<AuthUser | null> {
+export async function getAuthUser(supabase: SupabaseClient): Promise<AuthUser | null> {
   const {
     data: { user },
   } = await supabase.auth.getUser();

@@ -19,13 +19,9 @@ export function TeamRecap({ module8 }: TeamRecapProps) {
     >
       <div className="text-center">
         <h2 className="text-2xl font-bold text-white">Votre Équipe</h2>
-        <p className="text-sm text-white/50 mt-1">
-          {team.length} membres prêts pour le tournage !
-        </p>
+        <p className="text-sm text-white/50 mt-1">{team.length} membres prêts pour le tournage !</p>
         {formula === "F3" && (
-          <p className="text-xs text-violet-400 mt-2">
-            Rotation : vous changerez de poste à mi-journée.
-          </p>
+          <p className="text-xs text-violet-400 mt-2">Rotation : vous changerez de poste à mi-journée.</p>
         )}
       </div>
 
@@ -50,18 +46,11 @@ export function TeamRecap({ module8 }: TeamRecapProps) {
             <p className="text-sm font-bold text-white truncate">{member.displayName}</p>
 
             {/* Role — dynamic color from data */}
-            <p
-              className="text-xs font-medium mt-1"
-              style={{ color: member.roleColor }}
-            >
+            <p className="text-xs font-medium mt-1" style={{ color: member.roleColor }}>
               {member.roleLabel}
             </p>
 
-            {member.isVeto && (
-              <span className="inline-block mt-1 text-xs text-bw-amber/60">
-                Veto BW
-              </span>
-            )}
+            {member.isVeto && <span className="inline-block mt-1 text-xs text-bw-amber/60">Veto BW</span>}
           </motion.div>
         ))}
       </div>

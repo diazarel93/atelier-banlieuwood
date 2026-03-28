@@ -22,9 +22,33 @@ export interface CharacterCardProps {
 }
 
 const SIZES = {
-  sm: { avatar: 80, width: "w-full max-w-[180px]", text: "text-xs", heading: "text-sm", gap: "gap-2", pad: "p-3", badge: "px-1.5 py-0.5 text-xs" },
-  md: { avatar: 120, width: "w-full max-w-[260px]", text: "text-sm", heading: "text-lg", gap: "gap-3", pad: "p-4", badge: "px-2 py-0.5 text-xs" },
-  lg: { avatar: 160, width: "w-full max-w-[320px]", text: "text-sm", heading: "text-xl", gap: "gap-4", pad: "p-5", badge: "px-2.5 py-1 text-xs" },
+  sm: {
+    avatar: 80,
+    width: "w-full max-w-[180px]",
+    text: "text-xs",
+    heading: "text-sm",
+    gap: "gap-2",
+    pad: "p-3",
+    badge: "px-1.5 py-0.5 text-xs",
+  },
+  md: {
+    avatar: 120,
+    width: "w-full max-w-[260px]",
+    text: "text-sm",
+    heading: "text-lg",
+    gap: "gap-3",
+    pad: "p-4",
+    badge: "px-2 py-0.5 text-xs",
+  },
+  lg: {
+    avatar: 160,
+    width: "w-full max-w-[320px]",
+    text: "text-sm",
+    heading: "text-xl",
+    gap: "gap-4",
+    pad: "p-5",
+    badge: "px-2.5 py-1 text-xs",
+  },
 } as const;
 
 const CARD_BG = "rgb(15,23,42)";
@@ -57,7 +81,9 @@ function RevealSection({ show, delay = 0, children }: { show: boolean; delay?: n
 /** Locked placeholder — shows what's coming to encourage completing the game */
 function LockedSlot({ label, badgeClass }: { label: string; badgeClass: string }) {
   return (
-    <span className={`${badgeClass} rounded-full bg-white/[0.04] text-white/20 inline-flex items-center gap-1 border border-dashed border-white/[0.08]`}>
+    <span
+      className={`${badgeClass} rounded-full bg-white/[0.04] text-white/20 inline-flex items-center gap-1 border border-dashed border-white/[0.08]`}
+    >
       <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" className="opacity-40">
         <path d="M8 1a4 4 0 0 0-4 4v2H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-1V5a4 4 0 0 0-4-4zm-2 4a2 2 0 1 1 4 0v2H6V5z" />
       </svg>
@@ -90,8 +116,11 @@ export function CharacterCard({
       const { exportElementAsImage } = await import("@/lib/export-image");
       const safeName = personnage.prenom.replace(/[^a-zA-Z0-9À-ÿ]/g, "-").toLowerCase();
       await exportElementAsImage(cardRef.current, `${safeName}-banlieuwood.png`);
-    } catch { /* silent */ }
-    finally { setDownloading(false); }
+    } catch {
+      /* silent */
+    } finally {
+      setDownloading(false);
+    }
   }
 
   return (
@@ -112,11 +141,27 @@ export function CharacterCard({
           title="Télécharger la carte"
         >
           {downloading ? (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="animate-spin"
+            >
               <path d="M21 12a9 9 0 11-6.219-8.56" />
             </svg>
           ) : (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
@@ -142,9 +187,7 @@ export function CharacterCard({
             <h3 className={`${s.heading} font-bold text-bw-heading leading-tight`}>{personnage.prenom}</h3>
           </div>
           {personnage.trait && (
-            <span
-              className={`${s.badge} rounded-full font-medium bg-bw-primary/20 text-bw-primary whitespace-nowrap`}
-            >
+            <span className={`${s.badge} rounded-full font-medium bg-bw-primary/20 text-bw-primary whitespace-nowrap`}>
               {getTraitLabel(personnage.trait)}
             </span>
           )}
@@ -160,7 +203,9 @@ export function CharacterCard({
                 </span>
               )}
               {obstacle && (
-                <span className={`${s.badge} rounded-full bg-bw-danger/15 text-bw-danger inline-flex items-center gap-1`}>
+                <span
+                  className={`${s.badge} rounded-full bg-bw-danger/15 text-bw-danger inline-flex items-center gap-1`}
+                >
                   <span>🧱</span> {getObstacleLabel(obstacle)}
                 </span>
               )}
@@ -204,7 +249,9 @@ export function CharacterCard({
                   <span>⏱</span> {chronoSeconds}s
                 </span>
               )}
-              <span className={`${s.badge} rounded-full bg-bw-green/20 text-bw-green font-bold inline-flex items-center gap-1`}>
+              <span
+                className={`${s.badge} rounded-full bg-bw-green/20 text-bw-green font-bold inline-flex items-center gap-1`}
+              >
                 🎬 PRÊT
               </span>
             </div>

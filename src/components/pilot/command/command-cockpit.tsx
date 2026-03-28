@@ -38,7 +38,7 @@ function useCommandSidebarData() {
 
   const activeStudentIds = useMemo(
     () => new Set((session.students || []).filter((s) => s.is_active).map((s) => s.id)),
-    [session.students]
+    [session.students],
   );
 
   // Track when responding started
@@ -67,12 +67,20 @@ function useCommandSidebarData() {
   const prevStatusRef = useRef(session.status);
   const prevResponseCountRef = useRef(responses.length);
 
-  const addEvent = useCallback((type: Parameters<typeof createTimelineEvent>[0], label: string, detail?: string, severity?: TimelineEvent["severity"]) => {
-    const key = `${type}-${label}`;
-    if (trackedRef.current.has(key)) return;
-    trackedRef.current.add(key);
-    setTimelineEvents((prev) => [...prev, createTimelineEvent(type, label, detail, severity)]);
-  }, []);
+  const addEvent = useCallback(
+    (
+      type: Parameters<typeof createTimelineEvent>[0],
+      label: string,
+      detail?: string,
+      severity?: TimelineEvent["severity"],
+    ) => {
+      const key = `${type}-${label}`;
+      if (trackedRef.current.has(key)) return;
+      trackedRef.current.add(key);
+      setTimelineEvents((prev) => [...prev, createTimelineEvent(type, label, detail, severity)]);
+    },
+    [],
+  );
 
   // Track status changes
   useEffect(() => {
@@ -158,40 +166,43 @@ function useAlertActions() {
   const { updateSession, onSelectStudent } = useCockpitActions();
   const { activeStudents } = useCockpitData();
 
-  return useCallback((actionId: string) => {
-    switch (actionId) {
-      case "broadcast":
-        updateSession.mutate({
-          broadcast_message: "N'oubliez pas de repondre a la question !",
-          broadcast_at: new Date().toISOString(),
-        });
-        toast.success("Relance envoyee a la classe");
-        break;
-      case "hint":
-        updateSession.mutate({
-          broadcast_message: "Petit indice : relisez bien la question et prenez votre temps.",
-          broadcast_at: new Date().toISOString(),
-        });
-        toast.success("Indice envoye a la classe");
-        break;
-      case "vote":
-        updateSession.mutate({ status: "voting", timer_ends_at: null });
-        toast.success("Vote lance");
-        break;
-      case "debate":
-        toast("Lancez le debat a l'oral !", { icon: "🎭" });
-        break;
-      case "see-hand": {
-        // Select the first student with hand raised
-        const handStudent = activeStudents.find(s => s.hand_raised_at);
-        if (handStudent) onSelectStudent(handStudent);
-        break;
+  return useCallback(
+    (actionId: string) => {
+      switch (actionId) {
+        case "broadcast":
+          updateSession.mutate({
+            broadcast_message: "N'oubliez pas de repondre a la question !",
+            broadcast_at: new Date().toISOString(),
+          });
+          toast.success("Relance envoyee a la classe");
+          break;
+        case "hint":
+          updateSession.mutate({
+            broadcast_message: "Petit indice : relisez bien la question et prenez votre temps.",
+            broadcast_at: new Date().toISOString(),
+          });
+          toast.success("Indice envoye a la classe");
+          break;
+        case "vote":
+          updateSession.mutate({ status: "voting", timer_ends_at: null });
+          toast.success("Vote lance");
+          break;
+        case "debate":
+          toast("Lancez le debat a l'oral !", { icon: "🎭" });
+          break;
+        case "see-hand": {
+          // Select the first student with hand raised
+          const handStudent = activeStudents.find((s) => s.hand_raised_at);
+          if (handStudent) onSelectStudent(handStudent);
+          break;
+        }
+        case "see-alerts":
+          toast("Consultez la liste des eleves", { icon: "👀" });
+          break;
       }
-      case "see-alerts":
-        toast("Consultez la liste des eleves", { icon: "👀" });
-        break;
-    }
-  }, [updateSession, activeStudents, onSelectStudent]);
+    },
+    [updateSession, activeStudents, onSelectStudent],
+  );
 }
 
 export function CommandCockpit() {

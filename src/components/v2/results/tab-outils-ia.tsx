@@ -79,8 +79,8 @@ function ficheToMarkdown(f: FicheData): string {
     `- **Lycée :** ${f.adaptationByLevel.lycee}`,
     "",
     "## Évaluation",
-    ...f.evaluation.map((e) =>
-      `- ${typeof e === "string" ? e : Object.values(e as Record<string, string>).join(" — ")}`
+    ...f.evaluation.map(
+      (e) => `- ${typeof e === "string" ? e : Object.values(e as Record<string, string>).join(" — ")}`,
     ),
   ];
   if (f.sessionRecap) {
@@ -137,12 +137,7 @@ export function TabOutilsIa({
         onGenerate={generateFiche}
         onDownload={handleDownloadFiche}
       />
-      <BibleFilmSection
-        bible={bible}
-        loading={bibleLoading}
-        provider={bibleProvider}
-        onGenerate={generateBible}
-      />
+      <BibleFilmSection bible={bible} loading={bibleLoading} provider={bibleProvider} onGenerate={generateBible} />
     </div>
   );
 }

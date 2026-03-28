@@ -5,7 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 // GET — return replay data (events + context) for a finished session
 export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
@@ -38,10 +38,7 @@ export const GET = withErrorHandler(async function GET(
 
   // Fetch context data
   const [studentsRes, responsesRes, choicesRes, situationsRes] = await Promise.all([
-    admin
-      .from("students")
-      .select("id, display_name, avatar")
-      .eq("session_id", sessionId),
+    admin.from("students").select("id, display_name, avatar").eq("session_id", sessionId),
     admin
       .from("responses")
       .select("id, student_id, situation_id, text, response_time_ms, ai_score, is_highlighted, submitted_at")
@@ -52,10 +49,7 @@ export const GET = withErrorHandler(async function GET(
       .from("collective_choices")
       .select("id, situation_id, category, restitution_label, chosen_text, validated_at")
       .eq("session_id", sessionId),
-    admin
-      .from("situations")
-      .select("id, prompt, category, position, question_type")
-      .eq("session_id", sessionId),
+    admin.from("situations").select("id, prompt, category, position, question_type").eq("session_id", sessionId),
   ]);
 
   return NextResponse.json({

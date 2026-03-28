@@ -13,7 +13,10 @@ import { ROUTES } from "@/lib/routes";
 import { FacilitatorFeedbackForm } from "@/components/pilot/facilitator-feedback-form";
 import { FocusHeader } from "./focus-header";
 
-const StudentFiche = dynamic(() => import("@/components/pilot/student-fiche").then(m => ({ default: m.StudentFiche })), { ssr: false });
+const StudentFiche = dynamic(
+  () => import("@/components/pilot/student-fiche").then((m) => ({ default: m.StudentFiche })),
+  { ssr: false },
+);
 import { FocusFooter } from "./focus-footer";
 import { FocusQuestionCard } from "./focus-question-card";
 import { FocusModuleContent } from "./focus-module-content";
@@ -34,40 +37,87 @@ export function FocusCockpit() {
   const [remoteMode, setRemoteMode] = useState(false);
   const state = useFocusCockpitState();
   const {
-    session, sessionId, responses, activeStudents, voteData,
-    situation, visibleResponses, voteOptionCount, currentQIndex, respondedCount,
-    nextAction, moduleFlags, moduleLabel, moduleColor, questionGuide,
-    filteredResponses, isPreviewing, displayIndex,
-    stuckStudents, notRespondedStudents,
-    universalQuestionText, universalCategoryLabel, unifiedRespondedCount,
-    isStandardQA, winnerResponseId, allResponded,
-    respondingOpenedAt, broadcastHistory,
-    previewIndex, setPreviewIndex,
-    autoAdvance, setAutoAdvance, autoAdvanceCountdown,
-    plusOpen, setPlusOpen,
-    showStudentSheet, setShowStudentSheet,
-    selectedResponseIds, setSelectedResponseIds,
-    responseFilter, setResponseFilter,
-    responseSortMode, setResponseSortMode,
-    reformulating, setReformulating,
-    isDarkMode, setIsDarkMode,
-    modals, budgetSubmitted,
-    goToSituation, handleNextAction, handleSelectionBarAction, handleQuickVote,
-    handleBroadcast, handleNudgeAllStuck,
-    handleHighlightAllVisible, handleClearAllHighlights, handleHighlightBoth,
+    session,
+    sessionId,
+    responses,
+    activeStudents,
+    voteData,
+    situation,
+    visibleResponses,
+    voteOptionCount,
+    currentQIndex,
+    respondedCount,
+    nextAction,
+    moduleFlags,
+    moduleLabel,
+    moduleColor,
+    questionGuide,
+    filteredResponses,
+    isPreviewing,
+    displayIndex,
+    stuckStudents,
+    notRespondedStudents,
+    universalQuestionText,
+    universalCategoryLabel,
+    unifiedRespondedCount,
+    isStandardQA,
+    winnerResponseId,
+    allResponded,
+    respondingOpenedAt,
+    broadcastHistory,
+    previewIndex,
+    setPreviewIndex,
+    autoAdvance,
+    setAutoAdvance,
+    autoAdvanceCountdown,
+    plusOpen,
+    setPlusOpen,
+    showStudentSheet,
+    setShowStudentSheet,
+    selectedResponseIds,
+    setSelectedResponseIds,
+    responseFilter,
+    setResponseFilter,
+    responseSortMode,
+    setResponseSortMode,
+    reformulating,
+    setReformulating,
+    isDarkMode,
+    setIsDarkMode,
+    modals,
+    budgetSubmitted,
+    goToSituation,
+    handleNextAction,
+    handleSelectionBarAction,
+    handleQuickVote,
+    handleBroadcast,
+    handleNudgeAllStuck,
+    handleHighlightAllVisible,
+    handleClearAllHighlights,
+    handleHighlightBoth,
   } = state;
 
   const {
-    updateSession, validateChoice, toggleHide, aiEvaluate, onSelectStudent,
-    toggleVoteOption, commentResponse, highlightResponse, scoreResponse,
-    resetResponse, nudgeStudent, warnStudent, toggleStudentActive,
+    updateSession,
+    validateChoice,
+    toggleHide,
+    aiEvaluate,
+    onSelectStudent,
+    toggleVoteOption,
+    commentResponse,
+    highlightResponse,
+    scoreResponse,
+    resetResponse,
+    nudgeStudent,
+    warnStudent,
+    toggleStudentActive,
   } = useCockpitActions();
 
   const { studentWarnings } = useCockpitData();
 
   // ── Plan de classe (collapsible in center) ──
   const [showPlan, setShowPlan] = useState(false);
-  const activeStudentIds = useMemo(() => new Set(activeStudents.map(s => s.id)), [activeStudents]);
+  const activeStudentIds = useMemo(() => new Set(activeStudents.map((s) => s.id)), [activeStudents]);
   const stuckLevels = useStuckDetection({
     respondedStudentIds: state.respondedStudentIds,
     activeStudentIds,
@@ -93,10 +143,13 @@ export function FocusCockpit() {
 
   // ── Student fiche slide-over ──
   const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
-  const handleSelectStudent = useCallback((s: { id: string }) => {
-    setFicheStudentId(s.id);
-    setShowStudentSheet(false);
-  }, [setShowStudentSheet]);
+  const handleSelectStudent = useCallback(
+    (s: { id: string }) => {
+      setFicheStudentId(s.id);
+      setShowStudentSheet(false);
+    },
+    [setShowStudentSheet],
+  );
 
   // Listen for student selection from sidebar (CommandCockpit dispatches this)
   useEffect(() => {
@@ -119,14 +172,17 @@ export function FocusCockpit() {
 
   const [timerMode, setTimerMode] = useState(false);
 
-  const handleSetTimerPreset = useCallback((n: number) => {
-    const seconds = TIMER_PRESETS[n - 1];
-    if (!seconds) return;
-    const endsAt = new Date(Date.now() + seconds * 1000).toISOString();
-    updateSession.mutate({ timer_ends_at: endsAt });
-    toast.success(`Timer ${seconds >= 60 ? `${seconds / 60}min` : `${seconds}s`} lancé`);
-    setTimerMode(false);
-  }, [updateSession]);
+  const handleSetTimerPreset = useCallback(
+    (n: number) => {
+      const seconds = TIMER_PRESETS[n - 1];
+      if (!seconds) return;
+      const endsAt = new Date(Date.now() + seconds * 1000).toISOString();
+      updateSession.mutate({ timer_ends_at: endsAt });
+      toast.success(`Timer ${seconds >= 60 ? `${seconds / 60}min` : `${seconds}s`} lancé`);
+      setTimerMode(false);
+    },
+    [updateSession],
+  );
 
   usePilotKeyboardShortcuts({
     sessionStatus: session.status,
@@ -143,7 +199,7 @@ export function FocusCockpit() {
       toast("Mode intervention (bientôt)", { icon: "🖐️" });
     }, []),
     onTimerShortcut: useCallback(() => {
-      setTimerMode(v => {
+      setTimerMode((v) => {
         if (!v) toast("Timer : appuyez 1-5 pour choisir", { icon: "⏱️", duration: 2000 });
         return !v;
       });
@@ -178,14 +234,20 @@ export function FocusCockpit() {
 
   // Screen control handlers
   const broadcastMsg = (session as unknown as Record<string, unknown>).broadcast_message as string | null | undefined;
-  const currentScreenMode = typeof broadcastMsg === "string" && broadcastMsg.startsWith("__SCREEN_MODE:")
-    ? broadcastMsg.replace("__SCREEN_MODE:", "")
-    : "default";
+  const currentScreenMode =
+    typeof broadcastMsg === "string" && broadcastMsg.startsWith("__SCREEN_MODE:")
+      ? broadcastMsg.replace("__SCREEN_MODE:", "")
+      : "default";
   const screenFrozen = broadcastMsg === "__SCREEN_FROZEN";
 
   function handleSetScreenMode(mode: string) {
     updateSession.mutate({ broadcast_message: `__SCREEN_MODE:${mode}`, broadcast_at: new Date().toISOString() });
-    const labels: Record<string, string> = { default: "Question", responses: "Réponses", wordcloud: "Nuage de mots", blank: "Écran noir" };
+    const labels: Record<string, string> = {
+      default: "Question",
+      responses: "Réponses",
+      wordcloud: "Nuage de mots",
+      blank: "Écran noir",
+    };
     toast.success(`Écran : ${labels[mode] || mode}`);
   }
 
@@ -202,7 +264,9 @@ export function FocusCockpit() {
   // ── Remote Control Mode ──
   if (remoteMode) {
     return (
-      <div className={`flex-1 flex flex-col overflow-hidden bg-gray-50/50 relative ${isDarkMode ? "cockpit-dark" : ""}`}>
+      <div
+        className={`flex-1 flex flex-col overflow-hidden bg-gray-50/50 relative ${isDarkMode ? "cockpit-dark" : ""}`}
+      >
         <RemoteControlView
           questionText={universalQuestionText}
           respondedCount={unifiedRespondedCount}
@@ -317,7 +381,9 @@ export function FocusCockpit() {
                   <motion.div
                     className="h-full rounded-full bg-emerald-500"
                     initial={{ width: 0 }}
-                    animate={{ width: `${activeStudents.length > 0 ? (unifiedRespondedCount / activeStudents.length) * 100 : 0}%` }}
+                    animate={{
+                      width: `${activeStudents.length > 0 ? (unifiedRespondedCount / activeStudents.length) * 100 : 0}%`,
+                    }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
                   />
                 </div>
@@ -336,7 +402,16 @@ export function FocusCockpit() {
                 className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 <span className="flex items-center gap-2 text-[12px] font-bold text-gray-500">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <rect x="3" y="3" width="7" height="7" />
                     <rect x="14" y="3" width="7" height="7" />
                     <rect x="3" y="14" width="7" height="7" />
@@ -345,8 +420,12 @@ export function FocusCockpit() {
                   Plan de classe
                 </span>
                 <svg
-                  width="12" height="12" viewBox="0 0 24 24"
-                  fill="none" stroke="#9CA3AF" strokeWidth="2"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#9CA3AF"
+                  strokeWidth="2"
                   className={`transition-transform duration-200 ${showPlan ? "rotate-180" : ""}`}
                 >
                   <path d="M6 9l6 6 6-6" />
@@ -365,7 +444,7 @@ export function FocusCockpit() {
                       <ClassroomPlanCompact
                         students={miniStudentStates}
                         onStudentClick={(id) => {
-                          const s = activeStudents.find(st => st.id === id);
+                          const s = activeStudents.find((st) => st.id === id);
                           if (s) handleSelectStudent(s);
                         }}
                       />
@@ -378,218 +457,241 @@ export function FocusCockpit() {
 
           {/* Remaining content — constrained width */}
           <div className="max-w-2xl mx-auto space-y-4">
-          {/* Empty state — waiting for responses */}
-          {session.status === "responding" && unifiedRespondedCount === 0 && activeStudents.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-white rounded-2xl border border-gray-100 p-6 text-center space-y-3"
-            >
+            {/* Empty state — waiting for responses */}
+            {session.status === "responding" && unifiedRespondedCount === 0 && activeStudents.length > 0 && (
               <motion.div
-                animate={{ y: [0, -4, 0] }}
-                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                className="text-4xl"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="bg-white rounded-2xl border border-gray-100 p-6 text-center space-y-3"
               >
-                ✏️
-              </motion.div>
-              <p className="text-[14px] font-medium text-gray-700">Les élèves réfléchissent...</p>
-              <p className="text-[12px] text-gray-400">Les réponses apparaîtront ici</p>
-            </motion.div>
-          )}
-
-          {/* Empty state — no students connected */}
-          {session.status === "responding" && activeStudents.length === 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-white rounded-2xl border border-dashed border-gray-200 p-6 text-center space-y-3"
-            >
-              <div className="text-4xl">📡</div>
-              <p className="text-[14px] font-medium text-gray-700">Aucun élève connecté</p>
-              <p className="text-[12px] text-gray-400">Projetez le QR code pour qu&apos;ils rejoignent</p>
-            </motion.div>
-          )}
-
-          {/* Auto-advance countdown */}
-          {autoAdvanceCountdown > 0 && (
-            <div className="text-center py-2">
-              <span className="text-sm font-medium text-emerald-600">
-                Auto-avance dans {autoAdvanceCountdown}s...
-              </span>
-            </div>
-          )}
-
-          {/* Module-specific content */}
-          <FocusModuleContent
-            isPreviewing={isPreviewing}
-            currentQIndex={currentQIndex}
-          />
-
-          {/* Vote results (Standard QA) */}
-          {isStandardQA && (session.status === "voting" || session.status === "reviewing") && voteData && voteData.results.length > 0 && (
-            <VotingResults
-              voteData={voteData}
-              sessionStatus={session.status}
-              onValidateWinner={(responseId, text, students) => {
-                const fakeResponse = { id: responseId, student_id: "", situation_id: "", text, submitted_at: "", is_hidden: false, is_vote_option: true, is_highlighted: false, teacher_comment: null, students } as Response;
-                setReformulating(fakeResponse);
-              }}
-            />
-          )}
-
-          {/* Vote progress — live counter */}
-          {isStandardQA && session.status === "voting" && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[13px] font-bold text-gray-700 flex items-center gap-2">
-                  <motion.span animate={{ scale: [1, 1.15, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>🗳️</motion.span>
-                  Vote en cours
-                </span>
-                <span className="text-[13px] font-bold text-orange-600 tabular-nums">
-                  {voteData?.totalVotes || 0}/{activeStudents.length}
-                </span>
-              </div>
-              <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
                 <motion.div
-                  className="h-full rounded-full bg-orange-400"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${activeStudents.length > 0 ? ((voteData?.totalVotes || 0) / activeStudents.length) * 100 : 0}%` }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Vote empty state (reviewing with no votes) */}
-          {isStandardQA && session.status === "reviewing" && (!voteData || voteData.totalVotes === 0) && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 text-center space-y-2">
-              <p className="text-3xl">🗳️</p>
-              <p className="text-sm text-gray-500">Aucun vote enregistré</p>
-            </div>
-          )}
-
-          {/* B2b — Décadrage oral marker for M1 image seances */}
-          {moduleFlags.isM1Image && session.status === "reviewing" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-violet-50 border border-violet-200 rounded-2xl p-5 text-center space-y-2"
-            >
-              <p className="text-2xl">🎤</p>
-              <p className="text-sm font-bold text-violet-800">Moment de decadrage oral</p>
-              <p className="text-xs text-violet-600 leading-relaxed max-w-sm mx-auto">
-                C&apos;est le moment de reformuler la lecon cle : &laquo; Mon regard n&apos;est pas une erreur. Il est une matiere. &raquo;
-                Commentez les 2 reponses projetees — montrez la richesse des points de vue differents.
-              </p>
-            </motion.div>
-          )}
-
-          {/* Inline reformulation */}
-          <AnimatePresence>
-            {reformulating && (
-              <InlineReformulation
-                response={reformulating as ResponseCardResponse}
-                onValidate={(text) => { validateChoice.mutate({ response: reformulating, text }); }}
-                onCancel={() => setReformulating(null)}
-                isPending={validateChoice.isPending}
-              />
-            )}
-          </AnimatePresence>
-
-          {/* Response stream (Standard QA + M1 Image/Notebook) */}
-          {(isStandardQA || moduleFlags.isM1Image || moduleFlags.isM1Notebook) && session.status !== "done" && session.status !== "paused" && !(session.status === "voting" || session.status === "reviewing") && (
-            <ResponseStreamSection
-              filteredResponses={filteredResponses as ResponseCardResponse[]}
-              respondedCount={respondedCount}
-              highlightedCount={highlightedCount}
-              respondingOpenedAt={respondingOpenedAt}
-              winnerResponseId={winnerResponseId}
-              stuckStudents={stuckStudents}
-              questionGuide={questionGuide}
-              situation={situation}
-              responseFilter={responseFilter}
-              setResponseFilter={setResponseFilter}
-              responseSortMode={responseSortMode}
-              setResponseSortMode={setResponseSortMode}
-              onShowBroadcast={modals.openBroadcast}
-              onShowCompare={() => modals.setShowCompare(true)}
-              onShowExport={() => modals.setShowExport(true)}
-              showRevealAnswer={modals.showRevealAnswer}
-              onToggleRevealAnswer={() => modals.setShowRevealAnswer((v: boolean) => !v)}
-              onClearAllHighlights={handleClearAllHighlights}
-              onNudgeAllStuck={handleNudgeAllStuck}
-              onReformulate={(r) => setReformulating(r as unknown as Response)}
-              onSpotlight={(r) => modals.setSpotlightResponse({
-                studentName: r.students?.display_name || "",
-                studentAvatar: r.students?.avatar || "",
-                text: r.text,
-                score: r.teacher_score,
-                highlighted: r.is_highlighted,
-              })}
-              onHighlightAllVisible={handleHighlightAllVisible}
-              onHideAllVisible={handleHideAllVisible}
-            />
-          )}
-
-          {/* Not responded students */}
-          {session.status === "responding" && notRespondedStudents.length > 0 && notRespondedStudents.length <= 5 && (
-            <div className="flex flex-wrap gap-1.5 pt-2">
-              <span className="text-[11px] text-gray-400 font-medium self-center mr-1">En attente :</span>
-              {notRespondedStudents.map((s) => (
-                <span key={s.id} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-medium">
-                  {s.display_name?.split(" ")[0]}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Done state — session recap */}
-          {session.status === "done" && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              {/* Hero */}
-              <div className="text-center py-6 space-y-2">
-                <motion.div
-                  initial={{ scale: 0.5 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 12 }}
-                  className="text-5xl"
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                  className="text-4xl"
                 >
-                  🎬
+                  ✏️
                 </motion.div>
-                <h3 className="text-xl font-bold text-gray-900">C&apos;est dans la boîte !</h3>
-              </div>
+                <p className="text-[14px] font-medium text-gray-700">Les élèves réfléchissent...</p>
+                <p className="text-[12px] text-gray-400">Les réponses apparaîtront ici</p>
+              </motion.div>
+            )}
 
-              {/* Stats cards */}
-              <div className="grid grid-cols-3 gap-2">
-                <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
-                  <p className="text-2xl font-bold text-emerald-600 tabular-nums">{activeStudents.length}</p>
-                  <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Élèves</p>
+            {/* Empty state — no students connected */}
+            {session.status === "responding" && activeStudents.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="bg-white rounded-2xl border border-dashed border-gray-200 p-6 text-center space-y-3"
+              >
+                <div className="text-4xl">📡</div>
+                <p className="text-[14px] font-medium text-gray-700">Aucun élève connecté</p>
+                <p className="text-[12px] text-gray-400">Projetez le QR code pour qu&apos;ils rejoignent</p>
+              </motion.div>
+            )}
+
+            {/* Auto-advance countdown */}
+            {autoAdvanceCountdown > 0 && (
+              <div className="text-center py-2">
+                <span className="text-sm font-medium text-emerald-600">
+                  Auto-avance dans {autoAdvanceCountdown}s...
+                </span>
+              </div>
+            )}
+
+            {/* Module-specific content */}
+            <FocusModuleContent isPreviewing={isPreviewing} currentQIndex={currentQIndex} />
+
+            {/* Vote results (Standard QA) */}
+            {isStandardQA &&
+              (session.status === "voting" || session.status === "reviewing") &&
+              voteData &&
+              voteData.results.length > 0 && (
+                <VotingResults
+                  voteData={voteData}
+                  sessionStatus={session.status}
+                  onValidateWinner={(responseId, text, students) => {
+                    const fakeResponse = {
+                      id: responseId,
+                      student_id: "",
+                      situation_id: "",
+                      text,
+                      submitted_at: "",
+                      is_hidden: false,
+                      is_vote_option: true,
+                      is_highlighted: false,
+                      teacher_comment: null,
+                      students,
+                    } as Response;
+                    setReformulating(fakeResponse);
+                  }}
+                />
+              )}
+
+            {/* Vote progress — live counter */}
+            {isStandardQA && session.status === "voting" && (
+              <div className="bg-white rounded-2xl border border-gray-100 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] font-bold text-gray-700 flex items-center gap-2">
+                    <motion.span animate={{ scale: [1, 1.15, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>
+                      🗳️
+                    </motion.span>
+                    Vote en cours
+                  </span>
+                  <span className="text-[13px] font-bold text-orange-600 tabular-nums">
+                    {voteData?.totalVotes || 0}/{activeStudents.length}
+                  </span>
                 </div>
-                <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
-                  <p className="text-2xl font-bold text-orange-500 tabular-nums">{responses.length}</p>
-                  <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Réponses</p>
-                </div>
-                <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
-                  <p className="text-2xl font-bold text-purple-500 tabular-nums">
-                    {responses.filter(r => r.is_highlighted).length}
-                  </p>
-                  <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Mises en avant</p>
+                <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+                  <motion.div
+                    className="h-full rounded-full bg-orange-400"
+                    initial={{ width: 0 }}
+                    animate={{
+                      width: `${activeStudents.length > 0 ? ((voteData?.totalVotes || 0) / activeStudents.length) * 100 : 0}%`,
+                    }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                  />
                 </div>
               </div>
+            )}
 
-              {/* Post-session facilitator feedback */}
-              <FacilitatorFeedbackForm
-                sessionId={sessionId}
-                onComplete={() => window.location.href = ROUTES.seanceDetail(sessionId)}
-                onSkip={() => window.location.href = ROUTES.seanceDetail(sessionId)}
-              />
-            </motion.div>
-          )}
-          </div>{/* close max-w-2xl */}
+            {/* Vote empty state (reviewing with no votes) */}
+            {isStandardQA && session.status === "reviewing" && (!voteData || voteData.totalVotes === 0) && (
+              <div className="bg-white rounded-2xl border border-gray-100 p-6 text-center space-y-2">
+                <p className="text-3xl">🗳️</p>
+                <p className="text-sm text-gray-500">Aucun vote enregistré</p>
+              </div>
+            )}
+
+            {/* B2b — Décadrage oral marker for M1 image seances */}
+            {moduleFlags.isM1Image && session.status === "reviewing" && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-violet-50 border border-violet-200 rounded-2xl p-5 text-center space-y-2"
+              >
+                <p className="text-2xl">🎤</p>
+                <p className="text-sm font-bold text-violet-800">Moment de decadrage oral</p>
+                <p className="text-xs text-violet-600 leading-relaxed max-w-sm mx-auto">
+                  C&apos;est le moment de reformuler la lecon cle : &laquo; Mon regard n&apos;est pas une erreur. Il est
+                  une matiere. &raquo; Commentez les 2 reponses projetees — montrez la richesse des points de vue
+                  differents.
+                </p>
+              </motion.div>
+            )}
+
+            {/* Inline reformulation */}
+            <AnimatePresence>
+              {reformulating && (
+                <InlineReformulation
+                  response={reformulating as ResponseCardResponse}
+                  onValidate={(text) => {
+                    validateChoice.mutate({ response: reformulating, text });
+                  }}
+                  onCancel={() => setReformulating(null)}
+                  isPending={validateChoice.isPending}
+                />
+              )}
+            </AnimatePresence>
+
+            {/* Response stream (Standard QA + M1 Image/Notebook) */}
+            {(isStandardQA || moduleFlags.isM1Image || moduleFlags.isM1Notebook) &&
+              session.status !== "done" &&
+              session.status !== "paused" &&
+              !(session.status === "voting" || session.status === "reviewing") && (
+                <ResponseStreamSection
+                  filteredResponses={filteredResponses as ResponseCardResponse[]}
+                  respondedCount={respondedCount}
+                  highlightedCount={highlightedCount}
+                  respondingOpenedAt={respondingOpenedAt}
+                  winnerResponseId={winnerResponseId}
+                  stuckStudents={stuckStudents}
+                  questionGuide={questionGuide}
+                  situation={situation}
+                  responseFilter={responseFilter}
+                  setResponseFilter={setResponseFilter}
+                  responseSortMode={responseSortMode}
+                  setResponseSortMode={setResponseSortMode}
+                  onShowBroadcast={modals.openBroadcast}
+                  onShowCompare={() => modals.setShowCompare(true)}
+                  onShowExport={() => modals.setShowExport(true)}
+                  showRevealAnswer={modals.showRevealAnswer}
+                  onToggleRevealAnswer={() => modals.setShowRevealAnswer((v: boolean) => !v)}
+                  onClearAllHighlights={handleClearAllHighlights}
+                  onNudgeAllStuck={handleNudgeAllStuck}
+                  onReformulate={(r) => setReformulating(r as unknown as Response)}
+                  onSpotlight={(r) =>
+                    modals.setSpotlightResponse({
+                      studentName: r.students?.display_name || "",
+                      studentAvatar: r.students?.avatar || "",
+                      text: r.text,
+                      score: r.teacher_score,
+                      highlighted: r.is_highlighted,
+                    })
+                  }
+                  onHighlightAllVisible={handleHighlightAllVisible}
+                  onHideAllVisible={handleHideAllVisible}
+                />
+              )}
+
+            {/* Not responded students */}
+            {session.status === "responding" && notRespondedStudents.length > 0 && notRespondedStudents.length <= 5 && (
+              <div className="flex flex-wrap gap-1.5 pt-2">
+                <span className="text-[11px] text-gray-400 font-medium self-center mr-1">En attente :</span>
+                {notRespondedStudents.map((s) => (
+                  <span
+                    key={s.id}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-medium"
+                  >
+                    {s.display_name?.split(" ")[0]}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Done state — session recap */}
+            {session.status === "done" && (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                {/* Hero */}
+                <div className="text-center py-6 space-y-2">
+                  <motion.div
+                    initial={{ scale: 0.5 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                    className="text-5xl"
+                  >
+                    🎬
+                  </motion.div>
+                  <h3 className="text-xl font-bold text-gray-900">C&apos;est dans la boîte !</h3>
+                </div>
+
+                {/* Stats cards */}
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+                    <p className="text-2xl font-bold text-emerald-600 tabular-nums">{activeStudents.length}</p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Élèves</p>
+                  </div>
+                  <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+                    <p className="text-2xl font-bold text-orange-500 tabular-nums">{responses.length}</p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Réponses</p>
+                  </div>
+                  <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+                    <p className="text-2xl font-bold text-purple-500 tabular-nums">
+                      {responses.filter((r) => r.is_highlighted).length}
+                    </p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Mises en avant</p>
+                  </div>
+                </div>
+
+                {/* Post-session facilitator feedback */}
+                <FacilitatorFeedbackForm
+                  sessionId={sessionId}
+                  onComplete={() => (window.location.href = ROUTES.seanceDetail(sessionId))}
+                  onSkip={() => (window.location.href = ROUTES.seanceDetail(sessionId))}
+                />
+              </motion.div>
+            )}
+          </div>
+          {/* close max-w-2xl */}
         </div>
       </div>
 
@@ -659,7 +761,11 @@ export function FocusCockpit() {
       </BottomSheet>
 
       {/* ── STUDENTS BOTTOM SHEET ── */}
-      <BottomSheet open={showStudentSheet} onClose={() => setShowStudentSheet(false)} title={`Élèves (${activeStudents.length})`}>
+      <BottomSheet
+        open={showStudentSheet}
+        onClose={() => setShowStudentSheet(false)}
+        title={`Élèves (${activeStudents.length})`}
+      >
         <div className="space-y-1.5">
           {studentList.map((s) => {
             const hasResponded = state.respondedStudentIds.has(s.id);
@@ -671,74 +777,77 @@ export function FocusCockpit() {
               >
                 <span className="text-2xl">{s.avatar}</span>
                 <span className="flex-1 text-[14px] font-medium text-gray-900 truncate">{s.display_name}</span>
-                {s.hand_raised_at && <span className="text-sm" title="Main levée">✋</span>}
-                <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                  hasResponded ? "bg-emerald-500" : "bg-gray-300"
-                }`} />
+                {s.hand_raised_at && (
+                  <span className="text-sm" title="Main levée">
+                    ✋
+                  </span>
+                )}
+                <span
+                  className={`w-2.5 h-2.5 rounded-full shrink-0 ${hasResponded ? "bg-emerald-500" : "bg-gray-300"}`}
+                />
               </button>
             );
           })}
-          {studentList.length === 0 && (
-            <p className="text-center text-sm text-gray-400 py-4">Aucun élève connecté</p>
-          )}
+          {studentList.length === 0 && <p className="text-center text-sm text-gray-400 py-4">Aucun élève connecté</p>}
         </div>
       </BottomSheet>
 
       {/* ── STUDENT FICHE SLIDE-OVER ── */}
       <AnimatePresence>
-        {ficheStudentId && (() => {
-          const raw = (session.students || []).find((s) => s.id === ficheStudentId);
-          if (!raw) return null;
-          const studentResponses = responses.filter((r) => r.student_id === ficheStudentId) as ResponseCardResponse[];
-          const hasResponded = state.respondedStudentIds.has(ficheStudentId);
-          const studentState = hasResponded ? "responded" : "active";
-          return (
-            <motion.div
-              key="student-fiche-overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex justify-end"
-              onClick={() => setFicheStudentId(null)}
-            >
+        {ficheStudentId &&
+          (() => {
+            const raw = (session.students || []).find((s) => s.id === ficheStudentId);
+            if (!raw) return null;
+            const studentResponses = responses.filter((r) => r.student_id === ficheStudentId) as ResponseCardResponse[];
+            const hasResponded = state.respondedStudentIds.has(ficheStudentId);
+            const studentState = hasResponded ? "responded" : "active";
+            return (
               <motion.div
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="w-full max-w-md h-full bg-white shadow-2xl overflow-y-auto"
-                onClick={(e) => e.stopPropagation()}
+                key="student-fiche-overlay"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 flex justify-end"
+                onClick={() => setFicheStudentId(null)}
               >
-                <StudentFiche
-                  studentId={ficheStudentId}
-                  student={raw}
-                  state={studentState}
-                  responses={studentResponses}
-                  sessionStatus={session.status}
-                  respondingOpenedAt={respondingOpenedAt}
-                  onBack={() => setFicheStudentId(null)}
-                  onNudge={(sid, text) => {
-                    const r = responses.find((r) => r.student_id === sid);
-                    if (r) nudgeStudent.mutate({ responseId: r.id, nudgeText: text });
-                  }}
-                  onWarn={(sid) => warnStudent.mutate(sid)}
-                  onBroadcast={modals.openBroadcast}
-                  toggleHide={toggleHide}
-                  toggleVoteOption={toggleVoteOption}
-                  commentResponse={commentResponse}
-                  highlightResponse={highlightResponse}
-                  scoreResponse={scoreResponse}
-                  resetResponse={resetResponse}
-                  nudgeStudent={nudgeStudent}
-                  warnStudent={warnStudent}
-                  studentWarnings={studentWarnings}
-                  onToggleActive={(studentId, isActive) => toggleStudentActive.mutate({ studentId, isActive })}
-                  isToggleActivePending={toggleStudentActive.isPending}
-                />
+                <motion.div
+                  initial={{ x: "100%" }}
+                  animate={{ x: 0 }}
+                  exit={{ x: "100%" }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className="w-full max-w-md h-full bg-white shadow-2xl overflow-y-auto"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <StudentFiche
+                    studentId={ficheStudentId}
+                    student={raw}
+                    state={studentState}
+                    responses={studentResponses}
+                    sessionStatus={session.status}
+                    respondingOpenedAt={respondingOpenedAt}
+                    onBack={() => setFicheStudentId(null)}
+                    onNudge={(sid, text) => {
+                      const r = responses.find((r) => r.student_id === sid);
+                      if (r) nudgeStudent.mutate({ responseId: r.id, nudgeText: text });
+                    }}
+                    onWarn={(sid) => warnStudent.mutate(sid)}
+                    onBroadcast={modals.openBroadcast}
+                    toggleHide={toggleHide}
+                    toggleVoteOption={toggleVoteOption}
+                    commentResponse={commentResponse}
+                    highlightResponse={highlightResponse}
+                    scoreResponse={scoreResponse}
+                    resetResponse={resetResponse}
+                    nudgeStudent={nudgeStudent}
+                    warnStudent={warnStudent}
+                    studentWarnings={studentWarnings}
+                    onToggleActive={(studentId, isActive) => toggleStudentActive.mutate({ studentId, isActive })}
+                    isToggleActivePending={toggleStudentActive.isPending}
+                  />
+                </motion.div>
               </motion.div>
-            </motion.div>
-          );
-        })()}
+            );
+          })()}
       </AnimatePresence>
 
       {/* ── MODALS (reused unchanged) ── */}

@@ -24,16 +24,14 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   }
 
   // Also get all definitions
-  const { data: definitions } = await supabase
-    .from("achievement_definitions")
-    .select("*");
+  const { data: definitions } = await supabase.from("achievement_definitions").select("*");
 
   return NextResponse.json(
     {
       unlocked: achievements || [],
       definitions: definitions || [],
     },
-    { headers: { "Cache-Control": "private, max-age=60, stale-while-revalidate=120" } }
+    { headers: { "Cache-Control": "private, max-age=60, stale-while-revalidate=120" } },
   );
 });
 
@@ -48,22 +46,13 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
 
   const validTiers = ["bronze", "silver", "gold"];
   if (!profileId || !achievementId || !tier || !isValidUUID(profileId)) {
-    return NextResponse.json(
-      { error: "profileId (UUID), achievementId, et tier requis" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "profileId (UUID), achievementId, et tier requis" }, { status: 400 });
   }
   if (!validTiers.includes(tier)) {
-    return NextResponse.json(
-      { error: "tier invalide (bronze, silver, gold)" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "tier invalide (bronze, silver, gold)" }, { status: 400 });
   }
   if (progress !== undefined && (typeof progress !== "number" || progress < 0 || progress > 100)) {
-    return NextResponse.json(
-      { error: "progress doit être entre 0 et 100" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "progress doit être entre 0 et 100" }, { status: 400 });
   }
 
   const { data, error } = await supabase

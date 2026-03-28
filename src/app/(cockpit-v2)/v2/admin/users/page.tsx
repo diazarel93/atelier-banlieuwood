@@ -59,7 +59,9 @@ export default function AdminUsersPage() {
       return res.json();
     },
     onSuccess: (_data, vars) => {
-      toast.success(`Utilisateur ${vars.action === "validate" ? "valide" : vars.action === "reject" ? "refuse" : "mis a jour"}`);
+      toast.success(
+        `Utilisateur ${vars.action === "validate" ? "valide" : vars.action === "reject" ? "refuse" : "mis a jour"}`,
+      );
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
     },
@@ -82,20 +84,14 @@ export default function AdminUsersPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 space-y-6">
-      <BreadcrumbV2
-        items={[
-          { label: "Admin", href: "/v2/admin" },
-          { label: "Utilisateurs" },
-        ]}
-      />
+      <BreadcrumbV2 items={[{ label: "Admin", href: "/v2/admin" }, { label: "Utilisateurs" }]} />
 
       <div className="flex items-center justify-between">
         <h1 className="text-heading-lg text-bw-heading">Utilisateurs</h1>
         <p className="text-sm text-bw-muted">
           {searchQuery && users.length !== allUsers.length
             ? `${users.length} / ${allUsers.length} utilisateur${allUsers.length > 1 ? "s" : ""}`
-            : `${users.length} utilisateur${users.length > 1 ? "s" : ""}`
-          }
+            : `${users.length} utilisateur${users.length > 1 ? "s" : ""}`}
         </p>
       </div>
 
@@ -104,7 +100,10 @@ export default function AdminUsersPage() {
         <div className="relative">
           <svg
             className="absolute left-3 top-1/2 -translate-y-1/2 text-bw-muted pointer-events-none"
-            width="14" height="14" viewBox="0 0 14 14" fill="none"
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
             aria-hidden="true"
           >
             <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.5" />
@@ -188,7 +187,10 @@ export default function AdminUsersPage() {
               </thead>
               <tbody>
                 {users.map((user) => {
-                  const statusInfo = STATUS_LABELS[user.status] ?? { label: user.status, color: "bg-[var(--color-bw-surface-dim)]" };
+                  const statusInfo = STATUS_LABELS[user.status] ?? {
+                    label: user.status,
+                    color: "bg-[var(--color-bw-surface-dim)]",
+                  };
                   return (
                     <tr key={user.id} className="border-b border-bw-border/50 last:border-0">
                       <td className="px-4 py-3 font-medium text-bw-heading">{user.name}</td>
@@ -197,7 +199,9 @@ export default function AdminUsersPage() {
                         <span className="text-xs font-medium">{ROLE_LABELS[user.role] ?? user.role}</span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusInfo.color}`}>
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusInfo.color}`}
+                        >
                           {statusInfo.label}
                         </span>
                       </td>

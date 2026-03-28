@@ -13,7 +13,10 @@ interface SessionStateBannerProps {
   compact?: boolean;
 }
 
-const STATE_CONFIG: Record<string, { bg: string; border: string; text: string; accent: string; label: string; sub: string }> = {
+const STATE_CONFIG: Record<
+  string,
+  { bg: string; border: string; text: string; accent: string; label: string; sub: string }
+> = {
   waiting: {
     bg: "#F5F0FF",
     border: "#E8DFFF",
@@ -168,8 +171,12 @@ export function SessionStateBanner({
 
         {/* Label + sub */}
         <div className="flex items-baseline gap-2 min-w-0">
-          <span className="text-[14px] font-semibold" style={{ color: config.text }}>{config.label}</span>
-          <span className="text-[12px]" style={{ color: `${config.text}99` }}>{subText}</span>
+          <span className="text-[14px] font-semibold" style={{ color: config.text }}>
+            {config.label}
+          </span>
+          <span className="text-[12px]" style={{ color: `${config.text}99` }}>
+            {subText}
+          </span>
         </div>
 
         {/* Spacer */}
@@ -181,36 +188,49 @@ export function SessionStateBanner({
             <svg className="-rotate-90" width="28" height="28" viewBox="0 0 28 28">
               <circle cx="14" cy="14" r="11" fill="none" stroke={config.border} strokeWidth="2.5" />
               <motion.circle
-                cx="14" cy="14" r="11" fill="none"
-                stroke={config.accent} strokeWidth="2.5" strokeLinecap="round"
+                cx="14"
+                cy="14"
+                r="11"
+                fill="none"
+                stroke={config.accent}
+                strokeWidth="2.5"
+                strokeLinecap="round"
                 strokeDasharray={`${2 * Math.PI * 11}`}
                 animate={{ strokeDashoffset: (1 - pct / 100) * 2 * Math.PI * 11 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
               />
             </svg>
-            <span className="text-[18px] font-bold tabular-nums" style={{ color: config.text }}>{respondedCount}/{totalStudents}</span>
+            <span className="text-[18px] font-bold tabular-nums" style={{ color: config.text }}>
+              {respondedCount}/{totalStudents}
+            </span>
           </div>
         )}
 
         {/* Counter — voting */}
         {status === "voting" && (
-          <span className="text-[16px] font-bold tabular-nums flex-shrink-0" style={{ color: config.text }}>{voteCount} votes</span>
+          <span className="text-[16px] font-bold tabular-nums flex-shrink-0" style={{ color: config.text }}>
+            {voteCount} votes
+          </span>
         )}
 
         {/* Paused: resume */}
         {status === "paused" && onTogglePause && (
-          <button onClick={onTogglePause}
+          <button
+            onClick={onTogglePause}
             className="h-7 px-3 rounded-[8px] text-[12px] font-semibold cursor-pointer transition-colors"
-            style={{ background: config.accent, color: "#fff" }}>
+            style={{ background: config.accent, color: "#fff" }}
+          >
             Reprendre
           </button>
         )}
 
         {/* Done: results */}
         {status === "done" && onViewResults && (
-          <button onClick={onViewResults}
+          <button
+            onClick={onViewResults}
             className="h-7 px-3 rounded-[8px] text-[12px] font-semibold cursor-pointer transition-colors"
-            style={{ background: config.accent, color: "#fff" }}>
+            style={{ background: config.accent, color: "#fff" }}
+          >
             Resultats →
           </button>
         )}

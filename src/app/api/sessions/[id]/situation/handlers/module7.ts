@@ -9,7 +9,7 @@ export async function handleModule7(
   req: NextRequest,
   session: Record<string, unknown>,
   sessionId: string,
-  admin: AdminClient
+  admin: AdminClient,
 ) {
   const currentIndex = (session.current_situation_index as number) || 0;
   const position = currentIndex + 1; // 1-4
@@ -120,8 +120,8 @@ export async function handleModule7(
     // Découpage — Adrian: prioritize scenes with most action/tension
     // Confrontation > Resolution > Setup (by narrative tension)
     const ACT_PRIORITY: Record<string, number> = { confrontation: 3, resolution: 2, setup: 1 };
-    const sorted = [...(scenes || [])].sort((a, b) =>
-      (ACT_PRIORITY[b.act as string] || 0) - (ACT_PRIORITY[a.act as string] || 0)
+    const sorted = [...(scenes || [])].sort(
+      (a, b) => (ACT_PRIORITY[b.act as string] || 0) - (ACT_PRIORITY[a.act as string] || 0),
     );
     const keyScenes = sorted.slice(0, 3);
 
@@ -186,9 +186,7 @@ export async function handleModule7(
     module7Data = {
       type: "storyboard",
       position,
-      storyboard: storyboard
-        ? { scenes: storyboard.scenes, validated: storyboard.validated }
-        : null,
+      storyboard: storyboard ? { scenes: storyboard.scenes, validated: storyboard.validated } : null,
       allDecoupages: allDecoupages.map((d) => ({
         sceneId: d.scene_id,
         studentId: d.student_id,
@@ -217,7 +215,7 @@ export async function handleModule7(
     lycee: "prompt_14_18",
   };
   const field = levelMap[session.level as string] || "prompt_10_13";
-  const prompt = situation?.[field as keyof typeof situation] as string || "";
+  const prompt = (situation?.[field as keyof typeof situation] as string) || "";
 
   return NextResponse.json({
     session: sessionBase,

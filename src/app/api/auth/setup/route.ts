@@ -30,11 +30,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
   const admin = createAdminClient();
 
   // Check if facilitator already exists — don't downgrade active users
-  const { data: existing } = await admin
-    .from("facilitators")
-    .select("id, status, role")
-    .eq("id", user.id)
-    .single();
+  const { data: existing } = await admin.from("facilitators").select("id, status, role").eq("id", user.id).single();
 
   if (existing && existing.status === "active") {
     // Already active — just return ok, don't overwrite role/status
@@ -43,11 +39,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
 
   // Create or get org (for V1, one default org)
   let orgId: string;
-  const { data: existingOrg } = await admin
-    .from("organizations")
-    .select("id")
-    .eq("name", "Banlieuwood")
-    .single();
+  const { data: existingOrg } = await admin.from("organizations").select("id").eq("name", "Banlieuwood").single();
 
   if (existingOrg) {
     orgId = existingOrg.id;

@@ -28,7 +28,9 @@ function readQueue(): QueuedAction[] {
 }
 
 function writeQueue(queue: QueuedAction[]) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(queue)); } catch {}
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
+  } catch {}
 }
 
 export function enqueue(action: QueuedAction): EnqueueResult {
@@ -87,7 +89,7 @@ export function clearStale(maxAgeMs: number = MAX_STALE_AGE_MS): number {
 }
 
 export async function flush(
-  executor: (action: QueuedAction) => Promise<boolean>
+  executor: (action: QueuedAction) => Promise<boolean>,
 ): Promise<{ sent: number; failed: number }> {
   const queue = readQueue();
   if (queue.length === 0) return { sent: 0, failed: 0 };

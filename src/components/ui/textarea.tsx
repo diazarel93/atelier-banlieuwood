@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (
@@ -14,11 +14,11 @@ function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
         "focus:outline-none focus:border-bw-primary focus:ring-[3px] focus:ring-bw-primary/15 focus:shadow-[0_0_0_3px_rgba(255,107,53,0.1)]",
         "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
         "aria-invalid:border-bw-danger aria-invalid:ring-[3px] aria-invalid:ring-bw-danger/15",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
-export { Textarea }
+export { Textarea };

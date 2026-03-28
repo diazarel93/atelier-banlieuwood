@@ -6,7 +6,7 @@ import { safeJson, withErrorHandler } from "@/lib/api-utils";
 // POST — create/update avatar + character info
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "personnage", { max: 15, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -17,31 +17,19 @@ export const POST = withErrorHandler(async function POST(
   const { studentId, prenom, traitDominant, force, faiblesse, avatarData } = parsed.data;
 
   if (!studentId || !prenom) {
-    return NextResponse.json(
-      { error: "studentId et prenom requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "studentId et prenom requis" }, { status: 400 });
   }
 
   if (typeof prenom !== "string" || prenom.trim().length < 1) {
-    return NextResponse.json(
-      { error: "Le prénom est requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Le prénom est requis" }, { status: 400 });
   }
 
   if (typeof force !== "string" || force.trim().length < 2) {
-    return NextResponse.json(
-      { error: "La force est obligatoire (2 caractères minimum)" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "La force est obligatoire (2 caractères minimum)" }, { status: 400 });
   }
 
   if (typeof faiblesse !== "string" || faiblesse.trim().length < 2) {
-    return NextResponse.json(
-      { error: "La faiblesse est obligatoire (2 caractères minimum)" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "La faiblesse est obligatoire (2 caractères minimum)" }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -57,15 +45,12 @@ export const POST = withErrorHandler(async function POST(
   if (!session || session.current_module !== 10 || (session.current_seance || 1) !== 2) {
     return NextResponse.json(
       { error: "La création de personnage n'est pas disponible pour cette séance" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (session.status !== "responding") {
-    return NextResponse.json(
-      { error: "Les réponses ne sont pas ouvertes" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Les réponses ne sont pas ouvertes" }, { status: 400 });
   }
 
   // Verify student
@@ -77,10 +62,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!student) {
-    return NextResponse.json(
-      { error: "Joueur introuvable dans cette partie" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Joueur introuvable dans cette partie" }, { status: 404 });
   }
 
   // Upsert personnage
@@ -96,19 +78,22 @@ export const POST = withErrorHandler(async function POST(
         faiblesse: faiblesse || null,
         avatar_data: avatarData || {},
       },
-      { onConflict: "session_id,student_id" }
+      { onConflict: "session_id,student_id" },
     )
     .select()
     .single();
 
-  if (error) { console.error("[personnage POST]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[personnage POST]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
   return NextResponse.json(data);
 });
 
 // GET — get student's character or all characters
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const studentId = req.nextUrl.searchParams.get("studentId");
@@ -122,7 +107,10 @@ export const GET = withErrorHandler(async function GET(
       .eq("student_id", studentId)
       .maybeSingle();
 
-    if (error) { console.error("[personnage GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+    if (error) {
+      console.error("[personnage GET]", error.message);
+      return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    }
     return NextResponse.json({ personnage: data });
   }
 
@@ -133,6 +121,9 @@ export const GET = withErrorHandler(async function GET(
     .eq("session_id", sessionId)
     .order("submitted_at", { ascending: true });
 
-  if (error) { console.error("[personnage GET all]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[personnage GET all]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
   return NextResponse.json({ personnages: data || [], count: data?.length || 0 });
 });

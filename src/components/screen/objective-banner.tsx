@@ -3,11 +3,13 @@
 import { motion } from "motion/react";
 
 export interface ObjectiveBannerProps {
-  seanceIntro: {
-    icon: string;
-    description: string;
-    steps: string[];
-  } | undefined;
+  seanceIntro:
+    | {
+        icon: string;
+        description: string;
+        steps: string[];
+      }
+    | undefined;
   connectedCount: number;
   /** Cinema fun fact text */
   objectifText: string;
@@ -17,7 +19,11 @@ export interface ObjectiveBannerProps {
 export function ObjectiveBanner({ seanceIntro, connectedCount, objectifText, moduleColor }: ObjectiveBannerProps) {
   if (!seanceIntro) {
     return (
-      <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 2 }} className="flex items-center justify-center gap-3">
+      <motion.div
+        animate={{ opacity: [0.4, 1, 0.4] }}
+        transition={{ repeat: Infinity, duration: 2 }}
+        className="flex items-center justify-center gap-3"
+      >
         <div className="w-2.5 h-2.5 rounded-full bg-bw-amber" />
         <span className="text-lg text-bw-muted">En attente du facilitateur</span>
       </motion.div>
@@ -40,8 +46,12 @@ export function ObjectiveBanner({ seanceIntro, connectedCount, objectifText, mod
           transition={{ delay: 0.3 }}
           className="flex items-center justify-center gap-2"
         >
-          <span className="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
-            style={{ backgroundColor: `${moduleColor}25`, color: moduleColor }}>1</span>
+          <span
+            className="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
+            style={{ backgroundColor: `${moduleColor}25`, color: moduleColor }}
+          >
+            1
+          </span>
           <span className="text-base text-bw-text">{seanceIntro.steps[0]}</span>
         </motion.div>
       )}

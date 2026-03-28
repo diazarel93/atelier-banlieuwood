@@ -3,15 +3,10 @@
 import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 
-const QRCodeSVG = dynamic(
-  () => import("qrcode.react").then((mod) => ({ default: mod.QRCodeSVG })),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-[200px] h-[200px] rounded-2xl bg-white/10 animate-pulse" />
-    ),
-  }
-);
+const QRCodeSVG = dynamic(() => import("qrcode.react").then((mod) => ({ default: mod.QRCodeSVG })), {
+  ssr: false,
+  loading: () => <div className="w-[200px] h-[200px] rounded-2xl bg-white/10 animate-pulse" />,
+});
 
 interface Student {
   id: string;
@@ -26,12 +21,7 @@ interface ProjectionOverlayProps {
   onClose: () => void;
 }
 
-export function ProjectionOverlay({
-  joinCode,
-  joinUrl,
-  activeStudents,
-  onClose,
-}: ProjectionOverlayProps) {
+export function ProjectionOverlay({ joinCode, joinUrl, activeStudents, onClose }: ProjectionOverlayProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,16 +30,20 @@ export function ProjectionOverlay({
 
       // Focus trap
       if (e.key === "Tab" && overlayRef.current) {
-        const focusable = overlayRef.current.querySelectorAll<HTMLElement>(
-          'button, [tabindex]:not([tabindex="-1"])'
-        );
+        const focusable = overlayRef.current.querySelectorAll<HTMLElement>('button, [tabindex]:not([tabindex="-1"])');
         if (focusable.length === 0) return;
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
         if (e.shiftKey) {
-          if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
         } else {
-          if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
         }
       }
     }
@@ -78,9 +72,7 @@ export function ProjectionOverlay({
 
       <div className="text-center space-y-8">
         {/* Brand */}
-        <h1 className="text-3xl font-bold tracking-[0.3em] uppercase text-white/90">
-          Banlieuwood
-        </h1>
+        <h1 className="text-3xl font-bold tracking-[0.3em] uppercase text-white/90">Banlieuwood</h1>
 
         {/* Code characters */}
         <div className="flex gap-2 justify-center">
@@ -96,8 +88,7 @@ export function ProjectionOverlay({
 
         {/* URL */}
         <p className="text-white/50 text-lg">
-          Rejoins sur{" "}
-          <span className="text-white font-medium">banlieuwood.fr/join</span>
+          Rejoins sur <span className="text-white font-medium">banlieuwood.fr/join</span>
         </p>
 
         {/* QR Code */}

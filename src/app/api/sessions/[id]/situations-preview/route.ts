@@ -10,7 +10,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
  */
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
@@ -58,7 +58,7 @@ export const GET = withErrorHandler(async function GET(
   }));
 
   // Deduplicate by position (variants → pick first)
-  const byPosition = new Map<number, typeof items[number]>();
+  const byPosition = new Map<number, (typeof items)[number]>();
   for (const item of items) {
     if (!byPosition.has(item.position)) {
       byPosition.set(item.position, item);

@@ -5,7 +5,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // POST — reset all responses for a situation (teacher replays the question)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "reset-responses", { max: 10, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });

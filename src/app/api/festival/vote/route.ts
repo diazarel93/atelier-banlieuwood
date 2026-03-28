@@ -15,24 +15,14 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
   const { entryId, voterProfileId } = await req.json();
 
   if (!entryId || !voterProfileId || !isValidUUID(entryId) || !isValidUUID(voterProfileId)) {
-    return NextResponse.json(
-      { error: "entryId et voterProfileId requis (UUID)" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "entryId et voterProfileId requis (UUID)" }, { status: 400 });
   }
 
   // Check not voting for own entry
-  const { data: entry } = await supabase
-    .from("festival_entries")
-    .select("profile_id")
-    .eq("id", entryId)
-    .single();
+  const { data: entry } = await supabase.from("festival_entries").select("profile_id").eq("id", entryId).single();
 
   if (entry?.profile_id === voterProfileId) {
-    return NextResponse.json(
-      { error: "Tu ne peux pas voter pour ta propre creation" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Tu ne peux pas voter pour ta propre creation" }, { status: 400 });
   }
 
   const { error } = await supabase

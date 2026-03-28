@@ -70,16 +70,9 @@ export function ContactForm() {
             <path d="M20 6 9 17l-5-5" />
           </svg>
         </div>
-        <h3 className="text-lg font-semibold text-bw-heading mb-2">
-          Message envoye
-        </h3>
-        <p className="text-sm text-bw-muted">
-          Nous vous repondons sous 48h. Merci pour votre interet.
-        </p>
-        <button
-          onClick={() => setStatus("idle")}
-          className="mt-6 text-sm text-bw-primary hover:underline"
-        >
+        <h3 className="text-lg font-semibold text-bw-heading mb-2">Message envoye</h3>
+        <p className="text-sm text-bw-muted">Nous vous repondons sous 48h. Merci pour votre interet.</p>
+        <button onClick={() => setStatus("idle")} className="mt-6 text-sm text-bw-primary hover:underline">
           Envoyer un autre message
         </button>
       </div>
@@ -87,10 +80,7 @@ export function ContactForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-bw-surface border border-bw-border rounded-2xl p-6 sm:p-8 space-y-5"
-    >
+    <form onSubmit={handleSubmit} className="bg-bw-surface border border-bw-border rounded-2xl p-6 sm:p-8 space-y-5">
       {/* Errors */}
       {errors.length > 0 && (
         <div className="bg-bw-danger-100 border border-bw-danger/20 rounded-xl p-4">
@@ -104,10 +94,7 @@ export function ContactForm() {
 
       {/* Name */}
       <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-bw-heading mb-1.5"
-        >
+        <label htmlFor="name" className="block text-sm font-medium text-bw-heading mb-1.5">
           Nom complet
         </label>
         <input
@@ -123,10 +110,7 @@ export function ContactForm() {
 
       {/* Email */}
       <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-bw-heading mb-1.5"
-        >
+        <label htmlFor="email" className="block text-sm font-medium text-bw-heading mb-1.5">
           Email
         </label>
         <input
@@ -141,10 +125,7 @@ export function ContactForm() {
 
       {/* Type */}
       <div>
-        <label
-          htmlFor="type"
-          className="block text-sm font-medium text-bw-heading mb-1.5"
-        >
+        <label htmlFor="type" className="block text-sm font-medium text-bw-heading mb-1.5">
           Type de demande
         </label>
         <select
@@ -167,10 +148,7 @@ export function ContactForm() {
 
       {/* Message */}
       <div>
-        <label
-          htmlFor="message"
-          className="block text-sm font-medium text-bw-heading mb-1.5"
-        >
+        <label htmlFor="message" className="block text-sm font-medium text-bw-heading mb-1.5">
           Message
         </label>
         <textarea

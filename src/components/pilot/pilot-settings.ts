@@ -49,6 +49,6 @@ export const POLLING = {
 
 /** Elapsed timer color thresholds in seconds */
 export const ELAPSED_THRESHOLDS = {
-  amber: 120,  // 2 min
-  red: 300,    // 5 min
+  amber: 120, // 2 min
+  red: 300, // 5 min
 } as const;

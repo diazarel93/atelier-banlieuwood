@@ -92,7 +92,9 @@ export function FacilitatorFeedbackForm({ sessionId, onComplete, onSkip }: Facil
 
       {/* Free text */}
       <div className="space-y-2">
-        <p className="text-sm font-medium text-bw-heading">Notes libres <span className="text-bw-muted font-normal">(optionnel)</span></p>
+        <p className="text-sm font-medium text-bw-heading">
+          Notes libres <span className="text-bw-muted font-normal">(optionnel)</span>
+        </p>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}

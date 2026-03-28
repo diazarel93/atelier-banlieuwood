@@ -88,14 +88,8 @@ export default function SeancesPage() {
       confirmVariant: "danger",
       action: async () => {
         const ids = [...selected];
-        const results = await Promise.allSettled(
-          ids.map((id) =>
-            fetch(`/api/sessions/${id}`, { method: "DELETE" })
-          )
-        );
-        const succeeded = results.filter(
-          (r) => r.status === "fulfilled" && (r.value as Response).ok
-        ).length;
+        const results = await Promise.allSettled(ids.map((id) => fetch(`/api/sessions/${id}`, { method: "DELETE" })));
+        const succeeded = results.filter((r) => r.status === "fulfilled" && (r.value as Response).ok).length;
         if (succeeded === ids.length) {
           toast.success(`${succeeded} seance${succeeded > 1 ? "s archivees" : " archivee"}`);
         } else {
@@ -108,7 +102,12 @@ export default function SeancesPage() {
   }, [selected, confirm, clearSelection, queryClient]);
 
   // Active sessions (deleted_at IS NULL, enforced by RLS)
-  const { data: sessions = [], isLoading, isError, refetch } = useQuery({
+  const {
+    data: sessions = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: ["sessions"],
     queryFn: fetchSessions,
     refetchInterval: 15_000,
@@ -127,11 +126,7 @@ export default function SeancesPage() {
       let list = archivedSessions;
       if (search.trim()) {
         const q = search.toLowerCase();
-        list = list.filter(
-          (s) =>
-            s.title.toLowerCase().includes(q) ||
-            s.class_label?.toLowerCase().includes(q)
-        );
+        list = list.filter((s) => s.title.toLowerCase().includes(q) || s.class_label?.toLowerCase().includes(q));
       }
       return list;
     }
@@ -142,25 +137,16 @@ export default function SeancesPage() {
     switch (tab) {
       case "upcoming":
         // Scheduled in the future OR waiting with a schedule date
-        list = list.filter(
-          (s) =>
-            s.status !== "done" &&
-            s.scheduled_at &&
-            new Date(s.scheduled_at) > new Date()
-        );
+        list = list.filter((s) => s.status !== "done" && s.scheduled_at && new Date(s.scheduled_at) > new Date());
         break;
       case "active":
         // Currently running (not waiting, not done)
-        list = list.filter(
-          (s) => ACTIVE_STATUSES.includes(s.status) && s.status !== "waiting"
-        );
+        list = list.filter((s) => ACTIVE_STATUSES.includes(s.status) && s.status !== "waiting");
         break;
       case "draft":
         // Waiting sessions without a future schedule
         list = list.filter(
-          (s) =>
-            s.status === "waiting" &&
-            (!s.scheduled_at || new Date(s.scheduled_at) <= new Date())
+          (s) => s.status === "waiting" && (!s.scheduled_at || new Date(s.scheduled_at) <= new Date()),
         );
         break;
       case "done":
@@ -171,11 +157,7 @@ export default function SeancesPage() {
     // Search filter
     if (search.trim()) {
       const q = search.toLowerCase();
-      list = list.filter(
-        (s) =>
-          s.title.toLowerCase().includes(q) ||
-          s.class_label?.toLowerCase().includes(q)
-      );
+      list = list.filter((s) => s.title.toLowerCase().includes(q) || s.class_label?.toLowerCase().includes(q));
     }
 
     return list;
@@ -196,13 +178,11 @@ export default function SeancesPage() {
   const counts = useMemo(() => {
     const now = new Date();
     const upcoming = sessions.filter(
-      (s) => s.status !== "done" && s.scheduled_at && new Date(s.scheduled_at) > now
+      (s) => s.status !== "done" && s.scheduled_at && new Date(s.scheduled_at) > now,
     ).length;
-    const active = sessions.filter(
-      (s) => ACTIVE_STATUSES.includes(s.status) && s.status !== "waiting"
-    ).length;
+    const active = sessions.filter((s) => ACTIVE_STATUSES.includes(s.status) && s.status !== "waiting").length;
     const draft = sessions.filter(
-      (s) => s.status === "waiting" && (!s.scheduled_at || new Date(s.scheduled_at) <= now)
+      (s) => s.status === "waiting" && (!s.scheduled_at || new Date(s.scheduled_at) <= now),
     ).length;
     const done = sessions.filter((s) => s.status === "done").length;
     const archived = archivedSessions.length;
@@ -210,9 +190,7 @@ export default function SeancesPage() {
   }, [sessions, archivedSessions]);
 
   // Calendar dates
-  const sessionDates = sessions
-    .map((s) => new Date(s.scheduled_at || s.created_at))
-    .filter(Boolean);
+  const sessionDates = sessions.map((s) => new Date(s.scheduled_at || s.created_at)).filter(Boolean);
 
   const currentlyLoading = isLoading || (tab === "archived" && isLoadingArchived);
 
@@ -222,9 +200,7 @@ export default function SeancesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-heading-lg text-bw-heading">Seances</h1>
-          <p className="text-sm text-bw-muted mt-0.5">
-            Gerez et preparez vos seances
-          </p>
+          <p className="text-sm text-bw-muted mt-0.5">Gerez et preparez vos seances</p>
         </div>
         <div className="flex items-center gap-3">
           {/* Search */}
@@ -282,7 +258,16 @@ export default function SeancesPage() {
           {isError ? (
             <EmptyState
               icon={
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  aria-hidden="true"
+                >
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 8v4M12 16h.01" />
                 </svg>
@@ -301,7 +286,16 @@ export default function SeancesPage() {
           ) : grouped.length === 0 ? (
             <EmptyState
               icon={
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  aria-hidden="true"
+                >
                   <rect x="3" y="4" width="18" height="18" rx="2" />
                   <path d="M16 2v4M8 2v4M3 10h18" />
                 </svg>
@@ -359,7 +353,16 @@ export default function SeancesPage() {
             onClick={handleBulkArchive}
             className="inline-flex items-center gap-1.5 rounded-lg bg-red-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-600 transition-colors"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
               <polyline points="3 6 5 6 21 6" />
               <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
               <path d="M10 11v6M14 11v6" />

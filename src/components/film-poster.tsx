@@ -404,7 +404,7 @@ const FilmPoster = forwardRef<HTMLDivElement, FilmPosterProps>(
         />
       </div>
     );
-  }
+  },
 );
 
 FilmPoster.displayName = "FilmPoster";

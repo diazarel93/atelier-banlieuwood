@@ -14,31 +14,21 @@ export function ExerciseCard({ exercise, className, onClick }: ExerciseCardProps
   return (
     <GlassCardV2 hover className={cn("p-4 flex flex-col", onClick && "cursor-pointer", className)} onClick={onClick}>
       {/* Color accent bar */}
-      <div
-        className="h-1.5 w-12 rounded-full mb-3"
-        style={{ backgroundColor: exercise.color }}
-      />
+      <div className="h-1.5 w-12 rounded-full mb-3" style={{ backgroundColor: exercise.color }} />
 
       {/* Phase badge */}
       <div className="flex items-center gap-1.5 mb-2">
         <span className="text-sm">{exercise.phaseEmoji}</span>
-        <span
-          className="text-body-xs font-semibold uppercase tracking-wide"
-          style={{ color: exercise.phaseColor }}
-        >
+        <span className="text-body-xs font-semibold uppercase tracking-wide" style={{ color: exercise.phaseColor }}>
           {exercise.phaseLabel}
         </span>
       </div>
 
       {/* Title */}
-      <h3 className="text-sm font-bold text-bw-heading leading-snug mb-1">
-        {exercise.title}
-      </h3>
+      <h3 className="text-sm font-bold text-bw-heading leading-snug mb-1">{exercise.title}</h3>
 
       {/* Description */}
-      <p className="text-xs text-bw-muted line-clamp-2 mb-3 flex-1">
-        {exercise.description}
-      </p>
+      <p className="text-xs text-bw-muted line-clamp-2 mb-3 flex-1">{exercise.description}</p>
 
       {/* Meta row */}
       <div className="flex items-center gap-3 text-[11px] text-bw-muted">

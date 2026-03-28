@@ -24,13 +24,11 @@ export function useCockpitNavigation({
   const visibleResponses = responses.filter((r) => !r.is_hidden);
   const voteOptionCount = responses.filter((r) => r.is_vote_option && !r.is_hidden).length;
 
-  const {
-    canGoNext,
-    maxSituations,
-    isBudgetQuiz,
-  } = useCockpitModuleFlags(session);
+  const { canGoNext, maxSituations, isBudgetQuiz } = useCockpitModuleFlags(session);
 
-  const budgetStats = (session as unknown as Record<string, unknown>)?.budgetStats as { submittedCount: number } | undefined;
+  const budgetStats = (session as unknown as Record<string, unknown>)?.budgetStats as
+    | { submittedCount: number }
+    | undefined;
   const budgetSubmitted = budgetStats?.submittedCount || 0;
 
   const nextAction = getNextAction(
@@ -43,7 +41,7 @@ export function useCockpitNavigation({
     canGoNext,
     session.current_seance || 1,
     session.current_situation_index || 0,
-    session.reveal_phase
+    session.reveal_phase,
   );
 
   // ── Preview state ──

@@ -20,12 +20,10 @@ export async function GET(request: NextRequest) {
             return cookieStore.getAll();
           },
           setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
+            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
           },
         },
-      }
+      },
     );
 
     const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -39,11 +37,7 @@ export async function GET(request: NextRequest) {
         const admin = createAdminClient();
 
         // Check if facilitator already exists — don't downgrade
-        const { data: existing } = await admin
-          .from("facilitators")
-          .select("id, status")
-          .eq("id", user.id)
-          .single();
+        const { data: existing } = await admin.from("facilitators").select("id, status").eq("id", user.id).single();
 
         if (!existing) {
           // Get or create default org
@@ -70,10 +64,7 @@ export async function GET(request: NextRequest) {
               id: user.id,
               org_id: orgId,
               email: user.email!,
-              name:
-                user.user_metadata?.name ||
-                user.user_metadata?.full_name ||
-                user.email!.split("@")[0],
+              name: user.user_metadata?.name || user.user_metadata?.full_name || user.email!.split("@")[0],
               role: "intervenant",
               status: "pending",
             });

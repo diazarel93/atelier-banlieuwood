@@ -3,13 +3,7 @@
 import { useEffect } from "react";
 import * as Sentry from "@sentry/nextjs";
 
-export default function PilotError({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function PilotError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     Sentry.captureException(error, { tags: { page: "pilot", device: "unknown" } });
     console.error("[PilotError]", error.message, error.stack);
@@ -31,9 +25,7 @@ export default function PilotError({
     >
       <div style={{ textAlign: "center", maxWidth: "420px" }}>
         <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⚠️</div>
-        <h2 style={{ fontSize: "1.25rem", fontWeight: "bold", marginBottom: "0.5rem" }}>
-          Erreur du cockpit
-        </h2>
+        <h2 style={{ fontSize: "1.25rem", fontWeight: "bold", marginBottom: "0.5rem" }}>Erreur du cockpit</h2>
         <p style={{ color: "#6B7280", marginBottom: "0.75rem", fontSize: "0.875rem" }}>
           Le cockpit a rencontre un probleme. Vos eleves ne sont pas affectes.
         </p>
@@ -73,7 +65,19 @@ export default function PilotError({
           </button>
         </div>
         {process.env.NODE_ENV === "development" && (
-          <pre style={{ marginTop: "1rem", fontSize: "0.7rem", color: "#EF4444", textAlign: "left", overflowX: "auto", padding: "0.5rem", background: "rgba(255,0,0,0.05)", borderRadius: "0.5rem", border: "1px solid rgba(255,0,0,0.1)" }}>
+          <pre
+            style={{
+              marginTop: "1rem",
+              fontSize: "0.7rem",
+              color: "#EF4444",
+              textAlign: "left",
+              overflowX: "auto",
+              padding: "0.5rem",
+              background: "rgba(255,0,0,0.05)",
+              borderRadius: "0.5rem",
+              border: "1px solid rgba(255,0,0,0.1)",
+            }}
+          >
             {error.message}
           </pre>
         )}

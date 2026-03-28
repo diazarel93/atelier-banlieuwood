@@ -6,12 +6,7 @@ import { createAvatar } from "@dicebear/core";
 import { avataaars } from "@dicebear/collection";
 import DOMPurify from "dompurify";
 import { exportElementAsImage, exportElementAsPdf } from "@/lib/export-image";
-import {
-  TEMPLATE_LABELS,
-  THEMATIQUE_LABELS,
-  CATEGORY_LABELS,
-  CATEGORY_COLORS,
-} from "@/lib/constants";
+import { TEMPLATE_LABELS, THEMATIQUE_LABELS, CATEGORY_LABELS, CATEGORY_COLORS } from "@/lib/constants";
 import type { FilmData } from "@/app/api/sessions/[id]/film/route";
 
 // ── Constants ──
@@ -80,7 +75,15 @@ function GoldDivider({ label }: { label: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "4px 0 16px" }}>
       <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, transparent, rgba(212,168,67,0.35))" }} />
-      <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 5, textTransform: "uppercase" as const, color: "#D4A843" }}>
+      <span
+        style={{
+          fontSize: 9,
+          fontWeight: 700,
+          letterSpacing: 5,
+          textTransform: "uppercase" as const,
+          color: "#D4A843",
+        }}
+      >
         {label}
       </span>
       <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(212,168,67,0.35), transparent)" }} />
@@ -181,11 +184,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
   }, [filmData]);
 
   if (!filmData) {
-    return (
-      <div className="flex items-center justify-center py-16 text-bw-muted text-sm">
-        Chargement du film...
-      </div>
-    );
+    return <div className="flex items-center justify-center py-16 text-bw-muted text-sm">Chargement du film...</div>;
   }
 
   const { session, collectiveChoices, personnages, construction, students, stats } = filmData;
@@ -213,7 +212,16 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
           disabled={exporting}
           className="inline-flex items-center gap-2 rounded-lg border border-[#D4A843]/30 bg-transparent px-4 py-2 text-sm font-medium text-[#D4A843] transition-opacity hover:bg-[#D4A843]/10 disabled:opacity-50"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
             <polyline points="14 2 14 8 20 8" />
             <line x1="16" y1="13" x2="8" y2="13" />
@@ -230,13 +238,26 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
             <>
               <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
               </svg>
               Export en cours...
             </>
           ) : (
             <>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
@@ -264,27 +285,101 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
             }}
           >
             {/* ── Ambient light effects ── */}
-            <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 600, height: 500, background: "radial-gradient(ellipse at center, rgba(212,168,67,0.07) 0%, rgba(212,168,67,0.02) 45%, transparent 70%)", pointerEvents: "none" }} />
-            <div style={{ position: "absolute", bottom: 100, left: -80, width: 350, height: 350, background: "radial-gradient(circle, rgba(255,107,53,0.03) 0%, transparent 70%)", pointerEvents: "none" }} />
-            <div style={{ position: "absolute", bottom: 200, right: -80, width: 300, height: 300, background: "radial-gradient(circle, rgba(212,168,67,0.025) 0%, transparent 70%)", pointerEvents: "none" }} />
+            <div
+              style={{
+                position: "absolute",
+                top: -100,
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: 600,
+                height: 500,
+                background:
+                  "radial-gradient(ellipse at center, rgba(212,168,67,0.07) 0%, rgba(212,168,67,0.02) 45%, transparent 70%)",
+                pointerEvents: "none",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                bottom: 100,
+                left: -80,
+                width: 350,
+                height: 350,
+                background: "radial-gradient(circle, rgba(255,107,53,0.03) 0%, transparent 70%)",
+                pointerEvents: "none",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                bottom: 200,
+                right: -80,
+                width: 300,
+                height: 300,
+                background: "radial-gradient(circle, rgba(212,168,67,0.025) 0%, transparent 70%)",
+                pointerEvents: "none",
+              }}
+            />
             {/* Film grain */}
-            <div style={{ position: "absolute", inset: 0, opacity: 0.025, backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", pointerEvents: "none" }} />
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                opacity: 0.025,
+                backgroundImage:
+                  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+                pointerEvents: "none",
+              }}
+            />
 
             {/* Top film strip */}
             <FilmStripBar prefix="top" />
 
             {/* ── Main content ── */}
-            <div style={{ display: "flex", flexDirection: "column", padding: "40px 44px 36px", gap: 0, position: "relative", zIndex: 1 }}>
-
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                padding: "40px 44px 36px",
+                gap: 0,
+                position: "relative",
+                zIndex: 1,
+              }}
+            >
               {/* ═══ Section 1: Studio header + Clap + Title ═══ */}
               <div style={{ textAlign: "center", marginBottom: 32 }}>
                 {/* Studio name */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 4 }}>
-                  <span style={{ color: "#D4A843", fontSize: 8 }}>{"\u2726"} {"\u2726"} {"\u2726"}</span>
-                  <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: 8, textTransform: "uppercase", color: "#D4A843" }}>Banlieuwood</span>
-                  <span style={{ color: "#D4A843", fontSize: 8 }}>{"\u2726"} {"\u2726"} {"\u2726"}</span>
+                <div
+                  style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 4 }}
+                >
+                  <span style={{ color: "#D4A843", fontSize: 8 }}>
+                    {"\u2726"} {"\u2726"} {"\u2726"}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 800,
+                      letterSpacing: 8,
+                      textTransform: "uppercase",
+                      color: "#D4A843",
+                    }}
+                  >
+                    Banlieuwood
+                  </span>
+                  <span style={{ color: "#D4A843", fontSize: 8 }}>
+                    {"\u2726"} {"\u2726"} {"\u2726"}
+                  </span>
                 </div>
-                <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 6, textTransform: "uppercase", color: "#64748B", margin: "0 0 24px" }}>
+                <p
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 500,
+                    letterSpacing: 6,
+                    textTransform: "uppercase",
+                    color: "#64748B",
+                    margin: "0 0 24px",
+                  }}
+                >
                   présente
                 </p>
 
@@ -295,34 +390,69 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
 
                 {/* Genre badge */}
                 {genreLabel && (
-                  <div style={{ display: "inline-block", padding: "4px 20px", borderRadius: 999, border: "1px solid rgba(212,168,67,0.5)", background: "rgba(212,168,67,0.06)", color: "#D4A843", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", marginBottom: 20 }}>
+                  <div
+                    style={{
+                      display: "inline-block",
+                      padding: "4px 20px",
+                      borderRadius: 999,
+                      border: "1px solid rgba(212,168,67,0.5)",
+                      background: "rgba(212,168,67,0.06)",
+                      color: "#D4A843",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      letterSpacing: 3,
+                      textTransform: "uppercase",
+                      marginBottom: 20,
+                    }}
+                  >
                     {genreLabel}
                   </div>
                 )}
 
                 {/* Title with spotlight */}
                 <div style={{ position: "relative" }}>
-                  <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 450, height: 100, background: "radial-gradient(ellipse, rgba(212,168,67,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
-                  <h1 style={{
-                    fontSize: 48,
-                    fontWeight: 900,
-                    lineHeight: 1.05,
-                    letterSpacing: 3,
-                    textTransform: "uppercase",
-                    background: "linear-gradient(135deg, #FFFFFF 0%, #F5E6B8 30%, #D4A843 60%, #FF6B35 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    margin: 0,
-                    position: "relative",
-                    textShadow: "none",
-                  }}>
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      width: 450,
+                      height: 100,
+                      background: "radial-gradient(ellipse, rgba(212,168,67,0.12) 0%, transparent 70%)",
+                      pointerEvents: "none",
+                    }}
+                  />
+                  <h1
+                    style={{
+                      fontSize: 48,
+                      fontWeight: 900,
+                      lineHeight: 1.05,
+                      letterSpacing: 3,
+                      textTransform: "uppercase",
+                      background: "linear-gradient(135deg, #FFFFFF 0%, #F5E6B8 30%, #D4A843 60%, #FF6B35 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      margin: 0,
+                      position: "relative",
+                      textShadow: "none",
+                    }}
+                  >
                     {session.title}
                   </h1>
                 </div>
 
                 {/* Gold ornament */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, margin: "20px 0 0" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    margin: "20px 0 0",
+                  }}
+                >
                   <div style={{ width: 50, height: 1, background: "linear-gradient(90deg, transparent, #D4A843)" }} />
                   <span style={{ color: "#D4A843", fontSize: 10 }}>{"\u2726"}</span>
                   <div style={{ width: 50, height: 1, background: "linear-gradient(90deg, #D4A843, transparent)" }} />
@@ -357,10 +487,32 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                       const catColor = CATEGORY_COLORS[choice.category] || "#D4A843";
                       return (
                         <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                          <div style={{ width: 8, height: 8, borderRadius: "50%", background: catColor, marginTop: 6, flexShrink: 0, boxShadow: `0 0 10px ${catColor}50` }} />
+                          <div
+                            style={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: "50%",
+                              background: catColor,
+                              marginTop: 6,
+                              flexShrink: 0,
+                              boxShadow: `0 0 10px ${catColor}50`,
+                            }}
+                          />
                           <div style={{ flex: 1 }}>
-                            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: catColor }}>{catLabel}</span>
-                            <p style={{ fontSize: 13, lineHeight: 1.55, color: "#CBD5E1", margin: "2px 0 0" }}>{choice.chosen_text}</p>
+                            <span
+                              style={{
+                                fontSize: 9,
+                                fontWeight: 700,
+                                letterSpacing: 2,
+                                textTransform: "uppercase",
+                                color: catColor,
+                              }}
+                            >
+                              {catLabel}
+                            </span>
+                            <p style={{ fontSize: 13, lineHeight: 1.55, color: "#CBD5E1", margin: "2px 0 0" }}>
+                              {choice.chosen_text}
+                            </p>
                           </div>
                         </div>
                       );
@@ -378,13 +530,62 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                       const key = `${p.prenom}-${p.studentName}`;
                       const svg = avatarSvgs[key] || "";
                       return (
-                        <div key={i} style={{ width: 118, background: "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)", border: "1px solid rgba(212,168,67,0.12)", borderRadius: 12, padding: "10px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
-                          <div style={{ width: 56, height: 56, borderRadius: 28, overflow: "hidden", flexShrink: 0, border: "2px solid rgba(212,168,67,0.2)" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true } }) }} />
-                          <span style={{ fontSize: 12, fontWeight: 700, color: "#F1F5F9", textAlign: "center", lineHeight: 1.2 }}>{p.prenom}</span>
+                        <div
+                          key={i}
+                          style={{
+                            width: 118,
+                            background:
+                              "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)",
+                            border: "1px solid rgba(212,168,67,0.12)",
+                            borderRadius: 12,
+                            padding: "10px 8px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: 5,
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: 56,
+                              height: 56,
+                              borderRadius: 28,
+                              overflow: "hidden",
+                              flexShrink: 0,
+                              border: "2px solid rgba(212,168,67,0.2)",
+                            }}
+                            dangerouslySetInnerHTML={{
+                              __html: DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true } }),
+                            }}
+                          />
+                          <span
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 700,
+                              color: "#F1F5F9",
+                              textAlign: "center",
+                              lineHeight: 1.2,
+                            }}
+                          >
+                            {p.prenom}
+                          </span>
                           {p.trait_dominant && (
-                            <span style={{ fontSize: 8, fontWeight: 700, color: "#FF6B35", textTransform: "uppercase", letterSpacing: 1.5, textAlign: "center" }}>{p.trait_dominant}</span>
+                            <span
+                              style={{
+                                fontSize: 8,
+                                fontWeight: 700,
+                                color: "#FF6B35",
+                                textTransform: "uppercase",
+                                letterSpacing: 1.5,
+                                textAlign: "center",
+                              }}
+                            >
+                              {p.trait_dominant}
+                            </span>
                           )}
-                          <span style={{ fontSize: 8, color: "#64748B", textAlign: "center", fontStyle: "italic" }}>par {p.studentName}</span>
+                          <span style={{ fontSize: 8, color: "#64748B", textAlign: "center", fontStyle: "italic" }}>
+                            par {p.studentName}
+                          </span>
                         </div>
                       );
                     })}
@@ -396,18 +597,66 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
               {construction.length > 0 && (
                 <div style={{ marginBottom: 28 }}>
                   <GoldDivider label="Construction" />
-                  <div style={{ display: "flex", flexDirection: "column", gap: 0, position: "relative", paddingLeft: 20 }}>
-                    <div style={{ position: "absolute", left: 5, top: 6, bottom: 6, width: 1, background: "linear-gradient(180deg, #D4A843, rgba(212,168,67,0.15))" }} />
+                  <div
+                    style={{ display: "flex", flexDirection: "column", gap: 0, position: "relative", paddingLeft: 20 }}
+                  >
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: 5,
+                        top: 6,
+                        bottom: 6,
+                        width: 1,
+                        background: "linear-gradient(180deg, #D4A843, rgba(212,168,67,0.15))",
+                      }}
+                    />
                     {construction.map((c, idx) => {
                       const label = MANCHE_LABELS[c.manche] || `Manche ${c.manche}`;
                       const roman = ROMAN[c.manche - 1] || String(c.manche);
                       return (
-                        <div key={c.manche} style={{ display: "flex", gap: 14, alignItems: "flex-start", paddingBottom: idx < construction.length - 1 ? 12 : 0, position: "relative" }}>
-                          <div style={{ position: "absolute", left: -18, top: 4, width: 10, height: 10, borderRadius: "50%", background: "#0F1219", border: "2px solid #D4A843", boxShadow: "0 0 6px rgba(212,168,67,0.3)" }} />
-                          <span style={{ fontSize: 11, fontWeight: 800, color: "#D4A843", minWidth: 24, flexShrink: 0 }}>{roman}</span>
+                        <div
+                          key={c.manche}
+                          style={{
+                            display: "flex",
+                            gap: 14,
+                            alignItems: "flex-start",
+                            paddingBottom: idx < construction.length - 1 ? 12 : 0,
+                            position: "relative",
+                          }}
+                        >
+                          <div
+                            style={{
+                              position: "absolute",
+                              left: -18,
+                              top: 4,
+                              width: 10,
+                              height: 10,
+                              borderRadius: "50%",
+                              background: "#0F1219",
+                              border: "2px solid #D4A843",
+                              boxShadow: "0 0 6px rgba(212,168,67,0.3)",
+                            }}
+                          />
+                          <span
+                            style={{ fontSize: 11, fontWeight: 800, color: "#D4A843", minWidth: 24, flexShrink: 0 }}
+                          >
+                            {roman}
+                          </span>
                           <div style={{ flex: 1 }}>
-                            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "#94A3B8" }}>{label}</span>
-                            <p style={{ fontSize: 12, lineHeight: 1.5, color: "#CBD5E1", margin: "2px 0 0" }}>{c.winning_text}</p>
+                            <span
+                              style={{
+                                fontSize: 9,
+                                fontWeight: 700,
+                                letterSpacing: 2,
+                                textTransform: "uppercase",
+                                color: "#94A3B8",
+                              }}
+                            >
+                              {label}
+                            </span>
+                            <p style={{ fontSize: 12, lineHeight: 1.5, color: "#CBD5E1", margin: "2px 0 0" }}>
+                              {c.winning_text}
+                            </p>
                           </div>
                         </div>
                       );
@@ -425,19 +674,28 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                     <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-end" }}>
                       {col1.map((s, i) => (
                         <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <span style={{ fontSize: 13, fontWeight: 500, color: "#CBD5E1", letterSpacing: 0.5 }}>{s.display_name}</span>
+                          <span style={{ fontSize: 13, fontWeight: 500, color: "#CBD5E1", letterSpacing: 0.5 }}>
+                            {s.display_name}
+                          </span>
                           <span style={{ fontSize: 18 }}>{s.avatar}</span>
                         </div>
                       ))}
                     </div>
                     {/* Divider line */}
-                    <div style={{ width: 1, background: "linear-gradient(180deg, transparent, rgba(212,168,67,0.25), transparent)" }} />
+                    <div
+                      style={{
+                        width: 1,
+                        background: "linear-gradient(180deg, transparent, rgba(212,168,67,0.25), transparent)",
+                      }}
+                    />
                     {/* Column 2 */}
                     <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-start" }}>
                       {col2.map((s, i) => (
                         <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                           <span style={{ fontSize: 18 }}>{s.avatar}</span>
-                          <span style={{ fontSize: 13, fontWeight: 500, color: "#CBD5E1", letterSpacing: 0.5 }}>{s.display_name}</span>
+                          <span style={{ fontSize: 13, fontWeight: 500, color: "#CBD5E1", letterSpacing: 0.5 }}>
+                            {s.display_name}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -454,10 +712,36 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                   </span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 999, border: "1px solid rgba(212,168,67,0.2)", background: "rgba(212,168,67,0.05)", fontSize: 10, color: "#D4A843", fontWeight: 600 }}>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      padding: "3px 10px",
+                      borderRadius: 999,
+                      border: "1px solid rgba(212,168,67,0.2)",
+                      background: "rgba(212,168,67,0.05)",
+                      fontSize: 10,
+                      color: "#D4A843",
+                      fontWeight: 600,
+                    }}
+                  >
                     {"\u2726"} {stats.totalStudents} élèves
                   </span>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 999, border: "1px solid rgba(212,168,67,0.2)", background: "rgba(212,168,67,0.05)", fontSize: 10, color: "#D4A843", fontWeight: 600 }}>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      padding: "3px 10px",
+                      borderRadius: 999,
+                      border: "1px solid rgba(212,168,67,0.2)",
+                      background: "rgba(212,168,67,0.05)",
+                      fontSize: 10,
+                      color: "#D4A843",
+                      fontWeight: 600,
+                    }}
+                  >
                     {"\u2726"} {stats.totalResponses} réponses
                   </span>
                 </div>
@@ -465,25 +749,43 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
 
               {/* ═══ Branding footer ═══ */}
               <div style={{ textAlign: "center", paddingTop: 20 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginBottom: 14 }}>
-                  <div style={{ width: 60, height: 1, background: "linear-gradient(90deg, transparent, rgba(212,168,67,0.3))" }} />
+                <div
+                  style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginBottom: 14 }}
+                >
+                  <div
+                    style={{
+                      width: 60,
+                      height: 1,
+                      background: "linear-gradient(90deg, transparent, rgba(212,168,67,0.3))",
+                    }}
+                  />
                   <span style={{ color: "#D4A843", fontSize: 6 }}>{"\u2726"}</span>
-                  <div style={{ width: 60, height: 1, background: "linear-gradient(90deg, rgba(212,168,67,0.3), transparent)" }} />
+                  <div
+                    style={{
+                      width: 60,
+                      height: 1,
+                      background: "linear-gradient(90deg, rgba(212,168,67,0.3), transparent)",
+                    }}
+                  />
                 </div>
-                <p style={{
-                  fontSize: 24,
-                  fontWeight: 900,
-                  letterSpacing: 8,
-                  textTransform: "uppercase",
-                  background: "linear-gradient(135deg, #D4A843 0%, #FF6B35 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                  margin: 0,
-                }}>
+                <p
+                  style={{
+                    fontSize: 24,
+                    fontWeight: 900,
+                    letterSpacing: 8,
+                    textTransform: "uppercase",
+                    background: "linear-gradient(135deg, #D4A843 0%, #FF6B35 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    margin: 0,
+                  }}
+                >
                   Banlieuwood
                 </p>
-                <p style={{ fontSize: 9, color: "#4B5563", letterSpacing: 4, textTransform: "uppercase", marginTop: 5 }}>
+                <p
+                  style={{ fontSize: 9, color: "#4B5563", letterSpacing: 4, textTransform: "uppercase", marginTop: 5 }}
+                >
                   Atelier Cinéma &middot; {new Date().getFullYear()}
                 </p>
               </div>
@@ -493,8 +795,26 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
             <FilmStripBar prefix="bottom" />
 
             {/* Side accents */}
-            <div style={{ position: "absolute", left: 0, top: 18, bottom: 18, width: 4, background: "linear-gradient(180deg, #D4A843 0%, rgba(212,168,67,0.15) 50%, #D4A843 100%)" }} />
-            <div style={{ position: "absolute", right: 0, top: 18, bottom: 18, width: 4, background: "linear-gradient(180deg, #D4A843 0%, rgba(212,168,67,0.15) 50%, #D4A843 100%)" }} />
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 18,
+                bottom: 18,
+                width: 4,
+                background: "linear-gradient(180deg, #D4A843 0%, rgba(212,168,67,0.15) 50%, #D4A843 100%)",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                right: 0,
+                top: 18,
+                bottom: 18,
+                width: 4,
+                background: "linear-gradient(180deg, #D4A843 0%, rgba(212,168,67,0.15) 50%, #D4A843 100%)",
+              }}
+            />
           </div>
         </div>
       </div>

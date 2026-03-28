@@ -37,9 +37,7 @@ export function CountdownTimer({ endsAt, size = "md", onExpired }: CountdownTime
 
   const mins = Math.floor(secondsLeft / 60);
   const secs = secondsLeft % 60;
-  const display = mins > 0
-    ? `${mins}:${secs.toString().padStart(2, "0")}`
-    : `${secs}s`;
+  const display = mins > 0 ? `${mins}:${secs.toString().padStart(2, "0")}` : `${secs}s`;
 
   const sizeClasses = {
     sm: "text-sm px-2.5 py-1",
@@ -62,16 +60,29 @@ export function CountdownTimer({ endsAt, size = "md", onExpired }: CountdownTime
             boxShadow: "0 0 20px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255,255,255,0.04)",
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
           </svg>
           Temps &eacute;coul&eacute; !
         </motion.div>
       ) : (
         <motion.div
           key="counting"
-          animate={isCritical ? { scale: [1, 1.1, 1], x: [0, -2, 2, -1, 1, 0] } : isUrgent ? { scale: [1, 1.08, 1] } : {}}
-          transition={isCritical ? { repeat: Infinity, duration: 0.3 } : isUrgent ? { repeat: Infinity, duration: 0.8 } : {}}
+          animate={
+            isCritical ? { scale: [1, 1.1, 1], x: [0, -2, 2, -1, 1, 0] } : isUrgent ? { scale: [1, 1.08, 1] } : {}
+          }
+          transition={
+            isCritical ? { repeat: Infinity, duration: 0.3 } : isUrgent ? { repeat: Infinity, duration: 0.8 } : {}
+          }
           className={`inline-flex items-center gap-2 rounded-xl backdrop-blur-md ${sizeClasses[size]}`}
           style={{
             background: isCritical
@@ -92,8 +103,17 @@ export function CountdownTimer({ endsAt, size = "md", onExpired }: CountdownTime
                 : "0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
           </svg>
           {display}
         </motion.div>

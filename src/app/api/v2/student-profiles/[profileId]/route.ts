@@ -8,7 +8,7 @@ import { isValidUUID, withErrorHandler, safeJson } from "@/lib/api-utils";
  */
 export const GET = withErrorHandler<{ profileId: string }>(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ profileId: string }> }
+  { params }: { params: Promise<{ profileId: string }> },
 ) {
   const { profileId } = await params;
   if (!isValidUUID(profileId)) {
@@ -47,9 +47,7 @@ export const GET = withErrorHandler<{ profileId: string }>(async function GET(
   }
 
   const studentIds = students.map((s) => s.id);
-  const student = students.sort((a, b) =>
-    (b.joined_at || "").localeCompare(a.joined_at || "")
-  )[0];
+  const student = students.sort((a, b) => (b.joined_at || "").localeCompare(a.joined_at || ""))[0];
 
   // ── Parallel queries ──
   const [
@@ -71,16 +69,15 @@ export const GET = withErrorHandler<{ profileId: string }>(async function GET(
     // Recent responses (last 30 with full data)
     supabase
       .from("responses")
-      .select("id, situation_id, text, ai_score, response_time_ms, teacher_score, teacher_flag, is_highlighted, submitted_at, situations(category, restitution_label)")
+      .select(
+        "id, situation_id, text, ai_score, response_time_ms, teacher_score, teacher_flag, is_highlighted, submitted_at, situations(category, restitution_label)",
+      )
       .in("student_id", studentIds)
       .order("submitted_at", { ascending: false })
       .limit(30),
 
     // Total response count (separate query, no limit)
-    supabase
-      .from("responses")
-      .select("id", { count: "exact", head: true })
-      .in("student_id", studentIds),
+    supabase.from("responses").select("id", { count: "exact", head: true }).in("student_id", studentIds),
 
     // Facilitator tags across all sessions
     supabase
@@ -122,10 +119,7 @@ export const GET = withErrorHandler<{ profileId: string }>(async function GET(
       .limit(1),
 
     // Reaction counts received on this student's responses
-    supabase
-      .from("response_reactions")
-      .select("emoji")
-      .in("session_id", facSessionIds),
+    supabase.from("response_reactions").select("emoji").in("session_id", facSessionIds),
 
     // Achievements
     supabase
@@ -241,15 +235,13 @@ export const GET = withErrorHandler<{ profileId: string }>(async function GET(
 
   // ── Average ai_score across all responses ──
   const aiScores = responses.filter((r) => r.ai_score !== null).map((r) => r.ai_score as number);
-  const avgAiScore = aiScores.length > 0
-    ? Math.round((aiScores.reduce((a, b) => a + b, 0) / aiScores.length) * 10) / 10
-    : null;
+  const avgAiScore =
+    aiScores.length > 0 ? Math.round((aiScores.reduce((a, b) => a + b, 0) / aiScores.length) * 10) / 10 : null;
 
   // ── Average response time ──
   const responseTimes = responses.filter((r) => r.response_time_ms !== null).map((r) => r.response_time_ms as number);
-  const avgResponseTimeMs = responseTimes.length > 0
-    ? Math.round(responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length)
-    : null;
+  const avgResponseTimeMs =
+    responseTimes.length > 0 ? Math.round(responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length) : null;
 
   return NextResponse.json({
     profileId,
@@ -279,7 +271,7 @@ export const GET = withErrorHandler<{ profileId: string }>(async function GET(
  */
 export const PATCH = withErrorHandler<{ profileId: string }>(async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ profileId: string }> }
+  { params }: { params: Promise<{ profileId: string }> },
 ) {
   const { profileId } = await params;
   if (!isValidUUID(profileId)) {
@@ -306,10 +298,7 @@ export const PATCH = withErrorHandler<{ profileId: string }>(async function PATC
   }
 
   // Get facilitator sessions to verify ownership
-  const { data: facSessions } = await supabase
-    .from("sessions")
-    .select("id")
-    .eq("facilitator_id", user.id);
+  const { data: facSessions } = await supabase.from("sessions").select("id").eq("facilitator_id", user.id);
 
   if (!facSessions || facSessions.length === 0) {
     return NextResponse.json({ error: "Aucune seance trouvee" }, { status: 404 });

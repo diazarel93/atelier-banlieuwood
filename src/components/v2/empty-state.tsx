@@ -40,23 +40,14 @@ const ACCENT_STYLES = {
   },
 };
 
-export function EmptyState({
-  icon,
-  title,
-  description,
-  action,
-  accent = "primary",
-  className,
-}: EmptyStateProps) {
+export function EmptyState({ icon, title, description, action, accent = "primary", className }: EmptyStateProps) {
   const styles = ACCENT_STYLES[accent];
 
   const actionClasses =
     "inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 hover:shadow-md active:scale-[0.98] transition-all duration-150";
 
   return (
-    <GlassCardV2
-      className={`py-14 px-8 flex flex-col items-center text-center max-w-md mx-auto ${className || ""}`}
-    >
+    <GlassCardV2 className={`py-14 px-8 flex flex-col items-center text-center max-w-md mx-auto ${className || ""}`}>
       {/* Icon with gradient background + ring */}
       <div
         className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl ring-1 ring-inset ${styles.ring} ${styles.bg} ${styles.icon}`}
@@ -65,9 +56,7 @@ export function EmptyState({
       </div>
 
       <h2 className="text-heading-md text-bw-heading mb-2">{title}</h2>
-      <p className="text-body-sm text-bw-muted leading-relaxed mb-8 max-w-xs">
-        {description}
-      </p>
+      <p className="text-body-sm text-bw-muted leading-relaxed mb-8 max-w-xs">{description}</p>
 
       {action &&
         (action.href ? (
@@ -87,11 +76,7 @@ export function EmptyState({
             </svg>
           </Link>
         ) : (
-          <button
-            type="button"
-            onClick={action.onClick}
-            className={actionClasses}
-          >
+          <button type="button" onClick={action.onClick} className={actionClasses}>
             {action.label}
           </button>
         ))}

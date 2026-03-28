@@ -10,7 +10,15 @@ interface OnboardingSlidesProps {
 const SLIDES = [
   {
     icon: (
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round">
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#FF6B35"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      >
         <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
       </svg>
     ),
@@ -21,7 +29,15 @@ const SLIDES = [
   },
   {
     icon: (
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="1.5" strokeLinecap="round">
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#8B5CF6"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      >
         <path d="M7 10v12M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z" />
       </svg>
     ),
@@ -32,9 +48,18 @@ const SLIDES = [
   },
   {
     icon: (
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D4A843" strokeWidth="1.5" strokeLinecap="round">
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#D4A843"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      >
         <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C5.71 4 7 5.71 7 8v11a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8c0-2.29 1.29-4 2.5-4a2.5 2.5 0 0 1 0 5H18" />
-        <path d="M12 4v4" /><path d="M8 4h8" />
+        <path d="M12 4v4" />
+        <path d="M8 4h8" />
       </svg>
     ),
     title: "GAGNE",
@@ -69,7 +94,10 @@ export function OnboardingSlides({ onComplete }: OnboardingSlidesProps) {
     >
       {/* Skip button */}
       <button
-        onClick={(e) => { e.stopPropagation(); onComplete(); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onComplete();
+        }}
         aria-label="Passer le tutoriel"
         className="absolute top-6 right-6 text-xs text-bw-muted hover:text-bw-text transition-colors cursor-pointer"
       >
@@ -102,9 +130,7 @@ export function OnboardingSlides({ onComplete }: OnboardingSlidesProps) {
           </h2>
 
           {/* Text */}
-          <p className="text-sm text-bw-text leading-relaxed whitespace-pre-line">
-            {slide.text}
-          </p>
+          <p className="text-sm text-bw-text leading-relaxed whitespace-pre-line">{slide.text}</p>
 
           {/* XP badge */}
           <span
@@ -139,9 +165,15 @@ export function OnboardingSlides({ onComplete }: OnboardingSlidesProps) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          onClick={(e) => { e.stopPropagation(); onComplete(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onComplete();
+          }}
           className="absolute bottom-24 px-8 py-3 rounded-xl font-bold text-white cursor-pointer"
-          style={{ background: `linear-gradient(135deg, #FF6B35, #D4A843)`, boxShadow: "0 4px 15px rgba(255,107,53,0.3)" }}
+          style={{
+            background: `linear-gradient(135deg, #FF6B35, #D4A843)`,
+            boxShadow: "0 4px 15px rgba(255,107,53,0.3)",
+          }}
         >
           C&apos;est parti !
         </motion.button>

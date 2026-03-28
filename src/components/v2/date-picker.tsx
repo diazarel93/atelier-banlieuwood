@@ -12,9 +12,7 @@ interface DatePickerProps {
 export function DatePicker({ value, onChange, label, className }: DatePickerProps) {
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      {label && (
-        <label className="text-xs font-medium text-bw-muted">{label}</label>
-      )}
+      {label && <label className="text-xs font-medium text-bw-muted">{label}</label>}
       <input
         type="datetime-local"
         value={value}

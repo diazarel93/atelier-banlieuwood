@@ -11,12 +11,7 @@ export interface NotebookStateProps {
   onAnswered: () => void;
 }
 
-export function NotebookState({
-  module1,
-  sessionId,
-  studentId,
-  onAnswered,
-}: NotebookStateProps) {
+export function NotebookState({ module1, sessionId, studentId, onAnswered }: NotebookStateProps) {
   const [text, setText] = useState(module1.existingText || "");
   const [saving, setSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<string | null>(module1.existingText ? "Chargé" : null);
@@ -52,26 +47,37 @@ export function NotebookState({
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="flex flex-col gap-4 w-full h-full">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="flex flex-col gap-4 w-full h-full"
+    >
       {/* Header */}
       <div className="text-center space-y-2">
         <span className="text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-bw-violet/20 text-bw-violet">
           Carnet d&apos;observation
         </span>
         <div className="flex items-center gap-2 text-bw-violet">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.35-4.35" />
           </svg>
           <span className="text-sm font-medium">Mission d&apos;observation</span>
         </div>
-        {module1.question && (
-          <p className="text-sm text-bw-muted">{module1.question.text}</p>
-        )}
+        {module1.question && <p className="text-sm text-bw-muted">{module1.question.text}</p>}
       </div>
 
       {/* Large textarea */}
@@ -90,14 +96,15 @@ export function NotebookState({
         <p className="text-xs text-bw-muted">Tu peux noter par exemple :</p>
         <div className="flex flex-wrap gap-2">
           {(module1.suggestions || ["une dispute", "un moment gênant", "un moment drôle", "une injustice"]).map((s) => (
-            <span key={s} className="text-xs px-2 py-0.5 rounded-full bg-bw-violet/10 text-bw-violet/70 border border-bw-violet/20">
+            <span
+              key={s}
+              className="text-xs px-2 py-0.5 rounded-full bg-bw-violet/10 text-bw-violet/70 border border-bw-violet/20"
+            >
               {s}
             </span>
           ))}
         </div>
-        {module1.encouragement && (
-          <p className="text-xs text-bw-violet/80 italic mt-1">{module1.encouragement}</p>
-        )}
+        {module1.encouragement && <p className="text-xs text-bw-violet/80 italic mt-1">{module1.encouragement}</p>}
       </div>
 
       {/* Footer with char count and save status */}

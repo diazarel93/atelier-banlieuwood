@@ -5,7 +5,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // GET — all responses for a session (facilitator only)
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
@@ -54,7 +54,7 @@ export const GET = withErrorHandler(async function GET(
 // PATCH — update a response (facilitator only: comment, highlight, hide, vote_option)
 export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "responses-update", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -72,7 +72,15 @@ export const PATCH = withErrorHandler(async function PATCH(
     return NextResponse.json({ error: "responseId requis et valide" }, { status: 400 });
   }
 
-  const allowed = ["teacher_comment", "is_highlighted", "is_hidden", "is_vote_option", "teacher_score", "ai_score", "ai_feedback"];
+  const allowed = [
+    "teacher_comment",
+    "is_highlighted",
+    "is_hidden",
+    "is_vote_option",
+    "teacher_score",
+    "ai_score",
+    "ai_feedback",
+  ];
   const updates: Record<string, unknown> = {};
   for (const key of allowed) {
     if (key in body) updates[key] = body[key];

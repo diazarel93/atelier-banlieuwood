@@ -6,7 +6,7 @@ import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
 // idea bank, collective choices, module-specific data
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const studentId = req.nextUrl.searchParams.get("studentId");
@@ -60,7 +60,9 @@ export const GET = withErrorHandler(async function GET(
     // 1. Student's own responses
     admin
       .from("responses")
-      .select("id, situation_id, text, submitted_at, relance_text, relance_response, teacher_comment, teacher_score, ai_score")
+      .select(
+        "id, situation_id, text, submitted_at, relance_text, relance_response, teacher_comment, teacher_score, ai_score",
+      )
       .eq("session_id", sessionId)
       .eq("student_id", studentId)
       .order("submitted_at", { ascending: true }),
@@ -130,11 +132,7 @@ export const GET = withErrorHandler(async function GET(
       .maybeSingle(),
 
     // 10. Student count
-    admin
-      .from("students")
-      .select("id", { count: "exact", head: true })
-      .eq("session_id", sessionId)
-      .eq("kicked", false),
+    admin.from("students").select("id", { count: "exact", head: true }).eq("session_id", sessionId).eq("kicked", false),
   ]);
 
   // Build my response IDs set for "isMine" marking

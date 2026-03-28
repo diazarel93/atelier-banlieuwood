@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useEffect, useId, useRef, useState } from "react"
-import { cn } from "@/lib/utils"
+import { useEffect, useId, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 /* ═══════════════════════════════════════════════════════════════
    PROGRESS RING — animated circular progress indicator
@@ -9,22 +9,22 @@ import { cn } from "@/lib/utils"
 
 interface ProgressRingProps {
   /** Progress value from 0 to 100 */
-  value: number
+  value: number;
   /** Size variant */
-  size?: "sm" | "md" | "lg" | "xl"
+  size?: "sm" | "md" | "lg" | "xl";
   /** Stroke color (hex) */
-  color?: string
+  color?: string;
   /** Track (background circle) color */
-  trackColor?: string
+  trackColor?: string;
   /** Stroke width in pixels */
-  strokeWidth?: number
+  strokeWidth?: number;
   /** Show percentage value in center */
-  showValue?: boolean
+  showValue?: boolean;
   /** Small label below the value */
-  label?: string
+  label?: string;
   /** Use a gradient stroke (e.g. orange to gold) */
-  gradient?: boolean
-  className?: string
+  gradient?: boolean;
+  className?: string;
 }
 
 const sizeConfig: Record<string, { px: number; fontSize: number; labelSize: number }> = {
@@ -32,7 +32,7 @@ const sizeConfig: Record<string, { px: number; fontSize: number; labelSize: numb
   md: { px: 56, fontSize: 13, labelSize: 0 },
   lg: { px: 72, fontSize: 16, labelSize: 9 },
   xl: { px: 96, fontSize: 22, labelSize: 11 },
-}
+};
 
 export function ProgressRing({
   value,
@@ -45,55 +45,47 @@ export function ProgressRing({
   gradient = false,
   className,
 }: ProgressRingProps) {
-  const config = sizeConfig[size]
-  const radius = (config.px - strokeWidth) / 2
-  const circumference = 2 * Math.PI * radius
-  const clampedValue = Math.max(0, Math.min(100, value))
-  const targetOffset = circumference - (clampedValue / 100) * circumference
+  const config = sizeConfig[size];
+  const radius = (config.px - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const clampedValue = Math.max(0, Math.min(100, value));
+  const targetOffset = circumference - (clampedValue / 100) * circumference;
 
-  const [offset, setOffset] = useState(circumference)
-  const [prefersReduced, setPrefersReduced] = useState(false)
-  const hasAnimated = useRef(false)
+  const [offset, setOffset] = useState(circumference);
+  const [prefersReduced, setPrefersReduced] = useState(false);
+  const hasAnimated = useRef(false);
 
   // Detect prefers-reduced-motion
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
-    setPrefersReduced(mq.matches)
-    const handler = (e: MediaQueryListEvent) => setPrefersReduced(e.matches)
-    mq.addEventListener("change", handler)
-    return () => mq.removeEventListener("change", handler)
-  }, [])
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReduced(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setPrefersReduced(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   // Animate on mount and on value change
   useEffect(() => {
     if (prefersReduced) {
-      setOffset(targetOffset)
-      return
+      setOffset(targetOffset);
+      return;
     }
 
     // Small delay for mount animation
-    const timer = setTimeout(
-      () => setOffset(targetOffset),
-      hasAnimated.current ? 0 : 100
-    )
-    hasAnimated.current = true
-    return () => clearTimeout(timer)
-  }, [targetOffset, prefersReduced])
+    const timer = setTimeout(() => setOffset(targetOffset), hasAnimated.current ? 0 : 100);
+    hasAnimated.current = true;
+    return () => clearTimeout(timer);
+  }, [targetOffset, prefersReduced]);
 
-  const gradientId = useId()
-  const canShowLabel = (size === "lg" || size === "xl") && label
+  const gradientId = useId();
+  const canShowLabel = (size === "lg" || size === "xl") && label;
 
   return (
     <div
       className={cn("relative inline-flex items-center justify-center", className)}
       style={{ width: config.px, height: config.px }}
     >
-      <svg
-        width={config.px}
-        height={config.px}
-        viewBox={`0 0 ${config.px} ${config.px}`}
-        className="block -rotate-90"
-      >
+      <svg width={config.px} height={config.px} viewBox={`0 0 ${config.px} ${config.px}`} className="block -rotate-90">
         {gradient && (
           <defs>
             <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
@@ -125,9 +117,7 @@ export function ProgressRing({
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           style={{
-            transition: prefersReduced
-              ? "none"
-              : "stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+            transition: prefersReduced ? "none" : "stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         />
       </svg>
@@ -136,29 +126,20 @@ export function ProgressRing({
       {(showValue || canShowLabel) && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {showValue && (
-            <span
-              className="font-bold text-bw-heading leading-none tabular-nums"
-              style={{ fontSize: config.fontSize }}
-            >
+            <span className="font-bold text-bw-heading leading-none tabular-nums" style={{ fontSize: config.fontSize }}>
               {Math.round(clampedValue)}
-              <span
-                className="text-bw-muted"
-                style={{ fontSize: config.fontSize * 0.6 }}
-              >
+              <span className="text-bw-muted" style={{ fontSize: config.fontSize * 0.6 }}>
                 %
               </span>
             </span>
           )}
           {canShowLabel && (
-            <span
-              className="text-bw-muted mt-0.5 leading-none"
-              style={{ fontSize: config.labelSize }}
-            >
+            <span className="text-bw-muted mt-0.5 leading-none" style={{ fontSize: config.labelSize }}>
               {label}
             </span>
           )}
         </div>
       )}
     </div>
-  )
+  );
 }

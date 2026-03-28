@@ -33,7 +33,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
       className={cn(
         "inline-flex items-center rounded-lg bg-white/[0.04] border border-white/[0.06] p-0.5",
         isPending && "opacity-60 pointer-events-none",
-        className
+        className,
       )}
     >
       {LOCALES.map(({ code, flag, label }) => (
@@ -42,9 +42,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
           onClick={() => switchLocale(code)}
           className={cn(
             "flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all",
-            currentLocale === code
-              ? "bg-white/[0.08] text-white"
-              : "text-bw-muted hover:text-bw-text"
+            currentLocale === code ? "bg-white/[0.08] text-white" : "text-bw-muted hover:text-bw-text",
           )}
           aria-label={`Switch to ${label}`}
         >

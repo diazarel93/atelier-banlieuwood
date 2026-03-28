@@ -50,7 +50,12 @@ export interface Emotion {
 
 export const EMOTIONS: Emotion[] = [
   { key: "exclusion", label: "Peur d'être exclu", color: "#8B5CF6", desc: "Se sentir rejeté, invisible" },
-  { key: "injustice", label: "Colère face à une injustice", color: "#EF4444", desc: "Quelque chose de profondément injuste" },
+  {
+    key: "injustice",
+    label: "Colère face à une injustice",
+    color: "#EF4444",
+    desc: "Quelque chose de profondément injuste",
+  },
   { key: "honte", label: "Honte après une erreur", color: "#F59E0B", desc: "Vouloir disparaître" },
   { key: "jalousie", label: "Jalousie envers un ami", color: "#10B981", desc: "Envier ce que l'autre a" },
   { key: "joie_fragile", label: "Joie fragile", color: "#EC4899", desc: "Un bonheur qui pourrait s'effondrer" },
@@ -67,8 +72,8 @@ export interface SceneElement {
   key: string;
   label: string;
   tier: 0 | 1 | 2 | 3;
-  cost: number;   // tokens
-  slots: number;  // always 1
+  cost: number; // tokens
+  slots: number; // always 1
 }
 
 export const SCENE_ELEMENTS: SceneElement[] = [
@@ -118,10 +123,10 @@ export const MIN_CHECKLIST = 3;
 
 // ── Tier colors for UI ──
 export const TIER_COLORS: Record<number, string> = {
-  0: "#4ECDC4",  // teal — free
-  1: "#F59E0B",  // amber
-  2: "#FF6B35",  // orange
-  3: "#EF4444",  // red — expensive
+  0: "#4ECDC4", // teal — free
+  1: "#F59E0B", // amber
+  2: "#FF6B35", // orange
+  3: "#EF4444", // red — expensive
 };
 
 export const TIER_LABELS: Record<number, string> = {

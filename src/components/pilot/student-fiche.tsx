@@ -124,7 +124,17 @@ export function StudentFiche({
         onClick={onBack}
         className="flex items-center gap-1.5 text-xs text-bw-muted hover:text-bw-heading cursor-pointer transition-colors"
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        >
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
         Retour au flux
       </button>
 
@@ -143,17 +153,13 @@ export function StudentFiche({
             <div className="flex items-center gap-2 mt-0.5">
               <span className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stateInfo.color }} />
-                <span className="text-xs" style={{ color: stateInfo.color }}>{stateInfo.label}</span>
+                <span className="text-xs" style={{ color: stateInfo.color }}>
+                  {stateInfo.label}
+                </span>
               </span>
-              {student.hand_raised_at && (
-                <span className="text-xs text-amber-400 font-medium">✋ Main levée</span>
-              )}
-              {warnings > 0 && (
-                <span className="text-xs text-amber-400 font-medium">{warnings}/3 avert.</span>
-              )}
-              {!student.is_active && (
-                <span className="text-xs text-red-500 font-medium">En pause</span>
-              )}
+              {student.hand_raised_at && <span className="text-xs text-amber-400 font-medium">✋ Main levée</span>}
+              {warnings > 0 && <span className="text-xs text-amber-400 font-medium">{warnings}/3 avert.</span>}
+              {!student.is_active && <span className="text-xs text-red-500 font-medium">En pause</span>}
             </div>
           </div>
         </div>
@@ -177,31 +183,38 @@ export function StudentFiche({
       )}
 
       {/* Response time indicator */}
-      {responses.length > 0 && respondingOpenedAt && (() => {
-        const firstResponse = responses[0];
-        const responseMs = new Date(firstResponse.submitted_at).getTime() - respondingOpenedAt;
-        if (responseMs <= 0 || responseMs > 600000) return null;
-        const secs = Math.round(responseMs / 1000);
-        const isFast = secs < 20;
-        const isSlow = secs > 60;
-        return (
-          <div
-            className="flex items-center gap-2 px-3 py-2 rounded-[10px]"
-            style={{
-              background: isFast ? "rgba(76,175,80,0.06)" : isSlow ? "rgba(235,87,87,0.06)" : "rgba(107,140,255,0.06)",
-              border: `1px solid ${isFast ? "rgba(76,175,80,0.15)" : isSlow ? "rgba(235,87,87,0.15)" : "rgba(107,140,255,0.15)"}`,
-            }}
-          >
-            <span className="text-[10px]">{isFast ? "⚡" : isSlow ? "🐢" : "⏱️"}</span>
-            <span className="text-[11px] font-semibold" style={{ color: isFast ? "#2E7D32" : isSlow ? "#C62828" : "#3B5998" }}>
-              Temps de reponse : {secs}s
-            </span>
-            <span className="text-[10px] text-bw-muted">
-              {isFast ? "(rapide)" : isSlow ? "(lent)" : ""}
-            </span>
-          </div>
-        );
-      })()}
+      {responses.length > 0 &&
+        respondingOpenedAt &&
+        (() => {
+          const firstResponse = responses[0];
+          const responseMs = new Date(firstResponse.submitted_at).getTime() - respondingOpenedAt;
+          if (responseMs <= 0 || responseMs > 600000) return null;
+          const secs = Math.round(responseMs / 1000);
+          const isFast = secs < 20;
+          const isSlow = secs > 60;
+          return (
+            <div
+              className="flex items-center gap-2 px-3 py-2 rounded-[10px]"
+              style={{
+                background: isFast
+                  ? "rgba(76,175,80,0.06)"
+                  : isSlow
+                    ? "rgba(235,87,87,0.06)"
+                    : "rgba(107,140,255,0.06)",
+                border: `1px solid ${isFast ? "rgba(76,175,80,0.15)" : isSlow ? "rgba(235,87,87,0.15)" : "rgba(107,140,255,0.15)"}`,
+              }}
+            >
+              <span className="text-[10px]">{isFast ? "⚡" : isSlow ? "🐢" : "⏱️"}</span>
+              <span
+                className="text-[11px] font-semibold"
+                style={{ color: isFast ? "#2E7D32" : isSlow ? "#C62828" : "#3B5998" }}
+              >
+                Temps de reponse : {secs}s
+              </span>
+              <span className="text-[10px] text-bw-muted">{isFast ? "(rapide)" : isSlow ? "(lent)" : ""}</span>
+            </div>
+          );
+        })()}
 
       {/* Student responses */}
       <div className="space-y-2">
@@ -214,11 +227,7 @@ export function StudentFiche({
               <ResponseCard
                 key={r.id}
                 response={r}
-                state={
-                  r.is_hidden ? "hidden"
-                    : r.is_vote_option ? "selected"
-                    : "default"
-                }
+                state={r.is_hidden ? "hidden" : r.is_vote_option ? "selected" : "default"}
                 sessionStatus={sessionStatus}
                 onSelect={() => toggleVoteOption.mutate({ responseId: r.id, is_vote_option: !r.is_vote_option })}
                 onHide={() => toggleHide.mutate({ responseId: r.id, is_hidden: !r.is_hidden })}
@@ -271,7 +280,10 @@ export function StudentFiche({
               ref={inputRef}
               value={nudgeText}
               onChange={(e) => setNudgeText(e.target.value.slice(0, 300))}
-              onKeyDown={(e) => { if (e.key === "Enter") handleSendNudge(); if (e.key === "Escape") setShowNudgeInput(false); }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSendNudge();
+                if (e.key === "Escape") setShowNudgeInput(false);
+              }}
               placeholder="Message personnalisé..."
               className="flex-1 bg-bw-bg border border-[#DDD7EC] rounded-lg px-3 py-2 text-sm text-bw-text placeholder:text-bw-muted/50 outline-none focus:border-bw-primary/40 transition-colors"
             />
@@ -292,7 +304,10 @@ export function StudentFiche({
               ref={hintInputRef}
               value={hintText}
               onChange={(e) => setHintText(e.target.value.slice(0, 300))}
-              onKeyDown={(e) => { if (e.key === "Enter") handleSendHint(); if (e.key === "Escape") setShowHintInput(false); }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSendHint();
+                if (e.key === "Escape") setShowHintInput(false);
+              }}
               placeholder="Indice prive pour cet eleve..."
               className="flex-1 bg-bw-bg border border-[#DDD7EC] rounded-lg px-3 py-2 text-sm text-bw-text placeholder:text-bw-muted/50 outline-none focus:border-[#F5A45B]/40 transition-colors"
             />
@@ -320,7 +335,10 @@ export function StudentFiche({
           </button>
           {onPrivateHint && (
             <button
-              onClick={() => { setShowHintInput(!showHintInput); setShowNudgeInput(false); }}
+              onClick={() => {
+                setShowHintInput(!showHintInput);
+                setShowNudgeInput(false);
+              }}
               className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all ${
                 showHintInput ? "text-[#F5A45B] bg-[#F5A45B]/10" : "text-bw-text hover:bg-black/[0.05]"
               }`}
@@ -351,18 +369,11 @@ export function StudentFiche({
               onClick={() => onToggleActive(student.id, !student.is_active)}
               disabled={isToggleActivePending}
               className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all active:scale-95 disabled:opacity-50 ${
-                student.is_active
-                  ? "text-red-500 hover:bg-red-50"
-                  : "text-emerald-600 hover:bg-emerald-50"
+                student.is_active ? "text-red-500 hover:bg-red-50" : "text-emerald-600 hover:bg-emerald-50"
               }`}
             >
               <span className="text-sm">{student.is_active ? "⏸" : "▶️"}</span>
-              {isToggleActivePending
-                ? "..."
-                : student.is_active
-                ? "Mettre en pause"
-                : "Réactiver"
-              }
+              {isToggleActivePending ? "..." : student.is_active ? "Mettre en pause" : "Réactiver"}
             </button>
           )}
         </div>
@@ -381,4 +392,3 @@ export function StudentFiche({
     </motion.div>
   );
 }
-

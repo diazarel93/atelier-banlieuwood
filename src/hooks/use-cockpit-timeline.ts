@@ -42,13 +42,18 @@ export function useCockpitTimeline({
   const { play } = useSound();
 
   const addTimelineEvent = useCallback(
-    (type: TimelineEventType, label: string, detail?: string, severity?: "info" | "positive" | "warning" | "highlight") => {
+    (
+      type: TimelineEventType,
+      label: string,
+      detail?: string,
+      severity?: "info" | "positive" | "warning" | "highlight",
+    ) => {
       const key = `${type}-${label}`;
       if (timelineTracked.current.has(key)) return;
       timelineTracked.current.add(key);
       setTimelineEvents((prev) => [...prev, createTimelineEvent(type, label, detail, severity)]);
     },
-    []
+    [],
   );
 
   // ── Track when responses opened ──
@@ -94,7 +99,11 @@ export function useCockpitTimeline({
       const name = students?.find((s) => s.id === responses[0]?.student_id)?.display_name;
       addTimelineEvent("first_response", "Premiere reponse", name || undefined, "positive");
     }
-    if (activeStudents.length > 2 && curr >= Math.ceil(activeStudents.length / 2) && prev < Math.ceil(activeStudents.length / 2)) {
+    if (
+      activeStudents.length > 2 &&
+      curr >= Math.ceil(activeStudents.length / 2) &&
+      prev < Math.ceil(activeStudents.length / 2)
+    ) {
       addTimelineEvent("half_responded", "50% ont repondu", `${curr}/${activeStudents.length}`, "info");
     }
     prevResponseCountRef.current = curr;
@@ -112,7 +121,7 @@ export function useCockpitTimeline({
           .slice(0, 3)
           .map((s) => s.name?.split(" ")[0])
           .join(", "),
-        "warning"
+        "warning",
       );
     }
     prevStuckCountRef.current = n;

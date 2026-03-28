@@ -128,11 +128,31 @@ function ScenePlage() {
       {/* Sun rays */}
       {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => {
         const rad = (angle * Math.PI) / 180;
-        return <line key={angle} x1={155 + Math.cos(rad) * 13} y1={14 + Math.sin(rad) * 13} x2={155 + Math.cos(rad) * 18} y2={14 + Math.sin(rad) * 18} stroke={AMBER} strokeWidth="0.8" />;
+        return (
+          <line
+            key={angle}
+            x1={155 + Math.cos(rad) * 13}
+            y1={14 + Math.sin(rad) * 13}
+            x2={155 + Math.cos(rad) * 18}
+            y2={14 + Math.sin(rad) * 18}
+            stroke={AMBER}
+            strokeWidth="0.8"
+          />
+        );
       })}
       {/* Waves */}
-      <path d="M0 32 Q15 28 30 32 Q45 36 60 32 Q75 28 90 32 Q105 36 120 32 Q135 28 150 32 Q165 36 180 32 Q195 28 200 32" fill="none" stroke={CYAN} strokeWidth="1.2" />
-      <path d="M0 38 Q20 34 40 38 Q60 42 80 38 Q100 34 120 38 Q140 42 160 38 Q180 34 200 38" fill="none" stroke={CYAN} strokeWidth="0.8" />
+      <path
+        d="M0 32 Q15 28 30 32 Q45 36 60 32 Q75 28 90 32 Q105 36 120 32 Q135 28 150 32 Q165 36 180 32 Q195 28 200 32"
+        fill="none"
+        stroke={CYAN}
+        strokeWidth="1.2"
+      />
+      <path
+        d="M0 38 Q20 34 40 38 Q60 42 80 38 Q100 34 120 38 Q140 42 160 38 Q180 34 200 38"
+        fill="none"
+        stroke={CYAN}
+        strokeWidth="0.8"
+      />
       {/* Sand line */}
       <line x1="0" y1="44" x2="200" y2="44" stroke={SL} strokeWidth="0.8" />
       {/* Umbrella */}
@@ -172,8 +192,12 @@ function SceneConcert() {
       <line x1="100" y1="36" x2="100" y2="54" stroke={S} strokeWidth="1.2" />
       <circle cx="100" cy="35" r="3" fill="none" stroke={S} strokeWidth="1" />
       {/* Music notes */}
-      <text x="60" y="28" fill={AMBER} fontSize="8" fontFamily="serif">&#9834;</text>
-      <text x="135" y="26" fill={CYAN} fontSize="6" fontFamily="serif">&#9835;</text>
+      <text x="60" y="28" fill={AMBER} fontSize="8" fontFamily="serif">
+        &#9834;
+      </text>
+      <text x="135" y="26" fill={CYAN} fontSize="6" fontFamily="serif">
+        &#9835;
+      </text>
     </>
   );
 }
@@ -184,7 +208,13 @@ function SceneMarche() {
       {/* String lights */}
       <path d="M0 6 Q50 14 100 6 Q150 14 200 6" fill="none" stroke={AMBER} strokeWidth="0.8" />
       {[20, 40, 60, 80, 100, 120, 140, 160, 180].map((x, i) => (
-        <circle key={x} cx={x} cy={i % 2 === 0 ? 8 : 12} r="2.5" fill={i % 3 === 0 ? AMBER : i % 3 === 1 ? RED : CYAN} />
+        <circle
+          key={x}
+          cx={x}
+          cy={i % 2 === 0 ? 8 : 12}
+          r="2.5"
+          fill={i % 3 === 0 ? AMBER : i % 3 === 1 ? RED : CYAN}
+        />
       ))}
       {/* Stall 1 */}
       <path d="M8 20 Q18 12 28 20 Q38 12 48 20" fill="none" stroke={RED} strokeWidth="1.2" />
@@ -220,7 +250,17 @@ function SceneMontagne() {
   return (
     <>
       {/* Stars */}
-      {[[15, 5], [38, 3], [65, 7], [92, 2], [120, 6], [148, 4], [175, 5], [55, 10], [140, 9]].map(([x, y]) => (
+      {[
+        [15, 5],
+        [38, 3],
+        [65, 7],
+        [92, 2],
+        [120, 6],
+        [148, 4],
+        [175, 5],
+        [55, 10],
+        [140, 9],
+      ].map(([x, y]) => (
         <circle key={`${x}-${y}`} cx={x} cy={y} r={0.8} fill="rgba(255,255,255,0.35)" />
       ))}
       {/* Moon */}
@@ -229,7 +269,12 @@ function SceneMontagne() {
       {/* Back mountains */}
       <path d="M-10 60 L30 16 L50 28 L90 8 L120 22 L160 12 L200 28 L210 60 Z" fill="none" stroke={SL} strokeWidth="1" />
       {/* Front mountains */}
-      <path d="M-10 60 L20 28 L45 40 L80 20 L110 34 L150 22 L190 38 L210 60 Z" fill="none" stroke={S} strokeWidth="1.5" />
+      <path
+        d="M-10 60 L20 28 L45 40 L80 20 L110 34 L150 22 L190 38 L210 60 Z"
+        fill="none"
+        stroke={S}
+        strokeWidth="1.5"
+      />
       {/* Snow caps */}
       <path d="M86 8 L90 8 L94 8 L92 14 L88 14 Z" fill="rgba(255,255,255,0.2)" stroke={S} strokeWidth="0.6" />
       <path d="M156 12 L160 12 L164 12 L162 16 L158 16 Z" fill="rgba(255,255,255,0.15)" stroke={S} strokeWidth="0.6" />

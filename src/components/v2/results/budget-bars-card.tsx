@@ -12,21 +12,16 @@ export function BudgetBarsCard({ averages }: BudgetBarsCardProps) {
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide">
-        Choix de production
-      </h3>
+      <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide">Choix de production</h3>
       <GlassCardV2 className="p-5 space-y-3">
         {BUDGET_CATEGORIES.map((cat) => {
           const avg = averages[cat.key] || 0;
           const closestOption = cat.options.reduce((prev, curr) =>
-            Math.abs(curr.cost - avg) < Math.abs(prev.cost - avg) ? curr : prev
+            Math.abs(curr.cost - avg) < Math.abs(prev.cost - avg) ? curr : prev,
           );
           return (
             <div key={cat.key} className="flex items-center gap-3">
-              <span
-                className="text-xs w-20 font-medium shrink-0"
-                style={{ color: cat.color }}
-              >
+              <span className="text-xs w-20 font-medium shrink-0" style={{ color: cat.color }}>
                 {cat.label}
               </span>
               <div className="flex-1 bg-[var(--color-bw-border-subtle)] rounded-full h-3 overflow-hidden">
@@ -38,9 +33,7 @@ export function BudgetBarsCard({ averages }: BudgetBarsCardProps) {
                   }}
                 />
               </div>
-              <span className="text-xs text-bw-muted w-28 text-right truncate">
-                {closestOption.label}
-              </span>
+              <span className="text-xs text-bw-muted w-28 text-right truncate">{closestOption.label}</span>
             </div>
           );
         })}

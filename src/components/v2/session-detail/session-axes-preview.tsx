@@ -17,8 +17,7 @@ export function SessionAxesPreview({ sessionId }: SessionAxesPreviewProps) {
     students: unknown[];
   }>({
     queryKey: ["v2-stats-session", sessionId],
-    queryFn: () =>
-      fetch(`/api/v2/stats?sessionId=${sessionId}`).then((r) => r.json()),
+    queryFn: () => fetch(`/api/v2/stats?sessionId=${sessionId}`).then((r) => r.json()),
     staleTime: 30_000,
   });
 

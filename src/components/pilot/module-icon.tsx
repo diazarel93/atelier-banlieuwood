@@ -5,13 +5,23 @@ interface ModuleIconProps {
 
 export function ModuleIcon({ iconKey, size = 32 }: ModuleIconProps) {
   const s = size;
-  const props = { width: s, height: s, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  const props = {
+    width: s,
+    height: s,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.5,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
 
   switch (iconKey) {
     case "positioning":
       return (
         <svg {...props}>
-          <circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" />
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4M12 8h.01" />
         </svg>
       );
     case "image":
@@ -67,7 +77,8 @@ export function ModuleIcon({ iconKey, size = 32 }: ModuleIconProps) {
     case "clock":
       return (
         <svg {...props}>
-          <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 6v6l4 2" />
         </svg>
       );
     case "alert":
@@ -81,7 +92,8 @@ export function ModuleIcon({ iconKey, size = 32 }: ModuleIconProps) {
       return (
         <svg {...props}>
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-          <path d="M14 2v6h6" /><path d="M16 13H8M16 17H8M10 9H8" />
+          <path d="M14 2v6h6" />
+          <path d="M16 13H8M16 17H8M10 9H8" />
         </svg>
       );
     case "person":
@@ -107,7 +119,8 @@ export function ModuleIcon({ iconKey, size = 32 }: ModuleIconProps) {
     case "camera":
       return (
         <svg {...props}>
-          <path d="M23 7l-7 5 7 5V7z" /><rect x="1" y="5" width="15" height="14" rx="2" />
+          <path d="M23 7l-7 5 7 5V7z" />
+          <rect x="1" y="5" width="15" height="14" rx="2" />
         </svg>
       );
     case "mic":
@@ -115,7 +128,8 @@ export function ModuleIcon({ iconKey, size = 32 }: ModuleIconProps) {
         <svg {...props}>
           <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
           <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-          <line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" />
+          <line x1="12" y1="19" x2="12" y2="23" />
+          <line x1="8" y1="23" x2="16" y2="23" />
         </svg>
       );
     case "sparkle":

@@ -13,12 +13,7 @@ interface DashboardHeaderProps {
   actions?: React.ReactNode;
 }
 
-export function DashboardHeader({
-  backHref,
-  backLabel,
-  breadcrumb,
-  actions,
-}: DashboardHeaderProps) {
+export function DashboardHeader({ backHref, backLabel, breadcrumb, actions }: DashboardHeaderProps) {
   return (
     <header className="glass sticky top-0 z-30 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 flex items-center justify-between rounded-b-xl">
       {/* Left side -- back link or breadcrumb */}
@@ -74,9 +69,7 @@ export function DashboardHeader({
       </div>
 
       {/* Right side -- actions only (no duplicate brand) */}
-      <div className="flex items-center gap-3">
-        {actions}
-      </div>
+      <div className="flex items-center gap-3">{actions}</div>
     </header>
   );
 }

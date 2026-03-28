@@ -8,7 +8,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // GET — Fetch existing fiches de tournage
 export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const admin = createAdminClient();
@@ -36,7 +36,7 @@ export const GET = withErrorHandler(async function GET(
 // POST — Generate 6 fiches from M6 scenes + M7 storyboard + M6 scenario
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "fiches-tournage", { max: 10, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -89,7 +89,12 @@ export const POST = withErrorHandler(async function POST(
     sceneNumber: s.scene_number,
   }));
 
-  const storyboardScenes = (storyboard?.scenes as { sceneId: string; title: string; plans: { position: number; planType: string; description: string; intention?: string; imageUrl?: string }[] }[]) || [];
+  const storyboardScenes =
+    (storyboard?.scenes as {
+      sceneId: string;
+      title: string;
+      plans: { position: number; planType: string; description: string; intention?: string; imageUrl?: string }[];
+    }[]) || [];
 
   const scenarioInput = scenario ? { fullText: scenario.full_text } : null;
 

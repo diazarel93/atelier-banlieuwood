@@ -70,9 +70,7 @@ export default function FicheCoursPageV2() {
       "",
       "## Évaluation",
       ...f.evaluation.map((e) =>
-        typeof e === "string"
-          ? `- ${e}`
-          : `- ${Object.values(e as Record<string, string>).join(" — ")}`
+        typeof e === "string" ? `- ${e}` : `- ${Object.values(e as Record<string, string>).join(" — ")}`,
       ),
     ];
     const md = lines.join("\n");
@@ -92,29 +90,18 @@ export default function FicheCoursPageV2() {
       <div className="max-w-2xl mx-auto mt-6 space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-heading-xl text-bw-heading">
-            Fiche de Cours
-          </h1>
-          <p className="text-sm text-bw-muted">
-            Générez une fiche pédagogique adaptée au niveau de vos élèves
-          </p>
+          <h1 className="text-heading-xl text-bw-heading">Fiche de Cours</h1>
+          <p className="text-sm text-bw-muted">Générez une fiche pédagogique adaptée au niveau de vos élèves</p>
         </div>
 
         {/* Level selector + generate button */}
-        <LevelSelector
-          level={level}
-          onLevelChange={setLevel}
-          onGenerate={handleGenerate}
-          loading={loading}
-        />
+        <LevelSelector level={level} onLevelChange={setLevel} onGenerate={handleGenerate} loading={loading} />
 
         {/* Loading spinner */}
         {loading && (
           <div className="flex items-center justify-center gap-3 py-8">
             <div className="w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-            <span className="text-sm text-bw-muted">
-              L&apos;IA prépare la fiche pédagogique...
-            </span>
+            <span className="text-sm text-bw-muted">L&apos;IA prépare la fiche pédagogique...</span>
           </div>
         )}
 

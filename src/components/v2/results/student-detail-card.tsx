@@ -57,9 +57,7 @@ export function StudentDetailCard({ sessionId, feedback }: StudentDetailCardProp
   }, [responses]);
 
   const selectedStudent = students.find((s) => s.id === selectedStudentId);
-  const selectedResponses = selectedStudentId
-    ? studentResponses.get(selectedStudentId) || []
-    : [];
+  const selectedResponses = selectedStudentId ? studentResponses.get(selectedStudentId) || [] : [];
 
   // Compute XP-like score for selected student
   const studentXp = useMemo(() => {
@@ -67,9 +65,7 @@ export function StudentDetailCard({ sessionId, feedback }: StudentDetailCardProp
     // XP = responses * 10 + chosenCount * 25 + avg score * 5
     let xp = selectedStudent.responses * 10;
     xp += selectedStudent.chosenCount * 25;
-    const scores = selectedResponses
-      .map((r) => r.ai_score ?? r.teacher_score)
-      .filter((s): s is number => s !== null);
+    const scores = selectedResponses.map((r) => r.ai_score ?? r.teacher_score).filter((s): s is number => s !== null);
     if (scores.length > 0) {
       xp += Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 5);
     }
@@ -102,12 +98,10 @@ export function StudentDetailCard({ sessionId, feedback }: StudentDetailCardProp
           <div className="flex items-center gap-3 rounded-xl bg-[var(--color-bw-surface-dim)] px-4 py-3">
             <Avatar name={selectedStudent.name} emoji={selectedStudent.avatar} size="lg" />
             <div className="min-w-0 flex-1">
-              <p className="text-heading-xs text-bw-heading truncate">
-                {selectedStudent.name}
-              </p>
+              <p className="text-heading-xs text-bw-heading truncate">{selectedStudent.name}</p>
               <p className="text-body-xs text-bw-muted">
-                {selectedStudent.responses} reponse{selectedStudent.responses !== 1 ? "s" : ""}{" "}
-                &middot; {selectedStudent.chosenCount} choix retenu{selectedStudent.chosenCount !== 1 ? "s" : ""}
+                {selectedStudent.responses} reponse{selectedStudent.responses !== 1 ? "s" : ""} &middot;{" "}
+                {selectedStudent.chosenCount} choix retenu{selectedStudent.chosenCount !== 1 ? "s" : ""}
               </p>
             </div>
             <div className="text-right shrink-0">
@@ -118,16 +112,11 @@ export function StudentDetailCard({ sessionId, feedback }: StudentDetailCardProp
 
           {/* Responses list */}
           {selectedResponses.length === 0 ? (
-            <p className="text-sm text-bw-muted text-center py-4">
-              Aucune reponse pour cet eleve.
-            </p>
+            <p className="text-sm text-bw-muted text-center py-4">Aucune reponse pour cet eleve.</p>
           ) : (
             <div className="space-y-2">
               {selectedResponses.map((r, idx) => (
-                <div
-                  key={r.id}
-                  className="rounded-lg border border-[var(--color-bw-border)] px-4 py-3"
-                >
+                <div key={r.id} className="rounded-lg border border-[var(--color-bw-border)] px-4 py-3">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-medium text-bw-muted mb-1">
@@ -141,9 +130,7 @@ export function StudentDetailCard({ sessionId, feedback }: StudentDetailCardProp
                           </span>
                         )}
                       </p>
-                      <p className="text-sm text-bw-text whitespace-pre-wrap">
-                        {r.text}
-                      </p>
+                      <p className="text-sm text-bw-text whitespace-pre-wrap">{r.text}</p>
                     </div>
                     {(r.ai_score !== null || r.teacher_score !== null) && (
                       <div className="shrink-0 flex items-center gap-1">
@@ -155,9 +142,7 @@ export function StudentDetailCard({ sessionId, feedback }: StudentDetailCardProp
                   </div>
                   {(r.ai_feedback || r.teacher_comment) && (
                     <div className="mt-2 pt-2 border-t border-[var(--color-bw-border)]">
-                      <p className="text-xs text-bw-muted italic">
-                        {r.teacher_comment || r.ai_feedback}
-                      </p>
+                      <p className="text-xs text-bw-muted italic">{r.teacher_comment || r.ai_feedback}</p>
                     </div>
                   )}
                   {r.response_time_ms && (

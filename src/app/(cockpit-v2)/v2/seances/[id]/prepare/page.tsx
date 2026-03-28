@@ -29,7 +29,11 @@ export default function SessionPreparePage() {
   const params = useParams();
   const id = params.id as string;
 
-  const { data: session, isLoading, isError } = useQuery<SessionDetail>({
+  const {
+    data: session,
+    isLoading,
+    isError,
+  } = useQuery<SessionDetail>({
     queryKey: ["session", id],
     queryFn: async () => {
       const res = await fetch(`/api/sessions/${id}`);
@@ -70,8 +74,9 @@ export default function SessionPreparePage() {
   }
 
   // Main parcours modules (M1–M8)
-  const mainModuleIds = PHASES.filter((p) => (MAIN_PHASE_IDS as readonly string[]).includes(p.id))
-    .flatMap((p) => p.moduleIds);
+  const mainModuleIds = PHASES.filter((p) => (MAIN_PHASE_IDS as readonly string[]).includes(p.id)).flatMap(
+    (p) => p.moduleIds,
+  );
   const mainModules = mainModuleIds
     .map((id) => MODULES.find((m) => m.id === id))
     .filter((m): m is (typeof MODULES)[number] => m !== undefined);
@@ -80,11 +85,13 @@ export default function SessionPreparePage() {
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
-      <BreadcrumbV2 items={[
-        { label: "Séances", href: ROUTES.seances },
-        { label: session.title, href: ROUTES.seanceDetail(session.id) },
-        { label: "Préparation" },
-      ]} />
+      <BreadcrumbV2
+        items={[
+          { label: "Séances", href: ROUTES.seances },
+          { label: session.title, href: ROUTES.seanceDetail(session.id) },
+          { label: "Préparation" },
+        ]}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-4">
         {/* Sidebar */}
@@ -125,22 +132,14 @@ export default function SessionPreparePage() {
 
         {/* Main: module sequence */}
         <div className="lg:col-span-9">
-          <h2 className="text-lg font-bold text-bw-heading mb-1">
-            Structure narrative
-          </h2>
-          <p className="text-sm text-bw-muted mb-4">
-            {mainModules.length} modules — parcours principal
-          </p>
+          <h2 className="text-lg font-bold text-bw-heading mb-1">Structure narrative</h2>
+          <p className="text-sm text-bw-muted mb-4">{mainModules.length} modules — parcours principal</p>
 
           <ModuleSequenceEditor
             modules={mainModules}
             completedModuleIds={session.completed_modules || []}
             currentModuleId={
-              MODULES.find(
-                (m) =>
-                  m.dbModule === session.current_module &&
-                  m.dbSeance === session.current_seance
-              )?.id
+              MODULES.find((m) => m.dbModule === session.current_module && m.dbSeance === session.current_seance)?.id
             }
           />
         </div>
@@ -148,4 +147,3 @@ export default function SessionPreparePage() {
     </div>
   );
 }
-

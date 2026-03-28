@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import {
-  isValidEmotion,
-  isValidElement,
-  getElement,
-  EMOTIONS,
-  MAX_SLOTS,
-  MAX_TOKENS,
-} from "@/lib/module5-data";
+import { isValidEmotion, isValidElement, getElement, EMOTIONS, MAX_SLOTS, MAX_TOKENS } from "@/lib/module5-data";
 import { safeJson, withErrorHandler } from "@/lib/api-utils";
 
 // AI feedback prompt
@@ -44,7 +37,7 @@ Donne ton feedback en JSON.`;
 // POST — student submits scene (Module 2 séance 2)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "scene", { max: 10, windowSec: 60 });
   if (rl) {
@@ -57,10 +50,7 @@ export const POST = withErrorHandler(async function POST(
   const { studentId, emotion, intention, obstacle, changement, elements } = parsed.data;
 
   if (!studentId || !emotion || !intention || !obstacle || !changement) {
-    return NextResponse.json(
-      { error: "Tous les champs sont requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Tous les champs sont requis" }, { status: 400 });
   }
 
   // Validate emotion
@@ -70,10 +60,7 @@ export const POST = withErrorHandler(async function POST(
 
   // Validate narrative fields
   if (intention.trim().length < 5 || obstacle.trim().length < 5 || changement.trim().length < 5) {
-    return NextResponse.json(
-      { error: "Chaque champ narratif doit avoir au moins 5 caractères" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Chaque champ narratif doit avoir au moins 5 caractères" }, { status: 400 });
   }
 
   // Validate elements
@@ -91,17 +78,11 @@ export const POST = withErrorHandler(async function POST(
   }
 
   if (totalSlots > MAX_SLOTS) {
-    return NextResponse.json(
-      { error: `Maximum ${MAX_SLOTS} emplacements (${totalSlots} utilisés)` },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: `Maximum ${MAX_SLOTS} emplacements (${totalSlots} utilisés)` }, { status: 400 });
   }
 
   if (totalTokens > MAX_TOKENS) {
-    return NextResponse.json(
-      { error: `Maximum ${MAX_TOKENS} jetons (${totalTokens} utilisés)` },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: `Maximum ${MAX_TOKENS} jetons (${totalTokens} utilisés)` }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -117,15 +98,12 @@ export const POST = withErrorHandler(async function POST(
   if (!session || session.current_module !== 2 || (session.current_seance || 1) !== 2) {
     return NextResponse.json(
       { error: "La construction de scène n'est pas disponible pour cette séance" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (session.status !== "responding") {
-    return NextResponse.json(
-      { error: "Les réponses ne sont pas ouvertes" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Les réponses ne sont pas ouvertes" }, { status: 400 });
   }
 
   // Verify student belongs to session
@@ -137,10 +115,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!student) {
-    return NextResponse.json(
-      { error: "Joueur introuvable dans cette partie" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Joueur introuvable dans cette partie" }, { status: 404 });
   }
 
   // Build clean elements array
@@ -164,7 +139,7 @@ export const POST = withErrorHandler(async function POST(
         tokens_used: totalTokens,
         slots_used: totalSlots,
       },
-      { onConflict: "session_id,student_id" }
+      { onConflict: "session_id,student_id" },
     )
     .select()
     .single();
@@ -199,10 +174,7 @@ export const POST = withErrorHandler(async function POST(
       aiFeedback = JSON.parse(cleaned);
 
       // Save feedback to DB
-      await admin
-        .from("module5_scenes")
-        .update({ ai_feedback: aiFeedback })
-        .eq("id", scene.id);
+      await admin.from("module5_scenes").update({ ai_feedback: aiFeedback }).eq("id", scene.id);
     }
   } catch {
     // AI feedback is optional — scene is still saved
@@ -217,7 +189,7 @@ export const POST = withErrorHandler(async function POST(
 // GET — all scenes for session + stats
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const admin = createAdminClient();

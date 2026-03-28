@@ -184,10 +184,7 @@ export function getDemoResponse(category: string): string {
  * Get a unique demo response for each student (no duplicates within one batch).
  * Falls back to getDemoResponse if not enough unique responses.
  */
-export function getDemoResponsesForStudents(
-  category: string,
-  count: number
-): string[] {
+export function getDemoResponsesForStudents(category: string, count: number): string[] {
   const responses = DEMO_RESPONSES[category];
   if (!responses || responses.length === 0) {
     return Array.from({ length: count }, () => getDemoResponse(category));

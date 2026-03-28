@@ -23,27 +23,13 @@ let insertReactionResult: { data: unknown; error: unknown | null } = {
   error: null,
 };
 
-function makeChain(
-  resolveWith: () => { data: unknown; error: unknown | null }
-) {
+function makeChain(resolveWith: () => { data: unknown; error: unknown | null }) {
   const chain: Record<string, unknown> = {};
-  const methods = [
-    "select",
-    "insert",
-    "update",
-    "delete",
-    "eq",
-    "is",
-    "in",
-    "single",
-    "order",
-  ];
+  const methods = ["select", "insert", "update", "delete", "eq", "is", "in", "single", "order"];
   for (const m of methods) {
     chain[m] = vi.fn().mockReturnValue(chain);
   }
-  chain.single = vi
-    .fn()
-    .mockImplementation(() => Promise.resolve(resolveWith()));
+  chain.single = vi.fn().mockImplementation(() => Promise.resolve(resolveWith()));
   return chain;
 }
 
@@ -63,9 +49,7 @@ vi.mock("@/lib/supabase/admin", () => ({
       }
 
       if (table === "response_reactions") {
-        const callCount = querySequence.filter(
-          (t) => t === "response_reactions"
-        ).length;
+        const callCount = querySequence.filter((t) => t === "response_reactions").length;
 
         if (callCount === 1) {
           // Toggle check (existing reaction)
@@ -85,9 +69,7 @@ vi.mock("@/lib/rate-limit", () => ({
   getIP: vi.fn().mockReturnValue("127.0.0.1"),
 }));
 
-const { POST } = await import(
-  "@/app/api/sessions/[id]/reactions/route"
-);
+const { POST } = await import("@/app/api/sessions/[id]/reactions/route");
 
 describe("POST /api/sessions/[id]/reactions", () => {
   const params = Promise.resolve({ id: "sess-001" });
@@ -104,31 +86,22 @@ describe("POST /api/sessions/[id]/reactions", () => {
   });
 
   function makeReq(body: Record<string, unknown>) {
-    return new NextRequest(
-      "http://localhost/api/sessions/sess-001/reactions",
-      {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(body),
-      }
-    );
+    return new NextRequest("http://localhost/api/sessions/sess-001/reactions", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
   }
 
   const validUUID = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
 
   it("returns 400 when responseId is missing", async () => {
-    const res = await POST(
-      makeReq({ studentId: validUUID, emoji: "👍" }),
-      { params }
-    );
+    const res = await POST(makeReq({ studentId: validUUID, emoji: "👍" }), { params });
     expect(res.status).toBe(400);
   });
 
   it("returns 400 when studentId is missing", async () => {
-    const res = await POST(
-      makeReq({ responseId: validUUID, emoji: "👍" }),
-      { params }
-    );
+    const res = await POST(makeReq({ responseId: validUUID, emoji: "👍" }), { params });
     expect(res.status).toBe(400);
   });
 
@@ -139,7 +112,7 @@ describe("POST /api/sessions/[id]/reactions", () => {
         studentId: validUUID,
         emoji: "🔥",
       }),
-      { params }
+      { params },
     );
     expect(res.status).toBe(400);
   });
@@ -150,7 +123,7 @@ describe("POST /api/sessions/[id]/reactions", () => {
         responseId: validUUID,
         studentId: validUUID,
       }),
-      { params }
+      { params },
     );
     expect(res.status).toBe(400);
   });
@@ -166,7 +139,7 @@ describe("POST /api/sessions/[id]/reactions", () => {
         studentId: validUUID,
         emoji: "👍",
       }),
-      { params }
+      { params },
     );
     expect(res.status).toBe(400);
   });
@@ -179,7 +152,7 @@ describe("POST /api/sessions/[id]/reactions", () => {
         studentId: validUUID,
         emoji: "👍",
       }),
-      { params }
+      { params },
     );
     expect(res.status).toBe(404);
   });
@@ -193,7 +166,7 @@ describe("POST /api/sessions/[id]/reactions", () => {
           studentId: validUUID,
           emoji,
         }),
-        { params }
+        { params },
       );
       expect(res.status).toBe(200);
       const json = await res.json();
@@ -212,7 +185,7 @@ describe("POST /api/sessions/[id]/reactions", () => {
         studentId: validUUID,
         emoji: "👍",
       }),
-      { params }
+      { params },
     );
     expect(res.status).toBe(200);
     const json = await res.json();
@@ -230,7 +203,7 @@ describe("POST /api/sessions/[id]/reactions", () => {
         studentId: validUUID,
         emoji: "❤️",
       }),
-      { params }
+      { params },
     );
     expect(res.status).toBe(200);
   });
@@ -246,7 +219,7 @@ describe("POST /api/sessions/[id]/reactions", () => {
         studentId: validUUID,
         emoji: "🎯",
       }),
-      { params }
+      { params },
     );
     expect(res.status).toBe(200);
   });

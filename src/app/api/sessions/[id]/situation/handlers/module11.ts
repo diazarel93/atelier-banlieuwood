@@ -6,7 +6,12 @@ import type { AdminClient } from "./types";
 
 // ── MODULE 11 handler — Ciné-Débat ──
 // Standard Q&A enriched with stimulus data (author, video, poster, debat)
-export async function handleModule11(req: NextRequest, session: Record<string, unknown>, sessionId: string, admin: AdminClient) {
+export async function handleModule11(
+  req: NextRequest,
+  session: Record<string, unknown>,
+  sessionId: string,
+  admin: AdminClient,
+) {
   const currentSeance = (session.current_seance as number) || 1;
   const currentIndex = (session.current_situation_index as number) || 0;
   const position = currentIndex + 1;
@@ -71,25 +76,32 @@ export async function handleModule11(req: NextRequest, session: Record<string, u
 
   // Enrich with stimulus data
   const stimulus: CineStimulus | undefined = getCineStimulus(currentSeance, position);
-  const module11Data = stimulus ? {
-    type: stimulus.type,
-    theme: stimulus.theme,
-    text: stimulus.text,
-    author: stimulus.author || null,
-    authorRole: stimulus.authorRole || null,
-    authorBio: stimulus.authorBio || null,
-    authorImageUrl: stimulus.authorImageUrl || null,
-    filmography: stimulus.filmography || null,
-    imageUrl: stimulus.imageUrl || null,
-    videoId: stimulus.videoId || null,
-    videoStart: stimulus.videoStart ?? null,
-    videoEnd: stimulus.videoEnd ?? null,
-    sourceTitle: stimulus.sourceTitle || null,
-    sourceYear: stimulus.sourceYear || null,
-    debatOptions: stimulus.type === "debat"
-      ? [{ key: "daccord", label: "D'accord" }, { key: "pasdaccord", label: "Pas d'accord" }, { key: "nuance", label: "C'est plus nuancé" }]
-      : null,
-  } : null;
+  const module11Data = stimulus
+    ? {
+        type: stimulus.type,
+        theme: stimulus.theme,
+        text: stimulus.text,
+        author: stimulus.author || null,
+        authorRole: stimulus.authorRole || null,
+        authorBio: stimulus.authorBio || null,
+        authorImageUrl: stimulus.authorImageUrl || null,
+        filmography: stimulus.filmography || null,
+        imageUrl: stimulus.imageUrl || null,
+        videoId: stimulus.videoId || null,
+        videoStart: stimulus.videoStart ?? null,
+        videoEnd: stimulus.videoEnd ?? null,
+        sourceTitle: stimulus.sourceTitle || null,
+        sourceYear: stimulus.sourceYear || null,
+        debatOptions:
+          stimulus.type === "debat"
+            ? [
+                { key: "daccord", label: "D'accord" },
+                { key: "pasdaccord", label: "Pas d'accord" },
+                { key: "nuance", label: "C'est plus nuancé" },
+              ]
+            : null,
+      }
+    : null;
 
   let hasResponded = false;
   let teacherNudge: string | null = null;
@@ -184,7 +196,11 @@ export async function handleModule11(req: NextRequest, session: Record<string, u
     hasVoted,
     voteOptions,
     collectiveChoice,
-    isMyResponseChosen: !!(collectiveChoice && studentResponseId && collectiveChoice.source_response_id === studentResponseId),
+    isMyResponseChosen: !!(
+      collectiveChoice &&
+      studentResponseId &&
+      collectiveChoice.source_response_id === studentResponseId
+    ),
     connectedCount: connectedCount || 0,
     responsesCount,
     budgetStats: null,

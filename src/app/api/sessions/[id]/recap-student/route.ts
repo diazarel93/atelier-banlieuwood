@@ -10,7 +10,7 @@ import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
  */
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const studentId = req.nextUrl.searchParams.get("studentId");

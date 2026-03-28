@@ -35,7 +35,9 @@ export function BroadcastMessageOverlay({ broadcastMsg }: BroadcastMessageOverla
           className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[600px] max-w-[90vw]"
         >
           <div className="px-8 py-5 rounded-2xl bg-bw-primary/20 border border-bw-primary/40 text-center backdrop-blur-md shadow-lg shadow-bw-primary/10">
-            <p className="text-xs text-bw-primary font-semibold uppercase tracking-[0.2em] mb-2">Message du professeur</p>
+            <p className="text-xs text-bw-primary font-semibold uppercase tracking-[0.2em] mb-2">
+              Message du professeur
+            </p>
             <p className="text-xl text-white font-medium line-clamp-3">{broadcastMsg}</p>
           </div>
         </motion.div>
@@ -66,7 +68,16 @@ export function BroadcastMessageOverlay({ broadcastMsg }: BroadcastMessageOverla
           className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
         >
           <div className="text-center space-y-3 opacity-[0.06]">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" className="mx-auto">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              className="mx-auto"
+            >
               <rect x="2" y="2" width="20" height="20" rx="2.18" />
               <path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 7h5M17 17h5" />
             </svg>

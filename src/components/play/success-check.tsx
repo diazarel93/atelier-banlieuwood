@@ -18,8 +18,14 @@ export function SuccessCheck() {
         className="w-16 h-16 rounded-full bg-bw-green/20 border-2 border-bw-green flex items-center justify-center"
       >
         <motion.svg
-          width="32" height="32" viewBox="0 0 24 24" fill="none"
-          stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#10B981"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
           transition={{ duration: 0.4, delay: 0.15 }}

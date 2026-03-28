@@ -13,7 +13,7 @@ const COLLAB_COLORS: Record<string, string> = {
 const TREND_ICONS: Record<string, string> = {
   croissant: "↗",
   stable: "→",
-  "décroissant": "↘",
+  décroissant: "↘",
 };
 
 const DEPTH_COLORS: Record<string, string> = {
@@ -38,12 +38,8 @@ export function SessionInsightsCard({ bilan, onViewFull }: SessionInsightsCardPr
     <GlassCardV2 className="p-5 border-l-4 border-l-bw-primary">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-bw-primary">
-            Synthèse IA
-          </span>
-          <p className="text-sm leading-relaxed mt-2 italic text-bw-heading">
-            &ldquo;{bilan.narrativeSummary}&rdquo;
-          </p>
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-bw-primary">Synthèse IA</span>
+          <p className="text-sm leading-relaxed mt-2 italic text-bw-heading">&ldquo;{bilan.narrativeSummary}&rdquo;</p>
 
           {/* Chips */}
           <div className="flex flex-wrap items-center gap-2 mt-3">

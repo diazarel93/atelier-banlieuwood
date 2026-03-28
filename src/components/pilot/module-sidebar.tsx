@@ -38,7 +38,10 @@ function ModuleSidebarInner({
 
   const [elapsed, setElapsed] = useState("");
   useEffect(() => {
-    if (!moduleStartedAt) { setElapsed(""); return; }
+    if (!moduleStartedAt) {
+      setElapsed("");
+      return;
+    }
     function update() {
       const mins = Math.floor((Date.now() - new Date(moduleStartedAt!).getTime()) / 60000);
       setElapsed(mins < 1 ? "<1m" : `${mins}m`);
@@ -66,15 +69,13 @@ function ModuleSidebarInner({
     return "available";
   }
 
-  const activePhase = activeModuleId
-    ? phases.find((p) => p.moduleIds.includes(activeModuleId))
-    : null;
+  const activePhase = activeModuleId ? phases.find((p) => p.moduleIds.includes(activeModuleId)) : null;
 
   const visiblePhases = phases.filter((phase) =>
     phase.moduleIds.some((id) => {
       const mod = modules.find((m) => m.id === id);
       return mod && isModuleVisible(mod);
-    })
+    }),
   );
 
   function getPhaseProgress(phase: PhaseDef) {
@@ -95,16 +96,20 @@ function ModuleSidebarInner({
     }
   }, [activeModuleId, activePhase]);
 
-  const handleKey = useCallback((e: KeyboardEvent) => {
-    const tag = (e.target as HTMLElement)?.tagName;
-    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (e.target as HTMLElement)?.isContentEditable) return;
-    const digit = parseInt(e.key);
-    if (digit >= 1 && digit <= visiblePhases.length) {
-      e.preventDefault();
-      const phase = visiblePhases[digit - 1];
-      setExpandedPhaseId((prev) => (prev === phase.id ? null : phase.id));
-    }
-  }, [visiblePhases]);
+  const handleKey = useCallback(
+    (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (e.target as HTMLElement)?.isContentEditable)
+        return;
+      const digit = parseInt(e.key);
+      if (digit >= 1 && digit <= visiblePhases.length) {
+        e.preventDefault();
+        const phase = visiblePhases[digit - 1];
+        setExpandedPhaseId((prev) => (prev === phase.id ? null : phase.id));
+      }
+    },
+    [visiblePhases],
+  );
 
   useEffect(() => {
     window.addEventListener("keydown", handleKey);
@@ -116,13 +121,12 @@ function ModuleSidebarInner({
       {/* ── Header ── */}
       <div className="px-5 pt-5 pb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-[13px] font-bold uppercase tracking-[0.15em] text-white/40">
-            Parcours
-          </h2>
+          <h2 className="text-[13px] font-bold uppercase tracking-[0.15em] text-white/40">Parcours</h2>
           <span
             className="text-[13px] font-bold tabular-nums px-2.5 py-1 rounded-lg"
             style={{
-              background: globalDone === allMods.length && globalDone > 0 ? "rgba(76,175,80,0.15)" : "rgba(255,255,255,0.06)",
+              background:
+                globalDone === allMods.length && globalDone > 0 ? "rgba(76,175,80,0.15)" : "rgba(255,255,255,0.06)",
               color: globalDone === allMods.length && globalDone > 0 ? "#66BB6A" : "rgba(255,255,255,0.7)",
             }}
           >
@@ -137,16 +141,20 @@ function ModuleSidebarInner({
             animate={{ width: `${globalPct}%` }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             style={{
-              background: globalDone === allMods.length && globalDone > 0
-                ? "linear-gradient(90deg, #4CAF50, #66BB6A)"
-                : "linear-gradient(90deg, #FF6B35, #FF8F5E)",
+              background:
+                globalDone === allMods.length && globalDone > 0
+                  ? "linear-gradient(90deg, #4CAF50, #66BB6A)"
+                  : "linear-gradient(90deg, #FF6B35, #FF8F5E)",
             }}
           />
         </div>
       </div>
 
       {/* ── Phase list ── */}
-      <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-1 scrollbar-thin" style={{ scrollbarColor: "rgba(255,255,255,0.1) transparent" }}>
+      <div
+        className="flex-1 overflow-y-auto px-3 pb-4 space-y-1 scrollbar-thin"
+        style={{ scrollbarColor: "rgba(255,255,255,0.1) transparent" }}
+      >
         {visiblePhases.map((phase, phaseIdx) => {
           const isActivePhase = activePhase?.id === phase.id;
           const isExpanded = expandedPhaseId === phase.id;
@@ -187,7 +195,17 @@ function ModuleSidebarInner({
                     }}
                   >
                     {allDone ? (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#66BB6A" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5" /></svg>
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#66BB6A"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                      >
+                        <path d="M20 6L9 17l-5-5" />
+                      </svg>
                     ) : (
                       <span>{phase.emoji}</span>
                     )}
@@ -216,11 +234,12 @@ function ModuleSidebarInner({
                           key={i}
                           className="w-2 h-2 rounded-full transition-colors"
                           style={{
-                            background: i < done
-                              ? "#66BB6A"
-                              : isActivePhase && i === done
-                                ? phase.color
-                                : "rgba(255,255,255,0.12)",
+                            background:
+                              i < done
+                                ? "#66BB6A"
+                                : isActivePhase && i === done
+                                  ? phase.color
+                                  : "rgba(255,255,255,0.12)",
                           }}
                         />
                       ))}
@@ -233,7 +252,13 @@ function ModuleSidebarInner({
 
                 {/* Chevron */}
                 <svg
-                  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                   className="flex-shrink-0 text-white/20 group-hover:text-white/40 transition-all duration-200"
                   style={{ transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }}
                 >
@@ -271,7 +296,18 @@ function ModuleSidebarInner({
                             <div className="flex items-center gap-2.5">
                               {/* Status */}
                               {isDone ? (
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#66BB6A" strokeWidth="3" strokeLinecap="round" className="flex-shrink-0"><path d="M20 6L9 17l-5-5" /></svg>
+                                <svg
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="#66BB6A"
+                                  strokeWidth="3"
+                                  strokeLinecap="round"
+                                  className="flex-shrink-0"
+                                >
+                                  <path d="M20 6L9 17l-5-5" />
+                                </svg>
                               ) : isActive ? (
                                 <motion.div
                                   className="w-3 h-3 rounded-full flex-shrink-0"
@@ -280,17 +316,22 @@ function ModuleSidebarInner({
                                   transition={{ repeat: Infinity, duration: 1.5 }}
                                 />
                               ) : (
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: "rgba(255,255,255,0.15)" }} />
+                                <div
+                                  className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                                  style={{ background: "rgba(255,255,255,0.15)" }}
+                                />
                               )}
 
                               {/* Title — FULL, no truncation */}
-                              <span className={`text-[14px] leading-snug flex-1 ${
-                                isActive
-                                  ? "text-white font-semibold"
-                                  : isDone
-                                    ? "text-white/35 line-through decoration-white/15"
-                                    : "text-white/60 group-hover/mod:text-white/80"
-                              }`}>
+                              <span
+                                className={`text-[14px] leading-snug flex-1 ${
+                                  isActive
+                                    ? "text-white font-semibold"
+                                    : isDone
+                                      ? "text-white/35 line-through decoration-white/15"
+                                      : "text-white/60 group-hover/mod:text-white/80"
+                                }`}
+                              >
                                 {mod.title}
                               </span>
 
@@ -395,7 +436,15 @@ export function SidebarDrawer({
                 aria-label="Fermer le parcours"
                 className="p-2 rounded-lg text-white/40 hover:text-white/80 hover:bg-white/10 transition-colors"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>

@@ -92,9 +92,7 @@ export function SessionTimeline({ events, totalDurationMs }: SessionTimelineProp
           <polyline points="9,18 15,12 9,6" />
         </svg>
         Déroulé de la séance
-        <span className="text-xs font-normal text-bw-muted normal-case">
-          ({formatTime(totalDurationMs)})
-        </span>
+        <span className="text-xs font-normal text-bw-muted normal-case">({formatTime(totalDurationMs)})</span>
       </button>
 
       {open && (
@@ -119,20 +117,13 @@ export function SessionTimeline({ events, totalDurationMs }: SessionTimelineProp
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono text-bw-muted">
-                          {formatTime(node.offsetMs)}
-                        </span>
-                        <span
-                          className="text-xs font-semibold uppercase"
-                          style={{ color: config.color }}
-                        >
+                        <span className="text-xs font-mono text-bw-muted">{formatTime(node.offsetMs)}</span>
+                        <span className="text-xs font-semibold uppercase" style={{ color: config.color }}>
                           {config.label}
                         </span>
                       </div>
                       {node.event_type === "situation_start" && (
-                        <p className="text-sm text-bw-heading mt-0.5 truncate">
-                          {getEventLabel(node)}
-                        </p>
+                        <p className="text-sm text-bw-heading mt-0.5 truncate">{getEventLabel(node)}</p>
                       )}
                     </div>
                   </div>

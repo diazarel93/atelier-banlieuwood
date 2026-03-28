@@ -25,9 +25,13 @@ export function HighlightedResponsesPanel({ highlightedResponses }: HighlightedR
           exit={{ opacity: 0, y: 30 }}
           className="fixed bottom-[76px] left-0 right-0 z-30 px-6 pointer-events-none"
         >
-          <div className={`max-w-5xl mx-auto pointer-events-auto ${
-              highlightedResponses.length <= 2 ? "flex flex-col gap-3" : "grid grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-2"
-            }`}>
+          <div
+            className={`max-w-5xl mx-auto pointer-events-auto ${
+              highlightedResponses.length <= 2
+                ? "flex flex-col gap-3"
+                : "grid grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-2"
+            }`}
+          >
             {highlightedResponses.map((hr) => (
               <motion.div
                 key={hr.id}
@@ -36,7 +40,11 @@ export function HighlightedResponsesPanel({ highlightedResponses }: HighlightedR
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="rounded-xl p-3 backdrop-blur-xl"
-                style={{ background: "rgba(34,37,43,0.85)", border: "1px solid rgba(255,107,53,0.25)", boxShadow: "0 0 24px rgba(255,107,53,0.1), 0 4px 20px rgba(0,0,0,0.4)" }}
+                style={{
+                  background: "rgba(34,37,43,0.85)",
+                  border: "1px solid rgba(255,107,53,0.25)",
+                  boxShadow: "0 0 24px rgba(255,107,53,0.1), 0 4px 20px rgba(0,0,0,0.4)",
+                }}
               >
                 <div className="flex items-center gap-2 mb-1.5">
                   <span className="text-lg">{hr.students?.avatar}</span>

@@ -10,11 +10,7 @@ export interface RelanceStateProps {
   onSkip: () => void;
 }
 
-export function RelanceState({
-  relanceText,
-  onSubmit,
-  onSkip,
-}: RelanceStateProps) {
+export function RelanceState({ relanceText, onSubmit, onSkip }: RelanceStateProps) {
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
   const { displayed, done, skip } = useTypewriter(relanceText, 40);
@@ -49,7 +45,15 @@ export function RelanceState({
       {/* Mentor avatar + label */}
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-bw-teal/20 flex items-center justify-center flex-shrink-0">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" strokeWidth="2" strokeLinecap="round">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#4ECDC4"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
             <path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
             <path d="M19 13c0-3.87-3.13-7-7-7s-7 3.13-7 7c0 2.06.89 3.92 2.3 5.2L5 21h14l-2.3-2.8A6.97 6.97 0 0 0 19 13Z" />
           </svg>
@@ -64,7 +68,12 @@ export function RelanceState({
         aria-label="Cliquer pour accelerer le texte du mentor"
         className="glass-card border-bw-teal/20 p-3 sm:p-5 min-h-[60px] sm:min-h-[80px] text-base sm:text-lg leading-relaxed cursor-pointer"
         onClick={() => !done && skip()}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); !done && skip(); } }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            !done && skip();
+          }
+        }}
       >
         <p className="text-bw-heading">{displayed}</p>
         {!done && (
@@ -78,11 +87,7 @@ export function RelanceState({
 
       {/* Response area (optional) */}
       {done && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-3"
-        >
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
           <textarea
             ref={relanceTextareaRef}
             value={text}

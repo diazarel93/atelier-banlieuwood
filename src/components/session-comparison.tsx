@@ -47,9 +47,7 @@ export function SessionComparison({ sessionId }: { sessionId: string }) {
   });
 
   const hasSimilar = data && data.similar.length > 0;
-  const selected = selectedId
-    ? data?.similar.find((s) => s.session.id === selectedId)
-    : data?.similar[0];
+  const selected = selectedId ? data?.similar.find((s) => s.session.id === selectedId) : data?.similar[0];
 
   // Group choices by category for side-by-side
   const categories = new Set<string>();
@@ -70,9 +68,16 @@ export function SessionComparison({ sessionId }: { sessionId: string }) {
           Comparer avec d&apos;autres sessions
         </h2>
         <motion.svg
-          width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2" strokeLinecap="round" className="text-bw-muted"
-          animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          className="text-bw-muted"
+          animate={{ rotate: open ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
         >
           <polyline points="6 9 12 15 18 9" />
         </motion.svg>
@@ -94,7 +99,8 @@ export function SessionComparison({ sessionId }: { sessionId: string }) {
               </div>
             ) : !hasSimilar ? (
               <p className="pt-4 text-[12px] text-bw-muted">
-                Aucune autre session avec le m&ecirc;me module trouv&eacute;e. Cr&eacute;ez plus de sessions pour comparer.
+                Aucune autre session avec le m&ecirc;me module trouv&eacute;e. Cr&eacute;ez plus de sessions pour
+                comparer.
               </p>
             ) : (
               <div className="pt-4 space-y-4">
@@ -127,14 +133,22 @@ export function SessionComparison({ sessionId }: { sessionId: string }) {
                     {/* Header */}
                     <div className="grid grid-cols-2 gap-3">
                       <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] px-3 py-2">
-                        <p className="text-xs uppercase tracking-[0.14em] text-bw-primary font-semibold">Cette session</p>
+                        <p className="text-xs uppercase tracking-[0.14em] text-bw-primary font-semibold">
+                          Cette session
+                        </p>
                         <p className="text-[12px] text-white truncate">{data!.current.title}</p>
                       </div>
                       <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] px-3 py-2">
-                        <p className="text-xs uppercase tracking-[0.14em] text-bw-violet font-semibold">{selected.session.title}</p>
+                        <p className="text-xs uppercase tracking-[0.14em] text-bw-violet font-semibold">
+                          {selected.session.title}
+                        </p>
                         <p className="text-[12px] text-bw-muted">
-                          {new Date(selected.session.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
-                          {" · "}{selected.session.studentCount} &eacute;l&egrave;ves
+                          {new Date(selected.session.createdAt).toLocaleDateString("fr-FR", {
+                            day: "numeric",
+                            month: "short",
+                          })}
+                          {" · "}
+                          {selected.session.studentCount} &eacute;l&egrave;ves
                         </p>
                       </div>
                     </div>
@@ -145,7 +159,8 @@ export function SessionComparison({ sessionId }: { sessionId: string }) {
                       const otherChoice = selected.choices.find((c) => c.category === cat);
                       const color = CATEGORY_COLORS[cat] || "#888";
                       const label = CATEGORY_LABELS[cat] || cat;
-                      const same = currentChoice && otherChoice && currentChoice.chosen_text === otherChoice.chosen_text;
+                      const same =
+                        currentChoice && otherChoice && currentChoice.chosen_text === otherChoice.chosen_text;
 
                       return (
                         <motion.div

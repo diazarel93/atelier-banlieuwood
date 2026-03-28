@@ -32,10 +32,7 @@ export function computeNotifications(data: NotificationInput): NotificationItem[
   const notifications: NotificationItem[] = [];
 
   // Sessions waiting for preparation
-  const waitingSessions = [
-    ...data.todaySessions,
-    ...data.tomorrowSessions,
-  ].filter((s) => s.status === "waiting");
+  const waitingSessions = [...data.todaySessions, ...data.tomorrowSessions].filter((s) => s.status === "waiting");
 
   for (const session of waitingSessions) {
     notifications.push({
@@ -49,10 +46,7 @@ export function computeNotifications(data: NotificationInput): NotificationItem[
   }
 
   // Sessions with results available
-  const doneSessions = [
-    ...data.todaySessions,
-    ...data.tomorrowSessions,
-  ].filter((s) => s.status === "done");
+  const doneSessions = [...data.todaySessions, ...data.tomorrowSessions].filter((s) => s.status === "done");
 
   for (const session of doneSessions) {
     notifications.push({
@@ -67,9 +61,7 @@ export function computeNotifications(data: NotificationInput): NotificationItem[
 
   // Sort: warnings first, then info
   const severityOrder = { warning: 0, info: 1 };
-  notifications.sort(
-    (a, b) => severityOrder[a.severity] - severityOrder[b.severity]
-  );
+  notifications.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
 
   return notifications;
 }

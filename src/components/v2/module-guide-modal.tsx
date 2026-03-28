@@ -16,11 +16,7 @@ interface ModuleGuideModalProps {
   onClose: () => void;
 }
 
-export function ModuleGuideModal({
-  exercise,
-  guide,
-  onClose,
-}: ModuleGuideModalProps) {
+export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
   // Close on Escape
@@ -47,7 +43,7 @@ export function ModuleGuideModal({
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key !== "Tab" || !modalRef.current) return;
     const focusable = modalRef.current.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     if (focusable.length === 0) return;
     const first = focusable[0];
@@ -94,7 +90,9 @@ export function ModuleGuideModal({
         <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm border-b border-[var(--color-bw-border)] px-6 py-4 flex items-start justify-between rounded-t-2xl">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-sm" aria-hidden="true">{exercise.phaseEmoji}</span>
+              <span className="text-sm" aria-hidden="true">
+                {exercise.phaseEmoji}
+              </span>
               <span
                 className="text-body-xs font-semibold uppercase tracking-wide"
                 style={{ color: exercise.phaseColor }}
@@ -105,11 +103,7 @@ export function ModuleGuideModal({
             <h2 id="module-guide-title" className="text-lg font-bold text-bw-heading leading-snug">
               {exercise.title}
             </h2>
-            {exercise.subtitle && (
-              <p className="text-sm text-bw-muted mt-0.5">
-                {exercise.subtitle}
-              </p>
-            )}
+            {exercise.subtitle && <p className="text-sm text-bw-muted mt-0.5">{exercise.subtitle}</p>}
           </div>
           <button
             onClick={onClose}
@@ -155,15 +149,11 @@ export function ModuleGuideModal({
           </div>
 
           {/* Description */}
-          <p className="text-sm text-bw-heading leading-relaxed">
-            {exercise.description}
-          </p>
+          <p className="text-sm text-bw-heading leading-relaxed">{exercise.description}</p>
 
           {!guide ? (
             <GlassCardV2 variant="flat" className="p-6 text-center">
-              <p className="text-sm text-bw-muted">
-                Fiche pédagogique non disponible pour ce module
-              </p>
+              <p className="text-sm text-bw-muted">Fiche pédagogique non disponible pour ce module</p>
             </GlassCardV2>
           ) : (
             <>
@@ -194,16 +184,12 @@ export function ModuleGuideModal({
 
                           <div className="flex-1 min-w-0 pb-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-sm font-semibold text-bw-heading">
-                                {phase.name}
-                              </span>
+                              <span className="text-sm font-semibold text-bw-heading">{phase.name}</span>
                               <span className="text-body-xs font-mono text-[var(--color-bw-violet)] bg-[var(--color-bw-violet-100)] border border-[var(--color-bw-violet)]/20 rounded-md px-1.5 py-0.5">
                                 {phase.timing}
                               </span>
                             </div>
-                            <p className="text-xs text-bw-muted leading-relaxed">
-                              {phase.instruction}
-                            </p>
+                            <p className="text-xs text-bw-muted leading-relaxed">{phase.instruction}</p>
                           </div>
                         </div>
                       ))}
@@ -218,9 +204,7 @@ export function ModuleGuideModal({
                   Introduction à dire
                 </p>
                 <div className="rounded-xl bg-[var(--color-bw-surface-dim)] p-4">
-                  <p className="text-sm text-bw-heading italic leading-relaxed">
-                    &ldquo;{guide.introADire}&rdquo;
-                  </p>
+                  <p className="text-sm text-bw-heading italic leading-relaxed">&ldquo;{guide.introADire}&rdquo;</p>
                 </div>
               </GlassCardV2>
 
@@ -249,25 +233,16 @@ export function ModuleGuideModal({
                     );
                   })}
                 </div>
-                <p className="text-sm text-bw-heading leading-relaxed">
-                  {guide.objectifPedagogique}
-                </p>
+                <p className="text-sm text-bw-heading leading-relaxed">{guide.objectifPedagogique}</p>
               </GlassCardV2>
 
               {/* Compétences */}
               <GlassCardV2 className="p-5">
-                <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-                  Compétences visées
-                </p>
+                <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Compétences visées</p>
                 <ul className="space-y-2">
                   {guide.competences.map((comp, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-2 text-sm text-bw-heading"
-                    >
-                      <span className="text-[var(--color-bw-green)] mt-0.5 shrink-0">
-                        &#10003;
-                      </span>
+                    <li key={i} className="flex items-start gap-2 text-sm text-bw-heading">
+                      <span className="text-[var(--color-bw-green)] mt-0.5 shrink-0">&#10003;</span>
                       {comp}
                     </li>
                   ))}
@@ -282,10 +257,7 @@ export function ModuleGuideModal({
                   </span>
                   <ul className="mt-2 space-y-1.5">
                     {guide.commentRelancer.map((r, i) => (
-                      <li
-                        key={i}
-                        className="text-xs text-bw-heading leading-relaxed"
-                      >
+                      <li key={i} className="text-xs text-bw-heading leading-relaxed">
                         &bull; {r}
                       </li>
                     ))}
@@ -298,10 +270,7 @@ export function ModuleGuideModal({
                   </span>
                   <ul className="mt-2 space-y-1.5">
                     {guide.commentChallenger.map((c, i) => (
-                      <li
-                        key={i}
-                        className="text-xs text-bw-heading leading-relaxed"
-                      >
+                      <li key={i} className="text-xs text-bw-heading leading-relaxed">
                         &bull; {c}
                       </li>
                     ))}
@@ -317,10 +286,7 @@ export function ModuleGuideModal({
                   </p>
                   <ul className="space-y-1.5">
                     {guide.aQuoiEtreAttentif.map((point, i) => (
-                      <li
-                        key={i}
-                        className="text-xs text-bw-heading leading-relaxed pl-3 border-l-2 border-amber-400"
-                      >
+                      <li key={i} className="text-xs text-bw-heading leading-relaxed pl-3 border-l-2 border-amber-400">
                         {point}
                       </li>
                     ))}
@@ -331,15 +297,10 @@ export function ModuleGuideModal({
               {/* Conseils */}
               {guide.conseils.length > 0 && (
                 <GlassCardV2 variant="flat" className="p-5">
-                  <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-                    Conseils
-                  </p>
+                  <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Conseils</p>
                   <ul className="space-y-1.5">
                     {guide.conseils.map((conseil, i) => (
-                      <li
-                        key={i}
-                        className="text-xs text-bw-heading leading-relaxed"
-                      >
+                      <li key={i} className="text-xs text-bw-heading leading-relaxed">
                         &bull; {conseil}
                       </li>
                     ))}

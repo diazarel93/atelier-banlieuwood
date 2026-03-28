@@ -10,7 +10,7 @@ import { checkAchievements, type ProfileStats, type AchievementUnlock } from "@/
  */
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const studentId = req.nextUrl.searchParams.get("studentId");
@@ -146,19 +146,17 @@ async function upsertAchievements(
     if (existing?.has(unlock.tier)) continue; // already have this tier
 
     // Upsert: insert on conflict do nothing (unique constraint: profile_id, achievement_id, tier)
-    const { error } = await admin
-      .from("student_achievements")
-      .upsert(
-        {
-          profile_id: profileId,
-          achievement_id: unlock.achievementId,
-          tier: unlock.tier,
-          progress: unlock.progress,
-          unlocked_at: now,
-          seen: false,
-        },
-        { onConflict: "profile_id,achievement_id,tier" }
-      );
+    const { error } = await admin.from("student_achievements").upsert(
+      {
+        profile_id: profileId,
+        achievement_id: unlock.achievementId,
+        tier: unlock.tier,
+        progress: unlock.progress,
+        unlocked_at: now,
+        seen: false,
+      },
+      { onConflict: "profile_id,achievement_id,tier" },
+    );
 
     if (!error) {
       newUnlocks.push(unlock);
@@ -175,7 +173,7 @@ async function upsertAchievements(
  */
 export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const parsed = await safeJson(req);
@@ -227,7 +225,9 @@ export const PATCH = withErrorHandler(async function PATCH(
     .eq("session_id", sessionId)
     .in(
       "source_response_id",
-      (await admin.from("responses").select("id").eq("session_id", sessionId).eq("student_id", studentId)).data?.map((r) => r.id) || []
+      (await admin.from("responses").select("id").eq("session_id", sessionId).eq("student_id", studentId)).data?.map(
+        (r) => r.id,
+      ) || [],
     );
 
   const { count: actualVotes } = await admin
@@ -253,7 +253,9 @@ export const PATCH = withErrorHandler(async function PATCH(
     // Fetch existing profile with all fields needed for achievements
     const { data: existing } = await admin
       .from("student_profiles")
-      .select("total_xp, sessions_played, total_responses, retained_count, current_streak, best_streak, total_votes, level, streak_updated_date")
+      .select(
+        "total_xp, sessions_played, total_responses, retained_count, current_streak, best_streak, total_votes, level, streak_updated_date",
+      )
       .eq("id", profileId)
       .single();
 
@@ -347,10 +349,7 @@ export const PATCH = withErrorHandler(async function PATCH(
     profileId = newProfile.id;
 
     // Link profile to student
-    await admin
-      .from("students")
-      .update({ profile_id: profileId })
-      .eq("id", studentId);
+    await admin.from("students").update({ profile_id: profileId }).eq("id", studentId);
 
     updatedStats = {
       totalXp: xpToAdd,
@@ -369,11 +368,7 @@ export const PATCH = withErrorHandler(async function PATCH(
   const newUnlocks = await upsertAchievements(admin, profileId, earned);
 
   // Fetch profile_code for the response
-  const { data: profileRow } = await admin
-    .from("student_profiles")
-    .select("profile_code")
-    .eq("id", profileId)
-    .single();
+  const { data: profileRow } = await admin.from("student_profiles").select("profile_code").eq("id", profileId).single();
 
   return NextResponse.json({
     ok: true,

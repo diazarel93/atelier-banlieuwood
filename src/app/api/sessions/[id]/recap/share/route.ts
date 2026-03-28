@@ -7,7 +7,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // POST — Generate a share token for a student's recap
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "recap-share", { max: 10, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -41,10 +41,7 @@ export const POST = withErrorHandler(async function POST(
 
   // Generate new token
   const shareToken = nanoid(16);
-  const { error } = await admin
-    .from("students")
-    .update({ share_token: shareToken })
-    .eq("id", studentId);
+  const { error } = await admin.from("students").update({ share_token: shareToken }).eq("id", studentId);
 
   if (error) {
     return NextResponse.json({ error: "Erreur lors de la création du lien" }, { status: 500 });
@@ -56,7 +53,7 @@ export const POST = withErrorHandler(async function POST(
 // GET — Fetch recap data via share token (public, no auth)
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const token = req.nextUrl.searchParams.get("token");
@@ -112,7 +109,9 @@ export const GET = withErrorHandler(async function GET(
   }));
 
   const myResponseIds = new Set(myResponses.map((r) => r.id));
-  const myChosenCount = (choices || []).filter((c) => c.source_response_id && myResponseIds.has(c.source_response_id)).length;
+  const myChosenCount = (choices || []).filter(
+    (c) => c.source_response_id && myResponseIds.has(c.source_response_id),
+  ).length;
 
   const story = (choices || []).map((c) => ({
     id: c.id,

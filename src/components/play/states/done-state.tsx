@@ -37,7 +37,17 @@ const TIER_COLORS: Record<string, string> = {
   gold: "bg-bw-gold/20 text-bw-gold border-bw-gold/30",
 };
 
-export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar, stats, xp, characterCard, newAchievements, profileId }: DoneStateProps) {
+export function DoneState({
+  sessionId,
+  sessionTitle,
+  studentName,
+  studentAvatar,
+  stats,
+  xp,
+  characterCard,
+  newAchievements,
+  profileId,
+}: DoneStateProps) {
   const { play } = useSound();
   const fanfarePlayed = useRef(false);
 
@@ -70,15 +80,22 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
         transition={{ repeat: Infinity, duration: 3, repeatDelay: 2 }}
         className="w-20 h-20 rounded-full bg-gradient-to-br from-bw-gold to-bw-primary mx-auto flex items-center justify-center shadow-[0_0_30px_rgba(212,168,67,0.3)]"
       >
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+        <svg
+          width="36"
+          height="36"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="white"
+          strokeWidth="2"
+          strokeLinecap="round"
+          aria-hidden="true"
+        >
           <rect x="2" y="2" width="20" height="20" rx="2.18" />
           <path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 7h5M17 17h5" />
         </svg>
       </motion.div>
       <div className="space-y-2">
-        <h2
-          className="text-2xl sm:text-3xl tracking-wider font-cinema"
-        >
+        <h2 className="text-2xl sm:text-3xl tracking-wider font-cinema">
           C&apos;EST DANS LA <span className="text-bw-gold">BOITE</span> !
         </h2>
         <motion.div
@@ -144,9 +161,7 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
           transition={{ delay: hasStats ? 1.0 : 0.6 }}
           className="w-full max-w-xs space-y-3"
         >
-          <h3 className="text-sm font-cinema tracking-wider text-bw-gold">
-            BADGES D&Eacute;BLOQU&Eacute;S !
-          </h3>
+          <h3 className="text-sm font-cinema tracking-wider text-bw-gold">BADGES D&Eacute;BLOQU&Eacute;S !</h3>
           <div className="flex gap-2.5 overflow-x-auto pb-1 justify-center flex-wrap">
             {newAchievements.map((a, i) => (
               <motion.div
@@ -158,7 +173,9 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
               >
                 <span className="text-3xl">{a.icon}</span>
                 <span className="text-xs font-semibold text-bw-text leading-tight text-center">{a.name}</span>
-                <span className={`text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${TIER_COLORS[a.tier] || TIER_COLORS.bronze}`}>
+                <span
+                  className={`text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${TIER_COLORS[a.tier] || TIER_COLORS.bronze}`}
+                >
                   {a.tier}
                 </span>
               </motion.div>
@@ -248,7 +265,15 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
           href={ROUTES.playBibliotheque(sessionId)}
           className="flex items-center justify-center gap-2 w-full py-2.5 text-bw-muted text-xs hover:text-white/60 transition-colors"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          >
             <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
           </svg>
           Toutes mes créations
