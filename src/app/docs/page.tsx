@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { SiteNavbar } from "@/components/site-navbar";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
   title: "Ressources — Banlieuwood",
@@ -58,6 +60,7 @@ export default function DocsPage() {
       className="min-h-dvh bg-[#0a0a16] text-[#f0f0f8]"
       style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
     >
+      <SiteNavbar />
       <section className="pt-28 pb-20 px-6">
         <div className="max-w-[1200px] mx-auto">
           {/* Header */}
@@ -104,6 +107,7 @@ export default function DocsPage() {
           </div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }

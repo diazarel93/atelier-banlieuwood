@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
 import { ContactForm } from "./contact-form";
+import { SiteNavbar } from "@/components/site-navbar";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
   title: "Contact — Banlieuwood",
@@ -24,6 +26,7 @@ export default function ContactPage() {
       className="min-h-dvh bg-[#0a0a16] text-[#f0f0f8]"
       style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
     >
+      <SiteNavbar />
       {/* Header */}
       <section className="pt-28 pb-12 px-6">
         <div className="max-w-[900px] mx-auto text-center">
@@ -78,6 +81,7 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }
