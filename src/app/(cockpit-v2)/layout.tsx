@@ -15,11 +15,11 @@ export const metadata: Metadata = {
 
 export default function CockpitV2Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="theme-lavande min-h-dvh bg-[var(--background)]" data-theme="dark">
-      {/* Dark by default — script allows user to switch to light if stored */}
+    <div className="theme-lavande min-h-dvh" data-theme="dark" style={{ backgroundColor: "#0c0c18", color: "#f0f0f8" }}>
+      {/* V2: Force dark — clear any old light preference */}
       <script
         dangerouslySetInnerHTML={{
-          __html: `try{var s=localStorage.getItem("bw-theme");if(s==="light"){document.currentScript.parentElement.removeAttribute("data-theme");var m=document.querySelector('meta[name="theme-color"]');if(m)m.content="#EEEAF6"}}catch(e){}`,
+          __html: `try{localStorage.setItem("bw-theme","dark")}catch(e){}`,
         }}
       />
       <AppShellV2>
