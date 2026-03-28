@@ -116,6 +116,22 @@ const GUIDE_ITEMS: GuideItem[] = [
       </svg>
     ),
   },
+  {
+    title: "Fiche de cours",
+    description:
+      "Générez une fiche pédagogique adaptée au niveau de vos élèves (Primaire, Collège, Lycée). La fiche inclut les objectifs, compétences PEAC, déroulé et conseils d'animation.",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path
+          d="M4 2h8l4 4v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <path d="M12 2v4h4M6 9h6M6 12h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
+  },
 ];
 
 // ── Keyboard Shortcuts ──
