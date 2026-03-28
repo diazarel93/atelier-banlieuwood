@@ -118,7 +118,7 @@ export const MODULES: ModuleDef[] = [
     id: "u2a",
     dbModule: 2,
     dbSeance: 1,
-    specModule: "M2",
+    bonus: true, // Legacy "Émotion Cachée" — NOT spec M2 (which is B_QCM only)
     title: "Mise en bain",
     subtitle: "Émotion · 1",
     description: "Checklist culturelle, scène marquante, décryptage de l'émotion cachée.",
@@ -133,7 +133,7 @@ export const MODULES: ModuleDef[] = [
     id: "u2b",
     dbModule: 2,
     dbSeance: 2,
-    specModule: "M2",
+    bonus: true, // Legacy "Émotion Cachée" — NOT spec M2 (which is B_QCM only)
     title: "Émotion Cachée",
     subtitle: "Émotion · 2",
     description: "Choisir une émotion et construire une scène avec jetons et contraintes.",
@@ -148,7 +148,7 @@ export const MODULES: ModuleDef[] = [
     id: "u2c",
     dbModule: 2,
     dbSeance: 3,
-    specModule: "M2",
+    bonus: true, // Legacy "Émotion Cachée" — NOT spec M2 (which is B_QCM only)
     title: "Phase Collective",
     subtitle: "Émotion · 3",
     description: "Projection de 2 scènes anonymes. Débat : laquelle communique le mieux ?",
@@ -163,7 +163,7 @@ export const MODULES: ModuleDef[] = [
     id: "u2d",
     dbModule: 2,
     dbSeance: 4,
-    specModule: "M2",
+    bonus: true, // Legacy "Émotion Cachée" — NOT spec M2 (which is B_QCM only)
     title: "Clôture",
     subtitle: "Émotion · 4",
     description: "Nommer le thème et l'arc du personnage. Bilan du module.",
@@ -473,21 +473,21 @@ export const MODULES: ModuleDef[] = [
 
 /** IDs of the 8 core programme phases (M1–M8) */
 export const MAIN_PHASE_IDS = [
-  "regard", "scene", "etsi", "pitch",
+  "regard", "etsi", "pitch",
   "collectif", "scenario", "mise-en-scene", "equipe",
 ] as const;
 
 export const PHASES: PhaseDef[] = [
   // ── Parcours principal M1–M8 (conforme au programme pédagogique) ──
   { id: "regard", label: "Le Regard", description: "Observer, interpréter, imaginer. Les élèves découvrent leur profil créatif à travers des images et des questions ouvertes.", color: "#8B5CF6", emoji: "👁️", moduleIds: ["m1a", "m1b", "m1c", "m1d", "m1e"] },
-  { id: "scene", label: "Le Mécanisme d'une scène", description: "Comprendre les composantes narratives et visuelles d'une scène : cadrage, son, jeu, montage.", color: "#EC4899", emoji: "🎬", moduleIds: ["u2a", "u2b", "u2c", "u2d"] },
-  { id: "etsi", label: "Générer l'idée", description: "Amorcer la création narrative par l'imagination guidée à partir d'images déclencheuses.", color: "#06B6D4", emoji: "✨", moduleIds: ["m10a"] },
+  { id: "etsi", label: "Générer l'idée", description: "Amorcer la création narrative par l'imagination guidée à partir d'images déclencheuses. Inclut les QCMs de cadrage narratif (M2 spec).", color: "#06B6D4", emoji: "✨", moduleIds: ["m10a"] },
   { id: "pitch", label: "Le Pitch", description: "Créer un personnage, définir son objectif, et pitcher son histoire en 30 secondes.", color: "#06B6D4", emoji: "🎤", moduleIds: ["m10b"] },
   { id: "collectif", label: "Le Récit", description: "Construire l'ossature narrative par manches de contributions et de votes collectifs.", color: "#14B8A6", emoji: "🗳️", moduleIds: ["m12a"] },
   { id: "scenario", label: "Le Scénario", description: "Transformer les choix collectifs en scénario structuré : frise narrative, scènes IA, missions d'écriture collaborative.", color: "#10B981", emoji: "✏️", moduleIds: ["m6"] },
   { id: "mise-en-scene", label: "La Mise en scène", description: "Apprendre le langage visuel : les 4 plans fondamentaux, comparer les cadrages, créer un mini-storyboard.", color: "#F59E0B", emoji: "🎥", moduleIds: ["m7"] },
   { id: "equipe", label: "L'Équipe", description: "Former l'équipe de tournage : quiz des métiers, choix des rôles par mérite, cartes talents.", color: "#EF4444", emoji: "🎭", moduleIds: ["m8"] },
   // ── Modules bonus (hors programme de base) ──
+  { id: "scene", label: "Émotion Cachée", description: "Explorer les émotions cachées derrière les images. Checklist culturelle, scene builder, débat collectif. (Legacy — hors spec M2)", color: "#EC4899", emoji: "🎬", moduleIds: ["u2a", "u2b", "u2c", "u2d"] },
   { id: "postprod", label: "La Post-prod", description: "Monter le film, ajouter la musique et les effets, finaliser le projet pour la projection.", color: "#06B6D4", emoji: "🎞️", moduleIds: ["m9"] },
   { id: "cinema", label: "Le Cinéma", description: "Comprendre le langage cinématographique : plans, angles, montage, son. Les outils pour raconter en images.", color: "#F59E0B", emoji: "🎬", moduleIds: ["m2a", "m2b", "m2c", "m2d"] },
   { id: "story", label: "L'Histoire", description: "Construire une histoire complète : personnages, conflits, structure narrative et parcours émotionnel.", color: "#4ECDC4", emoji: "📖", moduleIds: ["m2-perso", "m3", "m4", "m5"] },

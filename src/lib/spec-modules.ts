@@ -45,9 +45,13 @@ export const SPEC_MODULES: SpecModuleDef[] = [
     arc: "T1",
     arcLabel: "Observer",
     maturity: "A",
-    dbMappings: [{ dbModule: 2 }],
-    moduleIds: ["u2a", "u2b", "u2c", "u2d"],
-    phaseId: "scene",
+    // M2 = B_QCM only. In F0: integrated in M3 B4a flow. In F1/F2: standalone before M3.
+    // dbModule 2 ("Émotion Cachée") is legacy/bonus, NOT spec M2.
+    // B_QCM content lives in etsi-writer QCMs (part of dbModule 10 seance 1).
+    // M2 has no independent dbModule — it's embedded in M3's flow.
+    dbMappings: [],
+    moduleIds: [],
+    phaseId: "etsi", // Embedded within M3 "Générer l'idée" flow
   },
   {
     specId: "M3",
@@ -112,7 +116,7 @@ export const SPEC_MODULES: SpecModuleDef[] = [
 ];
 
 /** dbModule numbers that are outside the M1-M8 spec (bonus/legacy) */
-const EXTRA_DB_MODULES = new Set([3, 4, 9, 11, 13]);
+const EXTRA_DB_MODULES = new Set([2, 3, 4, 9, 11, 13]);
 
 /**
  * Get the spec module definition for a given code dbModule + dbSeance.
