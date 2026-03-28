@@ -16,7 +16,7 @@ import { ROUTES } from "@/lib/routes";
 function getGreeting(): string {
   const h = new Date().getHours();
   if (h >= 5 && h < 12) return "Bonjour";
-  if (h >= 12 && h < 18) return "Bon apr\u00e8s-midi";
+  if (h >= 12 && h < 18) return "Bon après-midi";
   return "Bonsoir";
 }
 
@@ -73,7 +73,7 @@ export default function DashboardV2Page() {
           onClick={() => refetch()}
           className="px-4 py-2 rounded-lg bg-[var(--color-bw-violet)] text-white text-sm font-semibold cursor-pointer"
         >
-          R\u00e9essayer
+          Réessayer
         </button>
       </div>
     );
@@ -87,18 +87,17 @@ export default function DashboardV2Page() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-[var(--color-bw-heading)]">
-            {getGreeting()}, {firstName || "Marc"} ! \ud83d\udc4b
+            {getGreeting()}, {firstName || "Marc"} ! 👋
           </h1>
           <p className="text-sm text-[var(--color-bw-muted)] mt-1">
-            {data?.todaySessions?.length || 0} s\u00e9ance{(data?.todaySessions?.length || 0) > 1 ? "s" : ""} cette
-            semaine
+            {data?.todaySessions?.length || 0} séance{(data?.todaySessions?.length || 0) > 1 ? "s" : ""} cette semaine
           </p>
         </div>
         <Link
           href={ROUTES.seanceNew}
           className="px-6 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] shadow-[0_4px_16px_rgba(139,92,246,0.3)] hover:shadow-[0_8px_24px_rgba(139,92,246,0.4)] transition-all"
         >
-          + Nouvelle session
+          + Nouvelle séance
         </Link>
       </div>
 
@@ -118,21 +117,21 @@ export default function DashboardV2Page() {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#34d399]/15 text-[#34d399] animate-pulse">
-                  \u25cf EN COURS
+                  ● EN COURS
                 </span>
                 <span className="text-sm font-bold text-[var(--color-bw-heading)]">
                   {activeSession.classLabel || activeSession.title}
                 </span>
               </div>
               <p className="text-[12px] text-[var(--color-bw-muted)]">
-                {activeSession.title} \u2014 {activeSession.studentCount} \u00e9l\u00e8ves connect\u00e9s
+                {activeSession.title} — {activeSession.studentCount} élèves connectés
               </p>
             </div>
             <Link
               href={ROUTES.pilot(activeSession.id)}
               className="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#34d399] to-[#059669] shadow-[0_4px_12px_rgba(52,211,153,0.3)] hover:shadow-[0_8px_20px_rgba(52,211,153,0.4)] transition-all"
             >
-              Retourner au cockpit \u2192
+              Retourner au cockpit →
             </Link>
           </div>
         </motion.div>
@@ -141,8 +140,8 @@ export default function DashboardV2Page() {
       {/* ── 4 KPI Cards ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { value: stats?.doneSessions || 0, label: "Sessions facilit\u00e9es", color: "#8b5cf6" },
-          { value: stats?.totalStudents || 0, label: "\u00c9l\u00e8ves engag\u00e9s", color: "#fbbf24" },
+          { value: stats?.doneSessions || 0, label: "Séances facilitées", color: "#8b5cf6" },
+          { value: stats?.totalStudents || 0, label: "Élèves engagés", color: "#fbbf24" },
           {
             value: stats?.totalSessions
               ? `${Math.round(((stats?.doneSessions || 0) / stats.totalSessions) * 100)}%`
@@ -169,7 +168,7 @@ export default function DashboardV2Page() {
       {/* ── Sessions a venir ── */}
       {upcomingSessions.length > 0 && (
         <div>
-          <h3 className="text-base font-bold text-[var(--color-bw-heading)] mb-3">Sessions \u00e0 venir</h3>
+          <h3 className="text-base font-bold text-[var(--color-bw-heading)] mb-3">Séances à venir</h3>
           <div className="space-y-3">
             {upcomingSessions.map((s) => (
               <div
@@ -177,12 +176,12 @@ export default function DashboardV2Page() {
                 className="flex items-center gap-4 rounded-2xl border border-[var(--color-bw-border)] bg-[var(--card)] p-4 hover:border-[#8b5cf6]/30 transition-all"
               >
                 <div className="w-10 h-10 rounded-xl bg-[#8b5cf6]/10 flex items-center justify-center text-lg flex-shrink-0">
-                  \ud83d\udcda
+                  📚
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-bold text-[var(--color-bw-heading)]">{s.classLabel || s.title}</div>
                   <div className="text-[12px] text-[var(--color-bw-muted)]">
-                    {s.title} \u2014{" "}
+                    {s.title} —{" "}
                     {new Date(s.scheduledAt).toLocaleDateString("fr-FR", {
                       weekday: "long",
                       day: "numeric",
@@ -215,12 +214,12 @@ export default function DashboardV2Page() {
       {/* ── Sessions recentes (table) ── */}
       {recentSessions.length > 0 && (
         <div>
-          <h3 className="text-base font-bold text-[var(--color-bw-heading)] mb-3">Sessions r\u00e9centes</h3>
+          <h3 className="text-base font-bold text-[var(--color-bw-heading)] mb-3">Séances récentes</h3>
           <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border)]">
             <table className="w-full text-[13px]" style={{ borderCollapse: "collapse" }}>
               <thead>
                 <tr>
-                  {["DATE", "CLASSE", "FORMULE", "\u00c9L\u00c8VES", "PARTICIPATION", "ACTIONS"].map((h) => (
+                  {["DATE", "CLASSE", "FORMULE", "ÉLÈVES", "PARTICIPATION", "ACTIONS"].map((h) => (
                     <th
                       key={h}
                       className="p-3 text-left text-[11px] uppercase tracking-wider text-[var(--color-bw-muted)] bg-[var(--color-bw-surface-dim)] border-b border-[var(--color-bw-border)]"
@@ -255,7 +254,7 @@ export default function DashboardV2Page() {
                       </td>
                       <td className="p-3 text-[var(--color-bw-heading)] tabular-nums">{s.studentCount}</td>
                       <td className="p-3 text-[#34d399] font-semibold tabular-nums">
-                        {s.studentCount > 0 ? "96%" : "\u2014"}
+                        {s.studentCount > 0 ? "96%" : "—"}
                       </td>
                       <td className="p-3">
                         <Link
@@ -277,16 +276,14 @@ export default function DashboardV2Page() {
       {/* ── Empty state ── */}
       {!data?.todaySessions?.length && !upcomingSessions.length && !recentSessions.length && (
         <div className="text-center py-16">
-          <div className="text-5xl mb-4">\ud83c\udfac</div>
+          <div className="text-5xl mb-4">🎬</div>
           <h2 className="text-xl font-bold text-[var(--color-bw-heading)] mb-2">Bienvenue sur Banlieuwood !</h2>
-          <p className="text-sm text-[var(--color-bw-muted)] mb-6">
-            Cr\u00e9ez votre premi\u00e8re s\u00e9ance pour commencer.
-          </p>
+          <p className="text-sm text-[var(--color-bw-muted)] mb-6">Créez votre première séance pour commencer.</p>
           <Link
             href={ROUTES.seanceNew}
             className="px-8 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] shadow-[0_4px_16px_rgba(139,92,246,0.3)]"
           >
-            + Nouvelle s\u00e9ance
+            + Nouvelle séance
           </Link>
         </div>
       )}

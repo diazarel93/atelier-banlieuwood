@@ -29,7 +29,7 @@ interface Session {
 
 async function fetchSessions(): Promise<Session[]> {
   const res = await fetch("/api/sessions");
-  if (!res.ok) throw new Error("Erreur chargement s\u00e9ances");
+  if (!res.ok) throw new Error("Erreur chargement séances");
   return res.json();
 }
 
@@ -82,8 +82,8 @@ export default function SeancesPage() {
     const count = selected.size;
     if (count === 0) return;
     confirm.requestConfirm({
-      title: `Archiver ${count} s\u00e9ance${count > 1 ? "s" : ""} ?`,
-      description: `${count} s\u00e9ance${count > 1 ? "s seront archiv\u00e9es" : " sera archiv\u00e9e"}. Vous pourrez les retrouver dans l'onglet Archives.`,
+      title: `Archiver ${count} séance${count > 1 ? "s" : ""} ?`,
+      description: `${count} séance${count > 1 ? "s seront archivées" : " sera archivée"}. Vous pourrez les retrouver dans l'onglet Archives.`,
       confirmLabel: "Archiver",
       confirmVariant: "danger",
       action: async () => {
@@ -91,9 +91,9 @@ export default function SeancesPage() {
         const results = await Promise.allSettled(ids.map((id) => fetch(`/api/sessions/${id}`, { method: "DELETE" })));
         const succeeded = results.filter((r) => r.status === "fulfilled" && (r.value as Response).ok).length;
         if (succeeded === ids.length) {
-          toast.success(`${succeeded} s\u00e9ance${succeeded > 1 ? "s archiv\u00e9es" : " archiv\u00e9e"}`);
+          toast.success(`${succeeded} séance${succeeded > 1 ? "s archivées" : " archivée"}`);
         } else {
-          toast.error(`${succeeded}/${ids.length} archiv\u00e9es. Certaines ont \u00e9chou\u00e9.`);
+          toast.error(`${succeeded}/${ids.length} archivées. Certaines ont échoué.`);
         }
         clearSelection();
         queryClient.invalidateQueries({ queryKey: ["sessions"] });
@@ -273,7 +273,7 @@ export default function SeancesPage() {
                 </svg>
               }
               title="Erreur de chargement"
-              description="Impossible de charger les s\u00e9ances."
+              description="Impossible de charger les séances."
               accent="amber"
               action={{ label: "Reessayer", onClick: () => refetch() }}
             />
@@ -300,15 +300,13 @@ export default function SeancesPage() {
                   <path d="M16 2v4M8 2v4M3 10h18" />
                 </svg>
               }
-              title={
-                tab === "archived" ? "Aucune s\u00e9ance archiv\u00e9e" : "Aucune s\u00e9ance dans cette cat\u00e9gorie"
-              }
+              title={tab === "archived" ? "Aucune séance archivée" : "Aucune séance dans cette catégorie"}
               description={
                 tab === "archived"
-                  ? "Les s\u00e9ances archiv\u00e9es appara\u00eetront ici."
-                  : "Cr\u00e9ez une nouvelle s\u00e9ance pour commencer."
+                  ? "Les séances archivées apparaîtront ici."
+                  : "Créez une nouvelle séance pour commencer."
               }
-              action={tab !== "archived" ? { label: "Cr\u00e9er une s\u00e9ance", href: ROUTES.seanceNew } : undefined}
+              action={tab !== "archived" ? { label: "Créer une séance", href: ROUTES.seanceNew } : undefined}
             />
           ) : (
             <div className="flex flex-col gap-6">

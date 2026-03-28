@@ -12,29 +12,29 @@ interface FaqItem {
 
 const FAQ_ITEMS: FaqItem[] = [
   {
-    question: "Comment cr\u00e9er une nouvelle s\u00e9ance ?",
+    question: "Comment créer une nouvelle séance ?",
     answer:
-      "Cliquez sur le bouton \u00ab Nouvelle s\u00e9ance \u00bb en haut \u00e0 droite, ou utilisez le raccourci \u2318K puis tapez \u00ab nouvelle s\u00e9ance \u00bb. Remplissez le titre, la classe, le niveau et les options, puis confirmez.",
+      "Cliquez sur le bouton « Nouvelle séance » en haut à droite, ou utilisez le raccourci ⌘K puis tapez « nouvelle séance ». Remplissez le titre, la classe, le niveau et les options, puis confirmez.",
   },
   {
-    question: "Comment les \u00e9l\u00e8ves rejoignent une s\u00e9ance ?",
+    question: "Comment les élèves rejoignent une séance ?",
     answer:
-      "Partagez le code de connexion affich\u00e9 dans la page de pr\u00e9paration de la s\u00e9ance. Les \u00e9l\u00e8ves vont sur la page de jeu et saisissent le code pour rejoindre. Ils choisissent un pseudo et un avatar.",
+      "Partagez le code de connexion affiché dans la page de préparation de la séance. Les élèves vont sur la page de jeu et saisissent le code pour rejoindre. Ils choisissent un pseudo et un avatar.",
   },
   {
-    question: "Puis-je modifier les r\u00e9ponses des \u00e9l\u00e8ves ?",
+    question: "Puis-je modifier les réponses des élèves ?",
     answer:
-      "Vous ne pouvez pas modifier les r\u00e9ponses directement, mais vous pouvez les noter, les mettre en avant (highlight) ou ajouter un tag p\u00e9dagogique depuis le cockpit de pilotage. Les annotations sont visibles dans le profil de l'\u00e9l\u00e8ve.",
+      "Vous ne pouvez pas modifier les réponses directement, mais vous pouvez les noter, les mettre en avant (highlight) ou ajouter un tag pédagogique depuis le cockpit de pilotage. Les annotations sont visibles dans le profil de l'élève.",
   },
   {
-    question: "Comment archiver une s\u00e9ance termin\u00e9e ?",
+    question: "Comment archiver une séance terminée ?",
     answer:
-      "Dans la liste des s\u00e9ances, cochez les s\u00e9ances souhait\u00e9es puis cliquez sur \u00ab Archiver \u00bb dans la barre d'actions. Les s\u00e9ances archiv\u00e9es restent accessibles dans l'onglet \u00ab Archives \u00bb.",
+      "Dans la liste des séances, cochez les séances souhaitées puis cliquez sur « Archiver » dans la barre d'actions. Les séances archivées restent accessibles dans l'onglet « Archives ».",
   },
   {
-    question: "Les donn\u00e9es sont-elles sauvegard\u00e9es automatiquement ?",
+    question: "Les données sont-elles sauvegardées automatiquement ?",
     answer:
-      "Oui, toutes les r\u00e9ponses et scores sont sauvegard\u00e9s en temps r\u00e9el. Les notes enseignant, les annotations et les param\u00e8tres de s\u00e9ance sont \u00e9galement persist\u00e9s automatiquement.",
+      "Oui, toutes les réponses et scores sont sauvegardés en temps réel. Les notes enseignant, les annotations et les paramètres de séance sont également persistés automatiquement.",
   },
 ];
 
@@ -50,7 +50,7 @@ const GUIDE_ITEMS: GuideItem[] = [
   {
     title: "Tableau de bord",
     description:
-      "Vue d'ensemble de vos s\u00e9ances actives, \u00e0 venir et r\u00e9centes. Les KPIs affichent le nombre total d'\u00e9l\u00e8ves, de s\u00e9ances et les scores moyens de la classe.",
+      "Vue d'ensemble de vos séances actives, à venir et récentes. Les KPIs affichent le nombre total d'élèves, de séances et les scores moyens de la classe.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <rect x="1" y="1" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="1.5" />
@@ -63,7 +63,7 @@ const GUIDE_ITEMS: GuideItem[] = [
   {
     title: "Cockpit de pilotage",
     description:
-      "Interface en temps r\u00e9el pour piloter une s\u00e9ance. Vous contr\u00f4lez l'avanc\u00e9e des questions, visualisez les r\u00e9ponses, envoyez des messages et g\u00e9rez le chronom\u00e8tre.",
+      "Interface en temps réel pour piloter une séance. Vous contrôlez l'avancée des questions, visualisez les réponses, envoyez des messages et gérez le chronomètre.",
     icon: (
       <svg
         width="20"
@@ -81,9 +81,9 @@ const GUIDE_ITEMS: GuideItem[] = [
     ),
   },
   {
-    title: "Profils \u00e9l\u00e8ves",
+    title: "Profils élèves",
     description:
-      "Chaque \u00e9l\u00e8ve a un profil avec son historique de scores, ses r\u00e9ponses r\u00e9centes, ses badges et son portfolio cr\u00e9atif. Vous pouvez y ajouter des notes p\u00e9dagogiques.",
+      "Chaque élève a un profil avec son historique de scores, ses réponses récentes, ses badges et son portfolio créatif. Vous pouvez y ajouter des notes pédagogiques.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <path
@@ -99,7 +99,7 @@ const GUIDE_ITEMS: GuideItem[] = [
   {
     title: "Statistiques",
     description:
-      "Analysez les performances par classe, par s\u00e9ance ou par module. Les graphiques montrent l'\u00e9volution des scores et la r\u00e9partition des comp\u00e9tences.",
+      "Analysez les performances par classe, par séance ou par module. Les graphiques montrent l'évolution des scores et la répartition des compétences.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <path d="M3 15V8M7 15V5M11 15V9M15 15V3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -107,9 +107,9 @@ const GUIDE_ITEMS: GuideItem[] = [
     ),
   },
   {
-    title: "Biblioth\u00e8que de modules",
+    title: "Bibliothèque de modules",
     description:
-      "Parcourez les modules p\u00e9dagogiques disponibles : Le Regard, G\u00e9n\u00e9rer l'id\u00e9e, Le Pitch, Le R\u00e9cit, Le Sc\u00e9nario, La Mise en sc\u00e8ne, L'\u00c9quipe. Lancez une s\u00e9ance directement depuis un module.",
+      "Parcourez les modules pédagogiques disponibles : Le Regard, Générer l'idée, Le Pitch, Le Récit, Le Scénario, La Mise en scène, L'Équipe. Lancez une séance directement depuis un module.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <path d="M2 3h5l2 2h7v10H2V3z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
@@ -126,19 +126,19 @@ interface ShortcutItem {
 }
 
 const SHORTCUTS: ShortcutItem[] = [
-  { keys: ["Espace"], description: "Pause / Reprendre la s\u00e9ance" },
+  { keys: ["Espace"], description: "Pause / Reprendre la séance" },
   { keys: ["N"], description: "Action suivante (question suivante)" },
   { keys: ["B"], description: "Envoyer un message broadcast" },
-  { keys: ["E"], description: "Exporter les r\u00e9sultats" },
-  { keys: ["C"], description: "Comparer les r\u00e9ponses" },
+  { keys: ["E"], description: "Exporter les résultats" },
+  { keys: ["C"], description: "Comparer les réponses" },
   { keys: ["F"], description: "Mode focus (masquer les panneaux)" },
   { keys: ["H"], description: "Mode intervention" },
-  { keys: ["T"], description: "Ouvrir le chronom\u00e8tre" },
-  { keys: ["1-5"], description: "Pr\u00e9s\u00e9lections chrono (en mode timer)" },
+  { keys: ["T"], description: "Ouvrir le chronomètre" },
+  { keys: ["1-5"], description: "Présélections chrono (en mode timer)" },
   { keys: ["?"], description: "Afficher les raccourcis" },
-  { keys: ["\u00c9chap"], description: "Fermer les panneaux ouverts" },
-  { keys: ["\u2318", "K"], description: "Recherche rapide (toutes les pages)" },
-  { keys: ["\u2318", "Z"], description: "Annuler la derni\u00e8re action" },
+  { keys: ["Échap"], description: "Fermer les panneaux ouverts" },
+  { keys: ["⌘", "K"], description: "Recherche rapide (toutes les pages)" },
+  { keys: ["⌘", "Z"], description: "Annuler la dernière action" },
 ];
 
 // ── Components ──
