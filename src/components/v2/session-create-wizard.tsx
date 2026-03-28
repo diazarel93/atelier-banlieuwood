@@ -9,11 +9,13 @@ import { ROUTES } from "@/lib/routes";
 import { GlassCardV2 } from "./glass-card";
 import { DatePicker } from "./date-picker";
 import { toast } from "sonner";
+import { FORMULAS, type FormulaId } from "@/lib/formulas";
 
 interface WizardData {
   title: string;
   classLabel: string;
   level: "primaire" | "college" | "lycee";
+  formula: FormulaId;
   scheduledAt: string;
   template: string;
   thematique: string;
@@ -50,6 +52,7 @@ export function SessionCreateWizard() {
     title: "",
     classLabel: "",
     level: "college",
+    formula: "F0",
     scheduledAt: "",
     template: "",
     thematique: "",
@@ -128,6 +131,7 @@ export function SessionCreateWizard() {
           body: JSON.stringify({
             title: sessionTitle,
             level: data.level,
+            formula: data.formula,
             template: data.template || null,
             thematique: data.thematique || null,
             scheduled_at: scheduledAt,
@@ -271,6 +275,39 @@ export function SessionCreateWizard() {
                     {l.label}
                   </button>
                 ))}
+              </div>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-bw-muted">
+                Formule
+              </label>
+              <div className="flex flex-col gap-1.5">
+                {(["F0", "F1", "F2"] as FormulaId[]).map((fId) => {
+                  const f = FORMULAS[fId];
+                  return (
+                    <button
+                      key={fId}
+                      type="button"
+                      onClick={() => update({ formula: fId })}
+                      className={cn(
+                        "rounded-lg border px-3 py-2.5 text-left transition-colors",
+                        data.formula === fId
+                          ? "border-bw-primary bg-bw-primary/5"
+                          : "border-[var(--color-bw-border)] hover:border-[var(--color-bw-border-hover)]"
+                      )}
+                    >
+                      <span className={cn(
+                        "text-sm font-semibold",
+                        data.formula === fId ? "text-bw-primary" : "text-bw-heading"
+                      )}>
+                        {fId} — {f.label}
+                      </span>
+                      <span className="block text-xs text-bw-muted mt-0.5">
+                        {f.description} ({f.sessionFormat})
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <div className="flex flex-col gap-1.5">
