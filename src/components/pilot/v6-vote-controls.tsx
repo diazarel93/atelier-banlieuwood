@@ -1,0 +1,159 @@
+"use client";
+
+// ═══════════════════════════════════════════════════════════════
+// V6 VOTE CONTROLS — 4-button grid for vote management
+// ═══════════════════════════════════════════════════════════════
+
+interface V6VoteControlsProps {
+  voteState: "closed" | "open" | "revealing" | "revealed";
+  totalVotes: number;
+  onOpenVote: () => void;
+  onCloseVote: () => void;
+  onReveal: () => void;
+  onNext: () => void;
+  onReset?: () => void;
+}
+
+export function V6VoteControls({
+  voteState,
+  totalVotes,
+  onOpenVote,
+  onCloseVote,
+  onReveal,
+  onNext,
+  onReset,
+}: V6VoteControlsProps) {
+  return (
+    <section className="rounded-2xl border border-[#2a2a50] bg-[#161633] p-5">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-[14px] font-bold text-[#f0f0f8]">Controles Vote</h3>
+        <div className="flex items-center gap-2">
+          {voteState === "open" && (
+            <span className="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-pulse">
+              {totalVotes} votes
+            </span>
+          )}
+          <span
+            className={`text-[10px] font-semibold px-2.5 py-1 rounded-lg border ${
+              voteState === "open"
+                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                : voteState === "revealed"
+                  ? "bg-[#fbbf24]/10 text-[#fbbf24] border-[#fbbf24]/20"
+                  : voteState === "revealing"
+                    ? "bg-[#8b5cf6]/10 text-[#8b5cf6] border-[#8b5cf6]/20"
+                    : "bg-[#1a1a35] text-[#64748b] border-[#2a2a50]"
+            }`}
+          >
+            {voteState === "open"
+              ? "Ouvert"
+              : voteState === "revealed"
+                ? "Revele"
+                : voteState === "revealing"
+                  ? "Revelation..."
+                  : "Ferme"}
+          </span>
+          {onReset && (
+            <button
+              onClick={onReset}
+              className="text-[9px] font-semibold px-2 py-1 rounded-md bg-[#1a1a35] border border-[#2a2a50] text-[#64748b] hover:text-[#94a3b8] cursor-pointer transition-colors flex items-center gap-1"
+            >
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M1 4v6h6" />
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+              </svg>
+              Reset
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* 4 buttons grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {/* Ouvrir */}
+        <button
+          onClick={onOpenVote}
+          disabled={voteState === "open"}
+          className={`py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
+            voteState === "open"
+              ? "bg-[#8b5cf6]/15 text-[#8b5cf6] border border-[#8b5cf6]/30"
+              : "bg-[#8b5cf6] text-white"
+          }`}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          Ouvrir
+        </button>
+
+        {/* Fermer */}
+        <button
+          onClick={onCloseVote}
+          disabled={voteState !== "open"}
+          className={`py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
+            voteState === "open" ? "bg-[#fb923c] text-white" : "bg-[#2a2a50] text-[#64748b]"
+          }`}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="4" width="4" height="16" />
+            <rect x="14" y="4" width="4" height="16" />
+          </svg>
+          Fermer
+        </button>
+
+        {/* Reveler */}
+        <button
+          onClick={onReveal}
+          disabled={voteState !== "closed" || totalVotes === 0}
+          className={`py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
+            voteState === "closed" && totalVotes > 0 ? "bg-[#ec4899] text-white" : "bg-[#2a2a50] text-[#64748b]"
+          }`}
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z" />
+          </svg>
+          Reveler
+        </button>
+
+        {/* Suivant */}
+        <button
+          onClick={onNext}
+          disabled={voteState !== "revealed"}
+          className={`py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
+            voteState === "revealed" ? "bg-[#34d399] text-white" : "bg-[#2a2a50] text-[#64748b]"
+          }`}
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <path d="M5 4l10 8-10 8z" />
+            <path d="M19 5v14" />
+          </svg>
+          Suivant
+        </button>
+      </div>
+    </section>
+  );
+}

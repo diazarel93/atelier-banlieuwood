@@ -28,6 +28,9 @@ import { ResponseStreamSection } from "@/components/pilot/response-stream-sectio
 import { VotingResults } from "@/components/pilot/voting-results";
 import { InlineReformulation } from "@/components/pilot/inline-reformulation";
 import { ClassroomPlanCompact } from "@/components/pilot/classroom-plan-compact";
+import { V6ControlPanels } from "@/components/pilot/v6-control-panels";
+import { V6VoteControls } from "@/components/pilot/v6-vote-controls";
+import { V6ActivityFeed, type ActivityItem } from "@/components/pilot/v6-activity-feed";
 import { useStuckDetection } from "@/hooks/use-stuck-detection";
 import type { StudentState } from "@/components/pilot/pulse-ring";
 import type { ResponseCardResponse } from "@/components/pilot/response-card";
@@ -377,7 +380,7 @@ export function FocusCockpit() {
             {/* Progress indicator */}
             {session.status === "responding" && (
               <div className="flex items-center gap-3">
-                <div className="flex-1 h-2 rounded-full bg-gray-200 overflow-hidden">
+                <div className="flex-1 h-2 rounded-full bg-[#1a1a35] overflow-hidden">
                   <motion.div
                     className="h-full rounded-full bg-emerald-500"
                     initial={{ width: 0 }}
@@ -387,7 +390,7 @@ export function FocusCockpit() {
                     transition={{ duration: 0.5, ease: "easeOut" }}
                   />
                 </div>
-                <span className="text-[13px] font-bold text-gray-500 tabular-nums shrink-0">
+                <span className="text-[13px] font-bold text-[#94a3b8] tabular-nums shrink-0">
                   {unifiedRespondedCount}/{activeStudents.length}
                 </span>
               </div>
@@ -396,12 +399,12 @@ export function FocusCockpit() {
 
           {/* Plan de classe — FULL WIDTH collapsible section */}
           {activeStudents.length > 0 && (
-            <div className="rounded-2xl bg-white border border-gray-100 overflow-hidden">
+            <div className="rounded-2xl bg-[#161633] border border-[#2a2a50] overflow-hidden">
               <button
                 onClick={() => setShowPlan(!showPlan)}
-                className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-50 transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-[#1a1a35] transition-colors cursor-pointer"
               >
-                <span className="flex items-center gap-2 text-[12px] font-bold text-gray-500">
+                <span className="flex items-center gap-2 text-[12px] font-bold text-[#94a3b8]">
                   <svg
                     width="14"
                     height="14"
@@ -438,7 +441,7 @@ export function FocusCockpit() {
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="overflow-hidden border-t border-gray-100"
+                    className="overflow-hidden border-t border-[#2a2a50]"
                   >
                     <div className="p-4">
                       <ClassroomPlanCompact
@@ -462,7 +465,7 @@ export function FocusCockpit() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="bg-white rounded-2xl border border-gray-100 p-6 text-center space-y-3"
+                className="bg-[#161633] rounded-2xl border border-[#2a2a50] p-6 text-center space-y-3"
               >
                 <motion.div
                   animate={{ y: [0, -4, 0] }}
@@ -471,8 +474,8 @@ export function FocusCockpit() {
                 >
                   ✏️
                 </motion.div>
-                <p className="text-[14px] font-medium text-gray-700">Les élèves réfléchissent...</p>
-                <p className="text-[12px] text-gray-400">Les réponses apparaîtront ici</p>
+                <p className="text-[14px] font-medium text-[#f0f0f8]">Les élèves réfléchissent...</p>
+                <p className="text-[12px] text-[#64748b]">Les réponses apparaîtront ici</p>
               </motion.div>
             )}
 
@@ -481,11 +484,11 @@ export function FocusCockpit() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="bg-white rounded-2xl border border-dashed border-gray-200 p-6 text-center space-y-3"
+                className="bg-[#161633] rounded-2xl border border-dashed border-[#2a2a50] p-6 text-center space-y-3"
               >
                 <div className="text-4xl">📡</div>
-                <p className="text-[14px] font-medium text-gray-700">Aucun élève connecté</p>
-                <p className="text-[12px] text-gray-400">Projetez le QR code pour qu&apos;ils rejoignent</p>
+                <p className="text-[14px] font-medium text-[#f0f0f8]">Aucun élève connecté</p>
+                <p className="text-[12px] text-[#64748b]">Projetez le QR code pour qu&apos;ils rejoignent</p>
               </motion.div>
             )}
 
@@ -529,9 +532,9 @@ export function FocusCockpit() {
 
             {/* Vote progress — live counter */}
             {isStandardQA && session.status === "voting" && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-4 space-y-3">
+              <div className="bg-[#161633] rounded-2xl border border-[#2a2a50] p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[13px] font-bold text-gray-700 flex items-center gap-2">
+                  <span className="text-[13px] font-bold text-[#f0f0f8] flex items-center gap-2">
                     <motion.span animate={{ scale: [1, 1.15, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>
                       🗳️
                     </motion.span>
@@ -541,7 +544,7 @@ export function FocusCockpit() {
                     {voteData?.totalVotes || 0}/{activeStudents.length}
                   </span>
                 </div>
-                <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+                <div className="h-2 rounded-full bg-[#1a1a35] overflow-hidden">
                   <motion.div
                     className="h-full rounded-full bg-orange-400"
                     initial={{ width: 0 }}
@@ -556,9 +559,9 @@ export function FocusCockpit() {
 
             {/* Vote empty state (reviewing with no votes) */}
             {isStandardQA && session.status === "reviewing" && (!voteData || voteData.totalVotes === 0) && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6 text-center space-y-2">
+              <div className="bg-[#161633] rounded-2xl border border-[#2a2a50] p-6 text-center space-y-2">
                 <p className="text-3xl">🗳️</p>
-                <p className="text-sm text-gray-500">Aucun vote enregistré</p>
+                <p className="text-sm text-[#64748b]">Aucun vote enregistré</p>
               </div>
             )}
 
@@ -636,11 +639,11 @@ export function FocusCockpit() {
             {/* Not responded students */}
             {session.status === "responding" && notRespondedStudents.length > 0 && notRespondedStudents.length <= 5 && (
               <div className="flex flex-wrap gap-1.5 pt-2">
-                <span className="text-[11px] text-gray-400 font-medium self-center mr-1">En attente :</span>
+                <span className="text-[11px] text-[#64748b] font-medium self-center mr-1">En attente :</span>
                 {notRespondedStudents.map((s) => (
                   <span
                     key={s.id}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-medium"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[11px] font-medium"
                   >
                     {s.display_name?.split(" ")[0]}
                   </span>
@@ -661,24 +664,24 @@ export function FocusCockpit() {
                   >
                     🎬
                   </motion.div>
-                  <h3 className="text-xl font-bold text-gray-900">C&apos;est dans la boîte !</h3>
+                  <h3 className="text-xl font-bold text-[#f0f0f8]">C&apos;est dans la boîte !</h3>
                 </div>
 
                 {/* Stats cards */}
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+                  <div className="bg-[#161633] rounded-xl border border-[#2a2a50] p-3 text-center">
                     <p className="text-2xl font-bold text-emerald-600 tabular-nums">{activeStudents.length}</p>
-                    <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Élèves</p>
+                    <p className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Élèves</p>
                   </div>
-                  <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+                  <div className="bg-[#161633] rounded-xl border border-[#2a2a50] p-3 text-center">
                     <p className="text-2xl font-bold text-orange-500 tabular-nums">{responses.length}</p>
-                    <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Réponses</p>
+                    <p className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Réponses</p>
                   </div>
-                  <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+                  <div className="bg-[#161633] rounded-xl border border-[#2a2a50] p-3 text-center">
                     <p className="text-2xl font-bold text-purple-500 tabular-nums">
                       {responses.filter((r) => r.is_highlighted).length}
                     </p>
-                    <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Mises en avant</p>
+                    <p className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Mises en avant</p>
                   </div>
                 </div>
 
@@ -691,6 +694,49 @@ export function FocusCockpit() {
               </motion.div>
             )}
           </div>
+          {/* ── V6 PANELS ── */}
+          {session.status !== "done" && (
+            <>
+              {/* Projection + Notes side by side */}
+              <V6ControlPanels
+                sessionId={sessionId}
+                currentScreenMode={currentScreenMode}
+                onScreenModeChange={(mode) => {
+                  updateSession.mutate({
+                    broadcast_message: `__SCREEN_${mode}`,
+                    broadcast_at: new Date().toISOString(),
+                  });
+                }}
+                onLockScreen={() => {
+                  updateSession.mutate({
+                    broadcast_message: "__SCREEN_black",
+                    broadcast_at: new Date().toISOString(),
+                  });
+                }}
+                onEndSession={() => {
+                  updateSession.mutate({ status: "done", timer_ends_at: null });
+                }}
+              />
+
+              {/* Vote controls (only for standard QA modules) */}
+              {isStandardQA && (
+                <V6VoteControls
+                  voteState={
+                    session.status === "voting" ? "open" : session.status === "reviewing" ? "revealed" : "closed"
+                  }
+                  totalVotes={voteData?.totalVotes || 0}
+                  onOpenVote={() => updateSession.mutate({ status: "voting", timer_ends_at: null })}
+                  onCloseVote={() => updateSession.mutate({ status: "responding", timer_ends_at: null })}
+                  onReveal={() => updateSession.mutate({ status: "reviewing", timer_ends_at: null })}
+                  onNext={handleNextAction}
+                />
+              )}
+
+              {/* Activity feed */}
+              <V6ActivityFeed items={[]} />
+            </>
+          )}
+
           {/* close max-w-2xl */}
         </div>
       </div>
