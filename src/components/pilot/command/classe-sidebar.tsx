@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "motion/react";
 import { StatRing } from "@/components/v2/stat-ring";
 import type { Student } from "@/hooks/use-pilot-session";
@@ -18,6 +18,8 @@ const STUCK_DOT_COLORS: Record<StuckLevel, string> = {
   stuck: "#EF4444", // red-500
 };
 
+type StudentFilter = "all" | "responded" | "waiting" | "blocked" | "hands";
+
 interface ClasseSidebarProps {
   activeStudents: Student[];
   allStudents: Student[];
@@ -25,6 +27,8 @@ interface ClasseSidebarProps {
   stuckLevels: Map<string, StuckLevel>;
   sessionStatus: string;
   onSelectStudent: (student: Student) => void;
+  onNudgeStudent?: (studentId: string) => void;
+  onEncourageStudent?: (studentId: string) => void;
 }
 
 export function ClasseSidebar({
@@ -34,7 +38,11 @@ export function ClasseSidebar({
   stuckLevels,
   sessionStatus,
   onSelectStudent,
+  onNudgeStudent,
+  onEncourageStudent,
 }: ClasseSidebarProps) {
+  const [filter, setFilter] = useState<StudentFilter>("all");
+  const [search, setSearch] = useState("");
   const respondedCount = useMemo(() => {
     return activeStudents.filter((s) => respondedStudentIds.has(s.id)).length;
   }, [activeStudents, respondedStudentIds]);
@@ -118,10 +126,59 @@ export function ClasseSidebar({
         </div>
       </div>
 
+      {/* ── Filter + Search ── */}
+      <div className="px-3 py-2 border-b border-gray-100 space-y-2">
+        <div className="relative">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="absolute left-2 top-[7px] text-gray-400">
+            <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Chercher..."
+            className="w-full pl-7 pr-2 py-1.5 text-[11px] rounded-lg border border-gray-200 bg-gray-50 text-gray-700 outline-none focus:border-blue-300"
+          />
+        </div>
+        <div className="flex gap-1 overflow-x-auto">
+          {([
+            { id: "all" as const, label: `Tous (${activeStudents.length})` },
+            { id: "responded" as const, label: `Repondu (${counts.responded})` },
+            { id: "waiting" as const, label: `Attente (${counts.thinking})` },
+            { id: "blocked" as const, label: `Bloques (${counts.blocked})` },
+            { id: "hands" as const, label: `Mains` },
+          ]).map((f) => (
+            <button
+              key={f.id}
+              onClick={() => setFilter(f.id)}
+              className={`text-[9px] font-semibold px-2 py-1 rounded-md whitespace-nowrap cursor-pointer transition-colors border ${
+                filter === f.id
+                  ? "bg-blue-50 text-blue-600 border-blue-200"
+                  : "bg-transparent text-gray-400 border-transparent hover:text-gray-600"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* ── Student list ── */}
       <div className="flex-1 overflow-y-auto">
         <div className="py-1">
-          {sortedStudents.map((student) => {
+          {sortedStudents.filter((s) => {
+            if (search) {
+              const q = search.toLowerCase();
+              if (!s.display_name.toLowerCase().includes(q)) return false;
+            }
+            if (filter === "responded") return respondedStudentIds.has(s.id);
+            if (filter === "waiting") return !respondedStudentIds.has(s.id) && (stuckLevels.get(s.id) || "ok") === "ok";
+            if (filter === "blocked") {
+              const level = stuckLevels.get(s.id) || "ok";
+              return !respondedStudentIds.has(s.id) && (level === "stuck" || level === "slow");
+            }
+            if (filter === "hands") return !!s.hand_raised_at;
+            return true;
+          }).map((student) => {
             const responded = respondedStudentIds.has(student.id);
             const level = stuckLevels.get(student.id) || "ok";
             const dotColor = responded ? "#22C55E" : STUCK_DOT_COLORS[level];
@@ -184,6 +241,26 @@ export function ClasseSidebar({
                   >
                     <path d="M5 13l4 4L19 7" />
                   </motion.svg>
+                )}
+
+                {/* Quick actions */}
+                {!responded && onNudgeStudent && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onNudgeStudent(student.id); }}
+                    className="text-[9px] px-1.5 py-0.5 rounded bg-orange-50 text-orange-500 border border-orange-200 hover:bg-orange-100 cursor-pointer flex-shrink-0 transition-colors"
+                    title="Relancer"
+                  >
+                    🔔
+                  </button>
+                )}
+                {responded && onEncourageStudent && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onEncourageStudent(student.id); }}
+                    className="text-[9px] px-1.5 py-0.5 rounded bg-green-50 text-green-500 border border-green-200 hover:bg-green-100 cursor-pointer flex-shrink-0 transition-colors"
+                    title="Encourager"
+                  >
+                    👏
+                  </button>
                 )}
               </button>
             );
