@@ -25,7 +25,27 @@ interface FocusHeaderProps {
   currentScreenMode?: string;
   onOpenStudents: () => void;
   onOpenPlan?: () => void;
+  onOpenCommandPalette?: () => void;
 }
+
+const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; dot: string }> = {
+  responding: {
+    label: "LIVE",
+    color: "text-emerald-700",
+    bg: "bg-emerald-50 border-emerald-200",
+    dot: "bg-emerald-500",
+  },
+  voting: { label: "VOTE", color: "text-orange-700", bg: "bg-orange-50 border-orange-200", dot: "bg-orange-500" },
+  reviewing: {
+    label: "RESULTATS",
+    color: "text-purple-700",
+    bg: "bg-purple-50 border-purple-200",
+    dot: "bg-purple-500",
+  },
+  waiting: { label: "ATTENTE", color: "text-gray-600", bg: "bg-gray-50 border-gray-200", dot: "bg-gray-400" },
+  paused: { label: "PAUSE", color: "text-amber-700", bg: "bg-amber-50 border-amber-200", dot: "bg-amber-500" },
+  done: { label: "TERMINE", color: "text-gray-600", bg: "bg-gray-50 border-gray-200", dot: "bg-gray-400" },
+};
 
 export function FocusHeader({
   sessionId,
@@ -43,9 +63,9 @@ export function FocusHeader({
   currentScreenMode,
   onOpenStudents,
   onOpenPlan,
+  onOpenCommandPalette,
 }: FocusHeaderProps) {
   const router = useRouter();
-  const [expanded, setExpanded] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const isScreenConnected = useScreenConnection();
   const { onOpenModules } = useCockpitActions();
@@ -57,311 +77,201 @@ export function FocusHeader({
   }, []);
 
   const toggleFullscreen = useCallback(() => {
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else {
-      document.documentElement.requestFullscreen();
-    }
+    if (document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen();
   }, []);
 
   const qLabel = maxSituations > 1 ? `Q${currentQIndex + 1}/${maxSituations}` : null;
-
-  // Timer countdown
   const timerActive = !!timerEndsAt;
-
-  // Screen mode label
-  const SCREEN_MODE_LABELS: Record<string, string> = {
-    default: "",
-    responses: "Rep",
-    spotlight: "Spot",
-    wordcloud: "Nuage",
-    blank: "Noir",
-  };
+  const statusCfg = STATUS_CONFIG[sessionStatus] || STATUS_CONFIG.waiting;
+  const pct = totalStudents > 0 ? Math.round((respondedCount / totalStudents) * 100) : 0;
 
   return (
     <div className="shrink-0">
-      {/* Main header bar */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none"
-        onClick={() => setExpanded(!expanded)}
-      >
-        {/* Module menu button */}
-        {onOpenModules && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpenModules();
-            }}
-            className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
-            title="Menu des modules"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+      {/* ── Main header bar ── */}
+      <div className="flex items-center gap-3 px-4 py-2.5 border-b border-gray-100">
+        {/* Left: Logo + module */}
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          {/* Menu modules */}
+          {onOpenModules && (
+            <button
+              onClick={() => onOpenModules()}
+              className="flex items-center justify-center w-9 h-9 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors cursor-pointer"
+              title="Menu des modules"
             >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-        )}
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+          )}
 
-        {/* Back button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            router.push(ROUTES.seanceDetail(sessionId));
-          }}
-          className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
-          title="Retour"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </button>
+          {/* Module badge */}
+          <div className="flex items-center gap-2 min-w-0">
+            <span
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-bold text-white truncate shadow-sm"
+              style={{ backgroundColor: moduleColor }}
+            >
+              {moduleLabel}
+            </span>
+            {qLabel && <span className="text-[12px] font-bold text-gray-400 tabular-nums">{qLabel}</span>}
+          </div>
 
-        {/* Phase pill + Q counter */}
-        <div className="flex items-center gap-2 flex-1 min-w-0">
+          {/* Status badge */}
           <span
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-bold text-white truncate max-w-[180px]"
-            style={{ backgroundColor: moduleColor }}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${statusCfg.bg} ${statusCfg.color}`}
           >
-            {moduleLabel}
+            <motion.span
+              className={`w-2 h-2 rounded-full ${statusCfg.dot}`}
+              animate={sessionStatus === "responding" ? { scale: [1, 1.3, 1], opacity: [1, 0.7, 1] } : {}}
+              transition={sessionStatus === "responding" ? { repeat: Infinity, duration: 1.5 } : {}}
+            />
+            {statusCfg.label}
           </span>
-          {qLabel && <span className="text-[13px] font-bold text-gray-500 tabular-nums">{qLabel}</span>}
         </div>
 
-        {/* Timer — countdown takes priority, then elapsed */}
-        {timerActive ? (
-          <div className="shrink-0 px-2.5 py-1 rounded-full bg-orange-50 border border-orange-200">
-            <CountdownTimer endsAt={timerEndsAt!} size="sm" />
-          </div>
-        ) : sessionStatus === "responding" ? (
-          <div className="shrink-0">
-            <ElapsedTimer startedAt={respondingOpenedAt} variant="pill" />
-          </div>
-        ) : null}
-
-        {/* Screen button with mode indicator */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            window.open(ROUTES.screen(sessionId), "bw-screen");
-          }}
-          className="relative flex items-center justify-center gap-1 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer px-2"
-          title={isScreenConnected ? "Écran connecté — cliquer pour ouvrir" : "Ouvrir l'écran de projection"}
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="2" y="3" width="20" height="14" rx="2" />
-            <path d="M8 21h8M12 17v4" />
-          </svg>
-          {currentScreenMode && SCREEN_MODE_LABELS[currentScreenMode] && (
-            <span className="text-[9px] font-bold text-gray-500 uppercase">
-              {SCREEN_MODE_LABELS[currentScreenMode]}
-            </span>
-          )}
-          {isScreenConnected && (
-            <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
-          )}
-        </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            window.open(ROUTES.play(sessionId), "bw-play");
-          }}
-          className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
-          title="Tester la vue élève"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="2" y="6" width="20" height="12" rx="2" />
-            <path d="M12 6V2M7 2h10" />
-          </svg>
-        </button>
-
-        {/* Student chip */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpenStudents();
-          }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-[13px] font-medium cursor-pointer"
-          title="Voir les élèves"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
-          <span className="tabular-nums">{activeStudentCount}</span>
-        </button>
-
-        {/* Fullscreen toggle */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleFullscreen();
-          }}
-          className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
-          title={isFullscreen ? "Quitter le plein écran" : "Plein écran"}
-        >
-          {isFullscreen ? (
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M8 3v3a2 2 0 0 1-2 2H3" />
-              <path d="M21 8h-3a2 2 0 0 1-2-2V3" />
-              <path d="M3 16h3a2 2 0 0 1 2 2v3" />
-              <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
-            </svg>
-          ) : (
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M8 3H5a2 2 0 0 0-2 2v3" />
-              <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
-              <path d="M3 16v3a2 2 0 0 0 2 2h3" />
-              <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
-            </svg>
-          )}
-        </button>
-
-        {/* Expand chevron */}
-        <motion.svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#999"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          animate={{ rotate: expanded ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <path d="M6 9l6 6 6-6" />
-        </motion.svg>
-      </div>
-
-      {/* Expanded detail panel */}
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden border-t border-gray-100"
-          >
-            <div className="px-4 py-3 space-y-2">
-              <div className="flex items-center justify-between text-[13px] text-gray-600">
-                <span className="truncate max-w-[200px]">{sessionTitle}</span>
-                <span className="tabular-nums">
-                  {respondedCount}/{totalStudents} réponse{respondedCount !== 1 ? "s" : ""}
-                </span>
-              </div>
-
-              {/* Status pill */}
-              <div className="flex items-center gap-2">
-                <span
-                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold ${
-                    sessionStatus === "responding"
-                      ? "bg-emerald-100 text-emerald-700"
-                      : sessionStatus === "voting"
-                        ? "bg-orange-100 text-orange-700"
-                        : sessionStatus === "reviewing"
-                          ? "bg-purple-100 text-purple-700"
-                          : sessionStatus === "waiting"
-                            ? "bg-gray-100 text-gray-600"
-                            : "bg-gray-100 text-gray-600"
-                  }`}
-                >
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full ${
-                      sessionStatus === "responding"
-                        ? "bg-emerald-500"
-                        : sessionStatus === "voting"
-                          ? "bg-orange-500"
-                          : sessionStatus === "reviewing"
-                            ? "bg-purple-500"
-                            : "bg-gray-400"
-                    }`}
-                  />
-                  {sessionStatus === "responding"
-                    ? "Réponses ouvertes"
-                    : sessionStatus === "voting"
-                      ? "Vote en cours"
-                      : sessionStatus === "reviewing"
-                        ? "Résultats"
-                        : sessionStatus === "waiting"
-                          ? "En attente"
-                          : sessionStatus}
-                </span>
-                {timerActive && <span className="text-[11px] text-gray-500 tabular-nums">Timer actif</span>}
-              </div>
+        {/* Center: Response progress */}
+        {sessionStatus === "responding" && totalStudents > 0 && (
+          <div className="hidden sm:flex items-center gap-2">
+            <div className="w-24 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+              <motion.div
+                className="h-full rounded-full"
+                style={{ backgroundColor: pct >= 100 ? "#22C55E" : moduleColor }}
+                animate={{ width: `${pct}%` }}
+                transition={{ duration: 0.3 }}
+              />
             </div>
-          </motion.div>
+            <span className="text-[11px] font-semibold text-gray-500 tabular-nums">
+              {respondedCount}/{totalStudents}
+            </span>
+          </div>
         )}
-      </AnimatePresence>
 
-      {/* Bottom border */}
-      <div className="h-px bg-gray-100" />
+        {/* Right: Actions */}
+        <div className="flex items-center gap-1.5">
+          {/* Timer */}
+          {timerActive ? (
+            <div className="shrink-0 px-2.5 py-1 rounded-lg bg-orange-50 border border-orange-200">
+              <CountdownTimer endsAt={timerEndsAt!} size="sm" />
+            </div>
+          ) : sessionStatus === "responding" ? (
+            <div className="shrink-0">
+              <ElapsedTimer startedAt={respondingOpenedAt} variant="pill" />
+            </div>
+          ) : null}
+
+          {/* Students */}
+          <button
+            onClick={onOpenStudents}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors text-[12px] font-semibold cursor-pointer"
+            title="Voir les eleves"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <span className="tabular-nums">{activeStudentCount}</span>
+          </button>
+
+          {/* Screen */}
+          <button
+            onClick={() => window.open(ROUTES.screen(sessionId), "bw-screen")}
+            className="relative flex items-center justify-center w-9 h-9 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors cursor-pointer"
+            title={isScreenConnected ? "Ecran connecte" : "Ouvrir l'ecran"}
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="M8 21h8M12 17v4" />
+            </svg>
+            {isScreenConnected && (
+              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
+            )}
+          </button>
+
+          {/* Command palette shortcut */}
+          {onOpenCommandPalette && (
+            <button
+              onClick={onOpenCommandPalette}
+              className="flex items-center gap-1 px-2 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors cursor-pointer text-[11px] text-gray-500 font-medium"
+              title="Commandes (⌘K)"
+            >
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <kbd className="font-mono text-[10px]">⌘K</kbd>
+            </button>
+          )}
+
+          {/* Fullscreen */}
+          <button
+            onClick={toggleFullscreen}
+            className="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors cursor-pointer"
+            title={isFullscreen ? "Quitter le plein ecran" : "Plein ecran"}
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              {isFullscreen ? (
+                <>
+                  <path d="M8 3v3a2 2 0 0 1-2 2H3" />
+                  <path d="M21 8h-3a2 2 0 0 1-2-2V3" />
+                  <path d="M3 16h3a2 2 0 0 1 2 2v3" />
+                  <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+                </>
+              ) : (
+                <>
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+                  <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+                  <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+                  <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                </>
+              )}
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
