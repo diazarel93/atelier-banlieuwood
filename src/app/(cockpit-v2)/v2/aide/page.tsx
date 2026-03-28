@@ -202,8 +202,8 @@ export default function AidePage() {
           <h2 className="label-caps mb-4">Guide rapide</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {GUIDE_ITEMS.map((item) => (
-              <div key={item.title} className="flex gap-3 rounded-xl border border-[var(--color-bw-border-subtle)] p-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--color-bw-surface-dim)] text-bw-muted">
+              <div key={item.title} className="card-interactive flex gap-3 p-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--color-bw-violet)]/10 text-[var(--color-bw-violet)]">
                   {item.icon}
                 </div>
                 <div className="min-w-0">

@@ -53,10 +53,13 @@ export function SessionCardV2({
       className={cn("relative overflow-hidden cursor-default", onClick && "cursor-pointer", bgTint, className)}
       onClick={onClick}
     >
-      {/* Left status bar — 4px for visual weight */}
+      {/* Left status bar — 4px with glow */}
       <div
-        className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full"
-        style={{ backgroundColor: STATUS_BAR_COLORS[status] || STATUS_BAR_COLORS.draft }}
+        className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full transition-shadow duration-200"
+        style={{
+          backgroundColor: STATUS_BAR_COLORS[status] || STATUS_BAR_COLORS.draft,
+          boxShadow: `2px 0 8px ${STATUS_BAR_COLORS[status] || STATUS_BAR_COLORS.draft}40`,
+        }}
       />
 
       <div className="p-3.5 pl-4.5">

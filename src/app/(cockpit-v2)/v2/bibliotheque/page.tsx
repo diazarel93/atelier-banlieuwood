@@ -348,7 +348,11 @@ export default function BibliothequePage() {
           return (
             <div key={phase.id}>
               {/* Phase header */}
-              <GlassCardV2 variant={isExpanded ? "elevated" : "default"} hover={!isExpanded}>
+              <GlassCardV2
+                variant={isExpanded ? "elevated" : "default"}
+                hover={!isExpanded}
+                style={{ borderLeftWidth: 3, borderLeftColor: phase.color }}
+              >
                 <button
                   type="button"
                   onClick={() => setExpandedPhase(isExpanded ? null : phase.id)}
