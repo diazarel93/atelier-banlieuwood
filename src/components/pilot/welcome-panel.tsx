@@ -34,7 +34,11 @@ export function WelcomePanel({
 }: WelcomePanelProps) {
   const threshold = expectedStudents ? Math.ceil(expectedStudents * 0.8) : null;
   const readyToStart = threshold ? activeStudents.length >= threshold : activeStudents.length > 0;
-  const FORMULA_LABELS: Record<string, string> = { F0: "Decouverte (1 seance)", F1: "Legere (~3 seances)", F2: "Complete (~8 seances)" };
+  const FORMULA_LABELS: Record<string, string> = {
+    F0: "Decouverte (1 seance)",
+    F1: "Legere (~3 seances)",
+    F2: "Complete (~8 seances)",
+  };
   return (
     <div className="max-w-2xl mx-auto px-6 py-6 space-y-5 relative">
       {/* Session info — warm EdTech header */}
@@ -57,17 +61,30 @@ export function WelcomePanel({
           className="flex items-center justify-center gap-3 flex-wrap"
         >
           {classLabel && (
-            <span className="text-[11px] font-semibold px-3 py-1 rounded-full" style={{ background: "#EEF2FF", color: "#6B8CFF", border: "1px solid #D8E0F0" }}>
+            <span
+              className="text-[11px] font-semibold px-3 py-1 rounded-full"
+              style={{ background: "#EEF2FF", color: "#6B8CFF", border: "1px solid #D8E0F0" }}
+            >
               {classLabel}
             </span>
           )}
           {formula && (
-            <span className="text-[11px] font-semibold px-3 py-1 rounded-full" style={{ background: "#F0FDF4", color: "#16A34A", border: "1px solid #BBF7D0" }}>
+            <span
+              className="text-[11px] font-semibold px-3 py-1 rounded-full"
+              style={{ background: "#F0FDF4", color: "#16A34A", border: "1px solid #BBF7D0" }}
+            >
               {formula} — {FORMULA_LABELS[formula] || formula}
             </span>
           )}
           {threshold && (
-            <span className="text-[11px] px-3 py-1 rounded-full" style={{ background: readyToStart ? "#F0FDF4" : "#FEF9C3", color: readyToStart ? "#16A34A" : "#A16207", border: "1px solid " + (readyToStart ? "#BBF7D0" : "#FDE68A") }}>
+            <span
+              className="text-[11px] px-3 py-1 rounded-full"
+              style={{
+                background: readyToStart ? "#F0FDF4" : "#FEF9C3",
+                color: readyToStart ? "#16A34A" : "#A16207",
+                border: "1px solid " + (readyToStart ? "#BBF7D0" : "#FDE68A"),
+              }}
+            >
               {readyToStart ? "Seuil 80% atteint" : `${activeStudents.length}/${threshold} (seuil 80%)`}
             </span>
           )}

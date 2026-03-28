@@ -129,8 +129,18 @@ export function ClasseSidebar({
       {/* ── Filter + Search ── */}
       <div className="px-3 py-2 border-b border-gray-100 space-y-2">
         <div className="relative">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="absolute left-2 top-[7px] text-gray-400">
-            <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            className="absolute left-2 top-[7px] text-gray-400"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
           </svg>
           <input
             value={search}
@@ -140,13 +150,13 @@ export function ClasseSidebar({
           />
         </div>
         <div className="flex gap-1 overflow-x-auto">
-          {([
+          {[
             { id: "all" as const, label: `Tous (${activeStudents.length})` },
             { id: "responded" as const, label: `Repondu (${counts.responded})` },
             { id: "waiting" as const, label: `Attente (${counts.thinking})` },
             { id: "blocked" as const, label: `Bloques (${counts.blocked})` },
             { id: "hands" as const, label: `Mains` },
-          ]).map((f) => (
+          ].map((f) => (
             <button
               key={f.id}
               onClick={() => setFilter(f.id)}
@@ -165,106 +175,115 @@ export function ClasseSidebar({
       {/* ── Student list ── */}
       <div className="flex-1 overflow-y-auto">
         <div className="py-1">
-          {sortedStudents.filter((s) => {
-            if (search) {
-              const q = search.toLowerCase();
-              if (!s.display_name.toLowerCase().includes(q)) return false;
-            }
-            if (filter === "responded") return respondedStudentIds.has(s.id);
-            if (filter === "waiting") return !respondedStudentIds.has(s.id) && (stuckLevels.get(s.id) || "ok") === "ok";
-            if (filter === "blocked") {
-              const level = stuckLevels.get(s.id) || "ok";
-              return !respondedStudentIds.has(s.id) && (level === "stuck" || level === "slow");
-            }
-            if (filter === "hands") return !!s.hand_raised_at;
-            return true;
-          }).map((student) => {
-            const responded = respondedStudentIds.has(student.id);
-            const level = stuckLevels.get(student.id) || "ok";
-            const dotColor = responded ? "#22C55E" : STUCK_DOT_COLORS[level];
+          {sortedStudents
+            .filter((s) => {
+              if (search) {
+                const q = search.toLowerCase();
+                if (!s.display_name.toLowerCase().includes(q)) return false;
+              }
+              if (filter === "responded") return respondedStudentIds.has(s.id);
+              if (filter === "waiting")
+                return !respondedStudentIds.has(s.id) && (stuckLevels.get(s.id) || "ok") === "ok";
+              if (filter === "blocked") {
+                const level = stuckLevels.get(s.id) || "ok";
+                return !respondedStudentIds.has(s.id) && (level === "stuck" || level === "slow");
+              }
+              if (filter === "hands") return !!s.hand_raised_at;
+              return true;
+            })
+            .map((student) => {
+              const responded = respondedStudentIds.has(student.id);
+              const level = stuckLevels.get(student.id) || "ok";
+              const dotColor = responded ? "#22C55E" : STUCK_DOT_COLORS[level];
 
-            return (
-              <button
-                key={student.id}
-                onClick={() => onSelectStudent(student)}
-                className="w-full flex items-center gap-2 px-3 py-1.5 hover:bg-gray-50 transition-colors cursor-pointer text-left"
-              >
-                {/* Avatar */}
-                <span className="text-base flex-shrink-0">{student.avatar || "👤"}</span>
+              return (
+                <button
+                  key={student.id}
+                  onClick={() => onSelectStudent(student)}
+                  className="w-full flex items-center gap-2 px-3 py-1.5 hover:bg-gray-50 transition-colors cursor-pointer text-left"
+                >
+                  {/* Avatar */}
+                  <span className="text-base flex-shrink-0">{student.avatar || "👤"}</span>
 
-                {/* Name */}
-                <span className="text-[12px] font-medium text-gray-700 truncate flex-1">{student.display_name}</span>
+                  {/* Name */}
+                  <span className="text-[12px] font-medium text-gray-700 truncate flex-1">{student.display_name}</span>
 
-                {/* Hand raised indicator */}
-                {student.hand_raised_at && (
+                  {/* Hand raised indicator */}
+                  {student.hand_raised_at && (
+                    <motion.span
+                      className="text-sm flex-shrink-0"
+                      animate={{ y: [0, -2, 0], rotate: [0, 15, -15, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                      title="Main levée"
+                    >
+                      ✋
+                    </motion.span>
+                  )}
+
+                  {/* Status dot — animated */}
                   <motion.span
-                    className="text-sm flex-shrink-0"
-                    animate={{ y: [0, -2, 0], rotate: [0, 15, -15, 0] }}
-                    transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
-                    title="Main levée"
-                  >
-                    ✋
-                  </motion.span>
-                )}
+                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{ background: dotColor }}
+                    animate={
+                      !responded && (level === "stuck" || level === "slow")
+                        ? { scale: [1, 1.4, 1], opacity: [1, 0.7, 1] }
+                        : responded
+                          ? { scale: [0, 1.2, 1] }
+                          : {}
+                    }
+                    transition={
+                      !responded && (level === "stuck" || level === "slow")
+                        ? { repeat: Infinity, duration: 2, ease: "easeInOut" }
+                        : { duration: 0.3, type: "spring" }
+                    }
+                  />
 
-                {/* Status dot — animated */}
-                <motion.span
-                  className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ background: dotColor }}
-                  animate={
-                    !responded && (level === "stuck" || level === "slow")
-                      ? { scale: [1, 1.4, 1], opacity: [1, 0.7, 1] }
-                      : responded
-                        ? { scale: [0, 1.2, 1] }
-                        : {}
-                  }
-                  transition={
-                    !responded && (level === "stuck" || level === "slow")
-                      ? { repeat: Infinity, duration: 2, ease: "easeInOut" }
-                      : { duration: 0.3, type: "spring" }
-                  }
-                />
+                  {/* Checkmark if responded */}
+                  {responded && (
+                    <motion.svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#22C55E"
+                      strokeWidth="3"
+                      className="flex-shrink-0"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                    >
+                      <path d="M5 13l4 4L19 7" />
+                    </motion.svg>
+                  )}
 
-                {/* Checkmark if responded */}
-                {responded && (
-                  <motion.svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#22C55E"
-                    strokeWidth="3"
-                    className="flex-shrink-0"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
-                  >
-                    <path d="M5 13l4 4L19 7" />
-                  </motion.svg>
-                )}
-
-                {/* Quick actions */}
-                {!responded && onNudgeStudent && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); onNudgeStudent(student.id); }}
-                    className="text-[9px] px-1.5 py-0.5 rounded bg-orange-50 text-orange-500 border border-orange-200 hover:bg-orange-100 cursor-pointer flex-shrink-0 transition-colors"
-                    title="Relancer"
-                  >
-                    🔔
-                  </button>
-                )}
-                {responded && onEncourageStudent && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); onEncourageStudent(student.id); }}
-                    className="text-[9px] px-1.5 py-0.5 rounded bg-green-50 text-green-500 border border-green-200 hover:bg-green-100 cursor-pointer flex-shrink-0 transition-colors"
-                    title="Encourager"
-                  >
-                    👏
-                  </button>
-                )}
-              </button>
-            );
-          })}
+                  {/* Quick actions */}
+                  {!responded && onNudgeStudent && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onNudgeStudent(student.id);
+                      }}
+                      className="text-[9px] px-1.5 py-0.5 rounded bg-orange-50 text-orange-500 border border-orange-200 hover:bg-orange-100 cursor-pointer flex-shrink-0 transition-colors"
+                      title="Relancer"
+                    >
+                      🔔
+                    </button>
+                  )}
+                  {responded && onEncourageStudent && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEncourageStudent(student.id);
+                      }}
+                      className="text-[9px] px-1.5 py-0.5 rounded bg-green-50 text-green-500 border border-green-200 hover:bg-green-100 cursor-pointer flex-shrink-0 transition-colors"
+                      title="Encourager"
+                    >
+                      👏
+                    </button>
+                  )}
+                </button>
+              );
+            })}
 
           {activeStudents.length === 0 && (
             <div className="text-center py-6 px-3 space-y-2">

@@ -60,7 +60,11 @@ export function NotificationFeed({ notifications, onClear }: NotificationFeedPro
             <button
               onClick={onClear}
               className="text-[10px] font-semibold px-2 py-1 rounded-md border cursor-pointer transition-colors"
-              style={{ background: "var(--color-bw-danger, #EF4444)10", borderColor: "var(--color-bw-danger, #EF4444)33", color: "var(--color-bw-danger, #EF4444)" }}
+              style={{
+                background: "var(--color-bw-danger, #EF4444)10",
+                borderColor: "var(--color-bw-danger, #EF4444)33",
+                color: "var(--color-bw-danger, #EF4444)",
+              }}
             >
               Effacer
             </button>
@@ -79,7 +83,11 @@ export function NotificationFeed({ notifications, onClear }: NotificationFeedPro
               initial={i === 0 ? { opacity: 0, y: -10 } : false}
               animate={{ opacity: 1, y: 0 }}
               className="flex items-center gap-2.5 px-4 py-2 text-xs border-b border-[var(--color-bw-border-subtle)] last:border-0"
-              style={{ borderLeftWidth: 3, borderLeftStyle: "solid", borderLeftColor: catColor[n.category] || catColor.system }}
+              style={{
+                borderLeftWidth: 3,
+                borderLeftStyle: "solid",
+                borderLeftColor: catColor[n.category] || catColor.system,
+              }}
             >
               <span className="text-sm shrink-0">{n.icon}</span>
               <span className="flex-1 text-bw-heading truncate">{n.text}</span>

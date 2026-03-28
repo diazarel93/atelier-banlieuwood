@@ -66,17 +66,28 @@ export function useCockpitModuleState(
 
   const universalQuestionText = useMemo((): string | null => {
     if (situation?.prompt) return situation.prompt;
-    if (moduleFlags.isM1Positioning && (module1Data as { questions?: { text: string }[] })?.questions?.[session.current_situation_index || 0])
-      return ((module1Data as { questions: { text: string }[] }).questions[session.current_situation_index || 0]).text;
+    if (
+      moduleFlags.isM1Positioning &&
+      (module1Data as { questions?: { text: string }[] })?.questions?.[session.current_situation_index || 0]
+    )
+      return (module1Data as { questions: { text: string }[] }).questions[session.current_situation_index || 0].text;
     if ((module1Data as { question?: { text: string } })?.question?.text)
       return (module1Data as { question: { text: string } }).question.text;
     if (module12Data) return module12Data.mancheLabel || `Manche ${module12Data.manche || 1}`;
     if (module13Data) return `${module13Data.stepEmoji} ${module13Data.stepLabel}`;
     return null;
-  }, [situation, moduleFlags.isM1Positioning, module1Data, module12Data, module13Data, session.current_situation_index]);
+  }, [
+    situation,
+    moduleFlags.isM1Positioning,
+    module1Data,
+    module12Data,
+    module13Data,
+    session.current_situation_index,
+  ]);
 
   const universalCategoryLabel = useMemo((): string => {
-    if (situation?.restitutionLabel || situation?.category) return situation.restitutionLabel || situation.category || "";
+    if (situation?.restitutionLabel || situation?.category)
+      return situation.restitutionLabel || situation.category || "";
     if (moduleFlags.isM1Positioning) return "Positionnement";
     if (moduleFlags.isM1Image) return "Image";
     if (moduleFlags.isM1Notebook) return "Carnet";
@@ -100,7 +111,10 @@ export function useCockpitModuleState(
       return Object.values(dist).reduce((sum, v) => sum + v, 0);
     }
     if (moduleFlags.isBudgetQuiz) return budgetSubmitted;
-    if ((moduleFlags.isM1Image || moduleFlags.isM1Notebook) && (module1Data as { responsesCount?: number })?.responsesCount)
+    if (
+      (moduleFlags.isM1Image || moduleFlags.isM1Notebook) &&
+      (module1Data as { responsesCount?: number })?.responsesCount
+    )
       return (module1Data as { responsesCount: number }).responsesCount;
     if (moduleFlags.isM10Any && module10Data?.allSubmissions) return module10Data.allSubmissions.length;
     return responses.length;
