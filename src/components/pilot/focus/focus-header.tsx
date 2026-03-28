@@ -31,20 +31,40 @@ interface FocusHeaderProps {
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; dot: string }> = {
   responding: {
     label: "LIVE",
-    color: "text-emerald-700",
-    bg: "bg-emerald-50 border-emerald-200",
+    color: "text-emerald-400",
+    bg: "bg-emerald-500/10 border-emerald-500/30",
     dot: "bg-emerald-500",
   },
-  voting: { label: "VOTE", color: "text-orange-700", bg: "bg-orange-50 border-orange-200", dot: "bg-orange-500" },
+  voting: {
+    label: "VOTE",
+    color: "text-orange-400",
+    bg: "bg-orange-500/10 border-orange-500/30",
+    dot: "bg-orange-500",
+  },
   reviewing: {
     label: "RESULTATS",
-    color: "text-purple-700",
-    bg: "bg-purple-50 border-purple-200",
+    color: "text-purple-400",
+    bg: "bg-purple-500/10 border-purple-500/30",
     dot: "bg-purple-500",
   },
-  waiting: { label: "ATTENTE", color: "text-gray-600", bg: "bg-gray-50 border-gray-200", dot: "bg-gray-400" },
-  paused: { label: "PAUSE", color: "text-amber-700", bg: "bg-amber-50 border-amber-200", dot: "bg-amber-500" },
-  done: { label: "TERMINE", color: "text-gray-600", bg: "bg-gray-50 border-gray-200", dot: "bg-gray-400" },
+  waiting: {
+    label: "ATTENTE",
+    color: "text-[#64748b]",
+    bg: "bg-[#1a1a35] border-[#2a2a50]",
+    dot: "bg-[#64748b]",
+  },
+  paused: {
+    label: "PAUSE",
+    color: "text-amber-400",
+    bg: "bg-amber-500/10 border-amber-500/30",
+    dot: "bg-amber-500",
+  },
+  done: {
+    label: "TERMINE",
+    color: "text-[#64748b]",
+    bg: "bg-[#1a1a35] border-[#2a2a50]",
+    dot: "bg-[#64748b]",
+  },
 };
 
 export function FocusHeader({
@@ -123,7 +143,7 @@ export function FocusHeader({
             >
               {moduleLabel}
             </span>
-            {qLabel && <span className="text-[12px] font-bold text-gray-400 tabular-nums">{qLabel}</span>}
+            {qLabel && <span className="text-[12px] font-bold text-[#64748b] tabular-nums">{qLabel}</span>}
           </div>
 
           {/* Status badge */}
@@ -142,7 +162,7 @@ export function FocusHeader({
         {/* Center: Response progress */}
         {sessionStatus === "responding" && totalStudents > 0 && (
           <div className="hidden sm:flex items-center gap-2">
-            <div className="w-24 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+            <div className="w-24 h-1.5 rounded-full bg-[#1a1a35] overflow-hidden">
               <motion.div
                 className="h-full rounded-full"
                 style={{ backgroundColor: pct >= 100 ? "#22C55E" : moduleColor }}
@@ -150,7 +170,7 @@ export function FocusHeader({
                 transition={{ duration: 0.3 }}
               />
             </div>
-            <span className="text-[11px] font-semibold text-gray-500 tabular-nums">
+            <span className="text-[11px] font-semibold text-[#94a3b8] tabular-nums">
               {respondedCount}/{totalStudents}
             </span>
           </div>
@@ -160,7 +180,7 @@ export function FocusHeader({
         <div className="flex items-center gap-1.5">
           {/* Timer */}
           {timerActive ? (
-            <div className="shrink-0 px-2.5 py-1 rounded-lg bg-orange-50 border border-orange-200">
+            <div className="shrink-0 px-2.5 py-1 rounded-lg bg-orange-500/10 border border-orange-500/30">
               <CountdownTimer endsAt={timerEndsAt!} size="sm" />
             </div>
           ) : sessionStatus === "responding" ? (
@@ -211,7 +231,7 @@ export function FocusHeader({
               <path d="M8 21h8M12 17v4" />
             </svg>
             {isScreenConnected && (
-              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
+              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-[#13132a]" />
             )}
           </button>
 
