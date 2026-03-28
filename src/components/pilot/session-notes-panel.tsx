@@ -42,9 +42,7 @@ export function SessionNotesPanel() {
 
   const insertTimestamp = useCallback(() => {
     const openedAt = sess.question_opened_at as string | null;
-    const elapsed = openedAt
-      ? Math.floor((Date.now() - new Date(openedAt).getTime()) / 1000)
-      : 0;
+    const elapsed = openedAt ? Math.floor((Date.now() - new Date(openedAt).getTime()) / 1000) : 0;
     const mm = Math.floor(elapsed / 60);
     const ss = String(elapsed % 60).padStart(2, "0");
     handleChange(notes + `\n[${mm}:${ss}] `);
@@ -64,7 +62,15 @@ export function SessionNotesPanel() {
           onClick={insertTimestamp}
           className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold bg-[var(--color-bw-surface-dim)] text-bw-muted hover:text-bw-heading transition-colors cursor-pointer border border-[var(--color-bw-border)]"
         >
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
             <circle cx="12" cy="12" r="10" />
             <path d="M12 6v6l4 2" />
           </svg>

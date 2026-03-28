@@ -62,13 +62,37 @@ export function CommandPalette({
 
   const actions = useMemo<CommandAction[]>(() => {
     const list: CommandAction[] = [
-      { id: "pause", label: sessionOn ? "Pause session" : "Reprendre session", icon: sessionOn ? "⏸️" : "▶️", category: "Session", action: onToggleSession },
+      {
+        id: "pause",
+        label: sessionOn ? "Pause session" : "Reprendre session",
+        icon: sessionOn ? "⏸️" : "▶️",
+        category: "Session",
+        action: onToggleSession,
+      },
       { id: "end", label: "Terminer la seance", icon: "🏁", category: "Session", action: onEndSession },
-      { id: "vote-open", label: "Lancer le vote", icon: "🗳️", category: "Session", action: () => updateSession.mutate({ status: "voting", timer_ends_at: null }) },
-      { id: "review", label: "Voir les resultats", icon: "📊", category: "Session", action: () => updateSession.mutate({ status: "reviewing", timer_ends_at: null }) },
+      {
+        id: "vote-open",
+        label: "Lancer le vote",
+        icon: "🗳️",
+        category: "Session",
+        action: () => updateSession.mutate({ status: "voting", timer_ends_at: null }),
+      },
+      {
+        id: "review",
+        label: "Voir les resultats",
+        icon: "📊",
+        category: "Session",
+        action: () => updateSession.mutate({ status: "reviewing", timer_ends_at: null }),
+      },
       { id: "students", label: "Voir les eleves", icon: "👥", category: "Navigation", action: onOpenStudents },
       { id: "modules", label: "Changer de module", icon: "📚", category: "Navigation", action: onOpenModules },
-      { id: "theme", label: isDarkMode ? "Mode clair" : "Mode sombre", icon: isDarkMode ? "☀️" : "🌙", category: "Interface", action: onToggleDarkMode },
+      {
+        id: "theme",
+        label: isDarkMode ? "Mode clair" : "Mode sombre",
+        icon: isDarkMode ? "☀️" : "🌙",
+        category: "Interface",
+        action: onToggleDarkMode,
+      },
     ];
 
     if (onSelectModule) {
@@ -85,7 +109,17 @@ export function CommandPalette({
     }
 
     return list;
-  }, [sessionOn, isDarkMode, onToggleSession, onEndSession, onToggleDarkMode, onOpenStudents, onOpenModules, onSelectModule, updateSession]);
+  }, [
+    sessionOn,
+    isDarkMode,
+    onToggleSession,
+    onEndSession,
+    onToggleDarkMode,
+    onOpenStudents,
+    onOpenModules,
+    onSelectModule,
+    updateSession,
+  ]);
 
   const filtered = useMemo(() => {
     if (!query.trim()) return actions;
@@ -121,7 +155,16 @@ export function CommandPalette({
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center gap-3 px-4 py-3 border-b border-[var(--color-bw-border)]">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-bw-muted shrink-0">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              className="text-bw-muted shrink-0"
+            >
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.3-4.3" />
             </svg>

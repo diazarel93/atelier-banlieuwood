@@ -528,9 +528,7 @@ export default function ScreenPage() {
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-[90] bg-gradient-to-b from-[#1a1a2e] to-[#16213e] flex flex-col items-center justify-center p-8"
             >
-              <p className="text-sm text-white/50 uppercase tracking-[0.2em] font-semibold mb-8">
-                A debattre
-              </p>
+              <p className="text-sm text-white/50 uppercase tracking-[0.2em] font-semibold mb-8">A debattre</p>
               <div className="flex gap-8 max-w-5xl w-full">
                 {highlightedResponses.slice(0, 3).map((r, i) => (
                   <motion.div
