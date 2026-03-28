@@ -31,8 +31,8 @@ const mainPhases = PHASES.filter((p) => (MAIN_PHASE_IDS as readonly string[]).in
 
 export default function DashboardV2Page() {
   const [classLabel, setClassLabel] = useState<string | null>(null);
-  const { data, isLoading, isError, refetch } = useDashboardSummary(classLabel);
   const { data: authUser } = useAuthUser();
+  const { data, isLoading, isError, refetch } = useDashboardSummary(classLabel, authUser?.role);
   const prefersReducedMotion = useReducedMotion();
 
   const router = useRouter();

@@ -40,9 +40,9 @@ async function fetchDashboardSummary(classLabel?: string | null): Promise<Dashbo
   return res.json();
 }
 
-export function useDashboardSummary(classLabel?: string | null) {
+export function useDashboardSummary(classLabel?: string | null, userRole?: string | null) {
   return useQuery({
-    queryKey: ["v2", "dashboard-summary", classLabel ?? null],
+    queryKey: ["v2", "dashboard-summary", classLabel ?? null, userRole ?? "unknown"],
     queryFn: () => fetchDashboardSummary(classLabel),
     refetchInterval: 30_000,
     staleTime: 15_000,
