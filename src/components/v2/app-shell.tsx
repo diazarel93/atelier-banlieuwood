@@ -96,7 +96,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       </a>
 
       {/* ══ SIDEBAR — Desktop ══ */}
-      <aside className="hidden lg:flex w-[240px] flex-col bg-[var(--sidebar)] border-r border-[var(--sidebar-border)] sticky top-0 h-dvh overflow-y-auto flex-shrink-0">
+      <aside className="hidden lg:flex w-[220px] flex-col bg-[var(--sidebar)] border-r border-[var(--sidebar-border)] sticky top-0 h-dvh overflow-y-auto flex-shrink-0">
         {/* User info */}
         <div className="px-4 py-5 border-b border-[var(--sidebar-border)]">
           <div className="text-[13px] font-bold text-[var(--color-bw-heading)]">{firstName || "Utilisateur"}</div>
