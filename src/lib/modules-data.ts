@@ -480,10 +480,10 @@ export const MAIN_PHASE_IDS = [
 export const PHASES: PhaseDef[] = [
   // ── Parcours principal M1–M8 (conforme au programme pédagogique) ──
   { id: "regard", label: "Le Regard", description: "Observer, interpréter, imaginer. Les élèves découvrent leur profil créatif à travers des images et des questions ouvertes.", color: "#8B5CF6", emoji: "👁️", moduleIds: ["m1a", "m1b", "m1c", "m1d", "m1e"] },
-  { id: "scene", label: "La Scène", description: "Explorer les émotions cachées derrière les images et les situations. Construire une scène avec le jeu Émotion Cachée.", color: "#EC4899", emoji: "🎬", moduleIds: ["u2a", "u2b", "u2c", "u2d"] },
-  { id: "etsi", label: "Et si...", description: "Libérer la créativité avec des scénarios « Et si... » à partir d'images. La naissance de l'idée.", color: "#06B6D4", emoji: "✨", moduleIds: ["m10a"] },
+  { id: "scene", label: "Le Mécanisme d'une scène", description: "Comprendre les composantes narratives et visuelles d'une scène : cadrage, son, jeu, montage.", color: "#EC4899", emoji: "🎬", moduleIds: ["u2a", "u2b", "u2c", "u2d"] },
+  { id: "etsi", label: "Générer l'idée", description: "Amorcer la création narrative par l'imagination guidée à partir d'images déclencheuses.", color: "#06B6D4", emoji: "✨", moduleIds: ["m10a"] },
   { id: "pitch", label: "Le Pitch", description: "Créer un personnage, définir son objectif, et pitcher son histoire en 30 secondes.", color: "#06B6D4", emoji: "🎤", moduleIds: ["m10b"] },
-  { id: "collectif", label: "Construction Collective", description: "Voter en 8 manches pour construire le film de la classe à partir des idées de chacun.", color: "#14B8A6", emoji: "🗳️", moduleIds: ["m12a"] },
+  { id: "collectif", label: "Le Récit", description: "Construire l'ossature narrative par manches de contributions et de votes collectifs.", color: "#14B8A6", emoji: "🗳️", moduleIds: ["m12a"] },
   { id: "scenario", label: "Le Scénario", description: "Transformer les choix collectifs en scénario structuré : frise narrative, scènes IA, missions d'écriture collaborative.", color: "#10B981", emoji: "✏️", moduleIds: ["m6"] },
   { id: "mise-en-scene", label: "La Mise en scène", description: "Apprendre le langage visuel : les 4 plans fondamentaux, comparer les cadrages, créer un mini-storyboard.", color: "#F59E0B", emoji: "🎥", moduleIds: ["m7"] },
   { id: "equipe", label: "L'Équipe", description: "Former l'équipe de tournage : quiz des métiers, choix des rôles par mérite, cartes talents.", color: "#EF4444", emoji: "🎭", moduleIds: ["m8"] },
