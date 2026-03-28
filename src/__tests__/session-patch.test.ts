@@ -108,7 +108,7 @@ describe("PATCH /api/sessions/[id]", () => {
     const res = await PATCH(makeReq({ current_module: 0 }), { params });
     expect(res.status).toBe(400);
 
-    const res2 = await PATCH(makeReq({ current_module: 13 }), { params });
+    const res2 = await PATCH(makeReq({ current_module: 14 }), { params });
     expect(res2.status).toBe(400);
 
     const res3 = await PATCH(

@@ -3,6 +3,7 @@ import { createServerSupabase } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { safeJson, withErrorHandler } from "@/lib/api-utils";
 import { createSessionSchema, formatZodError } from "@/lib/schemas";
+import { getEnabledModulesForFormula, type FormulaId } from "@/lib/formulas";
 import { getAuthUser } from "@/lib/auth-helpers";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { customAlphabet } from "nanoid";
@@ -157,9 +158,11 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
     );
   }
 
-  const { title, level, template, description, question_timer, thematique, scheduled_at, class_label } = validated.data;
+  const { title, level, template, description, question_timer, thematique, scheduled_at, class_label, formula } = validated.data;
   const cleanTitle = title.slice(0, 60);
   const cleanTemplate = template || null;
+  const formulaId = (formula || "F0") as FormulaId;
+  const modulesEnabled = getEnabledModulesForFormula(formulaId);
 
   // Get facilitator's org
   const { data: facilitator } = await supabase
@@ -195,6 +198,8 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
       ...(thematique && { thematique }),
       ...(scheduled_at && { scheduled_at }),
       ...(class_label && { class_label }),
+      formula: formulaId,
+      modules_enabled: modulesEnabled,
     })
     .select()
     .single();
