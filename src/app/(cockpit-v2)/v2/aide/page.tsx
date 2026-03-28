@@ -201,7 +201,7 @@ export default function AidePage() {
 
         {/* FAQ */}
         <GlassCardV2 className="p-5">
-          <h2 className="label-caps mb-2">Questions frequentes</h2>
+          <h2 className="label-caps mb-2">Questions fréquentes</h2>
           <div>
             {FAQ_ITEMS.map((item) => (
               <FaqAccordion key={item.question} item={item} />
@@ -263,7 +263,7 @@ export default function AidePage() {
               </svg>
               support@banlieuwood.fr
             </a>
-            <p className="text-xs text-bw-muted mt-1">Nous repondons generalement sous 24 heures en jours ouvrables.</p>
+            <p className="text-xs text-bw-muted mt-1">Nous répondons généralement sous 24 heures en jours ouvrables.</p>
           </div>
         </GlassCardV2>
       </div>

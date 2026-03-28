@@ -322,7 +322,7 @@ export default function BibliothequePage() {
                 <path d="M21 21l-4.35-4.35" />
               </svg>
             }
-            title="Aucun module trouve"
+            title="Aucun module trouvé"
             description="Aucun module ne correspond a votre recherche. Essayez avec d'autres termes."
             accent="violet"
             action={{ label: "Effacer la recherche", onClick: () => setSearch("") }}

@@ -447,7 +447,7 @@ export function SessionCreateWizard() {
                 {data.repeat && data.scheduledAt && (
                   <>
                     <Row
-                      label="Repetition"
+                      label="Répétition"
                       value={data.repeatFrequency === "biweekly" ? "Toutes les 2 semaines" : "Chaque semaine"}
                     />
                     <Row label="Nombre de séances" value={String(data.repeatCount)} />

@@ -212,8 +212,8 @@ export default function SeancesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-heading-lg text-bw-heading">S&#233;ances</h1>
-          <p className="text-sm text-bw-muted mt-0.5">G&#233;rez et pr&#233;parez vos s&#233;ances</p>
+          <h1 className="text-heading-lg text-bw-heading">Séances</h1>
+          <p className="text-sm text-bw-muted mt-0.5">Gérez et préparez vos séances</p>
         </div>
         <div className="flex items-center gap-3">
           {/* Search */}
@@ -359,7 +359,7 @@ export default function SeancesPage() {
       {selected.size > 0 && (
         <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 rounded-2xl bg-card border border-[var(--color-bw-border)] shadow-xl px-4 py-2.5 animate-in slide-in-from-bottom-4 duration-200">
           <span className="text-sm font-medium text-bw-heading tabular-nums">
-            {selected.size} s&#233;lectionn&#233;e{selected.size > 1 ? "s" : ""}
+            {selected.size} sélectionnée{selected.size > 1 ? "s" : ""}
           </span>
           <button
             type="button"

@@ -23,7 +23,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const { data: authUser, isLoading: authLoading } = useAuthUser();
 
-  // ── Preferences (localStorage) ──
+  // ── Préférences (localStorage) ──
   const [defaultLevel, setDefaultLevel] = useState("college");
   const [defaultClass, setDefaultClass] = useState("");
 
@@ -155,17 +155,23 @@ export default function SettingsPage() {
               </div>
             </div>
             <div>
-              <label className="block text-body-xs font-medium text-bw-muted mb-1">Role</label>
+              <label className="block text-body-xs font-medium text-bw-muted mb-1">Rôle</label>
               <div className="h-9 flex items-center rounded-lg border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/50 px-3 text-sm text-bw-muted capitalize">
                 {authUser?.role || ""}
+              </div>
+            </div>
+            <div>
+              <label className="block text-body-xs font-medium text-bw-muted mb-1">Établissement</label>
+              <div className="h-9 flex items-center rounded-lg border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/50 px-3 text-sm text-bw-heading">
+                {authUser?.institution || "Non renseigné"}
               </div>
             </div>
           </div>
         </GlassCardV2>
 
-        {/* ── Section 2: Preferences ── */}
+        {/* ── Section 2: Préférences ── */}
         <GlassCardV2 className="p-5">
-          <h2 className="text-heading-xs text-bw-heading mb-4">Preferences</h2>
+          <h2 className="text-heading-xs text-bw-heading mb-4">Préférences</h2>
           <div className="space-y-4">
             <div>
               <label htmlFor="default-level" className="block text-body-xs font-medium text-bw-muted mb-1">
@@ -201,9 +207,9 @@ export default function SettingsPage() {
           </div>
         </GlassCardV2>
 
-        {/* ── Section 3: Securite ── */}
+        {/* ── Section 3: Sécurité ── */}
         <GlassCardV2 className="p-5">
-          <h2 className="text-heading-xs text-bw-heading mb-4">Securite</h2>
+          <h2 className="text-heading-xs text-bw-heading mb-4">Sécurité</h2>
           <div className="space-y-4">
             <div>
               <label htmlFor="new-password" className="block text-body-xs font-medium text-bw-muted mb-1">

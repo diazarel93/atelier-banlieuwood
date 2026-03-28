@@ -213,10 +213,10 @@ export default function SessionDetailPage() {
             {/* QR Code join */}
             <QrJoinCard joinCode={session.join_code} joinUrl={joinUrl} />
 
-            {/* Thematique */}
+            {/* Thématique */}
             {session.thematique && (
               <GlassCardV2 variant="flat" className="p-4">
-                <p className="text-xs text-bw-muted font-medium mb-1">Thematique</p>
+                <p className="text-xs text-bw-muted font-medium mb-1">Thématique</p>
                 <p className="text-sm text-bw-heading">{session.thematique}</p>
               </GlassCardV2>
             )}
