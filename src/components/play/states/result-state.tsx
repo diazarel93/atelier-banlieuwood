@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CATEGORY_COLORS } from "@/lib/constants";
-import { MiniLeaderboard } from "@/components/play/mini-leaderboard";
 import type { SessionState } from "@/hooks/use-session-polling";
 
 export interface ResultStateProps {
@@ -11,9 +10,6 @@ export interface ResultStateProps {
   isMyResponseChosen?: boolean;
   comboCount?: number;
   onReveal?: () => void;
-  topStudents?: { id: string; displayName: string; avatar: string; xp: number }[];
-  currentStudentId?: string;
-  currentRank?: number;
 }
 
 export function ResultState({
@@ -21,9 +17,6 @@ export function ResultState({
   isMyResponseChosen,
   comboCount,
   onReveal,
-  topStudents,
-  currentStudentId,
-  currentRank,
 }: ResultStateProps) {
   const categoryColor = CATEGORY_COLORS[collectiveChoice.category] || "#FF6B35";
   const [phase, setPhase] = useState<"suspense" | "revealed">("suspense");
@@ -153,13 +146,6 @@ export function ResultState({
                     ? "Encore ton idée choisie par le groupe !"
                     : "Le groupe a choisi ton idée !"}
                 </motion.p>
-              </motion.div>
-            )}
-
-            {/* Mini leaderboard — top 3 after result */}
-            {topStudents && topStudents.length > 0 && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="flex justify-center">
-                <MiniLeaderboard entries={topStudents} currentStudentId={currentStudentId} currentRank={currentRank} />
               </motion.div>
             )}
 

@@ -6,13 +6,10 @@ import { CINEMA_TIPS, type CinemaTip } from "@/lib/cinema-tips";
 import { ROUTES } from "@/lib/routes";
 import { PHASES, MAIN_PHASE_IDS, getModuleByDb, getPhaseForModule } from "@/lib/modules-data";
 import type { SessionState } from "@/hooks/use-session-polling";
-import { MiniLeaderboard } from "@/components/play/mini-leaderboard";
 
 export interface WaitingStateProps {
   session: SessionState["session"];
   connectedCount: number;
-  topStudents?: { id: string; displayName: string; avatar: string; xp: number }[];
-  currentStudentId?: string;
   crossSessionStreak?: number;
   onReplayTutorial?: () => void;
 }
@@ -30,7 +27,7 @@ const TYPE_ICONS: Record<string, string> = {
   acteur: "🌟", rappel: "📌", motivation: "💪",
 };
 
-export function WaitingState({ session, connectedCount, topStudents, currentStudentId, crossSessionStreak, onReplayTutorial }: WaitingStateProps) {
+export function WaitingState({ session, connectedCount, crossSessionStreak, onReplayTutorial }: WaitingStateProps) {
   const tips = useMemo(() => pickTips(session.currentModule || 1, session.currentSeance), [session.currentModule, session.currentSeance]);
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * tips.length));
 
@@ -145,11 +142,6 @@ export function WaitingState({ session, connectedCount, topStudents, currentStud
           </div>
         );
       })()}
-
-      {/* Mini leaderboard — top 3 students */}
-      {topStudents && topStudents.length > 0 && (
-        <MiniLeaderboard entries={topStudents} currentStudentId={currentStudentId} />
-      )}
 
       <div className="rounded-xl px-4 py-2 sm:px-6 sm:py-3 flex items-center gap-3" aria-live="polite" aria-atomic="true" style={{ background: "linear-gradient(135deg, rgba(78,205,196,0.08), rgba(78,205,196,0.03))", border: "1px solid rgba(78,205,196,0.15)" }}>
         <motion.div

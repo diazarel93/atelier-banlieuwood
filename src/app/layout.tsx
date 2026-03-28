@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Bebas_Neue, Courier_Prime, Caveat } from "next/font/google";
 import { Providers } from "./providers";
 import { Analytics } from "@/components/analytics";
-import { CookieConsentBanner } from "@/components/cookie-consent-banner";
 import { ServiceWorkerRegister } from "@/components/sw-register";
 import "./globals.css";
 
@@ -106,7 +105,6 @@ export default function RootLayout({
         </a>
         <Providers><main id="main-content">{children}</main></Providers>
         <Analytics />
-        <CookieConsentBanner />
         <ServiceWorkerRegister />
       </body>
     </html>

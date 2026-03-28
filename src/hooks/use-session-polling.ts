@@ -324,8 +324,6 @@ export interface SessionState {
   studentWarnings: number;
   studentKicked: boolean;
   team?: { id: string; teamName: string; teamColor: string; teamNumber: number } | null;
-  topStudents?: { id: string; displayName: string; avatar: string; xp: number }[];
-  currentRank?: number | null;
 }
 
 export function useSessionPolling(

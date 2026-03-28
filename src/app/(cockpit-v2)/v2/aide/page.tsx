@@ -22,11 +22,6 @@ const FAQ_ITEMS: FaqItem[] = [
       "Partagez le code de connexion affiche dans la page de preparation de la seance. Les eleves vont sur la page de jeu et saisissent le code pour rejoindre. Ils choisissent un pseudo et un avatar.",
   },
   {
-    question: "Comment fonctionne le systeme de scores OIE ?",
-    answer:
-      "Chaque reponse d'eleve est evaluee sur 3 axes : Observation (O), Imagination (I) et Expression (E). Ces scores bruts sont ensuite transformes en 4 axes visuels : Comprehension, Creativite, Expression et Engagement. Les scores evoluent au fil des seances.",
-  },
-  {
     question: "Puis-je modifier les reponses des eleves ?",
     answer:
       "Vous ne pouvez pas modifier les reponses directement, mais vous pouvez les noter, les mettre en avant (highlight) ou ajouter un tag pedagogique depuis le cockpit de pilotage. Les annotations sont visibles dans le profil de l'eleve.",

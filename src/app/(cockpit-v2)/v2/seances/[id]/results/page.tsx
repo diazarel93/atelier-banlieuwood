@@ -141,7 +141,6 @@ function ResultsPageInner() {
         {activeTab === "competences" && (
           <TabCompetences
             feedback={data.feedback}
-            oieScores={data.oieData.scores}
           />
         )}
 

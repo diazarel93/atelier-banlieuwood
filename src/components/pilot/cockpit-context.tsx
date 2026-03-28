@@ -22,7 +22,6 @@ export interface CockpitDataValue {
   voteData: { totalVotes: number; results: VoteResult[] } | undefined;
   collectiveChoices: CollectiveChoice[];
   situationData: Record<string, unknown> | null;
-  oieScores?: Record<string, import("@/lib/oie-profile").OIEScores>;
   teams: { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[];
   studentWarnings: Record<string, number>;
 }
@@ -100,13 +99,12 @@ export function CockpitProvider({
     voteData: value.voteData,
     collectiveChoices: value.collectiveChoices,
     situationData: value.situationData,
-    oieScores: value.oieScores,
     teams: value.teams,
     studentWarnings: value.studentWarnings,
   }), [
     value.session, value.sessionId, value.responses, value.activeStudents,
     value.voteData, value.collectiveChoices, value.situationData,
-    value.oieScores, value.teams, value.studentWarnings,
+    value.teams, value.studentWarnings,
   ]);
 
   return (

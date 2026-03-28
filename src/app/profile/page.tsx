@@ -54,14 +54,6 @@ interface SessionEntry {
   date: string;
 }
 
-interface LeaderboardEntry {
-  profileId: string;
-  displayName: string;
-  avatar: string;
-  totalXp: number;
-  rank: number;
-}
-
 interface NextSessionData {
   title: string;
   scheduledAt: string;
@@ -72,7 +64,6 @@ interface PlayerProfileResponse {
   profile: ProfileData;
   achievements: UnlockedAchievement[];
   sessionHistory: SessionEntry[];
-  classLeaderboard: LeaderboardEntry[];
   nextSession: NextSessionData | null;
 }
 
@@ -156,7 +147,7 @@ export default function ProfilePage() {
     );
   }
 
-  const { profile, achievements, sessionHistory, classLeaderboard, nextSession } = data;
+  const { profile, achievements, sessionHistory, nextSession } = data;
   const level = getLevel(profile.totalXp);
   const xpToNext = level.nextThreshold - level.currentXp;
 
@@ -480,74 +471,6 @@ export default function ProfilePage() {
           </motion.section>
         )}
 
-        {/* ── Class Leaderboard ── */}
-        {classLeaderboard.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="space-y-3"
-          >
-            <h2 className="font-cinema text-xl tracking-wider text-[#D4A843] uppercase">
-              Classement
-            </h2>
-            <div className="rounded-2xl border border-white/[0.08] divide-y divide-white/[0.06] overflow-hidden" style={{ background: "rgba(255,255,255,0.04)" }}>
-              {classLeaderboard.map((entry, i) => {
-                const isMe = entry.profileId === profileId;
-                return (
-                  <motion.div
-                    key={entry.profileId}
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.45 + i * 0.04 }}
-                    className={`flex items-center gap-3 px-4 py-3 ${
-                      isMe
-                        ? "bg-[#D4A843]/[0.1] border-l-[3px] border-[#D4A843]"
-                        : ""
-                    }`}
-                  >
-                    {/* Rank */}
-                    <span
-                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                        entry.rank === 1
-                          ? "bg-yellow-900/40 text-yellow-300"
-                          : entry.rank === 2
-                            ? "bg-slate-700/40 text-slate-300"
-                            : entry.rank === 3
-                              ? "bg-amber-900/40 text-amber-300"
-                              : "bg-white/[0.06] text-[#9898aa]"
-                      }`}
-                    >
-                      {entry.rank <= 3
-                        ? ["🥇", "🥈", "🥉"][entry.rank - 1]
-                        : entry.rank}
-                    </span>
-
-                    {/* Avatar */}
-                    <span className="text-xl shrink-0">{entry.avatar}</span>
-
-                    {/* Name + XP */}
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className={`text-sm truncate ${
-                          isMe
-                            ? "font-bold text-[#D4A843]"
-                            : "font-medium text-[#f0f0f5]"
-                        }`}
-                      >
-                        {entry.displayName}
-                        {isMe && " (toi)"}
-                      </p>
-                    </div>
-                    <span className="text-xs font-bold text-[#D4A843] tabular-nums">
-                      {entry.totalXp} XP
-                    </span>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.section>
-        )}
       </div>
     </main>
   );

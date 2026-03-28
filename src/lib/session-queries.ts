@@ -107,57 +107,6 @@ export async function fetchVoteOptions(
   return { data: data || [], error };
 }
 
-// ── OIE Score queries ──
-
-export async function fetchOIEScoresBySessionId(
-  client: SupabaseClient,
-  sessionId: string
-) {
-  const { data, error } = await client
-    .from("session_oie_scores")
-    .select("student_id, observation, imagination, expression, dominant, response_count, computed_at")
-    .eq("session_id", sessionId);
-  return { data: data || [], error };
-}
-
-export async function fetchOIEScoresByStudentIds(
-  client: SupabaseClient,
-  studentIds: string[],
-  opts?: { limit?: number }
-) {
-  let query = client
-    .from("session_oie_scores")
-    .select("student_id, session_id, observation, imagination, expression, response_count, computed_at")
-    .in("student_id", studentIds)
-    .order("computed_at", { ascending: false });
-
-  if (opts?.limit) {
-    query = query.limit(opts.limit);
-  }
-
-  const { data, error } = await query;
-  return { data: data || [], error };
-}
-
-export async function fetchOIEScoresBySessionIds(
-  client: SupabaseClient,
-  sessionIds: string[],
-  opts?: { select?: string; limit?: number }
-) {
-  const select = opts?.select || "student_id, observation, imagination, expression, response_count";
-  let query = client
-    .from("session_oie_scores")
-    .select(select)
-    .in("session_id", sessionIds);
-
-  if (opts?.limit) {
-    query = query.limit(opts.limit);
-  }
-
-  const { data, error } = await query;
-  return { data: data || [], error };
-}
-
 // ── Collective choices ──
 
 export async function fetchCollectiveChoice(

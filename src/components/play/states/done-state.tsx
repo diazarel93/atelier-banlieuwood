@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useEffect, useRef } from "react";
+import { motion } from "motion/react";
 import { fireConfetti } from "@/components/play/utils";
 import { CountUp } from "@/components/play/count-up";
 import { CharacterCard } from "@/components/module10/character-card";
@@ -11,12 +11,6 @@ import { ROUTES } from "@/lib/routes";
 import { getLevel } from "@/lib/xp";
 import { SessionBadge } from "@/components/play/session-badge";
 import { useSound } from "@/hooks/use-sound";
-
-interface LeaderboardData {
-  entries: { id: string; displayName: string; avatar: string; responses: number; votes: number; retained: number; xp?: number }[];
-  badges: { id: string; label: string; description: string }[];
-  totals: { responses: number; votes: number; retained: number; participants: number };
-}
 
 export interface DoneStateProps {
   sessionId: string;
@@ -44,8 +38,6 @@ const TIER_COLORS: Record<string, string> = {
 };
 
 export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar, stats, xp, characterCard, newAchievements, profileId }: DoneStateProps) {
-  const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const { play } = useSound();
   const fanfarePlayed = useRef(false);
 
@@ -63,13 +55,6 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
       play("fanfare");
     }
   }, [newAchievements, play]);
-
-  useEffect(() => {
-    fetch(`/api/sessions/${sessionId}/leaderboard`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((d) => { if (d) setLeaderboard(d); })
-      .catch(() => {});
-  }, [sessionId]);
 
   const hasStats = stats && stats.responses > 0;
 
@@ -237,80 +222,6 @@ export function DoneState({ sessionId, sessionTitle, studentName, studentAvatar,
             obstacle={characterCard.obstacle}
             pitchText={characterCard.pitchText}
           />
-        </motion.div>
-      )}
-
-      {/* Collective Leaderboard */}
-      {leaderboard && (
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: hasStats ? 1.8 : 1.0 }}
-          className="w-full max-w-xs space-y-3"
-        >
-          <button
-            onClick={() => setShowLeaderboard(!showLeaderboard)}
-            aria-expanded={showLeaderboard}
-            aria-label={showLeaderboard ? "Masquer le tableau de la classe" : "Afficher le tableau de la classe"}
-            className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-bw-elevated border border-white/[0.06] cursor-pointer hover:border-white/10 transition-colors"
-          >
-            <span className="text-sm font-medium text-bw-text">Tableau de la classe</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-              className={`text-bw-muted transition-transform ${showLeaderboard ? "rotate-180" : ""}`}>
-              <path d="M6 9l6 6 6-6"/>
-            </svg>
-          </button>
-
-          <AnimatePresence>
-            {showLeaderboard && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden space-y-3"
-              >
-                {/* Collective badges */}
-                {leaderboard.badges.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 justify-center">
-                    {leaderboard.badges.map((b) => (
-                      <span key={b.id} className="text-xs font-semibold px-2.5 py-1 rounded-full bg-bw-gold/15 text-bw-gold border border-bw-gold/20" title={b.description}>
-                        {b.label}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {/* Class totals */}
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="glass-card p-2">
-                    <p className="text-lg font-bold text-bw-primary">{leaderboard.totals.responses}</p>
-                    <p className="text-xs text-bw-muted">R&eacute;ponses</p>
-                  </div>
-                  <div className="glass-card p-2">
-                    <p className="text-lg font-bold text-bw-violet">{leaderboard.totals.votes}</p>
-                    <p className="text-xs text-bw-muted">Votes</p>
-                  </div>
-                  <div className="glass-card p-2">
-                    <p className="text-lg font-bold text-bw-gold">{leaderboard.totals.retained}</p>
-                    <p className="text-xs text-bw-muted">Choix collectifs</p>
-                  </div>
-                </div>
-
-                {/* Top contributors (retained ideas) */}
-                {leaderboard.entries.slice(0, 5).map((e, i) => (
-                  <div key={e.id} className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-bw-elevated/60">
-                    <span className="text-xs font-bold text-bw-muted w-4 text-center">{i + 1}</span>
-                    <span className="text-base">{e.avatar}</span>
-                    <span className="text-sm text-bw-text flex-1 truncate">{e.displayName}</span>
-                    {(e.xp ?? 0) > 0 && (
-                      <span className="text-xs font-bold text-bw-gold tabular-nums">{e.xp} pts</span>
-                    )}
-                    {i === 0 && <span className="text-xs">&#9733;</span>}
-                  </div>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
         </motion.div>
       )}
 

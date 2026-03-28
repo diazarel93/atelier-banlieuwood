@@ -65,12 +65,8 @@ export const GET = withErrorHandler<{ profileId: string }>(async function GET(
     achievementsRes,
     notesRes,
   ] = await Promise.all([
-    // OIE scores per session
-    supabase
-      .from("session_oie_scores")
-      .select("session_id, observation, imagination, expression, response_count, computed_at")
-      .in("student_id", studentIds)
-      .order("computed_at", { ascending: true }),
+    // OIE scores removed — return empty array to preserve shape
+    Promise.resolve({ data: [], error: null }),
 
     // Recent responses (last 30 with full data)
     supabase
@@ -146,41 +142,18 @@ export const GET = withErrorHandler<{ profileId: string }>(async function GET(
       .order("created_at", { ascending: false }),
   ]);
 
-  const scores = scoresRes.data || [];
   const responses = responsesRes.data || [];
   const totalResponseCount = responseCountRes.count ?? responses.length;
   const tags = tagsRes.data || [];
 
-  // ── Session history with scores + ai_score avg ──
-  // Compute ai_score average per session from responses
-  const aiScoreBySession: Record<string, { sum: number; count: number }> = {};
-  const responseTimeBySession: Record<string, { sum: number; count: number }> = {};
-  for (const r of responses) {
-    // Find which session this student was in for this response
-    const stu = students.find((s) => true); // responses are already filtered by studentIds
-    if (r.ai_score !== null) {
-      // We don't have session_id in the response select, so we'll aggregate globally
-    }
-  }
-
-  const sessionHistory = scores.map((sc) => {
-    const sess = facSessions.find((s) => s.id === sc.session_id);
-    return {
-      sessionId: sc.session_id,
-      sessionTitle: sess?.title || "Séance",
-      classLabel: sess?.class_label || null,
-      date: sc.computed_at,
-      scores: {
-        comprehension: Math.round(sc.observation ?? 0),
-        creativite: Math.round(sc.imagination ?? 0),
-        expression: Math.round(sc.expression ?? 0),
-        engagement: Math.min(
-          100,
-          Math.round(((sc.response_count || 0) / 20) * 100)
-        ),
-      },
-    };
-  });
+  // OIE scoring removed — sessionHistory is empty
+  const sessionHistory: {
+    sessionId: string;
+    sessionTitle: string;
+    classLabel: string | null;
+    date: string;
+    scores: { comprehension: number; creativite: number; expression: number; engagement: number };
+  }[] = [];
 
   // ── Situation labels for responses ──
   const recentResponses = responses.map((r) => {
@@ -255,36 +228,16 @@ export const GET = withErrorHandler<{ profileId: string }>(async function GET(
     unlockedAt: a.unlocked_at,
   }));
 
-  // ── Aggregate average scores ──
-  const avg = (arr: number[]) =>
-    arr.length > 0 ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : 0;
-
+  // OIE scoring removed — aggregate scores are zeroed
   const aggregateScores = {
-    comprehension: avg(scores.map((s) => s.observation ?? 0)),
-    creativite: avg(scores.map((s) => s.imagination ?? 0)),
-    expression: avg(scores.map((s) => s.expression ?? 0)),
-    engagement: avg(
-      scores.map((s) =>
-        Math.min(100, Math.round(((s.response_count || 0) / 20) * 100))
-      )
-    ),
+    comprehension: 0,
+    creativite: 0,
+    expression: 0,
+    engagement: 0,
   };
 
-  // ── Compute deltas (last session vs previous average) ──
-  let deltas: Record<string, number> | null = null;
-  if (scores.length >= 2) {
-    const last = scores[scores.length - 1];
-    const prevScores = scores.slice(0, -1);
-    deltas = {
-      comprehension: Math.round((last.observation ?? 0) - avg(prevScores.map((s) => s.observation ?? 0))),
-      creativite: Math.round((last.imagination ?? 0) - avg(prevScores.map((s) => s.imagination ?? 0))),
-      expression: Math.round((last.expression ?? 0) - avg(prevScores.map((s) => s.expression ?? 0))),
-      engagement: Math.round(
-        Math.min(100, ((last.response_count || 0) / 20) * 100) -
-        avg(prevScores.map((s) => Math.min(100, Math.round(((s.response_count || 0) / 20) * 100))))
-      ),
-    };
-  }
+  // OIE scoring removed — no deltas
+  const deltas: Record<string, number> | null = null;
 
   // ── Average ai_score across all responses ──
   const aiScores = responses.filter((r) => r.ai_score !== null).map((r) => r.ai_score as number);

@@ -92,91 +92,8 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     };
   });
 
-  // ── 4. Class leaderboard ──
-  // Find the most recent session's class_label for this profile
+  // ── 4. Next scheduled session ──
   const latestClassLabel = sessionHistory.find((s) => s.classLabel)?.classLabel;
-  let classLeaderboard: {
-    profileId: string;
-    displayName: string;
-    avatar: string;
-    totalXp: number;
-    rank: number;
-  }[] = [];
-
-  if (latestClassLabel) {
-    // Find all sessions with same class_label
-    const { data: classSessions } = await supabase
-      .from("sessions")
-      .select("id")
-      .eq("class_label", latestClassLabel);
-
-    if (classSessions && classSessions.length > 0) {
-      const classSessionIds = classSessions.map((s) => s.id);
-
-      // Find all profile_ids of students in those sessions
-      const { data: classStudents } = await supabase
-        .from("students")
-        .select("profile_id")
-        .in("session_id", classSessionIds)
-        .not("profile_id", "is", null);
-
-      if (classStudents && classStudents.length > 0) {
-        const uniqueProfileIds = [
-          ...new Set(classStudents.map((s) => s.profile_id).filter(Boolean)),
-        ] as string[];
-
-        // Fetch those profiles ordered by XP
-        const { data: leaderboardProfiles } = await supabase
-          .from("student_profiles")
-          .select("id, display_name, avatar, total_xp")
-          .in("id", uniqueProfileIds)
-          .order("total_xp", { ascending: false })
-          .limit(10);
-
-        classLeaderboard = (leaderboardProfiles || []).map((p, i) => ({
-          profileId: p.id,
-          displayName: p.display_name,
-          avatar: p.avatar,
-          totalXp: p.total_xp ?? 0,
-          rank: i + 1,
-        }));
-      }
-    }
-  }
-
-  // Fallback: if no class_label found, use most recent session_id for a session-level leaderboard
-  if (classLeaderboard.length === 0 && sessionHistory.length > 0) {
-    const latestSessionId = sessionHistory[0].sessionId;
-
-    const { data: sessionStudents } = await supabase
-      .from("students")
-      .select("profile_id")
-      .eq("session_id", latestSessionId)
-      .not("profile_id", "is", null);
-
-    if (sessionStudents && sessionStudents.length > 0) {
-      const uniqueProfileIds = [
-        ...new Set(sessionStudents.map((s) => s.profile_id).filter(Boolean)),
-      ] as string[];
-
-      const { data: leaderboardProfiles } = await supabase
-        .from("student_profiles")
-        .select("id, display_name, avatar, total_xp")
-        .in("id", uniqueProfileIds)
-        .order("total_xp", { ascending: false })
-        .limit(10);
-
-      classLeaderboard = (leaderboardProfiles || []).map((p, i) => ({
-        profileId: p.id,
-        displayName: p.display_name,
-        avatar: p.avatar,
-        totalXp: p.total_xp ?? 0,
-        rank: i + 1,
-      }));
-    }
-  }
-
-  // ── 5. Next scheduled session ──
   let nextSession: { title: string; scheduledAt: string; classLabel: string } | null = null;
   if (latestClassLabel) {
     const { data: upcoming } = await supabase
@@ -219,7 +136,6 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     },
     achievements,
     sessionHistory,
-    classLeaderboard,
     nextSession,
   });
 });

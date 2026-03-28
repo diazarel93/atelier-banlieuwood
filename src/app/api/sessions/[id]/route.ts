@@ -120,15 +120,6 @@ export const PATCH = withErrorHandler(async function PATCH(
       },
     });
   }
-  // Auto-trigger O-I-E computation when session is done
-  if (updates.status === "done") {
-    fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/sessions/${id}/oie-profile`, { method: "POST" })
-      .then((r) => {
-        if (!r.ok) console.error(`[OIE] Computation failed for session ${id}: HTTP ${r.status}`);
-      })
-      .catch((err) => console.error(`[OIE] Computation error for session ${id}:`, err.message));
-  }
-
   return NextResponse.json(data);
 });
 

@@ -62,7 +62,7 @@ export function FocusCockpit() {
     resetResponse, nudgeStudent, warnStudent, toggleStudentActive,
   } = useCockpitActions();
 
-  const { studentWarnings, oieScores } = useCockpitData();
+  const { studentWarnings } = useCockpitData();
 
   // ── Plan de classe (collapsible in center) ──
   const [showPlan, setShowPlan] = useState(false);
@@ -716,7 +716,6 @@ export function FocusCockpit() {
                   nudgeStudent={nudgeStudent}
                   warnStudent={warnStudent}
                   studentWarnings={studentWarnings}
-                  oieScores={oieScores?.[ficheStudentId] ?? null}
                   onToggleActive={(studentId, isActive) => toggleStudentActive.mutate({ studentId, isActive })}
                   isToggleActivePending={toggleStudentActive.isPending}
                 />

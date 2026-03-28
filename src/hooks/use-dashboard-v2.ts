@@ -20,14 +20,6 @@ interface DashboardStats {
   totalStudents: number;
 }
 
-interface AtRiskStudent {
-  profileId: string;
-  displayName: string;
-  avatar: string | null;
-  severity: "warning" | "alert";
-  reasons: string[];
-}
-
 interface DashboardSummary {
   todaySessions: SessionSummary[];
   tomorrowSessions: SessionSummary[];
@@ -36,7 +28,6 @@ interface DashboardSummary {
   sessionDates: string[];
   completedModuleIds: string[];
   classLabels: string[];
-  atRiskStudents?: AtRiskStudent[];
   trends?: Record<string, { value: number; label?: string }>;
 }
 
@@ -64,5 +55,4 @@ export type {
   SessionSummary,
   DashboardStats,
   DashboardSummary,
-  AtRiskStudent,
 };

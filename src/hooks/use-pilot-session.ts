@@ -185,18 +185,6 @@ export function usePilotSession(
     enabled: !checkingAuth && !!session && hasActiveModule && (session?.current_module === 3 || session?.current_module === 4),
   });
 
-  // O-I-E creative profile scores
-  const { data: oieData } = useQuery<{ scores: Record<string, import("@/lib/oie-profile").OIEScores> }>({
-    queryKey: ["pilot-oie", sessionId],
-    queryFn: async () => {
-      const res = await fetch(`/api/sessions/${sessionId}/oie-profile?debug=true`);
-      if (!res.ok) return { scores: {} };
-      return res.json();
-    },
-    refetchInterval: getPollingInterval(realtimeStatus, 30_000, 60_000),
-    staleTime: 15_000,
-    enabled: !checkingAuth && !!session,
-  });
 
   // ── Mutations ──
 
@@ -485,7 +473,6 @@ export function usePilotSession(
     responses,
     voteData,
     collectiveChoices,
-    oieScores: oieData?.scores,
     // Derived
     activeModule,
     hasActiveModule,
