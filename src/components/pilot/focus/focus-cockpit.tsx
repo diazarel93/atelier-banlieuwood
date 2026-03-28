@@ -222,7 +222,7 @@ export function FocusCockpit() {
   const currentScreenMode =
     typeof broadcastMsg === "string" && broadcastMsg.startsWith("__SCREEN_MODE:")
       ? broadcastMsg.replace("__SCREEN_MODE:", "")
-      : "default";
+      : "vote";
   const screenFrozen = broadcastMsg === "__SCREEN_FROZEN";
 
   function handleSetScreenMode(mode: string) {

@@ -101,9 +101,21 @@ export function V6ControlPanels({
           </button>
         </div>
 
-        {/* Preview placeholder */}
-        <div className="w-full h-14 rounded-lg bg-gradient-to-br from-[#8b5cf6]/8 to-[#ec4899]/8 border border-[#2a2a50] mb-3 flex items-center justify-center text-[10px] text-[#64748b]">
-          Apercu: {currentScreenMode}
+        {/* Preview — miniature iframe of /screen */}
+        <div className="w-full h-[120px] rounded-lg border border-[#2a2a50] mb-3 overflow-hidden bg-[#0c0c18] relative">
+          {projActive ? (
+            <iframe
+              src={ROUTES.screen(sessionId)}
+              title="Apercu projection"
+              className="w-[200%] h-[200%] origin-top-left pointer-events-none border-none"
+              style={{ transform: "scale(0.5)" }}
+              tabIndex={-1}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-[10px] text-[#64748b]">
+              Projection inactive
+            </div>
+          )}
         </div>
 
         {/* Mode selector */}
