@@ -79,7 +79,7 @@ export default function DashboardV2Page() {
   const activeSessions = data?.todaySessions?.filter((s) => s.status === "responding" || s.status === "voting") || [];
 
   return (
-    <div className="px-4 sm:px-6 py-6 max-w-[1440px] mx-auto" aria-live="polite">
+    <div className="px-4 sm:px-6 pt-16 lg:pt-6 pb-6 max-w-[1440px] mx-auto" aria-live="polite">
       {/* ── Greeting row ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>

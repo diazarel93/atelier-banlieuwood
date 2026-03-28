@@ -65,7 +65,7 @@ export default function SessionDetailPage() {
   // Loading skeleton
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 pt-16 lg:pt-8 pb-8">
         <BreadcrumbV2 items={[{ label: "Séances", href: ROUTES.seances }]} />
         <div className="space-y-4 mt-4">
           <div className="h-48 rounded-2xl bg-card shimmer" />
@@ -87,7 +87,7 @@ export default function SessionDetailPage() {
   // Error state
   if (isError || !session || !sessionState) {
     return (
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 pt-16 lg:pt-8 pb-8">
         <BreadcrumbV2 items={[{ label: "Séances", href: ROUTES.seances }]} />
         <GlassCardV2 className="p-8 text-center mt-4">
           <p className="text-bw-muted text-sm mb-4">Session introuvable ou erreur de chargement</p>
@@ -116,7 +116,7 @@ export default function SessionDetailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
+    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 pt-16 lg:pt-8 pb-8">
       <BreadcrumbV2 items={[{ label: "Séances", href: ROUTES.seances }, { label: session.title }]} />
 
       <div className="space-y-6 mt-4">

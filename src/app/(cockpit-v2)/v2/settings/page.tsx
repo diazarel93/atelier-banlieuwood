@@ -112,7 +112,7 @@ export default function SettingsPage() {
 
   if (authLoading) {
     return (
-      <div className="mx-auto max-w-2xl px-4 sm:px-6 py-6">
+      <div className="mx-auto max-w-2xl px-4 sm:px-6 pt-16 lg:pt-6 pb-6">
         <BreadcrumbV2 items={[{ label: "Réglages" }]} />
         <div className="space-y-5 mt-4">
           {[1, 2, 3, 4].map((i) => (
@@ -124,7 +124,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 sm:px-6 py-6">
+    <div className="mx-auto max-w-2xl px-4 sm:px-6 pt-16 lg:pt-6 pb-6">
       <BreadcrumbV2 items={[{ label: "Réglages" }]} />
 
       <div className="flex items-center gap-3 mt-4 mb-6">
