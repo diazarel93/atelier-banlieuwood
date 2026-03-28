@@ -57,6 +57,7 @@ export function useSessionDetail(id: string) {
       return res.json();
     },
     enabled: !!id,
+    retry: 1,
     refetchInterval: getPollingInterval(realtimeStatus, 10_000, 30_000),
   });
 
