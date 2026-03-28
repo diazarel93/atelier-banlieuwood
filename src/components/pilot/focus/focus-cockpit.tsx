@@ -530,8 +530,52 @@ export function FocusCockpit() {
                 />
               )}
 
-              {/* Activity feed */}
-              <V6ActivityFeed items={[]} />
+              {/* Activity feed — doctrine: anonymized, no student names */}
+              <V6ActivityFeed
+                items={(() => {
+                  const items: ActivityItem[] = [];
+                  const total = activeStudents.length;
+                  const responded = state.respondedStudentIds.size;
+                  if (session.status === "responding" && responded > 0) {
+                    items.push({
+                      id: "resp",
+                      text: `${responded}/${total} eleves ont repondu`,
+                      time: "maintenant",
+                      icon: "✏️",
+                      cat: "response",
+                    });
+                  }
+                  if (session.status === "voting" && voteData) {
+                    items.push({
+                      id: "vote",
+                      text: `${voteData.totalVotes} votes enregistres`,
+                      time: "maintenant",
+                      icon: "🗳️",
+                      cat: "vote",
+                    });
+                  }
+                  if (session.status === "reviewing") {
+                    items.push({
+                      id: "review",
+                      text: "Phase de discussion en cours",
+                      time: "maintenant",
+                      icon: "💬",
+                      cat: "system",
+                    });
+                  }
+                  const handsUp = activeStudents.filter((s) => s.hand_raised_at).length;
+                  if (handsUp > 0) {
+                    items.push({
+                      id: "hands",
+                      text: `${handsUp} main${handsUp > 1 ? "s" : ""} levee${handsUp > 1 ? "s" : ""}`,
+                      time: "maintenant",
+                      icon: "✋",
+                      cat: "system",
+                    });
+                  }
+                  return items;
+                })()}
+              />
             </>
           )}
 

@@ -45,7 +45,6 @@ type StudentFilter = "all" | "active" | "idle" | "off" | "responding";
 const NOTE_TAGS = [
   { id: "obs", label: "Observation", color: "#8b5cf6" },
   { id: "rev", label: "A revoir", color: "#f87171" },
-  { id: "comp", label: "Comportement", color: "#fb923c" },
   { id: "idee", label: "Idee", color: "#34d399" },
 ];
 
@@ -253,18 +252,10 @@ export function V6Sidebar({
                           </motion.span>
                         )}
                       </div>
-                      {/* XP bar placeholder */}
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <div className="w-16 h-1 rounded-full bg-[#2a2a50] overflow-hidden">
-                          <div
-                            className="h-full rounded-full bg-[#8b5cf6]/60"
-                            style={{ width: `${Math.min(100, Math.random() * 80 + 20)}%` }}
-                          />
-                        </div>
-                        <span className="text-[9px] text-[#64748b]">
-                          {isOnline ? (responded ? "repondu" : "en ligne") : "hors ligne"}
-                        </span>
-                      </div>
+                      {/* Status label — doctrine: no XP/scores/levels */}
+                      <span className="text-[9px] text-[#64748b] mt-0.5">
+                        {isOnline ? (responded ? "a repondu" : "en ligne") : "hors ligne"}
+                      </span>
                     </div>
 
                     {/* Status dot */}
