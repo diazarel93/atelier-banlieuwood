@@ -3,15 +3,10 @@
 import dynamic from "next/dynamic";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 
-const QRCodeSVG = dynamic(
-  () => import("qrcode.react").then((mod) => ({ default: mod.QRCodeSVG })),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-[120px] h-[120px] rounded-xl bg-[var(--color-bw-surface-dim)] animate-pulse" />
-    ),
-  }
-);
+const QRCodeSVG = dynamic(() => import("qrcode.react").then((mod) => ({ default: mod.QRCodeSVG })), {
+  ssr: false,
+  loading: () => <div className="w-[120px] h-[120px] rounded-xl bg-[var(--color-bw-surface-dim)] animate-pulse" />,
+});
 
 interface QrJoinCardProps {
   joinCode: string;
@@ -21,9 +16,7 @@ interface QrJoinCardProps {
 export function QrJoinCard({ joinCode, joinUrl }: QrJoinCardProps) {
   return (
     <GlassCardV2 className="p-6 text-center">
-      <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-4">
-        Rejoindre la séance
-      </p>
+      <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-4">Rejoindre la séance</p>
 
       <div className="inline-block bg-white p-3 rounded-xl border border-[var(--color-bw-border)]">
         <QRCodeSVG value={`${joinUrl}?code=${joinCode}`} size={120} />

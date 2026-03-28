@@ -11,12 +11,14 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
 
   let query = supabase
     .from("festival_entries")
-    .select(`
+    .select(
+      `
       *,
       profile:student_profiles!festival_entries_profile_id_fkey(
         id, display_name, avatar, avatar_frame, level, custom_title
       )
-    `)
+    `,
+    )
     .eq("is_published", true);
 
   if (category) {
@@ -53,16 +55,10 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
   const { profileId, sessionId, title, content, entryType, category } = body;
 
   if (!profileId || !title || !content || !entryType || !isValidUUID(profileId)) {
-    return NextResponse.json(
-      { error: "profileId (UUID), title, content, et entryType requis" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "profileId (UUID), title, content, et entryType requis" }, { status: 400 });
   }
   if (title.length > 200 || content.length > 10000) {
-    return NextResponse.json(
-      { error: "Titre (max 200) ou contenu (max 10000) trop long" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Titre (max 200) ou contenu (max 10000) trop long" }, { status: 400 });
   }
 
   const { data, error } = await supabase

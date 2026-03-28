@@ -3,54 +3,34 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const glassCardVariants = cva(
-  "rounded-2xl bg-card transition-all duration-200",
-  {
-    variants: {
-      variant: {
-        default:
-          "border border-[var(--color-bw-border)] glass-shadow",
-        elevated:
-          "border border-[var(--color-bw-border)] glass-shadow-elevated",
-        flat:
-          "border border-[var(--color-bw-border-subtle)]",
-        ghost:
-          "border border-transparent hover:border-[var(--color-bw-border-subtle)] hover:bg-card/60",
-      },
-      hover: {
-        true: "glass-interactive hover:-translate-y-0.5 active:scale-[0.995] active:translate-y-0 active:duration-75",
-        false: "",
-      },
+const glassCardVariants = cva("rounded-2xl bg-card transition-all duration-200", {
+  variants: {
+    variant: {
+      default: "border border-[var(--color-bw-border)] glass-shadow",
+      elevated: "border border-[var(--color-bw-border)] glass-shadow-elevated",
+      flat: "border border-[var(--color-bw-border-subtle)]",
+      ghost: "border border-transparent hover:border-[var(--color-bw-border-subtle)] hover:bg-card/60",
     },
-    defaultVariants: {
-      variant: "default",
-      hover: false,
+    hover: {
+      true: "glass-interactive hover:-translate-y-0.5 active:scale-[0.995] active:translate-y-0 active:duration-75",
+      false: "",
     },
-  }
-);
+  },
+  defaultVariants: {
+    variant: "default",
+    hover: false,
+  },
+});
 
-interface GlassCardV2Props
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof glassCardVariants> {}
+interface GlassCardV2Props extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof glassCardVariants> {}
 
-export function GlassCardV2({
-  className,
-  variant,
-  hover,
-  children,
-  onClick,
-  ...props
-}: GlassCardV2Props) {
+export function GlassCardV2({ className, variant, hover, children, onClick, ...props }: GlassCardV2Props) {
   const isClickable = !!onClick;
   // Auto-enable hover effects for clickable cards unless explicitly disabled
   const resolvedHover = hover ?? isClickable;
   return (
     <div
-      className={cn(
-        glassCardVariants({ variant, hover: resolvedHover }),
-        isClickable && "cursor-pointer",
-        className,
-      )}
+      className={cn(glassCardVariants({ variant, hover: resolvedHover }), isClickable && "cursor-pointer", className)}
       onClick={onClick}
       {...(isClickable && {
         role: "button",

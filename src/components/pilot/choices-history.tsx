@@ -37,9 +37,7 @@ export function ChoicesHistory({ choices }: ChoicesHistoryProps) {
                 <span className="text-xs font-bold" style={{ color }}>
                   Q{i + 1}
                 </span>
-                <span className="text-xs text-bw-text truncate flex-1">
-                  {c.chosen_text}
-                </span>
+                <span className="text-xs text-bw-text truncate flex-1">{c.chosen_text}</span>
               </div>
               {/* Tooltip on hover */}
               <div className="hidden group-hover:block absolute z-20 left-0 top-full mt-1 bg-bw-elevated border border-black/[0.04] rounded-xl p-3 text-xs text-bw-text leading-relaxed max-w-[240px] shadow-xl">

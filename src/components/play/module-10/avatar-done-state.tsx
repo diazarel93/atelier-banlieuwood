@@ -27,14 +27,23 @@ export function AvatarDoneState({ prenom, avatar, responsesCount, connectedCount
         <DiceBearAvatar options={avatar} size={160} />
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="space-y-1">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="space-y-1"
+      >
         <h2 className="text-2xl font-bold text-bw-heading">{prenom}</h2>
         <p className="text-sm text-bw-muted">Personnage créé !</p>
       </motion.div>
 
       {responsesCount != null && connectedCount != null && connectedCount > 0 && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-          className="text-xs text-bw-muted bg-bw-elevated px-4 py-2 rounded-full border border-white/[0.06]">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="text-xs text-bw-muted bg-bw-elevated px-4 py-2 rounded-full border border-white/[0.06]"
+        >
           {responsesCount}/{connectedCount} ont répondu
         </motion.div>
       )}

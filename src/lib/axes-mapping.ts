@@ -23,10 +23,34 @@ export interface AxisDef {
 }
 
 export const AXES: AxisDef[] = [
-  { key: "comprehension", label: "Compréhension", shortLabel: "Comp.", color: "#4ECDC4", description: "Capacité d'observation et d'analyse" },
-  { key: "creativite", label: "Créativité", shortLabel: "Créa.", color: "#8B5CF6", description: "Imagination et originalité" },
-  { key: "expression", label: "Expression", shortLabel: "Expr.", color: "#FF6B35", description: "Formulation et communication" },
-  { key: "engagement", label: "Engagement", shortLabel: "Eng.", color: "#10B981", description: "Participation et implication" },
+  {
+    key: "comprehension",
+    label: "Compréhension",
+    shortLabel: "Comp.",
+    color: "#4ECDC4",
+    description: "Capacité d'observation et d'analyse",
+  },
+  {
+    key: "creativite",
+    label: "Créativité",
+    shortLabel: "Créa.",
+    color: "#8B5CF6",
+    description: "Imagination et originalité",
+  },
+  {
+    key: "expression",
+    label: "Expression",
+    shortLabel: "Expr.",
+    color: "#FF6B35",
+    description: "Formulation et communication",
+  },
+  {
+    key: "engagement",
+    label: "Engagement",
+    shortLabel: "Eng.",
+    color: "#10B981",
+    description: "Participation et implication",
+  },
 ];
 
 export function aggregateAxes(studentAxes: AxesScores[]): AxesScores {

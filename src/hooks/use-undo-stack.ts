@@ -27,20 +27,18 @@ export function useUndoStack() {
   const [undoStack, setUndoStack] = useState<UndoEntry[]>([]);
   const [redoStack, setRedoStack] = useState<UndoEntry[]>([]);
 
-  const push = useCallback(
-    (entry: Omit<UndoEntry, "id" | "timestamp">) => {
-      const full: UndoEntry = {
-        ...entry,
-        id: typeof crypto.randomUUID === "function"
+  const push = useCallback((entry: Omit<UndoEntry, "id" | "timestamp">) => {
+    const full: UndoEntry = {
+      ...entry,
+      id:
+        typeof crypto.randomUUID === "function"
           ? crypto.randomUUID()
           : `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
-        timestamp: Date.now(),
-      };
-      setUndoStack((prev) => [...prev.slice(-(MAX_STACK_SIZE - 1)), full]);
-      setRedoStack([]); // clear redo on new action
-    },
-    []
-  );
+      timestamp: Date.now(),
+    };
+    setUndoStack((prev) => [...prev.slice(-(MAX_STACK_SIZE - 1)), full]);
+    setRedoStack([]); // clear redo on new action
+  }, []);
 
   const undo = useCallback(async () => {
     setUndoStack((prev) => {

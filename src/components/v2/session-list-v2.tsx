@@ -11,11 +11,7 @@ interface SessionListV2Props {
 
 export function SessionListV2({ sessions, className }: SessionListV2Props) {
   if (sessions.length === 0) {
-    return (
-      <p className="text-sm text-bw-muted py-8 text-center">
-        Aucune séance récente
-      </p>
-    );
+    return <p className="text-sm text-bw-muted py-8 text-center">Aucune séance récente</p>;
   }
 
   return (

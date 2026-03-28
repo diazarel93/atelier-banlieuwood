@@ -87,24 +87,33 @@ export default function BadgePage() {
           }}
         >
           {/* Ambient glow */}
-          <div style={{ position: "absolute", top: -60, left: "50%", transform: "translateX(-50%)", width: 300, height: 300, background: "radial-gradient(circle, rgba(212,168,67,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+          <div
+            style={{
+              position: "absolute",
+              top: -60,
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: 300,
+              height: 300,
+              background: "radial-gradient(circle, rgba(212,168,67,0.08) 0%, transparent 70%)",
+              pointerEvents: "none",
+            }}
+          />
 
           {/* Studio header */}
           <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
-            <div style={{ fontSize: 10, letterSpacing: 4, textTransform: "uppercase", color: "#D4A843", fontWeight: 600 }}>
+            <div
+              style={{ fontSize: 10, letterSpacing: 4, textTransform: "uppercase", color: "#D4A843", fontWeight: 600 }}
+            >
               Banlieuwood Atelier
             </div>
-            <div style={{ fontSize: 8, color: "#64748B", marginTop: 4 }}>
-              Certificat de participation
-            </div>
+            <div style={{ fontSize: 8, color: "#64748B", marginTop: 4 }}>Certificat de participation</div>
           </div>
 
           {/* Avatar + name */}
           <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
             <div style={{ fontSize: 48, marginBottom: 8 }}>{data.avatar || "🎬"}</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#F1F5F9" }}>
-              {data.displayName}
-            </div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#F1F5F9" }}>{data.displayName}</div>
             {profile && (
               <div style={{ fontSize: 13, color: "#D4A843", marginTop: 4, fontWeight: 500 }}>
                 {profile.emoji} {profile.label}
@@ -113,13 +122,13 @@ export default function BadgePage() {
           </div>
 
           {/* Separator */}
-          <div style={{ width: 60, height: 2, background: "linear-gradient(90deg, #D4A843, #FF6B35)", borderRadius: 2 }} />
+          <div
+            style={{ width: 60, height: 2, background: "linear-gradient(90deg, #D4A843, #FF6B35)", borderRadius: 2 }}
+          />
 
           {/* Session info */}
           <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#CBD5E1" }}>
-              {data.sessionTitle}
-            </div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#CBD5E1" }}>{data.sessionTitle}</div>
             <div style={{ fontSize: 11, color: "#64748B", marginTop: 4 }}>
               {LEVEL_LABELS[data.level] || data.level} · {new Date(data.date).toLocaleDateString("fr-FR")}
             </div>
@@ -129,11 +138,15 @@ export default function BadgePage() {
           <div style={{ display: "flex", gap: 20, position: "relative", zIndex: 1 }}>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 28, fontWeight: 700, color: "#D4A843" }}>{data.responses}</div>
-              <div style={{ fontSize: 10, color: "#64748B", textTransform: "uppercase", letterSpacing: 1 }}>Réponses</div>
+              <div style={{ fontSize: 10, color: "#64748B", textTransform: "uppercase", letterSpacing: 1 }}>
+                Réponses
+              </div>
             </div>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 28, fontWeight: 700, color: "#FF6B35" }}>{data.retained}</div>
-              <div style={{ fontSize: 10, color: "#64748B", textTransform: "uppercase", letterSpacing: 1 }}>Retenues</div>
+              <div style={{ fontSize: 10, color: "#64748B", textTransform: "uppercase", letterSpacing: 1 }}>
+                Retenues
+              </div>
             </div>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 28, fontWeight: 700, color: "#10B981" }}>{data.impactRate}%</div>
@@ -143,20 +156,48 @@ export default function BadgePage() {
 
           {/* Personnage */}
           {data.personnage && (
-            <div style={{ textAlign: "center", padding: "12px 20px", background: "rgba(255,255,255,0.04)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.06)", position: "relative", zIndex: 1 }}>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "12px 20px",
+                background: "rgba(255,255,255,0.04)",
+                borderRadius: 12,
+                border: "1px solid rgba(255,255,255,0.06)",
+                position: "relative",
+                zIndex: 1,
+              }}
+            >
               <div style={{ fontSize: 11, color: "#64748B", marginBottom: 4 }}>Personnage créé</div>
               <div style={{ fontSize: 15, fontWeight: 600, color: "#F1F5F9" }}>{data.personnage.prenom}</div>
-              <div style={{ fontSize: 12, color: "#94A3B8", fontStyle: "italic" }}>{data.personnage.trait_dominant}</div>
+              <div style={{ fontSize: 12, color: "#94A3B8", fontStyle: "italic" }}>
+                {data.personnage.trait_dominant}
+              </div>
             </div>
           )}
 
           {/* Achievements */}
           {data.achievements.length > 0 && (
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center", position: "relative", zIndex: 1 }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                flexWrap: "wrap",
+                justifyContent: "center",
+                position: "relative",
+                zIndex: 1,
+              }}
+            >
               {data.achievements.slice(0, 5).map((a) => (
                 <span
                   key={a}
-                  style={{ fontSize: 10, padding: "3px 10px", borderRadius: 12, background: "rgba(212,168,67,0.12)", color: "#D4A843", fontWeight: 500 }}
+                  style={{
+                    fontSize: 10,
+                    padding: "3px 10px",
+                    borderRadius: 12,
+                    background: "rgba(212,168,67,0.12)",
+                    color: "#D4A843",
+                    fontWeight: 500,
+                  }}
                 >
                   {a}
                 </span>
@@ -165,7 +206,16 @@ export default function BadgePage() {
           )}
 
           {/* Footer */}
-          <div style={{ fontSize: 8, color: "#475569", textTransform: "uppercase", letterSpacing: 3, position: "relative", zIndex: 1 }}>
+          <div
+            style={{
+              fontSize: 8,
+              color: "#475569",
+              textTransform: "uppercase",
+              letterSpacing: 3,
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
             banlieuwood.fr
           </div>
         </div>

@@ -64,12 +64,7 @@ export default function AdminInvitationsPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 space-y-6">
-      <BreadcrumbV2
-        items={[
-          { label: "Admin", href: "/v2/admin" },
-          { label: "Invitations" },
-        ]}
-      />
+      <BreadcrumbV2 items={[{ label: "Admin", href: "/v2/admin" }, { label: "Invitations" }]} />
 
       <h1 className="text-heading-lg text-bw-heading">Invitations</h1>
 
@@ -145,18 +140,24 @@ export default function AdminInvitationsPage() {
                     <td className="px-4 py-3 font-medium text-bw-heading">{inv.email}</td>
                     <td className="px-4 py-3 text-xs">{inv.role}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                        inv.type === "invite" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"
-                      }`}>
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                          inv.type === "invite" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"
+                        }`}
+                      >
                         {inv.type === "invite" ? "Invitation" : "Demande"}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                        inv.status === "pending" ? "bg-amber-100 text-amber-700"
-                          : inv.status === "accepted" ? "bg-green-100 text-green-700"
-                          : "bg-[var(--color-bw-surface-dim)] text-bw-muted"
-                      }`}>
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                          inv.status === "pending"
+                            ? "bg-amber-100 text-amber-700"
+                            : inv.status === "accepted"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-[var(--color-bw-surface-dim)] text-bw-muted"
+                        }`}
+                      >
                         {inv.status}
                       </span>
                     </td>

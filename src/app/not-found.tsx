@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 
 export default function NotFound() {
   return (
@@ -37,8 +37,7 @@ export default function NotFound() {
 
         {/* Description */}
         <p className="mt-4 max-w-md text-sm leading-relaxed text-bw-muted">
-          Cette page n&apos;existe pas dans le scenario. Le realisateur a du couper
-          cette scene au montage.
+          Cette page n&apos;existe pas dans le scenario. Le realisateur a du couper cette scene au montage.
         </p>
 
         {/* CTA — glass button */}
@@ -61,14 +60,10 @@ export default function NotFound() {
         {/* Film strip decoration */}
         <div className="mt-16 flex items-center gap-2 opacity-20">
           {Array.from({ length: 7 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-1.5 w-6 rounded-full bg-bw-muted"
-              style={{ opacity: i === 3 ? 1 : 0.4 }}
-            />
+            <div key={i} className="h-1.5 w-6 rounded-full bg-bw-muted" style={{ opacity: i === 3 ? 1 : 0.4 }} />
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }

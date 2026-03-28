@@ -25,9 +25,7 @@ function PlansView({ module7 }: { module7: Module7Data }) {
   return (
     <div className="space-y-4">
       <h3 className="text-base font-bold text-bw-heading">Les 4 plans fondamentaux</h3>
-      <p className="text-xs text-bw-muted">
-        Les eleves decouvrent les 4 cadrages essentiels du cinema.
-      </p>
+      <p className="text-xs text-bw-muted">Les eleves decouvrent les 4 cadrages essentiels du cinema.</p>
       <div className="grid grid-cols-2 gap-3">
         {plans.map((plan) => {
           const color = PLAN_COLORS[plan.key] || "#CBD5E1";
@@ -88,10 +86,17 @@ function ComparaisonView({ module7 }: { module7: Module7Data }) {
                 {/* Plan A */}
                 <div className="flex-1 text-center">
                   <p className="text-xs font-semibold text-bw-heading">{comp.planA.type.replace(/-/g, " ")}</p>
-                  <p className="text-[40px] font-extrabold tabular-nums" style={{ color: total > 0 ? colorA : "#CBD5E1" }}>
+                  <p
+                    className="text-[40px] font-extrabold tabular-nums"
+                    style={{ color: total > 0 ? colorA : "#CBD5E1" }}
+                  >
                     {total > 0 ? `${pctA}%` : "—"}
                   </p>
-                  {total > 0 && <p className="text-[10px] text-bw-muted">{countA} vote{countA > 1 ? "s" : ""}</p>}
+                  {total > 0 && (
+                    <p className="text-[10px] text-bw-muted">
+                      {countA} vote{countA > 1 ? "s" : ""}
+                    </p>
+                  )}
                 </div>
                 {/* VS divider */}
                 <div className="flex flex-col items-center gap-1">
@@ -100,10 +105,17 @@ function ComparaisonView({ module7 }: { module7: Module7Data }) {
                 {/* Plan B */}
                 <div className="flex-1 text-center">
                   <p className="text-xs font-semibold text-bw-heading">{comp.planB.type.replace(/-/g, " ")}</p>
-                  <p className="text-[40px] font-extrabold tabular-nums" style={{ color: total > 0 ? colorB : "#CBD5E1" }}>
+                  <p
+                    className="text-[40px] font-extrabold tabular-nums"
+                    style={{ color: total > 0 ? colorB : "#CBD5E1" }}
+                  >
                     {total > 0 ? `${pctB}%` : "—"}
                   </p>
-                  {total > 0 && <p className="text-[10px] text-bw-muted">{countB} vote{countB > 1 ? "s" : ""}</p>}
+                  {total > 0 && (
+                    <p className="text-[10px] text-bw-muted">
+                      {countB} vote{countB > 1 ? "s" : ""}
+                    </p>
+                  )}
                 </div>
               </div>
               {/* Combined bar */}
@@ -125,9 +137,7 @@ function ComparaisonView({ module7 }: { module7: Module7Data }) {
                   />
                 </div>
               )}
-              {total === 0 && (
-                <p className="text-xs text-bw-muted/60 text-center mt-2">En attente des votes...</p>
-              )}
+              {total === 0 && <p className="text-xs text-bw-muted/60 text-center mt-2">En attente des votes...</p>}
             </motion.div>
           );
         })}
@@ -150,10 +160,7 @@ function DecoupageView({ module7, connectedCount }: { module7: Module7Data; conn
         {keyScenes.map((scene) => {
           const submitted = decoupages.filter((d) => d.sceneId === scene.id).length;
           return (
-            <div
-              key={scene.id}
-              className="p-3 rounded-[18px] border border-black/[0.06] bg-bw-surface"
-            >
+            <div key={scene.id} className="p-3 rounded-[18px] border border-black/[0.06] bg-bw-surface">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold text-bw-heading">Scene {scene.sceneNumber}</p>
@@ -202,7 +209,13 @@ function DecoupageView({ module7, connectedCount }: { module7: Module7Data; conn
 // ── Position 4: Storyboard ──
 function StoryboardView({ module7, sessionId }: { module7: Module7Data; sessionId: string }) {
   const storyboard = module7.storyboard;
-  const storyboardScenes = storyboard?.scenes as { sceneId: string; title: string; plans: { position: number; planType: string; description: string; intention: string; imageUrl?: string }[] }[] | undefined;
+  const storyboardScenes = storyboard?.scenes as
+    | {
+        sceneId: string;
+        title: string;
+        plans: { position: number; planType: string; description: string; intention: string; imageUrl?: string }[];
+      }[]
+    | undefined;
   const scenes = module7.scenes || [];
   const [assembling, setAssembling] = useState(false);
   const [validating, setValidating] = useState(false);
@@ -240,18 +253,14 @@ function StoryboardView({ module7, sessionId }: { module7: Module7Data; sessionI
       <div className="flex items-center justify-between">
         <h3 className="text-base font-bold text-bw-heading">Storyboard</h3>
         {storyboard?.validated && (
-          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">
-            Validé
-          </span>
+          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Validé</span>
         )}
       </div>
 
       {/* No storyboard yet — assemble button */}
       {!storyboard && (
         <div className="text-center py-6 space-y-3">
-          <p className="text-sm text-bw-muted">
-            Assembler le storyboard à partir des découpages des élèves.
-          </p>
+          <p className="text-sm text-bw-muted">Assembler le storyboard à partir des découpages des élèves.</p>
           <button
             onClick={handleAssemble}
             disabled={assembling}
@@ -349,7 +358,9 @@ function StoryboardView({ module7, sessionId }: { module7: Module7Data; sessionI
                 </div>
               )}
               <p className="text-xs font-semibold text-bw-heading">{scene.title}</p>
-              <p className="text-[10px] text-bw-muted">{scene.plans.length} plan{scene.plans.length > 1 ? "s" : ""}</p>
+              <p className="text-[10px] text-bw-muted">
+                {scene.plans.length} plan{scene.plans.length > 1 ? "s" : ""}
+              </p>
             </div>
           ))}
         </div>
@@ -357,9 +368,7 @@ function StoryboardView({ module7, sessionId }: { module7: Module7Data; sessionI
 
       {/* Fallback for no scenes at all */}
       {!storyboard && scenes.length === 0 && (
-        <p className="text-sm text-bw-muted text-center py-4">
-          Aucun découpage soumis pour le moment.
-        </p>
+        <p className="text-sm text-bw-muted text-center py-4">Aucun découpage soumis pour le moment.</p>
       )}
     </div>
   );

@@ -18,9 +18,7 @@ export function FriseNarrative({ module6 }: FriseNarrativeProps) {
     >
       <div className="text-center">
         <h2 className="text-2xl font-bold text-white">La Frise Narrative</h2>
-        <p className="text-sm text-white/50 mt-1">
-          Les 8 ingrédients de votre film
-        </p>
+        <p className="text-sm text-white/50 mt-1">Les 8 ingrédients de votre film</p>
       </div>
 
       <div className="w-full space-y-4">
@@ -36,16 +34,12 @@ export function FriseNarrative({ module6 }: FriseNarrativeProps) {
             <div className="flex flex-col items-center">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                  step.winnerText
-                    ? "bg-bw-teal text-white"
-                    : "bg-white/10 text-white/40"
+                  step.winnerText ? "bg-bw-teal text-white" : "bg-white/10 text-white/40"
                 }`}
               >
                 {i + 1}
               </div>
-              {i < steps.length - 1 && (
-                <div className="w-0.5 h-8 bg-white/[0.06] mt-1" />
-              )}
+              {i < steps.length - 1 && <div className="w-0.5 h-8 bg-white/[0.06] mt-1" />}
             </div>
 
             {/* Content */}

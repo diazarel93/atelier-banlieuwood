@@ -14,10 +14,26 @@ interface CognitiveMapProps {
 }
 
 const STYLE_MAPPING: { keywords: string[]; emoji: string; label: string }[] = [
-  { keywords: ["couleur", "image", "visuel", "decor", "lumiere", "photo", "dessin", "cadre"], emoji: "🎨", label: "Visuel" },
-  { keywords: ["dialogue", "mot", "texte", "histoire", "personnage", "narrat", "parole", "disent", "raconte"], emoji: "💬", label: "Narratif" },
-  { keywords: ["musique", "son", "emotion", "sentiment", "ambiance", "ressent", "touche"], emoji: "🎭", label: "Emotionnel" },
-  { keywords: ["technique", "structure", "regle", "plan", "montage", "passer", "action", "va se"], emoji: "🔧", label: "Analytique" },
+  {
+    keywords: ["couleur", "image", "visuel", "decor", "lumiere", "photo", "dessin", "cadre"],
+    emoji: "🎨",
+    label: "Visuel",
+  },
+  {
+    keywords: ["dialogue", "mot", "texte", "histoire", "personnage", "narrat", "parole", "disent", "raconte"],
+    emoji: "💬",
+    label: "Narratif",
+  },
+  {
+    keywords: ["musique", "son", "emotion", "sentiment", "ambiance", "ressent", "touche"],
+    emoji: "🎭",
+    label: "Emotionnel",
+  },
+  {
+    keywords: ["technique", "structure", "regle", "plan", "montage", "passer", "action", "va se"],
+    emoji: "🔧",
+    label: "Analytique",
+  },
 ];
 
 function detectStyle(label: string): { emoji: string; label: string } {
@@ -38,7 +54,12 @@ function CognitiveMapInner({ options, total }: CognitiveMapProps) {
   return (
     <div
       className="rounded-[14px] overflow-hidden"
-      style={{ background: "rgba(255,255,255,0.7)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.5)" }}
+      style={{
+        background: "rgba(255,255,255,0.7)",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
+        border: "1px solid rgba(255,255,255,0.5)",
+      }}
     >
       <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.5)" }}>
         <h4 className="text-[14px] font-bold text-bw-heading">Comment pense la classe</h4>
@@ -57,10 +78,7 @@ function CognitiveMapInner({ options, total }: CognitiveMapProps) {
                 </span>
                 <span className="text-[13px] font-bold tabular-nums text-bw-heading">{pct}%</span>
               </div>
-              <div
-                className="h-2 rounded-full overflow-hidden"
-                style={{ background: "rgba(239,232,221,0.5)" }}
-              >
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(239,232,221,0.5)" }}>
                 <motion.div
                   className="h-full rounded-full"
                   initial={{ width: 0 }}
@@ -71,7 +89,9 @@ function CognitiveMapInner({ options, total }: CognitiveMapProps) {
                   }}
                 />
               </div>
-              <p className="text-[11px] text-bw-muted mt-0.5">{opt.count} eleve{opt.count > 1 ? "s" : ""}</p>
+              <p className="text-[11px] text-bw-muted mt-0.5">
+                {opt.count} eleve{opt.count > 1 ? "s" : ""}
+              </p>
             </div>
           );
         })}

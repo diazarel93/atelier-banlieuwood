@@ -41,8 +41,13 @@ export function FlipCounter({ current, total, label = "reponses" }: FlipCounterP
           <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
           {/* Progress ring */}
           <motion.circle
-            cx="50" cy="50" r="42" fill="none"
-            stroke="url(#flip-grad)" strokeWidth="6" strokeLinecap="round"
+            cx="50"
+            cy="50"
+            r="42"
+            fill="none"
+            stroke="url(#flip-grad)"
+            strokeWidth="6"
+            strokeLinecap="round"
             strokeDasharray={2 * Math.PI * 42}
             animate={{ strokeDashoffset: 2 * Math.PI * 42 * (1 - pct / 100) }}
             transition={{ duration: 0.5, ease: "easeOut" }}
@@ -73,7 +78,9 @@ export function FlipCounter({ current, total, label = "reponses" }: FlipCounterP
             ))}
             <span className="text-lg text-white/30 mx-1">/</span>
             {totalDigits.map((d, i) => (
-              <span key={`t-${i}`} className="text-2xl font-bold font-cinema text-white/40 tabular-nums">{d}</span>
+              <span key={`t-${i}`} className="text-2xl font-bold font-cinema text-white/40 tabular-nums">
+                {d}
+              </span>
             ))}
           </div>
         </div>

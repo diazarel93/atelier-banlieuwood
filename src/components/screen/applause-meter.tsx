@@ -29,7 +29,11 @@ export function ApplauseMeter({ entries, accentColor = "#FF6B35", topN = 5 }: Ap
   if (sorted.length === 0) {
     return (
       <div className="flex items-center justify-center py-12">
-        <motion.p animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 2 }} className="text-bw-muted text-lg">
+        <motion.p
+          animate={{ opacity: [0.4, 1, 0.4] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="text-bw-muted text-lg"
+        >
           En attente des applaudissements...
         </motion.p>
       </div>
@@ -39,13 +43,21 @@ export function ApplauseMeter({ entries, accentColor = "#FF6B35", topN = 5 }: Ap
   return (
     <div className="w-full max-w-3xl mx-auto px-6 space-y-4">
       <div className="flex items-center justify-center gap-2 mb-2">
-        <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.2 }} className="text-2xl">
+        <motion.span
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ repeat: Infinity, duration: 1.2 }}
+          className="text-2xl"
+        >
           👏
         </motion.span>
         <span className="text-xs uppercase tracking-[0.2em] font-bold" style={{ color: accentColor }}>
           Applaudimètre
         </span>
-        <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.6 }} className="text-2xl">
+        <motion.span
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ repeat: Infinity, duration: 1.2, delay: 0.6 }}
+          className="text-2xl"
+        >
           👏
         </motion.span>
       </div>
@@ -137,9 +149,7 @@ export function ClapButton({
       >
         👏
       </motion.span>
-      {clapCount > 0 && (
-        <span className="text-sm font-bold tabular-nums">{clapCount}</span>
-      )}
+      {clapCount > 0 && <span className="text-sm font-bold tabular-nums">{clapCount}</span>}
     </motion.button>
   );
 }

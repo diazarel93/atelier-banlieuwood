@@ -71,7 +71,10 @@ export function SessionReplay({ events, totalDurationMs, students, responses, on
 
   // Detect key moments
   const keyMoments = useMemo(() => detectKeyMoments(events, studentMap), [events, studentMap]);
-  const replaySummary = useMemo(() => generateReplaySummary(keyMoments, totalDurationMs, events.length), [keyMoments, totalDurationMs, events.length]);
+  const replaySummary = useMemo(
+    () => generateReplaySummary(keyMoments, totalDurationMs, events.length),
+    [keyMoments, totalDurationMs, events.length],
+  );
 
   // Events visible at current playhead
   const visibleEvents = useMemo(() => {
@@ -103,22 +106,25 @@ export function SessionReplay({ events, totalDurationMs, students, responses, on
   }, [keyMoments, playheadMs]);
 
   // Animation loop
-  const tick = useCallback((now: number) => {
-    if (lastFrameRef.current === 0) lastFrameRef.current = now;
-    const delta = (now - lastFrameRef.current) * speed;
-    lastFrameRef.current = now;
+  const tick = useCallback(
+    (now: number) => {
+      if (lastFrameRef.current === 0) lastFrameRef.current = now;
+      const delta = (now - lastFrameRef.current) * speed;
+      lastFrameRef.current = now;
 
-    setPlayheadMs((prev) => {
-      const next = prev + delta;
-      if (next >= totalDurationMs) {
-        setPlaying(false);
-        return totalDurationMs;
-      }
-      return next;
-    });
+      setPlayheadMs((prev) => {
+        const next = prev + delta;
+        if (next >= totalDurationMs) {
+          setPlaying(false);
+          return totalDurationMs;
+        }
+        return next;
+      });
 
-    rafRef.current = requestAnimationFrame(tick);
-  }, [speed, totalDurationMs]);
+      rafRef.current = requestAnimationFrame(tick);
+    },
+    [speed, totalDurationMs],
+  );
 
   useEffect(() => {
     if (playing) {
@@ -133,21 +139,20 @@ export function SessionReplay({ events, totalDurationMs, students, responses, on
   }, [playing, tick]);
 
   // Timeline scrubber click
-  const handleTimelineClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!timelineRef.current || totalDurationMs === 0) return;
-    const rect = timelineRef.current.getBoundingClientRect();
-    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    setPlayheadMs(pct * totalDurationMs);
-  }, [totalDurationMs]);
+  const handleTimelineClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!timelineRef.current || totalDurationMs === 0) return;
+      const rect = timelineRef.current.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      setPlayheadMs(pct * totalDurationMs);
+    },
+    [totalDurationMs],
+  );
 
   const progressPct = totalDurationMs > 0 ? (playheadMs / totalDurationMs) * 100 : 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-4"
-    >
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -192,7 +197,10 @@ export function SessionReplay({ events, totalDurationMs, students, responses, on
             return (
               <button
                 key={`km-${i}`}
-                onClick={(e) => { e.stopPropagation(); setPlayheadMs(m.offsetMs); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPlayheadMs(m.offsetMs);
+                }}
                 className="absolute top-0 -translate-x-1/2 cursor-pointer group"
                 style={{ left: `${leftPct}%` }}
                 title={`${m.icon} ${m.label} — ${formatReplayTime(m.offsetMs)}`}
@@ -227,9 +235,14 @@ export function SessionReplay({ events, totalDurationMs, students, responses, on
               className="w-8 h-8 rounded-full bg-bw-primary text-white flex items-center justify-center cursor-pointer hover:brightness-110 transition-all active:scale-95"
             >
               {playing ? (
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="6" y="4" width="4" height="16" rx="1" />
+                  <rect x="14" y="4" width="4" height="16" rx="1" />
+                </svg>
               ) : (
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="6,4 20,12 6,20" />
+                </svg>
               )}
             </button>
 
@@ -263,7 +276,9 @@ export function SessionReplay({ events, totalDurationMs, students, responses, on
           >
             <span className="text-sm">{activeKeyMoment.icon}</span>
             <div>
-              <p className="text-[11px] font-semibold" style={{ color: activeKeyMoment.color }}>{activeKeyMoment.label}</p>
+              <p className="text-[11px] font-semibold" style={{ color: activeKeyMoment.color }}>
+                {activeKeyMoment.label}
+              </p>
               <p className="text-[10px] text-[#5B5B5B]">{activeKeyMoment.detail}</p>
             </div>
           </motion.div>
@@ -279,7 +294,8 @@ export function SessionReplay({ events, totalDurationMs, students, responses, on
               <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-muted">Question active</p>
               <div className="bg-black/[0.03] rounded-lg px-3 py-2">
                 <p className="text-xs text-bw-text">
-                  Module {String(currentQuestion.payload.module)} — Séance {String(currentQuestion.payload.seance)} — Q{Number(currentQuestion.payload.situationIndex) + 1}
+                  Module {String(currentQuestion.payload.module)} — Séance {String(currentQuestion.payload.seance)} — Q
+                  {Number(currentQuestion.payload.situationIndex) + 1}
                 </p>
               </div>
             </div>
@@ -291,17 +307,22 @@ export function SessionReplay({ events, totalDurationMs, students, responses, on
               Réponses ({visibleResponses.length})
             </p>
             <div className="max-h-48 overflow-y-auto space-y-1">
-              {visibleResponses.slice(-10).reverse().map((r) => (
-                <div key={r.id} className="flex items-start gap-2 px-2 py-1.5 rounded-lg bg-black/[0.02]">
-                  <span className="text-sm flex-shrink-0">{r.studentAvatar}</span>
-                  <div className="min-w-0">
-                    <span className="text-[10px] font-medium text-bw-heading">{r.studentName}</span>
-                    {typeof r.payload.responseTimeMs === "number" && (
-                      <span className="text-[9px] text-bw-muted ml-1">({Math.round(r.payload.responseTimeMs / 1000)}s)</span>
-                    )}
+              {visibleResponses
+                .slice(-10)
+                .reverse()
+                .map((r) => (
+                  <div key={r.id} className="flex items-start gap-2 px-2 py-1.5 rounded-lg bg-black/[0.02]">
+                    <span className="text-sm flex-shrink-0">{r.studentAvatar}</span>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-medium text-bw-heading">{r.studentName}</span>
+                      {typeof r.payload.responseTimeMs === "number" && (
+                        <span className="text-[9px] text-bw-muted ml-1">
+                          ({Math.round(r.payload.responseTimeMs / 1000)}s)
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
               {visibleResponses.length === 0 && (
                 <p className="text-[10px] text-bw-muted text-center py-2">Aucune réponse encore</p>
               )}
@@ -316,7 +337,9 @@ export function SessionReplay({ events, totalDurationMs, students, responses, on
               return (
                 <div key={type} className="flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
-                  <span className="text-[10px] text-bw-muted">{count} {EVENT_LABELS[type] || type}</span>
+                  <span className="text-[10px] text-bw-muted">
+                    {count} {EVENT_LABELS[type] || type}
+                  </span>
                 </div>
               );
             })}
@@ -347,10 +370,14 @@ export function SessionReplay({ events, totalDurationMs, students, responses, on
                   >
                     <span className="text-sm flex-shrink-0">{m.icon}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-semibold" style={{ color: m.color }}>{m.label}</p>
+                      <p className="text-[10px] font-semibold" style={{ color: m.color }}>
+                        {m.label}
+                      </p>
                       <p className="text-[9px] text-[#8894A0] truncate">{m.detail}</p>
                     </div>
-                    <span className="text-[9px] font-mono text-bw-muted flex-shrink-0">{formatReplayTime(m.offsetMs)}</span>
+                    <span className="text-[9px] font-mono text-bw-muted flex-shrink-0">
+                      {formatReplayTime(m.offsetMs)}
+                    </span>
                   </button>
                 );
               })}

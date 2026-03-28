@@ -148,15 +148,7 @@ export function BaseRadar({
 
       {/* Data dots */}
       {polygon.map((p) => (
-        <circle
-          key={p.axis.key}
-          cx={p.x}
-          cy={p.y}
-          r={dotRadius}
-          fill={p.axis.color}
-          stroke="white"
-          strokeWidth={1.5}
-        />
+        <circle key={p.axis.key} cx={p.x} cy={p.y} r={dotRadius} fill={p.axis.color} stroke="white" strokeWidth={1.5} />
       ))}
 
       {/* Value text near dots */}
@@ -182,35 +174,26 @@ export function BaseRadar({
         })}
 
       {/* Axis labels */}
-      {showLabels && axes.map((axis) => {
-        const labelP = polarToCartesian(cx, cy, maxR + 16, axis.angle);
-        const anchor =
-          Math.abs(labelP.x - cx) < 5
-            ? "middle"
-            : labelP.x > cx
-              ? "start"
-              : "end";
-        const baseline =
-          Math.abs(labelP.y - cy) < 5
-            ? "middle"
-            : labelP.y > cy
-              ? "hanging"
-              : "auto";
-        return (
-          <text
-            key={`lbl-${axis.key}`}
-            x={labelP.x}
-            y={labelP.y}
-            fill={axis.color}
-            fontSize={labelFontSize}
-            fontWeight="600"
-            textAnchor={anchor}
-            dominantBaseline={baseline}
-          >
-            {axis.label}
-          </text>
-        );
-      })}
+      {showLabels &&
+        axes.map((axis) => {
+          const labelP = polarToCartesian(cx, cy, maxR + 16, axis.angle);
+          const anchor = Math.abs(labelP.x - cx) < 5 ? "middle" : labelP.x > cx ? "start" : "end";
+          const baseline = Math.abs(labelP.y - cy) < 5 ? "middle" : labelP.y > cy ? "hanging" : "auto";
+          return (
+            <text
+              key={`lbl-${axis.key}`}
+              x={labelP.x}
+              y={labelP.y}
+              fill={axis.color}
+              fontSize={labelFontSize}
+              fontWeight="600"
+              textAnchor={anchor}
+              dominantBaseline={baseline}
+            >
+              {axis.label}
+            </text>
+          );
+        })}
     </svg>
   );
 }

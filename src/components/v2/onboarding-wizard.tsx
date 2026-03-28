@@ -14,7 +14,14 @@ const STEPS = [
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
         <rect x="6" y="20" width="36" height="20" rx="3" fill="#F3F4F6" stroke="#FF6B35" strokeWidth="1.5" />
-        <path d="M6 20L14 6H34L42 20" fill="#FF6B35" fillOpacity="0.15" stroke="#FF6B35" strokeWidth="1.5" strokeLinejoin="round" />
+        <path
+          d="M6 20L14 6H34L42 20"
+          fill="#FF6B35"
+          fillOpacity="0.15"
+          stroke="#FF6B35"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
         <line x1="18" y1="10" x2="15" y2="18" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
         <line x1="26" y1="8" x2="23" y2="18" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
@@ -27,10 +34,50 @@ const STEPS = [
       "De l'imagination au tournage : chaque module est une brique du film. Les eleves ecrivent, votent, debattent — chacun sur sa tablette ou ordinateur.",
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-        <rect x="4" y="8" width="16" height="14" rx="3" fill="#FF6B35" fillOpacity="0.15" stroke="#FF6B35" strokeWidth="1.5" />
-        <rect x="28" y="8" width="16" height="14" rx="3" fill="#8B5CF6" fillOpacity="0.15" stroke="#8B5CF6" strokeWidth="1.5" />
-        <rect x="4" y="28" width="16" height="14" rx="3" fill="#D4A843" fillOpacity="0.15" stroke="#D4A843" strokeWidth="1.5" />
-        <rect x="28" y="28" width="16" height="14" rx="3" fill="#4ECDC4" fillOpacity="0.15" stroke="#4ECDC4" strokeWidth="1.5" />
+        <rect
+          x="4"
+          y="8"
+          width="16"
+          height="14"
+          rx="3"
+          fill="#FF6B35"
+          fillOpacity="0.15"
+          stroke="#FF6B35"
+          strokeWidth="1.5"
+        />
+        <rect
+          x="28"
+          y="8"
+          width="16"
+          height="14"
+          rx="3"
+          fill="#8B5CF6"
+          fillOpacity="0.15"
+          stroke="#8B5CF6"
+          strokeWidth="1.5"
+        />
+        <rect
+          x="4"
+          y="28"
+          width="16"
+          height="14"
+          rx="3"
+          fill="#D4A843"
+          fillOpacity="0.15"
+          stroke="#D4A843"
+          strokeWidth="1.5"
+        />
+        <rect
+          x="28"
+          y="28"
+          width="16"
+          height="14"
+          rx="3"
+          fill="#4ECDC4"
+          fillOpacity="0.15"
+          stroke="#4ECDC4"
+          strokeWidth="1.5"
+        />
       </svg>
     ),
     cta: { label: "Voir les modules", href: ROUTES.bibliotheque },
@@ -84,7 +131,11 @@ export function OnboardingWizard() {
               <div
                 key={i}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === currentStep ? "w-6 bg-bw-primary" : i < currentStep ? "w-3 bg-bw-primary/40" : "w-3 bg-bw-border"
+                  i === currentStep
+                    ? "w-6 bg-bw-primary"
+                    : i < currentStep
+                      ? "w-3 bg-bw-primary/40"
+                      : "w-3 bg-bw-border"
                 }`}
               />
             ))}
@@ -111,7 +162,13 @@ export function OnboardingWizard() {
                 >
                   {step.cta.label}
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                    <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                      d="M5 3l4 4-4 4"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </Link>
               )}

@@ -23,9 +23,7 @@ export function TabCompetences({ feedback }: TabCompetencesProps) {
       {/* Empty state */}
       {!feedback && (
         <div className="py-12 text-center">
-          <p className="text-sm text-bw-muted">
-            Pas encore de données de compétences pour cette séance.
-          </p>
+          <p className="text-sm text-bw-muted">Pas encore de données de compétences pour cette séance.</p>
         </div>
       )}
     </div>

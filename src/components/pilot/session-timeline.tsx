@@ -65,7 +65,10 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
 
   if (events.length === 0) {
     return (
-      <div className="rounded-xl p-4 text-center" style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.4)" }}>
+      <div
+        className="rounded-xl p-4 text-center"
+        style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.4)" }}
+      >
         <span className="text-lg">📼</span>
         <p className="text-[12px] text-bw-muted mt-1">La timeline se remplit pendant la seance</p>
       </div>
@@ -75,7 +78,10 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
   const visibleEvents = expanded ? events.slice(-maxVisible) : events.slice(-5);
 
   return (
-    <div className="rounded-xl overflow-hidden" style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.4)" }}>
+    <div
+      className="rounded-xl overflow-hidden"
+      style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.4)" }}
+    >
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between px-3.5 py-2.5 cursor-pointer hover:bg-white/40 transition-colors"
@@ -84,13 +90,20 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
         <div className="flex items-center gap-2">
           <span className="text-sm">📼</span>
           <span className="text-[12px] font-bold text-bw-heading">Timeline de seance</span>
-          <span className="text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full" style={{ background: "#EFE8DD", color: "#7A7A7A" }}>
+          <span
+            className="text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full"
+            style={{ background: "#EFE8DD", color: "#7A7A7A" }}
+          >
             {events.length}
           </span>
         </div>
         <svg
-          width="12" height="12" viewBox="0 0 24 24"
-          fill="none" stroke="#B0A99E" strokeWidth="2"
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#B0A99E"
+          strokeWidth="2"
           className={`transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
         >
           <path d="M6 9l6 6 6-6" />
@@ -126,9 +139,7 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
                       >
                         {style.icon}
                       </div>
-                      {!isLast && (
-                        <div className="w-px flex-1 min-h-[12px] mt-0.5" style={{ background: "#E8DFD2" }} />
-                      )}
+                      {!isLast && <div className="w-px flex-1 min-h-[12px] mt-0.5" style={{ background: "#E8DFD2" }} />}
                     </div>
 
                     {/* Content */}
@@ -141,9 +152,7 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
                           {event.label}
                         </span>
                       </div>
-                      {event.detail && (
-                        <p className="text-[10px] text-bw-text mt-0.5 leading-snug">{event.detail}</p>
-                      )}
+                      {event.detail && <p className="text-[10px] text-bw-text mt-0.5 leading-snug">{event.detail}</p>}
                     </div>
                   </motion.div>
                 );

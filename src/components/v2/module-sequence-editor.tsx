@@ -27,10 +27,7 @@ export function ModuleSequenceEditor({
         return (
           <GlassCardV2
             key={mod.id}
-            className={cn(
-              "p-4 flex items-start gap-4",
-              isCurrent && "ring-2 ring-bw-primary/20"
-            )}
+            className={cn("p-4 flex items-start gap-4", isCurrent && "ring-2 ring-bw-primary/20")}
           >
             {/* Number/check */}
             <div
@@ -38,27 +35,17 @@ export function ModuleSequenceEditor({
                 "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold",
                 isDone && "text-white",
                 isCurrent && "text-white ring-2 ring-offset-2 ring-offset-[var(--card)]",
-                !isDone && !isCurrent && "bg-[var(--color-bw-surface-dim)] text-bw-muted"
+                !isDone && !isCurrent && "bg-[var(--color-bw-surface-dim)] text-bw-muted",
               )}
-              style={
-                isDone || isCurrent
-                  ? { backgroundColor: mod.color }
-                  : undefined
-              }
+              style={isDone || isCurrent ? { backgroundColor: mod.color } : undefined}
             >
-              {isDone ? (
-                <IconCheck />
-              ) : (
-                i + 1
-              )}
+              {isDone ? <IconCheck /> : i + 1}
             </div>
 
             {/* Content */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
-                <h3 className="text-sm font-semibold text-bw-heading">
-                  {mod.title}
-                </h3>
+                <h3 className="text-sm font-semibold text-bw-heading">{mod.title}</h3>
                 <span
                   className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-bold text-white"
                   style={{ backgroundColor: mod.color }}
@@ -66,20 +53,12 @@ export function ModuleSequenceEditor({
                   {mod.duration}
                 </span>
               </div>
-              <p className="text-xs text-bw-muted line-clamp-2">
-                {mod.description}
-              </p>
-              {mod.teacherNote && (
-                <p className="mt-1 text-[11px] text-bw-violet italic">
-                  {mod.teacherNote}
-                </p>
-              )}
+              <p className="text-xs text-bw-muted line-clamp-2">{mod.description}</p>
+              {mod.teacherNote && <p className="mt-1 text-[11px] text-bw-violet italic">{mod.teacherNote}</p>}
             </div>
 
             {/* Questions count */}
-            <span className="shrink-0 text-xs text-bw-muted tabular-nums">
-              {mod.questions} Q
-            </span>
+            <span className="shrink-0 text-xs text-bw-muted tabular-nums">{mod.questions} Q</span>
           </GlassCardV2>
         );
       })}

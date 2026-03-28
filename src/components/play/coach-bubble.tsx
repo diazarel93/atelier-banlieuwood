@@ -39,7 +39,12 @@ export function CoachBubble({ tip, onDismiss }: CoachBubbleProps) {
           tabIndex={0}
           aria-label="Conseil du coach, cliquer pour fermer"
           onClick={handleDismiss}
-          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleDismiss(); } }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handleDismiss();
+            }
+          }}
           className="w-full max-w-md mx-auto cursor-pointer"
         >
           <div className="flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl border border-bw-primary/20 bg-bw-primary/[0.08] backdrop-blur-sm">
@@ -48,9 +53,7 @@ export function CoachBubble({ tip, onDismiss }: CoachBubbleProps) {
               🎬
             </span>
             {/* Tip text */}
-            <p className="text-xs leading-snug text-bw-text/90 line-clamp-2">
-              {tip}
-            </p>
+            <p className="text-xs leading-snug text-bw-text/90 line-clamp-2">{tip}</p>
           </div>
         </motion.div>
       )}

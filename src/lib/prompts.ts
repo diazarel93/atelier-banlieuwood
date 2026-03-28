@@ -104,11 +104,13 @@ export function buildBilanUserPrompt(data: SessionFullData): string {
   }
 
   // Build student profiles
-  const studentProfiles = students.map((s) => {
-    const count = studentResponseCounts.get(s.id) || 0;
-    const chosen = studentChosenCounts.get(s.id) || 0;
-    return `- ${s.display_name}: ${count} réponses, ${chosen} choisie(s)`;
-  }).join("\n");
+  const studentProfiles = students
+    .map((s) => {
+      const count = studentResponseCounts.get(s.id) || 0;
+      const chosen = studentChosenCounts.get(s.id) || 0;
+      return `- ${s.display_name}: ${count} réponses, ${chosen} choisie(s)`;
+    })
+    .join("\n");
 
   // Build collective story
   const story = collectiveChoices
@@ -180,12 +182,11 @@ export function buildFallbackBilan(data: SessionFullData): BilanResult {
   const visibleResponses = responses.filter((r) => !r.is_hidden);
 
   // Narrative summary from collective choices
-  const storyParts = collectiveChoices.map(
-    (c) => `${c.restitution_label}: ${c.chosen_text}`
-  );
-  const narrativeSummary = storyParts.length > 0
-    ? `L'histoire collective comprend ${storyParts.length} éléments narratifs. ${storyParts.slice(0, 3).join(". ")}.`
-    : "La session n'a pas encore produit d'histoire collective.";
+  const storyParts = collectiveChoices.map((c) => `${c.restitution_label}: ${c.chosen_text}`);
+  const narrativeSummary =
+    storyParts.length > 0
+      ? `L'histoire collective comprend ${storyParts.length} éléments narratifs. ${storyParts.slice(0, 3).join(". ")}.`
+      : "La session n'a pas encore produit d'histoire collective.";
 
   // Find most active students
   const studentCounts = new Map<string, number>();
@@ -220,9 +221,13 @@ export function buildFallbackBilan(data: SessionFullData): BilanResult {
   // Recommendations
   const recommendations: string[] = [];
   if (stats.participationRate < 60)
-    recommendations.push("Encourager les élèves les plus discrets à proposer leurs idées, par exemple en faisant un tour de table.");
+    recommendations.push(
+      "Encourager les élèves les plus discrets à proposer leurs idées, par exemple en faisant un tour de table.",
+    );
   if (stats.avgResponseLength < 30)
-    recommendations.push("Inciter les élèves à développer davantage leurs réponses en posant des questions de relance.");
+    recommendations.push(
+      "Inciter les élèves à développer davantage leurs réponses en posant des questions de relance.",
+    );
   if (collectiveChoices.length < 5)
     recommendations.push("Poursuivre l'exploration narrative pour enrichir l'histoire collective.");
   if (recommendations.length === 0)
@@ -282,20 +287,39 @@ const GENERIC_FICHE_TEMPLATES: Record<string, FicheCoursResult> = {
       },
     },
     animationTips: [
-      { phase: "Lancement", tip: "Présenter Banlieuwood comme un jeu : chaque élève est scénariste. Montrer le QR code pour rejoindre.", timing: "5 min" },
-      { phase: "Module 1 — Confiance", tip: "Commencer par les images pour libérer la parole sans enjeu d'écriture longue.", timing: "15 min" },
-      { phase: "Module 3 — Histoire", tip: "Lire à voix haute les meilleures réponses avant le vote pour créer de l'émulation.", timing: "20 min" },
-      { phase: "Restitution", tip: "Relire l'histoire collective à la fin. Demander aux élèves ce qu'ils changeraient.", timing: "5 min" },
+      {
+        phase: "Lancement",
+        tip: "Présenter Banlieuwood comme un jeu : chaque élève est scénariste. Montrer le QR code pour rejoindre.",
+        timing: "5 min",
+      },
+      {
+        phase: "Module 1 — Confiance",
+        tip: "Commencer par les images pour libérer la parole sans enjeu d'écriture longue.",
+        timing: "15 min",
+      },
+      {
+        phase: "Module 3 — Histoire",
+        tip: "Lire à voix haute les meilleures réponses avant le vote pour créer de l'émulation.",
+        timing: "20 min",
+      },
+      {
+        phase: "Restitution",
+        tip: "Relire l'histoire collective à la fin. Demander aux élèves ce qu'ils changeraient.",
+        timing: "5 min",
+      },
     ],
     relaunchTips: [
-      "Si le groupe est silencieux : proposer un choix binaire (\"Votre héros est plutôt courageux ou malin ?\")",
+      'Si le groupe est silencieux : proposer un choix binaire ("Votre héros est plutôt courageux ou malin ?")',
       "Si les réponses sont courtes : demander \"Et si tu devais filmer cette scène, qu'est-ce qu'on verrait à l'écran ?\"",
       "Si un élève domine : valoriser les réponses des autres et encourager le vote démocratique",
     ],
     adaptationByLevel: {
-      primaire: "Privilégier les questions visuelles et concrètes. Lire les questions à voix haute. Accepter les réponses courtes en début de séance.",
-      college: "Encourager les descriptions détaillées et les motivations des personnages. Introduire la notion de conflit dramatique.",
-      lycee: "Travailler sur les thèmes, le sous-texte et les références cinématographiques. Demander de justifier les choix narratifs.",
+      primaire:
+        "Privilégier les questions visuelles et concrètes. Lire les questions à voix haute. Accepter les réponses courtes en début de séance.",
+      college:
+        "Encourager les descriptions détaillées et les motivations des personnages. Introduire la notion de conflit dramatique.",
+      lycee:
+        "Travailler sur les thèmes, le sous-texte et les références cinématographiques. Demander de justifier les choix narratifs.",
     },
     evaluation: [
       "L'élève propose au moins une réponse par séance",
@@ -309,7 +333,10 @@ const GENERIC_FICHE_TEMPLATES: Record<string, FicheCoursResult> = {
     title: "Écriture collaborative de scénario - Cycle 4",
     duration: "3 séances de 55 minutes",
     objectives: [
-      { objective: "Exploiter les ressources expressives et créatives de la parole et de l'écriture", socleCommun: "D1" },
+      {
+        objective: "Exploiter les ressources expressives et créatives de la parole et de l'écriture",
+        socleCommun: "D1",
+      },
       { objective: "Développer le jugement critique et l'argumentation dans un projet collectif", socleCommun: "D3" },
       { objective: "Comprendre et interpréter des récits en mobilisant sa culture personnelle", socleCommun: "D5" },
     ],
@@ -340,20 +367,39 @@ const GENERIC_FICHE_TEMPLATES: Record<string, FicheCoursResult> = {
       },
     },
     animationTips: [
-      { phase: "Accroche", tip: "Montrer un extrait de film du genre choisi (2 min). Demander : qu'est-ce qui vous a accroché ?", timing: "7 min" },
-      { phase: "Module 1 — Diagnostic", tip: "Utiliser les images comme diagnostic de créativité. Noter les élèves les plus descriptifs.", timing: "15 min" },
-      { phase: "Module 3 — Narration", tip: "Insister sur la cohérence : chaque choix doit s'accorder avec les précédents. Faire le lien explicitement.", timing: "25 min" },
-      { phase: "Bilan collectif", tip: "Projeter l'histoire finale. Demander à chaque élève de choisir son moment préféré et d'expliquer pourquoi.", timing: "8 min" },
+      {
+        phase: "Accroche",
+        tip: "Montrer un extrait de film du genre choisi (2 min). Demander : qu'est-ce qui vous a accroché ?",
+        timing: "7 min",
+      },
+      {
+        phase: "Module 1 — Diagnostic",
+        tip: "Utiliser les images comme diagnostic de créativité. Noter les élèves les plus descriptifs.",
+        timing: "15 min",
+      },
+      {
+        phase: "Module 3 — Narration",
+        tip: "Insister sur la cohérence : chaque choix doit s'accorder avec les précédents. Faire le lien explicitement.",
+        timing: "25 min",
+      },
+      {
+        phase: "Bilan collectif",
+        tip: "Projeter l'histoire finale. Demander à chaque élève de choisir son moment préféré et d'expliquer pourquoi.",
+        timing: "8 min",
+      },
     ],
     relaunchTips: [
-      "Si les réponses sont superficielles : \"Imagine que tu es le réalisateur. Comment tu filmes cette scène ?\"",
+      'Si les réponses sont superficielles : "Imagine que tu es le réalisateur. Comment tu filmes cette scène ?"',
       "Si le groupe n'arrive pas à se décider : limiter le temps de vote et rappeler qu'il n'y a pas de mauvais choix",
-      "Si un conflit émerge entre élèves : le transformer en conflit narratif (\"Et si vos deux idées coexistaient dans l'histoire ?\")",
+      'Si un conflit émerge entre élèves : le transformer en conflit narratif ("Et si vos deux idées coexistaient dans l\'histoire ?")',
     ],
     adaptationByLevel: {
-      primaire: "Simplifier le vocabulaire cinématographique. Proposer des choix guidés plutôt que des questions ouvertes.",
-      college: "Travailler la psychologie des personnages et les retournements de situation. Introduire le vocabulaire du scénario.",
-      lycee: "Approfondir l'analyse thématique et les références culturelles. Encourager l'originalité et la prise de risque narrative.",
+      primaire:
+        "Simplifier le vocabulaire cinématographique. Proposer des choix guidés plutôt que des questions ouvertes.",
+      college:
+        "Travailler la psychologie des personnages et les retournements de situation. Introduire le vocabulaire du scénario.",
+      lycee:
+        "Approfondir l'analyse thématique et les références culturelles. Encourager l'originalité et la prise de risque narrative.",
     },
     evaluation: [
       "L'élève produit des réponses développées et cohérentes avec l'univers narratif",
@@ -398,20 +444,39 @@ const GENERIC_FICHE_TEMPLATES: Record<string, FicheCoursResult> = {
       },
     },
     animationTips: [
-      { phase: "Introduction", tip: "Présenter un pitch de film raté vs réussi. Analyser pourquoi. Introduire les contraintes de genre.", timing: "10 min" },
-      { phase: "Module 1 — Confiance", tip: "Phase rapide, pas de jugement. Valoriser la prise de risque dans les interprétations.", timing: "10 min" },
-      { phase: "Module 3 — Écriture", tip: "Exiger de la cohérence et de la profondeur. Relancer avec des questions de dramaturgie (enjeux, obstacles, climax).", timing: "30 min" },
-      { phase: "Analyse finale", tip: "Faire un retour critique collectif : qu'est-ce qui fonctionne ? Quelles faiblesses ? Comment améliorer ?", timing: "10 min" },
+      {
+        phase: "Introduction",
+        tip: "Présenter un pitch de film raté vs réussi. Analyser pourquoi. Introduire les contraintes de genre.",
+        timing: "10 min",
+      },
+      {
+        phase: "Module 1 — Confiance",
+        tip: "Phase rapide, pas de jugement. Valoriser la prise de risque dans les interprétations.",
+        timing: "10 min",
+      },
+      {
+        phase: "Module 3 — Écriture",
+        tip: "Exiger de la cohérence et de la profondeur. Relancer avec des questions de dramaturgie (enjeux, obstacles, climax).",
+        timing: "30 min",
+      },
+      {
+        phase: "Analyse finale",
+        tip: "Faire un retour critique collectif : qu'est-ce qui fonctionne ? Quelles faiblesses ? Comment améliorer ?",
+        timing: "10 min",
+      },
     ],
     relaunchTips: [
-      "Si le groupe manque d'inspiration : proposer une contrainte créative (\"Et si votre héros ne pouvait pas parler ?\")",
+      'Si le groupe manque d\'inspiration : proposer une contrainte créative ("Et si votre héros ne pouvait pas parler ?")',
       "Si les réponses sont convenues : demander l'opposé de ce qui est attendu dans le genre",
       "Si la dynamique s'essouffle : changer de modalité (travail en binôme, puis mise en commun)",
     ],
     adaptationByLevel: {
-      primaire: "Réduire la complexité narrative. Proposer des amorces de phrases. Se concentrer sur le plaisir de raconter.",
-      college: "Accompagner la construction des personnages. Travailler le vocabulaire des émotions et des motivations.",
-      lycee: "Laisser une grande autonomie. Encourager les récits non-linéaires, les points de vue multiples, les thèmes ambitieux.",
+      primaire:
+        "Réduire la complexité narrative. Proposer des amorces de phrases. Se concentrer sur le plaisir de raconter.",
+      college:
+        "Accompagner la construction des personnages. Travailler le vocabulaire des émotions et des motivations.",
+      lycee:
+        "Laisser une grande autonomie. Encourager les récits non-linéaires, les points de vue multiples, les thèmes ambitieux.",
     },
     evaluation: [
       "L'élève produit des propositions narratives originales et cohérentes",
@@ -526,9 +591,10 @@ export function buildFallbackBible(data: SessionFullData): BibleResult {
   const trajectoire = choices.filter((c) => c.category === "trajectoire");
 
   return {
-    logline: personnage.length > 0 && conflit.length > 0
-      ? `${personnage[0]?.chosen_text || "Un protagoniste"} doit faire face à ${conflit[0]?.chosen_text || "un défi"}.`
-      : "Un groupe d'élèves a imaginé ensemble une histoire unique.",
+    logline:
+      personnage.length > 0 && conflit.length > 0
+        ? `${personnage[0]?.chosen_text || "Un protagoniste"} doit faire face à ${conflit[0]?.chosen_text || "un défi"}.`
+        : "Un groupe d'élèves a imaginé ensemble une histoire unique.",
     synopsis: choices.map((c) => c.chosen_text).join(". ") || "L'histoire reste à écrire...",
     characters: personnage.map((c) => ({
       name: c.restitution_label || "Personnage",
@@ -557,8 +623,9 @@ export function buildFallbackBible(data: SessionFullData): BibleResult {
       influences: [],
       visualIdentity: "À définir",
     },
-    themes: choices.length > 0
-      ? [...new Set(choices.map((c) => CATEGORY_LABELS[c.category] || c.category))].slice(0, 5)
-      : ["Créativité", "Collaboration"],
+    themes:
+      choices.length > 0
+        ? [...new Set(choices.map((c) => CATEGORY_LABELS[c.category] || c.category))].slice(0, 5)
+        : ["Créativité", "Collaboration"],
   };
 }

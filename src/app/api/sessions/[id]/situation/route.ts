@@ -64,18 +64,19 @@ interface SessionCacheData {
 // GET — get current situation for a session (used by students via polling)
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
 
   // Rate limit per student (avoids NAT collision when 30+ students share one school IP)
   const rlStudentId = req.nextUrl.searchParams.get("studentId");
-  const rateLimitKey = rlStudentId
-    ? `situation:${sessionId}:${rlStudentId}`
-    : `situation:${sessionId}:${getIP(req)}`;
+  const rateLimitKey = rlStudentId ? `situation:${sessionId}:${rlStudentId}` : `situation:${sessionId}:${getIP(req)}`;
   const limited = checkRateLimit(getIP(req), rateLimitKey, { max: 30, windowSec: 10 });
   if (limited) {
-    return NextResponse.json({ error: limited.error }, { status: 429, headers: { "Retry-After": String(limited.retryAfterSec) } });
+    return NextResponse.json(
+      { error: limited.error },
+      { status: 429, headers: { "Retry-After": String(limited.retryAfterSec) } },
+    );
   }
 
   const admin = createAdminClient();
@@ -87,7 +88,9 @@ export const GET = withErrorHandler(async function GET(
   if (!session) {
     const { data: sessionData, error: sessionError } = await admin
       .from("sessions")
-      .select("id, status, current_module, current_seance, current_situation_index, level, title, join_code, template, timer_ends_at, mode, sharing_enabled, broadcast_message, broadcast_at, mute_sounds, reveal_phase")
+      .select(
+        "id, status, current_module, current_seance, current_situation_index, level, title, join_code, template, timer_ends_at, mode, sharing_enabled, broadcast_message, broadcast_at, mute_sounds, reveal_phase",
+      )
       .eq("id", sessionId)
       .is("deleted_at", null)
       .single();
@@ -178,61 +181,55 @@ export const GET = withErrorHandler(async function GET(
     }
 
     // ── Session-level parallel queries ──
-    const [
-      voteOptionsResult,
-      collectiveChoiceResult,
-      connectedCountResult,
-      responsesCountResult,
-      budgetResult,
-    ] = await Promise.all([
-      // Q6: Vote options (session-level — same for all students)
-      session.status === "voting" && situation
-        ? admin
-            .from("responses")
-            .select("id, text")
-            .eq("session_id", sessionId)
-            .eq("situation_id", situation.id)
-            .eq("is_hidden", false)
-            .eq("is_vote_option", true)
-        : Promise.resolve({ data: null }),
-      // Q8: Collective choice
-      situation
-        ? admin
-            .from("collective_choices")
-            .select("*")
-            .eq("session_id", sessionId)
-            .eq("situation_id", situation.id)
-            .single()
-        : Promise.resolve({ data: null }),
-      // Q9: Connected students count
-      admin
-        .from("students")
-        .select("*", { count: "exact", head: true })
-        .eq("session_id", sessionId)
-        .eq("is_active", true),
-      // Q10: Responses count
-      situation
-        ? admin
-            .from("responses")
-            .select("*", { count: "exact", head: true })
-            .eq("session_id", sessionId)
-            .eq("situation_id", situation.id)
-            .is("reset_at", null)
-        : Promise.resolve({ count: 0 }),
-      // Q11: Budget stats (module 9 séance 2)
-      session.current_module === 9 && ((session.current_seance as number) || 1) === 2
-        ? admin
-            .from("module2_budgets")
-            .select("choices")
-            .eq("session_id", sessionId)
-        : Promise.resolve({ data: null }),
-    ]);
+    const [voteOptionsResult, collectiveChoiceResult, connectedCountResult, responsesCountResult, budgetResult] =
+      await Promise.all([
+        // Q6: Vote options (session-level — same for all students)
+        session.status === "voting" && situation
+          ? admin
+              .from("responses")
+              .select("id, text")
+              .eq("session_id", sessionId)
+              .eq("situation_id", situation.id)
+              .eq("is_hidden", false)
+              .eq("is_vote_option", true)
+          : Promise.resolve({ data: null }),
+        // Q8: Collective choice
+        situation
+          ? admin
+              .from("collective_choices")
+              .select("*")
+              .eq("session_id", sessionId)
+              .eq("situation_id", situation.id)
+              .single()
+          : Promise.resolve({ data: null }),
+        // Q9: Connected students count
+        admin
+          .from("students")
+          .select("*", { count: "exact", head: true })
+          .eq("session_id", sessionId)
+          .eq("is_active", true),
+        // Q10: Responses count
+        situation
+          ? admin
+              .from("responses")
+              .select("*", { count: "exact", head: true })
+              .eq("session_id", sessionId)
+              .eq("situation_id", situation.id)
+              .is("reset_at", null)
+          : Promise.resolve({ count: 0 }),
+        // Q11: Budget stats (module 9 séance 2)
+        session.current_module === 9 && ((session.current_seance as number) || 1) === 2
+          ? admin.from("module2_budgets").select("choices").eq("session_id", sessionId)
+          : Promise.resolve({ data: null }),
+      ]);
 
     // Unpack session-level results
-    const voteOptions: { id: string; text: string }[] = Array.isArray(voteOptionsResult.data) ? voteOptionsResult.data : [];
+    const voteOptions: { id: string; text: string }[] = Array.isArray(voteOptionsResult.data)
+      ? voteOptionsResult.data
+      : [];
     const collectiveChoice = collectiveChoiceResult.data || null;
-    const connectedCount = "count" in connectedCountResult ? ((connectedCountResult.count as number | null) || 0) : 0;
-    const responsesCount = "count" in responsesCountResult ? ((responsesCountResult.count as number | null) || 0) : 0;
+    const connectedCount = "count" in connectedCountResult ? (connectedCountResult.count as number | null) || 0 : 0;
+    const responsesCount = "count" in responsesCountResult ? (responsesCountResult.count as number | null) || 0 : 0;
 
     let budgetStats: { averages: Record<string, number>; submittedCount: number } | null = null;
     const budgets = Array.isArray(budgetResult.data) ? budgetResult.data : null;
@@ -240,7 +237,7 @@ export const GET = withErrorHandler(async function GET(
       const budgetKeys = ["acteurs", "decors", "effets", "musique", "duree"];
       const averages: Record<string, number> = {};
       for (const cat of budgetKeys) {
-        const values = budgets.map((b: { choices: unknown }) => ((b.choices as Record<string, number>)?.[cat] || 0));
+        const values = budgets.map((b: { choices: unknown }) => (b.choices as Record<string, number>)?.[cat] || 0);
         averages[cat] = Math.round(values.reduce((a: number, b: number) => a + b, 0) / values.length);
       }
       budgetStats = { averages, submittedCount: budgets.length };
@@ -307,12 +304,7 @@ export const GET = withErrorHandler(async function GET(
 
   // ── Student-specific queries (always fresh — never cached) ──
   const situation = cached.situation;
-  const [
-    responseResult,
-    studentResult,
-    studentTeamResult,
-    hasVotedResult,
-  ] = await Promise.all([
+  const [responseResult, studentResult, studentTeamResult, hasVotedResult] = await Promise.all([
     // Q3: Student response check
     studentId && situation
       ? admin
@@ -326,17 +318,10 @@ export const GET = withErrorHandler(async function GET(
       : Promise.resolve({ data: null }),
     // Q4: Student warnings/kicked
     studentId
-      ? admin
-          .from("students")
-          .select("warnings, kicked")
-          .eq("id", studentId)
-          .eq("session_id", sessionId)
-          .single()
+      ? admin.from("students").select("warnings, kicked").eq("id", studentId).eq("session_id", sessionId).single()
       : Promise.resolve({ data: null }),
     // Q5: Student team
-    studentId
-      ? getStudentTeam(admin, studentId, sessionId)
-      : Promise.resolve(null),
+    studentId ? getStudentTeam(admin, studentId, sessionId) : Promise.resolve(null),
     // Q7: Has voted
     session.status === "voting" && situation && studentId
       ? admin
@@ -362,20 +347,27 @@ export const GET = withErrorHandler(async function GET(
 
   const hasVoted = !!hasVotedResult.data;
 
-  return NextResponse.json({
-    session: cached.sessionPayload,
-    situation: cached.situationPayload,
-    hasResponded,
-    hasVoted,
-    voteOptions: cached.voteOptions,
-    collectiveChoice: cached.collectiveChoice,
-    isMyResponseChosen: !!(cached.collectiveChoice && studentResponseId && (cached.collectiveChoice as Record<string, unknown>).source_response_id === studentResponseId),
-    connectedCount: cached.connectedCount,
-    responsesCount: cached.responsesCount,
-    budgetStats: cached.budgetStats,
-    teacherNudge,
-    studentWarnings,
-    studentKicked,
-    team: studentTeam,
-  }, { headers: { "Cache-Control": "private, no-store" } });
+  return NextResponse.json(
+    {
+      session: cached.sessionPayload,
+      situation: cached.situationPayload,
+      hasResponded,
+      hasVoted,
+      voteOptions: cached.voteOptions,
+      collectiveChoice: cached.collectiveChoice,
+      isMyResponseChosen: !!(
+        cached.collectiveChoice &&
+        studentResponseId &&
+        (cached.collectiveChoice as Record<string, unknown>).source_response_id === studentResponseId
+      ),
+      connectedCount: cached.connectedCount,
+      responsesCount: cached.responsesCount,
+      budgetStats: cached.budgetStats,
+      teacherNudge,
+      studentWarnings,
+      studentKicked,
+      team: studentTeam,
+    },
+    { headers: { "Cache-Control": "private, no-store" } },
+  );
 });

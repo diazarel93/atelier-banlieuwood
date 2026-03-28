@@ -49,10 +49,7 @@ export function PreSessionChecklist({
         id: "students",
         label: "Eleves connectes",
         autoChecked: connectedCount >= 3,
-        statusText:
-          connectedCount >= 3
-            ? `${connectedCount} eleves en ligne`
-            : `${connectedCount}/3 minimum`,
+        statusText: connectedCount >= 3 ? `${connectedCount} eleves en ligne` : `${connectedCount}/3 minimum`,
       },
       {
         id: "code",
@@ -64,12 +61,10 @@ export function PreSessionChecklist({
         id: "module",
         label: "Module choisi",
         autoChecked: moduleSelected,
-        statusText: moduleSelected
-          ? moduleName || "Module selectionne"
-          : "Aucun module selectionne",
+        statusText: moduleSelected ? moduleName || "Module selectionne" : "Aucun module selectionne",
       },
     ],
-    [projectorChecked, connectedCount, joinCode, moduleSelected, moduleName]
+    [projectorChecked, connectedCount, joinCode, moduleSelected, moduleName],
   );
 
   const checkedCount = items.filter((i) => i.autoChecked).length;
@@ -98,13 +93,10 @@ export function PreSessionChecklist({
             ? "linear-gradient(135deg, #10B981, #059669)"
             : "linear-gradient(135deg, rgba(24,24,27,0.95), rgba(15,15,18,0.95))",
           border: "1px solid rgba(255,255,255,0.1)",
-          boxShadow:
-            "0 8px 32px rgba(0,0,0,0.4), 0 0 16px rgba(255,107,53,0.08)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.4), 0 0 16px rgba(255,107,53,0.08)",
         }}
       >
-        <span className="text-sm">
-          {allChecked ? "\u2705" : "\uD83C\uDFAC"}
-        </span>
+        <span className="text-sm">{allChecked ? "\u2705" : "\uD83C\uDFAC"}</span>
         <span className="text-xs font-bold text-white tabular-nums">
           {checkedCount}/{items.length}
         </span>
@@ -125,11 +117,9 @@ export function PreSessionChecklist({
         <div
           className="relative rounded-2xl overflow-hidden"
           style={{
-            background:
-              "linear-gradient(160deg, rgba(24,24,27,0.97), rgba(12,12,15,0.98))",
+            background: "linear-gradient(160deg, rgba(24,24,27,0.97), rgba(12,12,15,0.98))",
             border: "1px solid rgba(255,255,255,0.08)",
-            boxShadow:
-              "0 24px 64px rgba(0,0,0,0.5), 0 0 40px rgba(255,107,53,0.06)",
+            boxShadow: "0 24px 64px rgba(0,0,0,0.5), 0 0 40px rgba(255,107,53,0.06)",
           }}
         >
           {/* Clipboard clip — decorative top element */}
@@ -139,8 +129,7 @@ export function PreSessionChecklist({
           <div
             className="absolute top-0 inset-x-0 h-[2px]"
             style={{
-              background:
-                "linear-gradient(90deg, transparent, #FF6B35, transparent)",
+              background: "linear-gradient(90deg, transparent, #FF6B35, transparent)",
             }}
           />
 
@@ -148,10 +137,7 @@ export function PreSessionChecklist({
           <div className="px-5 pt-5 pb-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <span className="text-lg">{"\uD83C\uDFAC"}</span>
-              <h3
-                className="text-[14px] font-bold text-white tracking-tight"
-                style={{ fontVariantLigatures: "none" }}
-              >
+              <h3 className="text-[14px] font-bold text-white tracking-tight" style={{ fontVariantLigatures: "none" }}>
                 Check-list de tournage
               </h3>
             </div>
@@ -225,22 +211,13 @@ export function PreSessionChecklist({
               >
                 {/* Checkbox */}
                 {item.id === "projector" ? (
-                  <button
-                    onClick={() => setProjectorChecked((v) => !v)}
-                    className="mt-0.5 shrink-0 cursor-pointer"
-                  >
+                  <button onClick={() => setProjectorChecked((v) => !v)} className="mt-0.5 shrink-0 cursor-pointer">
                     <div
                       className="w-5 h-5 rounded-md flex items-center justify-center transition-all duration-200"
                       style={{
-                        background: projectorChecked
-                          ? "linear-gradient(135deg, #10B981, #059669)"
-                          : "transparent",
-                        border: projectorChecked
-                          ? "none"
-                          : "2px solid rgba(255,255,255,0.15)",
-                        boxShadow: projectorChecked
-                          ? "0 0 8px rgba(16,185,129,0.3)"
-                          : "none",
+                        background: projectorChecked ? "linear-gradient(135deg, #10B981, #059669)" : "transparent",
+                        border: projectorChecked ? "none" : "2px solid rgba(255,255,255,0.15)",
+                        boxShadow: projectorChecked ? "0 0 8px rgba(16,185,129,0.3)" : "none",
                       }}
                     >
                       {projectorChecked && (
@@ -271,15 +248,9 @@ export function PreSessionChecklist({
                     <div
                       className="w-5 h-5 rounded-md flex items-center justify-center transition-all duration-200"
                       style={{
-                        background: item.autoChecked
-                          ? "linear-gradient(135deg, #10B981, #059669)"
-                          : "transparent",
-                        border: item.autoChecked
-                          ? "none"
-                          : "2px solid rgba(255,255,255,0.15)",
-                        boxShadow: item.autoChecked
-                          ? "0 0 8px rgba(16,185,129,0.3)"
-                          : "none",
+                        background: item.autoChecked ? "linear-gradient(135deg, #10B981, #059669)" : "transparent",
+                        border: item.autoChecked ? "none" : "2px solid rgba(255,255,255,0.15)",
+                        boxShadow: item.autoChecked ? "0 0 8px rgba(16,185,129,0.3)" : "none",
                       }}
                     >
                       {item.autoChecked && (
@@ -324,9 +295,7 @@ export function PreSessionChecklist({
                     {item.statusText}
                   </p>
                   {item.tip && !item.autoChecked && (
-                    <p className="text-xs text-bw-muted/60 mt-0.5 italic">
-                      {item.tip}
-                    </p>
+                    <p className="text-xs text-bw-muted/60 mt-0.5 italic">{item.tip}</p>
                   )}
                 </div>
 
@@ -335,12 +304,8 @@ export function PreSessionChecklist({
                   <div
                     className="w-2 h-2 rounded-full"
                     style={{
-                      backgroundColor: item.autoChecked
-                        ? "#10B981"
-                        : "#F59E0B",
-                      boxShadow: item.autoChecked
-                        ? "0 0 6px rgba(16,185,129,0.4)"
-                        : "0 0 6px rgba(245,158,11,0.3)",
+                      backgroundColor: item.autoChecked ? "#10B981" : "#F59E0B",
+                      boxShadow: item.autoChecked ? "0 0 6px rgba(16,185,129,0.4)" : "0 0 6px rgba(245,158,11,0.3)",
                     }}
                   />
                 </div>
@@ -357,24 +322,14 @@ export function PreSessionChecklist({
               disabled={!allChecked}
               className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[13px] font-bold transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
               style={{
-                background: allChecked
-                  ? "linear-gradient(135deg, #FF6B35, #E85D26)"
-                  : "rgba(255,255,255,0.04)",
+                background: allChecked ? "linear-gradient(135deg, #FF6B35, #E85D26)" : "rgba(255,255,255,0.04)",
                 color: allChecked ? "white" : "rgba(255,255,255,0.25)",
-                border: allChecked
-                  ? "none"
-                  : "1px solid rgba(255,255,255,0.06)",
-                boxShadow: allChecked
-                  ? "0 0 20px rgba(255,107,53,0.25), inset 0 1px 0 rgba(255,255,255,0.1)"
-                  : "none",
+                border: allChecked ? "none" : "1px solid rgba(255,255,255,0.06)",
+                boxShadow: allChecked ? "0 0 20px rgba(255,107,53,0.25), inset 0 1px 0 rgba(255,255,255,0.1)" : "none",
               }}
             >
               <span>{allChecked ? "\uD83C\uDF1F" : "\u23F3"}</span>
-              <span>
-                {allChecked
-                  ? "C'est parti !"
-                  : `${checkedCount}/${items.length} — Encore un effort`}
-              </span>
+              <span>{allChecked ? "C'est parti !" : `${checkedCount}/${items.length} — Encore un effort`}</span>
             </motion.button>
           </div>
 
@@ -385,10 +340,7 @@ export function PreSessionChecklist({
                 key={i}
                 className="flex-1 mx-[1px] rounded-t-[1px]"
                 style={{
-                  backgroundColor:
-                    i % 2 === 0
-                      ? "rgba(255,107,53,0.08)"
-                      : "transparent",
+                  backgroundColor: i % 2 === 0 ? "rgba(255,107,53,0.08)" : "transparent",
                 }}
               />
             ))}

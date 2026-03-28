@@ -65,7 +65,16 @@ const GUIDE_ITEMS: GuideItem[] = [
     description:
       "Interface en temps reel pour piloter une seance. Vous controlez l'avancee des questions, visualisez les reponses, envoyez des messages et gerez le chronometre.",
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
         <circle cx="12" cy="12" r="10" />
         <path d="M12 6v6l4 2" />
       </svg>
@@ -77,7 +86,12 @@ const GUIDE_ITEMS: GuideItem[] = [
       "Chaque eleve a un profil avec son historique de scores, ses reponses recentes, ses badges et son portfolio creatif. Vous pouvez y ajouter des notes pedagogiques.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-        <path d="M12 13v-1a3 3 0 00-3-3H5a3 3 0 00-3 3v1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <path
+          d="M12 13v-1a3 3 0 00-3-3H5a3 3 0 00-3 3v1"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
         <circle cx="7" cy="5" r="3" stroke="currentColor" strokeWidth="1.5" />
       </svg>
     ),
@@ -138,33 +152,19 @@ function FaqAccordion({ item }: { item: FaqItem }) {
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between py-4 text-left"
       >
-        <span className="text-sm font-medium text-bw-heading pr-4">
-          {item.question}
-        </span>
+        <span className="text-sm font-medium text-bw-heading pr-4">{item.question}</span>
         <svg
           width="16"
           height="16"
           viewBox="0 0 16 16"
           fill="none"
-          className={`shrink-0 text-bw-muted transition-transform duration-200 ${
-            open ? "rotate-180" : ""
-          }`}
+          className={`shrink-0 text-bw-muted transition-transform duration-200 ${open ? "rotate-180" : ""}`}
           aria-hidden="true"
         >
-          <path
-            d="M4 6l4 4 4-4"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+          <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      <div
-        className={`overflow-hidden transition-all duration-200 ${
-          open ? "max-h-40 pb-4" : "max-h-0"
-        }`}
-      >
+      <div className={`overflow-hidden transition-all duration-200 ${open ? "max-h-40 pb-4" : "max-h-0"}`}>
         <p className="text-sm text-bw-muted leading-relaxed">{item.answer}</p>
       </div>
     </div>
@@ -177,9 +177,7 @@ export default function AidePage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-heading-lg text-bw-heading">Aide</h1>
-        <p className="text-sm text-bw-muted mt-0.5">
-          Guides, FAQ et raccourcis pour utiliser Banlieuwood
-        </p>
+        <p className="text-sm text-bw-muted mt-0.5">Guides, FAQ et raccourcis pour utiliser Banlieuwood</p>
       </div>
 
       <div className="flex flex-col gap-6">
@@ -188,20 +186,13 @@ export default function AidePage() {
           <h2 className="label-caps mb-4">Guide rapide</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {GUIDE_ITEMS.map((item) => (
-              <div
-                key={item.title}
-                className="flex gap-3 rounded-xl border border-[var(--color-bw-border-subtle)] p-4"
-              >
+              <div key={item.title} className="flex gap-3 rounded-xl border border-[var(--color-bw-border-subtle)] p-4">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--color-bw-surface-dim)] text-bw-muted">
                   {item.icon}
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-heading-xs text-bw-heading mb-0.5">
-                    {item.title}
-                  </h3>
-                  <p className="text-body-xs text-bw-muted leading-relaxed">
-                    {item.description}
-                  </p>
+                  <h3 className="text-heading-xs text-bw-heading mb-0.5">{item.title}</h3>
+                  <p className="text-body-xs text-bw-muted leading-relaxed">{item.description}</p>
                 </div>
               </div>
             ))}
@@ -222,9 +213,7 @@ export default function AidePage() {
         <GlassCardV2 className="p-5">
           <h2 className="label-caps mb-4">
             Raccourcis clavier
-            <span className="ml-2 text-body-xs text-bw-muted font-normal normal-case">
-              (cockpit de pilotage)
-            </span>
+            <span className="ml-2 text-body-xs text-bw-muted font-normal normal-case">(cockpit de pilotage)</span>
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
             {SHORTCUTS.map((s) => (
@@ -236,9 +225,7 @@ export default function AidePage() {
                 <div className="flex items-center gap-1 shrink-0 ml-3">
                   {s.keys.map((key, i) => (
                     <span key={i}>
-                      {i > 0 && (
-                        <span className="text-[10px] text-bw-muted mx-0.5">+</span>
-                      )}
+                      {i > 0 && <span className="text-[10px] text-bw-muted mx-0.5">+</span>}
                       <kbd className="inline-flex items-center justify-center rounded-md border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)] px-1.5 py-0.5 text-xs font-medium text-bw-heading min-w-[24px] text-center">
                         {key}
                       </kbd>
@@ -276,9 +263,7 @@ export default function AidePage() {
               </svg>
               support@banlieuwood.fr
             </a>
-            <p className="text-xs text-bw-muted mt-1">
-              Nous repondons generalement sous 24 heures en jours ouvrables.
-            </p>
+            <p className="text-xs text-bw-muted mt-1">Nous repondons generalement sous 24 heures en jours ouvrables.</p>
           </div>
         </GlassCardV2>
       </div>

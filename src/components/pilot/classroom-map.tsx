@@ -72,7 +72,14 @@ function FreeStudentChip({
 }) {
   const [hovered, setHovered] = useState(false);
   const s = STATE_STYLE[student.state] || STATE_STYLE.disconnected;
-  const stateLabel = student.state === "responded" ? "a repondu" : student.state === "stuck" ? "bloque" : student.state === "active" ? "en reflexion" : "absent";
+  const stateLabel =
+    student.state === "responded"
+      ? "a repondu"
+      : student.state === "stuck"
+        ? "bloque"
+        : student.state === "active"
+          ? "en reflexion"
+          : "absent";
 
   return (
     <motion.button
@@ -98,20 +105,43 @@ function FreeStudentChip({
           {student.avatar}
         </div>
         {student.hand_raised_at && (
-          <motion.span animate={{ y: [0, -2, 0] }} transition={{ repeat: Infinity, duration: 0.8 }}
-            className="absolute -top-1 -right-1 text-[10px]">✋</motion.span>
+          <motion.span
+            animate={{ y: [0, -2, 0] }}
+            transition={{ repeat: Infinity, duration: 0.8 }}
+            className="absolute -top-1 -right-1 text-[10px]"
+          >
+            ✋
+          </motion.span>
         )}
         {student.state === "responded" && (
-          <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }}
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
             className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center"
-            style={{ background: "#4CAF50", boxShadow: "0 1px 3px rgba(76,175,80,0.4)" }}>
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round"><path d="M5 12l5 5L20 7" /></svg>
+            style={{ background: "#4CAF50", boxShadow: "0 1px 3px rgba(76,175,80,0.4)" }}
+          >
+            <svg
+              width="8"
+              height="8"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+            >
+              <path d="M5 12l5 5L20 7" />
+            </svg>
           </motion.span>
         )}
         {student.state === "stuck" && (
-          <motion.span animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 1.2 }}
+          <motion.span
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ repeat: Infinity, duration: 1.2 }}
             className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-black text-white"
-            style={{ background: "#EB5757" }}>!</motion.span>
+            style={{ background: "#EB5757" }}
+          >
+            !
+          </motion.span>
         )}
       </div>
       <span className="text-[11px] font-semibold truncate max-w-[56px] leading-tight" style={{ color: s.text }}>
@@ -122,9 +152,12 @@ function FreeStudentChip({
       <AnimatePresence>
         {hovered && response && (
           <motion.div
-            initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 4 }}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
             className="absolute z-30 bottom-full mb-2 left-1/2 -translate-x-1/2 w-[200px] rounded-[12px] p-3 pointer-events-none"
-            style={{ background: "#FFFFFF", border: "1px solid #E8DFD2", boxShadow: "0 8px 24px rgba(61,43,16,0.12)" }}>
+            style={{ background: "#FFFFFF", border: "1px solid #E8DFD2", boxShadow: "0 8px 24px rgba(61,43,16,0.12)" }}
+          >
             <p className="text-[12px] text-[#5B5B5B] leading-snug line-clamp-3">{response}</p>
           </motion.div>
         )}
@@ -167,7 +200,8 @@ export function ClassroomMap({
 
   // Stats
   const { respondedCount, disconnectedCount } = useMemo(() => {
-    let responded = 0, disconnected = 0;
+    let responded = 0,
+      disconnected = 0;
     for (const s of students) {
       if (s.state === "responded") responded++;
       else if (s.state === "disconnected") disconnected++;
@@ -180,19 +214,24 @@ export function ClassroomMap({
   const hasTeams = teams.length > 0;
 
   // Sort: hand raised first, then stuck, active, responded, disconnected
-  const sortedStudents = useMemo(
-    () => [...students].sort((a, b) => studentSortKey(a) - studentSortKey(b)),
-    [students]
-  );
+  const sortedStudents = useMemo(() => [...students].sort((a, b) => studentSortKey(a) - studentSortKey(b)), [students]);
 
-  const handleStudentClick = useCallback((studentId: string) => {
-    if (onStudentClick) onStudentClick(studentId);
-  }, [onStudentClick]);
+  const handleStudentClick = useCallback(
+    (studentId: string) => {
+      if (onStudentClick) onStudentClick(studentId);
+    },
+    [onStudentClick],
+  );
 
   // Build desk rows (pairs grouped by team)
   const deskRows = useMemo(() => {
     if (hasTeams) {
-      const rows: { teamId: string; teamName: string; teamColor: string; pairs: [SeatStudent, SeatStudent | undefined][] }[] = [];
+      const rows: {
+        teamId: string;
+        teamName: string;
+        teamColor: string;
+        pairs: [SeatStudent, SeatStudent | undefined][];
+      }[] = [];
       for (const team of teams) {
         const idSet = new Set(team.students.map((s) => s.id));
         const members = sortedStudents.filter((s) => idSet.has(s.id));
@@ -202,7 +241,12 @@ export function ClassroomMap({
       const allIds = new Set(teams.flatMap((t) => t.students.map((s) => s.id)));
       const unassigned = sortedStudents.filter((s) => !allIds.has(s.id));
       if (unassigned.length > 0) {
-        rows.push({ teamId: "__unassigned__", teamName: "Non assignes", teamColor: "#B0A99E", pairs: toPairs(unassigned) });
+        rows.push({
+          teamId: "__unassigned__",
+          teamName: "Non assignes",
+          teamColor: "#B0A99E",
+          pairs: toPairs(unassigned),
+        });
       }
       return rows;
     }
@@ -232,20 +276,49 @@ export function ClassroomMap({
           {hasAisle ? (
             <>
               {row.slice(0, aisleAt).map(([left, right], deskIdx) => (
-                <DeskPair key={`${left.id}-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} size={deskSize} />
+                <DeskPair
+                  key={`${left.id}-${deskIdx}`}
+                  left={left}
+                  right={right}
+                  responseMap={responseMap}
+                  onStudentClick={handleStudentClick}
+                  teamColor={teamColor || undefined}
+                  size={deskSize}
+                />
               ))}
               {row.length > aisleAt && (
                 <div className="w-4 sm:w-6 flex-shrink-0 self-stretch flex items-center justify-center">
-                  <div className="w-px h-full" style={{ background: "linear-gradient(to bottom, transparent, #D9CFC0 20%, #D9CFC0 80%, transparent)" }} />
+                  <div
+                    className="w-px h-full"
+                    style={{
+                      background: "linear-gradient(to bottom, transparent, #D9CFC0 20%, #D9CFC0 80%, transparent)",
+                    }}
+                  />
                 </div>
               )}
               {row.slice(aisleAt).map(([left, right], deskIdx) => (
-                <DeskPair key={`${left.id}-r-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} size={deskSize} />
+                <DeskPair
+                  key={`${left.id}-r-${deskIdx}`}
+                  left={left}
+                  right={right}
+                  responseMap={responseMap}
+                  onStudentClick={handleStudentClick}
+                  teamColor={teamColor || undefined}
+                  size={deskSize}
+                />
               ))}
             </>
           ) : (
             row.map(([left, right], deskIdx) => (
-              <DeskPair key={`${left.id}-${deskIdx}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} teamColor={teamColor || undefined} size={deskSize} />
+              <DeskPair
+                key={`${left.id}-${deskIdx}`}
+                left={left}
+                right={right}
+                responseMap={responseMap}
+                onStudentClick={handleStudentClick}
+                teamColor={teamColor || undefined}
+                size={deskSize}
+              />
             ))
           )}
         </div>
@@ -268,7 +341,14 @@ export function ClassroomMap({
         <div className="flex justify-between gap-3">
           <div className="flex flex-col gap-2">
             {leftPairs.map(([left, right], i) => (
-              <DeskPair key={`l-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} size={deskSize} />
+              <DeskPair
+                key={`l-${left.id}-${i}`}
+                left={left}
+                right={right}
+                responseMap={responseMap}
+                onStudentClick={handleStudentClick}
+                size={deskSize}
+              />
             ))}
           </div>
           {/* Center: teacher area marker */}
@@ -279,7 +359,14 @@ export function ClassroomMap({
           </div>
           <div className="flex flex-col gap-2">
             {rightPairs.map(([left, right], i) => (
-              <DeskPair key={`r-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} size={deskSize} />
+              <DeskPair
+                key={`r-${left.id}-${i}`}
+                left={left}
+                right={right}
+                responseMap={responseMap}
+                onStudentClick={handleStudentClick}
+                size={deskSize}
+              />
             ))}
           </div>
         </div>
@@ -287,7 +374,14 @@ export function ClassroomMap({
         {bottomPairs.length > 0 && (
           <div className="flex justify-center gap-2 sm:gap-3 flex-wrap">
             {bottomPairs.map(([left, right], i) => (
-              <DeskPair key={`b-${left.id}-${i}`} left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} size={deskSize} />
+              <DeskPair
+                key={`b-${left.id}-${i}`}
+                left={left}
+                right={right}
+                responseMap={responseMap}
+                onStudentClick={handleStudentClick}
+                size={deskSize}
+              />
             ))}
           </div>
         )}
@@ -311,7 +405,13 @@ export function ClassroomMap({
             {island.map(([left, right], pairIdx) => (
               <div key={`is-${left.id}-${pairIdx}`} style={pairIdx === 1 ? { transform: "scaleY(-1)" } : undefined}>
                 <div style={pairIdx === 1 ? { transform: "scaleY(-1)" } : undefined}>
-                  <DeskPair left={left} right={right} responseMap={responseMap} onStudentClick={handleStudentClick} size={deskSize} />
+                  <DeskPair
+                    left={left}
+                    right={right}
+                    responseMap={responseMap}
+                    onStudentClick={handleStudentClick}
+                    size={deskSize}
+                  />
                 </div>
               </div>
             ))}
@@ -336,7 +436,10 @@ export function ClassroomMap({
     const count = sortedStudents.length;
     const cols = Math.min(Math.max(Math.ceil(Math.sqrt(count)), 3), 6);
     return (
-      <div className="grid gap-2 justify-items-center" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+      <div
+        className="grid gap-2 justify-items-center"
+        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+      >
         {sortedStudents.map((student) => (
           <FreeStudentChip
             key={student.id}
@@ -374,7 +477,6 @@ export function ClassroomMap({
 
   return (
     <div className="space-y-2" role="region" aria-label="Plan de classe">
-
       {/* ── CLASSROOM FLOOR PLAN ── */}
       <div
         ref={containerRef}
@@ -386,7 +488,6 @@ export function ClassroomMap({
           boxShadow: "0 2px 8px rgba(61,43,16,0.04), inset 0 1px 2px rgba(61,43,16,0.02)",
         }}
       >
-
         <div
           ref={contentRef}
           className="relative p-3 sm:p-4 space-y-2"
@@ -396,7 +497,6 @@ export function ClassroomMap({
             height: fitScale < 1 ? `calc(100% * ${fitScale})` : undefined,
           }}
         >
-
           {/* Teacher's desk / Tableau */}
           <div className="flex justify-center">
             <div
@@ -413,7 +513,10 @@ export function ClassroomMap({
           </div>
 
           {/* Separator */}
-          <div className="h-px" style={{ background: "linear-gradient(to right, transparent, #E8DFD2, transparent)" }} />
+          <div
+            className="h-px"
+            style={{ background: "linear-gradient(to right, transparent, #E8DFD2, transparent)" }}
+          />
 
           {/* Desk layout — animated layout transitions */}
           <AnimatePresence mode="wait">
@@ -425,33 +528,48 @@ export function ClassroomMap({
               transition={{ duration: 0.2 }}
               className="space-y-2"
             >
-              {layout === "u-shape" ? renderUShape()
-                : layout === "islands" ? renderIslands()
-                : layout === "free" ? renderFreeLayout()
-                : /* rows */ deskRows.map((group, gi) => (
-                <motion.div
-                  key={group.teamId}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: gi * 0.04 }}
-                  className="space-y-1"
-                >
-                  {group.teamName && (
-                    <div className="flex items-center gap-2 px-1">
-                      {group.teamColor && group.teamColor !== "#B0A99E" && (
-                        <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: group.teamColor, boxShadow: `0 0 6px ${group.teamColor}30` }} />
-                      )}
-                      <span className="text-[12px] font-semibold uppercase tracking-wider text-[#5B5B5B]">{group.teamName}</span>
-                      <div className="flex-1 h-px" style={{ background: "#EFE4D8" }} />
-                      <span className="text-[12px] text-[#B0A99E] tabular-nums font-medium">
-                        {group.pairs.reduce((n, [l, r]) => n + (l.state === "responded" ? 1 : 0) + (r?.state === "responded" ? 1 : 0), 0)}/
-                        {group.pairs.reduce((n, [, r]) => n + 1 + (r ? 1 : 0), 0)}
-                      </span>
-                    </div>
-                  )}
-                  {renderRowsLayout(group.pairs, group.teamColor)}
-                </motion.div>
-              ))}
+              {layout === "u-shape"
+                ? renderUShape()
+                : layout === "islands"
+                  ? renderIslands()
+                  : layout === "free"
+                    ? renderFreeLayout()
+                    : /* rows */ deskRows.map((group, gi) => (
+                        <motion.div
+                          key={group.teamId}
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: gi * 0.04 }}
+                          className="space-y-1"
+                        >
+                          {group.teamName && (
+                            <div className="flex items-center gap-2 px-1">
+                              {group.teamColor && group.teamColor !== "#B0A99E" && (
+                                <div
+                                  className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                                  style={{
+                                    backgroundColor: group.teamColor,
+                                    boxShadow: `0 0 6px ${group.teamColor}30`,
+                                  }}
+                                />
+                              )}
+                              <span className="text-[12px] font-semibold uppercase tracking-wider text-[#5B5B5B]">
+                                {group.teamName}
+                              </span>
+                              <div className="flex-1 h-px" style={{ background: "#EFE4D8" }} />
+                              <span className="text-[12px] text-[#B0A99E] tabular-nums font-medium">
+                                {group.pairs.reduce(
+                                  (n, [l, r]) =>
+                                    n + (l.state === "responded" ? 1 : 0) + (r?.state === "responded" ? 1 : 0),
+                                  0,
+                                )}
+                                /{group.pairs.reduce((n, [, r]) => n + 1 + (r ? 1 : 0), 0)}
+                              </span>
+                            </div>
+                          )}
+                          {renderRowsLayout(group.pairs, group.teamColor)}
+                        </motion.div>
+                      ))}
             </motion.div>
           </AnimatePresence>
 
@@ -478,8 +596,20 @@ export function ClassroomMap({
                   boxShadow: "0 2px 8px rgba(76,175,80,0.08)",
                 }}
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5" /></svg>
-                <span className="text-[12px] font-semibold" style={{ color: "#2E7D32" }}>Tout le monde a repondu</span>
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#4CAF50"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                >
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+                <span className="text-[12px] font-semibold" style={{ color: "#2E7D32" }}>
+                  Tout le monde a repondu
+                </span>
               </div>
             </motion.div>
           )}
@@ -487,11 +617,23 @@ export function ClassroomMap({
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-4 text-[11px] text-[#B0A99E]" role="list" aria-label="Legende des etats">
-        <span className="flex items-center gap-1.5" role="listitem"><span className="w-2 h-2 rounded-full" style={{ background: "#4CAF50" }} /> Repondu</span>
-        <span className="flex items-center gap-1.5" role="listitem"><span className="w-2 h-2 rounded-full" style={{ background: "#F2C94C" }} /> En cours</span>
-        <span className="flex items-center gap-1.5" role="listitem"><span className="w-2 h-2 rounded-full" style={{ background: "#EB5757" }} /> Bloque</span>
-        <span className="flex items-center gap-1.5" role="listitem"><span className="w-2 h-2 rounded-full" style={{ background: "#C4BDB2" }} /> Hors ligne</span>
+      <div
+        className="flex items-center justify-center gap-4 text-[11px] text-[#B0A99E]"
+        role="list"
+        aria-label="Legende des etats"
+      >
+        <span className="flex items-center gap-1.5" role="listitem">
+          <span className="w-2 h-2 rounded-full" style={{ background: "#4CAF50" }} /> Repondu
+        </span>
+        <span className="flex items-center gap-1.5" role="listitem">
+          <span className="w-2 h-2 rounded-full" style={{ background: "#F2C94C" }} /> En cours
+        </span>
+        <span className="flex items-center gap-1.5" role="listitem">
+          <span className="w-2 h-2 rounded-full" style={{ background: "#EB5757" }} /> Bloque
+        </span>
+        <span className="flex items-center gap-1.5" role="listitem">
+          <span className="w-2 h-2 rounded-full" style={{ background: "#C4BDB2" }} /> Hors ligne
+        </span>
       </div>
     </div>
   );

@@ -122,23 +122,16 @@ const EXTRA_DB_MODULES = new Set([2, 3, 4, 9, 11, 13]);
  * Get the spec module definition for a given code dbModule + dbSeance.
  * Returns undefined for bonus modules (3, 4, 9, 11, 13).
  */
-export function getSpecModuleFromDb(
-  dbModule: number,
-  dbSeance?: number,
-): SpecModuleDef | undefined {
+export function getSpecModuleFromDb(dbModule: number, dbSeance?: number): SpecModuleDef | undefined {
   return SPEC_MODULES.find((sm) =>
-    sm.dbMappings.some(
-      (m) => m.dbModule === dbModule && (m.dbSeance == null || m.dbSeance === dbSeance),
-    ),
+    sm.dbMappings.some((m) => m.dbModule === dbModule && (m.dbSeance == null || m.dbSeance === dbSeance)),
   );
 }
 
 /**
  * Get all dbModule mappings for a given spec module ID.
  */
-export function getDbMappingsForSpec(
-  specId: SpecModuleId,
-): { dbModule: number; dbSeance?: number }[] {
+export function getDbMappingsForSpec(specId: SpecModuleId): { dbModule: number; dbSeance?: number }[] {
   const spec = SPEC_MODULES.find((sm) => sm.specId === specId);
   return spec?.dbMappings ?? [];
 }

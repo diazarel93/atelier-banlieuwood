@@ -53,7 +53,7 @@ export const FORMULAS: Record<FormulaId, FormulaConfig> = {
     sessionFormat: "3 seances minimum",
     modules: {
       M1: "support", // Rappel condense, pas re-enseigne integralement
-      M2: "core",    // B_QCM enseigne formellement avant M3
+      M2: "core", // B_QCM enseigne formellement avant M3
       M3: "core",
       M4: "probable", // Non valide terrain — pitch individuel
       M5: "plausible", // Tres conditionnel — n'activer qu'apres M4 valide
@@ -106,9 +106,6 @@ export function getCoreModulesForFormula(formulaId: FormulaId): SpecModuleId[] {
 /**
  * Check if a spec module is active (any role except inactive) in a formula.
  */
-export function isModuleActiveInFormula(
-  formulaId: FormulaId,
-  specId: SpecModuleId,
-): boolean {
+export function isModuleActiveInFormula(formulaId: FormulaId, specId: SpecModuleId): boolean {
   return FORMULAS[formulaId].modules[specId] !== "inactive";
 }

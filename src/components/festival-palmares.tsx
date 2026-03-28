@@ -71,10 +71,20 @@ export function FestivalPalmares({ sessionId }: { sessionId: string }) {
       gradient: "from-bw-gold/20 to-bw-amber/10",
       borderColor: "rgba(212,168,67,0.3)",
       winner: byResponses[0]
-        ? { name: byResponses[0].name, avatar: byResponses[0].avatar, value: byResponses[0].responses, label: `${byResponses[0].responses} réponses` }
+        ? {
+            name: byResponses[0].name,
+            avatar: byResponses[0].avatar,
+            value: byResponses[0].responses,
+            label: `${byResponses[0].responses} réponses`,
+          }
         : null,
       runnerUp: byResponses[1]
-        ? { name: byResponses[1].name, avatar: byResponses[1].avatar, value: byResponses[1].responses, label: `${byResponses[1].responses} réponses` }
+        ? {
+            name: byResponses[1].name,
+            avatar: byResponses[1].avatar,
+            value: byResponses[1].responses,
+            label: `${byResponses[1].responses} réponses`,
+          }
         : null,
     };
 
@@ -87,10 +97,20 @@ export function FestivalPalmares({ sessionId }: { sessionId: string }) {
       gradient: "from-bw-violet/20 to-bw-primary/10",
       borderColor: "rgba(139,92,246,0.3)",
       winner: byDepth[0]
-        ? { name: byDepth[0].name, avatar: byDepth[0].avatar, value: byDepth[0].avgLength, label: `${byDepth[0].avgLength} car. moy.` }
+        ? {
+            name: byDepth[0].name,
+            avatar: byDepth[0].avatar,
+            value: byDepth[0].avgLength,
+            label: `${byDepth[0].avgLength} car. moy.`,
+          }
         : null,
       runnerUp: byDepth[1]
-        ? { name: byDepth[1].name, avatar: byDepth[1].avatar, value: byDepth[1].avgLength, label: `${byDepth[1].avgLength} car. moy.` }
+        ? {
+            name: byDepth[1].name,
+            avatar: byDepth[1].avatar,
+            value: byDepth[1].avgLength,
+            label: `${byDepth[1].avgLength} car. moy.`,
+          }
         : null,
     };
 
@@ -103,24 +123,34 @@ export function FestivalPalmares({ sessionId }: { sessionId: string }) {
       gradient: "from-bw-teal/20 to-bw-green/10",
       borderColor: "rgba(78,205,196,0.3)",
       winner: byChosen[0]
-        ? { name: byChosen[0].name, avatar: byChosen[0].avatar, value: byChosen[0].chosenCount, label: `${byChosen[0].chosenCount}× choisi(e)` }
+        ? {
+            name: byChosen[0].name,
+            avatar: byChosen[0].avatar,
+            value: byChosen[0].chosenCount,
+            label: `${byChosen[0].chosenCount}× choisi(e)`,
+          }
         : null,
       runnerUp: byChosen[1]
-        ? { name: byChosen[1].name, avatar: byChosen[1].avatar, value: byChosen[1].chosenCount, label: `${byChosen[1].chosenCount}× choisi(e)` }
+        ? {
+            name: byChosen[1].name,
+            avatar: byChosen[1].avatar,
+            value: byChosen[1].chosenCount,
+            label: `${byChosen[1].chosenCount}× choisi(e)`,
+          }
         : null,
     };
 
     // 4. Grand Prix — composite score (participation + depth + chosen)
-    const scored = students.map((s) => {
-      const maxResp = byResponses[0]?.responses || 1;
-      const maxLen = byDepth[0]?.avgLength || 1;
-      const maxChosen = byChosen[0]?.chosenCount || 1;
-      const composite =
-        (s.responses / maxResp) * 0.3 +
-        (s.avgLength / maxLen) * 0.3 +
-        (s.chosenCount / maxChosen) * 0.4;
-      return { ...s, composite };
-    }).sort((a, b) => b.composite - a.composite);
+    const scored = students
+      .map((s) => {
+        const maxResp = byResponses[0]?.responses || 1;
+        const maxLen = byDepth[0]?.avgLength || 1;
+        const maxChosen = byChosen[0]?.chosenCount || 1;
+        const composite =
+          (s.responses / maxResp) * 0.3 + (s.avgLength / maxLen) * 0.3 + (s.chosenCount / maxChosen) * 0.4;
+        return { ...s, composite };
+      })
+      .sort((a, b) => b.composite - a.composite);
 
     const grandPrix: Trophy = {
       id: "grand-prix",
@@ -129,10 +159,20 @@ export function FestivalPalmares({ sessionId }: { sessionId: string }) {
       gradient: "from-bw-primary/25 to-bw-gold/15",
       borderColor: "rgba(255,107,53,0.35)",
       winner: scored[0]
-        ? { name: scored[0].name, avatar: scored[0].avatar, value: Math.round(scored[0].composite * 100), label: "Score composite" }
+        ? {
+            name: scored[0].name,
+            avatar: scored[0].avatar,
+            value: Math.round(scored[0].composite * 100),
+            label: "Score composite",
+          }
         : null,
       runnerUp: scored[1]
-        ? { name: scored[1].name, avatar: scored[1].avatar, value: Math.round(scored[1].composite * 100), label: "Score composite" }
+        ? {
+            name: scored[1].name,
+            avatar: scored[1].avatar,
+            value: Math.round(scored[1].composite * 100),
+            label: "Score composite",
+          }
         : null,
     };
 
@@ -170,15 +210,20 @@ export function FestivalPalmares({ sessionId }: { sessionId: string }) {
         className="group flex items-center gap-2.5 cursor-pointer transition-colors mt-2"
       >
         <div className="w-[3px] h-5 rounded-full bg-gradient-to-b from-bw-gold to-bw-primary" />
-        <h3
-          className="text-[13px] font-bold uppercase tracking-wider text-bw-muted group-hover:text-white transition-colors"
-        >
+        <h3 className="text-[13px] font-bold uppercase tracking-wider text-bw-muted group-hover:text-white transition-colors">
           Comparer les sessions
         </h3>
         <motion.svg
-          width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2" strokeLinecap="round" className="text-bw-muted"
-          animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          className="text-bw-muted"
+          animate={{ rotate: open ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
         >
           <polyline points="6 9 12 15 18 9" />
         </motion.svg>
@@ -234,7 +279,10 @@ function TrophyCard({ trophy, rank }: { trophy: Trophy; rank: number }) {
 
         {/* Winner */}
         {trophy.winner && (
-          <div className="flex items-center gap-3 rounded-lg px-3 py-2.5" style={{ background: "rgba(255,255,255,0.06)" }}>
+          <div
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5"
+            style={{ background: "rgba(255,255,255,0.06)" }}
+          >
             <span className="text-xl">{"\uD83E\uDD47"}</span>
             <span className="text-lg">{trophy.winner.avatar}</span>
             <div className="min-w-0 flex-1">
@@ -246,7 +294,10 @@ function TrophyCard({ trophy, rank }: { trophy: Trophy; rank: number }) {
 
         {/* Runner-up */}
         {trophy.runnerUp && (
-          <div className="flex items-center gap-3 rounded-lg px-3 py-2 opacity-70" style={{ background: "rgba(255,255,255,0.03)" }}>
+          <div
+            className="flex items-center gap-3 rounded-lg px-3 py-2 opacity-70"
+            style={{ background: "rgba(255,255,255,0.03)" }}
+          >
             <span className="text-base">{"\uD83E\uDD48"}</span>
             <span className="text-base">{trophy.runnerUp.avatar}</span>
             <div className="min-w-0 flex-1">
@@ -300,12 +351,14 @@ function ComparisonFestival({ sessionId }: { sessionId: string }) {
 
   // Compute "match score" for each similar session
   const currentTexts = new Set(data.currentChoices.map((c) => c.chosen_text));
-  const ranked = data.similar.map((s) => {
-    const matches = s.choices.filter((c) => currentTexts.has(c.chosen_text)).length;
-    const total = Math.max(data.currentChoices.length, s.choices.length, 1);
-    const matchPct = Math.round((matches / total) * 100);
-    return { ...s, matches, matchPct };
-  }).sort((a, b) => b.matchPct - a.matchPct);
+  const ranked = data.similar
+    .map((s) => {
+      const matches = s.choices.filter((c) => currentTexts.has(c.chosen_text)).length;
+      const total = Math.max(data.currentChoices.length, s.choices.length, 1);
+      const matchPct = Math.round((matches / total) * 100);
+      return { ...s, matches, matchPct };
+    })
+    .sort((a, b) => b.matchPct - a.matchPct);
 
   return (
     <div className="py-2 space-y-3">
@@ -336,7 +389,9 @@ function ComparisonFestival({ sessionId }: { sessionId: string }) {
 
           {/* Match percentage */}
           <div className="flex-shrink-0 text-right">
-            <p className={`text-sm font-bold ${s.matchPct > 60 ? "text-bw-teal" : s.matchPct > 30 ? "text-bw-gold" : "text-bw-muted"}`}>
+            <p
+              className={`text-sm font-bold ${s.matchPct > 60 ? "text-bw-teal" : s.matchPct > 30 ? "text-bw-gold" : "text-bw-muted"}`}
+            >
               {s.matchPct}%
             </p>
             <p className="text-xs text-bw-muted">similitude</p>

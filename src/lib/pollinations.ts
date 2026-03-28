@@ -48,7 +48,7 @@ export function generateStoryboardUrls(params: StoryboardParams): string[] {
 interface SceneStoryboardParams {
   sceneTitle: string;
   sceneDescription: string;
-  planType: string;           // plan-large, plan-moyen, gros-plan, plan-reaction
+  planType: string; // plan-large, plan-moyen, gros-plan, plan-reaction
   planDescription: string;
   tone?: string;
 }

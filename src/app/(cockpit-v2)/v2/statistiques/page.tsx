@@ -36,23 +36,19 @@ interface StatsData {
 const MODULE_OPTIONS = PHASES.flatMap((p) =>
   p.moduleIds.map((mid) => {
     const mod = getModuleById(mid);
-    return mod
-      ? { value: String(mod.dbModule), label: `${p.label} — ${mod.title}`, dbModule: mod.dbModule }
-      : null;
-  })
+    return mod ? { value: String(mod.dbModule), label: `${p.label} — ${mod.title}`, dbModule: mod.dbModule } : null;
+  }),
 ).filter((o): o is { value: string; label: string; dbModule: number } => o !== null);
 
 // Deduplicate by dbModule (keep first occurrence)
-const UNIQUE_MODULE_OPTIONS = MODULE_OPTIONS.filter(
-  (opt, i, arr) => arr.findIndex((o) => o.value === opt.value) === i
-);
+const UNIQUE_MODULE_OPTIONS = MODULE_OPTIONS.filter((opt, i, arr) => arr.findIndex((o) => o.value === opt.value) === i);
 
 async function fetchStats(
   classLabel: string | null,
   sessionId: string | null,
   dateFrom: string | null,
   dateTo: string | null,
-  moduleFilter: string | null
+  moduleFilter: string | null,
 ): Promise<StatsData> {
   const params = new URLSearchParams();
   if (classLabel) params.set("classLabel", classLabel);
@@ -85,16 +81,13 @@ export default function StatistiquesPage() {
 
   const hasStudents = data && data.students.length > 0;
 
-
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-heading-lg text-bw-heading">Statistiques</h1>
-          <p className="text-sm text-bw-muted mt-0.5">
-            Vue d&apos;ensemble des compétences par axe
-          </p>
+          <p className="text-sm text-bw-muted mt-0.5">Vue d&apos;ensemble des compétences par axe</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           {data && data.sessions.length > 0 && (
@@ -138,11 +131,22 @@ export default function StatistiquesPage() {
             {(dateFrom || dateTo) && (
               <button
                 type="button"
-                onClick={() => { setDateFrom(null); setDateTo(null); }}
+                onClick={() => {
+                  setDateFrom(null);
+                  setDateTo(null);
+                }}
                 className="h-9 rounded-lg border border-[var(--color-bw-border)] px-2 text-xs font-medium text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
                 title="Effacer les dates"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -172,9 +176,7 @@ export default function StatistiquesPage() {
         </div>
       ) : isError ? (
         <GlassCardV2 className="p-8 text-center">
-          <p className="text-sm text-bw-muted mb-4">
-            Impossible de charger les statistiques
-          </p>
+          <p className="text-sm text-bw-muted mb-4">Impossible de charger les statistiques</p>
           <button
             type="button"
             onClick={() => refetch()}

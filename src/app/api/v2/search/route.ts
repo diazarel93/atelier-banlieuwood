@@ -44,11 +44,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   // For non-admin, first get own session IDs to filter students
   let sessionIdsForFilter: string[] | null = null;
   if (!isAdmin) {
-    const { data: ownSessions } = await supabase
-      .from("sessions")
-      .select("id")
-      .eq("facilitator_id", user.id)
-      .limit(200);
+    const { data: ownSessions } = await supabase.from("sessions").select("id").eq("facilitator_id", user.id).limit(200);
     sessionIdsForFilter = (ownSessions || []).map((s) => s.id);
   }
 

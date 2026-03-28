@@ -7,7 +7,7 @@ import { isValidEtsiImageId } from "@/lib/module10-data";
 // POST — student submits "Et si..." text for an image
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "etsi", { max: 20, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -18,10 +18,7 @@ export const POST = withErrorHandler(async function POST(
   const { studentId, imageId, etsiText, helpUsed, qcmAnswers } = parsed.data;
 
   if (!studentId || !imageId || !etsiText) {
-    return NextResponse.json(
-      { error: "studentId, imageId et etsiText requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "studentId, imageId et etsiText requis" }, { status: 400 });
   }
 
   if (!isValidEtsiImageId(imageId)) {
@@ -29,10 +26,7 @@ export const POST = withErrorHandler(async function POST(
   }
 
   if (typeof etsiText !== "string" || etsiText.trim().length < 5) {
-    return NextResponse.json(
-      { error: "Le texte doit faire au moins 5 caractères" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Le texte doit faire au moins 5 caractères" }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -46,17 +40,11 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!session || session.current_module !== 10 || (session.current_seance || 1) !== 1) {
-    return NextResponse.json(
-      { error: "\"Et si...\" n'est pas disponible pour cette séance" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: '"Et si..." n\'est pas disponible pour cette séance' }, { status: 400 });
   }
 
   if (session.status !== "responding") {
-    return NextResponse.json(
-      { error: "Les réponses ne sont pas ouvertes" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Les réponses ne sont pas ouvertes" }, { status: 400 });
   }
 
   // Verify student belongs to session
@@ -68,16 +56,18 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!student) {
-    return NextResponse.json(
-      { error: "Joueur introuvable dans cette partie" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Joueur introuvable dans cette partie" }, { status: 404 });
   }
 
   // Validate qcmAnswers if provided (optional Record<string, string>)
-  const validQcm = qcmAnswers && typeof qcmAnswers === "object" && !Array.isArray(qcmAnswers)
-    ? Object.fromEntries(Object.entries(qcmAnswers as Record<string, unknown>).filter(([, v]) => typeof v === "string" && v.length > 0))
-    : {};
+  const validQcm =
+    qcmAnswers && typeof qcmAnswers === "object" && !Array.isArray(qcmAnswers)
+      ? Object.fromEntries(
+          Object.entries(qcmAnswers as Record<string, unknown>).filter(
+            ([, v]) => typeof v === "string" && v.length > 0,
+          ),
+        )
+      : {};
 
   // Upsert etsi response (one per student per session)
   const { data, error } = await admin
@@ -91,7 +81,7 @@ export const POST = withErrorHandler(async function POST(
         help_used: !!helpUsed,
         qcm_answers: validQcm,
       },
-      { onConflict: "session_id,student_id,image_id" }
+      { onConflict: "session_id,student_id,image_id" },
     )
     .select()
     .single();
@@ -109,7 +99,7 @@ export const POST = withErrorHandler(async function POST(
 // Without ?studentId → all responses (facilitator only)
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const studentId = req.nextUrl.searchParams.get("studentId");
@@ -124,7 +114,10 @@ export const GET = withErrorHandler(async function GET(
       .eq("student_id", studentId)
       .order("submitted_at", { ascending: true });
 
-    if (error) { console.error("[etsi GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+    if (error) {
+      console.error("[etsi GET]", error.message);
+      return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    }
     return NextResponse.json({ responses: data || [] });
   }
 
@@ -138,6 +131,9 @@ export const GET = withErrorHandler(async function GET(
     .eq("session_id", sessionId)
     .order("submitted_at", { ascending: true });
 
-  if (error) { console.error("[etsi GET all]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[etsi GET all]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
   return NextResponse.json({ responses: data || [], count: data?.length || 0 });
 });

@@ -71,8 +71,8 @@ export interface QuizMetier {
   metierKey: string;
   metierLabel: string;
   metierEmoji: string;
-  commonBelief: string;   // Ce que la plupart des élèves pensent
-  reality: string;        // Ce que le rôle fait vraiment
+  commonBelief: string; // Ce que la plupart des élèves pensent
+  reality: string; // Ce que le rôle fait vraiment
 }
 
 export const QUIZ_METIERS: QuizMetier[] = [
@@ -81,21 +81,24 @@ export const QUIZ_METIERS: QuizMetier[] = [
     metierLabel: "Réalisateur·rice",
     metierEmoji: "🎬",
     commonBelief: "C'est celui qui tient la caméra",
-    reality: "Le réalisateur dirige les acteurs et choisit les plans. Il ne touche pas la caméra — c'est le cadreur qui filme.",
+    reality:
+      "Le réalisateur dirige les acteurs et choisit les plans. Il ne touche pas la caméra — c'est le cadreur qui filme.",
   },
   {
     metierKey: "cadreur",
     metierLabel: "Cadreur·se",
     metierEmoji: "📷",
     commonBelief: "Il filme ce qu'il veut",
-    reality: "Le cadreur suit les indications du réalisateur. Il choisit les angles et la composition, mais c'est un travail d'équipe.",
+    reality:
+      "Le cadreur suit les indications du réalisateur. Il choisit les angles et la composition, mais c'est un travail d'équipe.",
   },
   {
     metierKey: "son",
     metierLabel: "Ingénieur·e son",
     metierEmoji: "🎧",
     commonBelief: "Il appuie sur 'enregistrer'",
-    reality: "L'ingénieur son gère le son en direct : micro, niveaux, bruits parasites. Sans lui, pas de dialogue utilisable.",
+    reality:
+      "L'ingénieur son gère le son en direct : micro, niveaux, bruits parasites. Sans lui, pas de dialogue utilisable.",
   },
   {
     metierKey: "assistant-real",
@@ -109,14 +112,16 @@ export const QUIZ_METIERS: QuizMetier[] = [
     metierLabel: "Scripte",
     metierEmoji: "📝",
     commonBelief: "Il écrit le scénario sur le plateau",
-    reality: "Le scripte vérifie la continuité entre les prises : costumes, positions, dialogues. Rien ne doit changer.",
+    reality:
+      "Le scripte vérifie la continuité entre les prises : costumes, positions, dialogues. Rien ne doit changer.",
   },
   {
     metierKey: "acteur",
     metierLabel: "Acteur·rice",
     metierEmoji: "🎭",
     commonBelief: "Il apprend son texte par cœur",
-    reality: "Un acteur donne vie au personnage. Il mémorise le texte mais surtout il ressent et interprète les émotions.",
+    reality:
+      "Un acteur donne vie au personnage. Il mémorise le texte mais surtout il ressent et interprète les émotions.",
   },
 ];
 
@@ -158,23 +163,27 @@ const ROLE_TO_CATEGORY: Record<string, string> = {
  */
 export async function computePoints(
   sessionId: string,
-  admin: { from: (table: string) => { select: (cols: string) => { eq: (col: string, val: string) => unknown } } }
-): Promise<{
-  studentId: string;
-  participationScore: number;
-  creativityScore: number;
-  engagementScore: number;
-}[]> {
+  admin: { from: (table: string) => { select: (cols: string) => { eq: (col: string, val: string) => unknown } } },
+): Promise<
+  {
+    studentId: string;
+    participationScore: number;
+    creativityScore: number;
+    engagementScore: number;
+  }[]
+> {
   // Get all active students
-  const { data: students } = await (admin.from("students")
-    .select("id")
-    .eq("session_id", sessionId) as unknown as { eq: (col: string, val: boolean) => Promise<{ data: { id: string }[] | null }> })
-    .eq("is_active", true);
+  const { data: students } = await (
+    admin.from("students").select("id").eq("session_id", sessionId) as unknown as {
+      eq: (col: string, val: boolean) => Promise<{ data: { id: string }[] | null }>;
+    }
+  ).eq("is_active", true);
 
   if (!students || students.length === 0) return [];
 
   // Count responses per student (participation)
-  const { data: responses } = await (admin.from("responses")
+  const { data: responses } = await (admin
+    .from("responses")
     .select("student_id")
     .eq("session_id", sessionId) as unknown as Promise<{ data: { student_id: string }[] | null }>);
 
@@ -184,20 +193,24 @@ export async function computePoints(
   }
 
   // Count creative contributions (module10 etsi texts + personnages + pitchs + idea bank)
-  const { data: etsi } = await (admin.from("module10_etsi")
+  const { data: etsi } = await (admin
+    .from("module10_etsi")
     .select("student_id")
     .eq("session_id", sessionId) as unknown as Promise<{ data: { student_id: string }[] | null }>);
 
-  const { data: personnages } = await (admin.from("module10_personnages")
+  const { data: personnages } = await (admin
+    .from("module10_personnages")
     .select("student_id")
     .eq("session_id", sessionId) as unknown as Promise<{ data: { student_id: string }[] | null }>);
 
-  const { data: pitchs } = await (admin.from("module10_pitchs")
+  const { data: pitchs } = await (admin
+    .from("module10_pitchs")
     .select("student_id")
     .eq("session_id", sessionId) as unknown as Promise<{ data: { student_id: string }[] | null }>);
 
   // Adrian: "le carnet d'idées a un poids important"
-  const { data: ideaBank } = await (admin.from("module10_idea_bank")
+  const { data: ideaBank } = await (admin
+    .from("module10_idea_bank")
     .select("student_id")
     .eq("session_id", sessionId) as unknown as Promise<{ data: { student_id: string }[] | null }>);
 
@@ -211,7 +224,8 @@ export async function computePoints(
   }
 
   // Count M6 missions done (engagement)
-  const { data: missions } = await (admin.from("module6_missions")
+  const { data: missions } = await (admin
+    .from("module6_missions")
     .select("student_id, status")
     .eq("session_id", sessionId) as unknown as Promise<{ data: { student_id: string; status: string }[] | null }>);
 
@@ -223,13 +237,18 @@ export async function computePoints(
   }
 
   // Adrian: "observations de l'intervenant" — facilitator tags feed into engagement
-  const { data: tags } = await (admin.from("facilitator_tags")
+  const { data: tags } = await (admin
+    .from("facilitator_tags")
     .select("student_id, tag")
     .eq("session_id", sessionId) as unknown as Promise<{ data: { student_id: string; tag: string }[] | null }>);
 
   const POSITIVE_TAGS = new Set([
-    "tres_creatif", "force_de_proposition", "bonne_ecoute",
-    "tres_investi", "bonne_cooperation", "leadership",
+    "tres_creatif",
+    "force_de_proposition",
+    "bonne_ecoute",
+    "tres_investi",
+    "bonne_cooperation",
+    "leadership",
   ]);
   for (const t of tags || []) {
     if (POSITIVE_TAGS.has(t.tag)) {
@@ -254,15 +273,17 @@ export async function computePoints(
  * Trie les élèves par total décroissant et assigne les rangs
  */
 export function rankStudents(
-  points: { studentId: string; participationScore: number; creativityScore: number; engagementScore: number }[]
-): (typeof points[number] & { total: number; rank: number })[] {
+  points: { studentId: string; participationScore: number; creativityScore: number; engagementScore: number }[],
+): ((typeof points)[number] & { total: number; rank: number })[] {
   const withTotal = points.map((p) => ({
     ...p,
     total: p.participationScore + p.creativityScore + p.engagementScore,
     rank: 0,
   }));
   withTotal.sort((a, b) => b.total - a.total);
-  withTotal.forEach((p, i) => { p.rank = i + 1; });
+  withTotal.forEach((p, i) => {
+    p.rank = i + 1;
+  });
   return withTotal;
 }
 
@@ -272,7 +293,7 @@ export function rankStudents(
 export function generateTalentCard(
   student: { id: string; displayName?: string },
   scores: { participationScore: number; creativityScore: number; engagementScore: number },
-  roleKey: string
+  roleKey: string,
 ): {
   talentCategory: string;
   strengths: string[];

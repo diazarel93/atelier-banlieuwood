@@ -45,9 +45,9 @@ export function PhaseStepper({
         p.moduleIds.some((id) => {
           const mod = getModuleById(id);
           return mod && !mod.disabled && !mod.comingSoon;
-        })
+        }),
       ),
-    [phases]
+    [phases],
   );
 
   const activePhaseId = useMemo(() => {
@@ -116,7 +116,14 @@ export function PhaseStepper({
                     className="flex items-center justify-center rounded-full w-7 h-7 md:w-[44px] md:h-[44px]"
                     style={{ background: phase.color, boxShadow: "0 0 0 3px white" }}
                   >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" className="w-3 h-3 md:w-[18px] md:h-[18px]">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      className="w-3 h-3 md:w-[18px] md:h-[18px]"
+                    >
                       <path d="M5 12l5 5L20 7" />
                     </svg>
                   </div>
@@ -197,7 +204,10 @@ export function PhaseStepper({
                       }}
                     />
                   ) : lineActive ? (
-                    <div className="flex-1 h-[3px] hidden md:block rounded-sm overflow-hidden" style={{ background: "#E0D8CC" }}>
+                    <div
+                      className="flex-1 h-[3px] hidden md:block rounded-sm overflow-hidden"
+                      style={{ background: "#E0D8CC" }}
+                    >
                       <div
                         className="h-full rounded-sm"
                         style={{
@@ -214,9 +224,10 @@ export function PhaseStepper({
                   <div
                     className="flex-1 h-[2px] rounded-full md:hidden"
                     style={{
-                      background: lineCompleted || lineActive
-                        ? `linear-gradient(to right, ${phase.color}, ${nextPhase.color})`
-                        : "#E0D8CC",
+                      background:
+                        lineCompleted || lineActive
+                          ? `linear-gradient(to right, ${phase.color}, ${nextPhase.color})`
+                          : "#E0D8CC",
                       opacity: lineCompleted || lineActive ? 0.5 : 0.3,
                     }}
                   />

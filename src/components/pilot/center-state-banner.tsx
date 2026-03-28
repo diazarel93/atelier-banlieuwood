@@ -31,10 +31,30 @@ interface CenterStateBannerProps {
 
 // Stronger contrast than before — these are the center focal point
 const SEVERITY_STYLES: Record<string, { bg: string; border: string; color: string; glow: string }> = {
-  calm: { bg: "rgba(76,175,80,0.10)", border: "rgba(76,175,80,0.25)", color: "#1B5E20", glow: "0 2px 8px rgba(76,175,80,0.08)" },
-  warn: { bg: "rgba(245,164,91,0.12)", border: "rgba(245,164,91,0.30)", color: "#BF360C", glow: "0 2px 8px rgba(245,164,91,0.10)" },
-  alert: { bg: "rgba(198,40,40,0.10)", border: "rgba(198,40,40,0.25)", color: "#B71C1C", glow: "0 2px 8px rgba(198,40,40,0.10)" },
-  info: { bg: "rgba(107,140,255,0.10)", border: "rgba(107,140,255,0.22)", color: "#283593", glow: "0 2px 8px rgba(107,140,255,0.08)" },
+  calm: {
+    bg: "rgba(76,175,80,0.10)",
+    border: "rgba(76,175,80,0.25)",
+    color: "#1B5E20",
+    glow: "0 2px 8px rgba(76,175,80,0.08)",
+  },
+  warn: {
+    bg: "rgba(245,164,91,0.12)",
+    border: "rgba(245,164,91,0.30)",
+    color: "#BF360C",
+    glow: "0 2px 8px rgba(245,164,91,0.10)",
+  },
+  alert: {
+    bg: "rgba(198,40,40,0.10)",
+    border: "rgba(198,40,40,0.25)",
+    color: "#B71C1C",
+    glow: "0 2px 8px rgba(198,40,40,0.10)",
+  },
+  info: {
+    bg: "rgba(107,140,255,0.10)",
+    border: "rgba(107,140,255,0.22)",
+    color: "#283593",
+    glow: "0 2px 8px rgba(107,140,255,0.08)",
+  },
 };
 
 export function CenterStateBanner({
@@ -46,7 +66,7 @@ export function CenterStateBanner({
   optionLabels,
   primaryAttentionActive = false,
 }: CenterStateBannerProps) {
-  const onlineStudents = studentStates.filter(s => s.state !== "disconnected").length;
+  const onlineStudents = studentStates.filter((s) => s.state !== "disconnected").length;
 
   const bannerState = useMemo((): BannerState => {
     if (sessionStatus !== "responding") return null;
@@ -74,13 +94,18 @@ export function CenterStateBanner({
         const secondPct = Math.round((secondCount / totalVotes) * 100);
 
         // Divisée ~50/50 — downgrade when AttentionPriority handles it
-        if (topPct >= 30 && secondPct >= 30 && (topPct - secondPct) < 15) {
+        if (topPct >= 30 && secondPct >= 30 && topPct - secondPct < 15) {
           const topLabel = optionLabels?.[topKey] || topKey.toUpperCase();
           const secondLabel = optionLabels?.[secondKey] || secondKey.toUpperCase();
           if (primaryAttentionActive) {
             return { text: `${topLabel} ${topPct}% · ${secondLabel} ${secondPct}%`, icon: "📊", severity: "info" };
           }
-          return { text: `Classe partagee entre ${topLabel} et ${secondLabel}`, icon: "⚖️", severity: "warn", sub: `${totalVotes} votes` };
+          return {
+            text: `Classe partagee entre ${topLabel} et ${secondLabel}`,
+            icon: "⚖️",
+            severity: "warn",
+            sub: `${totalVotes} votes`,
+          };
         }
 
         // Clear majority >= 70%
@@ -107,7 +132,16 @@ export function CenterStateBanner({
     }
 
     return null;
-  }, [sessionStatus, studentStates, responsesCount, totalStudents, onlineStudents, optionDistribution, optionLabels, primaryAttentionActive]);
+  }, [
+    sessionStatus,
+    studentStates,
+    responsesCount,
+    totalStudents,
+    onlineStudents,
+    optionDistribution,
+    optionLabels,
+    primaryAttentionActive,
+  ]);
 
   if (!bannerState) return null;
 

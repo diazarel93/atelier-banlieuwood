@@ -9,7 +9,7 @@ import { withErrorHandler } from "@/lib/api-utils";
  */
 export const GET = withErrorHandler<{ token: string }>(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ token: string }> }
+  { params }: { params: Promise<{ token: string }> },
 ) {
   const { token } = await params;
 
@@ -31,37 +31,29 @@ export const GET = withErrorHandler<{ token: string }>(async function GET(
   }
 
   // Fetch session + responses + personnage + achievements in parallel
-  const [sessionRes, responsesRes, retainedRes, personnageRes, achievementsRes] =
-    await Promise.all([
-      admin
-        .from("sessions")
-        .select("title, level, created_at")
-        .eq("id", student.session_id)
-        .single(),
-      admin
-        .from("responses")
-        .select("id", { count: "exact", head: true })
-        .eq("student_id", student.id)
-        .eq("session_id", student.session_id)
-        .is("reset_at", null),
-      admin
-        .from("collective_choices")
-        .select("source_response_id, responses!inner(student_id)")
-        .eq("session_id", student.session_id)
-        .not("source_response_id", "is", null),
-      admin
-        .from("module10_personnages")
-        .select("prenom, trait_dominant")
-        .eq("session_id", student.session_id)
-        .eq("student_id", student.id)
-        .single(),
-      student.profile_id
-        ? admin
-            .from("student_achievements")
-            .select("achievement_key")
-            .eq("profile_id", student.profile_id)
-        : Promise.resolve({ data: [] }),
-    ]);
+  const [sessionRes, responsesRes, retainedRes, personnageRes, achievementsRes] = await Promise.all([
+    admin.from("sessions").select("title, level, created_at").eq("id", student.session_id).single(),
+    admin
+      .from("responses")
+      .select("id", { count: "exact", head: true })
+      .eq("student_id", student.id)
+      .eq("session_id", student.session_id)
+      .is("reset_at", null),
+    admin
+      .from("collective_choices")
+      .select("source_response_id, responses!inner(student_id)")
+      .eq("session_id", student.session_id)
+      .not("source_response_id", "is", null),
+    admin
+      .from("module10_personnages")
+      .select("prenom, trait_dominant")
+      .eq("session_id", student.session_id)
+      .eq("student_id", student.id)
+      .single(),
+    student.profile_id
+      ? admin.from("student_achievements").select("achievement_key").eq("profile_id", student.profile_id)
+      : Promise.resolve({ data: [] }),
+  ]);
 
   const session = sessionRes.data;
   if (!session) {
@@ -73,11 +65,10 @@ export const GET = withErrorHandler<{ token: string }>(async function GET(
   // Count retained: collective choices whose source response belongs to this student
   const retained = (retainedRes.data || []).filter(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (c: any) => c.responses?.student_id === student.id
+    (c: any) => c.responses?.student_id === student.id,
   ).length;
 
-  const impactRate =
-    totalResponses > 0 ? Math.round((retained / totalResponses) * 100) : 0;
+  const impactRate = totalResponses > 0 ? Math.round((retained / totalResponses) * 100) : 0;
 
   // Get creative profile from student_profiles if available
   let creativeProfile: string | null = null;
@@ -100,9 +91,7 @@ export const GET = withErrorHandler<{ token: string }>(async function GET(
     impactRate,
     creativeProfile,
     personnage: personnageRes.data || null,
-    achievements: (achievementsRes.data || []).map(
-      (a: { achievement_key: string }) => a.achievement_key
-    ),
+    achievements: (achievementsRes.data || []).map((a: { achievement_key: string }) => a.achievement_key),
     date: session.created_at,
   });
 });

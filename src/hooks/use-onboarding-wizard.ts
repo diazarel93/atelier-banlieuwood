@@ -10,7 +10,9 @@ export function useOnboardingWizard() {
     try {
       const done = localStorage.getItem(STORAGE_KEY);
       if (!done) setShowWizard(true);
-    } catch { /* iPad Private Browsing */ }
+    } catch {
+      /* iPad Private Browsing */
+    }
   }, []);
 
   const nextStep = useCallback(() => {
@@ -23,7 +25,9 @@ export function useOnboardingWizard() {
 
   const dismiss = useCallback(() => {
     setShowWizard(false);
-    try { localStorage.setItem(STORAGE_KEY, "true"); } catch {}
+    try {
+      localStorage.setItem(STORAGE_KEY, "true");
+    } catch {}
   }, []);
 
   return { showWizard, currentStep, nextStep, prevStep, dismiss };

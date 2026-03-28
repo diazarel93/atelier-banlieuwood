@@ -45,9 +45,7 @@ export function FacilitatorTimeline({ sessions }: FacilitatorTimelineProps) {
   if (sessions.length === 0) return null;
 
   // Sort by date descending, take last 10
-  const sorted = [...sessions]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 10);
+  const sorted = [...sessions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10);
 
   return (
     <GlassCardV2 className="p-5">
@@ -79,7 +77,9 @@ export function FacilitatorTimeline({ sessions }: FacilitatorTimelineProps) {
                   <div className="flex items-center gap-2 text-xs text-bw-muted mt-0.5">
                     <span>{formatRelativeDate(session.date)}</span>
                     <span>·</span>
-                    <span>{session.studentCount} élève{session.studentCount !== 1 ? "s" : ""}</span>
+                    <span>
+                      {session.studentCount} élève{session.studentCount !== 1 ? "s" : ""}
+                    </span>
                     {session.classLabel && (
                       <>
                         <span>·</span>

@@ -6,7 +6,7 @@ interface StatRingProps {
   value: number; // 0-100
   label: string;
   color?: string; // CSS color or var()
-  size?: number;  // px, default 80
+  size?: number; // px, default 80
   strokeWidth?: number; // px, default 6
   className?: string;
 }
@@ -26,7 +26,13 @@ export function StatRing({
   return (
     <div className={cn("flex flex-col items-center gap-1", className)}>
       <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} className="-rotate-90" role="img" aria-label={`${label}: ${Math.round(value)}%`}>
+        <svg
+          width={size}
+          height={size}
+          className="-rotate-90"
+          role="img"
+          aria-label={`${label}: ${Math.round(value)}%`}
+        >
           {/* Background track */}
           <circle
             cx={size / 2}
@@ -51,17 +57,11 @@ export function StatRing({
           />
         </svg>
         {/* Center label */}
-        <span
-          className="absolute inset-0 flex items-center justify-center text-sm font-bold tabular-nums text-bw-heading"
-        >
+        <span className="absolute inset-0 flex items-center justify-center text-sm font-bold tabular-nums text-bw-heading">
           {Math.round(value)}%
         </span>
       </div>
-      {label && (
-        <span className="text-xs font-medium text-bw-muted truncate max-w-full">
-          {label}
-        </span>
-      )}
+      {label && <span className="text-xs font-medium text-bw-muted truncate max-w-full">{label}</span>}
     </div>
   );
 }

@@ -23,25 +23,14 @@ function makeChain(
     data: unknown;
     error: unknown | null;
     count?: number | null;
-  }
+  },
 ) {
   const chain: Record<string, unknown> = {};
-  const methods = [
-    "select",
-    "insert",
-    "update",
-    "upsert",
-    "eq",
-    "is",
-    "single",
-    "order",
-  ];
+  const methods = ["select", "insert", "update", "upsert", "eq", "is", "single", "order"];
   for (const m of methods) {
     chain[m] = vi.fn().mockReturnValue(chain);
   }
-  chain.single = vi
-    .fn()
-    .mockImplementation(() => Promise.resolve(resolveWith()));
+  chain.single = vi.fn().mockImplementation(() => Promise.resolve(resolveWith()));
   return chain;
 }
 
@@ -62,9 +51,7 @@ vi.mock("@/lib/supabase/admin", () => ({
         // 1st: check existing student (reconnection)
         // 2nd: count students
         // 3rd: insert new student
-        const studentCallCount = querySequence.filter(
-          (t) => t === "students"
-        ).length;
+        const studentCallCount = querySequence.filter((t) => t === "students").length;
 
         if (studentCallCount === 1) {
           // Reconnection check
@@ -86,7 +73,7 @@ vi.mock("@/lib/supabase/admin", () => ({
                   count: countResult.count,
                   data: null,
                   error: null,
-                })
+                }),
               ),
             };
           });
@@ -142,40 +129,30 @@ describe("POST /api/sessions/join", () => {
   });
 
   it("returns 400 when avatar is missing", async () => {
-    const res = await POST(
-      makeReq({ joinCode: "ABC123", displayName: "Alice" })
-    );
+    const res = await POST(makeReq({ joinCode: "ABC123", displayName: "Alice" }));
     expect(res.status).toBe(400);
   });
 
   it("returns 400 when displayName is empty after trim", async () => {
-    const res = await POST(
-      makeReq({ joinCode: "ABC123", displayName: "   ", avatar: "🎬" })
-    );
+    const res = await POST(makeReq({ joinCode: "ABC123", displayName: "   ", avatar: "🎬" }));
     expect(res.status).toBe(400);
   });
 
   it("returns 400 when avatar is not an emoji", async () => {
-    const res = await POST(
-      makeReq({ joinCode: "ABC123", displayName: "Alice", avatar: "AB" })
-    );
+    const res = await POST(makeReq({ joinCode: "ABC123", displayName: "Alice", avatar: "AB" }));
     expect(res.status).toBe(400);
     const json = await res.json();
     expect(json.error).toContain("emoji");
   });
 
   it("returns 400 when avatar is multiple emojis", async () => {
-    const res = await POST(
-      makeReq({ joinCode: "ABC123", displayName: "Alice", avatar: "🎬🎥" })
-    );
+    const res = await POST(makeReq({ joinCode: "ABC123", displayName: "Alice", avatar: "🎬🎥" }));
     expect(res.status).toBe(400);
   });
 
   it("returns 404 when join code not found", async () => {
     sessionResult = { data: null, error: { code: "PGRST116" } };
-    const res = await POST(
-      makeReq({ joinCode: "XXXXXX", displayName: "Alice", avatar: "🎬" })
-    );
+    const res = await POST(makeReq({ joinCode: "XXXXXX", displayName: "Alice", avatar: "🎬" }));
     expect(res.status).toBe(404);
   });
 
@@ -184,9 +161,7 @@ describe("POST /api/sessions/join", () => {
       data: { id: "sess-001", status: "done" },
       error: null,
     };
-    const res = await POST(
-      makeReq({ joinCode: "ABC123", displayName: "Alice", avatar: "🎬" })
-    );
+    const res = await POST(makeReq({ joinCode: "ABC123", displayName: "Alice", avatar: "🎬" }));
     expect(res.status).toBe(400);
     const json = await res.json();
     expect(json.error).toContain("terminée");
@@ -201,7 +176,7 @@ describe("POST /api/sessions/join", () => {
           joinCode: "ABC123",
           displayName: "Alice",
           avatar: emoji,
-        })
+        }),
       );
       // Should not be a 400 avatar error
       if (res.status === 400) {
@@ -213,9 +188,7 @@ describe("POST /api/sessions/join", () => {
 
   it("uppercases join code", async () => {
     // lowercase input should work — the code uppercases it
-    const res = await POST(
-      makeReq({ joinCode: "abc123", displayName: "Alice", avatar: "🎬" })
-    );
+    const res = await POST(makeReq({ joinCode: "abc123", displayName: "Alice", avatar: "🎬" }));
     // Not a 404 (code should be uppercased to ABC123 and found)
     // The mock returns session for any .eq() call, so this should succeed
     expect(res.status).not.toBe(404);

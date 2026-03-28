@@ -7,7 +7,7 @@ const TEAM_COLORS = ["#FF6B35", "#4ECDC4", "#8B5CF6", "#EC4899", "#F59E0B", "#10
 // GET — list teams with their students
 export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
@@ -19,7 +19,10 @@ export const GET = withErrorHandler(async function GET(
     .eq("session_id", sessionId)
     .order("team_number");
 
-  if (error) { console.error("[teams GET]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[teams GET]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
 
   return NextResponse.json(teams || []);
 });
@@ -27,7 +30,7 @@ export const GET = withErrorHandler(async function GET(
 // POST — create a team
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "teams", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -53,7 +56,10 @@ export const POST = withErrorHandler(async function POST(
     .select()
     .single();
 
-  if (error) { console.error("[teams POST]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[teams POST]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
 
   return NextResponse.json(data, { status: 201 });
 });
@@ -61,7 +67,7 @@ export const POST = withErrorHandler(async function POST(
 // DELETE — delete a team (reset students' team_id)
 export const DELETE = withErrorHandler(async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "teams", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -78,10 +84,7 @@ export const DELETE = withErrorHandler(async function DELETE(
     await auth.supabase.from("teams").delete().eq("id", teamId).eq("session_id", sessionId);
   } else {
     // Delete all teams for session
-    const { data: teams } = await auth.supabase
-      .from("teams")
-      .select("id")
-      .eq("session_id", sessionId);
+    const { data: teams } = await auth.supabase.from("teams").select("id").eq("session_id", sessionId);
     if (teams?.length) {
       const teamIds = teams.map((t) => t.id);
       await auth.supabase.from("students").update({ team_id: null }).in("team_id", teamIds);

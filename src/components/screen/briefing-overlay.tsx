@@ -38,7 +38,11 @@ export function BriefingOverlay({ showBriefing, seanceIntro }: BriefingOverlayPr
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
               className="w-28 h-28 rounded-3xl mx-auto flex items-center justify-center text-5xl relative"
-              style={{ background: `${seanceIntro.color}20`, border: `2px solid ${seanceIntro.color}40`, boxShadow: `0 0 80px ${seanceIntro.color}30, 0 0 160px ${seanceIntro.color}10` }}
+              style={{
+                background: `${seanceIntro.color}20`,
+                border: `2px solid ${seanceIntro.color}40`,
+                boxShadow: `0 0 80px ${seanceIntro.color}30, 0 0 160px ${seanceIntro.color}10`,
+              }}
             >
               {seanceIntro.icon}
             </motion.div>
@@ -49,8 +53,10 @@ export function BriefingOverlay({ showBriefing, seanceIntro }: BriefingOverlayPr
               transition={{ delay: 1.5 }}
               className="space-y-4"
             >
-              <span className="text-sm font-bold uppercase tracking-[0.3em] px-4 py-1.5 rounded-full inline-block"
-                style={{ backgroundColor: `${seanceIntro.color}20`, color: seanceIntro.color }}>
+              <span
+                className="text-sm font-bold uppercase tracking-[0.3em] px-4 py-1.5 rounded-full inline-block"
+                style={{ backgroundColor: `${seanceIntro.color}20`, color: seanceIntro.color }}
+              >
                 {seanceIntro.activityType}
               </span>
               <h2 className="text-5xl font-bold text-white">{seanceIntro.title}</h2>
@@ -74,8 +80,14 @@ export function BriefingOverlay({ showBriefing, seanceIntro }: BriefingOverlayPr
                   transition={{ delay: 4 + i * 0.4 }}
                   className="flex items-center gap-2"
                 >
-                  <span className="w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: `${seanceIntro.color}25`, color: seanceIntro.color, border: `1px solid ${seanceIntro.color}40` }}>
+                  <span
+                    className="w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center flex-shrink-0"
+                    style={{
+                      backgroundColor: `${seanceIntro.color}25`,
+                      color: seanceIntro.color,
+                      border: `1px solid ${seanceIntro.color}40`,
+                    }}
+                  >
                     {i + 1}
                   </span>
                   <span className="text-sm text-bw-text">{step}</span>
@@ -85,7 +97,9 @@ export function BriefingOverlay({ showBriefing, seanceIntro }: BriefingOverlayPr
                       animate={{ opacity: 0.3 }}
                       transition={{ delay: 4.2 + i * 0.4 }}
                       className="mx-1 text-bw-muted"
-                    >{"\u2192"}</motion.span>
+                    >
+                      {"\u2192"}
+                    </motion.span>
                   )}
                 </motion.div>
               ))}

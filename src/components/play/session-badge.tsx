@@ -187,9 +187,7 @@ export function SessionBadge({
       // Fallback: copy to clipboard
       const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
       if (blob) {
-        await navigator.clipboard.write([
-          new ClipboardItem({ "image/png": blob }),
-        ]);
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
         toast.success("Badge copié dans le presse-papiers !");
       }
     } catch {
@@ -225,7 +223,9 @@ export function SessionBadge({
             { icon: "🔥", value: bestStreak, label: "Série" },
           ].map((s) => (
             <div key={s.label} className="rounded-xl bg-white/50 p-2.5 space-y-0.5">
-              <p className="text-lg font-bold text-bw-heading">{s.icon} {s.value}</p>
+              <p className="text-lg font-bold text-bw-heading">
+                {s.icon} {s.value}
+              </p>
               <p className="text-xs text-bw-muted">{s.label}</p>
             </div>
           ))}
@@ -242,8 +242,18 @@ export function SessionBadge({
           aria-label="Telecharger mon badge en image"
           className="flex-1 h-10 rounded-xl bg-bw-gold/10 text-bw-gold text-sm font-medium hover:bg-bw-gold/20 transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
           Télécharger
         </button>
@@ -253,8 +263,20 @@ export function SessionBadge({
           aria-label="Partager mon badge"
           className="flex-1 h-10 rounded-xl bg-bw-teal/10 text-bw-teal text-sm font-medium hover:bg-bw-teal/20 transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
           </svg>
           Partager
         </button>

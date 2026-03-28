@@ -11,7 +11,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useOfflineQueue } from "@/hooks/use-offline-queue";
 import { useOnlineStatus } from "@/hooks/use-online-status";
 import { useSound } from "@/hooks/use-sound";
-import { CATEGORY_COLORS, SEANCE_SITUATIONS, MODULE_SEANCE_SITUATIONS, TOTAL_SITUATIONS, getSeanceMax } from "@/lib/constants";
+import {
+  CATEGORY_COLORS,
+  SEANCE_SITUATIONS,
+  MODULE_SEANCE_SITUATIONS,
+  TOTAL_SITUATIONS,
+  getSeanceMax,
+} from "@/lib/constants";
 import { getCoachTip } from "@/lib/coach-tips";
 import { ROUTES } from "@/lib/routes";
 import { CountdownTimer } from "@/components/countdown-timer";
@@ -41,52 +47,145 @@ import { DoneState } from "@/components/play/states/done-state";
 import dynamic from "next/dynamic";
 
 // Module 1
-const PositioningState = dynamic(() => import("@/components/play/module-1/positioning-state").then(m => ({ default: m.PositioningState })), { ssr: false });
-const ImageQuestionState = dynamic(() => import("@/components/play/module-1/image-question-state").then(m => ({ default: m.ImageQuestionState })), { ssr: false });
-const NotebookState = dynamic(() => import("@/components/play/module-1/notebook-state").then(m => ({ default: m.NotebookState })), { ssr: false });
+const PositioningState = dynamic(
+  () => import("@/components/play/module-1/positioning-state").then((m) => ({ default: m.PositioningState })),
+  { ssr: false },
+);
+const ImageQuestionState = dynamic(
+  () => import("@/components/play/module-1/image-question-state").then((m) => ({ default: m.ImageQuestionState })),
+  { ssr: false },
+);
+const NotebookState = dynamic(
+  () => import("@/components/play/module-1/notebook-state").then((m) => ({ default: m.NotebookState })),
+  { ssr: false },
+);
 
 // Module 2
-const ChecklistState = dynamic(() => import("@/components/play/module-2/checklist-state").then(m => ({ default: m.ChecklistState })), { ssr: false });
-const SceneBuilderState = dynamic(() => import("@/components/play/module-2/scene-builder-state").then(m => ({ default: m.SceneBuilderState })), { ssr: false });
+const ChecklistState = dynamic(
+  () => import("@/components/play/module-2/checklist-state").then((m) => ({ default: m.ChecklistState })),
+  { ssr: false },
+);
+const SceneBuilderState = dynamic(
+  () => import("@/components/play/module-2/scene-builder-state").then((m) => ({ default: m.SceneBuilderState })),
+  { ssr: false },
+);
 
 // Module 6
-const FriseNarrative = dynamic(() => import("@/components/play/module-6/frise-narrative").then(m => ({ default: m.FriseNarrative })), { ssr: false });
-const SceneCardList = dynamic(() => import("@/components/play/module-6/scene-card").then(m => ({ default: m.SceneCardList })), { ssr: false });
-const MissionState = dynamic(() => import("@/components/play/module-6/mission-state").then(m => ({ default: m.MissionState })), { ssr: false });
-const ScenarioAssembly = dynamic(() => import("@/components/play/module-6/scenario-assembly").then(m => ({ default: m.ScenarioAssembly })), { ssr: false });
+const FriseNarrative = dynamic(
+  () => import("@/components/play/module-6/frise-narrative").then((m) => ({ default: m.FriseNarrative })),
+  { ssr: false },
+);
+const SceneCardList = dynamic(
+  () => import("@/components/play/module-6/scene-card").then((m) => ({ default: m.SceneCardList })),
+  { ssr: false },
+);
+const MissionState = dynamic(
+  () => import("@/components/play/module-6/mission-state").then((m) => ({ default: m.MissionState })),
+  { ssr: false },
+);
+const ScenarioAssembly = dynamic(
+  () => import("@/components/play/module-6/scenario-assembly").then((m) => ({ default: m.ScenarioAssembly })),
+  { ssr: false },
+);
 
 // Module 7
-const PlanTypesGallery = dynamic(() => import("@/components/play/module-7/plan-types-gallery").then(m => ({ default: m.PlanTypesGallery })), { ssr: false });
-const ComparisonQuiz = dynamic(() => import("@/components/play/module-7/comparison-quiz").then(m => ({ default: m.ComparisonQuiz })), { ssr: false });
-const DecoupageBuilder = dynamic(() => import("@/components/play/module-7/decoupage-builder").then(m => ({ default: m.DecoupageBuilder })), { ssr: false });
-const StoryboardView = dynamic(() => import("@/components/play/module-7/storyboard-view").then(m => ({ default: m.StoryboardView })), { ssr: false });
+const PlanTypesGallery = dynamic(
+  () => import("@/components/play/module-7/plan-types-gallery").then((m) => ({ default: m.PlanTypesGallery })),
+  { ssr: false },
+);
+const ComparisonQuiz = dynamic(
+  () => import("@/components/play/module-7/comparison-quiz").then((m) => ({ default: m.ComparisonQuiz })),
+  { ssr: false },
+);
+const DecoupageBuilder = dynamic(
+  () => import("@/components/play/module-7/decoupage-builder").then((m) => ({ default: m.DecoupageBuilder })),
+  { ssr: false },
+);
+const StoryboardView = dynamic(
+  () => import("@/components/play/module-7/storyboard-view").then((m) => ({ default: m.StoryboardView })),
+  { ssr: false },
+);
 
 // Module 8
-const MetierQuiz = dynamic(() => import("@/components/play/module-8/metier-quiz").then(m => ({ default: m.MetierQuiz })), { ssr: false });
-const DebriefView = dynamic(() => import("@/components/play/module-8/debrief-view").then(m => ({ default: m.DebriefView })), { ssr: false });
-const RolePicker = dynamic(() => import("@/components/play/module-8/role-picker").then(m => ({ default: m.RolePicker })), { ssr: false });
-const TalentCard = dynamic(() => import("@/components/play/module-8/talent-card").then(m => ({ default: m.TalentCard })), { ssr: false });
-const TeamRecap = dynamic(() => import("@/components/play/module-8/team-recap").then(m => ({ default: m.TeamRecap })), { ssr: false });
+const MetierQuiz = dynamic(
+  () => import("@/components/play/module-8/metier-quiz").then((m) => ({ default: m.MetierQuiz })),
+  { ssr: false },
+);
+const DebriefView = dynamic(
+  () => import("@/components/play/module-8/debrief-view").then((m) => ({ default: m.DebriefView })),
+  { ssr: false },
+);
+const RolePicker = dynamic(
+  () => import("@/components/play/module-8/role-picker").then((m) => ({ default: m.RolePicker })),
+  { ssr: false },
+);
+const TalentCard = dynamic(
+  () => import("@/components/play/module-8/talent-card").then((m) => ({ default: m.TalentCard })),
+  { ssr: false },
+);
+const TeamRecap = dynamic(
+  () => import("@/components/play/module-8/team-recap").then((m) => ({ default: m.TeamRecap })),
+  { ssr: false },
+);
 
 // Module 9
-const BudgetState = dynamic(() => import("@/components/play/module-9/budget-state").then(m => ({ default: m.BudgetState })), { ssr: false });
+const BudgetState = dynamic(
+  () => import("@/components/play/module-9/budget-state").then((m) => ({ default: m.BudgetState })),
+  { ssr: false },
+);
 
 // Module 10
-const EtsiWriterState = dynamic(() => import("@/components/play/module-10/etsi-writer-state").then(m => ({ default: m.EtsiWriterState })), { ssr: false });
-const IdeaBankState = dynamic(() => import("@/components/play/module-10/idea-bank-state").then(m => ({ default: m.IdeaBankState })), { ssr: false });
-const AvatarDoneState = dynamic(() => import("@/components/play/module-10/avatar-done-state").then(m => ({ default: m.AvatarDoneState })), { ssr: false });
-const AvatarBuilderState = dynamic(() => import("@/components/play/module-10/avatar-builder-state").then(m => ({ default: m.AvatarBuilderState })), { ssr: false });
-const ObjectifObstacleState = dynamic(() => import("@/components/play/module-10/objectif-obstacle-state").then(m => ({ default: m.ObjectifObstacleState })), { ssr: false });
-const PitchAssemblyState = dynamic(() => import("@/components/play/module-10/pitch-assembly-state").then(m => ({ default: m.PitchAssemblyState })), { ssr: false });
-const ChronoTestState = dynamic(() => import("@/components/play/module-10/chrono-test-state").then(m => ({ default: m.ChronoTestState })), { ssr: false });
-const PitchConfrontationState = dynamic(() => import("@/components/play/module-10/pitch-confrontation-state").then(m => ({ default: m.PitchConfrontationState })), { ssr: false });
+const EtsiWriterState = dynamic(
+  () => import("@/components/play/module-10/etsi-writer-state").then((m) => ({ default: m.EtsiWriterState })),
+  { ssr: false },
+);
+const IdeaBankState = dynamic(
+  () => import("@/components/play/module-10/idea-bank-state").then((m) => ({ default: m.IdeaBankState })),
+  { ssr: false },
+);
+const AvatarDoneState = dynamic(
+  () => import("@/components/play/module-10/avatar-done-state").then((m) => ({ default: m.AvatarDoneState })),
+  { ssr: false },
+);
+const AvatarBuilderState = dynamic(
+  () => import("@/components/play/module-10/avatar-builder-state").then((m) => ({ default: m.AvatarBuilderState })),
+  { ssr: false },
+);
+const ObjectifObstacleState = dynamic(
+  () =>
+    import("@/components/play/module-10/objectif-obstacle-state").then((m) => ({ default: m.ObjectifObstacleState })),
+  { ssr: false },
+);
+const PitchAssemblyState = dynamic(
+  () => import("@/components/play/module-10/pitch-assembly-state").then((m) => ({ default: m.PitchAssemblyState })),
+  { ssr: false },
+);
+const ChronoTestState = dynamic(
+  () => import("@/components/play/module-10/chrono-test-state").then((m) => ({ default: m.ChronoTestState })),
+  { ssr: false },
+);
+const PitchConfrontationState = dynamic(
+  () =>
+    import("@/components/play/module-10/pitch-confrontation-state").then((m) => ({
+      default: m.PitchConfrontationState,
+    })),
+  { ssr: false },
+);
 
 // Module 11-13
-const CineDebatState = dynamic(() => import("@/components/play/module-11/cine-debat-state").then(m => ({ default: m.CineDebatState })), { ssr: false });
-const MancheVoteState = dynamic(() => import("@/components/play/module-12/manche-vote-state").then(m => ({ default: m.MancheVoteState })), { ssr: false });
-const PostprodState = dynamic(() => import("@/components/play/module-13/postprod-state").then(m => ({ default: m.PostprodState })), { ssr: false });
+const CineDebatState = dynamic(
+  () => import("@/components/play/module-11/cine-debat-state").then((m) => ({ default: m.CineDebatState })),
+  { ssr: false },
+);
+const MancheVoteState = dynamic(
+  () => import("@/components/play/module-12/manche-vote-state").then((m) => ({ default: m.MancheVoteState })),
+  { ssr: false },
+);
+const PostprodState = dynamic(
+  () => import("@/components/play/module-13/postprod-state").then((m) => ({ default: m.PostprodState })),
+  { ssr: false },
+);
 import { TeamChat } from "@/components/play/team-chat";
-
 
 // ——— Main Page ———
 export default function PlayPage() {
@@ -130,7 +229,9 @@ export default function PlayPage() {
   const [lastXpGain, setLastXpGain] = useState(0);
   const prevLevelRef = useRef(0);
 
-  const [newAchievements, setNewAchievements] = useState<{ achievementId: string; name: string; icon: string; tier: string }[]>([]);
+  const [newAchievements, setNewAchievements] = useState<
+    { achievementId: string; name: string; icon: string; tier: string }[]
+  >([]);
   const [profileId, setProfileId] = useState<string | null>(null);
   const [crossSessionStreak, setCrossSessionStreak] = useState(0);
 
@@ -159,7 +260,9 @@ export default function PlayPage() {
 
   const handleIntroComplete = useCallback(() => {
     setShowIntro(false);
-    try { localStorage.setItem(`bw-intro-seen-${sessionId}`, "1"); } catch {}
+    try {
+      localStorage.setItem(`bw-intro-seen-${sessionId}`, "1");
+    } catch {}
   }, [sessionId]);
 
   // Reconnection toast
@@ -219,7 +322,9 @@ export default function PlayPage() {
           bestStreak: Math.max(profile.bestStreak || 0, prev.bestStreak),
         }));
       })
-      .catch(() => {/* silent — profile is optional */});
+      .catch(() => {
+        /* silent — profile is optional */
+      });
   }, [studentId, sessionId]);
 
   const { data, isLoading, error, refetch } = useSessionPolling(sessionId, studentId);
@@ -264,7 +369,9 @@ export default function PlayPage() {
           localStorage.setItem("bw-profile-id", data.profileId);
         }
       })
-      .catch(() => {/* silent */});
+      .catch(() => {
+        /* silent */
+      });
   }, [studentId, sessionId, data?.session?.status, sessionXp, gameStats, streak]);
 
   const isFreeMode = data?.session?.mode === "free";
@@ -348,11 +455,25 @@ export default function PlayPage() {
     if (characterCard || !m10Data?.personnage || !m10Data?.submitted) return;
     if (currentModule !== 10 || data?.session?.currentSeance !== 2) return;
     let rl: 0 | 1 | 2 | 3 = 0;
-    const persoData = { prenom: m10Data.personnage.prenom, trait: m10Data.personnage.trait, avatar: m10Data.personnage.avatar as unknown as AvatarOptions };
+    const persoData = {
+      prenom: m10Data.personnage.prenom,
+      trait: m10Data.personnage.trait,
+      avatar: m10Data.personnage.avatar as unknown as AvatarOptions,
+    };
     const rebuilt: Parameters<typeof setCharacterCard>[0] = { personnage: persoData, revealLevel: rl };
-    if (m10Data.objectif) { rebuilt.objectif = m10Data.objectif; rebuilt.obstacle = m10Data.obstacle ?? undefined; rl = 1; }
-    if (m10Data.pitchText) { rebuilt.pitchText = m10Data.pitchText; rl = 2; }
-    if (m10Data.chronoSeconds != null) { rebuilt.chronoSeconds = m10Data.chronoSeconds; rl = 3; }
+    if (m10Data.objectif) {
+      rebuilt.objectif = m10Data.objectif;
+      rebuilt.obstacle = m10Data.obstacle ?? undefined;
+      rl = 1;
+    }
+    if (m10Data.pitchText) {
+      rebuilt.pitchText = m10Data.pitchText;
+      rl = 2;
+    }
+    if (m10Data.chronoSeconds != null) {
+      rebuilt.chronoSeconds = m10Data.chronoSeconds;
+      rl = 3;
+    }
     rebuilt.revealLevel = rl;
     setCharacterCard(rebuilt);
   }, [characterCard, m10Data, currentModule, data?.session?.currentSeance]);
@@ -361,11 +482,13 @@ export default function PlayPage() {
   useEffect(() => {
     if (currentModule !== 9) return;
     fetch(`/api/sessions/${sessionId}/budget?context=true`)
-      .then((r) => r.ok ? r.json() : null)
+      .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (d?.storyContext) setStoryContext(d.storyContext);
       })
-      .catch(() => { /* Budget context is optional — student can still play */ });
+      .catch(() => {
+        /* Budget context is optional — student can still play */
+      });
   }, [sessionId, currentModule]);
 
   // Play reveal sound when collective choice appears + celebrate if student's idea was chosen
@@ -407,10 +530,8 @@ export default function PlayPage() {
             fireConfetti();
           }
           toast.success(
-            newCombo >= 2
-              ? `Combo x${newCombo} ! Encore ton idée retenue !`
-              : "Ton idée a été retenue par la classe !",
-            { duration: 5000 }
+            newCombo >= 2 ? `Combo x${newCombo} ! Encore ton idée retenue !` : "Ton idée a été retenue par la classe !",
+            { duration: 5000 },
           );
         }, 2500); // After suspense reveal
       }
@@ -426,7 +547,7 @@ export default function PlayPage() {
       const { ok, data: responseData } = await submitWithQueue(
         `/api/sessions/${sessionId}/respond`,
         { studentId, situationId: data.situation.id, text },
-        "respond"
+        "respond",
       );
 
       if (!ok) {
@@ -514,17 +635,19 @@ export default function PlayPage() {
   }
 
   // Compute global progress for free mode (across all séances)
-  const freeProgress = data ? (() => {
-    const mod = data.session.currentModule;
-    const seanceMap = MODULE_SEANCE_SITUATIONS[mod] ?? SEANCE_SITUATIONS;
-    let completed = 0;
-    for (let s = 1; s < data.session.currentSeance; s++) {
-      completed += seanceMap[s] || 0;
-    }
-    completed += data.session.currentSituationIndex;
-    const totalForModule = Object.values(seanceMap).reduce((a, b) => a + b, 0);
-    return { current: completed + 1, total: totalForModule || TOTAL_SITUATIONS };
-  })() : null;
+  const freeProgress = data
+    ? (() => {
+        const mod = data.session.currentModule;
+        const seanceMap = MODULE_SEANCE_SITUATIONS[mod] ?? SEANCE_SITUATIONS;
+        let completed = 0;
+        for (let s = 1; s < data.session.currentSeance; s++) {
+          completed += seanceMap[s] || 0;
+        }
+        completed += data.session.currentSituationIndex;
+        const totalForModule = Object.values(seanceMap).reduce((a, b) => a + b, 0);
+        return { current: completed + 1, total: totalForModule || TOTAL_SITUATIONS };
+      })()
+    : null;
 
   async function handleVote(chosenResponseId: string) {
     if (!studentId || !data?.situation) return;
@@ -534,7 +657,7 @@ export default function PlayPage() {
       const { ok, data: errData } = await submitWithQueue(
         `/api/sessions/${sessionId}/vote`,
         { studentId, situationId: data.situation.id, chosenResponseId },
-        "vote"
+        "vote",
       );
 
       if (!ok) {
@@ -558,10 +681,23 @@ export default function PlayPage() {
   // Determine which state to render
   function getView() {
     if (!data) return null;
-    const { session, situation, hasResponded, hasVoted, voteOptions, collectiveChoice, connectedCount, responsesCount } = data;
+    const {
+      session,
+      situation,
+      hasResponded,
+      hasVoted,
+      voteOptions,
+      collectiveChoice,
+      connectedCount,
+      responsesCount,
+    } = data;
 
     // Module 1 — Redesign Adrian — 3 types: positioning, image, notebook
-    if (session.currentModule === 1 && data.module1 && (session.status === "responding" || (isFreeMode && session.status === "waiting"))) {
+    if (
+      session.currentModule === 1 &&
+      data.module1 &&
+      (session.status === "responding" || (isFreeMode && session.status === "waiting"))
+    ) {
       switch (data.module1.type) {
         case "positioning":
           return (
@@ -649,8 +785,16 @@ export default function PlayPage() {
                     aria-label="Fermer"
                     className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white cursor-pointer hover:bg-white/20 transition-colors z-10"
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                      <path d="M18 6L6 18M6 6l12 12"/>
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      <path d="M18 6L6 18M6 6l12 12" />
                     </svg>
                   </button>
                   <SafeImage
@@ -669,30 +813,69 @@ export default function PlayPage() {
       }
       // Positioning or notebook waiting
       return (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center gap-4 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col items-center gap-4 text-center"
+        >
           <div className="w-16 h-16 rounded-full bg-bw-violet/20 flex items-center justify-center">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round">
-              {data.module1.type === "positioning"
-                ? <><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></>
-                : <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" /></>
-              }
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#8B5CF6"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              {data.module1.type === "positioning" ? (
+                <>
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 16v-4M12 8h.01" />
+                </>
+              ) : (
+                <>
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                  <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
+                </>
+              )}
             </svg>
           </div>
           <p className="text-sm text-bw-violet font-medium">
             {data.module1.type === "positioning" ? "Positionnement" : "Carnet d'idées"}
           </p>
-          <motion.p animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 2 }}
-            className="text-xs text-bw-muted">En attente du facilitateur...</motion.p>
+          <motion.p
+            animate={{ opacity: [0.4, 1, 0.4] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="text-xs text-bw-muted"
+          >
+            En attente du facilitateur...
+          </motion.p>
         </motion.div>
       );
     }
 
     // ── MODULE 2: Émotion Cachée — special components ──
     // Séance 1 index 0 — Checklist
-    if (session.currentModule === 2 && session.currentSeance === 1 && session.currentSituationIndex === 0 && session.status === "responding") {
+    if (
+      session.currentModule === 2 &&
+      session.currentSeance === 1 &&
+      session.currentSituationIndex === 0 &&
+      session.status === "responding"
+    ) {
       if (checklistDone || data.module5?.submitted) {
-        return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+        return (
+          <SentState
+            responsesCount={responsesCount}
+            connectedCount={connectedCount}
+            streak={streak}
+            lastXpGain={lastXpGain}
+            sessionId={sessionId}
+            studentId={studentId ?? undefined}
+            currentModule={session.currentModule}
+            currentSeance={session.currentSeance}
+          />
+        );
       }
       if (data.module5?.type === "checklist") {
         return (
@@ -701,16 +884,35 @@ export default function PlayPage() {
             sessionId={sessionId}
             studentId={studentId!}
             module5={data.module5}
-            onDone={() => { setChecklistDone(true); play("send"); }}
+            onDone={() => {
+              setChecklistDone(true);
+              play("send");
+            }}
           />
         );
       }
     }
 
     // Séance 2 index 1 — Scene Builder
-    if (session.currentModule === 2 && session.currentSeance === 2 && session.currentSituationIndex === 1 && session.status === "responding") {
+    if (
+      session.currentModule === 2 &&
+      session.currentSeance === 2 &&
+      session.currentSituationIndex === 1 &&
+      session.status === "responding"
+    ) {
       if (sceneDone || data.module5?.submitted) {
-        return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+        return (
+          <SentState
+            responsesCount={responsesCount}
+            connectedCount={connectedCount}
+            streak={streak}
+            lastXpGain={lastXpGain}
+            sessionId={sessionId}
+            studentId={studentId ?? undefined}
+            currentModule={session.currentModule}
+            currentSeance={session.currentSeance}
+          />
+        );
       }
       if (data.module5?.type === "scene-builder") {
         return (
@@ -719,7 +921,10 @@ export default function PlayPage() {
             sessionId={sessionId}
             studentId={studentId!}
             module5={data.module5}
-            onDone={() => { setSceneDone(true); play("send"); }}
+            onDone={() => {
+              setSceneDone(true);
+              play("send");
+            }}
           />
         );
       }
@@ -736,12 +941,55 @@ export default function PlayPage() {
       // Séance 1: Et si...
       if (session.currentSeance === 1) {
         if (m10.type === "etsi") {
-          if (etsiDone || m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
-          return <EtsiWriterState key="m10-etsi" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={() => { setEtsiDone(true); play("send"); }} />;
+          if (etsiDone || m10.submitted)
+            return (
+              <SentState
+                responsesCount={responsesCount}
+                connectedCount={connectedCount}
+                streak={streak}
+                lastXpGain={lastXpGain}
+                sessionId={sessionId}
+                studentId={studentId ?? undefined}
+                currentModule={session.currentModule}
+                currentSeance={session.currentSeance}
+              />
+            );
+          return (
+            <EtsiWriterState
+              key="m10-etsi"
+              module10={m10}
+              sessionId={sessionId}
+              studentId={studentId!}
+              onDone={() => {
+                setEtsiDone(true);
+                play("send");
+              }}
+            />
+          );
         }
         if (m10.type === "idea-bank") {
-          if (m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
-          return <IdeaBankState key="m10-ideas" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={() => play("send")} />;
+          if (m10.submitted)
+            return (
+              <SentState
+                responsesCount={responsesCount}
+                connectedCount={connectedCount}
+                streak={streak}
+                lastXpGain={lastXpGain}
+                sessionId={sessionId}
+                studentId={studentId ?? undefined}
+                currentModule={session.currentModule}
+                currentSeance={session.currentSeance}
+              />
+            );
+          return (
+            <IdeaBankState
+              key="m10-ideas"
+              module10={m10}
+              sessionId={sessionId}
+              studentId={studentId!}
+              onDone={() => play("send")}
+            />
+          );
         }
         // QCM falls through to standard Q&A below
       }
@@ -751,46 +999,236 @@ export default function PlayPage() {
         // Reconnection handled by useEffect above
 
         if (m10.type === "avatar") {
-          if (characterCard) return <CharacterCard {...characterCard} responsesCount={responsesCount} connectedCount={connectedCount} />;
-          if (m10.submitted && m10.personnage) return <CharacterCard personnage={{ prenom: m10.personnage.prenom, trait: m10.personnage.trait, avatar: m10.personnage.avatar as unknown as AvatarOptions }} revealLevel={0} responsesCount={responsesCount} connectedCount={connectedCount} />;
-          if (m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
-          return <AvatarBuilderState key="m10-avatar" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(data) => { setCharacterCard({ personnage: data, revealLevel: 0 }); play("cardReveal"); }} />;
+          if (characterCard)
+            return <CharacterCard {...characterCard} responsesCount={responsesCount} connectedCount={connectedCount} />;
+          if (m10.submitted && m10.personnage)
+            return (
+              <CharacterCard
+                personnage={{
+                  prenom: m10.personnage.prenom,
+                  trait: m10.personnage.trait,
+                  avatar: m10.personnage.avatar as unknown as AvatarOptions,
+                }}
+                revealLevel={0}
+                responsesCount={responsesCount}
+                connectedCount={connectedCount}
+              />
+            );
+          if (m10.submitted)
+            return (
+              <SentState
+                responsesCount={responsesCount}
+                connectedCount={connectedCount}
+                streak={streak}
+                lastXpGain={lastXpGain}
+                sessionId={sessionId}
+                studentId={studentId ?? undefined}
+                currentModule={session.currentModule}
+                currentSeance={session.currentSeance}
+              />
+            );
+          return (
+            <AvatarBuilderState
+              key="m10-avatar"
+              module10={m10}
+              sessionId={sessionId}
+              studentId={studentId!}
+              onDone={(data) => {
+                setCharacterCard({ personnage: data, revealLevel: 0 });
+                play("cardReveal");
+              }}
+            />
+          );
         }
         if (m10.type === "objectif") {
-          if (characterCard && characterCard.revealLevel >= 1) return <CharacterCard {...characterCard} responsesCount={responsesCount} connectedCount={connectedCount} />;
-          if (m10.submitted && characterCard) return <CharacterCard {...characterCard} objectif={m10.objectif ?? undefined} obstacle={m10.obstacle ?? undefined} revealLevel={1} responsesCount={responsesCount} connectedCount={connectedCount} />;
-          if (m10.submitted) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+          if (characterCard && characterCard.revealLevel >= 1)
+            return <CharacterCard {...characterCard} responsesCount={responsesCount} connectedCount={connectedCount} />;
+          if (m10.submitted && characterCard)
+            return (
+              <CharacterCard
+                {...characterCard}
+                objectif={m10.objectif ?? undefined}
+                obstacle={m10.obstacle ?? undefined}
+                revealLevel={1}
+                responsesCount={responsesCount}
+                connectedCount={connectedCount}
+              />
+            );
+          if (m10.submitted)
+            return (
+              <SentState
+                responsesCount={responsesCount}
+                connectedCount={connectedCount}
+                streak={streak}
+                lastXpGain={lastXpGain}
+                sessionId={sessionId}
+                studentId={studentId ?? undefined}
+                currentModule={session.currentModule}
+                currentSeance={session.currentSeance}
+              />
+            );
           // Late join: no personnage yet — let them create one first
-          if (!m10.personnage) return <AvatarBuilderState key="m10-avatar-late" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(data) => { setCharacterCard({ personnage: data, revealLevel: 0 }); play("cardReveal"); }} />;
-          return <ObjectifObstacleState key="m10-objectif" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(d) => { setCharacterCard((prev) => prev ? { ...prev, objectif: d.objectif, obstacle: d.obstacle, revealLevel: 1 } : prev); play("cardReveal"); }} />;
+          if (!m10.personnage)
+            return (
+              <AvatarBuilderState
+                key="m10-avatar-late"
+                module10={m10}
+                sessionId={sessionId}
+                studentId={studentId!}
+                onDone={(data) => {
+                  setCharacterCard({ personnage: data, revealLevel: 0 });
+                  play("cardReveal");
+                }}
+              />
+            );
+          return (
+            <ObjectifObstacleState
+              key="m10-objectif"
+              module10={m10}
+              sessionId={sessionId}
+              studentId={studentId!}
+              onDone={(d) => {
+                setCharacterCard((prev) =>
+                  prev ? { ...prev, objectif: d.objectif, obstacle: d.obstacle, revealLevel: 1 } : prev,
+                );
+                play("cardReveal");
+              }}
+            />
+          );
         }
         if (m10.type === "pitch") {
           if ((characterCard && characterCard.revealLevel >= 2) || m10.submitted) {
-            if (characterCard) return <CharacterCard {...characterCard} pitchText={characterCard.pitchText || m10.pitchText || undefined} revealLevel={Math.max(characterCard.revealLevel, 2) as 0 | 1 | 2 | 3} responsesCount={responsesCount} connectedCount={connectedCount} />;
-            return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+            if (characterCard)
+              return (
+                <CharacterCard
+                  {...characterCard}
+                  pitchText={characterCard.pitchText || m10.pitchText || undefined}
+                  revealLevel={Math.max(characterCard.revealLevel, 2) as 0 | 1 | 2 | 3}
+                  responsesCount={responsesCount}
+                  connectedCount={connectedCount}
+                />
+              );
+            return (
+              <SentState
+                responsesCount={responsesCount}
+                connectedCount={connectedCount}
+                streak={streak}
+                lastXpGain={lastXpGain}
+                sessionId={sessionId}
+                studentId={studentId ?? undefined}
+                currentModule={session.currentModule}
+                currentSeance={session.currentSeance}
+              />
+            );
           }
           // Late join: no personnage — create one first
-          if (!m10.personnage) return <AvatarBuilderState key="m10-avatar-late" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(data) => { setCharacterCard({ personnage: data, revealLevel: 0 }); play("cardReveal"); }} />;
-          return <PitchAssemblyState key="m10-pitch" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(d) => { setCharacterCard((prev) => prev ? { ...prev, pitchText: d.pitchText, revealLevel: 2 } : prev); play("cardReveal"); }} />;
+          if (!m10.personnage)
+            return (
+              <AvatarBuilderState
+                key="m10-avatar-late"
+                module10={m10}
+                sessionId={sessionId}
+                studentId={studentId!}
+                onDone={(data) => {
+                  setCharacterCard({ personnage: data, revealLevel: 0 });
+                  play("cardReveal");
+                }}
+              />
+            );
+          return (
+            <PitchAssemblyState
+              key="m10-pitch"
+              module10={m10}
+              sessionId={sessionId}
+              studentId={studentId!}
+              onDone={(d) => {
+                setCharacterCard((prev) => (prev ? { ...prev, pitchText: d.pitchText, revealLevel: 2 } : prev));
+                play("cardReveal");
+              }}
+            />
+          );
         }
         if (m10.type === "chrono") {
           if ((characterCard && characterCard.revealLevel >= 3) || m10.submitted) {
-            if (characterCard) return <CharacterCard {...characterCard} chronoSeconds={characterCard.chronoSeconds ?? m10.chronoSeconds ?? undefined} revealLevel={3} responsesCount={responsesCount} connectedCount={connectedCount} />;
-            return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+            if (characterCard)
+              return (
+                <CharacterCard
+                  {...characterCard}
+                  chronoSeconds={characterCard.chronoSeconds ?? m10.chronoSeconds ?? undefined}
+                  revealLevel={3}
+                  responsesCount={responsesCount}
+                  connectedCount={connectedCount}
+                />
+              );
+            return (
+              <SentState
+                responsesCount={responsesCount}
+                connectedCount={connectedCount}
+                streak={streak}
+                lastXpGain={lastXpGain}
+                sessionId={sessionId}
+                studentId={studentId ?? undefined}
+                currentModule={session.currentModule}
+                currentSeance={session.currentSeance}
+              />
+            );
           }
           // Late join: no personnage — create one first
-          if (!m10.personnage) return <AvatarBuilderState key="m10-avatar-late" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(data) => { setCharacterCard({ personnage: data, revealLevel: 0 }); play("cardReveal"); }} />;
-          return <ChronoTestState key="m10-chrono" module10={m10} sessionId={sessionId} studentId={studentId!} onDone={(d) => { setCharacterCard((prev) => prev ? { ...prev, chronoSeconds: d.chronoSeconds, revealLevel: 3 } : prev); play("cardReveal"); fireConfetti(); }} />;
+          if (!m10.personnage)
+            return (
+              <AvatarBuilderState
+                key="m10-avatar-late"
+                module10={m10}
+                sessionId={sessionId}
+                studentId={studentId!}
+                onDone={(data) => {
+                  setCharacterCard({ personnage: data, revealLevel: 0 });
+                  play("cardReveal");
+                }}
+              />
+            );
+          return (
+            <ChronoTestState
+              key="m10-chrono"
+              module10={m10}
+              sessionId={sessionId}
+              studentId={studentId!}
+              onDone={(d) => {
+                setCharacterCard((prev) => (prev ? { ...prev, chronoSeconds: d.chronoSeconds, revealLevel: 3 } : prev));
+                play("cardReveal");
+                fireConfetti();
+              }}
+            />
+          );
         }
         if (m10.type === "confrontation") {
-          return <PitchConfrontationState key="m10-confrontation" module10={m10} sessionId={sessionId} studentId={studentId!} />;
+          return (
+            <PitchConfrontationState
+              key="m10-confrontation"
+              module10={m10}
+              sessionId={sessionId}
+              studentId={studentId!}
+            />
+          );
         }
       }
     }
 
     // ── MODULE 11: Ciné-Débat — rich stimulus component ──
     if (session.currentModule === 11 && data.module11 && session.status === "responding") {
-      if (hasResponded) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+      if (hasResponded)
+        return (
+          <SentState
+            responsesCount={responsesCount}
+            connectedCount={connectedCount}
+            streak={streak}
+            lastXpGain={lastXpGain}
+            sessionId={sessionId}
+            studentId={studentId ?? undefined}
+            currentModule={session.currentModule}
+            currentSeance={session.currentSeance}
+          />
+        );
       return (
         <CineDebatState
           key={`m11-${situation?.id}`}
@@ -808,8 +1246,10 @@ export default function PlayPage() {
       const m6 = data.module6;
       if (m6.type === "frise") return <FriseNarrative key="m6-frise" module6={m6} />;
       if (m6.type === "scenes-v0") return <SceneCardList key="m6-scenes" module6={m6} />;
-      if (m6.type === "mission") return <MissionState key="m6-mission" module6={m6} sessionId={sessionId} studentId={studentId!} />;
-      if (m6.type === "ecriture") return <MissionState key="m6-ecriture" module6={m6} sessionId={sessionId} studentId={studentId!} isWriting />;
+      if (m6.type === "mission")
+        return <MissionState key="m6-mission" module6={m6} sessionId={sessionId} studentId={studentId!} />;
+      if (m6.type === "ecriture")
+        return <MissionState key="m6-ecriture" module6={m6} sessionId={sessionId} studentId={studentId!} isWriting />;
       if (m6.type === "assemblage") return <ScenarioAssembly key="m6-assembly" module6={m6} />;
     }
 
@@ -817,17 +1257,21 @@ export default function PlayPage() {
     if (session.currentModule === 7 && data.module7 && session.status === "responding") {
       const m7 = data.module7;
       if (m7.type === "plans") return <PlanTypesGallery key="m7-plans" module7={m7} />;
-      if (m7.type === "comparaison") return <ComparisonQuiz key="m7-comp" module7={m7} sessionId={sessionId} studentId={studentId!} />;
-      if (m7.type === "decoupage") return <DecoupageBuilder key="m7-decoupage" module7={m7} sessionId={sessionId} studentId={studentId!} />;
+      if (m7.type === "comparaison")
+        return <ComparisonQuiz key="m7-comp" module7={m7} sessionId={sessionId} studentId={studentId!} />;
+      if (m7.type === "decoupage")
+        return <DecoupageBuilder key="m7-decoupage" module7={m7} sessionId={sessionId} studentId={studentId!} />;
       if (m7.type === "storyboard") return <StoryboardView key="m7-storyboard" module7={m7} />;
     }
 
     // ── MODULE 8: L'Équipe (dbModule=8) ──
     if (session.currentModule === 8 && data.module8 && session.status === "responding") {
       const m8 = data.module8;
-      if (m8.type === "quiz") return <MetierQuiz key="m8-quiz" module8={m8} sessionId={sessionId} studentId={studentId!} />;
+      if (m8.type === "quiz")
+        return <MetierQuiz key="m8-quiz" module8={m8} sessionId={sessionId} studentId={studentId!} />;
       if (m8.type === "debrief") return <DebriefView key="m8-debrief" module8={m8} />;
-      if (m8.type === "role-choice") return <RolePicker key="m8-roles" module8={m8} sessionId={sessionId} studentId={studentId!} />;
+      if (m8.type === "role-choice")
+        return <RolePicker key="m8-roles" module8={m8} sessionId={sessionId} studentId={studentId!} />;
       if (m8.type === "team-recap") return <TeamRecap key="m8-recap" module8={m8} />;
       if (m8.type === "talent-card") return <TalentCard key="m8-talent" module8={m8} />;
     }
@@ -863,13 +1307,47 @@ export default function PlayPage() {
     if (session.currentModule === 9 && (session.currentSeance || 1) === 2 && session.status === "responding") {
       if (budgetDone) {
         if (isFreeMode) return <SentState />;
-        return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
+        return (
+          <SentState
+            responsesCount={responsesCount}
+            connectedCount={connectedCount}
+            streak={streak}
+            lastXpGain={lastXpGain}
+            sessionId={sessionId}
+            studentId={studentId ?? undefined}
+            currentModule={session.currentModule}
+            currentSeance={session.currentSeance}
+          />
+        );
       }
-      return <BudgetState sessionId={sessionId} studentId={studentId!} storyContext={storyContext} onDone={() => { setBudgetDone(true); play("send"); }} />;
+      return (
+        <BudgetState
+          sessionId={sessionId}
+          studentId={studentId!}
+          storyContext={storyContext}
+          onDone={() => {
+            setBudgetDone(true);
+            play("send");
+          }}
+        />
+      );
     }
 
     // Done
-    if (session.status === "done") return <DoneState sessionId={sessionId} sessionTitle={session.title} studentName={studentDisplayName} studentAvatar={studentAvatar} stats={gameStats} xp={sessionXp} characterCard={characterCard} newAchievements={newAchievements} profileId={profileId} />;
+    if (session.status === "done")
+      return (
+        <DoneState
+          sessionId={sessionId}
+          sessionTitle={session.title}
+          studentName={studentDisplayName}
+          studentAvatar={studentAvatar}
+          stats={gameStats}
+          xp={sessionXp}
+          characterCard={characterCard}
+          newAchievements={newAchievements}
+          profileId={profileId}
+        />
+      );
 
     // Paused
     if (session.status === "paused") return <PausedState />;
@@ -893,44 +1371,122 @@ export default function PlayPage() {
       if (session.status === "responding" && situation) {
         // In free mode, hasResponded means the server auto-advanced.
         // The polling will pick up the new situation, so just show the form.
-        return <SituationState key={situation.id} situation={situation} onSubmit={handleRespond} submitting={submitting} playSound={play} />;
+        return (
+          <SituationState
+            key={situation.id}
+            situation={situation}
+            onSubmit={handleRespond}
+            submitting={submitting}
+            playSound={play}
+          />
+        );
       }
-      return <WaitingState session={session} connectedCount={connectedCount} crossSessionStreak={crossSessionStreak} onReplayTutorial={() => setShowOnboarding(true)} />;
+      return (
+        <WaitingState
+          session={session}
+          connectedCount={connectedCount}
+          crossSessionStreak={crossSessionStreak}
+          onReplayTutorial={() => setShowOnboarding(true)}
+        />
+      );
     }
 
     // Reviewing — show result if choice exists, otherwise wait
     if (session.status === "reviewing") {
-      if (collectiveChoice) return <ResultState collectiveChoice={collectiveChoice} isMyResponseChosen={data.isMyResponseChosen} comboCount={comboCount} onReveal={() => play("drumroll")} />;
-      return <WaitingState session={session} connectedCount={connectedCount} crossSessionStreak={crossSessionStreak} onReplayTutorial={() => setShowOnboarding(true)} />;
+      if (collectiveChoice)
+        return (
+          <ResultState
+            collectiveChoice={collectiveChoice}
+            isMyResponseChosen={data.isMyResponseChosen}
+            comboCount={comboCount}
+            onReveal={() => play("drumroll")}
+          />
+        );
+      return (
+        <WaitingState
+          session={session}
+          connectedCount={connectedCount}
+          crossSessionStreak={crossSessionStreak}
+          onReplayTutorial={() => setShowOnboarding(true)}
+        />
+      );
     }
 
     // Voting
     if (session.status === "voting" && situation) {
       if (hasVoted) return <SentState />; // No counter needed during vote
-      return <VoteState key={situation.id} voteOptions={voteOptions} situation={situation} sessionId={sessionId} studentId={studentId!} onVote={handleVote} voting={voting} playSound={play} />;
+      return (
+        <VoteState
+          key={situation.id}
+          voteOptions={voteOptions}
+          situation={situation}
+          sessionId={sessionId}
+          studentId={studentId!}
+          onVote={handleVote}
+          voting={voting}
+          playSound={play}
+        />
+      );
     }
 
     // Responding
     if (session.status === "responding" && situation) {
-      if (hasResponded) return <SentState responsesCount={responsesCount} connectedCount={connectedCount} streak={streak} lastXpGain={lastXpGain} sessionId={sessionId} studentId={studentId ?? undefined} currentModule={session.currentModule} currentSeance={session.currentSeance} />;
-      return <SituationState key={situation.id} situation={situation} onSubmit={handleRespond} submitting={submitting} playSound={play} />;
+      if (hasResponded)
+        return (
+          <SentState
+            responsesCount={responsesCount}
+            connectedCount={connectedCount}
+            streak={streak}
+            lastXpGain={lastXpGain}
+            sessionId={sessionId}
+            studentId={studentId ?? undefined}
+            currentModule={session.currentModule}
+            currentSeance={session.currentSeance}
+          />
+        );
+      return (
+        <SituationState
+          key={situation.id}
+          situation={situation}
+          onSubmit={handleRespond}
+          submitting={submitting}
+          playSound={play}
+        />
+      );
     }
 
     // Waiting (default)
-    return <WaitingState session={session} connectedCount={connectedCount} crossSessionStreak={crossSessionStreak} onReplayTutorial={() => setShowOnboarding(true)} />;
+    return (
+      <WaitingState
+        session={session}
+        connectedCount={connectedCount}
+        crossSessionStreak={crossSessionStreak}
+        onReplayTutorial={() => setShowOnboarding(true)}
+      />
+    );
   }
 
   if (noStudent) {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center gap-4 px-4">
         <div className="w-16 h-16 rounded-full bg-bw-primary/20 flex items-center justify-center">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" strokeWidth="2" strokeLinecap="round">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#FF6B35"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
             <rect x="2" y="2" width="20" height="20" rx="2.18" />
             <path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 7h5M17 17h5" />
           </svg>
         </div>
         <p className="text-bw-muted text-center">Tu dois d&apos;abord rejoindre la partie</p>
-        <a href={ROUTES.join} className="text-bw-primary font-medium cursor-pointer">Rejoindre</a>
+        <a href={ROUTES.join} className="text-bw-primary font-medium cursor-pointer">
+          Rejoindre
+        </a>
       </div>
     );
   }
@@ -971,8 +1527,17 @@ export default function PlayPage() {
       <div className="min-h-dvh flex items-center justify-center px-4">
         <div className="text-center space-y-4">
           <div className="w-16 h-16 rounded-full bg-bw-danger/20 flex items-center justify-center">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round">
-              <circle cx="12" cy="12" r="10" /><path d="M15 9l-6 6M9 9l6 6" />
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#EF4444"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M15 9l-6 6M9 9l6 6" />
             </svg>
           </div>
           <p className="text-bw-muted">Session introuvable ou expirée</p>
@@ -993,8 +1558,17 @@ export default function PlayPage() {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center px-4 gap-6">
         <div className="w-20 h-20 rounded-full bg-bw-danger/20 flex items-center justify-center">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round">
-            <circle cx="12" cy="12" r="10" /><path d="M15 9l-6 6M9 9l6 6" />
+          <svg
+            width="36"
+            height="36"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#EF4444"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M15 9l-6 6M9 9l6 6" />
           </svg>
         </div>
         <div className="text-center space-y-2">
@@ -1006,9 +1580,12 @@ export default function PlayPage() {
   }
 
   // Compute view key for cinema transitions
-  const viewKey = data.session.status === "done" ? "done"
-    : data.session.status === "paused" ? "paused"
-    : `${data.session.status}-${data.situation?.id || "no-sit"}-${data.hasResponded}-${data.hasVoted}-${!!data.collectiveChoice}`;
+  const viewKey =
+    data.session.status === "done"
+      ? "done"
+      : data.session.status === "paused"
+        ? "paused"
+        : `${data.session.status}-${data.situation?.id || "no-sit"}-${data.hasResponded}-${data.hasVoted}-${!!data.collectiveChoice}`;
 
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center px-3 sm:px-4 py-8">
@@ -1024,15 +1601,24 @@ export default function PlayPage() {
 
       {/* Onboarding slides — first-time users */}
       {showOnboarding && (
-        <OnboardingSlides onComplete={() => {
-          localStorage.setItem("bw-onboarded", "1");
-          setShowOnboarding(false);
-        }} />
+        <OnboardingSlides
+          onComplete={() => {
+            localStorage.setItem("bw-onboarded", "1");
+            setShowOnboarding(false);
+          }}
+        />
       )}
 
       {/* Cinematic intro */}
       <AnimatePresence>
-        {showIntro && <CinematicIntro onComplete={handleIntroComplete} sessionTitle={data?.session?.title} studentName={studentDisplayName} studentAvatar={studentAvatar} />}
+        {showIntro && (
+          <CinematicIntro
+            onComplete={handleIntroComplete}
+            sessionTitle={data?.session?.title}
+            studentName={studentDisplayName}
+            studentAvatar={studentAvatar}
+          />
+        )}
       </AnimatePresence>
 
       {/* Warning banner */}
@@ -1043,11 +1629,14 @@ export default function PlayPage() {
             animate={{ height: "auto", opacity: 1 }}
             className="w-full max-w-md mb-3"
           >
-            <div role="alert" className={`px-4 py-2.5 rounded-xl text-center text-sm font-medium ${
-              data.studentWarnings >= 2
-                ? "bg-bw-danger/20 text-bw-danger border border-bw-danger/30"
-                : "bg-bw-amber/20 text-bw-amber border border-bw-amber/30"
-            }`}>
+            <div
+              role="alert"
+              className={`px-4 py-2.5 rounded-xl text-center text-sm font-medium ${
+                data.studentWarnings >= 2
+                  ? "bg-bw-danger/20 text-bw-danger border border-bw-danger/30"
+                  : "bg-bw-amber/20 text-bw-amber border border-bw-amber/30"
+              }`}
+            >
               ⚠️ Avertissement {data.studentWarnings}/3
               {data.studentWarnings >= 2 && " — Prochain = exclusion"}
             </div>
@@ -1088,7 +1677,9 @@ export default function PlayPage() {
                 onClick={() => setBroadcastMsg(null)}
                 aria-label="Fermer le message"
                 className="absolute top-1.5 right-2 text-bw-muted hover:text-white text-xs cursor-pointer"
-              >✕</button>
+              >
+                ✕
+              </button>
             </div>
           </motion.div>
         )}
@@ -1116,66 +1707,81 @@ export default function PlayPage() {
       </AnimatePresence>
 
       {/* Header with enhanced progress */}
-      <div className={`fixed ${!isOnline ? "top-8" : "top-0"} left-0 right-0 z-10 backdrop-blur-md transition-all border-b border-white/[0.06]`}
-        style={{ background: "linear-gradient(90deg, rgba(18,20,24,0.95), rgba(18,20,24,0.92) 50%, rgba(18,20,24,0.95))" }}>
+      <div
+        className={`fixed ${!isOnline ? "top-8" : "top-0"} left-0 right-0 z-10 backdrop-blur-md transition-all border-b border-white/[0.06]`}
+        style={{
+          background: "linear-gradient(90deg, rgba(18,20,24,0.95), rgba(18,20,24,0.92) 50%, rgba(18,20,24,0.95))",
+        }}
+      >
         <div className="px-4 py-2.5 flex justify-between items-center">
           <span className="font-cinema text-base tracking-[0.15em] uppercase">
             <BrandLogo />
           </span>
 
           {/* Center: progress label */}
-          {data.session.status !== "done" && (() => {
-            const mod = data.session.currentModule;
-            const seance = data.session.currentSeance;
-            const seanceLabels: Record<number, string> = { 1: "Acte I", 2: "Acte II", 3: "Acte III" };
-            // Module 3/4: show "Séquence X/Y — Acte Z"
-            if ((mod === 3 || mod === 4) && !isFreeMode && data.situation) {
-              const seanceMax = getSeanceMax(mod, seance);
-              return (
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-bw-primary bg-bw-primary/10 px-2 py-0.5 rounded-full">
-                    {seanceLabels[seance] || `Séance ${seance}`}
+          {data.session.status !== "done" &&
+            (() => {
+              const mod = data.session.currentModule;
+              const seance = data.session.currentSeance;
+              const seanceLabels: Record<number, string> = { 1: "Acte I", 2: "Acte II", 3: "Acte III" };
+              // Module 3/4: show "Séquence X/Y — Acte Z"
+              if ((mod === 3 || mod === 4) && !isFreeMode && data.situation) {
+                const seanceMax = getSeanceMax(mod, seance);
+                return (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-bw-primary bg-bw-primary/10 px-2 py-0.5 rounded-full">
+                      {seanceLabels[seance] || `Séance ${seance}`}
+                    </span>
+                    <span className="text-xs text-bw-muted tabular-nums">
+                      Q{data.situation.position}/{seanceMax}
+                    </span>
+                  </div>
+                );
+              }
+              // Free mode
+              if (isFreeMode && freeProgress) {
+                return (
+                  <span className="text-xs text-bw-primary font-medium tabular-nums">
+                    Question {freeProgress.current}/{freeProgress.total}
                   </span>
+                );
+              }
+              // Module 1
+              if (mod === 1 && data.module1) {
+                return (
+                  <span className="text-xs text-bw-violet font-medium">
+                    {data.module1.type === "positioning"
+                      ? `Q${(data.session.currentSituationIndex || 0) + 1}/8`
+                      : data.module1.type === "image" && data.module1.image
+                        ? data.module1.image.title
+                        : data.module1.type === "notebook"
+                          ? "Carnet"
+                          : ""}
+                  </span>
+                );
+              }
+              // All other modules: show position/total
+              if (data.situation) {
+                const seanceMax = getSeanceMax(mod, seance);
+                return (
                   <span className="text-xs text-bw-muted tabular-nums">
-                    Q{data.situation.position}/{seanceMax}
+                    {data.situation.position}/{seanceMax}
                   </span>
-                </div>
-              );
-            }
-            // Free mode
-            if (isFreeMode && freeProgress) {
-              return (
-                <span className="text-xs text-bw-primary font-medium tabular-nums">
-                  Question {freeProgress.current}/{freeProgress.total}
-                </span>
-              );
-            }
-            // Module 1
-            if (mod === 1 && data.module1) {
-              return (
-                <span className="text-xs text-bw-violet font-medium">
-                  {data.module1.type === "positioning" ? `Q${(data.session.currentSituationIndex || 0) + 1}/8`
-                    : data.module1.type === "image" && data.module1.image ? data.module1.image.title
-                    : data.module1.type === "notebook" ? "Carnet" : ""}
-                </span>
-              );
-            }
-            // All other modules: show position/total
-            if (data.situation) {
-              const seanceMax = getSeanceMax(mod, seance);
-              return (
-                <span className="text-xs text-bw-muted tabular-nums">
-                  {data.situation.position}/{seanceMax}
-                </span>
-              );
-            }
-            return null;
-          })()}
+                );
+              }
+              return null;
+            })()}
 
           {/* Team badge */}
           {data.team && (
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full border"
-              style={{ color: data.team.teamColor, borderColor: `${data.team.teamColor}40`, backgroundColor: `${data.team.teamColor}15` }}>
+            <span
+              className="text-xs font-semibold px-2 py-0.5 rounded-full border"
+              style={{
+                color: data.team.teamColor,
+                borderColor: `${data.team.teamColor}40`,
+                backgroundColor: `${data.team.teamColor}15`,
+              }}
+            >
               {data.team.teamName}
             </span>
           )}
@@ -1199,13 +1805,33 @@ export default function PlayPage() {
               className="w-7 h-7 flex items-center justify-center rounded-full text-bw-muted hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
             >
               {isMuted ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
                   <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                   <line x1="23" y1="9" x2="17" y2="15" />
                   <line x1="17" y1="9" x2="23" y2="15" />
                 </svg>
               ) : (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
                   <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                   <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
                   <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
@@ -1221,24 +1847,33 @@ export default function PlayPage() {
           </div>
         </div>
         {/* Progress bar — visible for all modules now */}
-        {data.session.status !== "done" && (() => {
-          const seanceMax = getSeanceMax(data.session.currentModule, data.session.currentSeance);
-          const pct = data.session.currentModule === 1
-            ? ((data.module1?.currentSeance || 1) / (data.module1?.totalSeances || 5)) * 100
-            : isFreeMode && freeProgress
-              ? (freeProgress.current / freeProgress.total) * 100
-              : ((data.session.currentSituationIndex + 1) / seanceMax) * 100;
-          return (
-            <div className="h-1 bg-white/[0.04]" role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100} aria-label={`Progression : ${Math.round(pct)}%`}>
-              <motion.div
-                className="h-full rounded-r-full"
-                style={{ background: "linear-gradient(90deg, #FF6B35, #D4A843)" }}
-                animate={{ width: `${pct}%` }}
-                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-              />
-            </div>
-          );
-        })()}
+        {data.session.status !== "done" &&
+          (() => {
+            const seanceMax = getSeanceMax(data.session.currentModule, data.session.currentSeance);
+            const pct =
+              data.session.currentModule === 1
+                ? ((data.module1?.currentSeance || 1) / (data.module1?.totalSeances || 5)) * 100
+                : isFreeMode && freeProgress
+                  ? (freeProgress.current / freeProgress.total) * 100
+                  : ((data.session.currentSituationIndex + 1) / seanceMax) * 100;
+            return (
+              <div
+                className="h-1 bg-white/[0.04]"
+                role="progressbar"
+                aria-valuenow={Math.round(pct)}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`Progression : ${Math.round(pct)}%`}
+              >
+                <motion.div
+                  className="h-full rounded-r-full"
+                  style={{ background: "linear-gradient(90deg, #FF6B35, #D4A843)" }}
+                  animate={{ width: `${pct}%` }}
+                  transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                />
+              </div>
+            );
+          })()}
       </div>
 
       {/* XP Toast */}
@@ -1269,21 +1904,18 @@ export default function PlayPage() {
       {/* Coach bubble — contextual tip */}
       {coachTip && (
         <div className={`w-full max-w-md ${collectedCategories.length > 0 ? "" : "mt-12"} mb-3`}>
-          <CoachBubble
-            key={coachShownForRef.current}
-            tip={coachTip}
-            onDismiss={() => setCoachTip(null)}
-          />
+          <CoachBubble key={coachShownForRef.current} tip={coachTip} onDismiss={() => setCoachTip(null)} />
         </div>
       )}
 
       {/* Main content */}
-      <div id="main-content" className={`w-full max-w-md ${collectedCategories.length > 0 ? "" : coachTip ? "" : "mt-12"}`}>
+      <div
+        id="main-content"
+        className={`w-full max-w-md ${collectedCategories.length > 0 ? "" : coachTip ? "" : "mt-12"}`}
+      >
         <ErrorBoundary>
           <AnimatePresence mode="wait">
-            <CinemaFade viewKey={viewKey}>
-              {getView()}
-            </CinemaFade>
+            <CinemaFade viewKey={viewKey}>{getView()}</CinemaFade>
           </AnimatePresence>
         </ErrorBoundary>
       </div>
@@ -1304,7 +1936,9 @@ export default function PlayPage() {
                 toast("Main levée ! Le prof est prévenu.", { icon: "✋" });
                 haptic(20);
               }
-            } catch { /* ignore */ }
+            } catch {
+              /* ignore */
+            }
           }}
           aria-label={handRaised ? "Baisser la main" : "Lever la main, j'ai besoin d'aide"}
           aria-pressed={handRaised}
@@ -1325,13 +1959,33 @@ export default function PlayPage() {
         </button>
       )}
 
-      <HelpButton pageKey="play" tips={[
-        { title: "Ecris ta reponse", description: "Quand une question apparait, tape ta reponse et envoie-la. Sois creatif !" },
-        { title: "Vote pour tes preferes", description: "Apres les reponses, tu peux voter pour les idees que tu preferes. Tape sur une carte pour voter." },
-        { title: "Le choix collectif", description: "Le prof choisit la meilleure idee parmi les plus votees. Elle construit le film de la classe !" },
-        { title: "Mode hors-ligne", description: "Pas de reseau ? Ta reponse est gardee et envoyee automatiquement quand tu te reconnectes." },
-        { title: "Lever la main", description: "Appuie sur ✋ en bas a gauche pour signaler au prof que tu as besoin d'aide." },
-      ]} />
+      <HelpButton
+        pageKey="play"
+        tips={[
+          {
+            title: "Ecris ta reponse",
+            description: "Quand une question apparait, tape ta reponse et envoie-la. Sois creatif !",
+          },
+          {
+            title: "Vote pour tes preferes",
+            description:
+              "Apres les reponses, tu peux voter pour les idees que tu preferes. Tape sur une carte pour voter.",
+          },
+          {
+            title: "Le choix collectif",
+            description:
+              "Le prof choisit la meilleure idee parmi les plus votees. Elle construit le film de la classe !",
+          },
+          {
+            title: "Mode hors-ligne",
+            description: "Pas de reseau ? Ta reponse est gardee et envoyee automatiquement quand tu te reconnectes.",
+          },
+          {
+            title: "Lever la main",
+            description: "Appuie sur ✋ en bas a gauche pour signaler au prof que tu as besoin d'aide.",
+          },
+        ]}
+      />
 
       {/* Team Chat */}
       {studentId && data.team && (
@@ -1343,7 +1997,6 @@ export default function PlayPage() {
           studentAvatar={studentAvatar}
         />
       )}
-
     </div>
   );
 }

@@ -62,9 +62,7 @@ export function MissionState({ module6, sessionId, studentId, isWriting = false 
       className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto px-4"
     >
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-white">
-          {isWriting ? "Écris ta contribution" : "Ta Mission"}
-        </h2>
+        <h2 className="text-2xl font-bold text-white">{isWriting ? "Écris ta contribution" : "Ta Mission"}</h2>
       </div>
 
       {/* Role badge */}
@@ -100,9 +98,7 @@ export function MissionState({ module6, sessionId, studentId, isWriting = false 
       <div className="w-full p-3 rounded-xl bg-white/5 border border-white/[0.06]">
         <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Scène</p>
         <p className="text-sm font-semibold text-white">{mission.sceneTitle}</p>
-        {mission.sceneDescription && (
-          <p className="text-xs text-white/50 mt-1">{mission.sceneDescription}</p>
-        )}
+        {mission.sceneDescription && <p className="text-xs text-white/50 mt-1">{mission.sceneDescription}</p>}
       </div>
 
       {/* Writing area (position 3: show task only, position 4: show textarea) */}

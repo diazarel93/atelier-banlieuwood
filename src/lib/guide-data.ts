@@ -55,9 +55,7 @@ const MODULE_GUIDES: ModuleGuide[] = [
       "Pas de bonne réponse — choisis celle qui te parle le plus",
       "Imagine-toi dans la situation, qu'est-ce que tu ferais vraiment ?",
     ],
-    commentChallenger: [
-      "Tu hésites entre deux ? Choisis celle qui te ressemble LE PLUS, même un peu",
-    ],
+    commentChallenger: ["Tu hésites entre deux ? Choisis celle qui te ressemble LE PLUS, même un peu"],
     conseils: [
       "Avancer question par question pour garder l'attention",
       "Montrer les stats en temps réel sur l'écran (bar chart) pour créer de l'émulation",
@@ -66,9 +64,21 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~10 min",
     phases: [
-      { name: "Intro", timing: "2 min", instruction: "Expliquer le principe : 8 questions, on choisit ce qui nous correspond." },
-      { name: "Questions", timing: "6 min", instruction: "Avancer question par question. Commenter brièvement les stats affichées à l'écran." },
-      { name: "Débrief", timing: "2 min", instruction: "Résumer les tendances de la classe. Transition vers les images." },
+      {
+        name: "Intro",
+        timing: "2 min",
+        instruction: "Expliquer le principe : 8 questions, on choisit ce qui nous correspond.",
+      },
+      {
+        name: "Questions",
+        timing: "6 min",
+        instruction: "Avancer question par question. Commenter brièvement les stats affichées à l'écran.",
+      },
+      {
+        name: "Débrief",
+        timing: "2 min",
+        instruction: "Résumer les tendances de la classe. Transition vers les images.",
+      },
     ],
   },
   {
@@ -108,7 +118,11 @@ const MODULE_GUIDES: ModuleGuide[] = [
     phases: [
       { name: "Observation", timing: "3 min", instruction: "Projeter l'image. Silence. Les élèves observent." },
       { name: "Écriture", timing: "4 min", instruction: "Ouvrir la question. Les élèves écrivent leur réponse." },
-      { name: "Confrontation", timing: "8 min", instruction: "Choisir 2 réponses contrastées. Les projeter. Débat oral en classe." },
+      {
+        name: "Confrontation",
+        timing: "8 min",
+        instruction: "Choisir 2 réponses contrastées. Les projeter. Débat oral en classe.",
+      },
     ],
   },
   {
@@ -222,8 +236,16 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~10 min",
     phases: [
-      { name: "Lancement", timing: "1 min", instruction: "Expliquer la consigne. Insister : pas de règle, pas de jugement." },
-      { name: "Écriture", timing: "7 min", instruction: "Silence. Les élèves écrivent. Passer dans les rangs discrètement." },
+      {
+        name: "Lancement",
+        timing: "1 min",
+        instruction: "Expliquer la consigne. Insister : pas de règle, pas de jugement.",
+      },
+      {
+        name: "Écriture",
+        timing: "7 min",
+        instruction: "Silence. Les élèves écrivent. Passer dans les rangs discrètement.",
+      },
       { name: "Clôture", timing: "2 min", instruction: "Remercier. Annoncer que ce carnet sera utile pour la suite." },
     ],
   },
@@ -332,9 +354,23 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~20 min",
     phases: [
-      { name: "Découverte", timing: "5 min", instruction: "Présenter le sujet : on va parler de la FABRICATION d'un film. Pas l'histoire — le making-of." },
-      { name: "Questions collaboratives", timing: "12 min", instruction: "8 questions en rythme soutenu. Pour chaque : réponse libre → discussion rapide → synthèse collective." },
-      { name: "Synthèse", timing: "3 min", instruction: "Résumer : produire un film = équipe + budget + contraintes + créativité. Transition vers le quiz budget." },
+      {
+        name: "Découverte",
+        timing: "5 min",
+        instruction: "Présenter le sujet : on va parler de la FABRICATION d'un film. Pas l'histoire — le making-of.",
+      },
+      {
+        name: "Questions collaboratives",
+        timing: "12 min",
+        instruction:
+          "8 questions en rythme soutenu. Pour chaque : réponse libre → discussion rapide → synthèse collective.",
+      },
+      {
+        name: "Synthèse",
+        timing: "3 min",
+        instruction:
+          "Résumer : produire un film = équipe + budget + contraintes + créativité. Transition vers le quiz budget.",
+      },
     ],
   },
   {
@@ -432,9 +468,24 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~20 min",
     phases: [
-      { name: "Mise en situation", timing: "3 min", instruction: "Expliquer le principe : 8 scénarios catastrophe, vous êtes le réalisateur, vous devez trouver une solution." },
-      { name: "Scénarios", timing: "14 min", instruction: "Enchaîner les 8 scénarios. Pour chaque : lire le problème → réponses → vote de la meilleure solution → commentaire rapide." },
-      { name: "Bilan", timing: "3 min", instruction: "Résumer les leçons : adaptabilité, créativité sous pression, toujours un plan B. Transition vers le plan de tournage." },
+      {
+        name: "Mise en situation",
+        timing: "3 min",
+        instruction:
+          "Expliquer le principe : 8 scénarios catastrophe, vous êtes le réalisateur, vous devez trouver une solution.",
+      },
+      {
+        name: "Scénarios",
+        timing: "14 min",
+        instruction:
+          "Enchaîner les 8 scénarios. Pour chaque : lire le problème → réponses → vote de la meilleure solution → commentaire rapide.",
+      },
+      {
+        name: "Bilan",
+        timing: "3 min",
+        instruction:
+          "Résumer les leçons : adaptabilité, créativité sous pression, toujours un plan B. Transition vers le plan de tournage.",
+      },
     ],
   },
   {
@@ -471,9 +522,21 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~20 min",
     phases: [
-      { name: "Rappel", timing: "3 min", instruction: "Récapituler les apprentissages : métiers, budget, imprévus. On passe à l'action." },
-      { name: "Construction du plan", timing: "14 min", instruction: "8 questions pour construire le plan. Chaque réponse est une brique concrète du tournage." },
-      { name: "Présentation", timing: "3 min", instruction: "Pitch final : chaque groupe/élève résume son plan en une phrase. Applaudir les meilleurs pitchs." },
+      {
+        name: "Rappel",
+        timing: "3 min",
+        instruction: "Récapituler les apprentissages : métiers, budget, imprévus. On passe à l'action.",
+      },
+      {
+        name: "Construction du plan",
+        timing: "14 min",
+        instruction: "8 questions pour construire le plan. Chaque réponse est une brique concrète du tournage.",
+      },
+      {
+        name: "Présentation",
+        timing: "3 min",
+        instruction: "Pitch final : chaque groupe/élève résume son plan en une phrase. Applaudir les meilleurs pitchs.",
+      },
     ],
   },
   {
@@ -702,9 +765,24 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~30 min",
     phases: [
-      { name: "Checklist", timing: "5 min", instruction: "Chaque élève sélectionne les contenus qu'il connaît (≥3), puis choisit son préféré. Commenter les tendances à l'écran." },
-      { name: "Scène marquante", timing: "15 min", instruction: "Écriture libre : décrire UNE scène qui les a marqués. Insister sur les détails sensoriels et émotionnels, pas le résumé." },
-      { name: "Entre les lignes", timing: "10 min", instruction: "Question ouverte : qu'est-ce que le personnage veut VRAIMENT ? Confronter 2 réponses. Transition vers l'émotion cachée." },
+      {
+        name: "Checklist",
+        timing: "5 min",
+        instruction:
+          "Chaque élève sélectionne les contenus qu'il connaît (≥3), puis choisit son préféré. Commenter les tendances à l'écran.",
+      },
+      {
+        name: "Scène marquante",
+        timing: "15 min",
+        instruction:
+          "Écriture libre : décrire UNE scène qui les a marqués. Insister sur les détails sensoriels et émotionnels, pas le résumé.",
+      },
+      {
+        name: "Entre les lignes",
+        timing: "10 min",
+        instruction:
+          "Question ouverte : qu'est-ce que le personnage veut VRAIMENT ? Confronter 2 réponses. Transition vers l'émotion cachée.",
+      },
     ],
   },
   {
@@ -746,9 +824,24 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~40 min",
     phases: [
-      { name: "L'émotion", timing: "5 min", instruction: "Question fermée : choisir parmi 5 émotions. Montrer la distribution à l'écran. Commenter les choix de la classe." },
-      { name: "Construction", timing: "25 min", instruction: "Chaque élève construit sa scène : intention + obstacle + changement, puis éléments visuels/narratifs avec budget jetons. L'IA donne un feedback bienveillant." },
-      { name: "Débrief", timing: "10 min", instruction: "Partager quelques scènes à l'oral. Montrer la distribution des émotions. Transition vers la phase collective." },
+      {
+        name: "L'émotion",
+        timing: "5 min",
+        instruction:
+          "Question fermée : choisir parmi 5 émotions. Montrer la distribution à l'écran. Commenter les choix de la classe.",
+      },
+      {
+        name: "Construction",
+        timing: "25 min",
+        instruction:
+          "Chaque élève construit sa scène : intention + obstacle + changement, puis éléments visuels/narratifs avec budget jetons. L'IA donne un feedback bienveillant.",
+      },
+      {
+        name: "Débrief",
+        timing: "10 min",
+        instruction:
+          "Partager quelques scènes à l'oral. Montrer la distribution des émotions. Transition vers la phase collective.",
+      },
     ],
   },
   {
@@ -789,9 +882,23 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~30 min",
     phases: [
-      { name: "Projection", timing: "5 min", instruction: "Projeter les 2 scènes anonymes côte à côte. Laisser les élèves lire en silence." },
-      { name: "La plus claire", timing: "15 min", instruction: "Question : laquelle communique le mieux l'émotion ? Réponses → vote → discussion. Projeter les arguments." },
-      { name: "Les désaccords", timing: "10 min", instruction: "Pourquoi pas tous d'accord ? Explorer les divergences. C'est le moment le plus riche — ne pas presser." },
+      {
+        name: "Projection",
+        timing: "5 min",
+        instruction: "Projeter les 2 scènes anonymes côte à côte. Laisser les élèves lire en silence.",
+      },
+      {
+        name: "La plus claire",
+        timing: "15 min",
+        instruction:
+          "Question : laquelle communique le mieux l'émotion ? Réponses → vote → discussion. Projeter les arguments.",
+      },
+      {
+        name: "Les désaccords",
+        timing: "10 min",
+        instruction:
+          "Pourquoi pas tous d'accord ? Explorer les divergences. C'est le moment le plus riche — ne pas presser.",
+      },
     ],
   },
   {
@@ -830,8 +937,18 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~20 min",
     phases: [
-      { name: "Le thème", timing: "10 min", instruction: "Question fermée : quel grand thème ressort ? Montrer la distribution. Commenter les tendances de la classe." },
-      { name: "L'arc", timing: "10 min", instruction: "Question fermée : comment évolue le personnage ? Débattre sur les choix. Conclure le module avec une synthèse valorisante." },
+      {
+        name: "Le thème",
+        timing: "10 min",
+        instruction:
+          "Question fermée : quel grand thème ressort ? Montrer la distribution. Commenter les tendances de la classe.",
+      },
+      {
+        name: "L'arc",
+        timing: "10 min",
+        instruction:
+          "Question fermée : comment évolue le personnage ? Débattre sur les choix. Conclure le module avec une synthèse valorisante.",
+      },
     ],
   },
   // ——— MODULE 10 : Et si... + Pitch (m10a / m10b) ———
@@ -872,9 +989,21 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~25 min",
     phases: [
-      { name: "Image + Et si...", timing: "10 min", instruction: "Projeter l'image. Laisser 2 minutes d'observation silencieuse. Puis écriture individuelle." },
-      { name: "QCM direction", timing: "5 min", instruction: "4 directions narratives tirées des réponses. Vote rapide, commenter les tendances." },
-      { name: "Banque d'idées", timing: "10 min", instruction: "Partage collectif + vote. Commenter les idées les plus populaires. Conclure avec la meilleure." },
+      {
+        name: "Image + Et si...",
+        timing: "10 min",
+        instruction: "Projeter l'image. Laisser 2 minutes d'observation silencieuse. Puis écriture individuelle.",
+      },
+      {
+        name: "QCM direction",
+        timing: "5 min",
+        instruction: "4 directions narratives tirées des réponses. Vote rapide, commenter les tendances.",
+      },
+      {
+        name: "Banque d'idées",
+        timing: "10 min",
+        instruction: "Partage collectif + vote. Commenter les idées les plus populaires. Conclure avec la meilleure.",
+      },
     ],
   },
   {
@@ -916,11 +1045,31 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~30 min",
     phases: [
-      { name: "Avatar + personnage", timing: "5 min", instruction: "Création rapide. Prénom, trait dominant, avatar visuel. Ne pas trop s'attarder." },
-      { name: "Objectif + obstacle", timing: "5 min", instruction: "Choix guidé. L'objectif donne la direction, l'obstacle donne le conflit." },
-      { name: "Assemblage du pitch", timing: "10 min", instruction: "Combiner tous les éléments. Le pitch doit tenir en 2-3 phrases." },
-      { name: "Chrono 30s", timing: "5 min", instruction: "Chaque élève teste en privé. Le chrono force la concision." },
-      { name: "Confrontation", timing: "5 min", instruction: "Projeter 2 pitchs. Vote de la classe. Commenter les qualités de chacun." },
+      {
+        name: "Avatar + personnage",
+        timing: "5 min",
+        instruction: "Création rapide. Prénom, trait dominant, avatar visuel. Ne pas trop s'attarder.",
+      },
+      {
+        name: "Objectif + obstacle",
+        timing: "5 min",
+        instruction: "Choix guidé. L'objectif donne la direction, l'obstacle donne le conflit.",
+      },
+      {
+        name: "Assemblage du pitch",
+        timing: "10 min",
+        instruction: "Combiner tous les éléments. Le pitch doit tenir en 2-3 phrases.",
+      },
+      {
+        name: "Chrono 30s",
+        timing: "5 min",
+        instruction: "Chaque élève teste en privé. Le chrono force la concision.",
+      },
+      {
+        name: "Confrontation",
+        timing: "5 min",
+        instruction: "Projeter 2 pitchs. Vote de la classe. Commenter les qualités de chacun.",
+      },
     ],
   },
 
@@ -961,9 +1110,23 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~30 min",
     phases: [
-      { name: "Ouverture", timing: "3 min", instruction: "Présenter le principe : on va explorer comment les grands du cinéma racontent leurs histoires. Chacun aura le droit de réagir." },
-      { name: "Exploration", timing: "20 min", instruction: "6 stimuli en rotation (~3 min chacun). Pour chaque : découverte → écriture/réflexion → débat oral rapide." },
-      { name: "Synthèse", timing: "5 min", instruction: "Vote collectif : quelle citation/idée a le plus marqué la classe ? Discussion libre." },
+      {
+        name: "Ouverture",
+        timing: "3 min",
+        instruction:
+          "Présenter le principe : on va explorer comment les grands du cinéma racontent leurs histoires. Chacun aura le droit de réagir.",
+      },
+      {
+        name: "Exploration",
+        timing: "20 min",
+        instruction:
+          "6 stimuli en rotation (~3 min chacun). Pour chaque : découverte → écriture/réflexion → débat oral rapide.",
+      },
+      {
+        name: "Synthèse",
+        timing: "5 min",
+        instruction: "Vote collectif : quelle citation/idée a le plus marqué la classe ? Discussion libre.",
+      },
     ],
   },
   {
@@ -1001,9 +1164,23 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~30 min",
     phases: [
-      { name: "Mise en condition", timing: "3 min", instruction: "Poser le cadre : on parle d'émotions, on respecte ce que chacun ressent. Pas de bonne ou mauvaise réponse." },
-      { name: "Exploration", timing: "22 min", instruction: "6 stimuli émotionnels. Alterner écriture individuelle et partage en classe. Encourager la précision du vocabulaire." },
-      { name: "Bilan émotionnel", timing: "5 min", instruction: "Tour rapide : chaque élève dit UN mot-émotion qui résume la séance. Pas d'explication requise." },
+      {
+        name: "Mise en condition",
+        timing: "3 min",
+        instruction:
+          "Poser le cadre : on parle d'émotions, on respecte ce que chacun ressent. Pas de bonne ou mauvaise réponse.",
+      },
+      {
+        name: "Exploration",
+        timing: "22 min",
+        instruction:
+          "6 stimuli émotionnels. Alterner écriture individuelle et partage en classe. Encourager la précision du vocabulaire.",
+      },
+      {
+        name: "Bilan émotionnel",
+        timing: "5 min",
+        instruction: "Tour rapide : chaque élève dit UN mot-émotion qui résume la séance. Pas d'explication requise.",
+      },
     ],
   },
   {
@@ -1041,9 +1218,23 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~30 min",
     phases: [
-      { name: "Accroche", timing: "3 min", instruction: "Question flash : c'est quoi un héros ? Laisser 3-4 réponses spontanées. Puis annoncer qu'on va challenger cette définition." },
-      { name: "Exploration", timing: "22 min", instruction: "6 stimuli sur le héros et l'anti-héros. Mélanger citations, portraits et débats. Pousser les élèves à argumenter." },
-      { name: "Verdict", timing: "5 min", instruction: "Vote : héros classique ou anti-héros — lequel fait le meilleur film ? Discussion ouverte." },
+      {
+        name: "Accroche",
+        timing: "3 min",
+        instruction:
+          "Question flash : c'est quoi un héros ? Laisser 3-4 réponses spontanées. Puis annoncer qu'on va challenger cette définition.",
+      },
+      {
+        name: "Exploration",
+        timing: "22 min",
+        instruction:
+          "6 stimuli sur le héros et l'anti-héros. Mélanger citations, portraits et débats. Pousser les élèves à argumenter.",
+      },
+      {
+        name: "Verdict",
+        timing: "5 min",
+        instruction: "Vote : héros classique ou anti-héros — lequel fait le meilleur film ? Discussion ouverte.",
+      },
     ],
   },
   {
@@ -1081,9 +1272,23 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~30 min",
     phases: [
-      { name: "Immersion", timing: "3 min", instruction: "Montrer un plan spectaculaire et demander : c'est réel ou numérique ? Lancer le sujet des coulisses." },
-      { name: "Exploration", timing: "22 min", instruction: "6 stimuli techniques. Budget, décors, IA, montage. Alterner information et débat." },
-      { name: "Clôture", timing: "5 min", instruction: "La grande question : le cinéma de demain, il ressemblera à quoi ? Chacun donne sa vision en une phrase." },
+      {
+        name: "Immersion",
+        timing: "3 min",
+        instruction:
+          "Montrer un plan spectaculaire et demander : c'est réel ou numérique ? Lancer le sujet des coulisses.",
+      },
+      {
+        name: "Exploration",
+        timing: "22 min",
+        instruction: "6 stimuli techniques. Budget, décors, IA, montage. Alterner information et débat.",
+      },
+      {
+        name: "Clôture",
+        timing: "5 min",
+        instruction:
+          "La grande question : le cinéma de demain, il ressemblera à quoi ? Chacun donne sa vision en une phrase.",
+      },
     ],
   },
   // ── MODULE 12 : Construction Collective ──
@@ -1109,9 +1314,7 @@ const MODULE_GUIDES: ModuleGuide[] = [
       "Pourquoi cette carte et pas l'autre ? Qu'est-ce qui vous a parle ?",
       "Imaginez le film avec cette carte. Ca donne quoi ?",
     ],
-    commentChallenger: [
-      "Et si on prenait la carte la moins populaire, ca changerait quoi au film ?",
-    ],
+    commentChallenger: ["Et si on prenait la carte la moins populaire, ca changerait quoi au film ?"],
     conseils: [
       "Lire les cartes a voix haute avant le vote",
       "Commenter brievement le resultat de chaque manche",
@@ -1120,9 +1323,21 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~30 min",
     phases: [
-      { name: "Intro", timing: "3 min", instruction: "Expliquer le principe : 8 manches, vote anonyme, le prof valide." },
-      { name: "Manches 1-4", timing: "12 min", instruction: "Ton, Situation, Personnages, Objectif. Rythme soutenu, ~3 min/manche." },
-      { name: "Manches 5-8", timing: "12 min", instruction: "Obstacle, Scene, Relation, Moment fort. Montrer comment le film se construit." },
+      {
+        name: "Intro",
+        timing: "3 min",
+        instruction: "Expliquer le principe : 8 manches, vote anonyme, le prof valide.",
+      },
+      {
+        name: "Manches 1-4",
+        timing: "12 min",
+        instruction: "Ton, Situation, Personnages, Objectif. Rythme soutenu, ~3 min/manche.",
+      },
+      {
+        name: "Manches 5-8",
+        timing: "12 min",
+        instruction: "Obstacle, Scene, Relation, Moment fort. Montrer comment le film se construit.",
+      },
       { name: "Synthese", timing: "3 min", instruction: "Relire les 8 cartes retenues. Le film de la classe est ne !" },
     ],
   },
@@ -1149,9 +1364,7 @@ const MODULE_GUIDES: ModuleGuide[] = [
       "Qu'est-ce que ton personnage dirait à ce moment-là ?",
       "Ferme les yeux. Décris ce que tu vois dans cette scène.",
     ],
-    commentChallenger: [
-      "C'est trop facile pour le héros. Ajoute un obstacle imprévu.",
-    ],
+    commentChallenger: ["C'est trop facile pour le héros. Ajoute un obstacle imprévu."],
     conseils: [
       "Lire chaque scène V0 à voix haute avant d'assigner les missions",
       "Donner 8-10 min d'écriture, pas plus — la pression temporelle aide",
@@ -1159,7 +1372,11 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~30 min",
     phases: [
-      { name: "Frise narrative", timing: "3 min", instruction: "Montrer les 8 ingrédients et comment ils s'enchaînent." },
+      {
+        name: "Frise narrative",
+        timing: "3 min",
+        instruction: "Montrer les 8 ingrédients et comment ils s'enchaînent.",
+      },
       { name: "Scènes V0", timing: "5 min", instruction: "Lire les scènes générées. Les élèves écoutent." },
       { name: "Missions", timing: "2 min", instruction: "Chaque élève reçoit sa mission. Expliquer les rôles." },
       { name: "Écriture", timing: "10 min", instruction: "Les élèves écrivent. Circuler pour aider." },
@@ -1190,9 +1407,7 @@ const MODULE_GUIDES: ModuleGuide[] = [
       "Regarde la même scène en plan large, puis en gros plan. Qu'est-ce qui change ?",
       "Quel plan utiliserais-tu pour montrer que le personnage a peur ?",
     ],
-    commentChallenger: [
-      "Et si tu filmais toute la scène en un seul plan, sans couper ?",
-    ],
+    commentChallenger: ["Et si tu filmais toute la scène en un seul plan, sans couper ?"],
     conseils: [
       "Montrer les 4 plans sur un exemple concret avant le quiz",
       "Pour la comparaison, projeter les images si possible",
@@ -1200,7 +1415,11 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~25 min",
     phases: [
-      { name: "Les 4 plans", timing: "5 min", instruction: "Présenter plan large, plan moyen, gros plan, plan réaction." },
+      {
+        name: "Les 4 plans",
+        timing: "5 min",
+        instruction: "Présenter plan large, plan moyen, gros plan, plan réaction.",
+      },
       { name: "Comparaison", timing: "8 min", instruction: "3 paires d'images. Chacun choisit et explique." },
       { name: "Découpage", timing: "10 min", instruction: "Les élèves découpent 2-3 scènes clés du scénario." },
       { name: "Storyboard", timing: "2 min", instruction: "Vue d'ensemble des plans choisis." },
@@ -1230,9 +1449,7 @@ const MODULE_GUIDES: ModuleGuide[] = [
       "Tu connais un film où l'ingénieur du son a tout changé ?",
       "Le script, c'est le gardien de la continuité. Sans lui, on se perd.",
     ],
-    commentChallenger: [
-      "Et si on supprimait le rôle de réalisateur ? Le film serait fait comment ?",
-    ],
+    commentChallenger: ["Et si on supprimait le rôle de réalisateur ? Le film serait fait comment ?"],
     conseils: [
       "Le quiz doit être ludique — pas un examen",
       "Laisser le temps au débrief — c'est là que les élèves apprennent vraiment",
@@ -1243,8 +1460,16 @@ const MODULE_GUIDES: ModuleGuide[] = [
     phases: [
       { name: "Quiz métiers", timing: "5 min", instruction: "Les élèves répondent au quiz. Pas de stress." },
       { name: "Débrief", timing: "5 min", instruction: "Corriger les idées reçues. Montrer les fiches métier." },
-      { name: "Choix de rôle", timing: "10 min", instruction: "Chacun choisit dans l'ordre. Tous les rôles sont importants." },
-      { name: "Récap + Carte talent", timing: "5 min", instruction: "Vue d'équipe complète. Distribuer les cartes talent." },
+      {
+        name: "Choix de rôle",
+        timing: "10 min",
+        instruction: "Chacun choisit dans l'ordre. Tous les rôles sont importants.",
+      },
+      {
+        name: "Récap + Carte talent",
+        timing: "5 min",
+        instruction: "Vue d'équipe complète. Distribuer les cartes talent.",
+      },
     ],
   },
 
@@ -1285,10 +1510,27 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~25 min",
     phases: [
-      { name: "Visionnage", timing: "5 min", instruction: "Projeter l'extrait sans consigne. Laisser les élèves réagir." },
-      { name: "Premières impressions", timing: "5 min", instruction: "Tour de table rapide : une émotion, un mot, une image qui reste." },
-      { name: "Analyse guidée", timing: "8 min", instruction: "Questions ciblées sur la mise en scène, le son, le cadrage. Les élèves répondent sur leurs écrans." },
-      { name: "Débat", timing: "7 min", instruction: "Confronter les analyses. Le prof projette des réponses contrastées." },
+      {
+        name: "Visionnage",
+        timing: "5 min",
+        instruction: "Projeter l'extrait sans consigne. Laisser les élèves réagir.",
+      },
+      {
+        name: "Premières impressions",
+        timing: "5 min",
+        instruction: "Tour de table rapide : une émotion, un mot, une image qui reste.",
+      },
+      {
+        name: "Analyse guidée",
+        timing: "8 min",
+        instruction:
+          "Questions ciblées sur la mise en scène, le son, le cadrage. Les élèves répondent sur leurs écrans.",
+      },
+      {
+        name: "Débat",
+        timing: "7 min",
+        instruction: "Confronter les analyses. Le prof projette des réponses contrastées.",
+      },
     ],
   },
   {
@@ -1327,10 +1569,26 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~25 min",
     phases: [
-      { name: "Extrait émotionnel", timing: "5 min", instruction: "Projeter un extrait à forte charge émotionnelle. Observer les réactions." },
-      { name: "Réactions à chaud", timing: "5 min", instruction: "Les élèves écrivent ce qu'ils ont ressenti. Pas d'analyse, juste l'émotion brute." },
-      { name: "Décryptage", timing: "8 min", instruction: "Revisionner en décortiquant : musique, cadrage, rythme, jeu d'acteur." },
-      { name: "Débat éthique", timing: "7 min", instruction: "Émotion vs manipulation : où est la frontière ? Lien avec les médias du quotidien." },
+      {
+        name: "Extrait émotionnel",
+        timing: "5 min",
+        instruction: "Projeter un extrait à forte charge émotionnelle. Observer les réactions.",
+      },
+      {
+        name: "Réactions à chaud",
+        timing: "5 min",
+        instruction: "Les élèves écrivent ce qu'ils ont ressenti. Pas d'analyse, juste l'émotion brute.",
+      },
+      {
+        name: "Décryptage",
+        timing: "8 min",
+        instruction: "Revisionner en décortiquant : musique, cadrage, rythme, jeu d'acteur.",
+      },
+      {
+        name: "Débat éthique",
+        timing: "7 min",
+        instruction: "Émotion vs manipulation : où est la frontière ? Lien avec les médias du quotidien.",
+      },
     ],
   },
   {
@@ -1369,10 +1627,26 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~25 min",
     phases: [
-      { name: "Extraits contrastés", timing: "6 min", instruction: "Montrer un héros classique puis un anti-héros. Laisser réagir." },
-      { name: "Positionnement", timing: "5 min", instruction: "Les élèves votent : héros ou anti-héros, lequel est le plus intéressant ? Justifier." },
-      { name: "L'antagoniste", timing: "7 min", instruction: "Montrer un méchant complexe. Les élèves analysent ses motivations." },
-      { name: "Débat final", timing: "7 min", instruction: "Le méchant avait-il raison ? Confronter les points de vue, forcer la nuance." },
+      {
+        name: "Extraits contrastés",
+        timing: "6 min",
+        instruction: "Montrer un héros classique puis un anti-héros. Laisser réagir.",
+      },
+      {
+        name: "Positionnement",
+        timing: "5 min",
+        instruction: "Les élèves votent : héros ou anti-héros, lequel est le plus intéressant ? Justifier.",
+      },
+      {
+        name: "L'antagoniste",
+        timing: "7 min",
+        instruction: "Montrer un méchant complexe. Les élèves analysent ses motivations.",
+      },
+      {
+        name: "Débat final",
+        timing: "7 min",
+        instruction: "Le méchant avait-il raison ? Confronter les points de vue, forcer la nuance.",
+      },
     ],
   },
   {
@@ -1411,10 +1685,26 @@ const MODULE_GUIDES: ModuleGuide[] = [
     ],
     duration: "~25 min",
     phases: [
-      { name: "Making-of", timing: "5 min", instruction: "Montrer un extrait de making-of. Les élèves identifient les métiers visibles." },
-      { name: "Quiz métiers", timing: "5 min", instruction: "Questions interactives sur les métiers du cinéma. Réponses sur écran." },
-      { name: "Budget challenge", timing: "7 min", instruction: "Comparer deux films (gros/petit budget). Lequel est le meilleur ? Pourquoi ?" },
-      { name: "Débat IA", timing: "8 min", instruction: "L'IA va-t-elle remplacer les créateurs ? Les élèves argumentent et votent." },
+      {
+        name: "Making-of",
+        timing: "5 min",
+        instruction: "Montrer un extrait de making-of. Les élèves identifient les métiers visibles.",
+      },
+      {
+        name: "Quiz métiers",
+        timing: "5 min",
+        instruction: "Questions interactives sur les métiers du cinéma. Réponses sur écran.",
+      },
+      {
+        name: "Budget challenge",
+        timing: "7 min",
+        instruction: "Comparer deux films (gros/petit budget). Lequel est le meilleur ? Pourquoi ?",
+      },
+      {
+        name: "Débat IA",
+        timing: "8 min",
+        instruction: "L'IA va-t-elle remplacer les créateurs ? Les élèves argumentent et votent.",
+      },
     ],
   },
 ];
@@ -1445,10 +1735,8 @@ const SEANCE_1_QUESTIONS: QuestionGuide[] = [
       "Ce que le héros veut CONSCIEMMENT : gagner un match, retrouver quelqu'un, prouver quelque chose. Pas ce dont il a besoin.",
     commonPitfalls:
       "Confusion désir/besoin. Désir trop vague ('être heureux'). Désir trop petit (pas d'enjeu) ou trop grand (sauver le monde).",
-    relancePhrase:
-      "Si le héros pouvait avoir UNE seule chose au monde, ce serait quoi ?",
-    challengePhrase:
-      "Et si ce qu'il VEUT n'est pas ce dont il a BESOIN ? C'est souvent ça qui fait un bon film.",
+    relancePhrase: "Si le héros pouvait avoir UNE seule chose au monde, ce serait quoi ?",
+    challengePhrase: "Et si ce qu'il VEUT n'est pas ce dont il a BESOIN ? C'est souvent ça qui fait un bon film.",
   },
   {
     position: 3,
@@ -1458,8 +1746,7 @@ const SEANCE_1_QUESTIONS: QuestionGuide[] = [
       "Un défaut profond : orgueil, peur, colère, mensonge, méfiance. Pas un défaut superficiel ('il est maladroit').",
     commonPitfalls:
       "Faille trop légère ou 'mignonne'. Confusion faille/handicap. Refus de donner un défaut au héros qu'ils aiment.",
-    relancePhrase:
-      "C'est quoi le truc que le héros fait et qui lui cause TOUJOURS des problèmes ?",
+    relancePhrase: "C'est quoi le truc que le héros fait et qui lui cause TOUJOURS des problèmes ?",
     challengePhrase:
       "Est-ce que cette faille pourrait lui faire PERDRE ce qu'il désire le plus ? Si oui, c'est la bonne.",
   },
@@ -1471,8 +1758,7 @@ const SEANCE_1_QUESTIONS: QuestionGuide[] = [
       "Quelque chose que personne ne sait. Peut être lié à la faille. Ajoute de la profondeur et du mystère au personnage.",
     commonPitfalls:
       "Secret trop anodin ('il aime les chats'). Secret déconnecté du personnage. Confusion secret/anecdote.",
-    relancePhrase:
-      "Si quelqu'un découvrait ce secret, qu'est-ce qui se passerait ? Ça changerait quoi ?",
+    relancePhrase: "Si quelqu'un découvrait ce secret, qu'est-ce qui se passerait ? Ça changerait quoi ?",
     challengePhrase:
       "Le meilleur secret, c'est celui qui pourrait tout faire s'effondrer s'il était révélé. On en est là ?",
   },
@@ -1484,8 +1770,7 @@ const SEANCE_1_QUESTIONS: QuestionGuide[] = [
       "Un personnage secondaire qui aide le héros. Avec une relation spécifique (ami d'enfance, mentor, famille).",
     commonPitfalls:
       "Allié trop parfait (pas de personnalité propre). Allié qui n'a aucune raison d'aider. Simple copie du sidekick classique.",
-    relancePhrase:
-      "Pourquoi CETTE personne aide le héros ? Qu'est-ce qui les lie ?",
+    relancePhrase: "Pourquoi CETTE personne aide le héros ? Qu'est-ce qui les lie ?",
     challengePhrase:
       "Est-ce que l'allié a ses propres problèmes ? Ses propres raisons d'être là ? Un bon allié n'est pas juste un faire-valoir.",
   },
@@ -1497,8 +1782,7 @@ const SEANCE_1_QUESTIONS: QuestionGuide[] = [
       "Pas forcément un méchant — quelqu'un qui complique la vie du héros. Peut être un ami, un membre de la famille.",
     commonPitfalls:
       "Rival = méchant caricatural. Pas de motivation propre. Trop éloigné du héros pour créer de la tension.",
-    relancePhrase:
-      "Le rival, est-ce qu'il pense avoir raison ? De SON point de vue, qu'est-ce qu'il veut ?",
+    relancePhrase: "Le rival, est-ce qu'il pense avoir raison ? De SON point de vue, qu'est-ce qu'il veut ?",
     challengePhrase:
       "Et si le rival et le héros se ressemblaient plus qu'on ne le pense ? C'est ça qui crée les meilleures histoires.",
   },
@@ -1510,10 +1794,8 @@ const SEANCE_1_QUESTIONS: QuestionGuide[] = [
       "Un endroit concret décrit avec les 5 sens. Quartier, ville, école, forêt... Le lieu raconte quelque chose du personnage.",
     commonPitfalls:
       "Lieu trop vague ('une ville'). Aucun détail sensoriel. Lieu déconnecté du personnage et de l'histoire.",
-    relancePhrase:
-      "Ferme les yeux. Tu es là-bas. Tu vois quoi ? Tu entends quoi ? Ça sent quoi ?",
-    challengePhrase:
-      "Ce lieu, est-ce qu'il reflète le personnage ? Un lieu peut être un personnage à part entière.",
+    relancePhrase: "Ferme les yeux. Tu es là-bas. Tu vois quoi ? Tu entends quoi ? Ça sent quoi ?",
+    challengePhrase: "Ce lieu, est-ce qu'il reflète le personnage ? Un lieu peut être un personnage à part entière.",
   },
   {
     position: 8,
@@ -1523,10 +1805,8 @@ const SEANCE_1_QUESTIONS: QuestionGuide[] = [
       "Des choix visuels et sonores : couleurs dominantes, lumière, sons, musique. L'atmosphère générale du film.",
     commonPitfalls:
       "Trop générique ('c'est sombre'). Aucune référence visuelle concrète. Incohérence avec le lieu et le personnage.",
-    relancePhrase:
-      "Si ce film était une couleur, ce serait laquelle ? Pourquoi ?",
-    challengePhrase:
-      "L'ambiance doit servir l'histoire. Est-ce que l'atmosphère renforce le conflit qui va arriver ?",
+    relancePhrase: "Si ce film était une couleur, ce serait laquelle ? Pourquoi ?",
+    challengePhrase: "L'ambiance doit servir l'histoire. Est-ce que l'atmosphère renforce le conflit qui va arriver ?",
   },
 ];
 
@@ -1539,10 +1819,8 @@ const SEANCE_2_QUESTIONS: QuestionGuide[] = [
       "L'événement qui brise l'équilibre initial. Un avant/après clair. Peut être violent, subtil, ou inattendu.",
     commonPitfalls:
       "Déclencheur trop mou (pas de vraie rupture). Déclencheur sans conséquence. Confusion avec l'obstacle.",
-    relancePhrase:
-      "Avant cet événement, la vie du héros était comment ? Et après, qu'est-ce qui change ?",
-    challengePhrase:
-      "Le meilleur déclencheur, c'est celui qui touche directement la faille du héros. Est-ce le cas ?",
+    relancePhrase: "Avant cet événement, la vie du héros était comment ? Et après, qu'est-ce qui change ?",
+    challengePhrase: "Le meilleur déclencheur, c'est celui qui touche directement la faille du héros. Est-ce le cas ?",
   },
   {
     position: 2,
@@ -1552,10 +1830,8 @@ const SEANCE_2_QUESTIONS: QuestionGuide[] = [
       "Ce qui empêche le héros d'atteindre son but. Peut être externe (quelqu'un, quelque chose) ou interne (sa propre faille).",
     commonPitfalls:
       "Obstacle trop facile à surmonter. Pas de lien avec le désir du héros. Obstacle unique alors qu'il en faut plusieurs.",
-    relancePhrase:
-      "Pourquoi le héros ne peut pas simplement résoudre le problème tout de suite ?",
-    challengePhrase:
-      "Et si le plus gros obstacle, c'était le héros lui-même ? Sa faille qui l'empêche d'avancer ?",
+    relancePhrase: "Pourquoi le héros ne peut pas simplement résoudre le problème tout de suite ?",
+    challengePhrase: "Et si le plus gros obstacle, c'était le héros lui-même ? Sa faille qui l'empêche d'avancer ?",
   },
   {
     position: 3,
@@ -1565,10 +1841,8 @@ const SEANCE_2_QUESTIONS: QuestionGuide[] = [
       "Qui ou quoi s'oppose au héros. Ses motivations, ses raisons. L'adversaire est souvent le miroir inversé du héros.",
     commonPitfalls:
       "Adversaire sans motivation ('il est méchant'). Pas assez menaçant. Déconnecté de l'enjeu principal.",
-    relancePhrase:
-      "L'adversaire, de SON point de vue, pourquoi il fait ça ? Il pense avoir raison ?",
-    challengePhrase:
-      "Un grand adversaire croit être le héros de sa propre histoire. Raconte-moi la sienne.",
+    relancePhrase: "L'adversaire, de SON point de vue, pourquoi il fait ça ? Il pense avoir raison ?",
+    challengePhrase: "Un grand adversaire croit être le héros de sa propre histoire. Raconte-moi la sienne.",
   },
   {
     position: 4,
@@ -1578,10 +1852,8 @@ const SEANCE_2_QUESTIONS: QuestionGuide[] = [
       "Le héros tente quelque chose pour la première fois — et échoue. Cet échec doit lui apprendre quelque chose.",
     commonPitfalls:
       "Le héros réussit du premier coup (pas d'histoire). L'échec est sans conséquence. Pas d'apprentissage.",
-    relancePhrase:
-      "Le héros essaie et rate. Qu'est-ce que cet échec lui apprend sur lui-même ?",
-    challengePhrase:
-      "Est-ce que c'est sa faille qui cause l'échec ? Si oui, c'est narrativement parfait.",
+    relancePhrase: "Le héros essaie et rate. Qu'est-ce que cet échec lui apprend sur lui-même ?",
+    challengePhrase: "Est-ce que c'est sa faille qui cause l'échec ? Si oui, c'est narrativement parfait.",
   },
   {
     position: 5,
@@ -1591,8 +1863,7 @@ const SEANCE_2_QUESTIONS: QuestionGuide[] = [
       "Un choix impossible entre deux choses importantes. Pas de bonne réponse. Le héros doit sacrifier quelque chose.",
     commonPitfalls:
       "Dilemme trop facile (une option clairement meilleure). Pas de vrai sacrifice. Enjeux trop faibles.",
-    relancePhrase:
-      "Les deux options sont mauvaises. Laquelle fait le plus mal ? Pourquoi ?",
+    relancePhrase: "Les deux options sont mauvaises. Laquelle fait le plus mal ? Pourquoi ?",
     challengePhrase:
       "Le dilemme parfait : le héros doit choisir entre ce qu'il VEUT et ce dont il a BESOIN. On y est ?",
   },
@@ -1604,8 +1875,7 @@ const SEANCE_2_QUESTIONS: QuestionGuide[] = [
       "Le moment le plus dur. Tout semble perdu. Le héros est au fond du trou. C'est le moment où le spectateur doute.",
     commonPitfalls:
       "Pas assez bas (on sent que ça va s'arranger). Déconnecté du conflit principal. Le héros ne souffre pas vraiment.",
-    relancePhrase:
-      "Imagine que tu es le héros à ce moment. Tu as envie de tout abandonner. Pourquoi ?",
+    relancePhrase: "Imagine que tu es le héros à ce moment. Tu as envie de tout abandonner. Pourquoi ?",
     challengePhrase:
       "Le point bas touche à ce que le héros a de plus intime. Sa faille, son secret. Tout remonte à la surface.",
   },
@@ -1617,8 +1887,7 @@ const SEANCE_2_QUESTIONS: QuestionGuide[] = [
       "Ce qui fait que le héros se relève. Une personne, un souvenir, une prise de conscience. Le tournant.",
     commonPitfalls:
       "Sursaut trop facile ou magique. Aide extérieure sans effort du héros. Pas de lien avec l'arc du personnage.",
-    relancePhrase:
-      "Qu'est-ce qui fait que le héros décide de se relever MAINTENANT ? Qu'est-ce qui a changé en lui ?",
+    relancePhrase: "Qu'est-ce qui fait que le héros décide de se relever MAINTENANT ? Qu'est-ce qui a changé en lui ?",
     challengePhrase:
       "Le sursaut, c'est quand le héros comprend enfin ce dont il a VRAIMENT besoin. Sa faille devient sa force ?",
   },
@@ -1630,10 +1899,8 @@ const SEANCE_2_QUESTIONS: QuestionGuide[] = [
       "Le face-à-face final avec l'adversaire. Pas forcément physique — peut être verbale, émotionnelle, symbolique.",
     commonPitfalls:
       "Confrontation trop simple (il gagne facilement). Pas de lien avec le parcours du héros. Violence gratuite.",
-    relancePhrase:
-      "Comment le héros utilise ce qu'il a appris pendant tout le film pour gagner ce face-à-face ?",
-    challengePhrase:
-      "La confrontation finale, c'est le moment où le héros prouve qu'il a changé. Comment ?",
+    relancePhrase: "Comment le héros utilise ce qu'il a appris pendant tout le film pour gagner ce face-à-face ?",
+    challengePhrase: "La confrontation finale, c'est le moment où le héros prouve qu'il a changé. Comment ?",
   },
 ];
 
@@ -1646,10 +1913,8 @@ const SEANCE_3_QUESTIONS: QuestionGuide[] = [
       "Comment ça finit. Happy end, fin ouverte, ou tragédie. Doit être cohérent avec le parcours du héros.",
     commonPitfalls:
       "Fin magique (tout s'arrange sans raison). Fin déconnectée du conflit. Pas de conséquences aux choix du héros.",
-    relancePhrase:
-      "Après la confrontation, qu'est-ce qui a changé dans la vie du héros ? Concrètement ?",
-    challengePhrase:
-      "Happy end ou pas, la fin doit être MÉRITÉE. Le héros a-t-il payé le prix de sa victoire ?",
+    relancePhrase: "Après la confrontation, qu'est-ce qui a changé dans la vie du héros ? Concrètement ?",
+    challengePhrase: "Happy end ou pas, la fin doit être MÉRITÉE. Le héros a-t-il payé le prix de sa victoire ?",
   },
   {
     position: 2,
@@ -1670,10 +1935,8 @@ const SEANCE_3_QUESTIONS: QuestionGuide[] = [
     label: "Le message",
     whatToExpect:
       "Le thème profond du film en une phrase. Pas une morale ('le bien triomphe') mais un sujet universel (l'identité, la famille, la confiance).",
-    commonPitfalls:
-      "Trop moralisateur. Trop vague ('c'est sur la vie'). Message plaqué, pas organique à l'histoire.",
-    relancePhrase:
-      "Si quelqu'un te demande 'c'est quoi ton film ?', tu réponds quoi en UNE phrase ?",
+    commonPitfalls: "Trop moralisateur. Trop vague ('c'est sur la vie'). Message plaqué, pas organique à l'histoire.",
+    relancePhrase: "Si quelqu'un te demande 'c'est quoi ton film ?', tu réponds quoi en UNE phrase ?",
     challengePhrase:
       "Le message n'est pas ce que le film DIT — c'est ce que le spectateur RESSENT. Quelle émotion reste ?",
   },
@@ -1681,14 +1944,11 @@ const SEANCE_3_QUESTIONS: QuestionGuide[] = [
     position: 4,
     category: "renforcement",
     label: "La scène clé",
-    whatToExpect:
-      "LA scène emblématique du film. Celle qu'on montre dans la bande-annonce. Le moment qui résume tout.",
+    whatToExpect: "LA scène emblématique du film. Celle qu'on montre dans la bande-annonce. Le moment qui résume tout.",
     commonPitfalls:
       "Scène d'action par défaut. Scène déconnectée du thème. Pas de lien émotionnel avec le parcours du héros.",
-    relancePhrase:
-      "La scène que tu racontes à tes potes le lendemain — c'est laquelle et pourquoi ?",
-    challengePhrase:
-      "La scène clé devrait contenir le message du film en miniature. C'est le cas ?",
+    relancePhrase: "La scène que tu racontes à tes potes le lendemain — c'est laquelle et pourquoi ?",
+    challengePhrase: "La scène clé devrait contenir le message du film en miniature. C'est le cas ?",
   },
   {
     position: 5,
@@ -1696,10 +1956,8 @@ const SEANCE_3_QUESTIONS: QuestionGuide[] = [
     label: "Le titre",
     whatToExpect:
       "Court, marquant, mémorable. Peut être littéral, métaphorique ou mystérieux. Doit donner envie de voir le film.",
-    commonPitfalls:
-      "Trop long. Trop générique ('Le Film'). Sans rapport avec l'histoire. Copie d'un film existant.",
-    relancePhrase:
-      "Imagine l'affiche du film. Le titre est en GRAND. C'est quoi ?",
+    commonPitfalls: "Trop long. Trop générique ('Le Film'). Sans rapport avec l'histoire. Copie d'un film existant.",
+    relancePhrase: "Imagine l'affiche du film. Le titre est en GRAND. C'est quoi ?",
     challengePhrase:
       "Les meilleurs titres contiennent déjà l'histoire ou le thème. 'Les Intouchables', 'Inception', 'Parasite' — qu'est-ce que le vôtre raconte ?",
   },
@@ -1720,8 +1978,7 @@ const MODULE4_QUESTIONS: QuestionGuide[] = [
       "Super-héros, personnage de manga/jeu vidéo — rappeler qu'on fait un VRAI film. Description trop vague ('c'est un mec'). Copie d'un personnage connu.",
     relancePhrase:
       "C'est quelqu'un de VRAI, qu'on pourrait croiser en bas de chez toi. Si on le croise dans la rue, on le reconnaît à quoi ?",
-    challengePhrase:
-      "Pas de super-pouvoirs. Quelqu'un de normal avec un truc PAS normal. C'est quoi ce truc ?",
+    challengePhrase: "Pas de super-pouvoirs. Quelqu'un de normal avec un truc PAS normal. C'est quoi ce truc ?",
   },
   {
     position: 2,
@@ -1729,12 +1986,9 @@ const MODULE4_QUESTIONS: QuestionGuide[] = [
     label: "Son désir",
     whatToExpect:
       "Ce que le personnage ferait avec de l'argent ou un vœu révèle ses priorités profondes : famille, pouvoir, liberté, vengeance...",
-    commonPitfalls:
-      "Réponse matérialiste sans profondeur ('acheter une Lambo'). Pas de justification émotionnelle.",
-    relancePhrase:
-      "OK il fait ça avec l'argent. Mais POURQUOI ? Qu'est-ce que ça lui apporte vraiment ?",
-    challengePhrase:
-      "Et si ce qu'il achète en premier révélait son plus gros manque ? C'est quoi ce manque ?",
+    commonPitfalls: "Réponse matérialiste sans profondeur ('acheter une Lambo'). Pas de justification émotionnelle.",
+    relancePhrase: "OK il fait ça avec l'argent. Mais POURQUOI ? Qu'est-ce que ça lui apporte vraiment ?",
+    challengePhrase: "Et si ce qu'il achète en premier révélait son plus gros manque ? C'est quoi ce manque ?",
   },
   {
     position: 3,
@@ -1742,12 +1996,9 @@ const MODULE4_QUESTIONS: QuestionGuide[] = [
     label: "Son problème",
     whatToExpect:
       "Une relation conflictuelle avec quelqu'un de précis. Le 'pourquoi ça tombe mal' révèle l'enjeu dramatique.",
-    commonPitfalls:
-      "Appel anodin (juste un pote). Pas de tension. Pas de raison pour laquelle c'est un problème.",
-    relancePhrase:
-      "Pourquoi cette personne précisément ? Qu'est-ce qui s'est passé entre eux ?",
-    challengePhrase:
-      "La personne au téléphone, elle appelle pour une bonne raison DE SON point de vue. C'est quoi ?",
+    commonPitfalls: "Appel anodin (juste un pote). Pas de tension. Pas de raison pour laquelle c'est un problème.",
+    relancePhrase: "Pourquoi cette personne précisément ? Qu'est-ce qui s'est passé entre eux ?",
+    challengePhrase: "La personne au téléphone, elle appelle pour une bonne raison DE SON point de vue. C'est quoi ?",
   },
   {
     position: 4,
@@ -1757,10 +2008,8 @@ const MODULE4_QUESTIONS: QuestionGuide[] = [
       "Quelque chose d'inavouable, de dangereux ou de vulnérable. Le secret ajoute une couche de complexité au personnage.",
     commonPitfalls:
       "Secret trop léger ('elle mange des bonbons en cachette'). Secret déconnecté du personnage construit.",
-    relancePhrase:
-      "Si quelqu'un découvrait ce secret, qu'est-ce qui se passerait ? Ça changerait quoi ?",
-    challengePhrase:
-      "Un bon secret, c'est celui qui pourrait tout détruire. On en est là ?",
+    relancePhrase: "Si quelqu'un découvrait ce secret, qu'est-ce qui se passerait ? Ça changerait quoi ?",
+    challengePhrase: "Un bon secret, c'est celui qui pourrait tout détruire. On en est là ?",
   },
   {
     position: 5,
@@ -1770,10 +2019,8 @@ const MODULE4_QUESTIONS: QuestionGuide[] = [
       "Remise en question de tout ce qui a été construit. Les élèves doivent réécrire leur vision du personnage. C'est le vrai exercice de scénariste.",
     commonPitfalls:
       "Twist trop petit (ne change rien). Twist incohérent avec ce qui précède. Refus de remettre en question.",
-    relancePhrase:
-      "Maintenant qu'on sait ça, est-ce que son secret de tout à l'heure prend un autre sens ?",
-    challengePhrase:
-      "Un bon twist change TOUT ce qu'on croyait savoir. Est-ce que le vôtre fait ça ?",
+    relancePhrase: "Maintenant qu'on sait ça, est-ce que son secret de tout à l'heure prend un autre sens ?",
+    challengePhrase: "Un bon twist change TOUT ce qu'on croyait savoir. Est-ce que le vôtre fait ça ?",
   },
   {
     position: 6,
@@ -1783,10 +2030,8 @@ const MODULE4_QUESTIONS: QuestionGuide[] = [
       "Une scène de tension entre deux personnes. Les élèves doivent imaginer le dialogue, les émotions, les non-dits.",
     commonPitfalls:
       "Scène qui tourne à la bagarre sans profondeur. Pas de dialogue, juste de l'action. Pas de tension émotionnelle.",
-    relancePhrase:
-      "Ils se parlent ou pas ? Et le silence, il dit quoi ?",
-    challengePhrase:
-      "Dans cette scène, qui a le plus à perdre ? Et est-ce que l'autre le sait ?",
+    relancePhrase: "Ils se parlent ou pas ? Et le silence, il dit quoi ?",
+    challengePhrase: "Dans cette scène, qui a le plus à perdre ? Et est-ce que l'autre le sait ?",
   },
   {
     position: 7,
@@ -1796,10 +2041,8 @@ const MODULE4_QUESTIONS: QuestionGuide[] = [
       "Une image finale cinématographique. Les meilleurs réponses utilisent les sens : on VOIT quelque chose, on ENTEND quelque chose.",
     commonPitfalls:
       "Fin bâclée ('il meurt' ou 'il est content'). Pas d'image concrète. Déconnexion avec l'arc du personnage.",
-    relancePhrase:
-      "Ferme les yeux. Tu es dans la salle de ciné. L'écran va s'éteindre. Tu vois quoi en dernier ?",
-    challengePhrase:
-      "La dernière image doit résumer TOUT le film en un plan. Est-ce le cas ?",
+    relancePhrase: "Ferme les yeux. Tu es dans la salle de ciné. L'écran va s'éteindre. Tu vois quoi en dernier ?",
+    challengePhrase: "La dernière image doit résumer TOUT le film en un plan. Est-ce le cas ?",
   },
   {
     position: 8,
@@ -1807,10 +2050,8 @@ const MODULE4_QUESTIONS: QuestionGuide[] = [
     label: "Le pitch",
     whatToExpect:
       "Une phrase d'accroche qui donne envie. Les meilleures sont courtes, mystérieuses, avec un paradoxe ou une question.",
-    commonPitfalls:
-      "Phrase trop longue (résumé au lieu de pitch). Pas accrocheuse. Révèle trop de l'histoire.",
-    relancePhrase:
-      "C'est cette phrase qu'on met sur l'affiche en GRAND. Elle donne envie ou pas ?",
+    commonPitfalls: "Phrase trop longue (résumé au lieu de pitch). Pas accrocheuse. Révèle trop de l'histoire.",
+    relancePhrase: "C'est cette phrase qu'on met sur l'affiche en GRAND. Elle donne envie ou pas ?",
     challengePhrase:
       "Les meilleurs pitchs créent un mystère. 'Dans sa vie, tout est un mensonge. Sauf un truc.' — Tu peux faire mieux ?",
   },
@@ -1831,8 +2072,7 @@ const MODULE9_S1_QUESTIONS: QuestionGuide[] = [
       "Confusion réalisateur/acteur. Réponse vague ('il fait le film'). Pas de mention des décisions créatives.",
     relancePhrase:
       "Le réalisateur ne joue pas dans le film (en général). Alors il fait quoi exactement sur le plateau ?",
-    challengePhrase:
-      "Si le réalisateur disparaît, est-ce que le film se fait quand même ? Qu'est-ce qui manquerait ?",
+    challengePhrase: "Si le réalisateur disparaît, est-ce que le film se fait quand même ? Qu'est-ce qui manquerait ?",
   },
   {
     position: 2,
@@ -1842,10 +2082,8 @@ const MODULE9_S1_QUESTIONS: QuestionGuide[] = [
       "Les élèves citent souvent acteurs et caméramans. Pousser vers les métiers moins visibles : son, lumière, montage, costumes.",
     commonPitfalls:
       "Ne cite que les acteurs. Oublie les métiers techniques. Ne comprend pas que chaque métier est indispensable.",
-    relancePhrase:
-      "OK y'a des acteurs et un cadreur. Mais qui s'occupe du son ? De la lumière ? Des costumes ?",
-    challengePhrase:
-      "Si tu enlèves UN métier de la liste, le film s'écroule. Lequel fait le plus de dégâts ?",
+    relancePhrase: "OK y'a des acteurs et un cadreur. Mais qui s'occupe du son ? De la lumière ? Des costumes ?",
+    challengePhrase: "Si tu enlèves UN métier de la liste, le film s'écroule. Lequel fait le plus de dégâts ?",
   },
   {
     position: 3,
@@ -1855,10 +2093,8 @@ const MODULE9_S1_QUESTIONS: QuestionGuide[] = [
       "Réponses centrées sur les acteurs et les effets spéciaux. Ouvrir vers les coûts cachés : transport, nourriture, locations.",
     commonPitfalls:
       "Pense que seuls les acteurs coûtent cher. Ne comprend pas les coûts logistiques. Chiffres irréalistes.",
-    relancePhrase:
-      "Les acteurs, OK. Mais qui paye la nourriture de l'équipe pendant 3 mois de tournage ?",
-    challengePhrase:
-      "Certains films coûtent 15 000 €, d'autres 200 millions. C'est quoi la différence fondamentale ?",
+    relancePhrase: "Les acteurs, OK. Mais qui paye la nourriture de l'équipe pendant 3 mois de tournage ?",
+    challengePhrase: "Certains films coûtent 15 000 €, d'autres 200 millions. C'est quoi la différence fondamentale ?",
   },
   {
     position: 4,
@@ -1866,12 +2102,9 @@ const MODULE9_S1_QUESTIONS: QuestionGuide[] = [
     label: "Le temps",
     whatToExpect:
       "Les élèves découvrent la pression du temps. Lien avec leur propre expérience (devoirs, projets de classe).",
-    commonPitfalls:
-      "Réponse passive ('on fait vite'). Pas de réflexion sur les choix qu'impose le manque de temps.",
-    relancePhrase:
-      "Tu as 2 heures pour tourner 5 scènes. Tu commences par laquelle ? Pourquoi ?",
-    challengePhrase:
-      "Et si le manque de temps t'obligeait à faire MIEUX ? Moins de temps = plus de créativité ?",
+    commonPitfalls: "Réponse passive ('on fait vite'). Pas de réflexion sur les choix qu'impose le manque de temps.",
+    relancePhrase: "Tu as 2 heures pour tourner 5 scènes. Tu commences par laquelle ? Pourquoi ?",
+    challengePhrase: "Et si le manque de temps t'obligeait à faire MIEUX ? Moins de temps = plus de créativité ?",
   },
   {
     position: 5,
@@ -1879,12 +2112,9 @@ const MODULE9_S1_QUESTIONS: QuestionGuide[] = [
     label: "L'espace",
     whatToExpect:
       "Réponses sur les autorisations, le bruit, les passants. Les élèves comprennent que l'espace public n'est pas libre.",
-    commonPitfalls:
-      "Pense qu'on peut filmer partout. Ne comprend pas les contraintes légales et pratiques.",
-    relancePhrase:
-      "Tu veux filmer dans la cour du collège. Tu dois demander à qui ? Et si on te dit non ?",
-    challengePhrase:
-      "Les meilleurs films utilisent un seul lieu. Comment faire tout un film dans cette salle ?",
+    commonPitfalls: "Pense qu'on peut filmer partout. Ne comprend pas les contraintes légales et pratiques.",
+    relancePhrase: "Tu veux filmer dans la cour du collège. Tu dois demander à qui ? Et si on te dit non ?",
+    challengePhrase: "Les meilleurs films utilisent un seul lieu. Comment faire tout un film dans cette salle ?",
   },
   {
     position: 6,
@@ -1892,12 +2122,9 @@ const MODULE9_S1_QUESTIONS: QuestionGuide[] = [
     label: "Le cadreur",
     whatToExpect:
       "Les élèves comprennent que la caméra n'est pas neutre — elle CHOISIT ce qu'on voit. C'est un métier créatif.",
-    commonPitfalls:
-      "Pense que le cadreur 'filme tout'. Ne comprend pas que cadrer = choisir et exclure.",
-    relancePhrase:
-      "Fais un cadre avec tes mains. Tu vois quoi ? Maintenant bouge un peu. Ça change tout, non ?",
-    challengePhrase:
-      "Si le cadreur décide de ne montrer QUE les mains du personnage, ça raconte quoi ?",
+    commonPitfalls: "Pense que le cadreur 'filme tout'. Ne comprend pas que cadrer = choisir et exclure.",
+    relancePhrase: "Fais un cadre avec tes mains. Tu vois quoi ? Maintenant bouge un peu. Ça change tout, non ?",
+    challengePhrase: "Si le cadreur décide de ne montrer QUE les mains du personnage, ça raconte quoi ?",
   },
   {
     position: 7,
@@ -1905,12 +2132,9 @@ const MODULE9_S1_QUESTIONS: QuestionGuide[] = [
     label: "Le low-budget",
     whatToExpect:
       "Les élèves sont surpris qu'on puisse faire des films sans argent. Exemples : Blair Witch, Tangerine (filmé à l'iPhone).",
-    commonPitfalls:
-      "Pense que low-budget = mauvais film. Ne comprend pas que la contrainte stimule la créativité.",
-    relancePhrase:
-      "Blair Witch a coûté 60 000 $ et a rapporté 250 millions. Comment c'est possible ?",
-    challengePhrase:
-      "Tu as 0 €, un téléphone et 3 amis. C'est assez pour un bon film ?",
+    commonPitfalls: "Pense que low-budget = mauvais film. Ne comprend pas que la contrainte stimule la créativité.",
+    relancePhrase: "Blair Witch a coûté 60 000 $ et a rapporté 250 millions. Comment c'est possible ?",
+    challengePhrase: "Tu as 0 €, un téléphone et 3 amis. C'est assez pour un bon film ?",
   },
   {
     position: 8,
@@ -1918,12 +2142,9 @@ const MODULE9_S1_QUESTIONS: QuestionGuide[] = [
     label: "Produire un film",
     whatToExpect:
       "Synthèse personnelle. Les meilleures réponses combinent équipe, argent, temps et créativité en une phrase.",
-    commonPitfalls:
-      "Synthèse trop vague. Oublie une dimension (technique, humaine, financière, créative).",
-    relancePhrase:
-      "En une phrase : c'est quoi le plus dur quand on produit un film ?",
-    challengePhrase:
-      "Produire un film, c'est l'art de faire des CHOIX. Tu es d'accord ou pas ?",
+    commonPitfalls: "Synthèse trop vague. Oublie une dimension (technique, humaine, financière, créative).",
+    relancePhrase: "En une phrase : c'est quoi le plus dur quand on produit un film ?",
+    challengePhrase: "Produire un film, c'est l'art de faire des CHOIX. Tu es d'accord ou pas ?",
   },
 ];
 
@@ -1934,10 +2155,8 @@ const MODULE9_S2_QUESTIONS: QuestionGuide[] = [
     label: "Le casting",
     whatToExpect:
       "L'élève réfléchit à l'impact du casting sur le film. Stars vs amis vs solo — chaque option a des conséquences.",
-    commonPitfalls:
-      "Veut toujours des stars. Ne comprend pas qu'un bon acteur amateur peut être plus authentique.",
-    relancePhrase:
-      "Des stars, c'est cool. Mais ça coûte cher. Et si tes potes jouaient mieux parce qu'ils y croient ?",
+    commonPitfalls: "Veut toujours des stars. Ne comprend pas qu'un bon acteur amateur peut être plus authentique.",
+    relancePhrase: "Des stars, c'est cool. Mais ça coûte cher. Et si tes potes jouaient mieux parce qu'ils y croient ?",
     challengePhrase:
       "Le film Tangerine a été tourné avec des inconnus et un iPhone. Il est meilleur que beaucoup de blockbusters. Pourquoi ?",
   },
@@ -1945,14 +2164,10 @@ const MODULE9_S2_QUESTIONS: QuestionGuide[] = [
     position: 2,
     category: "budget",
     label: "Le décor",
-    whatToExpect:
-      "Choix entre simplicité et ambition. Le lieu raconte une histoire — le budget détermine laquelle.",
-    commonPitfalls:
-      "Veut filmer partout sans penser au coût. Ne comprend pas qu'un seul lieu bien choisi suffit.",
-    relancePhrase:
-      "Un seul lieu, mais lequel ? L'endroit idéal pour TON histoire, c'est quoi ?",
-    challengePhrase:
-      "12 Angry Men se passe dans UNE seule pièce. Et c'est un chef-d'œuvre. Comment c'est possible ?",
+    whatToExpect: "Choix entre simplicité et ambition. Le lieu raconte une histoire — le budget détermine laquelle.",
+    commonPitfalls: "Veut filmer partout sans penser au coût. Ne comprend pas qu'un seul lieu bien choisi suffit.",
+    relancePhrase: "Un seul lieu, mais lequel ? L'endroit idéal pour TON histoire, c'est quoi ?",
+    challengePhrase: "12 Angry Men se passe dans UNE seule pièce. Et c'est un chef-d'œuvre. Comment c'est possible ?",
   },
   {
     position: 3,
@@ -1960,12 +2175,9 @@ const MODULE9_S2_QUESTIONS: QuestionGuide[] = [
     label: "L'image",
     whatToExpect:
       "L'élève découvre que le rendu visuel est un choix, pas un hasard. Brut peut être aussi puissant que léché.",
-    commonPitfalls:
-      "Pense que brut = nul. Ne comprend pas que le style visuel sert l'histoire.",
-    relancePhrase:
-      "Un film d'horreur filmé à la main, c'est plus flippant qu'en 4K. Pourquoi ?",
-    challengePhrase:
-      "L'image parfaite n'existe pas. L'image JUSTE, oui. C'est quoi la différence ?",
+    commonPitfalls: "Pense que brut = nul. Ne comprend pas que le style visuel sert l'histoire.",
+    relancePhrase: "Un film d'horreur filmé à la main, c'est plus flippant qu'en 4K. Pourquoi ?",
+    challengePhrase: "L'image parfaite n'existe pas. L'image JUSTE, oui. C'est quoi la différence ?",
   },
   {
     position: 4,
@@ -1975,10 +2187,8 @@ const MODULE9_S2_QUESTIONS: QuestionGuide[] = [
       "Les élèves sous-estiment le son. C'est l'occasion de montrer que le son fait 50% de l'émotion d'un film.",
     commonPitfalls:
       "Néglige le son ('c'est pas important'). Ne comprend pas la différence entre son direct et post-production.",
-    relancePhrase:
-      "Regarde une scène de film en coupant le son. Ça change tout, non ?",
-    challengePhrase:
-      "Un film muet avec des sous-titres, ça peut être PLUS puissant que des dialogues. Comment ?",
+    relancePhrase: "Regarde une scène de film en coupant le son. Ça change tout, non ?",
+    challengePhrase: "Un film muet avec des sous-titres, ça peut être PLUS puissant que des dialogues. Comment ?",
   },
   {
     position: 5,
@@ -1986,12 +2196,10 @@ const MODULE9_S2_QUESTIONS: QuestionGuide[] = [
     label: "Le montage",
     whatToExpect:
       "L'élève choisit entre plan-séquence et montage coupé. Chaque option a un impact sur le rythme et l'émotion.",
-    commonPitfalls:
-      "Veut plein d'effets sans comprendre pourquoi. Confond montage = effets spéciaux.",
+    commonPitfalls: "Veut plein d'effets sans comprendre pourquoi. Confond montage = effets spéciaux.",
     relancePhrase:
       "Un plan-séquence, c'est pas de coupure. Comme si on était DANS la scène. Ça te plaît ou ça te fait peur ?",
-    challengePhrase:
-      "Le montage est invisible quand il est bon. Le spectateur ne le voit pas mais le SENT. Comment ?",
+    challengePhrase: "Le montage est invisible quand il est bon. Le spectateur ne le voit pas mais le SENT. Comment ?",
   },
 ];
 
@@ -2004,8 +2212,7 @@ const MODULE9_S3_QUESTIONS: QuestionGuide[] = [
       "Solutions créatives : réécrire la scène, utiliser un doublure, tourner de dos, changer le plan de tournage.",
     commonPitfalls:
       "Réponse passive ('on attend qu'il revienne'). Pas de solution créative. Annulation pure et simple.",
-    relancePhrase:
-      "Tu ne peux PAS attendre. Le lieu est réservé pour aujourd'hui seulement. Tu fais quoi MAINTENANT ?",
+    relancePhrase: "Tu ne peux PAS attendre. Le lieu est réservé pour aujourd'hui seulement. Tu fais quoi MAINTENANT ?",
     challengePhrase:
       "Et si l'absence de l'acteur rendait la scène MEILLEURE ? On le montre jamais mais on sent sa présence...",
   },
@@ -2013,14 +2220,10 @@ const MODULE9_S3_QUESTIONS: QuestionGuide[] = [
     position: 2,
     category: "resolution",
     label: "La météo",
-    whatToExpect:
-      "Adaptation : tourner sous la pluie, aller en intérieur, réécrire la scène avec la météo.",
-    commonPitfalls:
-      "Attend que ça passe. Ne pense pas à intégrer la météo dans l'histoire.",
-    relancePhrase:
-      "La pluie peut rendre une scène magnifique. Comment tu l'utilises ?",
-    challengePhrase:
-      "Blade Runner, c'est sous la pluie. Et c'est mythique. Ta scène sous la pluie, elle donne quoi ?",
+    whatToExpect: "Adaptation : tourner sous la pluie, aller en intérieur, réécrire la scène avec la météo.",
+    commonPitfalls: "Attend que ça passe. Ne pense pas à intégrer la météo dans l'histoire.",
+    relancePhrase: "La pluie peut rendre une scène magnifique. Comment tu l'utilises ?",
+    challengePhrase: "Blade Runner, c'est sous la pluie. Et c'est mythique. Ta scène sous la pluie, elle donne quoi ?",
   },
   {
     position: 3,
@@ -2028,10 +2231,8 @@ const MODULE9_S3_QUESTIONS: QuestionGuide[] = [
     label: "La panne",
     whatToExpect:
       "Solutions : téléphone de secours, changer de plan, tourner en audio seul, improviser avec ce qu'on a.",
-    commonPitfalls:
-      "Panique. Pas de réflexe de backup. Ne pense pas à utiliser d'autres appareils.",
-    relancePhrase:
-      "Combien de téléphones il y a dans cette salle ? La solution est peut-être là.",
+    commonPitfalls: "Panique. Pas de réflexe de backup. Ne pense pas à utiliser d'autres appareils.",
+    relancePhrase: "Combien de téléphones il y a dans cette salle ? La solution est peut-être là.",
     challengePhrase:
       "Et si tu tournais le reste du film SANS image ? Juste du son, du noir, des voix... Ça marcherait ?",
   },
@@ -2039,12 +2240,9 @@ const MODULE9_S3_QUESTIONS: QuestionGuide[] = [
     position: 4,
     category: "resolution",
     label: "Le bruit",
-    whatToExpect:
-      "Solutions : post-synchronisation, sous-titres, réécriture en scène muette, changement de lieu.",
-    commonPitfalls:
-      "Attend que le bruit s'arrête. Ne pense pas aux alternatives créatives.",
-    relancePhrase:
-      "Et si le bruit FAISAIT PARTIE du film ? Les travaux deviennent le décor sonore...",
+    whatToExpect: "Solutions : post-synchronisation, sous-titres, réécriture en scène muette, changement de lieu.",
+    commonPitfalls: "Attend que le bruit s'arrête. Ne pense pas aux alternatives créatives.",
+    relancePhrase: "Et si le bruit FAISAIT PARTIE du film ? Les travaux deviennent le décor sonore...",
     challengePhrase:
       "Certains cinéastes utilisent le bruit ambiant comme musique. Comment tu transformes cette nuisance en art ?",
   },
@@ -2054,12 +2252,9 @@ const MODULE9_S3_QUESTIONS: QuestionGuide[] = [
     label: "Le conflit d'équipe",
     whatToExpect:
       "Gestion de conflit : écouter les deux côtés, voter, essayer les deux versions, trancher en tant que réalisateur.",
-    commonPitfalls:
-      "Prend un côté sans écouter l'autre. Résout par la force ('c'est moi le chef'). Ignore le conflit.",
-    relancePhrase:
-      "Les deux ont peut-être raison. Comment tu fais pour que tout le monde se sente écouté ?",
-    challengePhrase:
-      "Et si tu tournais les DEUX versions et que tu choisissais au montage ? Ça coûte quoi ?",
+    commonPitfalls: "Prend un côté sans écouter l'autre. Résout par la force ('c'est moi le chef'). Ignore le conflit.",
+    relancePhrase: "Les deux ont peut-être raison. Comment tu fais pour que tout le monde se sente écouté ?",
+    challengePhrase: "Et si tu tournais les DEUX versions et que tu choisissais au montage ? Ça coûte quoi ?",
   },
   {
     position: 6,
@@ -2067,10 +2262,8 @@ const MODULE9_S3_QUESTIONS: QuestionGuide[] = [
     label: "L'accès refusé",
     whatToExpect:
       "Alternatives : trouver un lieu similaire, filmer devant le lieu fermé, réécrire pour un autre décor.",
-    commonPitfalls:
-      "Abandon. Ne cherche pas de lieu alternatif. Pas de créativité dans la substitution.",
-    relancePhrase:
-      "Le lieu est fermé mais la rue devant est ouverte. Tu peux raconter quoi avec ça ?",
+    commonPitfalls: "Abandon. Ne cherche pas de lieu alternatif. Pas de créativité dans la substitution.",
+    relancePhrase: "Le lieu est fermé mais la rue devant est ouverte. Tu peux raconter quoi avec ça ?",
     challengePhrase:
       "Le lieu prévu était parfait. Mais peut-être que le lieu de remplacement raconte une histoire DIFFÉRENTE et meilleure ?",
   },
@@ -2078,14 +2271,11 @@ const MODULE9_S3_QUESTIONS: QuestionGuide[] = [
     position: 7,
     category: "resolution",
     label: "Le temps qui file",
-    whatToExpect:
-      "Priorisation : quelle scène est essentielle, que peut-on simplifier, que peut-on couper.",
-    commonPitfalls:
-      "Essaie de tout faire en bâclant. Ne sait pas prioriser. Sacrifie la scène clé.",
+    whatToExpect: "Priorisation : quelle scène est essentielle, que peut-on simplifier, que peut-on couper.",
+    commonPitfalls: "Essaie de tout faire en bâclant. Ne sait pas prioriser. Sacrifie la scène clé.",
     relancePhrase:
       "UNE seule scène est vraiment indispensable. Laquelle ? Les deux autres, tu les simplifies comment ?",
-    challengePhrase:
-      "30 minutes, 3 scènes. Et si tu les fusionnais en UNE seule scène qui raconte tout ?",
+    challengePhrase: "30 minutes, 3 scènes. Et si tu les fusionnais en UNE seule scène qui raconte tout ?",
   },
   {
     position: 8,
@@ -2109,23 +2299,18 @@ const MODULE9_S4_QUESTIONS: QuestionGuide[] = [
     label: "L'équipe idéale",
     whatToExpect:
       "Répartition des rôles : réalisateur, cadreur, acteurs, son, lumière. L'élève pense à qui fait quoi concrètement.",
-    commonPitfalls:
-      "Tout le monde est acteur, personne derrière la caméra. Oublie les rôles techniques.",
-    relancePhrase:
-      "OK t'as des acteurs. Mais qui tient la caméra ? Qui surveille le son ? Qui dit 'Action' ?",
-    challengePhrase:
-      "Et si tu n'avais que 3 personnes ? Qui fait quoi ? Certains cumulent les rôles — lesquels ?",
+    commonPitfalls: "Tout le monde est acteur, personne derrière la caméra. Oublie les rôles techniques.",
+    relancePhrase: "OK t'as des acteurs. Mais qui tient la caméra ? Qui surveille le son ? Qui dit 'Action' ?",
+    challengePhrase: "Et si tu n'avais que 3 personnes ? Qui fait quoi ? Certains cumulent les rôles — lesquels ?",
   },
   {
     position: 2,
     category: "organisation",
     label: "La scène clé",
-    whatToExpect:
-      "L'élève identifie LE moment fort de son film. C'est la scène autour de laquelle tout s'organise.",
+    whatToExpect: "L'élève identifie LE moment fort de son film. C'est la scène autour de laquelle tout s'organise.",
     commonPitfalls:
       "Choisit une scène d'action plutôt que la scène la plus IMPORTANTE narrativement. Pas de justification.",
-    relancePhrase:
-      "Si le spectateur ne retient qu'UNE scène, c'est laquelle ? Pourquoi celle-là ?",
+    relancePhrase: "Si le spectateur ne retient qu'UNE scène, c'est laquelle ? Pourquoi celle-là ?",
     challengePhrase:
       "Ta scène clé, est-ce qu'elle montre la transformation du personnage ? Si non, c'est la bonne scène ?",
   },
@@ -2133,25 +2318,18 @@ const MODULE9_S4_QUESTIONS: QuestionGuide[] = [
     position: 3,
     category: "organisation",
     label: "Le planning",
-    whatToExpect:
-      "Un début d'organisation concrète : quoi d'abord, quoi ensuite, gestion du temps et des pauses.",
-    commonPitfalls:
-      "Planning irréaliste (10 scènes en 2h). Pas de marge pour les imprévus. Pas d'ordre logique.",
-    relancePhrase:
-      "On commence par la scène la plus technique ou la plus simple ? Pourquoi ?",
-    challengePhrase:
-      "Les pros tournent rarement dans l'ordre du film. Pourquoi ? Et toi, tu tournes dans quel ordre ?",
+    whatToExpect: "Un début d'organisation concrète : quoi d'abord, quoi ensuite, gestion du temps et des pauses.",
+    commonPitfalls: "Planning irréaliste (10 scènes en 2h). Pas de marge pour les imprévus. Pas d'ordre logique.",
+    relancePhrase: "On commence par la scène la plus technique ou la plus simple ? Pourquoi ?",
+    challengePhrase: "Les pros tournent rarement dans l'ordre du film. Pourquoi ? Et toi, tu tournes dans quel ordre ?",
   },
   {
     position: 4,
     category: "organisation",
     label: "Le repérage",
-    whatToExpect:
-      "L'élève pense à la lumière, au bruit, aux autorisations, à la logistique (prises, espace, accès).",
-    commonPitfalls:
-      "Pense que repérage = juste 'regarder l'endroit'. Oublie le son, la lumière, les autorisations.",
-    relancePhrase:
-      "Quand tu arrives sur le lieu, tu vérifies quoi en PREMIER ? Le son ? La lumière ? L'espace ?",
+    whatToExpect: "L'élève pense à la lumière, au bruit, aux autorisations, à la logistique (prises, espace, accès).",
+    commonPitfalls: "Pense que repérage = juste 'regarder l'endroit'. Oublie le son, la lumière, les autorisations.",
+    relancePhrase: "Quand tu arrives sur le lieu, tu vérifies quoi en PREMIER ? Le son ? La lumière ? L'espace ?",
     challengePhrase:
       "Un bon repérage évite 80% des problèmes. Qu'est-ce qui pourrait mal tourner si tu sautes cette étape ?",
   },
@@ -2161,10 +2339,8 @@ const MODULE9_S4_QUESTIONS: QuestionGuide[] = [
     label: "Le plan B",
     whatToExpect:
       "L'élève anticipe l'échec et propose une alternative réaliste. Lien direct avec la séance 3 (imprévus).",
-    commonPitfalls:
-      "Pas de plan B ('ça va marcher'). Plan B identique au plan A. Pas de réflexion sur l'alternative.",
-    relancePhrase:
-      "Tu mises tout sur une scène. Elle rate. Tu fais quoi ? Tu avais prévu cette situation ?",
+    commonPitfalls: "Pas de plan B ('ça va marcher'). Plan B identique au plan A. Pas de réflexion sur l'alternative.",
+    relancePhrase: "Tu mises tout sur une scène. Elle rate. Tu fais quoi ? Tu avais prévu cette situation ?",
     challengePhrase:
       "Et si ton plan B était MEILLEUR que ton plan A ? Comment tu le sauras si tu ne l'as pas préparé ?",
   },
@@ -2172,12 +2348,9 @@ const MODULE9_S4_QUESTIONS: QuestionGuide[] = [
     position: 6,
     category: "organisation",
     label: "Le premier plan",
-    whatToExpect:
-      "Une image d'ouverture concrète et visuelle. Le premier plan donne le ton du film entier.",
-    commonPitfalls:
-      "Image trop vague ('on voit la ville'). Pas de lien avec l'histoire. Premier plan sans intention.",
-    relancePhrase:
-      "Ferme les yeux. L'écran s'allume. C'est quoi la PREMIÈRE image ? Décris-la comme si j'y étais.",
+    whatToExpect: "Une image d'ouverture concrète et visuelle. Le premier plan donne le ton du film entier.",
+    commonPitfalls: "Image trop vague ('on voit la ville'). Pas de lien avec l'histoire. Premier plan sans intention.",
+    relancePhrase: "Ferme les yeux. L'écran s'allume. C'est quoi la PREMIÈRE image ? Décris-la comme si j'y étais.",
     challengePhrase:
       "Le premier plan de ton film, c'est ta carte de visite. Le spectateur décide en 3 secondes s'il reste. Il reste ?",
   },
@@ -2185,12 +2358,9 @@ const MODULE9_S4_QUESTIONS: QuestionGuide[] = [
     position: 7,
     category: "organisation",
     label: "Le dernier plan",
-    whatToExpect:
-      "L'image finale, celle qui reste. Doit résonner avec le premier plan et résumer l'arc du personnage.",
-    commonPitfalls:
-      "Fin bâclée ('c'est fini'). Pas de lien avec le premier plan. Image sans émotion.",
-    relancePhrase:
-      "La dernière image, c'est celle que le spectateur emporte chez lui. C'est quoi ?",
+    whatToExpect: "L'image finale, celle qui reste. Doit résonner avec le premier plan et résumer l'arc du personnage.",
+    commonPitfalls: "Fin bâclée ('c'est fini'). Pas de lien avec le premier plan. Image sans émotion.",
+    relancePhrase: "La dernière image, c'est celle que le spectateur emporte chez lui. C'est quoi ?",
     challengePhrase:
       "Compare ton premier et ton dernier plan. Qu'est-ce qui a changé ? C'est ça, l'histoire de ton film.",
   },
@@ -2200,12 +2370,9 @@ const MODULE9_S4_QUESTIONS: QuestionGuide[] = [
     label: "Le pitch de prod",
     whatToExpect:
       "Une phrase de synthèse qui résume le quoi, où, qui et comment du tournage. L'exercice ultime de production.",
-    commonPitfalls:
-      "Phrase trop longue (résumé au lieu de pitch). Oublie un élément clé. Pas percutant.",
-    relancePhrase:
-      "En UNE phrase : c'est quoi ton film, on le tourne où, avec qui, et comment ?",
-    challengePhrase:
-      "Si tu dois convaincre un producteur en 10 secondes, c'est cette phrase. Elle convainc ?",
+    commonPitfalls: "Phrase trop longue (résumé au lieu de pitch). Oublie un élément clé. Pas percutant.",
+    relancePhrase: "En UNE phrase : c'est quoi ton film, on le tourne où, avec qui, et comment ?",
+    challengePhrase: "Si tu dois convaincre un producteur en 10 secondes, c'est cette phrase. Elle convainc ?",
   },
 ];
 
@@ -2222,8 +2389,7 @@ const MODULE2EC_S1_QUESTIONS: QuestionGuide[] = [
       "Les élèves sélectionnent ≥3 contenus qu'ils connaissent (séries, films, anime). Puis choisissent leur préféré. Pas de réponse à évaluer — c'est un déclencheur.",
     commonPitfalls:
       "Élèves qui ne connaissent rien de la liste — les rassurer, ils peuvent choisir ce qu'ils veulent. Élèves qui sélectionnent TOUT sans réfléchir.",
-    relancePhrase:
-      "C'est lequel qui t'a le plus marqué ? Celui dont tu pourrais parler pendant 10 minutes ?",
+    relancePhrase: "C'est lequel qui t'a le plus marqué ? Celui dont tu pourrais parler pendant 10 minutes ?",
     challengePhrase:
       "Tu en as choisi beaucoup — si tu devais n'en garder qu'UN pour en faire un film, ce serait lequel ?",
   },
@@ -2235,10 +2401,8 @@ const MODULE2EC_S1_QUESTIONS: QuestionGuide[] = [
       "Un texte libre décrivant une scène qui les a marqués dans un contenu qu'ils aiment. Détails visuels, émotions, contexte.",
     commonPitfalls:
       "Résumé de tout le film au lieu d'UNE scène. Description trop vague ('c'était bien'). Spoiler sans contexte émotionnel.",
-    relancePhrase:
-      "Ferme les yeux. Tu revois la scène. Qu'est-ce que tu vois ? Qu'est-ce que tu ressens à ce moment ?",
-    challengePhrase:
-      "Pourquoi CETTE scène et pas une autre ? Qu'est-ce qu'elle a de spécial pour toi ?",
+    relancePhrase: "Ferme les yeux. Tu revois la scène. Qu'est-ce que tu vois ? Qu'est-ce que tu ressens à ce moment ?",
+    challengePhrase: "Pourquoi CETTE scène et pas une autre ? Qu'est-ce qu'elle a de spécial pour toi ?",
   },
   {
     position: 3,
@@ -2248,10 +2412,8 @@ const MODULE2EC_S1_QUESTIONS: QuestionGuide[] = [
       "Une réponse qui creuse : qu'est-ce que le personnage veut VRAIMENT dans cette scène ? Au-delà de l'action visible.",
     commonPitfalls:
       "Réponse superficielle ('il veut gagner'). Confusion entre action et motivation profonde. Réponse trop courte.",
-    relancePhrase:
-      "OK, il fait ça. Mais POURQUOI ? Qu'est-ce qu'il cherche vraiment au fond ?",
-    challengePhrase:
-      "Et si le personnage lui-même ne savait pas ce qu'il veut vraiment ? C'est ça l'émotion cachée.",
+    relancePhrase: "OK, il fait ça. Mais POURQUOI ? Qu'est-ce qu'il cherche vraiment au fond ?",
+    challengePhrase: "Et si le personnage lui-même ne savait pas ce qu'il veut vraiment ? C'est ça l'émotion cachée.",
   },
 ];
 
@@ -2264,8 +2426,7 @@ const MODULE2EC_S2_QUESTIONS: QuestionGuide[] = [
       "Choix fermé parmi 5 émotions (exclusion, injustice, honte, jalousie, joie fragile). Chaque élève associe une émotion à son contenu préféré.",
     commonPitfalls:
       "Élèves qui choisissent 'par défaut' sans réfléchir. Difficulté à nommer une émotion — c'est normal et attendu.",
-    relancePhrase:
-      "Repense à ta scène marquante. Le personnage, qu'est-ce qu'il ressent VRAIMENT à ce moment ?",
+    relancePhrase: "Repense à ta scène marquante. Le personnage, qu'est-ce qu'il ressent VRAIMENT à ce moment ?",
     challengePhrase:
       "Parfois une émotion en cache une autre. La colère cache souvent la peur. La joie cache parfois la tristesse.",
   },
@@ -2277,8 +2438,7 @@ const MODULE2EC_S2_QUESTIONS: QuestionGuide[] = [
       "Chaque élève construit une scène avec contraintes : intention + obstacle + changement, puis choisit des éléments visuels/narratifs dans un budget de jetons.",
     commonPitfalls:
       "Scènes sans vrai conflit (tout se passe bien). Trop d'éléments spectaculaires sans lien narratif. Oubli de l'émotion choisie.",
-    relancePhrase:
-      "Ton personnage veut quelque chose, mais quelque chose l'empêche. C'est quoi l'empêchement ?",
+    relancePhrase: "Ton personnage veut quelque chose, mais quelque chose l'empêche. C'est quoi l'empêchement ?",
     challengePhrase:
       "Tu as choisi une explosion ET une cascade — est-ce que ça sert vraiment l'émotion de ta scène, ou c'est juste cool ?",
   },
@@ -2293,10 +2453,8 @@ const MODULE2EC_S3_QUESTIONS: QuestionGuide[] = [
       "Après projection de 2 scènes anonymes, les élèves disent laquelle communique le mieux l'émotion. Argumentation sur la clarté narrative.",
     commonPitfalls:
       "Vote 'pour mon pote' plutôt que sur le fond. Critiques méchantes — recadrer vers le constructif. Difficulté à expliquer pourquoi.",
-    relancePhrase:
-      "Laquelle des deux, tu COMPRENDS mieux ce que le personnage ressent ? Pourquoi ?",
-    challengePhrase:
-      "La scène la plus spectaculaire est-elle forcément la plus émouvante ? Pourquoi ?",
+    relancePhrase: "Laquelle des deux, tu COMPRENDS mieux ce que le personnage ressent ? Pourquoi ?",
+    challengePhrase: "La scène la plus spectaculaire est-elle forcément la plus émouvante ? Pourquoi ?",
   },
   {
     position: 2,
@@ -2322,10 +2480,8 @@ const MODULE2EC_S4_QUESTIONS: QuestionGuide[] = [
       "Choix fermé parmi 7 thèmes (amitié, injustice, secret, défi, rivalité, courage, autre). Synthèse collective des thèmes qui émergent.",
     commonPitfalls:
       "Choix sans lien avec le travail fait. Élèves qui choisissent 'autre' par facilité. Difficulté à faire le lien entre émotion et thème.",
-    relancePhrase:
-      "Repense à l'émotion que tu as explorée. C'est quoi le GRAND sujet derrière ?",
-    challengePhrase:
-      "L'amitié et la rivalité, c'est parfois la même chose. Tu es sûr de ton choix ?",
+    relancePhrase: "Repense à l'émotion que tu as explorée. C'est quoi le GRAND sujet derrière ?",
+    challengePhrase: "L'amitié et la rivalité, c'est parfois la même chose. Tu es sûr de ton choix ?",
   },
   {
     position: 2,
@@ -2335,10 +2491,8 @@ const MODULE2EC_S4_QUESTIONS: QuestionGuide[] = [
       "Choix fermé : le personnage gagne/perd/change/se rebelle/cache. Réflexion sur la trajectoire émotionnelle.",
     commonPitfalls:
       "Tout le monde choisit 'gagne' — discuter : gagner quoi ? Confusion entre fin heureuse et arc intéressant.",
-    relancePhrase:
-      "Le personnage au début et à la fin — c'est la même personne ? Qu'est-ce qui a changé ?",
-    challengePhrase:
-      "Les personnages les plus mémorables ne gagnent pas toujours. Pensez à des exemples.",
+    relancePhrase: "Le personnage au début et à la fin — c'est la même personne ? Qu'est-ce qui a changé ?",
+    challengePhrase: "Les personnages les plus mémorables ne gagnent pas toujours. Pensez à des exemples.",
   },
 ];
 
@@ -2461,9 +2615,11 @@ const MODULE1_S5_QUESTIONS: QuestionGuide[] = [
     position: 1,
     category: "carnet",
     label: "Carnet d'idées",
-    whatToExpect: "Écriture libre. Les élèves compilent leurs premières idées de film. Certains auront beaucoup, d'autres peu.",
+    whatToExpect:
+      "Écriture libre. Les élèves compilent leurs premières idées de film. Certains auront beaucoup, d'autres peu.",
     commonPitfalls: "Blocage de la page blanche. Les élèves ne savent pas par où commencer.",
-    relancePhrase: "Repensez à tout ce qu'on a vu aujourd'hui : les images, les questions. Qu'est-ce qui vous a le plus marqué ?",
+    relancePhrase:
+      "Repensez à tout ce qu'on a vu aujourd'hui : les images, les questions. Qu'est-ce qui vous a le plus marqué ?",
     challengePhrase: "Ne cherchez pas l'idée parfaite. Écrivez 3 idées nulles, la 4e sera bonne.",
   },
 ];
@@ -2476,7 +2632,8 @@ const MODULE10_S1_QUESTIONS: QuestionGuide[] = [
     position: 1,
     category: "imagination",
     label: "Image + « Et si... »",
-    whatToExpect: "Les élèves observent une image et écrivent une phrase commençant par « Et si... ». Certains bloqueront.",
+    whatToExpect:
+      "Les élèves observent une image et écrivent une phrase commençant par « Et si... ». Certains bloqueront.",
     commonPitfalls: "Réponses trop courtes ou littérales (description de l'image au lieu d'imagination).",
     relancePhrase: "Regardez bien les détails de l'image. Qu'est-ce qui pourrait se passer juste après cette scène ?",
     challengePhrase: "C'est un bon début, mais poussez plus loin — que se passe-t-il si on inverse la situation ?",
@@ -2506,44 +2663,60 @@ const MODULE10_S2_QUESTIONS: QuestionGuide[] = [
     position: 1,
     category: "pitch",
     label: "Création du personnage",
-    whatToExpect: "ÉTAPE IDENTITÉ — Les élèves construisent un avatar visuel, choisissent prénom + trait de caractère. Résultat attendu : un personnage reconnaissable en une phrase (« Lina, 15 ans, rebelle »). C'est la fondation, pas encore l'histoire.",
-    commonPitfalls: "Personnages copiés d'animes/films (Naruto, Spiderman). Trait trop générique (« gentil »). Pas de lien avec une vraie personnalité.",
-    relancePhrase: "Pense à quelqu'un de ton entourage ou de ton quartier. Qu'est-ce qui le rend unique ? Son look, sa façon de parler, un détail ?",
+    whatToExpect:
+      "ÉTAPE IDENTITÉ — Les élèves construisent un avatar visuel, choisissent prénom + trait de caractère. Résultat attendu : un personnage reconnaissable en une phrase (« Lina, 15 ans, rebelle »). C'est la fondation, pas encore l'histoire.",
+    commonPitfalls:
+      "Personnages copiés d'animes/films (Naruto, Spiderman). Trait trop générique (« gentil »). Pas de lien avec une vraie personnalité.",
+    relancePhrase:
+      "Pense à quelqu'un de ton entourage ou de ton quartier. Qu'est-ce qui le rend unique ? Son look, sa façon de parler, un détail ?",
     challengePhrase: "Si je croise ton personnage dans la rue, comment je le reconnais ? Un seul détail suffit.",
   },
   {
     position: 2,
     category: "pitch",
     label: "Objectif + Obstacle",
-    whatToExpect: "ÉTAPE CONFLIT — Les élèves choisissent ce que leur personnage VEUT (objectif) et ce qui l'en EMPÊCHE (obstacle). C'est le moteur dramatique. Ici on NE RÉDIGE PAS le pitch — on sélectionne les ingrédients. Le pitch viendra à l'étape suivante.",
-    commonPitfalls: "Obstacle trop facile (« il a un peu peur » → pas assez de tension). Objectif trop abstrait (« être heureux » → pas filmable). Confusion avec l'étape pitch — rappeler que l'écriture, c'est après.",
-    relancePhrase: "L'obstacle doit faire VRAIMENT peur au personnage. Si c'est facile à surmonter, personne n'a envie de regarder le film.",
+    whatToExpect:
+      "ÉTAPE CONFLIT — Les élèves choisissent ce que leur personnage VEUT (objectif) et ce qui l'en EMPÊCHE (obstacle). C'est le moteur dramatique. Ici on NE RÉDIGE PAS le pitch — on sélectionne les ingrédients. Le pitch viendra à l'étape suivante.",
+    commonPitfalls:
+      "Obstacle trop facile (« il a un peu peur » → pas assez de tension). Objectif trop abstrait (« être heureux » → pas filmable). Confusion avec l'étape pitch — rappeler que l'écriture, c'est après.",
+    relancePhrase:
+      "L'obstacle doit faire VRAIMENT peur au personnage. Si c'est facile à surmonter, personne n'a envie de regarder le film.",
     challengePhrase: "Rendez l'obstacle plus fort. Et si l'obstacle touchait aussi quelqu'un que le personnage aime ?",
   },
   {
     position: 3,
     category: "pitch",
     label: "Écriture du pitch",
-    whatToExpect: "ÉTAPE NARRATION — C'est ici que l'élève écrit vraiment. Le textarea est VIDE (pas de template). L'élève voit son personnage, objectif et obstacle en rappel, puis raconte l'histoire en 3-5 phrases. Minimum 80 caractères imposé. Le résultat doit être un RÉCIT, pas une liste (« Un jour, Lina décide de... mais... alors... »).",
-    commonPitfalls: "Pitch-liste (« il veut X mais Y ») au lieu d'un récit. Copier-coller de l'étape précédente. Trop court ou trop descriptif sans action. Rappeler : on raconte ce qui SE PASSE, pas ce que le personnage EST.",
-    relancePhrase: "Commence par « Un jour, [prénom] décide de... ». Qu'est-ce qui se passe quand l'obstacle arrive ? Qu'est-ce qui est en jeu ?",
-    challengePhrase: "Ferme les yeux. Imagine la bande-annonce de ton film. Qu'est-ce qu'on voit ? Maintenant écris ça.",
+    whatToExpect:
+      "ÉTAPE NARRATION — C'est ici que l'élève écrit vraiment. Le textarea est VIDE (pas de template). L'élève voit son personnage, objectif et obstacle en rappel, puis raconte l'histoire en 3-5 phrases. Minimum 80 caractères imposé. Le résultat doit être un RÉCIT, pas une liste (« Un jour, Lina décide de... mais... alors... »).",
+    commonPitfalls:
+      "Pitch-liste (« il veut X mais Y ») au lieu d'un récit. Copier-coller de l'étape précédente. Trop court ou trop descriptif sans action. Rappeler : on raconte ce qui SE PASSE, pas ce que le personnage EST.",
+    relancePhrase:
+      "Commence par « Un jour, [prénom] décide de... ». Qu'est-ce qui se passe quand l'obstacle arrive ? Qu'est-ce qui est en jeu ?",
+    challengePhrase:
+      "Ferme les yeux. Imagine la bande-annonce de ton film. Qu'est-ce qu'on voit ? Maintenant écris ça.",
   },
   {
     position: 4,
     category: "pitch",
     label: "Test chrono — 30 secondes",
-    whatToExpect: "ÉTAPE ORAL — L'élève lit son pitch à voix haute en 30 secondes chrono. Force la concision et l'expression. Ce n'est PAS une réécriture — c'est un exercice de présentation. Le chrono tourne vraiment.",
-    commonPitfalls: "Stress paralysant — certains vont bloquer ou bâcler. Pitch trop long qui ne rentre pas en 30s (signe qu'il faut couper). Lecture monotone sans conviction.",
-    relancePhrase: "C'est un entraînement, pas un examen. Si tu dépasses 30s, c'est normal — ça veut dire qu'il faut couper un bout.",
-    challengePhrase: "Imagine que tu croises un producteur dans un ascenseur. Tu as 30 secondes pour le convaincre. Go.",
+    whatToExpect:
+      "ÉTAPE ORAL — L'élève lit son pitch à voix haute en 30 secondes chrono. Force la concision et l'expression. Ce n'est PAS une réécriture — c'est un exercice de présentation. Le chrono tourne vraiment.",
+    commonPitfalls:
+      "Stress paralysant — certains vont bloquer ou bâcler. Pitch trop long qui ne rentre pas en 30s (signe qu'il faut couper). Lecture monotone sans conviction.",
+    relancePhrase:
+      "C'est un entraînement, pas un examen. Si tu dépasses 30s, c'est normal — ça veut dire qu'il faut couper un bout.",
+    challengePhrase:
+      "Imagine que tu croises un producteur dans un ascenseur. Tu as 30 secondes pour le convaincre. Go.",
   },
   {
     position: 5,
     category: "pitch",
     label: "Confrontation + Vote",
-    whatToExpect: "ÉTAPE COLLECTIVE — Deux pitchs sont projetés anonymement. La classe écoute les deux et vote pour celui qui donne le plus envie de voir le film. L'objectif est d'analyser ce qui rend un pitch efficace, pas de juger les personnes.",
-    commonPitfalls: "Votes par popularité (« c'est mon pote »). Pas d'argumentation du choix. Moqueries — cadrer le respect.",
+    whatToExpect:
+      "ÉTAPE COLLECTIVE — Deux pitchs sont projetés anonymement. La classe écoute les deux et vote pour celui qui donne le plus envie de voir le film. L'objectif est d'analyser ce qui rend un pitch efficace, pas de juger les personnes.",
+    commonPitfalls:
+      "Votes par popularité (« c'est mon pote »). Pas d'argumentation du choix. Moqueries — cadrer le respect.",
     relancePhrase: "Oubliez qui a écrit quoi. Lequel de ces deux films vous iriez voir au cinéma ? Pourquoi celui-là ?",
     challengePhrase: "Le pitch perdant a quand même un point fort. Lequel ? Et que manque-t-il pour qu'il gagne ?",
   },
@@ -2574,14 +2747,78 @@ const QUESTION_GUIDES: Record<string, QuestionGuide[]> = {
   "10-1": MODULE10_S1_QUESTIONS,
   "10-2": MODULE10_S2_QUESTIONS,
   "12-1": [
-    { position: 1, category: "collectif", label: "Le Ton", whatToExpect: "Les eleves choisissent l'ambiance du film.", commonPitfalls: "Vote trop rapide sans lire les cartes.", relancePhrase: "Lisez bien chaque carte avant de voter.", challengePhrase: "Et si le ton etait completement different ?" },
-    { position: 2, category: "collectif", label: "La Situation", whatToExpect: "Choix de la situation de depart.", commonPitfalls: "Les eleves choisissent le plus drole plutot que le plus riche.", relancePhrase: "Imaginez le debut du film avec chaque carte.", challengePhrase: "Cette situation, elle permet d'aller ou ?" },
-    { position: 3, category: "collectif", label: "Les Personnages", whatToExpect: "Selection des personnages du film.", commonPitfalls: "Tendance a choisir des personnages stereotypes.", relancePhrase: "Quel personnage vous intrigue le plus ?", challengePhrase: "Est-ce que ce personnage va surprendre le spectateur ?" },
-    { position: 4, category: "collectif", label: "L'Objectif", whatToExpect: "L'enjeu moteur de l'histoire.", commonPitfalls: "Objectif trop vague ou trop simple.", relancePhrase: "Quel objectif donne le plus envie de voir la suite ?", challengePhrase: "Est-ce que cet objectif va tenir 90 minutes ?" },
-    { position: 5, category: "collectif", label: "L'Obstacle", whatToExpect: "Le conflit central prend forme.", commonPitfalls: "Obstacle deconnecte de l'objectif.", relancePhrase: "Quel obstacle rend l'histoire la plus intense ?", challengePhrase: "Cet obstacle, il fait peur au heros ou au spectateur ?" },
-    { position: 6, category: "collectif", label: "La Premiere Scene", whatToExpect: "L'ouverture du film.", commonPitfalls: "Scene trop explicative, pas assez cinematographique.", relancePhrase: "Quelle scene vous donnerait envie de rester ?", challengePhrase: "En une image, qu'est-ce qu'on voit ?" },
-    { position: 7, category: "collectif", label: "La Relation", whatToExpect: "Le lien emotionnel cle.", commonPitfalls: "Relation trop classique.", relancePhrase: "Quelle relation rend l'histoire plus humaine ?", challengePhrase: "Cette relation, elle va evoluer comment ?" },
-    { position: 8, category: "collectif", label: "Le Moment Fort", whatToExpect: "Le climax du film.", commonPitfalls: "Moment trop previsible.", relancePhrase: "Quel moment vous donnerait des frissons ?", challengePhrase: "Si le spectateur devait retenir une seule scene, ce serait celle-la ?" },
+    {
+      position: 1,
+      category: "collectif",
+      label: "Le Ton",
+      whatToExpect: "Les eleves choisissent l'ambiance du film.",
+      commonPitfalls: "Vote trop rapide sans lire les cartes.",
+      relancePhrase: "Lisez bien chaque carte avant de voter.",
+      challengePhrase: "Et si le ton etait completement different ?",
+    },
+    {
+      position: 2,
+      category: "collectif",
+      label: "La Situation",
+      whatToExpect: "Choix de la situation de depart.",
+      commonPitfalls: "Les eleves choisissent le plus drole plutot que le plus riche.",
+      relancePhrase: "Imaginez le debut du film avec chaque carte.",
+      challengePhrase: "Cette situation, elle permet d'aller ou ?",
+    },
+    {
+      position: 3,
+      category: "collectif",
+      label: "Les Personnages",
+      whatToExpect: "Selection des personnages du film.",
+      commonPitfalls: "Tendance a choisir des personnages stereotypes.",
+      relancePhrase: "Quel personnage vous intrigue le plus ?",
+      challengePhrase: "Est-ce que ce personnage va surprendre le spectateur ?",
+    },
+    {
+      position: 4,
+      category: "collectif",
+      label: "L'Objectif",
+      whatToExpect: "L'enjeu moteur de l'histoire.",
+      commonPitfalls: "Objectif trop vague ou trop simple.",
+      relancePhrase: "Quel objectif donne le plus envie de voir la suite ?",
+      challengePhrase: "Est-ce que cet objectif va tenir 90 minutes ?",
+    },
+    {
+      position: 5,
+      category: "collectif",
+      label: "L'Obstacle",
+      whatToExpect: "Le conflit central prend forme.",
+      commonPitfalls: "Obstacle deconnecte de l'objectif.",
+      relancePhrase: "Quel obstacle rend l'histoire la plus intense ?",
+      challengePhrase: "Cet obstacle, il fait peur au heros ou au spectateur ?",
+    },
+    {
+      position: 6,
+      category: "collectif",
+      label: "La Premiere Scene",
+      whatToExpect: "L'ouverture du film.",
+      commonPitfalls: "Scene trop explicative, pas assez cinematographique.",
+      relancePhrase: "Quelle scene vous donnerait envie de rester ?",
+      challengePhrase: "En une image, qu'est-ce qu'on voit ?",
+    },
+    {
+      position: 7,
+      category: "collectif",
+      label: "La Relation",
+      whatToExpect: "Le lien emotionnel cle.",
+      commonPitfalls: "Relation trop classique.",
+      relancePhrase: "Quelle relation rend l'histoire plus humaine ?",
+      challengePhrase: "Cette relation, elle va evoluer comment ?",
+    },
+    {
+      position: 8,
+      category: "collectif",
+      label: "Le Moment Fort",
+      whatToExpect: "Le climax du film.",
+      commonPitfalls: "Moment trop previsible.",
+      relancePhrase: "Quel moment vous donnerait des frissons ?",
+      challengePhrase: "Si le spectateur devait retenir une seule scene, ce serait celle-la ?",
+    },
   ] satisfies QuestionGuide[],
 };
 
@@ -2589,11 +2826,7 @@ export function getModuleGuide(moduleId: string): ModuleGuide | undefined {
   return MODULE_GUIDES.find((g) => g.moduleId === moduleId);
 }
 
-export function getQuestionGuide(
-  seance: number,
-  position: number,
-  module?: number
-): QuestionGuide | undefined {
+export function getQuestionGuide(seance: number, position: number, module?: number): QuestionGuide | undefined {
   const key = `${module || 3}-${seance}`;
   const questions = QUESTION_GUIDES[key];
   if (!questions) return undefined;

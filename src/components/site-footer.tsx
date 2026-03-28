@@ -129,10 +129,7 @@ function FilmStripDecoration({ className }: { className?: string }) {
   return (
     <div className={cn("flex items-center gap-1 opacity-[0.08]", className)} aria-hidden="true">
       {Array.from({ length: 24 }).map((_, i) => (
-        <div
-          key={i}
-          className="w-2 h-3 rounded-[1px] bg-bw-heading shrink-0"
-        />
+        <div key={i} className="w-2 h-3 rounded-[1px] bg-bw-heading shrink-0" />
       ))}
     </div>
   );
@@ -145,14 +142,7 @@ export function SiteFooter({ className }: { className?: string }) {
   const isInView = useInView(ref, { once: true, margin: "-40px" });
 
   return (
-    <footer
-      ref={ref}
-      className={cn(
-        "relative mt-auto",
-        "border-t border-white/[0.06]",
-        className,
-      )}
-    >
+    <footer ref={ref} className={cn("relative mt-auto", "border-t border-white/[0.06]", className)}>
       {/* Ambient orange glow at bottom */}
       <div
         className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px]"
@@ -181,8 +171,8 @@ export function SiteFooter({ className }: { className?: string }) {
               <BrandStyles />
               <BrandLogo size="lg" color="cinema" />
               <p className="text-sm text-bw-muted leading-relaxed max-w-xs">
-                Le jeu collaboratif de cr&eacute;ation cin&eacute;matographique.
-                De 5 &agrave; 30 joueurs sur tablette ou ordinateur.
+                Le jeu collaboratif de cr&eacute;ation cin&eacute;matographique. De 5 &agrave; 30 joueurs sur tablette
+                ou ordinateur.
               </p>
 
               {/* Social icons */}
@@ -219,14 +209,9 @@ export function SiteFooter({ className }: { className?: string }) {
                   delay: 0.15 + colIdx * 0.08,
                   ease: [0.4, 0, 0.2, 1],
                 }}
-                className={cn(
-                  "md:col-span-2",
-                  colIdx === 0 && "md:col-start-7",
-                )}
+                className={cn("md:col-span-2", colIdx === 0 && "md:col-start-7")}
               >
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-bw-heading mb-4">
-                  {column.title}
-                </h4>
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-bw-heading mb-4">{column.title}</h4>
                 <ul className="space-y-2.5">
                   {column.links.map((link) => (
                     <li key={link.label}>
@@ -252,9 +237,7 @@ export function SiteFooter({ className }: { className?: string }) {
 
           {/* ── Bottom bar ── */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6">
-            <p className="text-xs text-bw-muted">
-              &copy; 2026 Banlieuwood &mdash; Fait avec passion &agrave; Paris
-            </p>
+            <p className="text-xs text-bw-muted">&copy; 2026 Banlieuwood &mdash; Fait avec passion &agrave; Paris</p>
             <div className="flex items-center gap-3">
               <LocaleSwitcher />
               <span

@@ -54,10 +54,7 @@ export function TabSynthese({
       {/* AI Insights */}
       <SessionInsightsCard bilan={bilan} onViewFull={onSwitchToIaTab} />
       {bilan && (
-        <PedagogicalTipsCard
-          recommendations={bilan.pedagogicalRecommendations}
-          keyMoments={bilan.keyMoments}
-        />
+        <PedagogicalTipsCard recommendations={bilan.pedagogicalRecommendations} keyMoments={bilan.keyMoments} />
       )}
 
       {/* Notable responses */}
@@ -68,10 +65,7 @@ export function TabSynthese({
 
       {/* Session timeline */}
       {replayData && replayData.events.length > 0 && (
-        <SessionTimeline
-          events={replayData.events}
-          totalDurationMs={replayData.totalDurationMs}
-        />
+        <SessionTimeline events={replayData.events} totalDurationMs={replayData.totalDurationMs} />
       )}
 
       {/* Replay toggle */}
@@ -109,9 +103,7 @@ export function TabSynthese({
       )}
       {showReplay && replayData && replayData.events.length === 0 && (
         <GlassCardV2 className="p-6 text-center">
-          <p className="text-sm text-bw-muted">
-            Aucun événement enregistré pour cette séance.
-          </p>
+          <p className="text-sm text-bw-muted">Aucun événement enregistré pour cette séance.</p>
         </GlassCardV2>
       )}
 
@@ -121,9 +113,7 @@ export function TabSynthese({
       {/* Film poster */}
       {posterData && posterData.choices.length > 0 && (
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide">
-            Affiche du film
-          </h3>
+          <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide">Affiche du film</h3>
           <FilmPosterExport
             title={exportData.session.title}
             template={template}
@@ -134,14 +124,10 @@ export function TabSynthese({
       )}
 
       {/* Budget */}
-      {budgetAverages && (
-        <BudgetBarsCard averages={budgetAverages} />
-      )}
+      {budgetAverages && <BudgetBarsCard averages={budgetAverages} />}
 
       {/* Pitchs M10 */}
-      {pitchData && pitchData.pitchs.length > 0 && (
-        <PitchListCard pitchs={pitchData.pitchs} count={pitchData.count} />
-      )}
+      {pitchData && pitchData.pitchs.length > 0 && <PitchListCard pitchs={pitchData.pitchs} count={pitchData.count} />}
 
       {/* Festival & comparison */}
       <GlassCardV2 className="p-5">

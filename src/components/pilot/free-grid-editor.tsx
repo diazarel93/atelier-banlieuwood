@@ -76,7 +76,10 @@ function DraggableFreeChip({
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
-            onClick={(e) => { e.stopPropagation(); onRemove(student.id); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove(student.id);
+            }}
             className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white z-30"
             style={{ background: "#EB5757" }}
             aria-label={`Retirer ${student.display_name}`}
@@ -86,7 +89,13 @@ function DraggableFreeChip({
         )}
       </AnimatePresence>
 
-      <div className="relative" onClick={(e) => { e.stopPropagation(); onClick(student.id); }}>
+      <div
+        className="relative"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick(student.id);
+        }}
+      >
         <div
           className="w-7 h-7 rounded-full flex items-center justify-center text-sm"
           style={{ background: "#FFFFFF", border: `2px solid ${s.dot}` }}
@@ -94,23 +103,49 @@ function DraggableFreeChip({
           {student.avatar}
         </div>
         {student.hand_raised_at && (
-          <motion.span animate={{ y: [0, -2, 0] }} transition={{ repeat: Infinity, duration: 0.8 }}
-            className="absolute -top-1 -right-1 text-[9px]">✋</motion.span>
+          <motion.span
+            animate={{ y: [0, -2, 0] }}
+            transition={{ repeat: Infinity, duration: 0.8 }}
+            className="absolute -top-1 -right-1 text-[9px]"
+          >
+            ✋
+          </motion.span>
         )}
         {student.state === "responded" && (
-          <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }}
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
             className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full flex items-center justify-center"
-            style={{ background: "#4CAF50", boxShadow: "0 1px 3px rgba(76,175,80,0.4)" }}>
-            <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round"><path d="M5 12l5 5L20 7" /></svg>
+            style={{ background: "#4CAF50", boxShadow: "0 1px 3px rgba(76,175,80,0.4)" }}
+          >
+            <svg
+              width="7"
+              height="7"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+            >
+              <path d="M5 12l5 5L20 7" />
+            </svg>
           </motion.span>
         )}
         {student.state === "stuck" && (
-          <motion.span animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 1.2 }}
+          <motion.span
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ repeat: Infinity, duration: 1.2 }}
             className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full flex items-center justify-center text-[7px] font-black text-white"
-            style={{ background: "#EB5757" }}>!</motion.span>
+            style={{ background: "#EB5757" }}
+          >
+            !
+          </motion.span>
         )}
       </div>
-      <span className="text-[10px] font-semibold truncate leading-tight" style={{ color: s.text, maxWidth: cellSize - 12 }}>
+      <span
+        className="text-[10px] font-semibold truncate leading-tight"
+        style={{ color: s.text, maxWidth: cellSize - 12 }}
+      >
         {student.display_name.split(" ")[0]}
       </span>
 
@@ -118,9 +153,12 @@ function DraggableFreeChip({
       <AnimatePresence>
         {hovered && response && (
           <motion.div
-            initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 4 }}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
             className="absolute z-40 bottom-full mb-2 left-1/2 -translate-x-1/2 w-[180px] rounded-[10px] p-2.5 pointer-events-none"
-            style={{ background: "#FFFFFF", border: "1px solid #E8DFD2", boxShadow: "0 8px 24px rgba(61,43,16,0.12)" }}>
+            style={{ background: "#FFFFFF", border: "1px solid #E8DFD2", boxShadow: "0 8px 24px rgba(61,43,16,0.12)" }}
+          >
             <p className="text-[11px] text-[#5B5B5B] leading-snug line-clamp-3">{response}</p>
           </motion.div>
         )}
@@ -130,15 +168,7 @@ function DraggableFreeChip({
 }
 
 // ── Tray chip (unplaced student) ──
-function TrayChip({
-  student,
-  selected,
-  onClick,
-}: {
-  student: SeatStudent;
-  selected: boolean;
-  onClick: () => void;
-}) {
+function TrayChip({ student, selected, onClick }: { student: SeatStudent; selected: boolean; onClick: () => void }) {
   const s = STATE_STYLE[student.state] || STATE_STYLE.disconnected;
   return (
     <motion.button
@@ -172,7 +202,18 @@ export function FreeGridEditor({ sessionId, students, responseMap, onStudentClic
   const [containerWidth, setContainerWidth] = useState(0);
   const [selectedTrayStudent, setSelectedTrayStudent] = useState<string | null>(null);
 
-  const { positions, cellToStudent, placeStudent, removeStudent, moveStudent, swapStudents, clearAll, autoPlace, cols, rows } = useGridPositions(sessionId);
+  const {
+    positions,
+    cellToStudent,
+    placeStudent,
+    removeStudent,
+    moveStudent,
+    swapStudents,
+    clearAll,
+    autoPlace,
+    cols,
+    rows,
+  } = useGridPositions(sessionId);
 
   // Measure container width
   useEffect(() => {
@@ -202,72 +243,86 @@ export function FreeGridEditor({ sessionId, students, responseMap, onStudentClic
   // Placed vs unplaced
   const placedStudentIds = useMemo(() => {
     // Only keep ids that are still in the students list
-    const validIds = new Set(students.map(s => s.id));
-    return Object.keys(positions).filter(id => validIds.has(id));
+    const validIds = new Set(students.map((s) => s.id));
+    return Object.keys(positions).filter((id) => validIds.has(id));
   }, [positions, students]);
 
-  const unplacedStudents = useMemo(
-    () => students.filter(s => !positions[s.id]),
-    [students, positions]
-  );
+  const unplacedStudents = useMemo(() => students.filter((s) => !positions[s.id]), [students, positions]);
 
   // Handle clicking an empty cell
-  const handleCellClick = useCallback((row: number, col: number) => {
-    if (selectedTrayStudent) {
-      placeStudent(selectedTrayStudent, row, col);
-      setSelectedTrayStudent(null);
-    }
-  }, [selectedTrayStudent, placeStudent]);
+  const handleCellClick = useCallback(
+    (row: number, col: number) => {
+      if (selectedTrayStudent) {
+        placeStudent(selectedTrayStudent, row, col);
+        setSelectedTrayStudent(null);
+      }
+    },
+    [selectedTrayStudent, placeStudent],
+  );
 
   // Handle drag end — snap to nearest cell, swap if occupied, remove if out
-  const handleDragEnd = useCallback((studentId: string, info: { point: { x: number; y: number } }, offset: { x: number; y: number }) => {
-    // Check if it was just a click (minimal movement)
-    if (Math.abs(offset.x) + Math.abs(offset.y) < 4) {
-      if (onStudentClick) onStudentClick(studentId);
-      return;
-    }
+  const handleDragEnd = useCallback(
+    (studentId: string, info: { point: { x: number; y: number } }, offset: { x: number; y: number }) => {
+      // Check if it was just a click (minimal movement)
+      if (Math.abs(offset.x) + Math.abs(offset.y) < 4) {
+        if (onStudentClick) onStudentClick(studentId);
+        return;
+      }
 
-    if (!gridRef.current) return;
-    const rect = gridRef.current.getBoundingClientRect();
-    const relX = info.point.x - rect.left;
-    const relY = info.point.y - rect.top;
+      if (!gridRef.current) return;
+      const rect = gridRef.current.getBoundingClientRect();
+      const relX = info.point.x - rect.left;
+      const relY = info.point.y - rect.top;
 
-    // Out of grid bounds → remove
-    if (relX < 0 || relY < 0 || relX >= gridWidth || relY >= gridHeight) {
-      removeStudent(studentId);
-      return;
-    }
+      // Out of grid bounds → remove
+      if (relX < 0 || relY < 0 || relX >= gridWidth || relY >= gridHeight) {
+        removeStudent(studentId);
+        return;
+      }
 
-    const targetCol = Math.min(cols - 1, Math.max(0, Math.floor(relX / cellSize)));
-    const targetRow = Math.min(rows - 1, Math.max(0, Math.floor(relY / cellSize)));
+      const targetCol = Math.min(cols - 1, Math.max(0, Math.floor(relX / cellSize)));
+      const targetRow = Math.min(rows - 1, Math.max(0, Math.floor(relY / cellSize)));
 
-    const occupant = cellToStudent.get(`${targetRow}-${targetCol}`);
-    if (occupant && occupant !== studentId) {
-      // Swap
-      swapStudents(studentId, occupant);
-    } else {
-      // Move to empty cell
-      moveStudent(studentId, targetRow, targetCol);
-    }
-  }, [gridRef, gridWidth, gridHeight, cols, rows, cellSize, cellToStudent, removeStudent, moveStudent, swapStudents, onStudentClick]);
+      const occupant = cellToStudent.get(`${targetRow}-${targetCol}`);
+      if (occupant && occupant !== studentId) {
+        // Swap
+        swapStudents(studentId, occupant);
+      } else {
+        // Move to empty cell
+        moveStudent(studentId, targetRow, targetCol);
+      }
+    },
+    [
+      gridRef,
+      gridWidth,
+      gridHeight,
+      cols,
+      rows,
+      cellSize,
+      cellToStudent,
+      removeStudent,
+      moveStudent,
+      swapStudents,
+      onStudentClick,
+    ],
+  );
 
   const handleAutoPlace = useCallback(() => {
-    autoPlace(students.map(s => s.id));
+    autoPlace(students.map((s) => s.id));
   }, [autoPlace, students]);
 
-  const handleStudentClick = useCallback((studentId: string) => {
-    if (onStudentClick) onStudentClick(studentId);
-  }, [onStudentClick]);
+  const handleStudentClick = useCallback(
+    (studentId: string) => {
+      if (onStudentClick) onStudentClick(studentId);
+    },
+    [onStudentClick],
+  );
 
   return (
     <div ref={containerRef} className="space-y-3">
       {/* Grid area */}
       <div className="flex justify-center overflow-hidden">
-        <div
-          ref={gridRef}
-          className="relative"
-          style={{ width: gridWidth, height: gridHeight }}
-        >
+        <div ref={gridRef} className="relative" style={{ width: gridWidth, height: gridHeight }}>
           {/* Background grid cells */}
           {Array.from({ length: rows }, (_, r) =>
             Array.from({ length: cols }, (_, c) => {
@@ -285,22 +340,18 @@ export function FreeGridEditor({ sessionId, students, responseMap, onStudentClic
                     left: c * cellSize + 1,
                     top: r * cellSize + 1,
                     borderRadius: 10,
-                    border: isHighlighted
-                      ? "1.5px dashed #6B8CFF"
-                      : isOccupied
-                        ? "none"
-                        : "1px dashed #E0D8CC",
+                    border: isHighlighted ? "1.5px dashed #6B8CFF" : isOccupied ? "none" : "1px dashed #E0D8CC",
                     background: isHighlighted ? "#F0F4FF" : "transparent",
                     cursor: isHighlighted ? "pointer" : "default",
                   }}
                 />
               );
-            })
+            }),
           )}
 
           {/* Placed students */}
           <AnimatePresence>
-            {placedStudentIds.map(id => {
+            {placedStudentIds.map((id) => {
               const student = studentMap.get(id);
               const pos = positions[id];
               if (!student || !pos) return null;
@@ -324,15 +375,10 @@ export function FreeGridEditor({ sessionId, students, responseMap, onStudentClic
 
       {/* Unplaced tray */}
       {(unplacedStudents.length > 0 || placedStudentIds.length > 0) && (
-        <div
-          className="rounded-[12px] p-3 space-y-2"
-          style={{ background: "#F7F5F2", border: "1px solid #E8DFD2" }}
-        >
+        <div className="rounded-[12px] p-3 space-y-2" style={{ background: "#F7F5F2", border: "1px solid #E8DFD2" }}>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-[#B0A99E] uppercase tracking-wider">
-              {unplacedStudents.length > 0
-                ? `Non places (${unplacedStudents.length})`
-                : "Tous places"}
+              {unplacedStudents.length > 0 ? `Non places (${unplacedStudents.length})` : "Tous places"}
             </span>
             <div className="flex gap-2">
               {unplacedStudents.length > 0 && (
@@ -358,14 +404,12 @@ export function FreeGridEditor({ sessionId, students, responseMap, onStudentClic
 
           {unplacedStudents.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
-              {unplacedStudents.map(student => (
+              {unplacedStudents.map((student) => (
                 <TrayChip
                   key={student.id}
                   student={student}
                   selected={selectedTrayStudent === student.id}
-                  onClick={() => setSelectedTrayStudent(
-                    selectedTrayStudent === student.id ? null : student.id
-                  )}
+                  onClick={() => setSelectedTrayStudent(selectedTrayStudent === student.id ? null : student.id)}
                 />
               ))}
             </div>

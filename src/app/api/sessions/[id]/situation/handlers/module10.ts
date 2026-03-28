@@ -4,7 +4,12 @@ import { ETSI_IMAGES, getEtsiImage, generatePitchMiroir } from "@/lib/module10-d
 import type { AdminClient } from "./types";
 
 // ── MODULE 10 handler — Et si... + Pitch ──
-export async function handleModule10(req: NextRequest, session: Record<string, unknown>, sessionId: string, admin: AdminClient) {
+export async function handleModule10(
+  req: NextRequest,
+  session: Record<string, unknown>,
+  sessionId: string,
+  admin: AdminClient,
+) {
   const currentSeance = (session.current_seance as number) || 1;
   const currentIndex = (session.current_situation_index as number) || 0;
   const studentId = req.nextUrl.searchParams.get("studentId");
@@ -57,7 +62,7 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
     if (currentIndex === 0) {
       // Student picks their own image from all 10 — return all images
       let etsiText: string | undefined;
-      let chosenImage: typeof ETSI_IMAGES[0] | undefined;
+      let chosenImage: (typeof ETSI_IMAGES)[0] | undefined;
       let helpUsed = false;
       let submitted = false;
       let qcmAnswers: Record<string, string> = {};
@@ -192,7 +197,9 @@ export async function handleModule10(req: NextRequest, session: Record<string, u
         .eq("session_id", sessionId);
 
       // Facilitator view: return all personnages
-      let allSubmissions: { studentName: string; text: string; studentId: string; avatar?: Record<string, unknown> }[] | undefined;
+      let allSubmissions:
+        | { studentName: string; text: string; studentId: string; avatar?: Record<string, unknown> }[]
+        | undefined;
       if (!studentId) {
         const { data: allPerso } = await admin
           .from("module10_personnages")
@@ -670,7 +677,11 @@ export async function handleStandardWithModule10(
     hasVoted,
     voteOptions,
     collectiveChoice,
-    isMyResponseChosen: !!(collectiveChoice && studentResponseId && collectiveChoice.source_response_id === studentResponseId),
+    isMyResponseChosen: !!(
+      collectiveChoice &&
+      studentResponseId &&
+      collectiveChoice.source_response_id === studentResponseId
+    ),
     connectedCount,
     responsesCount,
     budgetStats: null,

@@ -28,9 +28,7 @@ export function DecoupageBuilder({ module7, sessionId, studentId }: DecoupageBui
   const scene = keyScenes[currentSceneIdx];
 
   // Initialize slots from existing data or template
-  const existingForScene = existingDecoupages.find(
-    (d) => d.sceneId === scene?.id
-  );
+  const existingForScene = existingDecoupages.find((d) => d.sceneId === scene?.id);
   const initialSlots: PlanSlot[] = existingForScene
     ? (existingForScene.plans as PlanSlot[])
     : (scene?.template as { slots: PlanSlot[] })?.slots || [
@@ -52,9 +50,7 @@ export function DecoupageBuilder({ module7, sessionId, studentId }: DecoupageBui
   }
 
   const updateSlot = (index: number, field: keyof PlanSlot, value: string) => {
-    setSlots((prev) =>
-      prev.map((s, i) => (i === index ? { ...s, [field]: value } : s))
-    );
+    setSlots((prev) => prev.map((s, i) => (i === index ? { ...s, [field]: value } : s)));
   };
 
   const handleSubmit = async () => {
@@ -97,9 +93,7 @@ export function DecoupageBuilder({ module7, sessionId, studentId }: DecoupageBui
             key={s.id}
             onClick={() => setCurrentSceneIdx(i)}
             className={`flex-1 px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
-              i === currentSceneIdx
-                ? "bg-bw-teal text-white"
-                : "bg-white/5 text-white/50 hover:bg-white/10"
+              i === currentSceneIdx ? "bg-bw-teal text-white" : "bg-white/5 text-white/50 hover:bg-white/10"
             }`}
           >
             Scène {s.sceneNumber}
@@ -113,9 +107,7 @@ export function DecoupageBuilder({ module7, sessionId, studentId }: DecoupageBui
         <p className="text-xs text-white/50 mt-1">{scene.description}</p>
       </div>
 
-      <h2 className="text-lg font-bold text-white text-center">
-        Choisis les plans pour cette scène
-      </h2>
+      <h2 className="text-lg font-bold text-white text-center">Choisis les plans pour cette scène</h2>
 
       {/* Plan slots */}
       <div className="w-full space-y-3">

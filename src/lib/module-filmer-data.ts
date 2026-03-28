@@ -84,7 +84,8 @@ export const COMPARISONS: Comparison[] = [
     imageA: "/images/plans/comparisons/comp1-large.svg",
     imageB: "/images/plans/comparisons/comp1-gros.svg",
     question: "Quel cadrage rend la scène plus émouvante ?",
-    explanation: "Le gros plan montre l'émotion. Le plan large montre la solitude. Les deux racontent une histoire différente !",
+    explanation:
+      "Le gros plan montre l'émotion. Le plan large montre la solitude. Les deux racontent une histoire différente !",
   },
   {
     key: "comp2",
@@ -124,7 +125,11 @@ export const COMPARISONS: Comparison[] = [
 export const VOCABULAIRE_TECHNIQUE = [
   { key: "sequence", label: "Séquence", definition: "Un ensemble de plans qui racontent une action complète" },
   { key: "raccord", label: "Raccord", definition: "Le lien visuel entre deux plans pour que ça reste fluide" },
-  { key: "champ-contrechamp", label: "Champ/Contre-champ", definition: "Alterner entre deux personnages qui se parlent" },
+  {
+    key: "champ-contrechamp",
+    label: "Champ/Contre-champ",
+    definition: "Alterner entre deux personnages qui se parlent",
+  },
 ] as const;
 
 /**
@@ -189,7 +194,7 @@ export function buildFicheTournage(
   role: RoleKey,
   scenes: SceneInput[],
   storyboardScenes: StoryboardScene[],
-  scenario: ScenarioInput | null
+  scenario: ScenarioInput | null,
 ): FicheTournage {
   switch (role) {
     case "realisateur":
@@ -207,14 +212,23 @@ export function buildFicheTournage(
   }
 }
 
-function buildRealisateur(scenes: SceneInput[], storyboard: StoryboardScene[], scenario: ScenarioInput | null): FicheTournage {
+function buildRealisateur(
+  scenes: SceneInput[],
+  storyboard: StoryboardScene[],
+  scenario: ScenarioInput | null,
+): FicheTournage {
   const sections: FicheSection[] = [];
   if (scenario?.fullText) {
-    sections.push({ heading: "Résumé du scénario", content: scenario.fullText.slice(0, 500) + (scenario.fullText.length > 500 ? "…" : "") });
+    sections.push({
+      heading: "Résumé du scénario",
+      content: scenario.fullText.slice(0, 500) + (scenario.fullText.length > 500 ? "…" : ""),
+    });
   }
   for (const scene of scenes) {
     const sb = storyboard.find((s) => s.title === scene.title);
-    const plans = sb?.plans.map((p) => `  • ${PLAN_LABELS[p.planType] || p.planType} — ${p.description}`).join("\n") || "  (pas encore découpé)";
+    const plans =
+      sb?.plans.map((p) => `  • ${PLAN_LABELS[p.planType] || p.planType} — ${p.description}`).join("\n") ||
+      "  (pas encore découpé)";
     sections.push({
       heading: `Scène ${scene.sceneNumber || ""} : ${scene.title}`,
       content: `${scene.description}\n\nPlans prévus :\n${plans}`,
@@ -226,9 +240,12 @@ function buildRealisateur(scenes: SceneInput[], storyboard: StoryboardScene[], s
 function buildCadreur(storyboard: StoryboardScene[]): FicheTournage {
   const sections: FicheSection[] = [];
   for (const scene of storyboard) {
-    const lines = scene.plans.map((p) =>
-      `  ${p.position}. ${PLAN_LABELS[p.planType] || p.planType} — ${p.description}${p.intention ? ` (${p.intention})` : ""}`
-    ).join("\n");
+    const lines = scene.plans
+      .map(
+        (p) =>
+          `  ${p.position}. ${PLAN_LABELS[p.planType] || p.planType} — ${p.description}${p.intention ? ` (${p.intention})` : ""}`,
+      )
+      .join("\n");
     sections.push({ heading: scene.title, content: lines || "(aucun plan)" });
   }
   return { title: "Fiche Cadreur", emoji: "📷", sections };
@@ -255,7 +272,10 @@ function buildSon(scenes: SceneInput[], scenario: ScenarioInput | null): FicheTo
   for (const scene of scenes) {
     // Extract dialogue lines (lines starting with character names in CAPS or with —)
     const content = scene.content || "";
-    const dialogueLines = content.split("\n").filter((l) => /^[A-ZÉÈÊÀÂÔÎÙ].*:/.test(l.trim()) || l.trim().startsWith("—")).join("\n");
+    const dialogueLines = content
+      .split("\n")
+      .filter((l) => /^[A-ZÉÈÊÀÂÔÎÙ].*:/.test(l.trim()) || l.trim().startsWith("—"))
+      .join("\n");
     sections.push({
       heading: `Scène ${scene.sceneNumber || ""} : ${scene.title}`,
       content: dialogueLines || "(pas de dialogues écrits)\nAmbiance : (à compléter)",

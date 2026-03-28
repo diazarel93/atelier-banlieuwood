@@ -13,11 +13,26 @@ import { EXTENDED_AVATARS, getAvatarNickname } from "@/lib/avatar-nicknames";
 const AVATARS = EXTENDED_AVATARS;
 
 const RANDOM_NAMES = [
-  "RealisateurFou", "StarDuCinema", "ClapDeDebut", "ScenaristeNinja",
-  "CameraAction", "LumiereTamisee", "DoublureCascade", "FigurantStar",
-  "MonteurAgile", "ProducteurZen", "CastingDivin", "EffetSpecial",
-  "PlanSequence", "ChampContreChamp", "FondVert", "GrosPlanned",
-  "TravellingBoss", "ZoomArriere", "VoixOff", "GeneriQueFin",
+  "RealisateurFou",
+  "StarDuCinema",
+  "ClapDeDebut",
+  "ScenaristeNinja",
+  "CameraAction",
+  "LumiereTamisee",
+  "DoublureCascade",
+  "FigurantStar",
+  "MonteurAgile",
+  "ProducteurZen",
+  "CastingDivin",
+  "EffetSpecial",
+  "PlanSequence",
+  "ChampContreChamp",
+  "FondVert",
+  "GrosPlanned",
+  "TravellingBoss",
+  "ZoomArriere",
+  "VoixOff",
+  "GeneriQueFin",
 ];
 
 function JoinForm() {
@@ -74,7 +89,11 @@ function JoinForm() {
 
   function handlePaste(e: React.ClipboardEvent) {
     e.preventDefault();
-    const pasted = e.clipboardData.getData("text").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6);
+    const pasted = e.clipboardData
+      .getData("text")
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 6);
     if (!pasted) return;
     const newCode = [...code];
     for (let i = 0; i < pasted.length && i < 6; i++) {
@@ -119,7 +138,7 @@ function JoinForm() {
       // Store student info + auth token in localStorage for reconnection
       localStorage.setItem(
         `bw-student-${data.sessionId}`,
-        JSON.stringify({ studentId: data.studentId, displayName: name, avatar })
+        JSON.stringify({ studentId: data.studentId, displayName: name, avatar }),
       );
       if (data.token) {
         localStorage.setItem(`bw-student-token-${data.sessionId}`, data.token);
@@ -156,7 +175,10 @@ function JoinForm() {
           transition={{ delay: 0.05 }}
           className="text-center"
         >
-          <Link href="/" className="text-sm text-bw-muted hover:text-bw-ink transition-colors cursor-pointer inline-block">
+          <Link
+            href="/"
+            className="text-sm text-bw-muted hover:text-bw-ink transition-colors cursor-pointer inline-block"
+          >
             ← Retour
           </Link>
         </motion.div>
@@ -212,7 +234,9 @@ function JoinForm() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.3 + i * 0.06 }}
-                  ref={(el) => { inputRefs.current[i] = el; }}
+                  ref={(el) => {
+                    inputRefs.current[i] = el;
+                  }}
                   type="text"
                   inputMode="text"
                   autoCapitalize="characters"
@@ -266,7 +290,15 @@ function JoinForm() {
               aria-label="Generer un pseudo au hasard"
               className="w-full text-xs text-bw-teal/70 hover:text-bw-teal transition-colors cursor-pointer flex items-center justify-center gap-1.5"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
                 <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
               </svg>
               Pseudo au hasard
@@ -275,9 +307,7 @@ function JoinForm() {
 
           {/* Avatar picker */}
           <div className="space-y-2">
-            <label className="text-sm text-bw-muted block text-center">
-              Choisis ton emoji
-            </label>
+            <label className="text-sm text-bw-muted block text-center">Choisis ton emoji</label>
             <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 justify-items-center max-h-[200px] overflow-y-auto pr-1 scrollbar-thin">
               {AVATARS.map((emoji, i) => (
                 <motion.button
@@ -359,7 +389,14 @@ function JoinForm() {
                   placeholder="XXXX"
                   maxLength={4}
                   value={profileCode}
-                  onChange={(e) => setProfileCode(e.target.value.toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 4))}
+                  onChange={(e) =>
+                    setProfileCode(
+                      e.target.value
+                        .toUpperCase()
+                        .replace(/[^A-Z2-9]/g, "")
+                        .slice(0, 4),
+                    )
+                  }
                   aria-label="Code joueur existant (4 caracteres)"
                   className="w-full h-12 text-center text-lg font-mono font-bold tracking-[0.3em] rounded-xl bg-bw-elevated/50 border border-[var(--color-bw-border)] text-bw-ink placeholder:text-bw-placeholder/40 focus:border-bw-teal/50 focus:ring-2 focus:ring-bw-teal/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal transition-all uppercase"
                 />
@@ -385,16 +422,11 @@ function JoinForm() {
             }`}
             disabled={!canSubmit || loading}
           >
-            <motion.button
-              whileTap={canSubmit ? { scale: 0.97 } : {}}
-              onClick={handleJoin}
-              data-testid="join-submit"
-            >
+            <motion.button whileTap={canSubmit ? { scale: 0.97 } : {}} onClick={handleJoin} data-testid="join-submit">
               {loading ? "Connexion..." : "ENTRER"}
             </motion.button>
           </Button>
         </motion.div>
-
       </motion.div>
     </div>
   );

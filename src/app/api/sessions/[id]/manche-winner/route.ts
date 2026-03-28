@@ -6,7 +6,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // POST — facilitator validates the winning card for a manche
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "manche-winner", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -50,18 +50,16 @@ export const POST = withErrorHandler(async function POST(
   }
 
   // Upsert winner
-  const { error } = await admin
-    .from("module12_winners")
-    .upsert(
-      {
-        session_id: sessionId,
-        manche,
-        card_id: cardId,
-        winning_text: String(winningText).trim().slice(0, 500),
-        validated_at: new Date().toISOString(),
-      },
-      { onConflict: "session_id,manche" }
-    );
+  const { error } = await admin.from("module12_winners").upsert(
+    {
+      session_id: sessionId,
+      manche,
+      card_id: cardId,
+      winning_text: String(winningText).trim().slice(0, 500),
+      validated_at: new Date().toISOString(),
+    },
+    { onConflict: "session_id,manche" },
+  );
 
   if (error) {
     console.error("[manche-winner]", error.message);

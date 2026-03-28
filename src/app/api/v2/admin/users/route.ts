@@ -42,7 +42,13 @@ export const PATCH = withErrorHandler<Record<string, never>>(async function PATC
   const { userIds, status } = await req.json();
 
   const validStatuses = ["active", "pending", "blocked", "rejected"];
-  if (!Array.isArray(userIds) || userIds.length === 0 || userIds.length > 100 || !status || !validStatuses.includes(status)) {
+  if (
+    !Array.isArray(userIds) ||
+    userIds.length === 0 ||
+    userIds.length > 100 ||
+    !status ||
+    !validStatuses.includes(status)
+  ) {
     return NextResponse.json({ error: "userIds (tableau non vide) et status valide requis" }, { status: 400 });
   }
 
@@ -54,10 +60,7 @@ export const PATCH = withErrorHandler<Record<string, never>>(async function PATC
     updateData.validated_by = auth.authUser.id;
   }
 
-  const { error } = await admin
-    .from("facilitators")
-    .update(updateData)
-    .in("id", userIds);
+  const { error } = await admin.from("facilitators").update(updateData).in("id", userIds);
 
   if (error) {
     console.error("[admin/users PATCH]", error.message);

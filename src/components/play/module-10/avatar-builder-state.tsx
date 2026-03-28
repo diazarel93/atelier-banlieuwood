@@ -7,9 +7,19 @@ import { SuccessCheck } from "@/components/play/success-check";
 import { DiceBearAvatar } from "@/components/avatar-dicebear";
 import { haptic } from "@/components/play/utils";
 import {
-  AVATAR_SKIN_COLOR, AVATAR_TOP, AVATAR_HAIR_COLOR, AVATAR_EYES, AVATAR_EYEBROWS,
-  AVATAR_MOUTH, AVATAR_CLOTHING, AVATAR_CLOTHES_COLOR, AVATAR_ACCESSORIES,
-  AVATAR_FACIAL_HAIR, AVATAR_HEADWEAR, AVATAR_GRAPHIC, AVATAR_BACKGROUND,
+  AVATAR_SKIN_COLOR,
+  AVATAR_TOP,
+  AVATAR_HAIR_COLOR,
+  AVATAR_EYES,
+  AVATAR_EYEBROWS,
+  AVATAR_MOUTH,
+  AVATAR_CLOTHING,
+  AVATAR_CLOTHES_COLOR,
+  AVATAR_ACCESSORIES,
+  AVATAR_FACIAL_HAIR,
+  AVATAR_HEADWEAR,
+  AVATAR_GRAPHIC,
+  AVATAR_BACKGROUND,
 } from "@/lib/module10-data";
 import type { AvatarOptions } from "@/components/avatar-dicebear";
 import type { Module10Data } from "@/hooks/use-session-polling";
@@ -21,15 +31,13 @@ export interface AvatarBuilderStateProps {
   onDone: (data: { prenom: string; trait: string; avatar: AvatarOptions }) => void;
 }
 
-export function AvatarBuilderState({
-  module10, sessionId, studentId, onDone,
-}: AvatarBuilderStateProps) {
+export function AvatarBuilderState({ module10, sessionId, studentId, onDone }: AvatarBuilderStateProps) {
   const [prenom, setPrenom] = useState(module10.personnage?.prenom || "");
   const [trait, setTrait] = useState(module10.personnage?.trait || "");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [force, setForce] = useState((module10.personnage as any)?.force as string || "");
+  const [force, setForce] = useState(((module10.personnage as any)?.force as string) || "");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [faiblesse, setFaiblesse] = useState((module10.personnage as any)?.faiblesse as string || "");
+  const [faiblesse, setFaiblesse] = useState(((module10.personnage as any)?.faiblesse as string) || "");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [attempted, setAttempted] = useState(false);
@@ -70,7 +78,11 @@ export function AvatarBuilderState({
   function setHeadwear(key: string) {
     if (key === "none") {
       // Remove headwear, keep current hair
-      setAvatarOpts((prev) => ({ ...prev, top: prev.topProbability === 0 ? ["shortFlat"] : prev.top, topProbability: 100 }));
+      setAvatarOpts((prev) => ({
+        ...prev,
+        top: prev.topProbability === 0 ? ["shortFlat"] : prev.top,
+        topProbability: 100,
+      }));
     } else {
       setAvatarOpts((prev) => ({ ...prev, top: [key], topProbability: 100 }));
     }
@@ -124,10 +136,14 @@ export function AvatarBuilderState({
   }
 
   const TRAITS_LOCAL = [
-    { key: "courageux", label: "Courageux" }, { key: "timide", label: "Timide" },
-    { key: "drole", label: "Drôle" }, { key: "rebelle", label: "Rebelle" },
-    { key: "reveur", label: "Rêveur" }, { key: "loyal", label: "Loyal" },
-    { key: "malin", label: "Malin" }, { key: "sensible", label: "Sensible" },
+    { key: "courageux", label: "Courageux" },
+    { key: "timide", label: "Timide" },
+    { key: "drole", label: "Drôle" },
+    { key: "rebelle", label: "Rebelle" },
+    { key: "reveur", label: "Rêveur" },
+    { key: "loyal", label: "Loyal" },
+    { key: "malin", label: "Malin" },
+    { key: "sensible", label: "Sensible" },
   ];
 
   const canSubmit = prenom.trim().length >= 1 && force.trim().length >= 2 && faiblesse.trim().length >= 2;
@@ -141,11 +157,21 @@ export function AvatarBuilderState({
       await fetch(`/api/sessions/${sessionId}/personnage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, prenom: prenom.trim(), traitDominant: trait, force: force.trim(), faiblesse: faiblesse.trim(), avatarData: finalAvatar }),
+        body: JSON.stringify({
+          studentId,
+          prenom: prenom.trim(),
+          traitDominant: trait,
+          force: force.trim(),
+          faiblesse: faiblesse.trim(),
+          avatarData: finalAvatar,
+        }),
       });
       setSuccess(true);
       setTimeout(() => onDone({ prenom: prenom.trim(), trait, avatar: finalAvatar }), 600);
-    } catch { toast.error("Erreur"); setSubmitting(false); }
+    } catch {
+      toast.error("Erreur");
+      setSubmitting(false);
+    }
   }
 
   if (success) return <SuccessCheck />;
@@ -163,45 +189,78 @@ export function AvatarBuilderState({
     const v = avatarOpts[field];
     return Array.isArray(v) ? v[0] : undefined;
   };
-  const HEADWEAR_KEYS = new Set(AVATAR_HEADWEAR.filter(h => h.key !== "none").map(h => h.key));
+  const HEADWEAR_KEYS = new Set(AVATAR_HEADWEAR.filter((h) => h.key !== "none").map((h) => h.key));
   const currentHeadwear = avatarOpts.top?.[0] && HEADWEAR_KEYS.has(avatarOpts.top[0]) ? avatarOpts.top[0] : "none";
-  const currentAccessory = avatarOpts.accessoriesProbability === 0 ? "none" : (avatarOpts.accessories?.[0] || "none");
-  const currentFacialHair = avatarOpts.facialHairProbability === 0 ? "none" : (avatarOpts.facialHair?.[0] || "none");
+  const currentAccessory = avatarOpts.accessoriesProbability === 0 ? "none" : avatarOpts.accessories?.[0] || "none";
+  const currentFacialHair = avatarOpts.facialHairProbability === 0 ? "none" : avatarOpts.facialHair?.[0] || "none";
 
   // Render a color swatch grid
-  function SwatchGrid({ options, field }: { options: { key: string; label: string; color?: string }[]; field: keyof AvatarOptions }) {
+  function SwatchGrid({
+    options,
+    field,
+  }: {
+    options: { key: string; label: string; color?: string }[];
+    field: keyof AvatarOptions;
+  }) {
     return (
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => (
-          <motion.button key={opt.key} whileTap={{ scale: 0.9 }}
-            onClick={() => { setOpt(field, opt.key); haptic(); }}
+          <motion.button
+            key={opt.key}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              setOpt(field, opt.key);
+              haptic();
+            }}
             title={opt.label}
             className={`w-10 h-10 rounded-full border-2 transition-all cursor-pointer ${
               currentKey(field) === opt.key
                 ? "border-bw-teal ring-2 ring-bw-teal/30 scale-110"
                 : "border-white/10 hover:border-bw-teal/30"
             }`}
-            style={{ backgroundColor: opt.color }} />
+            style={{ backgroundColor: opt.color }}
+          />
         ))}
       </div>
     );
   }
 
   // Render a labeled button grid
-  function LabelGrid({ options, field, onSelect, selectedKey }: { options: { key: string; label: string }[]; field?: keyof AvatarOptions; onSelect?: (key: string) => void; selectedKey?: string }) {
+  function LabelGrid({
+    options,
+    field,
+    onSelect,
+    selectedKey,
+  }: {
+    options: { key: string; label: string }[];
+    field?: keyof AvatarOptions;
+    onSelect?: (key: string) => void;
+    selectedKey?: string;
+  }) {
     const selected = selectedKey ?? (field ? currentKey(field) : undefined);
     return (
       <div className="flex flex-wrap gap-1.5">
         {options.map((opt) => {
           const isActive = selected === opt.key;
           return (
-            <motion.button key={opt.key} whileTap={{ scale: 0.95 }}
-              onClick={() => { if (onSelect) { onSelect(opt.key); haptic(); } else if (field) { setOpt(field, opt.key); haptic(); } }}
+            <motion.button
+              key={opt.key}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                if (onSelect) {
+                  onSelect(opt.key);
+                  haptic();
+                } else if (field) {
+                  setOpt(field, opt.key);
+                  haptic();
+                }
+              }}
               className={`px-2.5 py-1.5 rounded-lg text-xs border transition-colors cursor-pointer ${
                 isActive
                   ? "bg-bw-teal/20 border-bw-teal/40 text-bw-teal"
                   : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:border-bw-teal/20"
-              }`}>
+              }`}
+            >
               {opt.label}
             </motion.button>
           );
@@ -211,8 +270,12 @@ export function AvatarBuilderState({
   }
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-      className="flex flex-col items-center gap-4 w-full max-w-md mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="flex flex-col items-center gap-4 w-full max-w-md mx-auto px-4"
+    >
       <span className="text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-bw-teal/20 text-bw-teal">
         Mon personnage
       </span>
@@ -220,10 +283,15 @@ export function AvatarBuilderState({
       {/* Avatar preview + randomize */}
       <div className="relative">
         <DiceBearAvatar options={avatarOpts} size={140} />
-        <motion.button whileTap={{ scale: 0.85 }} onClick={randomize}
+        <motion.button
+          whileTap={{ scale: 0.85 }}
+          onClick={randomize}
           className="absolute -right-2 -bottom-1 w-9 h-9 rounded-full bg-bw-elevated border border-white/10 flex items-center justify-center text-lg cursor-pointer hover:border-bw-teal/30 transition-colors"
-          title="Aléatoire">
-          <span role="img" aria-label="dé">🎲</span>
+          title="Aléatoire"
+        >
+          <span role="img" aria-label="dé">
+            🎲
+          </span>
         </motion.button>
       </div>
 
@@ -238,19 +306,27 @@ export function AvatarBuilderState({
       </motion.button>
 
       {/* Name */}
-      <input value={prenom} onChange={(e) => setPrenom(e.target.value)} placeholder="Prénom du personnage" maxLength={30}
-        className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-teal focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 transition-colors" />
+      <input
+        value={prenom}
+        onChange={(e) => setPrenom(e.target.value)}
+        placeholder="Prénom du personnage"
+        maxLength={30}
+        className="w-full rounded-xl bg-bw-elevated border border-white/[0.06] px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:border-bw-teal focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 transition-colors"
+      />
 
       {/* Tab bar */}
       <div className="w-full overflow-x-auto scrollbar-hide">
         <div className="flex gap-1 min-w-max">
           {TABS.map((t) => (
-            <button key={t.key} onClick={() => setTab(t.key)}
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer whitespace-nowrap ${
                 tab === t.key
                   ? "bg-bw-teal/20 text-bw-teal border border-bw-teal/40"
                   : "text-bw-muted hover:text-bw-text border border-transparent"
-              }`}>
+              }`}
+            >
               {t.label}
             </button>
           ))}
@@ -261,14 +337,26 @@ export function AvatarBuilderState({
       <div className="w-full min-h-[120px]">
         <AnimatePresence mode="wait">
           {tab === "peau" && (
-            <motion.div key="peau" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="space-y-2">
+            <motion.div
+              key="peau"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              className="space-y-2"
+            >
               <p className="text-xs text-bw-muted uppercase tracking-wider">Teinte de peau</p>
               <SwatchGrid options={AVATAR_SKIN_COLOR} field="skinColor" />
             </motion.div>
           )}
 
           {tab === "coiffure" && (
-            <motion.div key="coiffure" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="space-y-3">
+            <motion.div
+              key="coiffure"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              className="space-y-3"
+            >
               <div>
                 <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Coiffure</p>
                 <LabelGrid options={AVATAR_TOP} field="top" />
@@ -285,7 +373,13 @@ export function AvatarBuilderState({
           )}
 
           {tab === "visage" && (
-            <motion.div key="visage" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="space-y-3">
+            <motion.div
+              key="visage"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              className="space-y-3"
+            >
               <div>
                 <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Yeux</p>
                 <LabelGrid options={AVATAR_EYES} field="eyes" />
@@ -302,7 +396,13 @@ export function AvatarBuilderState({
           )}
 
           {tab === "style" && (
-            <motion.div key="style" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="space-y-3">
+            <motion.div
+              key="style"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              className="space-y-3"
+            >
               <div>
                 <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Vêtement</p>
                 <LabelGrid options={AVATAR_CLOTHING} field="clothing" />
@@ -327,7 +427,6 @@ export function AvatarBuilderState({
               </div>
             </motion.div>
           )}
-
         </AnimatePresence>
       </div>
 
@@ -336,13 +435,16 @@ export function AvatarBuilderState({
         <p className="text-xs text-bw-muted uppercase tracking-wider mb-1.5">Trait dominant</p>
         <div className="flex flex-wrap gap-1.5">
           {TRAITS_LOCAL.map((t) => (
-            <motion.button key={t.key} whileTap={{ scale: 0.95 }}
+            <motion.button
+              key={t.key}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setTrait(t.key)}
               className={`px-2.5 py-1.5 rounded-lg text-xs border transition-colors cursor-pointer ${
                 trait === t.key
                   ? "bg-bw-teal/20 border-bw-teal/40 text-bw-teal"
                   : "bg-bw-elevated border-white/[0.06] text-bw-muted hover:border-bw-teal/20"
-              }`}>
+              }`}
+            >
               {t.label}
             </motion.button>
           ))}
@@ -352,23 +454,40 @@ export function AvatarBuilderState({
       {/* Force + Faiblesse (obligatoires) */}
       <div className="w-full space-y-2">
         <div>
-          <p className={`text-xs uppercase tracking-wider mb-1 ${attempted && force.trim().length < 2 ? "text-red-400" : "text-bw-muted"}`}>Sa force <span className="text-red-400">*</span></p>
-          <input value={force} onChange={(e) => setForce(e.target.value)}
+          <p
+            className={`text-xs uppercase tracking-wider mb-1 ${attempted && force.trim().length < 2 ? "text-red-400" : "text-bw-muted"}`}
+          >
+            Sa force <span className="text-red-400">*</span>
+          </p>
+          <input
+            value={force}
+            onChange={(e) => setForce(e.target.value)}
             placeholder="Ce qu'il/elle fait le mieux..."
             maxLength={100}
-            className={`w-full rounded-xl bg-bw-elevated border px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 transition-colors ${attempted && force.trim().length < 2 ? "border-red-400/50 focus:border-red-400" : "border-white/[0.06] focus:border-bw-teal"}`} />
+            className={`w-full rounded-xl bg-bw-elevated border px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 transition-colors ${attempted && force.trim().length < 2 ? "border-red-400/50 focus:border-red-400" : "border-white/[0.06] focus:border-bw-teal"}`}
+          />
         </div>
         <div>
-          <p className={`text-xs uppercase tracking-wider mb-1 ${attempted && faiblesse.trim().length < 2 ? "text-red-400" : "text-bw-muted"}`}>Sa faiblesse <span className="text-red-400">*</span></p>
-          <input value={faiblesse} onChange={(e) => setFaiblesse(e.target.value)}
+          <p
+            className={`text-xs uppercase tracking-wider mb-1 ${attempted && faiblesse.trim().length < 2 ? "text-red-400" : "text-bw-muted"}`}
+          >
+            Sa faiblesse <span className="text-red-400">*</span>
+          </p>
+          <input
+            value={faiblesse}
+            onChange={(e) => setFaiblesse(e.target.value)}
             placeholder="Ce qui le/la freine..."
             maxLength={100}
-            className={`w-full rounded-xl bg-bw-elevated border px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 transition-colors ${attempted && faiblesse.trim().length < 2 ? "border-red-400/50 focus:border-red-400" : "border-white/[0.06] focus:border-bw-teal"}`} />
+            className={`w-full rounded-xl bg-bw-elevated border px-3 py-2 text-sm text-bw-text placeholder-bw-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-bw-teal/40 transition-colors ${attempted && faiblesse.trim().length < 2 ? "border-red-400/50 focus:border-red-400" : "border-white/[0.06] focus:border-bw-teal"}`}
+          />
         </div>
       </div>
 
-      <button onClick={handleSubmit} disabled={submitting}
-        className="w-full py-3 rounded-xl bg-gradient-to-r from-bw-teal to-bw-teal text-white font-medium text-sm disabled:opacity-40 transition-opacity cursor-pointer">
+      <button
+        onClick={handleSubmit}
+        disabled={submitting}
+        className="w-full py-3 rounded-xl bg-gradient-to-r from-bw-teal to-bw-teal text-white font-medium text-sm disabled:opacity-40 transition-opacity cursor-pointer"
+      >
         {submitting ? "Envoi..." : "Valider mon personnage"}
       </button>
     </motion.div>

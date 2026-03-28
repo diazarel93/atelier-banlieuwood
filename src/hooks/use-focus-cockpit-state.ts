@@ -15,14 +15,8 @@ import { STUCK_DETECTION_DELAY_MS } from "@/components/pilot/pilot-settings";
 import { useStuckDetection } from "@/hooks/use-stuck-detection";
 
 export function useFocusCockpitState() {
-  const {
-    session, sessionId, responses, activeStudents, voteData,
-    situationData, teams,
-  } = useCockpitData();
-  const {
-    updateSession, toggleHide, toggleVoteOption,
-    highlightResponse, onModuleComplete,
-  } = useCockpitActions();
+  const { session, sessionId, responses, activeStudents, voteData, situationData, teams } = useCockpitData();
+  const { updateSession, toggleHide, toggleVoteOption, highlightResponse, onModuleComplete } = useCockpitActions();
   const modals = useCockpitModals();
   const moduleFlags = useCockpitModuleFlags(session);
   const { isDarkMode, setIsDarkMode } = useCockpitDarkMode();
@@ -39,14 +33,25 @@ export function useFocusCockpitState() {
   const [broadcastHistory, setBroadcastHistory] = useState<{ text: string; sentAt: Date }[]>([]);
   const [responseFilter, setResponseFilter] = useState<"all" | "visible" | "highlighted">("all");
   const [responseSortMode, setResponseSortMode] = useState<"time" | "highlighted">("time");
-  const [reformulating, setReformulating] = useState<typeof responses[0] | null>(null);
+  const [reformulating, setReformulating] = useState<(typeof responses)[0] | null>(null);
   const allRespondedNotified = useRef(false);
   const prevResponseCountRef = useRef(0);
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [autoAdvanceCountdown, setAutoAdvanceCountdown] = useState(0);
 
   // ── Derived data ──
-  const situation = (situationData as { situation?: { id: string; position: number; category: string; restitutionLabel: string; prompt: string; nudgeText: string | null } })?.situation;
+  const situation = (
+    situationData as {
+      situation?: {
+        id: string;
+        position: number;
+        category: string;
+        restitutionLabel: string;
+        prompt: string;
+        nudgeText: string | null;
+      };
+    }
+  )?.situation;
   const budgetStats = (situationData as { budgetStats?: { submittedCount: number } })?.budgetStats;
   const budgetSubmitted = budgetStats?.submittedCount || 0;
   const visibleResponses = responses.filter((r) => !r.is_hidden);
@@ -54,19 +59,45 @@ export function useFocusCockpitState() {
   const currentQIndex = session.current_situation_index || 0;
   const respondedCount = responses.length;
 
-  const { canGoNext, maxSituations, isQAModule, isM2ECSpecial, isM2ECComparison, isM10Any, isM10SpecialPosition, isBudgetQuiz } = moduleFlags;
+  const {
+    canGoNext,
+    maxSituations,
+    isQAModule,
+    isM2ECSpecial,
+    isM2ECComparison,
+    isM10Any,
+    isM10SpecialPosition,
+    isBudgetQuiz,
+  } = moduleFlags;
 
   const nextAction = getNextAction(
-    session.status, visibleResponses.length, voteOptionCount,
+    session.status,
+    visibleResponses.length,
+    voteOptionCount,
     !!(voteData && voteData.totalVotes > 0),
-    session.current_module, budgetSubmitted, canGoNext,
-    session.current_seance || 1, session.current_situation_index || 0,
-    session.reveal_phase
+    session.current_module,
+    budgetSubmitted,
+    canGoNext,
+    session.current_seance || 1,
+    session.current_situation_index || 0,
+    session.reveal_phase,
   );
 
   // Module data
-  const module1Data = (situationData as { module1?: { type: string; questions?: { index: number; text: string }[]; question?: { text: string }; responsesCount?: number; optionDistribution?: Record<string, number> | null } })?.module1;
-  const module10Data = (situationData as { module10?: { type: string; allSubmissions?: { studentId: string; text: string }[] } })?.module10;
+  const module1Data = (
+    situationData as {
+      module1?: {
+        type: string;
+        questions?: { index: number; text: string }[];
+        question?: { text: string };
+        responsesCount?: number;
+        optionDistribution?: Record<string, number> | null;
+      };
+    }
+  )?.module1;
+  const module10Data = (
+    situationData as { module10?: { type: string; allSubmissions?: { studentId: string; text: string }[] } }
+  )?.module10;
   const module12Data = (situationData as { module12?: { mancheLabel: string; manche: number } })?.module12;
   const module13Data = (situationData as { module13?: { stepEmoji: string; stepLabel: string } })?.module13;
   const module6Data = (situationData as { module6?: { type: string } })?.module6;
@@ -75,7 +106,7 @@ export function useFocusCockpitState() {
 
   // Module label
   const currentMod = MODULES.find(
-    (m) => m.dbModule === session.current_module && m.dbSeance === (session.current_seance || 1)
+    (m) => m.dbModule === session.current_module && m.dbSeance === (session.current_seance || 1),
   );
   const moduleLabel = currentMod?.title || "Module";
   const moduleColor = currentMod?.color || "#FF6B35";
@@ -84,11 +115,13 @@ export function useFocusCockpitState() {
   const questionGuide = getQuestionGuide(
     session.current_seance || 1,
     (session.current_situation_index || 0) + 1,
-    session.current_module
+    session.current_module,
   );
 
   // Situations preview
-  const [allSituations, setAllSituations] = useState<{ position: number; category: string; restitutionLabel: string; prompt: string }[]>([]);
+  const [allSituations, setAllSituations] = useState<
+    { position: number; category: string; restitutionLabel: string; prompt: string }[]
+  >([]);
   const { data: situationsPreviewData } = useQuery<{ situations: typeof allSituations }>({
     queryKey: ["situations-preview", session?.id, session?.current_module, session?.current_seance],
     queryFn: async () => {
@@ -121,7 +154,7 @@ export function useFocusCockpitState() {
 
   const activeStudentIds = useMemo(
     () => new Set((session.students || []).filter((s) => s.is_active).map((s) => s.id)),
-    [session.students]
+    [session.students],
   );
 
   // Stuck detection
@@ -143,9 +176,9 @@ export function useFocusCockpitState() {
   // Not responded students
   const notRespondedStudents = useMemo(() => {
     if (session.status !== "responding") return [];
-    const respondedIds = new Set(responses.map(r => r.student_id));
-    moduleSubmittedIds.forEach(id => respondedIds.add(id));
-    return activeStudents.filter(s => !respondedIds.has(s.id));
+    const respondedIds = new Set(responses.map((r) => r.student_id));
+    moduleSubmittedIds.forEach((id) => respondedIds.add(id));
+    return activeStudents.filter((s) => !respondedIds.has(s.id));
   }, [session.status, responses, activeStudents, moduleSubmittedIds]);
 
   // Filtered responses
@@ -182,7 +215,7 @@ export function useFocusCockpitState() {
       allRespondedNotified.current = false;
       setAllResponded(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session.status]);
 
   // All responded notification
@@ -206,7 +239,7 @@ export function useFocusCockpitState() {
     const curr = responses.length;
     if (curr > prev && prev > 0) {
       const newest = responses[responses.length - 1];
-      const studentName = session.students?.find(s => s.id === newest?.student_id)?.display_name;
+      const studentName = session.students?.find((s) => s.id === newest?.student_id)?.display_name;
       if (studentName) {
         toast(`${studentName} a répondu`, { icon: "✏️", duration: 2000, style: { fontSize: 13, padding: "8px 14px" } });
       }
@@ -240,13 +273,18 @@ export function useFocusCockpitState() {
         autoAdvanceTimerRef.current = null;
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoAdvance, allResponded, session.status]);
 
   // ── Navigation handlers ──
   function goToSituation(index: number) {
     setPreviewIndex(null);
-    updateSession.mutate({ current_situation_index: index, status: "responding", timer_ends_at: null, reveal_phase: null });
+    updateSession.mutate({
+      current_situation_index: index,
+      status: "responding",
+      timer_ends_at: null,
+      reveal_phase: null,
+    });
   }
 
   function nextSituation() {
@@ -313,7 +351,10 @@ export function useFocusCockpitState() {
   }
 
   function handleNudgeAllStuck() {
-    updateSession.mutate({ broadcast_message: "N'oubliez pas de répondre à la question !", broadcast_at: new Date().toISOString() });
+    updateSession.mutate({
+      broadcast_message: "N'oubliez pas de répondre à la question !",
+      broadcast_at: new Date().toISOString(),
+    });
     play("send");
     toast.success(`Relance envoyée à la classe (${notRespondedStudents.length} en attente)`);
   }
@@ -321,13 +362,17 @@ export function useFocusCockpitState() {
   function handleHighlightAllVisible() {
     const toHighlight = responses.filter((r) => !r.is_hidden && !r.is_highlighted);
     for (const r of toHighlight) highlightResponse.mutate({ responseId: r.id, highlighted: true });
-    toast.success(`${toHighlight.length} réponse${toHighlight.length > 1 ? "s" : ""} projetée${toHighlight.length > 1 ? "s" : ""}`);
+    toast.success(
+      `${toHighlight.length} réponse${toHighlight.length > 1 ? "s" : ""} projetée${toHighlight.length > 1 ? "s" : ""}`,
+    );
   }
 
   function handleClearAllHighlights() {
     const highlighted = responses.filter((r) => r.is_highlighted);
     for (const r of highlighted) highlightResponse.mutate({ responseId: r.id, highlighted: false });
-    toast.success(`${highlighted.length} réponse${highlighted.length > 1 ? "s" : ""} dé-projetée${highlighted.length > 1 ? "s" : ""}`);
+    toast.success(
+      `${highlighted.length} réponse${highlighted.length > 1 ? "s" : ""} dé-projetée${highlighted.length > 1 ? "s" : ""}`,
+    );
   }
 
   function handleHighlightBoth(idA: string, idB: string) {
@@ -339,7 +384,8 @@ export function useFocusCockpitState() {
   // Universal question text
   const universalQuestionText = useMemo((): string | null => {
     if (situation?.prompt) return situation.prompt;
-    if (moduleFlags.isM1Positioning && module1Data?.questions?.[currentQIndex]) return module1Data.questions[currentQIndex].text;
+    if (moduleFlags.isM1Positioning && module1Data?.questions?.[currentQIndex])
+      return module1Data.questions[currentQIndex].text;
     if (module1Data?.question?.text) return module1Data.question.text;
     if (module12Data) return module12Data.mancheLabel || `Manche ${module12Data.manche || 1}`;
     if (module13Data) return `${module13Data.stepEmoji} ${module13Data.stepLabel}`;
@@ -373,7 +419,8 @@ export function useFocusCockpitState() {
       return Object.values(dist).reduce((sum, v) => sum + (v as number), 0);
     }
     if (isBudgetQuiz) return budgetSubmitted;
-    if ((moduleFlags.isM1Image || moduleFlags.isM1Notebook) && module1Data?.responsesCount) return module1Data.responsesCount;
+    if ((moduleFlags.isM1Image || moduleFlags.isM1Notebook) && module1Data?.responsesCount)
+      return module1Data.responsesCount;
     if (isM10Any && module10Data?.allSubmissions) return module10Data.allSubmissions.length;
     return responses.length;
   }, [moduleFlags, module1Data, isBudgetQuiz, budgetSubmitted, isM10Any, module10Data, responses.length]);
@@ -392,38 +439,79 @@ export function useFocusCockpitState() {
 
   return {
     // Session data
-    session, sessionId, responses, activeStudents, voteData, situationData, teams,
+    session,
+    sessionId,
+    responses,
+    activeStudents,
+    voteData,
+    situationData,
+    teams,
 
     // Computed
-    situation, visibleResponses, voteOptionCount, currentQIndex, respondedCount,
-    nextAction, moduleFlags, moduleLabel, moduleColor, questionGuide,
-    allSituations, filteredResponses, isPreviewing, displayIndex,
-    stuckStudents, notRespondedStudents, respondedStudentIds, stuckLevels,
-    universalQuestionText, universalCategoryLabel, unifiedRespondedCount,
-    isStandardQA, winnerResponseId, budgetSubmitted,
+    situation,
+    visibleResponses,
+    voteOptionCount,
+    currentQIndex,
+    respondedCount,
+    nextAction,
+    moduleFlags,
+    moduleLabel,
+    moduleColor,
+    questionGuide,
+    allSituations,
+    filteredResponses,
+    isPreviewing,
+    displayIndex,
+    stuckStudents,
+    notRespondedStudents,
+    respondedStudentIds,
+    stuckLevels,
+    universalQuestionText,
+    universalCategoryLabel,
+    unifiedRespondedCount,
+    isStandardQA,
+    winnerResponseId,
+    budgetSubmitted,
 
     // Local state
-    previewIndex, setPreviewIndex,
-    autoAdvance, setAutoAdvance,
+    previewIndex,
+    setPreviewIndex,
+    autoAdvance,
+    setAutoAdvance,
     autoAdvanceCountdown,
-    plusOpen, setPlusOpen,
-    showStudentSheet, setShowStudentSheet,
-    selectedResponseIds, setSelectedResponseIds,
+    plusOpen,
+    setPlusOpen,
+    showStudentSheet,
+    setShowStudentSheet,
+    selectedResponseIds,
+    setSelectedResponseIds,
     allResponded,
     respondingOpenedAt,
     broadcastHistory,
-    responseFilter, setResponseFilter,
-    responseSortMode, setResponseSortMode,
-    reformulating, setReformulating,
-    isDarkMode, setIsDarkMode,
+    responseFilter,
+    setResponseFilter,
+    responseSortMode,
+    setResponseSortMode,
+    reformulating,
+    setReformulating,
+    isDarkMode,
+    setIsDarkMode,
 
     // Modals
     modals,
 
     // Handlers
-    goToSituation, nextSituation, skipSituation, prevSituation,
-    handleNextAction, handleSelectionBarAction, handleQuickVote,
-    handleBroadcast, handleNudgeAllStuck,
-    handleHighlightAllVisible, handleClearAllHighlights, handleHighlightBoth,
+    goToSituation,
+    nextSituation,
+    skipSituation,
+    prevSituation,
+    handleNextAction,
+    handleSelectionBarAction,
+    handleQuickVote,
+    handleBroadcast,
+    handleNudgeAllStuck,
+    handleHighlightAllVisible,
+    handleClearAllHighlights,
+    handleHighlightBoth,
   };
 }

@@ -25,19 +25,11 @@ interface SessionEditDialogProps {
   };
 }
 
-export function SessionEditDialog({
-  open,
-  onClose,
-  onSave,
-  isPending,
-  initial,
-}: SessionEditDialogProps) {
+export function SessionEditDialog({ open, onClose, onSave, isPending, initial }: SessionEditDialogProps) {
   const [title, setTitle] = useState(initial.title);
   const [classLabel, setClassLabel] = useState(initial.class_label || "");
   const [level, setLevel] = useState(initial.level);
-  const [scheduledAt, setScheduledAt] = useState(
-    initial.scheduled_at ? initial.scheduled_at.slice(0, 10) : ""
-  );
+  const [scheduledAt, setScheduledAt] = useState(initial.scheduled_at ? initial.scheduled_at.slice(0, 10) : "");
   const [thematique, setThematique] = useState(initial.thematique || "");
 
   // Reset form when dialog opens with new initial values
@@ -46,9 +38,7 @@ export function SessionEditDialog({
       setTitle(initial.title);
       setClassLabel(initial.class_label || "");
       setLevel(initial.level);
-      setScheduledAt(
-        initial.scheduled_at ? initial.scheduled_at.slice(0, 10) : ""
-      );
+      setScheduledAt(initial.scheduled_at ? initial.scheduled_at.slice(0, 10) : "");
       setThematique(initial.thematique || "");
     }
   }, [open, initial]);
@@ -61,9 +51,7 @@ export function SessionEditDialog({
       title: title.trim(),
       class_label: classLabel.trim() || null,
       level,
-      scheduled_at: scheduledAt
-        ? new Date(scheduledAt).toISOString()
-        : null,
+      scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : null,
       thematique: thematique.trim() || null,
     };
     onSave(payload);
@@ -101,17 +89,12 @@ export function SessionEditDialog({
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="relative z-10 w-full max-w-md rounded-2xl bg-card border border-[var(--color-bw-border)] p-6 shadow-xl"
           >
-            <h3 className="text-lg font-semibold text-bw-heading mb-5">
-              Modifier la seance
-            </h3>
+            <h3 className="text-lg font-semibold text-bw-heading mb-5">Modifier la seance</h3>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Title */}
               <div>
-                <label
-                  htmlFor="edit-title"
-                  className="block text-xs font-medium text-bw-muted mb-1.5"
-                >
+                <label htmlFor="edit-title" className="block text-xs font-medium text-bw-muted mb-1.5">
                   Titre
                 </label>
                 <input
@@ -123,17 +106,12 @@ export function SessionEditDialog({
                   className={inputClasses}
                   required
                 />
-                <p className="text-[10px] text-bw-muted mt-1 text-right">
-                  {title.length}/100
-                </p>
+                <p className="text-[10px] text-bw-muted mt-1 text-right">{title.length}/100</p>
               </div>
 
               {/* Class label */}
               <div>
-                <label
-                  htmlFor="edit-class"
-                  className="block text-xs font-medium text-bw-muted mb-1.5"
-                >
+                <label htmlFor="edit-class" className="block text-xs font-medium text-bw-muted mb-1.5">
                   Classe
                 </label>
                 <input
@@ -149,10 +127,7 @@ export function SessionEditDialog({
 
               {/* Level */}
               <div>
-                <label
-                  htmlFor="edit-level"
-                  className="block text-xs font-medium text-bw-muted mb-1.5"
-                >
+                <label htmlFor="edit-level" className="block text-xs font-medium text-bw-muted mb-1.5">
                   Niveau
                 </label>
                 <select
@@ -171,10 +146,7 @@ export function SessionEditDialog({
 
               {/* Date */}
               <div>
-                <label
-                  htmlFor="edit-date"
-                  className="block text-xs font-medium text-bw-muted mb-1.5"
-                >
+                <label htmlFor="edit-date" className="block text-xs font-medium text-bw-muted mb-1.5">
                   Date prevue
                 </label>
                 <input
@@ -188,10 +160,7 @@ export function SessionEditDialog({
 
               {/* Thematique */}
               <div>
-                <label
-                  htmlFor="edit-thematique"
-                  className="block text-xs font-medium text-bw-muted mb-1.5"
-                >
+                <label htmlFor="edit-thematique" className="block text-xs font-medium text-bw-muted mb-1.5">
                   Thematique
                 </label>
                 <input
@@ -203,19 +172,12 @@ export function SessionEditDialog({
                   placeholder="ex: L'univers du cinema fantastique..."
                   className={inputClasses}
                 />
-                <p className="text-[10px] text-bw-muted mt-1 text-right">
-                  {thematique.length}/200
-                </p>
+                <p className="text-[10px] text-bw-muted mt-1 text-right">{thematique.length}/200</p>
               </div>
 
               {/* Actions */}
               <div className="flex justify-end gap-3 pt-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={onClose}
-                  disabled={isPending}
-                >
+                <Button type="button" variant="ghost" onClick={onClose} disabled={isPending}>
                   Annuler
                 </Button>
                 <Button type="submit" disabled={isPending || !title.trim()}>

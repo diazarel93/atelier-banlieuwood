@@ -47,7 +47,9 @@ function TeamChatInner({ sessionId, teamId, studentId, studentName, studentAvata
         lastCountRef.current = data.length;
         setMessages(data);
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }, [sessionId, teamId, open]);
 
   useEffect(() => {
@@ -79,7 +81,9 @@ function TeamChatInner({ sessionId, teamId, studentId, studentName, studentAvata
         setMessages((prev) => [...prev, msg]);
         lastCountRef.current += 1;
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   };
 
   return (
@@ -120,11 +124,13 @@ function TeamChatInner({ sessionId, teamId, studentId, studentName, studentAvata
             <div className="px-3 py-2.5 border-b border-white/[0.06] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-sm">💬</span>
-                <span className="text-sm font-bold text-bw-heading">
-                  {teamId ? "Chat Equipe" : "Chat Session"}
-                </span>
+                <span className="text-sm font-bold text-bw-heading">{teamId ? "Chat Equipe" : "Chat Session"}</span>
               </div>
-              <button onClick={() => setOpen(false)} aria-label="Fermer le chat" className="text-bw-muted hover:text-bw-text cursor-pointer">
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Fermer le chat"
+                className="text-bw-muted hover:text-bw-text cursor-pointer"
+              >
                 ✕
               </button>
             </div>
@@ -132,9 +138,7 @@ function TeamChatInner({ sessionId, teamId, studentId, studentName, studentAvata
             {/* Messages */}
             <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-2 space-y-2">
               {messages.length === 0 && (
-                <p className="text-xs text-bw-muted text-center py-8">
-                  Pas encore de messages. Dis bonjour ! 👋
-                </p>
+                <p className="text-xs text-bw-muted text-center py-8">Pas encore de messages. Dis bonjour ! 👋</p>
               )}
               {messages.map((msg, i) => {
                 const isOwn = msg.student?.id === studentId;
@@ -146,20 +150,14 @@ function TeamChatInner({ sessionId, teamId, studentId, studentName, studentAvata
                     transition={{ delay: i > messages.length - 5 ? 0 : 0 }}
                     className={`flex gap-2 ${isOwn ? "flex-row-reverse" : ""}`}
                   >
-                    {!isOwn && (
-                      <span className="text-sm flex-shrink-0 mt-1">{msg.student?.avatar}</span>
-                    )}
+                    {!isOwn && <span className="text-sm flex-shrink-0 mt-1">{msg.student?.avatar}</span>}
                     <div
                       className={`max-w-[80%] px-3 py-1.5 rounded-xl text-sm ${
-                        isOwn
-                          ? "bg-bw-violet/20 text-bw-text"
-                          : "bg-white/[0.06] text-bw-text"
+                        isOwn ? "bg-bw-violet/20 text-bw-text" : "bg-white/[0.06] text-bw-text"
                       }`}
                     >
                       {!isOwn && (
-                        <p className="text-xs font-semibold text-bw-muted mb-0.5">
-                          {msg.student?.display_name}
-                        </p>
+                        <p className="text-xs font-semibold text-bw-muted mb-0.5">{msg.student?.display_name}</p>
                       )}
                       {msg.message_type === "sticker" ? (
                         <span className="text-2xl">{msg.content}</span>

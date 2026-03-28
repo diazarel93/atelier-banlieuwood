@@ -6,5 +6,5 @@ export default function ScreenLoading() {
         <p className="text-sm text-bw-muted animate-pulse">Préparation de l'écran…</p>
       </div>
     </div>
-  )
+  );
 }

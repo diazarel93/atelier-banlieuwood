@@ -51,9 +51,7 @@ vi.mock("@/lib/supabase/server", () => ({
         chain.insert = vi.fn().mockReturnValue(chain);
         // For GET list query
         chain.select = vi.fn().mockReturnValue(chain);
-        chain.order = vi.fn().mockImplementation(() =>
-          Promise.resolve({ data: [], error: null })
-        );
+        chain.order = vi.fn().mockImplementation(() => Promise.resolve({ data: [], error: null }));
         return chain;
       }
       return makeChain(() => ({ data: null, error: null }));
@@ -107,9 +105,7 @@ describe("POST /api/sessions", () => {
   });
 
   it("accepts valid primaire level", async () => {
-    const res = await POST(
-      makeReq({ title: "Test", level: "primaire" })
-    );
+    const res = await POST(makeReq({ title: "Test", level: "primaire" }));
     // Should not be a 400 validation error
     expect(res.status).not.toBe(400);
   });
@@ -121,33 +117,25 @@ describe("POST /api/sessions", () => {
 
   it("returns 404 when facilitator profile is missing", async () => {
     facilitatorResult = makeSingleResult(null);
-    const res = await POST(
-      makeReq({ title: "Test", level: "college" })
-    );
+    const res = await POST(makeReq({ title: "Test", level: "college" }));
     expect(res.status).toBe(404);
   });
 
   it("creates session with valid input", async () => {
-    const res = await POST(
-      makeReq({ title: "Atelier cinema", level: "college", template: "comedie" })
-    );
+    const res = await POST(makeReq({ title: "Atelier cinema", level: "college", template: "comedie" }));
     const json = await res.json();
     expect(json.id).toBe("sess-789");
   });
 
   it("ignores invalid template value", async () => {
-    const res = await POST(
-      makeReq({ title: "Test", level: "college", template: "invalid-genre" })
-    );
+    const res = await POST(makeReq({ title: "Test", level: "college", template: "invalid-genre" }));
     // Should still create (cleanTemplate = null), not error
     expect(res.status).not.toBe(400);
   });
 
   it("truncates long title to 60 chars", async () => {
     const longTitle = "A".repeat(100);
-    const res = await POST(
-      makeReq({ title: longTitle, level: "college" })
-    );
+    const res = await POST(makeReq({ title: longTitle, level: "college" }));
     expect(res.status).not.toBe(400);
   });
 });

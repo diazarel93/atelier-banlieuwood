@@ -47,34 +47,61 @@ export function computeClassDynamics(params: {
   totalStudents: number;
 }): ClassDynamicsScores {
   const {
-    responsePct, avgResponseTimeSec, stuckPct, handsRaisedPct,
-    optionSpread, activeTimeSec, disconnectedPct, totalResponses,
+    responsePct,
+    avgResponseTimeSec,
+    stuckPct,
+    handsRaisedPct,
+    optionSpread,
+    activeTimeSec,
+    disconnectedPct,
+    totalResponses,
   } = params;
 
   const speedBonus = avgResponseTimeSec > 0 ? Math.max(0, 30 - avgResponseTimeSec) : 0;
   const participation = Math.min(100, Math.max(5, Math.round(responsePct + speedBonus)));
 
-  const comprehension = Math.min(100, Math.max(5, Math.round(
-    responsePct * 0.5 + (100 - stuckPct) * 0.3 + (100 - handsRaisedPct) * 0.2
-  )));
+  const comprehension = Math.min(
+    100,
+    Math.max(5, Math.round(responsePct * 0.5 + (100 - stuckPct) * 0.3 + (100 - handsRaisedPct) * 0.2)),
+  );
 
-  const imagination = Math.min(100, Math.max(5, Math.round(
-    (totalResponses > 0 ? 40 : 5) + optionSpread * 30 + Math.min(responsePct * 0.3, 30)
-  )));
+  const imagination = Math.min(
+    100,
+    Math.max(5, Math.round((totalResponses > 0 ? 40 : 5) + optionSpread * 30 + Math.min(responsePct * 0.3, 30))),
+  );
 
-  const debate = Math.min(100, Math.max(5, Math.round(
-    optionSpread * 60 + handsRaisedPct * 0.2 + (totalResponses >= 2 ? 15 : 0) + (responsePct > 50 ? 10 : 0)
-  )));
+  const debate = Math.min(
+    100,
+    Math.max(
+      5,
+      Math.round(
+        optionSpread * 60 + handsRaisedPct * 0.2 + (totalResponses >= 2 ? 15 : 0) + (responsePct > 50 ? 10 : 0),
+      ),
+    ),
+  );
 
-  const blocage = Math.min(100, Math.max(0, Math.round(
-    stuckPct * 0.7 + (avgResponseTimeSec > 60 ? 20 : avgResponseTimeSec > 30 ? 10 : 0) + disconnectedPct * 0.2
-  )));
+  const blocage = Math.min(
+    100,
+    Math.max(
+      0,
+      Math.round(
+        stuckPct * 0.7 + (avgResponseTimeSec > 60 ? 20 : avgResponseTimeSec > 30 ? 10 : 0) + disconnectedPct * 0.2,
+      ),
+    ),
+  );
 
-  const attention = Math.min(100, Math.max(5, Math.round(
-    (100 - disconnectedPct) * 0.4 + (responsePct > 0 ? 20 : 0) +
-    (activeTimeSec > 0 && activeTimeSec < 120 ? 20 : activeTimeSec < 300 ? 10 : 0) +
-    (100 - stuckPct) * 0.2
-  )));
+  const attention = Math.min(
+    100,
+    Math.max(
+      5,
+      Math.round(
+        (100 - disconnectedPct) * 0.4 +
+          (responsePct > 0 ? 20 : 0) +
+          (activeTimeSec > 0 && activeTimeSec < 120 ? 20 : activeTimeSec < 300 ? 10 : 0) +
+          (100 - stuckPct) * 0.2,
+      ),
+    ),
+  );
 
   return { participation, comprehension, imagination, debate, blocage, attention };
 }
@@ -90,7 +117,9 @@ export function ClassDynamicsRadar({ scores, size = 160 }: ClassDynamicsRadarPro
   };
 
   // Determine dominant trait for summary
-  const sorted = [...AXES].sort((a, b) => scores[b.key as keyof ClassDynamicsScores] - scores[a.key as keyof ClassDynamicsScores]);
+  const sorted = [...AXES].sort(
+    (a, b) => scores[b.key as keyof ClassDynamicsScores] - scores[a.key as keyof ClassDynamicsScores],
+  );
   const top = sorted[0];
   const low = sorted[sorted.length - 1];
 
@@ -120,10 +149,18 @@ export function ClassDynamicsRadar({ scores, size = 160 }: ClassDynamicsRadarPro
         style={{ background: `${top.color}08`, border: `1px solid ${top.color}15` }}
       >
         <p className="text-[10px] leading-snug" style={{ color: "#5B5B5B" }}>
-          <span className="font-bold" style={{ color: top.color }}>{top.label}</span>
+          <span className="font-bold" style={{ color: top.color }}>
+            {top.label}
+          </span>
           {" forte"}
           {scores[low.key as keyof ClassDynamicsScores] < 30 && (
-            <>, <span className="font-bold" style={{ color: low.color }}>{low.label.toLowerCase()}</span>{" faible"}</>
+            <>
+              ,{" "}
+              <span className="font-bold" style={{ color: low.color }}>
+                {low.label.toLowerCase()}
+              </span>
+              {" faible"}
+            </>
           )}
         </p>
       </div>

@@ -57,7 +57,10 @@ export function usePilotKeyboardShortcuts({
           onShowExport();
           break;
         case "c": // C = compare
-          if (responsesCount >= 2) { e.preventDefault(); onShowCompare(); }
+          if (responsesCount >= 2) {
+            e.preventDefault();
+            onShowCompare();
+          }
           break;
         case "n": // N = next action
           if (onNextAction && sessionStatus !== "done" && sessionStatus !== "paused") {
@@ -85,7 +88,11 @@ export function usePilotKeyboardShortcuts({
             onTimerShortcut();
           }
           break;
-        case "1": case "2": case "3": case "4": case "5": // Timer presets
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5": // Timer presets
           if (timerModeActive && onSetTimerPreset) {
             e.preventDefault();
             onSetTimerPreset(parseInt(e.key));
@@ -100,8 +107,12 @@ export function usePilotKeyboardShortcuts({
           break;
       }
     }
-    function handleBroadcastEvent() { onShowBroadcast(); }
-    function handleShortcutsEvent() { onToggleShortcuts(); }
+    function handleBroadcastEvent() {
+      onShowBroadcast();
+    }
+    function handleShortcutsEvent() {
+      onToggleShortcuts();
+    }
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("pilot-broadcast", handleBroadcastEvent);
     window.addEventListener("pilot-shortcuts", handleShortcutsEvent);
@@ -110,5 +121,20 @@ export function usePilotKeyboardShortcuts({
       window.removeEventListener("pilot-broadcast", handleBroadcastEvent);
       window.removeEventListener("pilot-shortcuts", handleShortcutsEvent);
     };
-  }, [sessionStatus, responsesCount, onPauseToggle, onShowBroadcast, onShowExport, onShowCompare, onToggleShortcuts, onCloseAll, onNextAction, onToggleFocus, onToggleIntervention, onTimerShortcut, onSetTimerPreset, timerModeActive]);
+  }, [
+    sessionStatus,
+    responsesCount,
+    onPauseToggle,
+    onShowBroadcast,
+    onShowExport,
+    onShowCompare,
+    onToggleShortcuts,
+    onCloseAll,
+    onNextAction,
+    onToggleFocus,
+    onToggleIntervention,
+    onTimerShortcut,
+    onSetTimerPreset,
+    timerModeActive,
+  ]);
 }

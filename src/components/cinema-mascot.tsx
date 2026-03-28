@@ -57,15 +57,7 @@ function getExpressions(mood: MascotMood): MoodExpressions {
           </g>
         ),
         /* Wide smile arc */
-        mouth: (
-          <path
-            d="M42 62 Q48 68 54 62"
-            fill="none"
-            stroke="#08090E"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-        ),
+        mouth: <path d="M42 62 Q48 68 54 62" fill="none" stroke="#08090E" strokeWidth="2.5" strokeLinecap="round" />,
       };
 
     case "thinking":
@@ -77,19 +69,9 @@ function getExpressions(mood: MascotMood): MoodExpressions {
             <circle cx="37" cy="50.5" r="1.2" fill="#E8EAED" />
           </g>
         ),
-        rightEye: (
-          <line x1="54" y1="52" x2="62" y2="52" stroke="#08090E" strokeWidth="2.5" strokeLinecap="round" />
-        ),
+        rightEye: <line x1="54" y1="52" x2="62" y2="52" stroke="#08090E" strokeWidth="2.5" strokeLinecap="round" />,
         /* Small flat mouth, slightly offset */
-        mouth: (
-          <path
-            d="M44 63 Q48 65 52 63"
-            fill="none"
-            stroke="#08090E"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        ),
+        mouth: <path d="M44 63 Q48 65 52 63" fill="none" stroke="#08090E" strokeWidth="2" strokeLinecap="round" />,
         /* Thought dots rising from head */
         extras: (
           <g className="bw-mascot-thought">
@@ -120,16 +102,50 @@ function getExpressions(mood: MascotMood): MoodExpressions {
           </g>
         ),
         /* Big open mouth "O" */
-        mouth: (
-          <ellipse cx="48" cy="64" rx="5" ry="4" fill="#08090E" />
-        ),
+        mouth: <ellipse cx="48" cy="64" rx="5" ry="4" fill="#08090E" />,
         /* Sparkle effects */
         extras: (
           <g className="bw-mascot-sparkle">
-            <line x1="22" y1="38" x2="18" y2="34" stroke="#D4A843" strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
-            <line x1="20" y1="42" x2="14" y2="42" stroke="#D4A843" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-            <line x1="72" y1="38" x2="76" y2="34" stroke="#D4A843" strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
-            <line x1="74" y1="44" x2="80" y2="44" stroke="#D4A843" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+            <line
+              x1="22"
+              y1="38"
+              x2="18"
+              y2="34"
+              stroke="#D4A843"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              opacity="0.7"
+            />
+            <line
+              x1="20"
+              y1="42"
+              x2="14"
+              y2="42"
+              stroke="#D4A843"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              opacity="0.5"
+            />
+            <line
+              x1="72"
+              y1="38"
+              x2="76"
+              y2="34"
+              stroke="#D4A843"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              opacity="0.7"
+            />
+            <line
+              x1="74"
+              y1="44"
+              x2="80"
+              y2="44"
+              stroke="#D4A843"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              opacity="0.5"
+            />
           </g>
         ),
       };
@@ -150,15 +166,40 @@ function getExpressions(mood: MascotMood): MoodExpressions {
           </g>
         ),
         /* Small O mouth */
-        mouth: (
-          <circle cx="48" cy="65" r="3.5" fill="#08090E" />
-        ),
+        mouth: <circle cx="48" cy="65" r="3.5" fill="#08090E" />,
         /* Surprise lines above head */
         extras: (
           <g>
-            <line x1="48" y1="18" x2="48" y2="12" stroke="#FF6B35" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
-            <line x1="40" y1="20" x2="36" y2="14" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
-            <line x1="56" y1="20" x2="60" y2="14" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+            <line
+              x1="48"
+              y1="18"
+              x2="48"
+              y2="12"
+              stroke="#FF6B35"
+              strokeWidth="2"
+              strokeLinecap="round"
+              opacity="0.6"
+            />
+            <line
+              x1="40"
+              y1="20"
+              x2="36"
+              y2="14"
+              stroke="#FF6B35"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              opacity="0.4"
+            />
+            <line
+              x1="56"
+              y1="20"
+              x2="60"
+              y2="14"
+              stroke="#FF6B35"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              opacity="0.4"
+            />
           </g>
         ),
       };
@@ -167,13 +208,7 @@ function getExpressions(mood: MascotMood): MoodExpressions {
 
 /* ── Speech Bubble ── */
 
-function SpeechBubble({
-  message,
-  size,
-}: {
-  message: string;
-  size: MascotSize;
-}) {
+function SpeechBubble({ message, size }: { message: string; size: MascotSize }) {
   return (
     <div
       className={cn(
@@ -205,13 +240,7 @@ interface CinemaMascotProps {
   animated?: boolean;
 }
 
-export function CinemaMascot({
-  mood = "happy",
-  size = "md",
-  message,
-  className,
-  animated = true,
-}: CinemaMascotProps) {
+export function CinemaMascot({ mood = "happy", size = "md", message, className, animated = true }: CinemaMascotProps) {
   const px = SIZE_MAP[size];
   const expressions = getExpressions(mood);
 
@@ -226,29 +255,17 @@ export function CinemaMascot({
         viewBox="0 0 96 96"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className={cn(
-          "shrink-0",
-          animated && "bw-mascot-float",
-        )}
+        className={cn("shrink-0", animated && "bw-mascot-float")}
         aria-label={`Director mascot, mood: ${mood}`}
         role="img"
       >
         {/* ── Beret ── */}
         <ellipse cx="48" cy="32" rx="22" ry="6" fill="#15181F" />
-        <path
-          d="M28 32 Q30 18 48 16 Q66 18 68 32"
-          fill="#15181F"
-        />
+        <path d="M28 32 Q30 18 48 16 Q66 18 68 32" fill="#15181F" />
         {/* Beret nub / pompom */}
         <circle cx="48" cy="16" r="3" fill="#FF6B35" />
         {/* Beret band */}
-        <path
-          d="M28 32 Q48 36 68 32"
-          fill="none"
-          stroke="#FF6B35"
-          strokeWidth="1.5"
-          opacity="0.5"
-        />
+        <path d="M28 32 Q48 36 68 32" fill="none" stroke="#FF6B35" strokeWidth="1.5" opacity="0.5" />
 
         {/* ── Head (rounded rectangle face) ── */}
         <rect x="30" y="34" width="36" height="40" rx="14" fill="#D4A843" />
@@ -293,11 +310,7 @@ export function CinemaMascot({
           {/* Handle */}
           <rect x="0" y="0" width="8" height="4" rx="1" fill="#7D828A" />
           {/* Cone */}
-          <path
-            d="M8 -4 L22 -10 L22 14 L8 8 Z"
-            fill="#FF6B35"
-            opacity="0.9"
-          />
+          <path d="M8 -4 L22 -10 L22 14 L8 8 Z" fill="#FF6B35" opacity="0.9" />
           {/* Cone opening ring */}
           <line x1="22" y1="-10" x2="22" y2="14" stroke="#D4A843" strokeWidth="1.5" />
           {/* Sound waves (when excited) */}

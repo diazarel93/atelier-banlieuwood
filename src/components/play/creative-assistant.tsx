@@ -119,7 +119,10 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
           }}
         >
           {/* Header */}
-          <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: "rgba(139,92,246,0.08)" }}>
+          <div
+            className="px-4 py-2.5 flex items-center justify-between"
+            style={{ background: "rgba(139,92,246,0.08)" }}
+          >
             <div className="flex items-center gap-2">
               <span>{"\u2728"}</span>
               <span className="text-xs uppercase tracking-widest text-bw-violet font-bold">
@@ -129,12 +132,23 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
             <div className="flex items-center gap-2">
               <span className="text-xs text-bw-muted">{usesLeft} restants</span>
               <button
-                onClick={() => { setOpen(false); handleReset(); }}
+                onClick={() => {
+                  setOpen(false);
+                  handleReset();
+                }}
                 aria-label="Fermer l'assistant creatif"
                 className="w-5 h-5 rounded-full flex items-center justify-center text-bw-muted hover:text-white cursor-pointer transition-colors"
                 style={{ background: "rgba(255,255,255,0.06)" }}
               >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
@@ -145,7 +159,13 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
             <AnimatePresence mode="wait">
               {/* Step 1: Choose mode */}
               {!mode && (
-                <motion.div key="modes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-2">
+                <motion.div
+                  key="modes"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="space-y-2"
+                >
                   <p className="text-xs text-bw-text font-medium">Que veux-tu cr&eacute;er ?</p>
                   {MODES.map((m) => (
                     <button
@@ -166,7 +186,13 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
 
               {/* Step 2: Input + result */}
               {mode && (
-                <motion.div key="input" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3">
+                <motion.div
+                  key="input"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="space-y-3"
+                >
                   {/* Mode badge + back */}
                   <div className="flex items-center gap-2">
                     <button
@@ -188,8 +214,8 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
                       {mode === "dialogue"
                         ? "Décris tes personnages et la situation :"
                         : mode === "scene"
-                        ? "Décris le moment que tu veux mettre en scène :"
-                        : "Partage ton idée pour avoir un retour :"}
+                          ? "Décris le moment que tu veux mettre en scène :"
+                          : "Partage ton idée pour avoir un retour :"}
                     </p>
                     <textarea
                       value={input}
@@ -199,8 +225,8 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
                         mode === "dialogue"
                           ? "Ex: Léa confronte son ami Thomas qui a menti..."
                           : mode === "scene"
-                          ? "Ex: Le héros entre dans l'entrepôt abandonné..."
-                          : "Ex: Mon film parle d'un ado qui découvre un secret..."
+                            ? "Ex: Le héros entre dans l'entrepôt abandonné..."
+                            : "Ex: Mon film parle d'un ado qui découvre un secret..."
                       }
                       maxLength={500}
                       rows={3}
@@ -232,7 +258,11 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
                       animate={{ opacity: 1 }}
                       className="flex items-center gap-2 py-2"
                     >
-                      <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} className="w-4 h-4 border-2 border-bw-violet border-t-transparent rounded-full" />
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-4 h-4 border-2 border-bw-violet border-t-transparent rounded-full"
+                      />
                       <span className="text-xs text-bw-violet">Le mentor r&eacute;fl&eacute;chit...</span>
                     </motion.div>
                   )}
@@ -251,7 +281,10 @@ export function CreativeAssistant({ sessionId, studentId, context }: CreativeAss
                       </div>
                       <p className="text-xs text-bw-text leading-relaxed whitespace-pre-wrap">{result.text}</p>
                       <button
-                        onClick={() => { setInput(""); setResult(null); }}
+                        onClick={() => {
+                          setInput("");
+                          setResult(null);
+                        }}
                         className="text-xs text-bw-violet hover:text-bw-violet/80 cursor-pointer transition-colors"
                       >
                         Nouvelle demande &rarr;

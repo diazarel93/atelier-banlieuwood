@@ -25,11 +25,7 @@ export function PostprodState({ module13, sessionId, studentId }: PostprodStateP
           <div
             key={p}
             className={`w-3 h-3 rounded-full transition-all ${
-              done
-                ? "bg-cyan-400 scale-110"
-                : isCurrent
-                ? "bg-yellow-400 animate-pulse"
-                : "bg-white/20"
+              done ? "bg-cyan-400 scale-110" : isCurrent ? "bg-yellow-400 animate-pulse" : "bg-white/20"
             }`}
           />
         );
@@ -42,9 +38,7 @@ export function PostprodState({ module13, sessionId, studentId }: PostprodStateP
       {progressDots}
 
       <div className="text-center">
-        <p className="text-sm text-white/50 uppercase tracking-wider">
-          Étape {position}/8
-        </p>
+        <p className="text-sm text-white/50 uppercase tracking-wider">Étape {position}/8</p>
         <h2 className="text-2xl font-bold text-white mt-1">
           {stepEmoji} {stepLabel}
         </h2>
@@ -78,9 +72,7 @@ export function PostprodState({ module13, sessionId, studentId }: PostprodStateP
           {module13.allResults.map((r) => (
             <div key={r.position} className="flex gap-2 text-xs text-white/60">
               <span className="text-cyan-400 font-mono">#{r.position}</span>
-              <span className="truncate">
-                {(r.data as { summary?: string })?.summary || r.type}
-              </span>
+              <span className="truncate">{(r.data as { summary?: string })?.summary || r.type}</span>
             </div>
           ))}
         </div>
@@ -92,11 +84,7 @@ export function PostprodState({ module13, sessionId, studentId }: PostprodStateP
 // ── Submitted state ─────────────────────────────────────
 function SubmittedView({ submittedCount }: { submittedCount: number }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="text-center py-8"
-    >
+    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-8">
       <div className="text-4xl mb-3">✅</div>
       <p className="text-cyan-400 font-semibold">Réponse envoyée !</p>
       <p className="text-sm text-white/50 mt-1">
@@ -158,8 +146,20 @@ function MontageForm({ module13, sessionId, studentId }: PostprodStateProps) {
           <span className="text-cyan-400 font-mono text-sm w-6">{i + 1}.</span>
           <p className="flex-1 text-sm text-white truncate">{sceneMap.get(manche)}</p>
           <div className="flex flex-col gap-0.5">
-            <button onClick={() => moveUp(i)} disabled={i === 0} className="text-white/40 hover:text-white disabled:opacity-20 text-xs">▲</button>
-            <button onClick={() => moveDown(i)} disabled={i === order.length - 1} className="text-white/40 hover:text-white disabled:opacity-20 text-xs">▼</button>
+            <button
+              onClick={() => moveUp(i)}
+              disabled={i === 0}
+              className="text-white/40 hover:text-white disabled:opacity-20 text-xs"
+            >
+              ▲
+            </button>
+            <button
+              onClick={() => moveDown(i)}
+              disabled={i === order.length - 1}
+              className="text-white/40 hover:text-white disabled:opacity-20 text-xs"
+            >
+              ▼
+            </button>
           </div>
         </div>
       ))}
@@ -225,9 +225,7 @@ function MusiqueForm({ sessionId, studentId }: PostprodStateProps) {
               key={m.key}
               onClick={() => setMood(m.key)}
               className={`p-3 rounded-lg text-left text-sm transition-all ${
-                mood === m.key
-                  ? "border-2"
-                  : "bg-white/5 border border-white/10 hover:bg-white/10"
+                mood === m.key ? "border-2" : "bg-white/5 border border-white/10 hover:bg-white/10"
               }`}
               style={mood === m.key ? { backgroundColor: `${m.color}30`, borderColor: m.color } : undefined}
             >
@@ -310,7 +308,11 @@ function AfficheForm({ sessionId, studentId }: PostprodStateProps) {
       await fetch(`/api/sessions/${sessionId}/postprod`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, position: 4, data: { style, description: description.trim(), tagline: tagline.trim() || null } }),
+        body: JSON.stringify({
+          studentId,
+          position: 4,
+          data: { style, description: description.trim(), tagline: tagline.trim() || null },
+        }),
       });
     } finally {
       setSubmitting(false);
@@ -424,7 +426,9 @@ function TrailerForm({ module13, sessionId, studentId }: PostprodStateProps) {
           );
         })}
       </div>
-      <p className="text-xs text-white/40 text-center">{selected.length}/3 sélectionné{selected.length !== 1 ? "s" : ""}</p>
+      <p className="text-xs text-white/40 text-center">
+        {selected.length}/3 sélectionné{selected.length !== 1 ? "s" : ""}
+      </p>
 
       <textarea
         value={voixOff}

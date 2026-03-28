@@ -1,23 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
-import {
-  BUDGET_CATEGORIES,
-  BUDGET_TOTAL,
-  BUDGET_RESERVE_MIN,
-  generateBudgetSummary,
-} from "@/lib/constants";
+import { BUDGET_CATEGORIES, BUDGET_TOTAL, BUDGET_RESERVE_MIN, generateBudgetSummary } from "@/lib/constants";
 import { safeJson, withErrorHandler } from "@/lib/api-utils";
 
 const VALID_KEYS = BUDGET_CATEGORIES.map((c) => c.key);
-const VALID_COSTS = new Map(
-  BUDGET_CATEGORIES.map((c) => [c.key, new Set(c.options.map((o) => o.cost))])
-);
+const VALID_COSTS = new Map(BUDGET_CATEGORIES.map((c) => [c.key, new Set(c.options.map((o) => o.cost))]));
 
 // POST — student submits budget allocation (Module 2)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "budget", { max: 10, windowSec: 60 });
   if (rl) {
@@ -30,10 +23,7 @@ export const POST = withErrorHandler(async function POST(
   const { studentId, choices } = parsed.data;
 
   if (!studentId || !choices || typeof choices !== "object") {
-    return NextResponse.json(
-      { error: "studentId et choices requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "studentId et choices requis" }, { status: 400 });
   }
 
   // Validate keys and costs
@@ -41,23 +31,17 @@ export const POST = withErrorHandler(async function POST(
     if (choices[key] == null) continue;
     const validCosts = VALID_COSTS.get(key);
     if (!validCosts || !validCosts.has(choices[key])) {
-      return NextResponse.json(
-        { error: `Choix invalide pour ${key}` },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: `Choix invalide pour ${key}` }, { status: 400 });
     }
   }
 
   // Validate total + reserve
-  const total = VALID_KEYS.reduce(
-    (sum, k) => sum + (choices[k] || 0),
-    0
-  );
+  const total = VALID_KEYS.reduce((sum, k) => sum + (choices[k] || 0), 0);
   const remaining = BUDGET_TOTAL - total;
   if (remaining < BUDGET_RESERVE_MIN) {
     return NextResponse.json(
       { error: `Réserve minimum de ${BUDGET_RESERVE_MIN} crédits non respectée` },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -72,17 +56,11 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!session || session.current_module !== 9 || (session.current_seance || 1) !== 2) {
-    return NextResponse.json(
-      { error: "Le budget n'est pas disponible pour cette séance" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Le budget n'est pas disponible pour cette séance" }, { status: 400 });
   }
 
   if (session.status !== "responding") {
-    return NextResponse.json(
-      { error: "Les réponses ne sont pas ouvertes" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Les réponses ne sont pas ouvertes" }, { status: 400 });
   }
 
   // Verify student belongs to session
@@ -94,10 +72,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!student) {
-    return NextResponse.json(
-      { error: "Joueur introuvable dans cette partie" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Joueur introuvable dans cette partie" }, { status: 404 });
   }
 
   // Build clean choices object (only valid keys)
@@ -118,7 +93,7 @@ export const POST = withErrorHandler(async function POST(
         credits_remaining: remaining,
         summary,
       },
-      { onConflict: "session_id,student_id" }
+      { onConflict: "session_id,student_id" },
     )
     .select()
     .single();
@@ -134,7 +109,7 @@ export const POST = withErrorHandler(async function POST(
 // GET — all budgets for a session (facilitator) + optional story context
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const wantContext = req.nextUrl.searchParams.get("context") === "true";
@@ -157,9 +132,7 @@ export const GET = withErrorHandler(async function GET(
 
   if (data && data.length > 0) {
     for (const cat of VALID_KEYS) {
-      const values = data.map(
-        (b) => ((b.choices as Record<string, number>)?.[cat] || 0)
-      );
+      const values = data.map((b) => (b.choices as Record<string, number>)?.[cat] || 0);
       averages[cat] = Math.round(values.reduce((a, b) => a + b, 0) / values.length);
     }
   }

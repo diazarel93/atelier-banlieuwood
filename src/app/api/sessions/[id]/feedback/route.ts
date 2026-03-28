@@ -29,7 +29,7 @@ interface ResponseRow {
 // GET — generate educational feedback for a session
 export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const supabase = await createServerSupabase();
@@ -54,10 +54,10 @@ export const GET = withErrorHandler(async function GET(
   }
 
   // Get all responses with situation data
-  const { data: responses } = await supabase
+  const { data: responses } = (await supabase
     .from("responses")
     .select("id, student_id, text, is_hidden, situations(category, position, restitution_label)")
-    .eq("session_id", sessionId) as { data: ResponseRow[] | null };
+    .eq("session_id", sessionId)) as { data: ResponseRow[] | null };
 
   // Get students
   const { data: students } = await supabase
@@ -89,13 +89,13 @@ export const GET = withErrorHandler(async function GET(
     participationByStudent.set(r.student_id, (participationByStudent.get(r.student_id) || 0) + 1);
   }
 
-  const avgResponseLength = visibleResponses.length > 0
-    ? Math.round(visibleResponses.reduce((sum, r) => sum + r.text.length, 0) / visibleResponses.length)
-    : 0;
+  const avgResponseLength =
+    visibleResponses.length > 0
+      ? Math.round(visibleResponses.reduce((sum, r) => sum + r.text.length, 0) / visibleResponses.length)
+      : 0;
 
-  const participationRate = allStudents.length > 0
-    ? Math.round((participationByStudent.size / allStudents.length) * 100)
-    : 0;
+  const participationRate =
+    allStudents.length > 0 ? Math.round((participationByStudent.size / allStudents.length) * 100) : 0;
 
   // ——— COMPETENCY ANALYSIS ———
   const categoryResponseCounts = new Map<string, number>();
@@ -119,10 +119,13 @@ export const GET = withErrorHandler(async function GET(
     // Score: 0-100 based on response count + average length
     let score = 0;
     if (count > 0) {
-      score = Math.min(100, Math.round(
-        (Math.min(count, 10) / 10) * 50 + // 50% from participation
-        (Math.min(avgLen, 200) / 200) * 50   // 50% from depth
-      ));
+      score = Math.min(
+        100,
+        Math.round(
+          (Math.min(count, 10) / 10) * 50 + // 50% from participation
+            (Math.min(avgLen, 200) / 200) * 50, // 50% from depth
+        ),
+      );
     }
 
     let detail = "";
@@ -136,15 +139,24 @@ export const GET = withErrorHandler(async function GET(
   }
 
   // ——— TOP CONTRIBUTORS ———
-  const studentScores: { id: string; name: string; avatar: string; responses: number; avgLength: number; votedFor: number; chosenCount: number }[] = [];
+  const studentScores: {
+    id: string;
+    name: string;
+    avatar: string;
+    responses: number;
+    avgLength: number;
+    votedFor: number;
+    chosenCount: number;
+  }[] = [];
 
   for (const s of allStudents) {
     const sResponses = visibleResponses.filter((r) => r.student_id === s.id);
-    const avgLen = sResponses.length > 0
-      ? Math.round(sResponses.reduce((sum, r) => sum + r.text.length, 0) / sResponses.length)
-      : 0;
+    const avgLen =
+      sResponses.length > 0 ? Math.round(sResponses.reduce((sum, r) => sum + r.text.length, 0) / sResponses.length) : 0;
     const votedFor = allVotes.filter((v) => v.student_id === s.id).length;
-    const chosenCount = allChoices.filter((c) => c.source_response_id && sResponses.some((r) => r.id === c.source_response_id)).length;
+    const chosenCount = allChoices.filter(
+      (c) => c.source_response_id && sResponses.some((r) => r.id === c.source_response_id),
+    ).length;
 
     studentScores.push({
       id: s.id,
@@ -158,15 +170,19 @@ export const GET = withErrorHandler(async function GET(
   }
 
   // Sort by impact (chosen > responses > avgLength)
-  studentScores.sort((a, b) => (b.chosenCount * 100 + b.responses * 10 + b.avgLength) - (a.chosenCount * 100 + a.responses * 10 + a.avgLength));
+  studentScores.sort(
+    (a, b) =>
+      b.chosenCount * 100 + b.responses * 10 + b.avgLength - (a.chosenCount * 100 + a.responses * 10 + a.avgLength),
+  );
 
   // ——— GROUP PROFILE ———
   const topCompetency = [...competencyScores].sort((a, b) => b.score - a.score)[0];
   const weakCompetency = [...competencyScores].sort((a, b) => a.score - b.score)[0];
 
-  const overallScore = competencyScores.length > 0
-    ? Math.round(competencyScores.reduce((sum, c) => sum + c.score, 0) / competencyScores.length)
-    : 0;
+  const overallScore =
+    competencyScores.length > 0
+      ? Math.round(competencyScores.reduce((sum, c) => sum + c.score, 0) / competencyScores.length)
+      : 0;
 
   let groupProfile = "";
   if (overallScore >= 70) groupProfile = "Groupe très créatif avec une belle diversité d'idées";
@@ -189,7 +205,17 @@ export const GET = withErrorHandler(async function GET(
     students: studentScores,
     groupProfile,
     overallScore,
-    strengths: topCompetency ? { label: topCompetency.label, detail: `Point fort du groupe en ${topCompetency.label.toLowerCase()} (${topCompetency.score}%)` } : null,
-    weakness: weakCompetency ? { label: weakCompetency.label, detail: `Axe de progression : ${weakCompetency.label.toLowerCase()} (${weakCompetency.score}%)` } : null,
+    strengths: topCompetency
+      ? {
+          label: topCompetency.label,
+          detail: `Point fort du groupe en ${topCompetency.label.toLowerCase()} (${topCompetency.score}%)`,
+        }
+      : null,
+    weakness: weakCompetency
+      ? {
+          label: weakCompetency.label,
+          detail: `Axe de progression : ${weakCompetency.label.toLowerCase()} (${weakCompetency.score}%)`,
+        }
+      : null,
   });
 });

@@ -15,12 +15,7 @@ interface LevelSelectorProps {
   loading: boolean;
 }
 
-export function LevelSelector({
-  level,
-  onLevelChange,
-  onGenerate,
-  loading,
-}: LevelSelectorProps) {
+export function LevelSelector({ level, onLevelChange, onGenerate, loading }: LevelSelectorProps) {
   return (
     <GlassCardV2 className="p-6 space-y-4">
       <p className="text-sm font-medium text-bw-muted">Niveau</p>

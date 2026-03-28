@@ -3,11 +3,7 @@
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
 import { IconClock } from "./icons";
-import {
-  StatusBadge,
-  STATUS_BG_TINT,
-  type SessionStatus,
-} from "./status-badge";
+import { StatusBadge, STATUS_BG_TINT, type SessionStatus } from "./status-badge";
 
 interface SessionCardV2Props {
   title: string;
@@ -54,12 +50,7 @@ export function SessionCardV2({
   return (
     <GlassCardV2
       hover={!!onClick}
-      className={cn(
-        "relative overflow-hidden cursor-default",
-        onClick && "cursor-pointer",
-        bgTint,
-        className
-      )}
+      className={cn("relative overflow-hidden cursor-default", onClick && "cursor-pointer", bgTint, className)}
       onClick={onClick}
     >
       {/* Left status bar — 4px for visual weight */}
@@ -80,19 +71,13 @@ export function SessionCardV2({
                 {moduleLabel}
               </span>
             )}
-            {classLabel && (
-              <span className="text-body-xs text-bw-muted font-medium">
-                {classLabel}
-              </span>
-            )}
+            {classLabel && <span className="text-body-xs text-bw-muted font-medium">{classLabel}</span>}
           </div>
           <StatusBadge status={status} size="sm" />
         </div>
 
         {/* Title */}
-        <h3 className="text-heading-xs text-bw-heading leading-snug mb-1 line-clamp-1">
-          {title}
-        </h3>
+        <h3 className="text-heading-xs text-bw-heading leading-snug mb-1 line-clamp-1">{title}</h3>
 
         {/* Meta row */}
         <div className="flex items-center gap-3 text-body-xs text-bw-muted">
@@ -123,9 +108,7 @@ export function SessionCardV2({
         )}
 
         {/* Actions slot */}
-        {actions && (
-          <div className="mt-3 flex items-center gap-2">{actions}</div>
-        )}
+        {actions && <div className="mt-3 flex items-center gap-2">{actions}</div>}
       </div>
     </GlassCardV2>
   );

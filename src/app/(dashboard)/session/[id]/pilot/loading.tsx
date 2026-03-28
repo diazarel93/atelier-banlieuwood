@@ -6,5 +6,5 @@ export default function PilotLoading() {
         <p className="text-sm text-bw-muted animate-pulse">Chargement du cockpit…</p>
       </div>
     </div>
-  )
+  );
 }

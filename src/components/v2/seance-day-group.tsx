@@ -34,9 +34,7 @@ export function SeanceDayGroup({
 }: SeanceDayGroupProps) {
   return (
     <div className={cn("flex flex-col gap-2", className)}>
-      <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide px-1">
-        {label}
-      </h3>
+      <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide px-1">{label}</h3>
       <div className="flex flex-col gap-2">
         {sessions.map((s) => (
           <div key={s.id} className="flex items-stretch gap-2">
@@ -55,17 +53,11 @@ export function SeanceDayGroup({
                     "flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors",
                     selectedIds?.has(s.id)
                       ? "border-bw-primary bg-bw-primary text-white"
-                      : "border-[var(--color-bw-border)] bg-card hover:border-bw-primary/50"
+                      : "border-[var(--color-bw-border)] bg-card hover:border-bw-primary/50",
                   )}
                 >
                   {selectedIds?.has(s.id) && (
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                      aria-hidden="true"
-                    >
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                       <path
                         d="M2.5 6l2.5 2.5 5-5"
                         stroke="currentColor"

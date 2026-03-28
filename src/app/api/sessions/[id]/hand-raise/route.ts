@@ -7,7 +7,7 @@ import { verifyStudentToken } from "@/lib/student-token";
 // POST — student raises or lowers their hand
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
 

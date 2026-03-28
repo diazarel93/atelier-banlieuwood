@@ -75,9 +75,7 @@ const CINEMA_REFS = [
 export function CinemaReferencesCard() {
   return (
     <GlassCardV2 className="p-5">
-      <p className="text-sm font-semibold text-bw-heading uppercase tracking-wide mb-4">
-        Références cinéma
-      </p>
+      <p className="text-sm font-semibold text-bw-heading uppercase tracking-wide mb-4">Références cinéma</p>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {CINEMA_REFS.map((film) => (
@@ -100,12 +98,8 @@ export function CinemaReferencesCard() {
             </div>
 
             <div className="p-2.5 bg-card">
-              <p className="font-semibold text-xs text-bw-heading leading-tight">
-                {film.title}
-              </p>
-              <p className="text-[10px] text-bw-muted mt-0.5">
-                {film.director}
-              </p>
+              <p className="font-semibold text-xs text-bw-heading leading-tight">{film.title}</p>
+              <p className="text-[10px] text-bw-muted mt-0.5">{film.director}</p>
               <p
                 className="text-[10px] font-medium mt-1.5 px-2 py-0.5 rounded-full inline-block border"
                 style={{

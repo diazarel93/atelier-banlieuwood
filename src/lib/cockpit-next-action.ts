@@ -18,7 +18,7 @@ export function getNextAction(
   canGoNext?: boolean,
   currentSeance?: number,
   currentSituationIndex?: number,
-  revealPhase?: number | null
+  revealPhase?: number | null,
 ): NextAction | null {
   // Reveal mode: progressive phase stepping
   if (status === "reviewing" && revealPhase != null) {
@@ -111,8 +111,19 @@ export function getNextAction(
       return { label: "Ouvrir les réponses", action: "responding", color: "#4ECDC4", shortcut: "N" };
     case "responding":
       if (visibleCount === 0) return null;
-      if (voteOptionCount < 2) return { label: `Sélectionner pour le vote (${voteOptionCount}/2 min)`, action: "", color: "#888", disabled: true };
-      return { label: `Lancer le vote (${voteOptionCount} options)`, action: "voting", color: "#FF6B35", shortcut: "N" };
+      if (voteOptionCount < 2)
+        return {
+          label: `Sélectionner pour le vote (${voteOptionCount}/2 min)`,
+          action: "",
+          color: "#888",
+          disabled: true,
+        };
+      return {
+        label: `Lancer le vote (${voteOptionCount} options)`,
+        action: "voting",
+        color: "#FF6B35",
+        shortcut: "N",
+      };
     case "voting":
       if (!hasVoteResults) return null;
       return { label: "Voir les résultats", action: "reviewing", color: "#8B5CF6", shortcut: "N" };

@@ -41,7 +41,7 @@ export function useSwipe({ onSwipe, threshold = 50 }: UseSwipeOptions) {
 
       startRef.current = null;
     },
-    [onSwipe, threshold]
+    [onSwipe, threshold],
   );
 
   return { onTouchStart, onTouchEnd };

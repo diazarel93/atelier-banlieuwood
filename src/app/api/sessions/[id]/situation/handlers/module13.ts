@@ -9,7 +9,7 @@ export async function handleModule13(
   req: NextRequest,
   session: Record<string, unknown>,
   sessionId: string,
-  admin: AdminClient
+  admin: AdminClient,
 ) {
   const currentIndex = (session.current_situation_index as number) || 0;
   const position = currentIndex + 1; // 1-8
@@ -61,7 +61,7 @@ export async function handleModule13(
     lycee: "prompt_14_18",
   };
   const field = levelMap[session.level as string] || "prompt_10_13";
-  const prompt = situation?.[field as keyof typeof situation] as string || "";
+  const prompt = (situation?.[field as keyof typeof situation] as string) || "";
 
   // Get all validated results so far (for progress display)
   const { data: allResultsData } = await admin
@@ -70,11 +70,13 @@ export async function handleModule13(
     .eq("session_id", sessionId)
     .order("position");
 
-  const allResults = (allResultsData || []).map((r: { position: number; result_type: string; result_data: unknown }) => ({
-    position: r.position,
-    type: r.result_type,
-    data: r.result_data,
-  }));
+  const allResults = (allResultsData || []).map(
+    (r: { position: number; result_type: string; result_data: unknown }) => ({
+      position: r.position,
+      type: r.result_type,
+      data: r.result_data,
+    }),
+  );
 
   // Build position-specific module13 data
   const stepConfig = POSTPROD_STEPS[position - 1];
@@ -154,10 +156,7 @@ export async function handleModule13(
       positionData.studentTitre = titre?.titre || null;
     }
     if (!studentId) {
-      const { data: all } = await admin
-        .from("module13_titres")
-        .select("titre, student_id")
-        .eq("session_id", sessionId);
+      const { data: all } = await admin.from("module13_titres").select("titre, student_id").eq("session_id", sessionId);
       positionData.allTitres = all || [];
     }
     const { count } = await admin

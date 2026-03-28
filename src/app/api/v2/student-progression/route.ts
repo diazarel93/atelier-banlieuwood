@@ -21,10 +21,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   const studentId = url.searchParams.get("studentId");
 
   if (!studentId || !isValidUUID(studentId)) {
-    return NextResponse.json(
-      { error: "studentId requis (UUID)" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "studentId requis (UUID)" }, { status: 400 });
   }
 
   // Find all student records for this profile (or direct student id)
@@ -34,10 +31,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     .or(`profile_id.eq.${studentId},id.eq.${studentId}`);
 
   if (!students || students.length === 0) {
-    return NextResponse.json(
-      { error: "Élève introuvable" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Élève introuvable" }, { status: 404 });
   }
 
   const displayName = students[0].display_name;

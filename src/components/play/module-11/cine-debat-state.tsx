@@ -43,9 +43,7 @@ function CitationStimulus({ module11 }: { module11: Module11Data }) {
         <span className="absolute top-2 left-3 text-3xl opacity-20" style={{ color: THEME_COLORS[module11.theme] }}>
           &ldquo;
         </span>
-        <p className="text-base sm:text-lg font-medium text-bw-heading italic pl-4 pr-2">
-          {module11.text}
-        </p>
+        <p className="text-base sm:text-lg font-medium text-bw-heading italic pl-4 pr-2">{module11.text}</p>
       </motion.blockquote>
 
       {/* Author card */}
@@ -68,12 +66,8 @@ function CitationStimulus({ module11 }: { module11: Module11Data }) {
           )}
           <div className="flex-1 min-w-0">
             <p className="font-bold text-bw-heading text-sm">{module11.author}</p>
-            {module11.authorRole && (
-              <p className="text-xs text-bw-muted">{module11.authorRole}</p>
-            )}
-            {module11.authorBio && (
-              <p className="text-xs text-bw-text mt-0.5 line-clamp-2">{module11.authorBio}</p>
-            )}
+            {module11.authorRole && <p className="text-xs text-bw-muted">{module11.authorRole}</p>}
+            {module11.authorBio && <p className="text-xs text-bw-text mt-0.5 line-clamp-2">{module11.authorBio}</p>}
           </div>
         </motion.div>
       )}
@@ -249,7 +243,10 @@ function DebatInput({
                 }`}
                 style={
                   justification.trim() && !submitting
-                    ? { background: "linear-gradient(135deg, #FF6B35, #D4A843)", boxShadow: "0 4px 15px rgba(255,107,53,0.3)" }
+                    ? {
+                        background: "linear-gradient(135deg, #FF6B35, #D4A843)",
+                        boxShadow: "0 4px 15px rgba(255,107,53,0.3)",
+                      }
                     : undefined
                 }
               >
@@ -264,13 +261,7 @@ function DebatInput({
 }
 
 // ── Open text input (for citation, scene, poster) ──
-function OpenInput({
-  onSubmit,
-  submitting,
-}: {
-  onSubmit: (text: string) => void;
-  submitting: boolean;
-}) {
+function OpenInput({ onSubmit, submitting }: { onSubmit: (text: string) => void; submitting: boolean }) {
   const [text, setText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -302,15 +293,19 @@ function OpenInput({
         />
       </div>
       <div className="flex justify-between items-center">
-        <span className={`text-xs transition-colors ${
-          text.length >= 480 ? "text-bw-danger" : text.length >= 400 ? "text-bw-amber" : "text-bw-muted"
-        }`}>
+        <span
+          className={`text-xs transition-colors ${
+            text.length >= 480 ? "text-bw-danger" : text.length >= 400 ? "text-bw-amber" : "text-bw-muted"
+          }`}
+        >
           {text.length}/500
         </span>
         <motion.button
           whileTap={{ scale: 0.95 }}
           whileHover={text.trim() && !submitting ? { scale: 1.03 } : undefined}
-          onClick={() => { if (text.trim() && !submitting) onSubmit(text.trim()); }}
+          onClick={() => {
+            if (text.trim() && !submitting) onSubmit(text.trim());
+          }}
           disabled={!text.trim() || submitting}
           className={`btn-glow px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl font-bold transition-all ${
             text.trim() && !submitting
@@ -319,7 +314,10 @@ function OpenInput({
           }`}
           style={
             text.trim() && !submitting
-              ? { background: "linear-gradient(135deg, #FF6B35, #D4A843)", boxShadow: "0 4px 15px rgba(255,107,53,0.3)" }
+              ? {
+                  background: "linear-gradient(135deg, #FF6B35, #D4A843)",
+                  boxShadow: "0 4px 15px rgba(255,107,53,0.3)",
+                }
               : undefined
           }
         >
@@ -331,13 +329,7 @@ function OpenInput({
 }
 
 // ── Main component ──
-export function CineDebatState({
-  module11,
-  prompt,
-  nudgeText,
-  onSubmit,
-  submitting,
-}: CineDebatStateProps) {
+export function CineDebatState({ module11, prompt, nudgeText, onSubmit, submitting }: CineDebatStateProps) {
   const { displayed, done, skip } = useTypewriter(prompt);
   const themeColor = THEME_COLORS[module11.theme] || "#FF6B35";
 
@@ -354,7 +346,13 @@ export function CineDebatState({
           className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
           style={{ backgroundColor: `${themeColor}15`, color: themeColor }}
         >
-          {module11.type === "citation" ? "💬 Citation" : module11.type === "scene" ? "🎬 Scène" : module11.type === "poster" ? "🖼️ Affiche" : "⚖️ Débat"}
+          {module11.type === "citation"
+            ? "💬 Citation"
+            : module11.type === "scene"
+              ? "🎬 Scène"
+              : module11.type === "poster"
+                ? "🖼️ Affiche"
+                : "⚖️ Débat"}
         </span>
         <span className="text-xs text-bw-muted">{THEME_LABELS[module11.theme] || ""}</span>
       </div>
@@ -372,7 +370,12 @@ export function CineDebatState({
         className="rounded-xl p-3 sm:p-4 min-h-[60px] text-base sm:text-lg leading-relaxed cursor-pointer border border-white/[0.06]"
         style={{ background: `linear-gradient(135deg, ${themeColor}08, rgba(26,26,26,0.8))` }}
         onClick={() => !done && skip()}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); !done && skip(); } }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            !done && skip();
+          }
+        }}
       >
         <p>{displayed}</p>
         {!done && (
@@ -403,8 +406,18 @@ export function CineDebatState({
           transition={{ delay: 1 }}
           className="glass-card border-bw-teal/20 px-4 py-3 flex items-start gap-2"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" strokeWidth="2" strokeLinecap="round" className="mt-0.5 flex-shrink-0">
-            <circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" />
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#4ECDC4"
+            strokeWidth="2"
+            strokeLinecap="round"
+            className="mt-0.5 flex-shrink-0"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 16v-4M12 8h.01" />
           </svg>
           <p className="text-sm text-bw-teal italic">{nudgeText}</p>
         </motion.div>

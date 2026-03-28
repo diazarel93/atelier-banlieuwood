@@ -72,9 +72,7 @@ export function SpotlightView({ responses, moduleColor = "#FF6B35" }: SpotlightV
         </span>
 
         {/* Response text */}
-        <p className="text-2xl sm:text-3xl text-white/90 leading-relaxed font-medium pl-8 pr-4">
-          {response.text}
-        </p>
+        <p className="text-2xl sm:text-3xl text-white/90 leading-relaxed font-medium pl-8 pr-4">{response.text}</p>
 
         {/* Student name */}
         {response.students?.display_name && (
@@ -85,12 +83,8 @@ export function SpotlightView({ responses, moduleColor = "#FF6B35" }: SpotlightV
             className="flex items-center gap-3 mt-6 pt-4"
             style={{ borderTop: `1px solid ${moduleColor}15` }}
           >
-            {response.students.avatar && (
-              <span className="text-2xl">{response.students.avatar}</span>
-            )}
-            <span className="text-lg text-white/50 font-medium">
-              — {response.students.display_name}
-            </span>
+            {response.students.avatar && <span className="text-2xl">{response.students.avatar}</span>}
+            <span className="text-lg text-white/50 font-medium">— {response.students.display_name}</span>
           </motion.div>
         )}
       </motion.div>

@@ -119,11 +119,7 @@ function ensureKeyframes() {
   document.head.appendChild(style);
 }
 
-export function CelebrationOverlay({
-  level,
-  trigger,
-  onComplete,
-}: CelebrationOverlayProps) {
+export function CelebrationOverlay({ level, trigger, onComplete }: CelebrationOverlayProps) {
   const reducedMotion = useReducedMotion();
   const [showSpotlight, setShowSpotlight] = useState(false);
   const prevTriggerRef = useRef(false);

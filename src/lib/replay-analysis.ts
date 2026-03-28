@@ -129,9 +129,8 @@ export function detectKeyMoments(events: ReplayEvent[], _studentMap: Record<stri
       offsetMs: highlights[0].offsetMs,
       type: "action_prof",
       label: "Mise en avant",
-      detail: highlights.length > 1
-        ? `${highlights.length} réponses mises en avant`
-        : "Le prof met en avant une réponse",
+      detail:
+        highlights.length > 1 ? `${highlights.length} réponses mises en avant` : "Le prof met en avant une réponse",
       color: "#EC4899",
       icon: "⭐",
       severity: SEVERITY.action_prof + highlights.length * 5,

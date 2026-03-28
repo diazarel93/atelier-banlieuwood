@@ -3,13 +3,7 @@
 import { useEffect } from "react";
 import * as Sentry from "@sentry/nextjs";
 
-export default function V2Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function V2Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     Sentry.captureException(error, { tags: { page: "v2", device: "unknown" } });
     console.error("[V2Error]", error.message, error.stack);
@@ -31,9 +25,7 @@ export default function V2Error({
     >
       <div style={{ textAlign: "center", maxWidth: "440px" }}>
         <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⚠️</div>
-        <h2 style={{ fontSize: "1.25rem", fontWeight: "bold", marginBottom: "0.5rem" }}>
-          Erreur du tableau de bord
-        </h2>
+        <h2 style={{ fontSize: "1.25rem", fontWeight: "bold", marginBottom: "0.5rem" }}>Erreur du tableau de bord</h2>
         <p style={{ color: "#6B7280", marginBottom: "1rem", fontSize: "0.875rem" }}>
           Le tableau de bord a rencontre un probleme.
         </p>
@@ -52,9 +44,7 @@ export default function V2Error({
             {error.message}
           </p>
           {error.digest && (
-            <p style={{ fontSize: "0.65rem", color: "#9CA3AF", marginTop: "0.25rem" }}>
-              Ref: {error.digest}
-            </p>
+            <p style={{ fontSize: "0.65rem", color: "#9CA3AF", marginTop: "0.25rem" }}>Ref: {error.digest}</p>
           )}
         </div>
         <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center" }}>

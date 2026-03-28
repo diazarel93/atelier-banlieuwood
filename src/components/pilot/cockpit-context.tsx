@@ -22,7 +22,13 @@ export interface CockpitDataValue {
   voteData: { totalVotes: number; results: VoteResult[] } | undefined;
   collectiveChoices: CollectiveChoice[];
   situationData: Record<string, unknown> | null;
-  teams: { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[];
+  teams: {
+    id: string;
+    team_name: string;
+    team_color: string;
+    team_number: number;
+    students: { id: string; display_name: string; avatar: string }[];
+  }[];
   studentWarnings: Record<string, number>;
 }
 
@@ -59,59 +65,63 @@ export type CockpitContextValue = CockpitDataValue & CockpitActionsValue;
 const CockpitDataContext = createContext<CockpitDataValue | null>(null);
 const CockpitActionsContext = createContext<CockpitActionsValue | null>(null);
 
-export function CockpitProvider({
-  value,
-  children,
-}: {
-  value: CockpitContextValue;
-  children: ReactNode;
-}) {
+export function CockpitProvider({ value, children }: { value: CockpitContextValue; children: ReactNode }) {
   // Split into stable actions ref — mutations from useMutation keep stable identity,
   // so this object only changes when the provider re-renders (not on data changes).
-  const actions = useMemo<CockpitActionsValue>(() => ({
-    updateSession: value.updateSession,
-    toggleHide: value.toggleHide,
-    toggleVoteOption: value.toggleVoteOption,
-    validateChoice: value.validateChoice,
-    removeStudent: value.removeStudent,
-    commentResponse: value.commentResponse,
-    highlightResponse: value.highlightResponse,
-    nudgeStudent: value.nudgeStudent,
-    warnStudent: value.warnStudent,
-    toggleStudentActive: value.toggleStudentActive,
-    lowerHand: value.lowerHand,
-    scoreResponse: value.scoreResponse,
-    aiEvaluate: value.aiEvaluate,
-    resetResponse: value.resetResponse,
-    resetAllResponses: value.resetAllResponses,
-    onModuleComplete: value.onModuleComplete,
-    onSelectStudent: value.onSelectStudent,
-    onOpenModules: value.onOpenModules,
-    onOpenScreen: value.onOpenScreen,
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), []);
+  const actions = useMemo<CockpitActionsValue>(
+    () => ({
+      updateSession: value.updateSession,
+      toggleHide: value.toggleHide,
+      toggleVoteOption: value.toggleVoteOption,
+      validateChoice: value.validateChoice,
+      removeStudent: value.removeStudent,
+      commentResponse: value.commentResponse,
+      highlightResponse: value.highlightResponse,
+      nudgeStudent: value.nudgeStudent,
+      warnStudent: value.warnStudent,
+      toggleStudentActive: value.toggleStudentActive,
+      lowerHand: value.lowerHand,
+      scoreResponse: value.scoreResponse,
+      aiEvaluate: value.aiEvaluate,
+      resetResponse: value.resetResponse,
+      resetAllResponses: value.resetAllResponses,
+      onModuleComplete: value.onModuleComplete,
+      onSelectStudent: value.onSelectStudent,
+      onOpenModules: value.onOpenModules,
+      onOpenScreen: value.onOpenScreen,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }),
+    [],
+  );
 
-  const data = useMemo<CockpitDataValue>(() => ({
-    session: value.session,
-    sessionId: value.sessionId,
-    responses: value.responses,
-    activeStudents: value.activeStudents,
-    voteData: value.voteData,
-    collectiveChoices: value.collectiveChoices,
-    situationData: value.situationData,
-    teams: value.teams,
-    studentWarnings: value.studentWarnings,
-  }), [
-    value.session, value.sessionId, value.responses, value.activeStudents,
-    value.voteData, value.collectiveChoices, value.situationData,
-    value.teams, value.studentWarnings,
-  ]);
+  const data = useMemo<CockpitDataValue>(
+    () => ({
+      session: value.session,
+      sessionId: value.sessionId,
+      responses: value.responses,
+      activeStudents: value.activeStudents,
+      voteData: value.voteData,
+      collectiveChoices: value.collectiveChoices,
+      situationData: value.situationData,
+      teams: value.teams,
+      studentWarnings: value.studentWarnings,
+    }),
+    [
+      value.session,
+      value.sessionId,
+      value.responses,
+      value.activeStudents,
+      value.voteData,
+      value.collectiveChoices,
+      value.situationData,
+      value.teams,
+      value.studentWarnings,
+    ],
+  );
 
   return (
     <CockpitActionsContext.Provider value={actions}>
-      <CockpitDataContext.Provider value={data}>
-        {children}
-      </CockpitDataContext.Provider>
+      <CockpitDataContext.Provider value={data}>{children}</CockpitDataContext.Provider>
     </CockpitActionsContext.Provider>
   );
 }

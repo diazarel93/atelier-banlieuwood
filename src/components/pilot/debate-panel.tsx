@@ -28,7 +28,11 @@ const CAMP_COLORS = [
 ];
 
 function normalizeText(t: string): string {
-  return t.toLowerCase().replace(/[^a-zà-ÿ0-9]/g, " ").replace(/\s+/g, " ").trim();
+  return t
+    .toLowerCase()
+    .replace(/[^a-zà-ÿ0-9]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 /**
@@ -49,8 +53,7 @@ function groupIntoCamps(responses: DebateResponse[]): { key: string; label: stri
   }
 
   // Sort by group size descending, take top groups
-  const sorted = [...groups.entries()]
-    .sort((a, b) => b[1].length - a[1].length);
+  const sorted = [...groups.entries()].sort((a, b) => b[1].length - a[1].length);
 
   return sorted.map(([key, resps], i) => ({
     key,
@@ -65,7 +68,7 @@ export function DebatePanel({ open, onClose, responses, onBroadcast, onSpotlight
   const camps = useMemo(() => groupIntoCamps(responses), [responses]);
 
   const toggleCamp = (campIdx: number, slot: 0 | 1) => {
-    setSelectedCamps(prev => {
+    setSelectedCamps((prev) => {
       const next = [...prev] as [number, number];
       next[slot] = campIdx;
       return next;
@@ -84,7 +87,9 @@ export function DebatePanel({ open, onClose, responses, onBroadcast, onSpotlight
       {open && (
         <>
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
@@ -99,9 +104,13 @@ export function DebatePanel({ open, onClose, responses, onBroadcast, onSpotlight
               <div className="flex items-center gap-2">
                 <span className="text-lg">🎭</span>
                 <h3 className="text-sm font-semibold">Mode Debat</h3>
-                <span className="text-xs text-bw-muted">{camps.length} positions, {responses.length} reponses</span>
+                <span className="text-xs text-bw-muted">
+                  {camps.length} positions, {responses.length} reponses
+                </span>
               </div>
-              <button onClick={onClose} className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">✕</button>
+              <button onClick={onClose} className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">
+                ✕
+              </button>
             </div>
 
             {/* Not enough distinct positions */}
@@ -117,7 +126,10 @@ export function DebatePanel({ open, onClose, responses, onBroadcast, onSpotlight
                       : "Il faut au moins 2 reponses visibles pour lancer un debat."}
                 </p>
                 <button
-                  onClick={() => { onBroadcast("Pour ce debat : quels arguments pour et contre ?"); onClose(); }}
+                  onClick={() => {
+                    onBroadcast("Pour ce debat : quels arguments pour et contre ?");
+                    onClose();
+                  }}
                   className="mt-2 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110 active:scale-95 border border-black/[0.06] text-bw-text hover:bg-black/[0.03]"
                 >
                   📢 Envoyer un message a la place
@@ -151,71 +163,85 @@ export function DebatePanel({ open, onClose, responses, onBroadcast, onSpotlight
 
             {/* Split view */}
             {!notEnoughCamps && (
-            <div className="flex-1 overflow-y-auto px-5 py-4">
-              <div className="grid grid-cols-2 gap-4 h-full">
-                {[campA, campB].map((camp, idx) => {
-                  if (!camp) return null;
-                  const color = CAMP_COLORS[idx];
-                  return (
-                    <div key={camp.key} className="flex flex-col">
-                      {/* Camp header */}
-                      <div className="flex items-center gap-2 mb-3 pb-2 border-b" style={{ borderColor: color.border + "40" }}>
-                        <div className="w-3 h-3 rounded-full" style={{ background: color.border }} />
-                        <span className="text-sm font-bold" style={{ color: color.text }}>{color.label}</span>
-                        <span className="text-xs text-bw-muted ml-auto">{camp.responses.length} eleve{camp.responses.length > 1 ? "s" : ""}</span>
-                      </div>
+              <div className="flex-1 overflow-y-auto px-5 py-4">
+                <div className="grid grid-cols-2 gap-4 h-full">
+                  {[campA, campB].map((camp, idx) => {
+                    if (!camp) return null;
+                    const color = CAMP_COLORS[idx];
+                    return (
+                      <div key={camp.key} className="flex flex-col">
+                        {/* Camp header */}
+                        <div
+                          className="flex items-center gap-2 mb-3 pb-2 border-b"
+                          style={{ borderColor: color.border + "40" }}
+                        >
+                          <div className="w-3 h-3 rounded-full" style={{ background: color.border }} />
+                          <span className="text-sm font-bold" style={{ color: color.text }}>
+                            {color.label}
+                          </span>
+                          <span className="text-xs text-bw-muted ml-auto">
+                            {camp.responses.length} eleve{camp.responses.length > 1 ? "s" : ""}
+                          </span>
+                        </div>
 
-                      {/* Representative text */}
-                      <div className="rounded-xl p-3 mb-3 text-sm leading-relaxed" style={{ background: color.bg, border: `1px solid ${color.border}30`, color: color.text }}>
-                        &ldquo;{camp.label}&rdquo;
-                      </div>
+                        {/* Representative text */}
+                        <div
+                          className="rounded-xl p-3 mb-3 text-sm leading-relaxed"
+                          style={{ background: color.bg, border: `1px solid ${color.border}30`, color: color.text }}
+                        >
+                          &ldquo;{camp.label}&rdquo;
+                        </div>
 
-                      {/* Students */}
-                      <div className="space-y-1.5 overflow-y-auto max-h-[300px]">
-                        {camp.responses.map(r => (
-                          <div
-                            key={r.id}
-                            className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-black/[0.04] hover:border-black/[0.08] transition-colors group"
-                          >
-                            <span className="text-sm">{r.studentAvatar}</span>
-                            <span className="text-xs text-bw-text flex-1 truncate">{r.studentName}</span>
-                            {r.is_highlighted && <span className="text-[10px]" title="Mis en avant">⭐</span>}
-                            {onSpotlight && (
-                              <button
-                                onClick={() => onSpotlight(r)}
-                                className="text-[10px] text-bw-muted hover:text-[#F5A45B] cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
-                                title="Projeter"
-                              >
-                                🔦
-                              </button>
-                            )}
-                          </div>
-                        ))}
+                        {/* Students */}
+                        <div className="space-y-1.5 overflow-y-auto max-h-[300px]">
+                          {camp.responses.map((r) => (
+                            <div
+                              key={r.id}
+                              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-black/[0.04] hover:border-black/[0.08] transition-colors group"
+                            >
+                              <span className="text-sm">{r.studentAvatar}</span>
+                              <span className="text-xs text-bw-text flex-1 truncate">{r.studentName}</span>
+                              {r.is_highlighted && (
+                                <span className="text-[10px]" title="Mis en avant">
+                                  ⭐
+                                </span>
+                              )}
+                              {onSpotlight && (
+                                <button
+                                  onClick={() => onSpotlight(r)}
+                                  className="text-[10px] text-bw-muted hover:text-[#F5A45B] cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                                  title="Projeter"
+                                >
+                                  🔦
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
             )}
 
             {/* Actions footer */}
             {!notEnoughCamps && (
-            <div className="px-5 py-3 border-t border-black/[0.04] flex items-center justify-between flex-shrink-0">
-              <span className="text-xs text-bw-muted">{totalInDebate} eleves dans le debat</span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    const msg = `Debat ! ${CAMP_COLORS[0].label} : "${campA?.label}" vs ${CAMP_COLORS[1].label} : "${campB?.label}" — Defendez votre position !`;
-                    onBroadcast(msg);
-                  }}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110 active:scale-95"
-                  style={{ backgroundColor: "#F5A45B", color: "white" }}
-                >
-                  📢 Lancer le debat
-                </button>
+              <div className="px-5 py-3 border-t border-black/[0.04] flex items-center justify-between flex-shrink-0">
+                <span className="text-xs text-bw-muted">{totalInDebate} eleves dans le debat</span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      const msg = `Debat ! ${CAMP_COLORS[0].label} : "${campA?.label}" vs ${CAMP_COLORS[1].label} : "${campB?.label}" — Defendez votre position !`;
+                      onBroadcast(msg);
+                    }}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110 active:scale-95"
+                    style={{ backgroundColor: "#F5A45B", color: "white" }}
+                  >
+                    📢 Lancer le debat
+                  </button>
+                </div>
               </div>
-            </div>
             )}
           </motion.div>
         </>

@@ -3,12 +3,11 @@ import { createServerSupabase } from "@/lib/supabase/server";
 import { withErrorHandler } from "@/lib/api-utils";
 
 // GET — find similar sessions and return comparison data
-export const GET = withErrorHandler(async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export const GET = withErrorHandler(async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }

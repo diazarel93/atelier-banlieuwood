@@ -37,9 +37,7 @@ export function ExerciseFilters({
     <GlassCardV2 className={cn("p-4 flex flex-col gap-5", className)}>
       {/* Phase filter */}
       <div>
-        <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-2">
-          Phase
-        </h3>
+        <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-2">Phase</h3>
         <div className="flex flex-col gap-1">
           <button
             type="button"
@@ -48,7 +46,7 @@ export function ExerciseFilters({
               "text-left rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
               !selectedPhase
                 ? "bg-[var(--color-bw-surface-dim)] text-bw-heading"
-                : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
             )}
           >
             Toutes
@@ -62,7 +60,7 @@ export function ExerciseFilters({
                 "flex items-center gap-2 text-left rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
                 selectedPhase === phase.id
                   ? "bg-[var(--color-bw-surface-dim)] text-bw-heading"
-                  : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                  : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
               )}
             >
               {phase.emoji && <span className="text-sm">{phase.emoji}</span>}
@@ -74,9 +72,7 @@ export function ExerciseFilters({
 
       {/* Duration filter */}
       <div>
-        <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-2">
-          Durée
-        </h3>
+        <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-2">Durée</h3>
         <div className="flex flex-col gap-1">
           <button
             type="button"
@@ -85,7 +81,7 @@ export function ExerciseFilters({
               "text-left rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
               !selectedDuration
                 ? "bg-[var(--color-bw-surface-dim)] text-bw-heading"
-                : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
             )}
           >
             Toutes
@@ -94,14 +90,12 @@ export function ExerciseFilters({
             <button
               key={d.id}
               type="button"
-              onClick={() =>
-                onDurationChange(d.id === selectedDuration ? null : d.id)
-              }
+              onClick={() => onDurationChange(d.id === selectedDuration ? null : d.id)}
               className={cn(
                 "text-left rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
                 selectedDuration === d.id
                   ? "bg-[var(--color-bw-surface-dim)] text-bw-heading"
-                  : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]"
+                  : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
               )}
             >
               {d.label}

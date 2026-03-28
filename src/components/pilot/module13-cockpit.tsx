@@ -19,7 +19,15 @@ export function Module13Cockpit({ sessionId, module13, connectedCount }: Module1
 
   // Validate result mutation
   const validateResult = useMutation({
-    mutationFn: async ({ position, resultType, resultData }: { position: number; resultType: string; resultData: unknown }) => {
+    mutationFn: async ({
+      position,
+      resultType,
+      resultData,
+    }: {
+      position: number;
+      resultType: string;
+      resultData: unknown;
+    }) => {
       const res = await fetch(`/api/sessions/${sessionId}/postprod`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -73,27 +81,52 @@ export function Module13Cockpit({ sessionId, module13, connectedCount }: Module1
 
       {/* Submission counter */}
       <div className="flex items-center gap-4 text-sm text-white/60">
-        <span>Réponses : {module13.submittedCount}/{connectedCount}</span>
-        {hasResult && (
-          <span className="text-cyan-400 font-semibold">Validé</span>
-        )}
+        <span>
+          Réponses : {module13.submittedCount}/{connectedCount}
+        </span>
+        {hasResult && <span className="text-cyan-400 font-semibold">Validé</span>}
       </div>
 
       {/* Position-specific content */}
       {module13.position === 1 && (
-        <MontageView module13={module13} onValidate={(data) => validateResult.mutate({ position: 1, resultType: "montage", resultData: data })} hasResult={hasResult} isPending={validateResult.isPending} />
+        <MontageView
+          module13={module13}
+          onValidate={(data) => validateResult.mutate({ position: 1, resultType: "montage", resultData: data })}
+          hasResult={hasResult}
+          isPending={validateResult.isPending}
+        />
       )}
       {module13.position === 2 && (
-        <MusiqueView module13={module13} onValidate={(data) => validateResult.mutate({ position: 2, resultType: "musique", resultData: data })} hasResult={hasResult} isPending={validateResult.isPending} />
+        <MusiqueView
+          module13={module13}
+          onValidate={(data) => validateResult.mutate({ position: 2, resultType: "musique", resultData: data })}
+          hasResult={hasResult}
+          isPending={validateResult.isPending}
+        />
       )}
       {module13.position === 3 && (
-        <TitreView module13={module13} onValidate={(data) => validateResult.mutate({ position: 3, resultType: "titre", resultData: data })} hasResult={hasResult} isPending={validateResult.isPending} />
+        <TitreView
+          module13={module13}
+          onValidate={(data) => validateResult.mutate({ position: 3, resultType: "titre", resultData: data })}
+          hasResult={hasResult}
+          isPending={validateResult.isPending}
+        />
       )}
       {module13.position === 4 && (
-        <AfficheView module13={module13} onValidate={(data) => validateResult.mutate({ position: 4, resultType: "affiche", resultData: data })} hasResult={hasResult} isPending={validateResult.isPending} />
+        <AfficheView
+          module13={module13}
+          onValidate={(data) => validateResult.mutate({ position: 4, resultType: "affiche", resultData: data })}
+          hasResult={hasResult}
+          isPending={validateResult.isPending}
+        />
       )}
       {module13.position === 5 && (
-        <TrailerView module13={module13} onValidate={(data) => validateResult.mutate({ position: 5, resultType: "trailer", resultData: data })} hasResult={hasResult} isPending={validateResult.isPending} />
+        <TrailerView
+          module13={module13}
+          onValidate={(data) => validateResult.mutate({ position: 5, resultType: "trailer", resultData: data })}
+          hasResult={hasResult}
+          isPending={validateResult.isPending}
+        />
       )}
       {module13.position >= 6 && (
         <div className="text-center text-white/50 py-4">
@@ -116,9 +149,7 @@ export function Module13Cockpit({ sessionId, module13, connectedCount }: Module1
                   <span className="text-cyan-400 font-semibold w-36 flex-shrink-0">
                     {step?.emoji} {step?.label || `Étape ${r.position}`}
                   </span>
-                  <span className="text-white/70 truncate">
-                    {(r.data as { summary?: string })?.summary || r.type}
-                  </span>
+                  <span className="text-white/70 truncate">{(r.data as { summary?: string })?.summary || r.type}</span>
                 </div>
               );
             })}
@@ -130,7 +161,12 @@ export function Module13Cockpit({ sessionId, module13, connectedCount }: Module1
 }
 
 // ── Position 1: Montage view ────────────────────────────
-function MontageView({ module13, onValidate, hasResult, isPending }: {
+function MontageView({
+  module13,
+  onValidate,
+  hasResult,
+  isPending,
+}: {
   module13: Module13Data;
   onValidate: (data: unknown) => void;
   hasResult: boolean;
@@ -143,7 +179,10 @@ function MontageView({ module13, onValidate, hasResult, isPending }: {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-white/60">{module13.submittedCount} proposition{module13.submittedCount > 1 ? "s" : ""} d&apos;ordre reçue{module13.submittedCount > 1 ? "s" : ""}</p>
+      <p className="text-sm text-white/60">
+        {module13.submittedCount} proposition{module13.submittedCount > 1 ? "s" : ""} d&apos;ordre reçue
+        {module13.submittedCount > 1 ? "s" : ""}
+      </p>
       {!hasResult && (
         <button
           onClick={() => onValidate({ summary: `${module13.submittedCount} ordres proposés` })}
@@ -158,7 +197,12 @@ function MontageView({ module13, onValidate, hasResult, isPending }: {
 }
 
 // ── Position 2: Musique view ────────────────────────────
-function MusiqueView({ module13, onValidate, hasResult, isPending }: {
+function MusiqueView({
+  module13,
+  onValidate,
+  hasResult,
+  isPending,
+}: {
   module13: Module13Data;
   onValidate: (data: unknown) => void;
   hasResult: boolean;
@@ -238,7 +282,12 @@ function MusiqueView({ module13, onValidate, hasResult, isPending }: {
 }
 
 // ── Position 3: Titre view ──────────────────────────────
-function TitreView({ module13, onValidate, hasResult, isPending }: {
+function TitreView({
+  module13,
+  onValidate,
+  hasResult,
+  isPending,
+}: {
   module13: Module13Data;
   onValidate: (data: unknown) => void;
   hasResult: boolean;
@@ -253,11 +302,7 @@ function TitreView({ module13, onValidate, hasResult, isPending }: {
   return (
     <div className="space-y-3">
       {allTitres.map((t, i) => (
-        <motion.div
-          key={i}
-          layout
-          className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10"
-        >
+        <motion.div key={i} layout className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
           <p className="flex-1 text-white font-medium">{t.titre}</p>
           {!hasResult && (
             <button
@@ -275,7 +320,12 @@ function TitreView({ module13, onValidate, hasResult, isPending }: {
 }
 
 // ── Position 4: Affiche view ────────────────────────────
-function AfficheView({ module13, onValidate, hasResult, isPending }: {
+function AfficheView({
+  module13,
+  onValidate,
+  hasResult,
+  isPending,
+}: {
   module13: Module13Data;
   onValidate: (data: unknown) => void;
   hasResult: boolean;
@@ -292,19 +342,24 @@ function AfficheView({ module13, onValidate, hasResult, isPending }: {
       {allAffiches.map((a, i) => {
         const styleInfo = POSTER_STYLES.find((s) => s.key === a.style);
         return (
-          <motion.div
-            key={i}
-            layout
-            className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2"
-          >
+          <motion.div key={i} layout className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs px-2 py-0.5 rounded bg-white/10 text-white/60">{styleInfo?.label || a.style}</span>
+              <span className="text-xs px-2 py-0.5 rounded bg-white/10 text-white/60">
+                {styleInfo?.label || a.style}
+              </span>
               {a.tagline && <span className="text-xs text-white/40 italic">&ldquo;{a.tagline}&rdquo;</span>}
             </div>
             <p className="text-sm text-white/80">{a.description}</p>
             {!hasResult && (
               <button
-                onClick={() => onValidate({ summary: `${styleInfo?.label}: ${a.description.slice(0, 50)}`, style: a.style, description: a.description, tagline: a.tagline })}
+                onClick={() =>
+                  onValidate({
+                    summary: `${styleInfo?.label}: ${a.description.slice(0, 50)}`,
+                    style: a.style,
+                    description: a.description,
+                    tagline: a.tagline,
+                  })
+                }
                 disabled={isPending}
                 className="px-3 py-1.5 text-xs bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 rounded-lg transition-colors border border-cyan-500/30"
               >
@@ -319,7 +374,12 @@ function AfficheView({ module13, onValidate, hasResult, isPending }: {
 }
 
 // ── Position 5: Trailer view ────────────────────────────
-function TrailerView({ module13, onValidate, hasResult, isPending }: {
+function TrailerView({
+  module13,
+  onValidate,
+  hasResult,
+  isPending,
+}: {
   module13: Module13Data;
   onValidate: (data: unknown) => void;
   hasResult: boolean;
@@ -331,7 +391,10 @@ function TrailerView({ module13, onValidate, hasResult, isPending }: {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-white/60">{module13.submittedCount} proposition{module13.submittedCount > 1 ? "s" : ""} reçue{module13.submittedCount > 1 ? "s" : ""}</p>
+      <p className="text-sm text-white/60">
+        {module13.submittedCount} proposition{module13.submittedCount > 1 ? "s" : ""} reçue
+        {module13.submittedCount > 1 ? "s" : ""}
+      </p>
       {!hasResult && (
         <button
           onClick={() => onValidate({ summary: `${module13.submittedCount} bandes-annonces proposées` })}

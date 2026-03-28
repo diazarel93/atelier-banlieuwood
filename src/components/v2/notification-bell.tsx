@@ -95,9 +95,7 @@ export function NotificationBell() {
           className="absolute right-0 top-full mt-2 w-80 rounded-xl border border-[var(--color-bw-border)] bg-card shadow-lg z-50"
         >
           <div className="px-4 py-3 border-b border-[var(--color-bw-border)]">
-            <h3 className="text-sm font-semibold text-bw-heading">
-              Notifications
-            </h3>
+            <h3 className="text-sm font-semibold text-bw-heading">Notifications</h3>
           </div>
 
           {notifications.length === 0 ? (
@@ -116,18 +114,14 @@ export function NotificationBell() {
                   <span
                     className={cn(
                       "flex h-7 w-7 items-center justify-center rounded-lg text-xs shrink-0",
-                      SEVERITY_COLORS[notif.severity]
+                      SEVERITY_COLORS[notif.severity],
                     )}
                   >
                     {TYPE_ICONS[notif.type]}
                   </span>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-bw-heading">
-                      {notif.title}
-                    </p>
-                    <p className="text-xs text-bw-muted truncate">
-                      {notif.description}
-                    </p>
+                    <p className="text-sm font-medium text-bw-heading">{notif.title}</p>
+                    <p className="text-xs text-bw-muted truncate">{notif.description}</p>
                   </div>
                 </Link>
               ))}

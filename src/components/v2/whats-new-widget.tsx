@@ -17,12 +17,7 @@ interface Insight {
   type: "positive" | "neutral" | "attention";
 }
 
-function computeInsights({
-  stats,
-  trends,
-  recentSessions,
-  todaySessions,
-}: WhatsNewWidgetProps): Insight[] {
+function computeInsights({ stats, trends, recentSessions, todaySessions }: WhatsNewWidgetProps): Insight[] {
   const insights: Insight[] = [];
 
   // Milestone reached
@@ -135,9 +130,7 @@ export function WhatsNewWidget(props: WhatsNewWidgetProps) {
             <span className="text-base leading-none mt-0.5" aria-hidden="true">
               {insight.emoji}
             </span>
-            <span className="text-bw-heading font-medium leading-snug">
-              {insight.text}
-            </span>
+            <span className="text-bw-heading font-medium leading-snug">{insight.text}</span>
           </div>
         ))}
       </div>

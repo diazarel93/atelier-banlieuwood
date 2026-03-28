@@ -13,11 +13,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CockpitV2Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function CockpitV2Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="theme-lavande min-h-dvh bg-[var(--background)]">
       {/* Prevent dark-mode flash: apply stored theme before first paint */}

@@ -27,8 +27,11 @@ export function StoryboardViewer({ prenom, trait, objectif, obstacle, pitchText 
       const { exportElementAsImage } = await import("@/lib/export-image");
       const safeName = prenom.replace(/[^a-zA-Z0-9À-ÿ]/g, "-").toLowerCase();
       await exportElementAsImage(gridRef.current, `storyboard-${safeName}.png`);
-    } catch { /* silent */ }
-    finally { setDownloading(false); }
+    } catch {
+      /* silent */
+    } finally {
+      setDownloading(false);
+    }
   }
 
   const PANEL_LABELS = ["Ouverture", "Découverte", "Confrontation", "Climax"];
@@ -46,11 +49,27 @@ export function StoryboardViewer({ prenom, trait, objectif, obstacle, pitchText 
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white/60 bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.1] hover:text-white transition-all cursor-pointer disabled:opacity-40"
         >
           {downloading ? (
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="animate-spin"
+            >
               <path d="M21 12a9 9 0 11-6.219-8.56" />
             </svg>
           ) : (
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
@@ -101,9 +120,7 @@ export function StoryboardViewer({ prenom, trait, objectif, obstacle, pitchText 
 
             {/* Panel label */}
             <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-white/70">
-                {PANEL_LABELS[i]}
-              </span>
+              <span className="text-xs font-bold uppercase tracking-wider text-white/70">{PANEL_LABELS[i]}</span>
             </div>
           </motion.div>
         ))}

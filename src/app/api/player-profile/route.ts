@@ -5,10 +5,7 @@ import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
 export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const profileId = req.nextUrl.searchParams.get("profileId");
   if (!profileId || !isValidUUID(profileId)) {
-    return NextResponse.json(
-      { error: "profileId invalide ou manquant" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "profileId invalide ou manquant" }, { status: 400 });
   }
 
   const supabase = createAdminClient();
@@ -17,23 +14,20 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   const { data: profile, error: profileErr } = await supabase
     .from("student_profiles")
     .select(
-      "id, display_name, avatar, avatar_frame, custom_title, total_xp, current_streak, best_streak, sessions_played, total_responses, retained_count, level, last_active_at, streak_updated_date, creative_profile, profile_code"
+      "id, display_name, avatar, avatar_frame, custom_title, total_xp, current_streak, best_streak, sessions_played, total_responses, retained_count, level, last_active_at, streak_updated_date, creative_profile, profile_code",
     )
     .eq("id", profileId)
     .single();
 
   if (profileErr || !profile) {
-    return NextResponse.json(
-      { error: "Profil introuvable" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Profil introuvable" }, { status: 404 });
   }
 
   // ── 2. Fetch achievements (joined with definitions) ──
   const { data: achievementsRaw } = await supabase
     .from("student_achievements")
     .select(
-      "achievement_id, tier, progress, unlocked_at, achievement_definitions(id, category, name_fr, description_fr, icon, tiers, reward_type, reward_value)"
+      "achievement_id, tier, progress, unlocked_at, achievement_definitions(id, category, name_fr, description_fr, icon, tiers, reward_type, reward_value)",
     )
     .eq("profile_id", profileId);
 
@@ -49,9 +43,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
       reward_value: string | null;
     } | null;
 
-    const tierDef = def?.tiers?.find(
-      (t: { tier: string }) => t.tier === a.tier
-    );
+    const tierDef = def?.tiers?.find((t: { tier: string }) => t.tier === a.tier);
 
     return {
       id: a.achievement_id,
@@ -63,9 +55,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
       progress: a.progress ?? 0,
       threshold: tierDef?.threshold ?? 1,
       unlockedAt: a.unlocked_at,
-      reward: def?.reward_type
-        ? { type: def.reward_type, value: def.reward_value }
-        : null,
+      reward: def?.reward_type ? { type: def.reward_type, value: def.reward_value } : null,
     };
   });
 

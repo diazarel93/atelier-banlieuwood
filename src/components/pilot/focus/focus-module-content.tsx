@@ -8,17 +8,50 @@ import { useCockpitModuleFlags } from "@/hooks/use-cockpit-module-flags";
 import { toast } from "sonner";
 
 // Lazy-loaded module cockpits (same as page.tsx)
-const Module1Cockpit = dynamic(() => import("@/components/pilot/module1-cockpit").then(m => ({ default: m.Module1Cockpit })), { ssr: false });
-const Module9BudgetOverview = dynamic(() => import("@/components/pilot/module9-budget-overview").then(m => ({ default: m.Module9BudgetOverview })), { ssr: false });
-const Module9BudgetCards = dynamic(() => import("@/components/pilot/module9-budget-cards").then(m => ({ default: m.Module9BudgetCards })), { ssr: false });
-const Module10Cockpit = dynamic(() => import("@/components/pilot/module10-cockpit").then(m => ({ default: m.Module10Cockpit })), { ssr: false });
-const Module12Cockpit = dynamic(() => import("@/components/pilot/module12-cockpit").then(m => ({ default: m.Module12Cockpit })), { ssr: false });
-const Module13Cockpit = dynamic(() => import("@/components/pilot/module13-cockpit").then(m => ({ default: m.Module13Cockpit })), { ssr: false });
-const Module6Cockpit = dynamic(() => import("@/components/pilot/module6-cockpit").then(m => ({ default: m.Module6Cockpit })), { ssr: false });
-const Module7Cockpit = dynamic(() => import("@/components/pilot/module7-cockpit").then(m => ({ default: m.Module7Cockpit })), { ssr: false });
-const Module8Cockpit = dynamic(() => import("@/components/pilot/module8-cockpit").then(m => ({ default: m.Module8Cockpit })), { ssr: false });
-const Module2ECCockpit = dynamic(() => import("@/components/pilot/module2ec-cockpit").then(m => ({ default: m.Module2ECCockpit })), { ssr: false });
-const Module11Cockpit = dynamic(() => import("@/components/pilot/module11-cockpit").then(m => ({ default: m.Module11Cockpit })), { ssr: false });
+const Module1Cockpit = dynamic(
+  () => import("@/components/pilot/module1-cockpit").then((m) => ({ default: m.Module1Cockpit })),
+  { ssr: false },
+);
+const Module9BudgetOverview = dynamic(
+  () => import("@/components/pilot/module9-budget-overview").then((m) => ({ default: m.Module9BudgetOverview })),
+  { ssr: false },
+);
+const Module9BudgetCards = dynamic(
+  () => import("@/components/pilot/module9-budget-cards").then((m) => ({ default: m.Module9BudgetCards })),
+  { ssr: false },
+);
+const Module10Cockpit = dynamic(
+  () => import("@/components/pilot/module10-cockpit").then((m) => ({ default: m.Module10Cockpit })),
+  { ssr: false },
+);
+const Module12Cockpit = dynamic(
+  () => import("@/components/pilot/module12-cockpit").then((m) => ({ default: m.Module12Cockpit })),
+  { ssr: false },
+);
+const Module13Cockpit = dynamic(
+  () => import("@/components/pilot/module13-cockpit").then((m) => ({ default: m.Module13Cockpit })),
+  { ssr: false },
+);
+const Module6Cockpit = dynamic(
+  () => import("@/components/pilot/module6-cockpit").then((m) => ({ default: m.Module6Cockpit })),
+  { ssr: false },
+);
+const Module7Cockpit = dynamic(
+  () => import("@/components/pilot/module7-cockpit").then((m) => ({ default: m.Module7Cockpit })),
+  { ssr: false },
+);
+const Module8Cockpit = dynamic(
+  () => import("@/components/pilot/module8-cockpit").then((m) => ({ default: m.Module8Cockpit })),
+  { ssr: false },
+);
+const Module2ECCockpit = dynamic(
+  () => import("@/components/pilot/module2ec-cockpit").then((m) => ({ default: m.Module2ECCockpit })),
+  { ssr: false },
+);
+const Module11Cockpit = dynamic(
+  () => import("@/components/pilot/module11-cockpit").then((m) => ({ default: m.Module11Cockpit })),
+  { ssr: false },
+);
 
 interface FocusModuleContentProps {
   isPreviewing: boolean;
@@ -52,7 +85,8 @@ export function FocusModuleContent({ isPreviewing, currentQIndex }: FocusModuleC
 
   // ── M2 EC: scenes data + comparison selection ──
   const [selectedSceneIds, setSelectedSceneIds] = useState<string[]>([]);
-  const isM2ECWithScenes = session.current_module === 2 && ((session.current_seance || 1) === 2 || (session.current_seance || 1) === 3);
+  const isM2ECWithScenes =
+    session.current_module === 2 && ((session.current_seance || 1) === 2 || (session.current_seance || 1) === 3);
 
   const { data: scenesData } = useQuery<{ scenes: any[]; emotionDistribution: Record<string, number>; count: number }>({
     queryKey: ["m2ec-scenes", sessionId, session.current_situation_index],
@@ -172,46 +206,24 @@ export function FocusModuleContent({ isPreviewing, currentQIndex }: FocusModuleC
 
       {/* M13 Post-prod */}
       {flags.isM13Any && module13Data && (
-        <Module13Cockpit
-          sessionId={session.id}
-          module13={module13Data}
-          connectedCount={activeStudents.length}
-        />
+        <Module13Cockpit sessionId={session.id} module13={module13Data} connectedCount={activeStudents.length} />
       )}
 
       {/* M6 Scénario */}
-      {flags.isM6Any && module6Data && (
-        <Module6Cockpit
-          module6={module6Data}
-          connectedCount={activeStudents.length}
-        />
-      )}
+      {flags.isM6Any && module6Data && <Module6Cockpit module6={module6Data} connectedCount={activeStudents.length} />}
 
       {/* M7 Mise en scène */}
       {flags.isM7Any && module7Data && (
-        <Module7Cockpit
-          module7={module7Data}
-          connectedCount={activeStudents.length}
-          sessionId={sessionId}
-        />
+        <Module7Cockpit module7={module7Data} connectedCount={activeStudents.length} sessionId={sessionId} />
       )}
 
       {/* M8 Équipe */}
       {flags.isM8Any && module8Data && (
-        <Module8Cockpit
-          sessionId={session.id}
-          module8={module8Data}
-          connectedCount={activeStudents.length}
-        />
+        <Module8Cockpit sessionId={session.id} module8={module8Data} connectedCount={activeStudents.length} />
       )}
 
       {/* M11 Ciné-Débat */}
-      {flags.isM11Any && module11Data && (
-        <Module11Cockpit
-          module11Data={module11Data}
-          isPreviewing={isPreviewing}
-        />
-      )}
+      {flags.isM11Any && module11Data && <Module11Cockpit module11Data={module11Data} isPreviewing={isPreviewing} />}
 
       {/* M2 EC */}
       {flags.isM2ECAny && (

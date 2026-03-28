@@ -5,23 +5,143 @@ import { motion, AnimatePresence } from "motion/react";
 
 // French stop words — common words to exclude from analysis
 const STOP_WORDS = new Set([
-  "le", "la", "les", "un", "une", "des", "de", "du", "au", "aux", "ce", "ces", "cette",
-  "mon", "ma", "mes", "ton", "ta", "tes", "son", "sa", "ses", "notre", "nos", "votre", "vos", "leur", "leurs",
-  "je", "tu", "il", "elle", "on", "nous", "vous", "ils", "elles", "me", "te", "se", "lui",
-  "et", "ou", "mais", "donc", "car", "ni", "que", "qui", "quoi", "dont", "où",
-  "ne", "pas", "plus", "jamais", "rien", "personne",
-  "est", "sont", "suis", "es", "sommes", "êtes", "a", "ai", "as", "ont", "avons", "avez",
-  "fait", "faire", "peut", "être", "avoir", "dit", "va", "vont",
-  "en", "dans", "sur", "sous", "avec", "pour", "par", "sans", "chez",
-  "si", "bien", "très", "aussi", "tout", "tous", "toute", "toutes",
-  "c", "j", "l", "m", "n", "s", "t", "y", "d", "qu",
-  "ça", "cela", "ceci", "quand", "comme", "alors", "même", "encore", "trop", "peu",
-  "là", "ici", "oui", "non", "entre", "depuis", "avant", "après", "pendant",
+  "le",
+  "la",
+  "les",
+  "un",
+  "une",
+  "des",
+  "de",
+  "du",
+  "au",
+  "aux",
+  "ce",
+  "ces",
+  "cette",
+  "mon",
+  "ma",
+  "mes",
+  "ton",
+  "ta",
+  "tes",
+  "son",
+  "sa",
+  "ses",
+  "notre",
+  "nos",
+  "votre",
+  "vos",
+  "leur",
+  "leurs",
+  "je",
+  "tu",
+  "il",
+  "elle",
+  "on",
+  "nous",
+  "vous",
+  "ils",
+  "elles",
+  "me",
+  "te",
+  "se",
+  "lui",
+  "et",
+  "ou",
+  "mais",
+  "donc",
+  "car",
+  "ni",
+  "que",
+  "qui",
+  "quoi",
+  "dont",
+  "où",
+  "ne",
+  "pas",
+  "plus",
+  "jamais",
+  "rien",
+  "personne",
+  "est",
+  "sont",
+  "suis",
+  "es",
+  "sommes",
+  "êtes",
+  "a",
+  "ai",
+  "as",
+  "ont",
+  "avons",
+  "avez",
+  "fait",
+  "faire",
+  "peut",
+  "être",
+  "avoir",
+  "dit",
+  "va",
+  "vont",
+  "en",
+  "dans",
+  "sur",
+  "sous",
+  "avec",
+  "pour",
+  "par",
+  "sans",
+  "chez",
+  "si",
+  "bien",
+  "très",
+  "aussi",
+  "tout",
+  "tous",
+  "toute",
+  "toutes",
+  "c",
+  "j",
+  "l",
+  "m",
+  "n",
+  "s",
+  "t",
+  "y",
+  "d",
+  "qu",
+  "ça",
+  "cela",
+  "ceci",
+  "quand",
+  "comme",
+  "alors",
+  "même",
+  "encore",
+  "trop",
+  "peu",
+  "là",
+  "ici",
+  "oui",
+  "non",
+  "entre",
+  "depuis",
+  "avant",
+  "après",
+  "pendant",
 ]);
 
 const COLORS = [
-  "#F5A45B", "#6B8CFF", "#4CAF50", "#EB5757", "#8B5CF6",
-  "#F59E0B", "#EC4899", "#14B8A6", "#F97316", "#3B82F6",
+  "#F5A45B",
+  "#6B8CFF",
+  "#4CAF50",
+  "#EB5757",
+  "#8B5CF6",
+  "#F59E0B",
+  "#EC4899",
+  "#14B8A6",
+  "#F97316",
+  "#3B82F6",
 ];
 
 interface WordCloudResponse {
@@ -49,7 +169,7 @@ function tokenize(text: string): string[] {
     .toLowerCase()
     .replace(/[^a-zà-ÿ\s'-]/g, " ")
     .split(/\s+/)
-    .filter(w => w.length > 2 && !STOP_WORDS.has(w));
+    .filter((w) => w.length > 2 && !STOP_WORDS.has(w));
 }
 
 function extractWords(responses: WordCloudResponse[]): WordEntry[] {
@@ -81,9 +201,9 @@ function extractWords(responses: WordCloudResponse[]): WordEntry[] {
 // ── Response clustering by shared keywords (Jaccard-like) ──
 interface ResponseCluster {
   id: number;
-  label: string;           // Most representative keyword(s)
+  label: string; // Most representative keyword(s)
   responses: WordCloudResponse[];
-  keywords: string[];      // Top keywords for this cluster
+  keywords: string[]; // Top keywords for this cluster
   color: string;
 }
 
@@ -91,7 +211,7 @@ function clusterResponses(responses: WordCloudResponse[]): ResponseCluster[] {
   if (responses.length === 0) return [];
 
   // Tokenize each response
-  const tokenized = responses.map(r => ({
+  const tokenized = responses.map((r) => ({
     response: r,
     words: new Set(tokenize(r.text)),
   }));
@@ -120,7 +240,7 @@ function clusterResponses(responses: WordCloudResponse[]): ResponseCluster[] {
 
       // Jaccard similarity against cluster centroid (union of all cluster words)
       const clusterWords = new Set<string>();
-      for (const ws of cluster.wordSets) ws.forEach(w => clusterWords.add(w));
+      for (const ws of cluster.wordSets) ws.forEach((w) => clusterWords.add(w));
 
       let intersection = 0;
       for (const w of other) if (clusterWords.has(w)) intersection++;
@@ -138,7 +258,7 @@ function clusterResponses(responses: WordCloudResponse[]): ResponseCluster[] {
   }
 
   // Handle unassigned (empty text) responses
-  const unclustered = tokenized.filter((_, i) => !assigned.has(i)).map(t => t.response);
+  const unclustered = tokenized.filter((_, i) => !assigned.has(i)).map((t) => t.response);
   if (unclustered.length > 0) {
     clusters.push({ responses: unclustered, wordSets: [] });
   }
@@ -150,7 +270,7 @@ function clusterResponses(responses: WordCloudResponse[]): ResponseCluster[] {
   return clusters.slice(0, 8).map((cluster, idx) => {
     const freq = new Map<string, number>();
     for (const ws of cluster.wordSets) {
-      ws.forEach(w => freq.set(w, (freq.get(w) || 0) + 1));
+      ws.forEach((w) => freq.set(w, (freq.get(w) || 0) + 1));
     }
     const topWords = [...freq.entries()]
       .sort((a, b) => b[1] - a[1])
@@ -180,7 +300,9 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
       {open && (
         <>
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
@@ -199,12 +321,16 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
             }}
           >
             {/* Header */}
-            <div className="px-5 py-3.5 flex items-center justify-between flex-shrink-0"
-              style={{ borderBottom: "1px solid rgba(232,223,210,0.5)" }}>
+            <div
+              className="px-5 py-3.5 flex items-center justify-between flex-shrink-0"
+              style={{ borderBottom: "1px solid rgba(232,223,210,0.5)" }}
+            >
               <div className="flex items-center gap-2.5">
                 <span className="text-lg">💡</span>
                 <h3 className="text-[14px] font-bold text-[#2C2C2C]">Nuage d&apos;idees de la classe</h3>
-                <span className="text-[11px] text-[#B0A99E] font-medium">{responses.length} reponse{responses.length > 1 ? "s" : ""}</span>
+                <span className="text-[11px] text-[#B0A99E] font-medium">
+                  {responses.length} reponse{responses.length > 1 ? "s" : ""}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 {/* View toggle */}
@@ -230,7 +356,12 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                     Mots
                   </button>
                 </div>
-                <button onClick={onClose} className="text-[#B0A99E] hover:text-[#2C2C2C] text-sm cursor-pointer transition-colors">✕</button>
+                <button
+                  onClick={onClose}
+                  className="text-[#B0A99E] hover:text-[#2C2C2C] text-sm cursor-pointer transition-colors"
+                >
+                  ✕
+                </button>
               </div>
             </div>
 
@@ -261,7 +392,8 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                             onClick={() => setExpandedCluster(expandedCluster === cluster.id ? null : cluster.id)}
                             className="w-full text-left rounded-[12px] px-4 py-3 cursor-pointer transition-all hover:shadow-sm"
                             style={{
-                              background: expandedCluster === cluster.id ? `${cluster.color}10` : "rgba(255,255,255,0.7)",
+                              background:
+                                expandedCluster === cluster.id ? `${cluster.color}10` : "rgba(255,255,255,0.7)",
                               border: `1px solid ${expandedCluster === cluster.id ? `${cluster.color}30` : "#E8DFD2"}`,
                             }}
                           >
@@ -283,8 +415,12 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                                   {cluster.responses.length} eleve{cluster.responses.length > 1 ? "s" : ""}
                                 </span>
                                 <svg
-                                  width="12" height="12" viewBox="0 0 24 24"
-                                  fill="none" stroke={cluster.color} strokeWidth="2"
+                                  width="12"
+                                  height="12"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke={cluster.color}
+                                  strokeWidth="2"
                                   className={`transition-transform duration-200 ${expandedCluster === cluster.id ? "rotate-180" : ""}`}
                                 >
                                   <path d="M6 9l6 6 6-6" />
@@ -295,8 +431,12 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                             {/* Keywords */}
                             {cluster.keywords.length > 0 && (
                               <div className="flex items-center gap-1 mt-1.5">
-                                {cluster.keywords.map(kw => (
-                                  <span key={kw} className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: `${cluster.color}08`, color: "#7A7A7A" }}>
+                                {cluster.keywords.map((kw) => (
+                                  <span
+                                    key={kw}
+                                    className="text-[10px] px-1.5 py-0.5 rounded"
+                                    style={{ background: `${cluster.color}08`, color: "#7A7A7A" }}
+                                  >
                                     {kw}
                                   </span>
                                 ))}
@@ -319,16 +459,23 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                                     <div
                                       key={ri}
                                       className="flex items-start gap-2 px-3 py-2 rounded-[8px]"
-                                      style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(232,223,210,0.4)" }}
+                                      style={{
+                                        background: "rgba(255,255,255,0.6)",
+                                        border: "1px solid rgba(232,223,210,0.4)",
+                                      }}
                                     >
                                       {r.students && (
                                         <span className="text-sm flex-shrink-0 mt-0.5">{r.students.avatar}</span>
                                       )}
                                       <div className="flex-1 min-w-0">
                                         {r.students && (
-                                          <span className="text-[11px] font-semibold text-[#2C2C2C]">{r.students.display_name}</span>
+                                          <span className="text-[11px] font-semibold text-[#2C2C2C]">
+                                            {r.students.display_name}
+                                          </span>
                                         )}
-                                        <p className="text-[12px] text-[#5B5B5B] leading-snug mt-0.5 line-clamp-3">{r.text}</p>
+                                        <p className="text-[12px] text-[#5B5B5B] leading-snug mt-0.5 line-clamp-3">
+                                          {r.text}
+                                        </p>
                                       </div>
                                     </div>
                                   ))}
@@ -342,10 +489,15 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
 
                     {/* Summary bar */}
                     {clusters.length > 0 && (
-                      <div className="flex items-center gap-3 pt-2" style={{ borderTop: "1px solid rgba(232,223,210,0.4)" }}>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#B0A99E]">Repartition</span>
+                      <div
+                        className="flex items-center gap-3 pt-2"
+                        style={{ borderTop: "1px solid rgba(232,223,210,0.4)" }}
+                      >
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#B0A99E]">
+                          Repartition
+                        </span>
                         <div className="flex-1 flex h-3 rounded-full overflow-hidden">
-                          {clusters.map(c => (
+                          {clusters.map((c) => (
                             <div
                               key={c.id}
                               style={{
@@ -399,8 +551,16 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                         <div className="pt-4 mt-4" style={{ borderTop: "1px solid rgba(232,223,210,0.4)" }}>
                           <p className="text-[10px] text-[#B0A99E] font-bold uppercase tracking-wider mb-2">Top 10</p>
                           <div className="flex flex-wrap gap-1.5">
-                            {words.slice(0, 10).map(entry => (
-                              <span key={entry.word} className="text-[11px] px-2.5 py-1 rounded-full" style={{ background: `${entry.color}10`, border: `1px solid ${entry.color}20`, color: entry.color }}>
+                            {words.slice(0, 10).map((entry) => (
+                              <span
+                                key={entry.word}
+                                className="text-[11px] px-2.5 py-1 rounded-full"
+                                style={{
+                                  background: `${entry.color}10`,
+                                  border: `1px solid ${entry.color}20`,
+                                  color: entry.color,
+                                }}
+                              >
                                 <strong>{entry.word}</strong> <span style={{ color: "#B0A99E" }}>×{entry.count}</span>
                               </span>
                             ))}

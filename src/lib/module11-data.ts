@@ -12,16 +12,16 @@ export interface CineStimulus {
   text: string;
   author?: string;
   authorRole?: string; // "Réalisateur" | "Acteur" | "Personnage" | "Créateur"
-  authorBio?: string;  // Mini bio pour les élèves ("Maître du suspense...")
+  authorBio?: string; // Mini bio pour les élèves ("Maître du suspense...")
   authorImageUrl?: string; // Portrait (Wikimedia Commons / libre de droit)
   filmography?: { title: string; year: number; posterPath: string }[]; // Films connus (TMDB poster path)
   sourceTitle?: string;
   sourceYear?: number;
   // Média
-  imageUrl?: string;     // URL poster TMDB ou Wikimedia
-  videoId?: string;      // YouTube video ID (pour embed)
-  videoStart?: number;   // Timestamp début (secondes)
-  videoEnd?: number;     // Timestamp fin (secondes)
+  imageUrl?: string; // URL poster TMDB ou Wikimedia
+  videoId?: string; // YouTube video ID (pour embed)
+  videoStart?: number; // Timestamp début (secondes)
+  videoEnd?: number; // Timestamp fin (secondes)
   // Thème
   theme: "raconter" | "émotion" | "héros" | "coulisses";
 }
@@ -296,9 +296,7 @@ export const CINE_STIMULI: CineStimulus[] = [
     authorRole: "Réalisateur",
     authorBio: "Il a tourné un film d'horreur chez lui avec une caméra à 200 $. Record de rentabilité.",
     authorImageUrl: "https://image.tmdb.org/t/p/w342/mNj3nStQ55K5M1woWo6F5dpDpb9.jpg",
-    filmography: [
-      { title: "Paranormal Activity", year: 2007, posterPath: "/1Kxhdm6up44BzZoVGAGuD5zYxYY.jpg" },
-    ],
+    filmography: [{ title: "Paranormal Activity", year: 2007, posterPath: "/1Kxhdm6up44BzZoVGAGuD5zYxYY.jpg" }],
     sourceTitle: "Paranormal Activity",
     sourceYear: 2007,
     theme: "coulisses",

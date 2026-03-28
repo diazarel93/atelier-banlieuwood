@@ -20,7 +20,13 @@ export function CinematicIntro({ onComplete, sessionTitle, studentName, studentA
     const t2 = setTimeout(() => setPhase("welcome"), 2800);
     const t3 = setTimeout(() => setPhase("fade"), 4200);
     const t4 = setTimeout(onComplete, 4800);
-    return () => { clearTimeout(t0); clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
+    return () => {
+      clearTimeout(t0);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+    };
   }, [onComplete]);
 
   return (
@@ -32,7 +38,12 @@ export function CinematicIntro({ onComplete, sessionTitle, studentName, studentA
       animate={phase === "fade" ? { opacity: 0 } : { opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
       onClick={onComplete}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " " || e.key === "Escape") { e.preventDefault(); onComplete(); } }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+          e.preventDefault();
+          onComplete();
+        }
+      }}
     >
       {/* Film grain overlay */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none film-grain" />
@@ -48,7 +59,13 @@ export function CinematicIntro({ onComplete, sessionTitle, studentName, studentA
               exit={{ x: "-100%" }}
               transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
             >
-              <div className="absolute inset-0" style={{ background: "repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(139,0,0,0.05) 30px, rgba(139,0,0,0.05) 32px)" }} />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(139,0,0,0.05) 30px, rgba(139,0,0,0.05) 32px)",
+                }}
+              />
             </motion.div>
             <motion.div
               key="curtain-right"
@@ -57,7 +74,13 @@ export function CinematicIntro({ onComplete, sessionTitle, studentName, studentA
               exit={{ x: "100%" }}
               transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
             >
-              <div className="absolute inset-0" style={{ background: "repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(139,0,0,0.05) 30px, rgba(139,0,0,0.05) 32px)" }} />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(139,0,0,0.05) 30px, rgba(139,0,0,0.05) 32px)",
+                }}
+              />
             </motion.div>
           </>
         )}
@@ -76,10 +99,20 @@ export function CinematicIntro({ onComplete, sessionTitle, studentName, studentA
           >
             <div className="relative w-28 h-28">
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#1a1a1a] to-[#08090E] border-2 border-bw-gold/40 flex items-center justify-center">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D4A843" strokeWidth="1.5" strokeLinecap="round">
+                <svg
+                  width="48"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#D4A843"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                >
                   <rect x="2" y="4" width="20" height="16" rx="2" />
                   <path d="M2 8h20" />
-                  <path d="M8 4l-2 4" /><path d="M14 4l-2 4" /><path d="M20 4l-2 4" />
+                  <path d="M8 4l-2 4" />
+                  <path d="M14 4l-2 4" />
+                  <path d="M20 4l-2 4" />
                 </svg>
               </div>
               <motion.div

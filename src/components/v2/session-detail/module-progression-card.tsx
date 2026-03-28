@@ -8,27 +8,16 @@ interface ModuleProgressionCardProps {
   currentModule: ModuleDef | null;
 }
 
-export function ModuleProgressionCard({
-  completedModules,
-  currentModule,
-}: ModuleProgressionCardProps) {
+export function ModuleProgressionCard({ completedModules, currentModule }: ModuleProgressionCardProps) {
   return (
     <GlassCardV2 className="p-5">
-      <p className="text-sm font-semibold text-bw-heading uppercase tracking-wide mb-4">
-        Parcours des modules
-      </p>
+      <p className="text-sm font-semibold text-bw-heading uppercase tracking-wide mb-4">Parcours des modules</p>
 
       <div className="space-y-3">
         {PHASES.map((phase) => {
-          const phaseModules = MODULES.filter((m) =>
-            phase.moduleIds.includes(m.id)
-          );
-          const completedInPhase = phaseModules.filter((m) =>
-            completedModules?.includes(m.id)
-          ).length;
-          const isCurrent = phaseModules.some(
-            (m) => m.id === currentModule?.id
-          );
+          const phaseModules = MODULES.filter((m) => phase.moduleIds.includes(m.id));
+          const completedInPhase = phaseModules.filter((m) => completedModules?.includes(m.id)).length;
+          const isCurrent = phaseModules.some((m) => m.id === currentModule?.id);
 
           return (
             <div
@@ -52,17 +41,11 @@ export function ModuleProgressionCard({
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span
-                    className={`text-sm font-semibold ${
-                      isCurrent ? "text-bw-heading" : "text-bw-muted"
-                    }`}
-                  >
+                  <span className={`text-sm font-semibold ${isCurrent ? "text-bw-heading" : "text-bw-muted"}`}>
                     {phase.label}
                   </span>
                   {phaseModules[0]?.comingSoon && (
-                    <span className="text-xs text-bw-muted font-medium uppercase tracking-wider">
-                      Bientôt
-                    </span>
+                    <span className="text-xs text-bw-muted font-medium uppercase tracking-wider">Bientôt</span>
                   )}
                 </div>
                 {!phaseModules[0]?.comingSoon && (
@@ -78,8 +61,8 @@ export function ModuleProgressionCard({
                             backgroundColor: isCompleted
                               ? phase.color
                               : isActive
-                              ? `${phase.color}60`
-                              : "rgba(0,0,0,0.06)",
+                                ? `${phase.color}60`
+                                : "rgba(0,0,0,0.06)",
                           }}
                         />
                       );
@@ -89,9 +72,7 @@ export function ModuleProgressionCard({
               </div>
 
               <span className="text-xs font-mono text-bw-muted tabular-nums">
-                {!phaseModules[0]?.comingSoon
-                  ? `${completedInPhase}/${phaseModules.length}`
-                  : ""}
+                {!phaseModules[0]?.comingSoon ? `${completedInPhase}/${phaseModules.length}` : ""}
               </span>
             </div>
           );

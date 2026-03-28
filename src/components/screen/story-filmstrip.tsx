@@ -28,7 +28,11 @@ export function StoryFilmstrip({ allChoices, moduleColor }: StoryFilmstripProps)
                   animate={{ opacity: 1, scale: 1, x: 0 }}
                   transition={{ type: "spring", stiffness: 200, damping: 15, delay: i * 0.05 }}
                   className="flex-shrink-0 rounded-lg px-3 py-2 backdrop-blur-md max-w-[260px]"
-                  style={{ background: "rgba(34,37,43,0.7)", borderLeft: `3px solid ${color}`, border: `1px solid rgba(255,255,255,0.05)` }}
+                  style={{
+                    background: "rgba(34,37,43,0.7)",
+                    borderLeft: `3px solid ${color}`,
+                    border: `1px solid rgba(255,255,255,0.05)`,
+                  }}
                 >
                   <span className="text-xs uppercase tracking-wider font-medium block" style={{ color }}>
                     {choice.restitution_label || choice.category}

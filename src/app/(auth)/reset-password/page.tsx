@@ -98,7 +98,15 @@ export default function ResetPasswordPage() {
               className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center bg-gradient-to-br from-bw-primary to-bw-primary-500"
               style={{ boxShadow: "0 8px 24px rgba(255,107,53,0.25)" }}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              >
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                 <path d="M7 11V7a5 5 0 0110 0v4" />
               </svg>
@@ -147,12 +155,7 @@ export default function ResetPasswordPage() {
               </div>
             )}
 
-            <Button
-              type="submit"
-              disabled={loading || !password || password !== confirm}
-              size="xl"
-              className="w-full"
-            >
+            <Button type="submit" disabled={loading || !password || password !== confirm} size="xl" className="w-full">
               {loading ? "Mise a jour..." : "Valider"}
             </Button>
           </form>

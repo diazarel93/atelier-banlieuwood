@@ -27,8 +27,8 @@ export const POSITIONING_SCORING: Record<number, Record<string, string>> = {
 // ── Creative profile ──
 
 export interface CreativeProfile {
-  dominant: string;  // strongest axis key
-  scores: Record<string, number>;  // score per axis (0-8)
+  dominant: string; // strongest axis key
+  scores: Record<string, number>; // score per axis (0-8)
 }
 
 export function computeCreativeProfile(answers: Record<number, string>): CreativeProfile {
@@ -67,9 +67,9 @@ export interface Module1Analysis {
   sessionId: string;
   classSummary: string;
   creativityAvg: number; // 1-5
-  detailAvg: number;     // 1-5
-  emotionAvg: number;    // 1-5
-  analysisAvg: number;   // 1-5
+  detailAvg: number; // 1-5
+  emotionAvg: number; // 1-5
+  analysisAvg: number; // 1-5
   remarkableResponses: {
     studentName: string;
     studentAvatar: string;

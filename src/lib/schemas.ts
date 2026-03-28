@@ -18,18 +18,14 @@ export const createSessionSchema = z.object({
   level: z.enum(["primaire", "college", "lycee"], {
     message: "Niveau invalide",
   }),
-  template: z.string().optional().nullable().transform((v) =>
-    v && (VALID_TEMPLATES as readonly string[]).includes(v) ? v : null
-  ),
+  template: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v && (VALID_TEMPLATES as readonly string[]).includes(v) ? v : null)),
   thematique: z.string().optional().nullable(),
   description: z.string().max(200).optional().nullable(),
-  question_timer: z
-    .number()
-    .int()
-    .min(1)
-    .max(600)
-    .optional()
-    .nullable(),
+  question_timer: z.number().int().min(1).max(600).optional().nullable(),
   scheduled_at: z.string().optional().nullable(),
   class_label: z.string().max(60).optional().nullable(),
   formula: z.enum(["F0", "F1", "F2"]).optional().default("F0"),
@@ -50,10 +46,7 @@ export type JoinSessionInput = z.infer<typeof joinSessionSchema>;
 
 // ──── Respond ────
 
-const uuidSchema = z.string().regex(
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
-  "UUID invalide"
-);
+const uuidSchema = z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, "UUID invalide");
 
 export const respondSchema = z.object({
   studentId: uuidSchema,
@@ -75,23 +68,34 @@ export type VoteInput = z.infer<typeof voteSchema>;
 
 // ──── Patch session ────
 
-const VALID_STATUSES = [
-  "waiting",
-  "responding",
-  "reviewing",
-  "voting",
-  "results",
-  "paused",
-  "done",
-] as const;
+const VALID_STATUSES = ["waiting", "responding", "reviewing", "voting", "results", "paused", "done"] as const;
 
 const VALID_MODULE_IDS = [
-  "m1", "m1a", "m1b", "m1c", "m1d", "m1e",
-  "m2a", "m2b", "m2c", "m2d", "m2-perso", "m2",
-  "m3", "m4", "m5",
-  "u2a", "u2b", "u2c", "u2d",
-  "m10a", "m10b",
-  "cd1", "cd2", "cd3", "cd4",
+  "m1",
+  "m1a",
+  "m1b",
+  "m1c",
+  "m1d",
+  "m1e",
+  "m2a",
+  "m2b",
+  "m2c",
+  "m2d",
+  "m2-perso",
+  "m2",
+  "m3",
+  "m4",
+  "m5",
+  "u2a",
+  "u2b",
+  "u2c",
+  "u2d",
+  "m10a",
+  "m10b",
+  "cd1",
+  "cd2",
+  "cd3",
+  "cd4",
   "m12a",
 ] as const;
 
@@ -103,9 +107,7 @@ export const patchSessionSchema = z
     current_situation_index: z.number().int().min(0).optional(),
     title: z.string().min(1).max(100).optional(),
     timer_ends_at: z.string().nullable().optional(),
-    completed_modules: z
-      .array(z.enum(VALID_MODULE_IDS))
-      .optional(),
+    completed_modules: z.array(z.enum(VALID_MODULE_IDS)).optional(),
     sharing_enabled: z.boolean().optional(),
     broadcast_message: z.string().max(200).nullable().optional(),
     broadcast_at: z.string().nullable().optional(),
@@ -118,7 +120,10 @@ export const patchSessionSchema = z
     thematique: z.string().max(200).nullable().optional(),
     teacher_notes: z.string().nullable().optional(),
     deleted_at: z.string().nullable().optional(),
-    modules_enabled: z.array(z.enum(["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"])).nullable().optional(),
+    modules_enabled: z
+      .array(z.enum(["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"]))
+      .nullable()
+      .optional(),
   })
   .refine((data) => Object.keys(data).length > 0, {
     message: "Rien a mettre a jour",

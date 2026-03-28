@@ -7,7 +7,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // GET — session detail (facilitator only)
 export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   const auth = await requireFacilitator(id);
@@ -15,7 +15,9 @@ export const GET = withErrorHandler(async function GET(
 
   const { data, error } = await auth.supabase
     .from("sessions")
-    .select("id, title, status, level, template, join_code, facilitator_id, created_at, scheduled_at, class_label, current_module, current_seance, current_situation_index, timer_ends_at, question_opened_at, broadcast_message, completed_modules, thematique, deleted_at, teacher_notes, students(id, display_name, avatar, session_id, profile_id, joined_at, is_active)")
+    .select(
+      "id, title, status, level, template, join_code, facilitator_id, created_at, scheduled_at, class_label, current_module, current_seance, current_situation_index, timer_ends_at, question_opened_at, broadcast_message, completed_modules, thematique, deleted_at, teacher_notes, students(id, display_name, avatar, session_id, profile_id, joined_at, is_active)",
+    )
     .eq("id", id)
     .single();
 
@@ -25,7 +27,7 @@ export const GET = withErrorHandler(async function GET(
     const status = error.code === "PGRST116" ? 404 : 500;
     return NextResponse.json(
       { error: status === 404 ? "Session introuvable" : `Erreur DB: ${error.message}` },
-      { status }
+      { status },
     );
   }
 
@@ -35,7 +37,7 @@ export const GET = withErrorHandler(async function GET(
 // PATCH — update session state (facilitator only)
 export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "session-update", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -49,10 +51,7 @@ export const PATCH = withErrorHandler(async function PATCH(
 
   const validated = patchSessionSchema.safeParse(parsed.data);
   if (!validated.success) {
-    return NextResponse.json(
-      { error: formatZodError(validated.error) },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: formatZodError(validated.error) }, { status: 400 });
   }
 
   const updates: Record<string, unknown> = { ...validated.data };
@@ -84,18 +83,13 @@ export const PATCH = withErrorHandler(async function PATCH(
       if ((updates.current_situation_index as number) >= max) {
         return NextResponse.json(
           { error: `Index de situation invalide (max ${max - 1} pour ce module/séance)` },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
   }
 
-  const { data, error } = await auth.supabase
-    .from("sessions")
-    .update(updates)
-    .eq("id", id)
-    .select()
-    .single();
+  const { data, error } = await auth.supabase.from("sessions").update(updates).eq("id", id).select().single();
 
   if (error) {
     console.error("[sessions PATCH]", id, error.message);
@@ -127,7 +121,7 @@ export const PATCH = withErrorHandler(async function PATCH(
 // Sets deleted_at timestamp; RLS policies filter out soft-deleted rows.
 export const DELETE = withErrorHandler(async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "session-update", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -136,10 +130,7 @@ export const DELETE = withErrorHandler(async function DELETE(
   const auth = await requireFacilitator(id);
   if ("error" in auth) return auth.error;
 
-  const { error } = await auth.supabase
-    .from("sessions")
-    .update({ deleted_at: new Date().toISOString() })
-    .eq("id", id);
+  const { error } = await auth.supabase.from("sessions").update({ deleted_at: new Date().toISOString() }).eq("id", id);
 
   if (error) {
     console.error("[sessions DELETE]", id, error.message);

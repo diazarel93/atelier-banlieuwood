@@ -28,14 +28,16 @@ export function WelcomePanel({
 }: WelcomePanelProps) {
   return (
     <div className="max-w-2xl mx-auto px-6 py-6 space-y-5 relative">
-
       {/* Session info — warm EdTech header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center">
         <h1 className="text-[22px] font-bold text-bw-heading">
           {(sessionTitle || "Session").replace(/\s*[-—]\s*$/, "")}
         </h1>
         <p className="text-[13px] text-bw-text mt-1">{level}</p>
-        <div className="h-0.5 w-16 mx-auto mt-4 rounded-full" style={{ background: "linear-gradient(90deg, #F5A45B, #57C4B6)" }} />
+        <div
+          className="h-0.5 w-16 mx-auto mt-4 rounded-full"
+          style={{ background: "linear-gradient(90deg, #F5A45B, #57C4B6)" }}
+        />
       </motion.div>
 
       {/* Onboarding when no students */}
@@ -65,7 +67,19 @@ export function WelcomePanel({
 
             <div className="space-y-3 max-w-sm mx-auto">
               {[
-                { num: "1", color: "#F5A45B", text: <>Projetez le <button onClick={onOpenQR} className="text-[#6B8CFF] underline cursor-pointer font-semibold">QR code</button> ou dictez le code</> },
+                {
+                  num: "1",
+                  color: "#F5A45B",
+                  text: (
+                    <>
+                      Projetez le{" "}
+                      <button onClick={onOpenQR} className="text-[#6B8CFF] underline cursor-pointer font-semibold">
+                        QR code
+                      </button>{" "}
+                      ou dictez le code
+                    </>
+                  ),
+                },
                 { num: "2", color: "#57C4B6", text: "Les eleves scannent et rejoignent la session" },
                 { num: "3", color: "#6B8CFF", text: "Choisissez un module et lancez l'activite" },
               ].map((step, i) => (
@@ -130,7 +144,8 @@ export function WelcomePanel({
                 className="w-2.5 h-2.5 rounded-full bg-[#57C4B6]"
               />
               <span className="text-[14px] font-semibold text-[#1B7A6E]">
-                {activeStudents.length} eleve{activeStudents.length !== 1 ? "s" : ""} connecte{activeStudents.length !== 1 ? "s" : ""}
+                {activeStudents.length} eleve{activeStudents.length !== 1 ? "s" : ""} connecte
+                {activeStudents.length !== 1 ? "s" : ""}
               </span>
             </div>
           </div>
@@ -165,7 +180,15 @@ export function WelcomePanel({
           className="w-14 h-14 rounded-[16px] mx-auto flex items-center justify-center"
           style={{ background: "#EEF2FF", border: "1px solid #D8E0F0" }}
         >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6B8CFF" strokeWidth="1.5" strokeLinecap="round">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#6B8CFF"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          >
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </motion.div>

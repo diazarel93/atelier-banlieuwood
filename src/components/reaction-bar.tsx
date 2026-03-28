@@ -18,25 +18,19 @@ interface ReactionBarProps {
   compact?: boolean;
 }
 
-export function ReactionBar({
-  responseId,
-  studentId,
-  sessionId,
-  counts = {},
-  onReact,
-  compact,
-}: ReactionBarProps) {
+export function ReactionBar({ responseId, studentId, sessionId, counts = {}, onReact, compact }: ReactionBarProps) {
   const [pending, setPending] = useState<string | null>(null);
   const [localCounts, setLocalCounts] = useState<ReactionCounts>(counts);
 
   // Sync when counts change from parent
   const countsKey = JSON.stringify(counts);
-  useEffect(() => { setLocalCounts(counts); }, [countsKey]);
+  useEffect(() => {
+    setLocalCounts(counts);
+  }, [countsKey]);
 
   const hasReacted = useCallback(
-    (emoji: string) =>
-      studentId ? localCounts[emoji]?.studentIds?.includes(studentId) : false,
-    [localCounts, studentId]
+    (emoji: string) => (studentId ? localCounts[emoji]?.studentIds?.includes(studentId) : false),
+    [localCounts, studentId],
   );
 
   async function toggleReaction(emoji: string) {
@@ -92,9 +86,7 @@ export function ReactionBar({
             className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-white/[0.06] text-xs"
           >
             {emoji}
-            <span className="font-mono text-xs text-bw-muted tabular-nums">
-              {localCounts[emoji]?.count}
-            </span>
+            <span className="font-mono text-xs text-bw-muted tabular-nums">{localCounts[emoji]?.count}</span>
           </span>
         ))}
       </div>

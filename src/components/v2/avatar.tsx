@@ -42,7 +42,7 @@ export function Avatar({ name, emoji, size = "md", className }: AvatarProps) {
         className={cn(
           "flex items-center justify-center rounded-full bg-[var(--color-bw-surface-dim)] shrink-0",
           SIZES[size],
-          className
+          className,
         )}
       >
         {emoji}
@@ -54,11 +54,7 @@ export function Avatar({ name, emoji, size = "md", className }: AvatarProps) {
 
   return (
     <span
-      className={cn(
-        "flex items-center justify-center rounded-full font-semibold shrink-0",
-        SIZES[size],
-        className
-      )}
+      className={cn("flex items-center justify-center rounded-full font-semibold shrink-0", SIZES[size], className)}
       style={{ backgroundColor: color.bg, color: color.text }}
     >
       {getInitials(name)}

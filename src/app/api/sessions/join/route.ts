@@ -26,10 +26,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
 
   const validated = joinSessionSchema.safeParse(parsed.data);
   if (!validated.success) {
-    return NextResponse.json(
-      { error: formatZodError(validated.error) },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: formatZodError(validated.error) }, { status: 400 });
   }
 
   const cleanName = validated.data.displayName.trim().slice(0, MAX_DISPLAY_NAME_LENGTH);
@@ -38,10 +35,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
   const profileCode = validated.data.profileCode?.trim().toUpperCase().slice(0, 4) || null;
 
   if (!isValidEmoji(String(avatar))) {
-    return NextResponse.json(
-      { error: "Avatar invalide — choisis un emoji" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Avatar invalide — choisis un emoji" }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -55,18 +49,12 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
     .single();
 
   if (sessionError || !session) {
-    return NextResponse.json(
-      { error: "Ce code n'existe pas. Vérifie avec ton facilitateur." },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Ce code n'existe pas. Vérifie avec ton facilitateur." }, { status: 404 });
   }
 
   // Don't allow joining a finished session
   if (session.status === "done") {
-    return NextResponse.json(
-      { error: "Cette partie est terminée." },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Cette partie est terminée." }, { status: 400 });
   }
 
   // Check if student already exists (reconnection)
@@ -109,7 +97,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
   if (count !== null && count >= MAX_STUDENTS_PER_SESSION) {
     return NextResponse.json(
       { error: `Cette partie est pleine (${MAX_STUDENTS_PER_SESSION} joueurs max)` },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -136,17 +124,10 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
     insertData.profile_id = linkedProfileId;
   }
 
-  const { data: student, error: studentError } = await admin
-    .from("students")
-    .insert(insertData)
-    .select("id")
-    .single();
+  const { data: student, error: studentError } = await admin.from("students").insert(insertData).select("id").single();
 
   if (studentError || !student) {
-    return NextResponse.json(
-      { error: "Erreur lors de l'inscription" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erreur lors de l'inscription" }, { status: 500 });
   }
 
   const token = signStudentToken(student.id, session.id);

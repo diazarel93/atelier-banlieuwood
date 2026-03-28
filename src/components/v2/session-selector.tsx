@@ -27,9 +27,7 @@ export function SessionSelector({
   onSessionChange,
   className,
 }: SessionSelectorProps) {
-  const filteredSessions = selectedClassLabel
-    ? sessions.filter((s) => s.classLabel === selectedClassLabel)
-    : sessions;
+  const filteredSessions = selectedClassLabel ? sessions.filter((s) => s.classLabel === selectedClassLabel) : sessions;
 
   return (
     <div className={cn("flex items-center gap-3 flex-wrap", className)}>

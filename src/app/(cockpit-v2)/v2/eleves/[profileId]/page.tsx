@@ -11,12 +11,7 @@ import { ResponseHistoryList } from "@/components/v2/student-profile/response-hi
 import { AchievementGrid } from "@/components/v2/student-profile/achievement-grid";
 import { NotesPanel } from "@/components/v2/student-profile/notes-panel";
 import { PortfolioSection } from "@/components/v2/student-profile/portfolio-section";
-import {
-  useStudentProfile,
-  useCreateNote,
-  useDeleteNote,
-  useUpdateStudentName,
-} from "@/hooks/use-student-profiles";
+import { useStudentProfile, useCreateNote, useDeleteNote, useUpdateStudentName } from "@/hooks/use-student-profiles";
 import { ProgressionChart } from "@/components/v2/student-profile/progression-chart";
 
 export default function EleveDetailPage() {
@@ -31,12 +26,7 @@ export default function EleveDetailPage() {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
-        <BreadcrumbV2
-          items={[
-            { label: "Élèves", href: ROUTES.eleves },
-            { label: "Chargement..." },
-          ]}
-        />
+        <BreadcrumbV2 items={[{ label: "Élèves", href: ROUTES.eleves }, { label: "Chargement..." }]} />
         <div className="space-y-4 mt-4">
           <div className="h-20 rounded-2xl bg-card shimmer" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -57,16 +47,9 @@ export default function EleveDetailPage() {
   if (isError || !profile) {
     return (
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
-        <BreadcrumbV2
-          items={[
-            { label: "Élèves", href: ROUTES.eleves },
-            { label: "Erreur" },
-          ]}
-        />
+        <BreadcrumbV2 items={[{ label: "Élèves", href: ROUTES.eleves }, { label: "Erreur" }]} />
         <GlassCardV2 className="p-8 text-center mt-4">
-          <p className="text-bw-muted text-sm mb-4">
-            Élève introuvable ou erreur de chargement
-          </p>
+          <p className="text-bw-muted text-sm mb-4">Élève introuvable ou erreur de chargement</p>
           <Link
             href={ROUTES.eleves}
             className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
@@ -78,9 +61,7 @@ export default function EleveDetailPage() {
     );
   }
 
-  const hasData =
-    profile.sessionHistory.length > 0 ||
-    profile.recentResponses.length > 0;
+  const hasData = profile.sessionHistory.length > 0 || profile.recentResponses.length > 0;
 
   const hasPortfolio =
     profile.portfolio.personnage ||
@@ -90,12 +71,7 @@ export default function EleveDetailPage() {
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
-      <BreadcrumbV2
-        items={[
-          { label: "Élèves", href: ROUTES.eleves },
-          { label: profile.displayName },
-        ]}
-      />
+      <BreadcrumbV2 items={[{ label: "Élèves", href: ROUTES.eleves }, { label: profile.displayName }]} />
 
       <div className="space-y-5 mt-4">
         {/* Hero — with creative profile, tags, deltas */}
@@ -127,18 +103,25 @@ export default function EleveDetailPage() {
           <GlassCardV2 className="p-8">
             <div className="flex flex-col items-center text-center max-w-sm mx-auto">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-bw-surface-dim)] mb-4">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-bw-muted">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  className="text-bw-muted"
+                >
                   <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
                   <circle cx="9" cy="7" r="4" />
                   <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
                 </svg>
               </div>
-              <h3 className="text-heading-xs text-bw-heading mb-1">
-                Profil en attente
-              </h3>
+              <h3 className="text-heading-xs text-bw-heading mb-1">Profil en attente</h3>
               <p className="text-body-sm text-bw-muted mb-4">
-                Les scores, réponses et badges de {profile.displayName} apparaîtront
-                après sa première participation à une séance.
+                Les scores, réponses et badges de {profile.displayName} apparaîtront après sa première participation à
+                une séance.
               </p>
               <Link
                 href={ROUTES.seanceNew}
@@ -155,9 +138,7 @@ export default function EleveDetailPage() {
             <div className="mt-6 pt-5 border-t border-[var(--color-bw-border-subtle)]">
               <NotesPanel
                 notes={profile.notes}
-                onAdd={(noteType, content) =>
-                  createNote.mutate({ noteType, content })
-                }
+                onAdd={(noteType, content) => createNote.mutate({ noteType, content })}
                 onDelete={(noteId) => deleteNote.mutate(noteId)}
                 isAdding={createNote.isPending}
               />
@@ -188,30 +169,18 @@ export default function EleveDetailPage() {
                         className="flex items-center justify-between rounded-lg border border-[var(--color-bw-border-subtle)] px-3 py-2"
                       >
                         <div className="min-w-0 flex-1">
-                          <p className="text-heading-xs text-bw-heading truncate">
-                            {sh.sessionTitle}
-                          </p>
+                          <p className="text-heading-xs text-bw-heading truncate">{sh.sessionTitle}</p>
                           <p className="text-body-xs text-bw-muted tabular-nums">
                             {new Date(sh.date).toLocaleDateString("fr-FR", {
                               day: "numeric",
                               month: "long",
                               year: "numeric",
                             })}
-                            {sh.classLabel && (
-                              <span className="ml-2 text-bw-muted">
-                                · {sh.classLabel}
-                              </span>
-                            )}
+                            {sh.classLabel && <span className="ml-2 text-bw-muted">· {sh.classLabel}</span>}
                           </p>
                         </div>
                         <span className="shrink-0 ml-3 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
-                          <svg
-                            width="10"
-                            height="10"
-                            viewBox="0 0 10 10"
-                            fill="none"
-                            aria-hidden="true"
-                          >
+                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
                             <path
                               d="M2 5l2 2 4-4"
                               stroke="currentColor"
@@ -231,15 +200,11 @@ export default function EleveDetailPage() {
 
             {/* Right — portfolio + badges + notes */}
             <div className="space-y-5">
-              {hasPortfolio && (
-                <PortfolioSection portfolio={profile.portfolio} />
-              )}
+              {hasPortfolio && <PortfolioSection portfolio={profile.portfolio} />}
               <AchievementGrid achievements={profile.achievements} />
               <NotesPanel
                 notes={profile.notes}
-                onAdd={(noteType, content) =>
-                  createNote.mutate({ noteType, content })
-                }
+                onAdd={(noteType, content) => createNote.mutate({ noteType, content })}
                 onDelete={(noteId) => deleteNote.mutate(noteId)}
                 isAdding={createNote.isPending}
               />

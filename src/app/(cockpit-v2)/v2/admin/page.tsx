@@ -25,34 +25,20 @@ export default function AdminDashboardPage() {
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 space-y-8">
       <div>
         <h1 className="text-heading-lg text-bw-heading">Administration</h1>
-        <p className="text-sm text-bw-muted mt-1">
-          Gestion des utilisateurs et des acces
-        </p>
+        <p className="text-sm text-bw-muted mt-1">Gestion des utilisateurs et des acces</p>
       </div>
 
       {/* Stats cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <StatCard
-          label="Utilisateurs"
-          value={stats?.totalUsers ?? 0}
-          loading={isLoading}
-        />
+        <StatCard label="Utilisateurs" value={stats?.totalUsers ?? 0} loading={isLoading} />
         <StatCard
           label="En attente"
           value={stats?.pendingUsers ?? 0}
           loading={isLoading}
           highlight={!!stats && stats.pendingUsers > 0}
         />
-        <StatCard
-          label="Sessions"
-          value={stats?.totalSessions ?? 0}
-          loading={isLoading}
-        />
-        <StatCard
-          label="Invitations"
-          value={stats?.pendingInvitations ?? 0}
-          loading={isLoading}
-        />
+        <StatCard label="Sessions" value={stats?.totalSessions ?? 0} loading={isLoading} />
+        <StatCard label="Invitations" value={stats?.pendingInvitations ?? 0} loading={isLoading} />
       </div>
 
       {/* Quick links */}
@@ -61,7 +47,16 @@ export default function AdminDashboardPage() {
           <GlassCardV2 className="p-6 hover:shadow-md transition-shadow cursor-pointer">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-bw-primary/10 flex items-center justify-center">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-bw-primary">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  className="text-bw-primary"
+                >
                   <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
                   <circle cx="9" cy="7" r="4" />
                   <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
@@ -84,7 +79,16 @@ export default function AdminDashboardPage() {
           <GlassCardV2 className="p-6 hover:shadow-md transition-shadow cursor-pointer">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-bw-teal/10 flex items-center justify-center">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-bw-teal">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  className="text-bw-teal"
+                >
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                   <polyline points="22,6 12,13 2,6" />
                 </svg>

@@ -90,22 +90,14 @@ function PowerUpsBarInner({ powerUps, onUsePowerUp, disabled }: PowerUpsBarProps
               disabled={isEmpty || disabled}
               aria-label={`${pu.name} : ${pu.description}${isEmpty ? " (epuise)" : ` (${pu.count} restant${pu.count > 1 ? "s" : ""})`}`}
               className={`relative w-10 h-10 rounded-xl flex items-center justify-center text-lg cursor-pointer transition-all ${
-                isEmpty || disabled
-                  ? "opacity-30 cursor-not-allowed"
-                  : "hover:scale-110 active:scale-95"
+                isEmpty || disabled ? "opacity-30 cursor-not-allowed" : "hover:scale-110 active:scale-95"
               }`}
               style={{
                 background: isEmpty ? "rgba(255,255,255,0.04)" : `${pu.color}15`,
                 border: `1px solid ${isEmpty ? "rgba(255,255,255,0.06)" : `${pu.color}30`}`,
-                boxShadow: isActivating
-                  ? `0 0 20px ${pu.color}60, 0 0 40px ${pu.color}30`
-                  : undefined,
+                boxShadow: isActivating ? `0 0 20px ${pu.color}60, 0 0 40px ${pu.color}30` : undefined,
               }}
-              animate={
-                isActivating
-                  ? { scale: [1, 1.3, 0.9, 1.1, 1], rotate: [0, -10, 10, -5, 0] }
-                  : {}
-              }
+              animate={isActivating ? { scale: [1, 1.3, 0.9, 1.1, 1], rotate: [0, -10, 10, -5, 0] } : {}}
               transition={{ duration: 0.6 }}
             >
               {pu.icon}
@@ -145,9 +137,7 @@ function PowerUpsBarInner({ powerUps, onUsePowerUp, disabled }: PowerUpsBarProps
                 >
                   <p className="text-xs font-bold text-bw-heading">{pu.name}</p>
                   <p className="text-xs text-bw-muted mt-0.5">{pu.description}</p>
-                  {isEmpty && (
-                    <p className="text-xs text-bw-danger mt-1 font-semibold">Epuise !</p>
-                  )}
+                  {isEmpty && <p className="text-xs text-bw-danger mt-1 font-semibold">Epuise !</p>}
                   <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-bw-popover border-r border-b border-white/10 rotate-45 -mt-1" />
                 </motion.div>
               )}

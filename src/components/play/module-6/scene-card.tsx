@@ -33,17 +33,13 @@ export function SceneCardList({ module6 }: SceneCardListProps) {
     >
       <div className="text-center">
         <h2 className="text-2xl font-bold text-white">Les Scènes</h2>
-        <p className="text-sm text-white/50 mt-1">
-          {scenes.length} scènes générées à partir de vos choix collectifs
-        </p>
+        <p className="text-sm text-white/50 mt-1">{scenes.length} scènes générées à partir de vos choix collectifs</p>
       </div>
 
       {/* Adrian: l'intervenant lit les scènes à voix haute avant les missions */}
       {module6.lectureCollective && (
         <div className="w-full p-3 rounded-xl bg-bw-violet/10 border border-bw-violet/20 text-center">
-          <p className="text-sm text-bw-violet font-medium">
-            L&apos;intervenant va lire chaque scène à voix haute.
-          </p>
+          <p className="text-sm text-bw-violet font-medium">L&apos;intervenant va lire chaque scène à voix haute.</p>
           <p className="text-xs text-white/40 mt-1">Écoute bien, tu recevras ta mission juste après.</p>
         </div>
       )}
@@ -61,18 +57,12 @@ export function SceneCardList({ module6 }: SceneCardListProps) {
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-mono text-white/40">#{scene.sceneNumber}</span>
-                <span className={`text-xs px-2 py-0.5 rounded-full border ${act.color}`}>
-                  {act.label}
-                </span>
-                {scene.status === "complete" && (
-                  <span className="text-xs text-bw-teal ml-auto">Complète</span>
-                )}
+                <span className={`text-xs px-2 py-0.5 rounded-full border ${act.color}`}>{act.label}</span>
+                {scene.status === "complete" && <span className="text-xs text-bw-teal ml-auto">Complète</span>}
               </div>
               <h3 className="text-sm font-semibold text-white">{scene.title}</h3>
               <p className="text-xs text-white/60 mt-1">{scene.description}</p>
-              {scene.content && (
-                <p className="text-xs text-white/40 mt-2 italic line-clamp-2">{scene.content}</p>
-              )}
+              {scene.content && <p className="text-xs text-white/40 mt-2 italic line-clamp-2">{scene.content}</p>}
             </motion.div>
           );
         })}

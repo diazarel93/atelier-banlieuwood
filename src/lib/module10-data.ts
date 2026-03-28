@@ -16,71 +16,61 @@ export const ETSI_IMAGES: EtsiImage[] = [
     id: "etsi-banc",
     url: "/images/etsi/banc.svg",
     title: "Le banc vide",
-    description:
-      "Un banc vide dans la cour de l'école, un sac oublié dessus.",
+    description: "Un banc vide dans la cour de l'école, un sac oublié dessus.",
   },
   {
     id: "etsi-fenetre",
     url: "/images/etsi/fenetre.svg",
     title: "La fenêtre",
-    description:
-      "Une fenêtre de salle de classe, un avion en papier sur le rebord. Dehors, la cour est vide.",
+    description: "Une fenêtre de salle de classe, un avion en papier sur le rebord. Dehors, la cour est vide.",
   },
   {
     id: "etsi-escalier",
     url: "/images/etsi/escalier.svg",
     title: "L'escalier",
-    description:
-      "L'escalier du collège, une lumière blafarde. Un cahier tombé sur une marche.",
+    description: "L'escalier du collège, une lumière blafarde. Un cahier tombé sur une marche.",
   },
   {
     id: "etsi-terrain",
     url: "/images/etsi/terrain.svg",
     title: "Le terrain de sport",
-    description:
-      "Le terrain de sport du collège au crépuscule. Un ballon abandonné sur le gazon.",
+    description: "Le terrain de sport du collège au crépuscule. Un ballon abandonné sur le gazon.",
   },
   {
     id: "etsi-bus",
     url: "/images/etsi/bus.svg",
     title: "L'arrêt de bus",
-    description:
-      "L'arrêt du bus scolaire le matin. Un sac par terre, mais pas d'élève.",
+    description: "L'arrêt du bus scolaire le matin. Un sac par terre, mais pas d'élève.",
   },
   {
     id: "etsi-miroir",
     url: "/images/etsi/miroir.svg",
     title: "Le miroir",
-    description:
-      "Le miroir des toilettes du collège. Un message écrit dans la buée, à moitié lisible.",
+    description: "Le miroir des toilettes du collège. Un message écrit dans la buée, à moitié lisible.",
   },
   {
     id: "etsi-cafe",
     url: "/images/etsi/cafe.svg",
     title: "La cantine",
-    description:
-      "La cantine vide. Un plateau encore posé sur une table, les chaises repoussées.",
+    description: "La cantine vide. Un plateau encore posé sur une table, les chaises repoussées.",
   },
   {
     id: "etsi-graffiti",
     url: "/images/etsi/graffiti.svg",
     title: "Le couloir",
-    description:
-      "Un couloir du collège avec un message à moitié effacé sur le mur. Des casiers fermés.",
+    description: "Un couloir du collège avec un message à moitié effacé sur le mur. Des casiers fermés.",
   },
   {
     id: "etsi-parking",
     url: "/images/etsi/parking.svg",
     title: "La salle vide",
-    description:
-      "Un bureau dans une salle de classe vide. Un téléphone oublié, écran allumé.",
+    description: "Un bureau dans une salle de classe vide. Un téléphone oublié, écran allumé.",
   },
   {
     id: "etsi-toit",
     url: "/images/etsi/toit.svg",
     title: "Le toit",
-    description:
-      "Le haut de l'escalier du collège, une porte entrouverte. Le coucher de soleil visible.",
+    description: "Le haut de l'escalier du collège, une porte entrouverte. Le coucher de soleil visible.",
   },
 ];
 
@@ -464,10 +454,7 @@ const ENDING_LABELS: Record<string, string> = {
   ouvert: "une question sans réponse",
 };
 
-export function generatePitchMiroir(
-  etsiText: string,
-  qcmAnswers: Record<string, string>,
-): string {
+export function generatePitchMiroir(etsiText: string, qcmAnswers: Record<string, string>): string {
   const tone = TONE_LABELS[qcmAnswers.tone] || "";
   const trigger = TRIGGER_LABELS[qcmAnswers.trigger] || "quelque chose d'inattendu";
   const ending = ENDING_LABELS[qcmAnswers.ending] || "une fin inattendue";

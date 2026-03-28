@@ -11,11 +11,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { id } = await params;
     const admin = createAdminClient();
-    const { data: session } = await admin
-      .from("sessions")
-      .select("title")
-      .eq("id", id)
-      .single();
+    const { data: session } = await admin.from("sessions").select("title").eq("id", id).single();
 
     return {
       title: session?.title ? `${session.title} — Jouer` : "Partie en cours",

@@ -63,7 +63,9 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   const TWO_MINUTES = 2 * 60 * 1000;
 
   // Get current situation responses for active sessions
-  const activeSessionIds = (data || []).filter((s: Record<string, unknown>) => s.status === "responding").map((s: Record<string, unknown>) => s.id as string);
+  const activeSessionIds = (data || [])
+    .filter((s: Record<string, unknown>) => s.status === "responding")
+    .map((s: Record<string, unknown>) => s.id as string);
 
   const responseMap: Record<string, Set<string>> = {};
   if (activeSessionIds.length > 0) {
@@ -152,30 +154,21 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
 
   const validated = createSessionSchema.safeParse(parsed.data);
   if (!validated.success) {
-    return NextResponse.json(
-      { error: formatZodError(validated.error) },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: formatZodError(validated.error) }, { status: 400 });
   }
 
-  const { title, level, template, description, question_timer, thematique, scheduled_at, class_label, formula } = validated.data;
+  const { title, level, template, description, question_timer, thematique, scheduled_at, class_label, formula } =
+    validated.data;
   const cleanTitle = title.slice(0, 60);
   const cleanTemplate = template || null;
   const formulaId = (formula || "F0") as FormulaId;
   const modulesEnabled = getEnabledModulesForFormula(formulaId);
 
   // Get facilitator's org
-  const { data: facilitator } = await supabase
-    .from("facilitators")
-    .select("org_id")
-    .eq("id", user.id)
-    .single();
+  const { data: facilitator } = await supabase.from("facilitators").select("org_id").eq("id", user.id).single();
 
   if (!facilitator) {
-    return NextResponse.json(
-      { error: "Profil facilitateur introuvable" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Profil facilitateur introuvable" }, { status: 404 });
   }
 
   // Generate unique 6-char join code

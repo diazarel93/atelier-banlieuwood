@@ -140,7 +140,10 @@ export default function FestivalPage() {
       {/* Featured entries */}
       {featured.length > 0 && (
         <section className="max-w-6xl mx-auto px-4 pb-8">
-          <h2 className="text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: "#D4A843" }}>
+          <h2
+            className="text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2"
+            style={{ color: "#D4A843" }}
+          >
             ⭐ Selections du Festival
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -277,10 +280,7 @@ function FestivalCard({ entry, index, featured }: { entry: FestivalEntry; index:
                 : "bg-white border border-black/[0.08] text-gray-700 hover:border-red-300 hover:text-red-500"
             }`}
           >
-            <motion.span
-              animate={voted ? { scale: [1, 1.4, 1] } : {}}
-              transition={{ duration: 0.3 }}
-            >
+            <motion.span animate={voted ? { scale: [1, 1.4, 1] } : {}} transition={{ duration: 0.3 }}>
               {voted ? "❤️" : "🤍"}
             </motion.span>
             {voteCount}

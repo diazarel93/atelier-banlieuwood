@@ -44,7 +44,13 @@ type TabId = "film" | "contributions" | "pitch";
 
 export default function RecapPage() {
   return (
-    <Suspense fallback={<div className="min-h-dvh flex items-center justify-center bg-bw-bg"><div className="w-8 h-8 border-2 border-bw-primary border-t-transparent rounded-full animate-spin" /></div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-dvh flex items-center justify-center bg-bw-bg">
+          <div className="w-8 h-8 border-2 border-bw-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
       <RecapPageInner />
     </Suspense>
   );
@@ -66,8 +72,10 @@ function RecapPageInner() {
     if (shareToken) {
       setIsSharedView(true);
       fetch(`/api/sessions/${sessionId}/recap/share?token=${shareToken}`)
-        .then((r) => r.ok ? r.json() : null)
-        .then((d) => { if (d) setData(d); })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d) setData(d);
+        })
         .catch(() => {})
         .finally(() => setLoading(false));
       return;
@@ -79,7 +87,9 @@ function RecapPageInner() {
       if (stored) {
         studentId = JSON.parse(stored).studentId;
       }
-    } catch { /* no student */ }
+    } catch {
+      /* no student */
+    }
 
     const params = studentId ? `?studentId=${studentId}` : "";
     // Try authenticated recap first (facilitator), fallback to student-public endpoint
@@ -88,16 +98,25 @@ function RecapPageInner() {
         if (r.ok) return r.json();
         // Fallback to public student recap if auth fails (student view)
         return fetch(`/api/sessions/${sessionId}/recap-student${params}`).then((r2) =>
-          r2.ok ? r2.json().then((d) => ({
-            session: { id: sessionId, title: d.sessionTitle, status: "done" },
-            story: d.story.map((s: { category: string; restitutionLabel: string; chosenText: string; isMine: boolean }, i: number) => ({ id: String(i), ...s })),
-            myResponses: [],
-            myChosenCount: d.myChosenCount,
-            totalChoices: d.totalChoices,
-          })) : null
+          r2.ok
+            ? r2.json().then((d) => ({
+                session: { id: sessionId, title: d.sessionTitle, status: "done" },
+                story: d.story.map(
+                  (
+                    s: { category: string; restitutionLabel: string; chosenText: string; isMine: boolean },
+                    i: number,
+                  ) => ({ id: String(i), ...s }),
+                ),
+                myResponses: [],
+                myChosenCount: d.myChosenCount,
+                totalChoices: d.totalChoices,
+              }))
+            : null,
         );
       })
-      .then((d) => { if (d) setData(d); })
+      .then((d) => {
+        if (d) setData(d);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [sessionId, shareToken]);
@@ -107,7 +126,9 @@ function RecapPageInner() {
     try {
       const stored = localStorage.getItem(`bw-student-${sessionId}`);
       if (stored) studentId = JSON.parse(stored).studentId;
-    } catch { /* */ }
+    } catch {
+      /* */
+    }
     if (!studentId) {
       toast.error("Impossible de partager sans identification");
       return;
@@ -166,7 +187,9 @@ function RecapPageInner() {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center bg-bw-bg gap-4 px-4">
         <p className="text-bw-muted">Recap introuvable</p>
-        <a href={ROUTES.play(sessionId)} className="text-bw-primary text-sm">Retour</a>
+        <a href={ROUTES.play(sessionId)} className="text-bw-primary text-sm">
+          Retour
+        </a>
       </div>
     );
   }
@@ -182,7 +205,10 @@ function RecapPageInner() {
       {/* Header */}
       <header className="sticky top-0 z-10 bg-bw-bg/90 backdrop-blur-md border-b border-white/[0.04]">
         <div className="px-4 py-3 flex items-center justify-between">
-          <a href={isSharedView ? "/" : ROUTES.play(sessionId)} className="text-bw-muted text-xs hover:text-white transition-colors">
+          <a
+            href={isSharedView ? "/" : ROUTES.play(sessionId)}
+            className="text-bw-muted text-xs hover:text-white transition-colors"
+          >
             &larr; {isSharedView ? "Accueil" : "Retour"}
           </a>
           <span className="font-cinema text-base tracking-[0.15em] uppercase">
@@ -195,9 +221,21 @@ function RecapPageInner() {
               className="flex items-center gap-1.5 text-xs text-bw-muted hover:text-white transition-colors cursor-pointer disabled:opacity-50"
               aria-label="Partager mon recap"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
               </svg>
               {sharing ? "..." : "Partager"}
             </button>
@@ -246,15 +284,7 @@ function RecapPageInner() {
 }
 
 // ——— Film Vivant — progressive story reveal ———
-function FilmVivant({
-  story,
-  revealedCount,
-  title,
-}: {
-  story: StoryChoice[];
-  revealedCount: number;
-  title: string;
-}) {
+function FilmVivant({ story, revealedCount, title }: { story: StoryChoice[]; revealedCount: number; title: string }) {
   if (story.length === 0) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
@@ -269,13 +299,17 @@ function FilmVivant({
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
       {/* Title card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center py-6 space-y-3"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-6 space-y-3">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-bw-primary to-bw-violet mx-auto flex items-center justify-center">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
             <rect x="2" y="2" width="20" height="20" rx="2.18" />
             <path d="M7 2v20M17 2v20M2 12h20" />
           </svg>
@@ -310,9 +344,7 @@ function FilmVivant({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 0.1, type: "spring", stiffness: 300, damping: 25 }}
               className={`relative rounded-xl p-4 border ${
-                choice.isMine
-                  ? "bg-bw-amber/5 border-bw-amber/30"
-                  : "bg-bw-elevated border-white/[0.06]"
+                choice.isMine ? "bg-bw-amber/5 border-bw-amber/30" : "bg-bw-elevated border-white/[0.06]"
               }`}
             >
               {choice.isMine && (
@@ -429,11 +461,14 @@ function Contributions({
 
   // Find which of my responses were chosen
   const chosenSituationIds = new Set(
-    story.filter((c) => c.isMine).map((c) => {
-      // map back to situationId — we don't have it directly, so use myResponses
-      const match = myResponses.find((r) => r.text === c.chosenText);
-      return match?.situationId;
-    }).filter(Boolean)
+    story
+      .filter((c) => c.isMine)
+      .map((c) => {
+        // map back to situationId — we don't have it directly, so use myResponses
+        const match = myResponses.find((r) => r.text === c.chosenText);
+        return match?.situationId;
+      })
+      .filter(Boolean),
   );
 
   return (
@@ -467,9 +502,7 @@ function Contributions({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
               className={`rounded-xl p-4 border ${
-                wasChosen
-                  ? "bg-bw-amber/5 border-bw-amber/30"
-                  : "bg-bw-elevated border-white/[0.06]"
+                wasChosen ? "bg-bw-amber/5 border-bw-amber/30" : "bg-bw-elevated border-white/[0.06]"
               }`}
             >
               <div className="flex items-start justify-between gap-2">

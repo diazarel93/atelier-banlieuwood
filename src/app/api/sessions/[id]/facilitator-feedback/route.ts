@@ -15,7 +15,7 @@ const feedbackSchema = z.object({
 // POST — submit facilitator post-session feedback
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const supabase = await createServerSupabase();
@@ -41,14 +41,17 @@ export const POST = withErrorHandler(async function POST(
 
   const { data, error } = await supabase
     .from("session_facilitator_feedback")
-    .upsert({
-      session_id: sessionId,
-      energy_level: parsed.data.energyLevel,
-      participation_quality: parsed.data.participationQuality,
-      tool_ease: parsed.data.toolEase,
-      would_redo: parsed.data.wouldRedo,
-      notes: parsed.data.notes || null,
-    }, { onConflict: "session_id" })
+    .upsert(
+      {
+        session_id: sessionId,
+        energy_level: parsed.data.energyLevel,
+        participation_quality: parsed.data.participationQuality,
+        tool_ease: parsed.data.toolEase,
+        would_redo: parsed.data.wouldRedo,
+        notes: parsed.data.notes || null,
+      },
+      { onConflict: "session_id" },
+    )
     .select()
     .single();
 
@@ -59,18 +62,14 @@ export const POST = withErrorHandler(async function POST(
 // GET — retrieve facilitator feedback for a session
 export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const supabase = await createServerSupabase();
   const user = await getAuthUser(supabase);
   if (!user) return NextResponse.json({ error: "Non autorise" }, { status: 401 });
 
-  const { data } = await supabase
-    .from("session_facilitator_feedback")
-    .select("*")
-    .eq("session_id", sessionId)
-    .single();
+  const { data } = await supabase.from("session_facilitator_feedback").select("*").eq("session_id", sessionId).single();
 
   return NextResponse.json(data || null);
 });

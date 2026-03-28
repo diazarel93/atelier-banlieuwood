@@ -6,7 +6,6 @@ import * as Sentry from "@sentry/nextjs";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-
 /**
  * Validate a string is a valid UUIDv4 format.
  */
@@ -30,7 +29,9 @@ export async function requireAuth() {
     return { error: NextResponse.json({ error: "Compte inactif" }, { status: 403 }) };
   }
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return { supabase, user: user!, authUser };
 }
@@ -58,7 +59,9 @@ export async function requireAdmin() {
  */
 export async function requireFacilitator(sessionId: string) {
   const supabase = await createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return { error: NextResponse.json({ error: "Non authentifié" }, { status: 401 }) };
@@ -66,11 +69,7 @@ export async function requireFacilitator(sessionId: string) {
 
   // RLS already filters by facilitator_id = auth.uid() OR is_admin(),
   // so if we can't find the session, the user doesn't own it (or it doesn't exist).
-  const { data: session } = await supabase
-    .from("sessions")
-    .select("id")
-    .eq("id", sessionId)
-    .single();
+  const { data: session } = await supabase.from("sessions").select("id").eq("id", sessionId).single();
 
   if (!session) {
     return { error: NextResponse.json({ error: "Session introuvable ou accès refusé" }, { status: 403 }) };
@@ -93,13 +92,17 @@ export function broadcastSessionUpdate(sessionId: string) {
     method: "POST",
     headers: { apikey: serviceKey, "Content-Type": "application/json" },
     body: JSON.stringify({
-      messages: [{
-        topic: `realtime:session-${sessionId}`,
-        event: "session-update",
-        payload: {},
-      }],
+      messages: [
+        {
+          topic: `realtime:session-${sessionId}`,
+          event: "session-update",
+          payload: {},
+        },
+      ],
     }),
-  }).catch(() => { /* best-effort */ });
+  }).catch(() => {
+    /* best-effort */
+  });
 }
 
 /**
@@ -108,17 +111,14 @@ export function broadcastSessionUpdate(sessionId: string) {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function safeJson<T = Record<string, any>>(
-  req: NextRequest
+  req: NextRequest,
 ): Promise<{ data: T } | { error: NextResponse }> {
   try {
     const data = await req.json();
     return { data: data as T };
   } catch {
     return {
-      error: NextResponse.json(
-        { error: "Corps de requête JSON invalide" },
-        { status: 400 }
-      ),
+      error: NextResponse.json({ error: "Corps de requête JSON invalide" }, { status: 400 }),
     };
   }
 }
@@ -128,42 +128,23 @@ export async function safeJson<T = Record<string, any>>(
  * Catches unhandled exceptions, logs them, reports to Sentry, and
  * returns a consistent 500 JSON response.
  */
-export function withErrorHandler<
-  P extends Record<string, string> = { id: string }
->(
-  handler: (
-    req: NextRequest,
-    ctx: { params: Promise<P> }
-  ) => Promise<NextResponse | undefined>
+export function withErrorHandler<P extends Record<string, string> = { id: string }>(
+  handler: (req: NextRequest, ctx: { params: Promise<P> }) => Promise<NextResponse | undefined>,
 ) {
-  return async (
-    req: NextRequest,
-    ctx: { params: Promise<P> }
-  ): Promise<NextResponse> => {
+  return async (req: NextRequest, ctx: { params: Promise<P> }): Promise<NextResponse> => {
     try {
       const result = await handler(req, ctx);
       if (!result) {
-        console.error(
-          `[API Error] ${req.method} ${req.nextUrl.pathname}: handler returned undefined`
-        );
-        return NextResponse.json(
-          { error: "Internal server error" },
-          { status: 500 }
-        );
+        console.error(`[API Error] ${req.method} ${req.nextUrl.pathname}: handler returned undefined`);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
       }
       return result;
     } catch (error) {
-      console.error(
-        `[API Error] ${req.method} ${req.nextUrl.pathname}:`,
-        error
-      );
+      console.error(`[API Error] ${req.method} ${req.nextUrl.pathname}:`, error);
       Sentry.captureException(error, {
         extra: { method: req.method, url: req.nextUrl.pathname },
       });
-      return NextResponse.json(
-        { error: "Internal server error" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
   };
 }

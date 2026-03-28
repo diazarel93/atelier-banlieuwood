@@ -81,7 +81,9 @@ export function OnboardingHints({ show, step, stepIndex, totalSteps, onNext, onD
       >
         <p className="text-xs text-bw-text leading-relaxed">{step.text}</p>
         <div className="flex items-center justify-between mt-2.5">
-          <span className="text-[10px] text-bw-muted tabular-nums">{stepIndex + 1}/{totalSteps}</span>
+          <span className="text-[10px] text-bw-muted tabular-nums">
+            {stepIndex + 1}/{totalSteps}
+          </span>
           <div className="flex gap-1.5">
             <button
               onClick={onDismiss}

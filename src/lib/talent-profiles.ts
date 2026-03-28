@@ -15,11 +15,41 @@ export interface TalentProfileDef {
 
 const LEGACY_PROFILES: Record<string, TalentProfileDef> = {
   // M6 curriculum roles (authorized)
-  acteur: { key: "acteur", label: "Acteur", emoji: "\uD83C\uDFAD", description: "Aime incarner les personnages", color: "#FF6B35" },
-  creatif: { key: "creatif", label: "Créatif", emoji: "\uD83C\uDFA8", description: "Déborde d'idées originales", color: "#8B5CF6" },
-  detective: { key: "detective", label: "Détective", emoji: "\uD83D\uDD0D", description: "Observe et analyse les détails", color: "#4ECDC4" },
-  provocateur: { key: "provocateur", label: "Provocateur", emoji: "\u26A1", description: "Aime bousculer les idées reçues", color: "#EF6461" },
-  stratege: { key: "stratege", label: "Stratège", emoji: "\u265F\uFE0F", description: "Planifie et organise", color: "#10B981" },
+  acteur: {
+    key: "acteur",
+    label: "Acteur",
+    emoji: "\uD83C\uDFAD",
+    description: "Aime incarner les personnages",
+    color: "#FF6B35",
+  },
+  creatif: {
+    key: "creatif",
+    label: "Créatif",
+    emoji: "\uD83C\uDFA8",
+    description: "Déborde d'idées originales",
+    color: "#8B5CF6",
+  },
+  detective: {
+    key: "detective",
+    label: "Détective",
+    emoji: "\uD83D\uDD0D",
+    description: "Observe et analyse les détails",
+    color: "#4ECDC4",
+  },
+  provocateur: {
+    key: "provocateur",
+    label: "Provocateur",
+    emoji: "\u26A1",
+    description: "Aime bousculer les idées reçues",
+    color: "#EF6461",
+  },
+  stratege: {
+    key: "stratege",
+    label: "Stratège",
+    emoji: "\u265F\uFE0F",
+    description: "Planifie et organise",
+    color: "#10B981",
+  },
 };
 
 /**

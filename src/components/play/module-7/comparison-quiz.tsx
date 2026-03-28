@@ -31,9 +31,7 @@ interface ComparisonQuizProps {
 export function ComparisonQuiz({ module7, sessionId, studentId }: ComparisonQuizProps) {
   const comparisons = module7.comparisons || [];
   const answered = new Set((module7.studentComparisons || []).map((c) => c.comparisonKey));
-  const [currentIndex, setCurrentIndex] = useState(
-    Math.min(answered.size, comparisons.length - 1)
-  );
+  const [currentIndex, setCurrentIndex] = useState(Math.min(answered.size, comparisons.length - 1));
   const [submitting, setSubmitting] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [reasoning, setReasoning] = useState("");
@@ -94,8 +92,8 @@ export function ComparisonQuiz({ module7, sessionId, studentId }: ComparisonQuiz
               i < currentIndex || answered.has(comparisons[i].key)
                 ? "bg-bw-teal"
                 : i === currentIndex
-                ? "bg-bw-amber animate-pulse"
-                : "bg-white/20"
+                  ? "bg-bw-amber animate-pulse"
+                  : "bg-white/20"
             }`}
           />
         ))}
@@ -121,7 +119,7 @@ export function ComparisonQuiz({ module7, sessionId, studentId }: ComparisonQuiz
               selectedPlan === plan.type
                 ? "bg-bw-teal/20 border-2 border-bw-teal"
                 : "bg-white/5 border border-white/[0.06] hover:bg-white/10"
-            } ${(submitting || isAnswered) ? "opacity-60" : ""}`}
+            } ${submitting || isAnswered ? "opacity-60" : ""}`}
           >
             {/* Comparison illustration */}
             {image && (

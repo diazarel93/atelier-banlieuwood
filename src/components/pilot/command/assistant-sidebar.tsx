@@ -58,9 +58,7 @@ export function AssistantSidebar({
       }
     }
 
-    const elapsedSeconds = respondingOpenedAt
-      ? Math.floor((Date.now() - respondingOpenedAt) / 1000)
-      : 0;
+    const elapsedSeconds = respondingOpenedAt ? Math.floor((Date.now() - respondingOpenedAt) / 1000) : 0;
 
     return {
       stuckCount,
@@ -132,19 +130,13 @@ export function AssistantSidebar({
     <div className="flex flex-col h-full bg-white/60">
       {/* ── Header ── */}
       <div className="px-3 py-3 border-b border-gray-100">
-        <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
-          Assistant
-        </h3>
+        <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Assistant</h3>
       </div>
 
       <div className="flex-1 overflow-y-auto">
         <div className="px-3 py-3 space-y-4">
           {/* ── Priority alert ── */}
-          <AttentionPriority
-            signals={attentionSignals}
-            onAction={onAlertAction}
-            showSecondary={false}
-          />
+          <AttentionPriority signals={attentionSignals} onAction={onAlertAction} showSecondary={false} />
 
           {/* ── Contextual suggestion ── */}
           {suggestion && (
@@ -157,18 +149,13 @@ export function AssistantSidebar({
             >
               <div className="flex items-start gap-2.5">
                 <span className="text-base flex-shrink-0">{suggestion.icon}</span>
-                <p className="text-[12px] leading-relaxed text-gray-600">
-                  {suggestion.text}
-                </p>
+                <p className="text-[12px] leading-relaxed text-gray-600">{suggestion.text}</p>
               </div>
             </div>
           )}
 
           {/* ── Session timeline ── */}
-          <SessionTimeline
-            events={timelineEvents}
-            sessionStartedAt={sessionStartedAt}
-          />
+          <SessionTimeline events={timelineEvents} sessionStartedAt={sessionStartedAt} />
         </div>
       </div>
     </div>

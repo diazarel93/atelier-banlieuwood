@@ -20,5 +20,8 @@ export function logSessionEvent(event: {
       situation_id: event.situationId ?? null,
       payload: event.payload ?? {},
     })
-    .then(() => {}, (err) => console.error("[event-logger]", err.message)); // fire-and-forget
+    .then(
+      () => {},
+      (err) => console.error("[event-logger]", err.message),
+    ); // fire-and-forget
 }

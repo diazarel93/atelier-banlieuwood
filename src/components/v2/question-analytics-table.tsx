@@ -35,22 +35,16 @@ function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
       fill="none"
       className={cn(
         "inline-block ml-1 transition-opacity",
-        active ? "opacity-100" : "opacity-0 group-hover:opacity-40"
+        active ? "opacity-100" : "opacity-0 group-hover:opacity-40",
       )}
       aria-hidden="true"
     >
-      <path
-        d={dir === "asc" ? "M5 2l3 4H2l3-4z" : "M5 8L2 4h6L5 8z"}
-        fill="currentColor"
-      />
+      <path d={dir === "asc" ? "M5 2l3 4H2l3-4z" : "M5 8L2 4h6L5 8z"} fill="currentColor" />
     </svg>
   );
 }
 
-export function QuestionAnalyticsTable({
-  questions,
-  className,
-}: QuestionAnalyticsTableProps) {
+export function QuestionAnalyticsTable({ questions, className }: QuestionAnalyticsTableProps) {
   const [sortKey, setSortKey] = useState<SortKey>("avgAiScore");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
@@ -82,9 +76,7 @@ export function QuestionAnalyticsTable({
   if (questions.length === 0) {
     return (
       <GlassCardV2 className={cn("p-6 text-center", className)}>
-        <p className="text-sm text-bw-muted">
-          Aucune donnée par question disponible
-        </p>
+        <p className="text-sm text-bw-muted">Aucune donnée par question disponible</p>
       </GlassCardV2>
     );
   }
@@ -112,10 +104,7 @@ export function QuestionAnalyticsTable({
                   className="group font-medium text-bw-muted text-xs uppercase tracking-wide cursor-pointer hover:text-bw-heading transition-colors"
                 >
                   Réponses
-                  <SortIcon
-                    active={sortKey === "responseCount"}
-                    dir={sortDir}
-                  />
+                  <SortIcon active={sortKey === "responseCount"} dir={sortDir} />
                 </button>
               </th>
               <th className="px-3 py-3 text-center">
@@ -135,10 +124,7 @@ export function QuestionAnalyticsTable({
                   className="group font-medium text-bw-muted text-xs uppercase tracking-wide cursor-pointer hover:text-bw-heading transition-colors"
                 >
                   Temps moyen
-                  <SortIcon
-                    active={sortKey === "avgResponseTimeMs"}
-                    dir={sortDir}
-                  />
+                  <SortIcon active={sortKey === "avgResponseTimeMs"} dir={sortDir} />
                 </button>
               </th>
             </tr>
@@ -151,9 +137,7 @@ export function QuestionAnalyticsTable({
               >
                 <td className="px-4 py-2.5">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-bw-heading line-clamp-1">
-                      {q.label}
-                    </span>
+                    <span className="font-medium text-bw-heading line-clamp-1">{q.label}</span>
                     {q.category && (
                       <span className="inline-block text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--color-bw-surface-dim)] text-bw-muted whitespace-nowrap">
                         {q.category}
@@ -161,16 +145,9 @@ export function QuestionAnalyticsTable({
                     )}
                   </div>
                 </td>
-                <td className="px-3 py-2.5 text-center text-bw-muted tabular-nums">
-                  {q.responseCount}
-                </td>
+                <td className="px-3 py-2.5 text-center text-bw-muted tabular-nums">{q.responseCount}</td>
                 <td className="px-3 py-2.5 text-center">
-                  <span
-                    className={cn(
-                      "font-bold tabular-nums",
-                      scoreColor(q.avgAiScore)
-                    )}
-                  >
+                  <span className={cn("font-bold tabular-nums", scoreColor(q.avgAiScore))}>
                     {q.avgAiScore !== null ? q.avgAiScore.toFixed(1) : "—"}
                   </span>
                 </td>

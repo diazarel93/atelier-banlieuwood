@@ -1,11 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import {
-  buildExerciseCatalog,
-  getCatalogPhases,
-  type ExerciseEntry,
-} from "@/lib/exercise-catalog";
+import { buildExerciseCatalog, getCatalogPhases, type ExerciseEntry } from "@/lib/exercise-catalog";
 import { getModuleGuide } from "@/lib/guide-data";
 import { GlassCardV2 } from "@/components/v2/glass-card";
 import { EmptyState } from "@/components/v2/empty-state";
@@ -24,42 +20,38 @@ function ModuleRow({
   onClick: () => void;
 }) {
   return (
-    <GlassCardV2
-      hover
-      className="p-5 cursor-pointer"
-      onClick={onClick}
-    >
+    <GlassCardV2 hover className="p-5 cursor-pointer" onClick={onClick}>
       <div className="flex items-start gap-4">
         {/* Color bar */}
-        <div
-          className="w-1.5 self-stretch rounded-full shrink-0"
-          style={{ backgroundColor: exercise.color }}
-        />
+        <div className="w-1.5 self-stretch rounded-full shrink-0" style={{ backgroundColor: exercise.color }} />
 
         <div className="flex-1 min-w-0">
           {/* Title + meta */}
           <div className="flex items-center gap-3 flex-wrap mb-2">
-            <h3 className="text-sm font-bold text-bw-heading">
-              {exercise.title}
-            </h3>
+            <h3 className="text-sm font-bold text-bw-heading">{exercise.title}</h3>
             <div className="flex items-center gap-2 text-[11px] text-bw-muted">
               <span className="flex items-center gap-1">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
                 </svg>
                 {exercise.duration}
               </span>
               <span>{exercise.questions} questions</span>
-              {guide && guide.phases.length > 0 && (
-                <span>{guide.phases.length} étapes</span>
-              )}
+              {guide && guide.phases.length > 0 && <span>{guide.phases.length} étapes</span>}
             </div>
           </div>
 
           {/* Description */}
-          <p className="text-xs text-bw-muted mb-3">
-            {exercise.description}
-          </p>
+          <p className="text-xs text-bw-muted mb-3">{exercise.description}</p>
 
           {/* Quick info row: socle commun badges + étapes preview */}
           <div className="flex items-center gap-4 flex-wrap">
@@ -103,16 +95,24 @@ function ModuleRow({
                 </span>
               ))}
               {guide.competences.length > 3 && (
-                <span className="text-body-xs text-bw-muted">
-                  +{guide.competences.length - 3} compétences
-                </span>
+                <span className="text-body-xs text-bw-muted">+{guide.competences.length - 3} compétences</span>
               )}
             </div>
           )}
         </div>
 
         {/* Arrow */}
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="shrink-0 text-bw-muted mt-1" aria-hidden="true">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          className="shrink-0 text-bw-muted mt-1"
+          aria-hidden="true"
+        >
           <polyline points="9 18 15 12 9 6" />
         </svg>
       </div>
@@ -143,7 +143,7 @@ export default function BibliothequePage() {
             (ex) =>
               ex.title.toLowerCase().includes(q) ||
               ex.description.toLowerCase().includes(q) ||
-              phase.label.toLowerCase().includes(q)
+              phase.label.toLowerCase().includes(q),
           );
         }
         return { phase, exercises };
@@ -173,13 +173,10 @@ export default function BibliothequePage() {
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-heading-lg text-bw-heading">
-          Bibliothèque pédagogique
-        </h1>
+        <h1 className="text-heading-lg text-bw-heading">Bibliothèque pédagogique</h1>
         <p className="text-sm text-bw-muted mt-1 max-w-2xl">
-          Découvrez le parcours Banlieuwood : chaque phase et chaque module sont
-          conçus pour développer la créativité, l&apos;expression et l&apos;esprit
-          critique des élèves, en lien avec le Socle Commun de l&apos;Éducation
+          Découvrez le parcours Banlieuwood : chaque phase et chaque module sont conçus pour développer la créativité,
+          l&apos;expression et l&apos;esprit critique des élèves, en lien avec le Socle Commun de l&apos;Éducation
           Nationale.
         </p>
 
@@ -218,38 +215,51 @@ export default function BibliothequePage() {
       {/* Methodology section */}
       <section aria-label="Méthodologie pédagogique" className="mb-8">
         <GlassCardV2 variant="flat" className="p-6">
-          <h2 className="text-sm font-bold text-bw-heading uppercase tracking-wide mb-4">
-            Notre méthodologie
-          </h2>
+          <h2 className="text-sm font-bold text-bw-heading uppercase tracking-wide mb-4">Notre méthodologie</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="w-10 h-10 rounded-xl bg-[var(--color-bw-violet-100)] text-[var(--color-bw-violet)] flex items-center justify-center text-sm font-bold" aria-hidden="true">1</span>
+                <span
+                  className="w-10 h-10 rounded-xl bg-[var(--color-bw-violet-100)] text-[var(--color-bw-violet)] flex items-center justify-center text-sm font-bold"
+                  aria-hidden="true"
+                >
+                  1
+                </span>
                 <h3 className="text-sm font-semibold text-bw-heading">Approche par le cinéma</h3>
               </div>
               <p className="text-xs text-bw-muted leading-relaxed">
-                Le cinéma comme vecteur d&apos;apprentissage : chaque module utilise la narration,
-                l&apos;image et la création pour ancrer les compétences dans une pratique concrète et motivante.
+                Le cinéma comme vecteur d&apos;apprentissage : chaque module utilise la narration, l&apos;image et la
+                création pour ancrer les compétences dans une pratique concrète et motivante.
               </p>
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="w-10 h-10 rounded-xl bg-[var(--color-bw-teal-100)] text-[var(--color-bw-teal-600)] flex items-center justify-center text-sm font-bold" aria-hidden="true">2</span>
+                <span
+                  className="w-10 h-10 rounded-xl bg-[var(--color-bw-teal-100)] text-[var(--color-bw-teal-600)] flex items-center justify-center text-sm font-bold"
+                  aria-hidden="true"
+                >
+                  2
+                </span>
                 <h3 className="text-sm font-semibold text-bw-heading">Progression structurée</h3>
               </div>
               <p className="text-xs text-bw-muted leading-relaxed">
-                Un parcours en phases progressives : de l&apos;écriture créative au débat critique,
-                chaque phase s&apos;appuie sur les acquis précédents pour développer des compétences transversales.
+                Un parcours en phases progressives : de l&apos;écriture créative au débat critique, chaque phase
+                s&apos;appuie sur les acquis précédents pour développer des compétences transversales.
               </p>
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="w-10 h-10 rounded-xl bg-bw-primary/10 text-bw-primary flex items-center justify-center text-sm font-bold" aria-hidden="true">3</span>
+                <span
+                  className="w-10 h-10 rounded-xl bg-bw-primary/10 text-bw-primary flex items-center justify-center text-sm font-bold"
+                  aria-hidden="true"
+                >
+                  3
+                </span>
                 <h3 className="text-sm font-semibold text-bw-heading">Alignement institutionnel</h3>
               </div>
               <p className="text-xs text-bw-muted leading-relaxed">
-                Chaque module est adossé au Socle Commun (D1 Langages, D3 Citoyenneté, D5 Culture) :
-                compétences visées, objectifs pédagogiques et étapes de déroulé sont documentés et traçables.
+                Chaque module est adossé au Socle Commun (D1 Langages, D3 Citoyenneté, D5 Culture) : compétences visées,
+                objectifs pédagogiques et étapes de déroulé sont documentés et traçables.
               </p>
             </div>
           </div>
@@ -261,7 +271,10 @@ export default function BibliothequePage() {
         <div className="relative max-w-sm">
           <svg
             className="absolute left-3 top-1/2 -translate-y-1/2 text-bw-muted"
-            width="14" height="14" viewBox="0 0 14 14" fill="none"
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
             aria-hidden="true"
           >
             <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.5" />
@@ -295,7 +308,16 @@ export default function BibliothequePage() {
         {grouped.length === 0 && (
           <EmptyState
             icon={
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
                 <circle cx="11" cy="11" r="8" />
                 <path d="M21 21l-4.35-4.35" />
               </svg>
@@ -326,10 +348,7 @@ export default function BibliothequePage() {
           return (
             <div key={phase.id}>
               {/* Phase header */}
-              <GlassCardV2
-                variant={isExpanded ? "elevated" : "default"}
-                hover={!isExpanded}
-              >
+              <GlassCardV2 variant={isExpanded ? "elevated" : "default"} hover={!isExpanded}>
                 <button
                   type="button"
                   onClick={() => setExpandedPhase(isExpanded ? null : phase.id)}
@@ -351,26 +370,26 @@ export default function BibliothequePage() {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 flex-wrap">
-                        <h2 className="text-base font-bold text-bw-heading">
-                          {phase.label}
-                        </h2>
+                        <h2 className="text-base font-bold text-bw-heading">{phase.label}</h2>
                         <span className="text-xs text-bw-muted">
                           {exercises.length} module{exercises.length > 1 ? "s" : ""}
                         </span>
                         {/* Socle commun badges */}
                         <div className="flex gap-1">
-                          {Array.from(phaseSocle).sort().map((code) => {
-                            const c = SOCLE_COLORS[code] || { bg: "#66666620", text: "#666" };
-                            return (
-                              <span
-                                key={code}
-                                className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
-                                style={{ backgroundColor: c.bg, color: c.text }}
-                              >
-                                {code}
-                              </span>
-                            );
-                          })}
+                          {Array.from(phaseSocle)
+                            .sort()
+                            .map((code) => {
+                              const c = SOCLE_COLORS[code] || { bg: "#66666620", text: "#666" };
+                              return (
+                                <span
+                                  key={code}
+                                  className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                                  style={{ backgroundColor: c.bg, color: c.text }}
+                                >
+                                  {code}
+                                </span>
+                              );
+                            })}
                         </div>
                       </div>
                     </div>
@@ -381,8 +400,13 @@ export default function BibliothequePage() {
                         <span>{phaseCompetences} compétences</span>
                       </div>
                       <svg
-                        width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
                         className={`text-bw-muted transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
                         aria-hidden="true"
                       >
@@ -392,9 +416,7 @@ export default function BibliothequePage() {
                   </div>
 
                   {/* Phase description — always visible */}
-                  <p className="text-xs text-bw-muted mt-2 ml-16 max-w-2xl leading-relaxed">
-                    {phase.description}
-                  </p>
+                  <p className="text-xs text-bw-muted mt-2 ml-16 max-w-2xl leading-relaxed">{phase.description}</p>
                 </button>
               </GlassCardV2>
 
@@ -402,12 +424,7 @@ export default function BibliothequePage() {
               {isExpanded && (
                 <div className="mt-2 ml-4 sm:ml-8 space-y-3 pb-2">
                   {phaseGuides.map(({ ex, guide }) => (
-                    <ModuleRow
-                      key={ex.id}
-                      exercise={ex}
-                      guide={guide}
-                      onClick={() => handleExerciseClick(ex)}
-                    />
+                    <ModuleRow key={ex.id} exercise={ex} guide={guide} onClick={() => handleExerciseClick(ex)} />
                   ))}
                 </div>
               )}

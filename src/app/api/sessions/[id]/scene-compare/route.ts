@@ -7,7 +7,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // POST — facilitator selects 2 scenes for comparison (Module 2 séance 3)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "scene-compare", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -18,10 +18,7 @@ export const POST = withErrorHandler(async function POST(
   const { sceneAId, sceneBId } = parsed.data;
 
   if (!sceneAId || !sceneBId) {
-    return NextResponse.json(
-      { error: "sceneAId et sceneBId requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "sceneAId et sceneBId requis" }, { status: 400 });
   }
 
   if (!isValidUUID(sceneAId) || !isValidUUID(sceneBId)) {
@@ -29,10 +26,7 @@ export const POST = withErrorHandler(async function POST(
   }
 
   if (sceneAId === sceneBId) {
-    return NextResponse.json(
-      { error: "Les deux scènes doivent être différentes" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Les deux scènes doivent être différentes" }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -45,10 +39,7 @@ export const POST = withErrorHandler(async function POST(
     .in("id", [sceneAId, sceneBId]);
 
   if (!scenes || scenes.length !== 2) {
-    return NextResponse.json(
-      { error: "Scènes introuvables dans cette session" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Scènes introuvables dans cette session" }, { status: 404 });
   }
 
   // Upsert comparison
@@ -60,7 +51,7 @@ export const POST = withErrorHandler(async function POST(
         scene_a_id: sceneAId,
         scene_b_id: sceneBId,
       },
-      { onConflict: "session_id" }
+      { onConflict: "session_id" },
     )
     .select()
     .single();
@@ -76,7 +67,7 @@ export const POST = withErrorHandler(async function POST(
 // GET — returns the 2 scenes (anonymized) for projection
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const admin = createAdminClient();

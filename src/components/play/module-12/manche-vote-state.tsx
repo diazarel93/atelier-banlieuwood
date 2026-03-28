@@ -53,11 +53,7 @@ export function MancheVoteState({ module12, sessionId, studentId, onVote }: Manc
             <div
               key={m}
               className={`w-3 h-3 rounded-full transition-all ${
-                won
-                  ? "bg-emerald-400 scale-110"
-                  : isCurrent
-                  ? "bg-yellow-400 animate-pulse"
-                  : "bg-white/20"
+                won ? "bg-emerald-400 scale-110" : isCurrent ? "bg-yellow-400 animate-pulse" : "bg-white/20"
               }`}
             />
           );
@@ -66,12 +62,8 @@ export function MancheVoteState({ module12, sessionId, studentId, onVote }: Manc
 
       {/* Manche label */}
       <div className="text-center">
-        <p className="text-sm text-white/50 uppercase tracking-wider">
-          Manche {module12.manche}/8
-        </p>
-        <h2 className="text-2xl font-bold text-white mt-1">
-          {module12.mancheLabel}
-        </h2>
+        <p className="text-sm text-white/50 uppercase tracking-wider">Manche {module12.manche}/8</p>
+        <h2 className="text-2xl font-bold text-white mt-1">{module12.mancheLabel}</h2>
       </div>
 
       {/* Cards grid */}
@@ -99,21 +91,25 @@ export function MancheVoteState({ module12, sessionId, studentId, onVote }: Manc
                     isWinner
                       ? "bg-emerald-500/30 border-2 border-emerald-400 ring-2 ring-emerald-400/30"
                       : isSelected
-                      ? "bg-teal-500/30 border-2 border-teal-400"
-                      : "bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20"
+                        ? "bg-teal-500/30 border-2 border-teal-400"
+                        : "bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20"
                   } ${voting ? "opacity-60" : ""}`}
                 >
                   <p className="text-white text-sm leading-relaxed">{card.text}</p>
-                  {card.isBanlieuwood && (
-                    <span className="absolute top-2 right-2 text-xs text-white/30">BW</span>
-                  )}
+                  {card.isBanlieuwood && <span className="absolute top-2 right-2 text-xs text-white/30">BW</span>}
                   {isSelected && !isWinner && (
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       className="absolute top-2 right-2 w-5 h-5 rounded-full bg-teal-400 flex items-center justify-center"
                     >
-                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <svg
+                        className="w-3 h-3 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={3}
+                      >
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </motion.div>
@@ -136,11 +132,7 @@ export function MancheVoteState({ module12, sessionId, studentId, onVote }: Manc
 
       {/* Status messages */}
       {hasVoted && !hasWinner && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-teal-400 text-sm text-center"
-        >
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-teal-400 text-sm text-center">
           Vote enregistre ! En attente du resultat...
         </motion.p>
       )}
@@ -151,9 +143,7 @@ export function MancheVoteState({ module12, sessionId, studentId, onVote }: Manc
           animate={{ opacity: 1, scale: 1 }}
           className="text-center py-2"
         >
-          <p className="text-emerald-400 font-semibold">
-            Le choix collectif est retenu !
-          </p>
+          <p className="text-emerald-400 font-semibold">Le choix collectif est retenu !</p>
         </motion.div>
       )}
 

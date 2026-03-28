@@ -11,20 +11,9 @@ interface EmptyStateProps {
   className?: string;
 }
 
-export function EmptyState({
-  icon,
-  title,
-  description,
-  action,
-  className,
-}: EmptyStateProps) {
+export function EmptyState({ icon, title, description, action, className }: EmptyStateProps) {
   return (
-    <div
-      className={cn(
-        "glass-card flex flex-col items-center justify-center py-20 px-8 text-center",
-        className
-      )}
-    >
+    <div className={cn("glass-card flex flex-col items-center justify-center py-20 px-8 text-center", className)}>
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

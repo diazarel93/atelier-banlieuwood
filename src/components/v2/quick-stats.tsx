@@ -23,9 +23,7 @@ const cardVariants = {
 export function QuickStats({ stats, trends, className }: QuickStatsProps) {
   const prefersReducedMotion = useReducedMotion();
 
-  const variants = prefersReducedMotion
-    ? { hidden: {}, visible: () => ({}) }
-    : cardVariants;
+  const variants = prefersReducedMotion ? { hidden: {}, visible: () => ({}) } : cardVariants;
 
   return (
     <div className={className ? `grid grid-cols-2 gap-4 ${className}` : "grid grid-cols-2 gap-4"}>

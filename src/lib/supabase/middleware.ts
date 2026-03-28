@@ -12,26 +12,18 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
-  const supabase = createServerClient(
-    supabaseUrl,
-    supabaseKey,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          supabaseResponse = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
-        },
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
       },
-    }
-  );
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        supabaseResponse = NextResponse.next({ request });
+        cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options));
+      },
+    },
+  });
 
   const {
     data: { user },
@@ -41,14 +33,10 @@ export async function updateSession(request: NextRequest) {
 
   // Protected routes: dashboard and session management
   const isProtected =
-    pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/session") ||
-    pathname.startsWith("/v2");
+    pathname.startsWith("/dashboard") || pathname.startsWith("/session") || pathname.startsWith("/v2");
 
   // Auth routes: login, reset-password
-  const isAuthRoute =
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/reset-password");
+  const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/reset-password");
 
   // Redirect /dashboard → /v2
   if (pathname === "/dashboard" && user) {
@@ -110,10 +98,7 @@ export async function updateSession(request: NextRequest) {
     }
 
     // Blocked/deactivated users → /account-blocked
-    if (
-      (status === "rejected" || status === "deactivated") &&
-      pathname !== "/account-blocked"
-    ) {
+    if ((status === "rejected" || status === "deactivated") && pathname !== "/account-blocked") {
       const url = request.nextUrl.clone();
       url.pathname = "/account-blocked";
       return NextResponse.redirect(url);
@@ -134,10 +119,7 @@ export async function updateSession(request: NextRequest) {
     }
 
     // R4(2b) — Role separation: intervenant cannot access post-session analytics
-    if (role === "intervenant" && (
-      pathname.startsWith("/v2/statistiques") ||
-      pathname.startsWith("/v2/eleves")
-    )) {
+    if (role === "intervenant" && (pathname.startsWith("/v2/statistiques") || pathname.startsWith("/v2/eleves"))) {
       const url = request.nextUrl.clone();
       url.pathname = "/v2";
       return NextResponse.redirect(url);

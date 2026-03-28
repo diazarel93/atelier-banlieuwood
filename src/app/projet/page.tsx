@@ -60,7 +60,15 @@ const PEDAGOGIE_POINTS = [
 const DIFFERENCES = [
   {
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      >
         <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z" />
         <circle cx="12" cy="12" r="3" />
       </svg>
@@ -70,7 +78,15 @@ const DIFFERENCES = [
   },
   {
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      >
         <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
         <circle cx="9" cy="7" r="4" />
         <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
@@ -81,7 +97,15 @@ const DIFFERENCES = [
   },
   {
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      >
         <rect x="2" y="7" width="20" height="15" rx="2" ry="2" />
         <polyline points="17 2 12 7 7 2" />
       </svg>
@@ -91,7 +115,15 @@ const DIFFERENCES = [
   },
   {
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      >
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
       </svg>
     ),
@@ -158,13 +190,7 @@ const IMPACT_OBJECTIFS = [
   "Rendre la creation artistique accessible",
 ];
 
-const CONTEXTES = [
-  "Ecoles primaires",
-  "Colleges",
-  "Lycees",
-  "Centres culturels",
-  "Structures associatives",
-];
+const CONTEXTES = ["Ecoles primaires", "Colleges", "Lycees", "Centres culturels", "Structures associatives"];
 
 /* ── Page ── */
 
@@ -200,19 +226,13 @@ export default function ProjetPage() {
 
       {/* ── Hero ── */}
       <header className="max-w-4xl mx-auto px-6 pt-16 pb-12 sm:pt-20 sm:pb-16">
-        <p className="text-sm font-medium text-bw-primary mb-3 tracking-wide uppercase">
-          Le Projet
-        </p>
-        <h1
-          className="text-bw-heading font-bold leading-tight"
-          style={{ fontSize: "clamp(28px, 5vw, 44px)" }}
-        >
+        <p className="text-sm font-medium text-bw-primary mb-3 tracking-wide uppercase">Le Projet</p>
+        <h1 className="text-bw-heading font-bold leading-tight" style={{ fontSize: "clamp(28px, 5vw, 44px)" }}>
           Le cinema comme outil d&apos;education
         </h1>
         <p className="text-bw-text text-lg leading-relaxed mt-4 max-w-2xl">
-          Banlieuwood propose des ateliers pedagogiques de creation audiovisuelle
-          destines aux jeunes. A travers un parcours progressif, les participants
-          decouvrent comment imaginer une histoire et la transformer en film
+          Banlieuwood propose des ateliers pedagogiques de creation audiovisuelle destines aux jeunes. A travers un
+          parcours progressif, les participants decouvrent comment imaginer une histoire et la transformer en film
           collectif.
         </p>
       </header>
@@ -221,19 +241,12 @@ export default function ProjetPage() {
          1. MANIFESTE — Nos convictions
          ════════════════════════════════════════════ */}
       <section className="max-w-4xl mx-auto px-6 pb-16">
-        <h2 className="text-2xl font-bold text-bw-heading mb-2">
-          Notre manifeste
-        </h2>
-        <p className="text-bw-muted mb-10">
-          Les convictions qui guident chaque atelier.
-        </p>
+        <h2 className="text-2xl font-bold text-bw-heading mb-2">Notre manifeste</h2>
+        <p className="text-bw-muted mb-10">Les convictions qui guident chaque atelier.</p>
 
         <div className="grid sm:grid-cols-2 gap-6">
           {CONVICTIONS.map((c) => (
-            <div
-              key={c.title}
-              className="bg-bw-surface border border-bw-border rounded-2xl p-6"
-            >
+            <div key={c.title} className="bg-bw-surface border border-bw-border rounded-2xl p-6">
               <h3 className="font-semibold text-bw-heading mb-2">{c.title}</h3>
               <p className="text-sm text-bw-text leading-relaxed">{c.text}</p>
             </div>
@@ -242,10 +255,9 @@ export default function ProjetPage() {
 
         <div className="mt-8 bg-bw-surface border border-bw-border rounded-2xl p-6 sm:p-8">
           <blockquote className="text-bw-heading font-medium text-lg leading-relaxed border-l-3 border-bw-primary pl-5">
-            &laquo;&thinsp;Tout le monde peut apprendre a raconter une histoire.
-            Il suffit parfois d&apos;un moment, d&apos;un groupe et d&apos;un
-            cadre pour que les idees apparaissent. Banlieuwood existe pour offrir
-            ce moment.&thinsp;&raquo;
+            &laquo;&thinsp;Tout le monde peut apprendre a raconter une histoire. Il suffit parfois d&apos;un moment,
+            d&apos;un groupe et d&apos;un cadre pour que les idees apparaissent. Banlieuwood existe pour offrir ce
+            moment.&thinsp;&raquo;
           </blockquote>
         </div>
       </section>
@@ -258,12 +270,8 @@ export default function ProjetPage() {
          2. PEDAGOGIE — Notre intention
          ════════════════════════════════════════════ */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <h2 className="text-2xl font-bold text-bw-heading mb-2">
-          Notre pedagogie
-        </h2>
-        <p className="text-bw-muted mb-10">
-          Une methode basee sur l&apos;experience, pas sur le cours magistral.
-        </p>
+        <h2 className="text-2xl font-bold text-bw-heading mb-2">Notre pedagogie</h2>
+        <p className="text-bw-muted mb-10">Une methode basee sur l&apos;experience, pas sur le cours magistral.</p>
 
         <div className="space-y-4">
           {PEDAGOGIE_POINTS.map((p) => (
@@ -279,9 +287,7 @@ export default function ProjetPage() {
               </span>
               <div>
                 <h3 className="font-semibold text-bw-heading">{p.title}</h3>
-                <p className="text-sm text-bw-text leading-relaxed mt-1">
-                  {p.text}
-                </p>
+                <p className="text-sm text-bw-text leading-relaxed mt-1">{p.text}</p>
               </div>
             </div>
           ))}
@@ -296,19 +302,12 @@ export default function ProjetPage() {
          3. CE QUI NOUS REND UNIQUES
          ════════════════════════════════════════════ */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <h2 className="text-2xl font-bold text-bw-heading mb-2">
-          Ce qui nous rend uniques
-        </h2>
-        <p className="text-bw-muted mb-10">
-          Face aux ateliers cinema existants, Banlieuwood se distingue.
-        </p>
+        <h2 className="text-2xl font-bold text-bw-heading mb-2">Ce qui nous rend uniques</h2>
+        <p className="text-bw-muted mb-10">Face aux ateliers cinema existants, Banlieuwood se distingue.</p>
 
         <div className="grid sm:grid-cols-2 gap-6">
           {DIFFERENCES.map((d) => (
-            <div
-              key={d.title}
-              className="bg-bw-surface border border-bw-border rounded-2xl p-6"
-            >
+            <div key={d.title} className="bg-bw-surface border border-bw-border rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-9 h-9 rounded-lg bg-bw-primary/10 text-bw-primary flex items-center justify-center">
                   {d.icon}
@@ -329,12 +328,8 @@ export default function ProjetPage() {
          4. COMPETENCES & IMPACT
          ════════════════════════════════════════════ */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <h2 className="text-2xl font-bold text-bw-heading mb-2">
-          Impact educatif
-        </h2>
-        <p className="text-bw-muted mb-10">
-          Les competences que le programme developpe chez les jeunes.
-        </p>
+        <h2 className="text-2xl font-bold text-bw-heading mb-2">Impact educatif</h2>
+        <p className="text-bw-muted mb-10">Les competences que le programme developpe chez les jeunes.</p>
 
         <div className="grid sm:grid-cols-2 gap-8">
           {/* Competences */}
@@ -353,10 +348,7 @@ export default function ProjetPage() {
                     border: `1px solid ${c.color}25`,
                   }}
                 >
-                  <span
-                    className="w-1.5 h-1.5 rounded-full"
-                    style={{ background: c.color }}
-                  />
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: c.color }} />
                   {c.label}
                 </span>
               ))}
@@ -397,10 +389,7 @@ export default function ProjetPage() {
           </h3>
           <div className="flex flex-wrap gap-2">
             {CONTEXTES.map((c) => (
-              <span
-                key={c}
-                className="rounded-lg bg-bw-bg border border-bw-border px-3 py-1.5 text-sm text-bw-text"
-              >
+              <span key={c} className="rounded-lg bg-bw-bg border border-bw-border px-3 py-1.5 text-sm text-bw-text">
                 {c}
               </span>
             ))}
@@ -416,12 +405,8 @@ export default function ProjetPage() {
          5. VISION A LONG TERME
          ════════════════════════════════════════════ */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <h2 className="text-2xl font-bold text-bw-heading mb-2">
-          Vision a long terme
-        </h2>
-        <p className="text-bw-muted mb-10">
-          Comment le dispositif pourrait evoluer dans les annees a venir.
-        </p>
+        <h2 className="text-2xl font-bold text-bw-heading mb-2">Vision a long terme</h2>
+        <p className="text-bw-muted mb-10">Comment le dispositif pourrait evoluer dans les annees a venir.</p>
 
         <div className="space-y-0">
           {VISION_ETAPES.map((v, i) => (
@@ -432,9 +417,7 @@ export default function ProjetPage() {
                   className="w-3 h-3 rounded-full shrink-0 mt-1.5"
                   style={{ background: STATUS_COLORS[v.status] || "#FF6B35" }}
                 />
-                {i < VISION_ETAPES.length - 1 && (
-                  <div className="w-px h-full min-h-16 bg-bw-border" />
-                )}
+                {i < VISION_ETAPES.length - 1 && <div className="w-px h-full min-h-16 bg-bw-border" />}
               </div>
               {/* Content */}
               <div className="pb-6 flex-1">
@@ -465,12 +448,8 @@ export default function ProjetPage() {
          6. POSITIONNEMENT
          ════════════════════════════════════════════ */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <h2 className="text-2xl font-bold text-bw-heading mb-2">
-          Notre positionnement
-        </h2>
-        <p className="text-bw-muted mb-10">
-          Banlieuwood n&apos;est pas un simple atelier cinema parmi d&apos;autres.
-        </p>
+        <h2 className="text-2xl font-bold text-bw-heading mb-2">Notre positionnement</h2>
+        <p className="text-bw-muted mb-10">Banlieuwood n&apos;est pas un simple atelier cinema parmi d&apos;autres.</p>
 
         <div className="grid sm:grid-cols-3 gap-4">
           {[
@@ -497,25 +476,14 @@ export default function ProjetPage() {
               key={p.title}
               className="rounded-2xl p-6 border"
               style={{
-                background:
-                  p.color === "#FF6B35"
-                    ? "rgba(255,107,53,0.06)"
-                    : "var(--color-bw-surface)",
-                borderColor:
-                  p.color === "#FF6B35"
-                    ? "rgba(255,107,53,0.2)"
-                    : "var(--color-bw-border)",
+                background: p.color === "#FF6B35" ? "rgba(255,107,53,0.06)" : "var(--color-bw-surface)",
+                borderColor: p.color === "#FF6B35" ? "rgba(255,107,53,0.2)" : "var(--color-bw-border)",
               }}
             >
-              <span
-                className="text-[11px] font-medium uppercase tracking-wider"
-                style={{ color: p.color }}
-              >
+              <span className="text-[11px] font-medium uppercase tracking-wider" style={{ color: p.color }}>
                 {p.label}
               </span>
-              <h3 className="font-semibold text-bw-heading mt-2 mb-2">
-                {p.title}
-              </h3>
+              <h3 className="font-semibold text-bw-heading mt-2 mb-2">{p.title}</h3>
               <p className="text-sm text-bw-text leading-relaxed">{p.desc}</p>
             </div>
           ))}
@@ -525,12 +493,10 @@ export default function ProjetPage() {
       {/* ── CTA ── */}
       <section className="max-w-4xl mx-auto px-6 pb-20">
         <div className="bg-bw-surface border border-bw-border rounded-2xl p-8 sm:p-12 text-center">
-          <h2 className="text-2xl font-bold text-bw-heading mb-3">
-            Envie de collaborer ?
-          </h2>
+          <h2 className="text-2xl font-bold text-bw-heading mb-3">Envie de collaborer ?</h2>
           <p className="text-bw-text mb-8 max-w-md mx-auto">
-            Vous etes un etablissement scolaire, une structure culturelle ou un
-            partenaire institutionnel ? Parlons de votre projet.
+            Vous etes un etablissement scolaire, une structure culturelle ou un partenaire institutionnel ? Parlons de
+            votre projet.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
@@ -554,22 +520,13 @@ export default function ProjetPage() {
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <p className="text-xs text-bw-muted">&copy; 2026 Banlieuwood</p>
           <div className="flex gap-4">
-            <Link
-              href="/legal/privacy"
-              className="text-xs text-bw-muted hover:text-bw-heading transition-colors"
-            >
+            <Link href="/legal/privacy" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">
               Confidentialite
             </Link>
-            <Link
-              href="/legal/cgu"
-              className="text-xs text-bw-muted hover:text-bw-heading transition-colors"
-            >
+            <Link href="/legal/cgu" className="text-xs text-bw-muted hover:text-bw-heading transition-colors">
               CGU
             </Link>
-            <Link
-              href={ROUTES.contact}
-              className="text-xs text-bw-muted hover:text-bw-heading transition-colors"
-            >
+            <Link href={ROUTES.contact} className="text-xs text-bw-muted hover:text-bw-heading transition-colors">
               Contact
             </Link>
           </div>

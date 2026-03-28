@@ -51,16 +51,23 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
         <div role="alert" className="min-h-dvh flex items-center justify-center px-4">
           <div className="text-center space-y-4 max-w-sm">
             <div className="w-16 h-16 rounded-full bg-bw-amber/20 flex items-center justify-center mx-auto">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4A843" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#D4A843"
+                strokeWidth="2"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
                 <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                 <line x1="12" y1="9" x2="12" y2="13" />
                 <line x1="12" y1="17" x2="12.01" y2="17" />
               </svg>
             </div>
             <p className="text-white font-medium">Quelque chose a planté</p>
-            <p className="text-bw-muted text-sm">
-              Une erreur inattendue s&apos;est produite.
-            </p>
+            <p className="text-bw-muted text-sm">Une erreur inattendue s&apos;est produite.</p>
             <button
               onClick={this.handleRetry}
               className="px-4 py-2 bg-bw-primary text-white rounded-xl text-sm font-medium cursor-pointer hover:bg-bw-primary/90 transition-colors"

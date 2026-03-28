@@ -82,7 +82,16 @@ export function FocusQuestionCard({
               disabled={currentIndex <= 0}
               className="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M15 18l-6-6 6-6" />
               </svg>
             </button>
@@ -91,16 +100,19 @@ export function FocusQuestionCard({
             <button
               onClick={() => hasQuestionList && setShowList(!showList)}
               className={`text-[12px] font-bold tabular-nums min-w-[32px] text-center rounded-full px-2 py-0.5 transition-colors ${
-                hasQuestionList
-                  ? "text-gray-500 hover:bg-gray-100 cursor-pointer"
-                  : "text-gray-400 cursor-default"
+                hasQuestionList ? "text-gray-500 hover:bg-gray-100 cursor-pointer" : "text-gray-400 cursor-default"
               }`}
               title={hasQuestionList ? "Voir toutes les questions" : undefined}
             >
               {currentIndex + 1}/{maxSituations}
               {hasQuestionList && (
                 <svg
-                  width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
+                  width="8"
+                  height="8"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
                   className={`inline-block ml-0.5 transition-transform ${showList ? "rotate-180" : ""}`}
                 >
                   <path d="M6 9l6 6 6-6" />
@@ -113,7 +125,16 @@ export function FocusQuestionCard({
               disabled={currentIndex >= maxSituations - 1}
               className="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M9 18l6-6-6-6" />
               </svg>
             </button>
@@ -141,21 +162,31 @@ export function FocusQuestionCard({
                             setShowList(false);
                           }}
                           className={`w-full text-left flex items-start gap-2.5 px-3 py-2 rounded-lg transition-colors cursor-pointer ${
-                            isCurrent
-                              ? "bg-orange-50 border border-orange-200"
-                              : "hover:bg-gray-50"
+                            isCurrent ? "bg-orange-50 border border-orange-200" : "hover:bg-gray-50"
                           }`}
                         >
                           {/* Index circle */}
-                          <span className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold mt-0.5 ${
-                            isLive
-                              ? "bg-orange-500 text-white"
-                              : isPast
-                              ? "bg-emerald-100 text-emerald-700"
-                              : "bg-gray-100 text-gray-500"
-                          }`}>
+                          <span
+                            className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold mt-0.5 ${
+                              isLive
+                                ? "bg-orange-500 text-white"
+                                : isPast
+                                  ? "bg-emerald-100 text-emerald-700"
+                                  : "bg-gray-100 text-gray-500"
+                            }`}
+                          >
                             {isPast ? (
-                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M5 12l5 5L20 7" /></svg>
+                              <svg
+                                width="10"
+                                height="10"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                              >
+                                <path d="M5 12l5 5L20 7" />
+                              </svg>
                             ) : (
                               i + 1
                             )}
@@ -163,9 +194,11 @@ export function FocusQuestionCard({
 
                           {/* Question text */}
                           <div className="flex-1 min-w-0">
-                            <p className={`text-[13px] leading-snug line-clamp-2 ${
-                              isCurrent ? "font-bold text-gray-900" : "font-medium text-gray-700"
-                            }`}>
+                            <p
+                              className={`text-[13px] leading-snug line-clamp-2 ${
+                                isCurrent ? "font-bold text-gray-900" : "font-medium text-gray-700"
+                              }`}
+                            >
                               {sit.prompt}
                             </p>
                             {sit.category && (
@@ -188,7 +221,16 @@ export function FocusQuestionCard({
       {/* Preview badge */}
       {isPreviewing && (
         <span className="inline-flex items-center gap-1 mb-2 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[11px] font-bold">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
             <circle cx="12" cy="12" r="3" />
           </svg>
@@ -197,9 +239,7 @@ export function FocusQuestionCard({
       )}
 
       {/* Question text */}
-      <p className="text-[20px] sm:text-[22px] font-bold text-gray-900 leading-snug">
-        {questionText}
-      </p>
+      <p className="text-[20px] sm:text-[22px] font-bold text-gray-900 leading-snug">{questionText}</p>
     </motion.div>
   );
 }

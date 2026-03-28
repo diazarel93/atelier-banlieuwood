@@ -214,8 +214,10 @@ export const MODULES: ModuleDef[] = [
     specModule: "M5",
     title: "Construction Collective",
     subtitle: "Collectif · 1",
-    description: "8 votes pour construire le film de la classe : ton, situation, personnages, objectif, obstacle, scène, relation, moment fort.",
-    teacherNote: "Préparer les cartes en inter-séance (bouton « Préparer les cartes »). Pendant la séance, les élèves votent manche par manche.",
+    description:
+      "8 votes pour construire le film de la classe : ton, situation, personnages, objectif, obstacle, scène, relation, moment fort.",
+    teacherNote:
+      "Préparer les cartes en inter-séance (bouton « Préparer les cartes »). Pendant la séance, les élèves votent manche par manche.",
     color: "#14B8A6",
     gradient: "from-[#14B8A6] to-[#0D9488]",
     iconKey: "users",
@@ -231,7 +233,7 @@ export const MODULES: ModuleDef[] = [
     title: "Le Cinéma",
     subtitle: "Le Cinéma · 1",
     description: "Comment on fait un film ? Les métiers, les coûts, les contraintes. Comprendre la prod.",
-    teacherNote: "Objectif : comprendre ce que veut dire \"produire un film\" à leur échelle.",
+    teacherNote: 'Objectif : comprendre ce que veut dire "produire un film" à leur échelle.',
     color: "#F59E0B",
     gradient: "from-[#F59E0B] to-[#D97706]",
     iconKey: "clapperboard",
@@ -413,8 +415,10 @@ export const MODULES: ModuleDef[] = [
     specModule: "M6",
     title: "Le Scénario",
     subtitle: "Scénario",
-    description: "Transformer les choix collectifs en scénario : frise narrative, scènes IA, missions d'écriture, assemblage.",
-    teacherNote: "Préparer les scènes en inter-séance (bouton « Générer les scènes »). Les élèves reçoivent chacun une mission d'écriture.",
+    description:
+      "Transformer les choix collectifs en scénario : frise narrative, scènes IA, missions d'écriture, assemblage.",
+    teacherNote:
+      "Préparer les scènes en inter-séance (bouton « Générer les scènes »). Les élèves reçoivent chacun une mission d'écriture.",
     color: "#10B981",
     gradient: "from-[#10B981] to-[#059669]",
     iconKey: "document",
@@ -445,8 +449,10 @@ export const MODULES: ModuleDef[] = [
     specModule: "M8",
     title: "L'Équipe",
     subtitle: "Équipe",
-    description: "Quiz des métiers du cinéma, choix des rôles par mérite (points invisibles), carte talent personnalisée.",
-    teacherNote: "Calculer les points en inter-séance. Les élèves choisissent leur rôle dans l'ordre du classement (invisible).",
+    description:
+      "Quiz des métiers du cinéma, choix des rôles par mérite (points invisibles), carte talent personnalisée.",
+    teacherNote:
+      "Calculer les points en inter-séance. Les élèves choisissent leur rôle dans l'ordre du classement (invisible).",
     color: "#EF4444",
     gradient: "from-[#EF4444] to-[#DC2626]",
     iconKey: "users",
@@ -472,26 +478,115 @@ export const MODULES: ModuleDef[] = [
 ];
 
 /** IDs of the 8 core programme phases (M1–M8) */
-export const MAIN_PHASE_IDS = [
-  "regard", "etsi", "pitch",
-  "collectif", "scenario", "mise-en-scene", "equipe",
-] as const;
+export const MAIN_PHASE_IDS = ["regard", "etsi", "pitch", "collectif", "scenario", "mise-en-scene", "equipe"] as const;
 
 export const PHASES: PhaseDef[] = [
   // ── Parcours principal M1–M8 (conforme au programme pédagogique) ──
-  { id: "regard", label: "Le Regard", description: "Observer, interpréter, imaginer. Les élèves découvrent leur profil créatif à travers des images et des questions ouvertes.", color: "#8B5CF6", emoji: "👁️", moduleIds: ["m1a", "m1b", "m1c", "m1d", "m1e"] },
-  { id: "etsi", label: "Générer l'idée", description: "Amorcer la création narrative par l'imagination guidée à partir d'images déclencheuses. Inclut les QCMs de cadrage narratif (M2 spec).", color: "#06B6D4", emoji: "✨", moduleIds: ["m10a"] },
-  { id: "pitch", label: "Le Pitch", description: "Créer un personnage, définir son objectif, et pitcher son histoire en 30 secondes.", color: "#06B6D4", emoji: "🎤", moduleIds: ["m10b"] },
-  { id: "collectif", label: "Le Récit", description: "Construire l'ossature narrative par manches de contributions et de votes collectifs.", color: "#14B8A6", emoji: "🗳️", moduleIds: ["m12a"] },
-  { id: "scenario", label: "Le Scénario", description: "Transformer les choix collectifs en scénario structuré : frise narrative, scènes IA, missions d'écriture collaborative.", color: "#10B981", emoji: "✏️", moduleIds: ["m6"] },
-  { id: "mise-en-scene", label: "La Mise en scène", description: "Apprendre le langage visuel : les 4 plans fondamentaux, comparer les cadrages, créer un mini-storyboard.", color: "#F59E0B", emoji: "🎥", moduleIds: ["m7"] },
-  { id: "equipe", label: "L'Équipe", description: "Former l'équipe de tournage : quiz des métiers, choix des rôles par mérite, cartes talents.", color: "#EF4444", emoji: "🎭", moduleIds: ["m8"] },
+  {
+    id: "regard",
+    label: "Le Regard",
+    description:
+      "Observer, interpréter, imaginer. Les élèves découvrent leur profil créatif à travers des images et des questions ouvertes.",
+    color: "#8B5CF6",
+    emoji: "👁️",
+    moduleIds: ["m1a", "m1b", "m1c", "m1d", "m1e"],
+  },
+  {
+    id: "etsi",
+    label: "Générer l'idée",
+    description:
+      "Amorcer la création narrative par l'imagination guidée à partir d'images déclencheuses. Inclut les QCMs de cadrage narratif (M2 spec).",
+    color: "#06B6D4",
+    emoji: "✨",
+    moduleIds: ["m10a"],
+  },
+  {
+    id: "pitch",
+    label: "Le Pitch",
+    description: "Créer un personnage, définir son objectif, et pitcher son histoire en 30 secondes.",
+    color: "#06B6D4",
+    emoji: "🎤",
+    moduleIds: ["m10b"],
+  },
+  {
+    id: "collectif",
+    label: "Le Récit",
+    description: "Construire l'ossature narrative par manches de contributions et de votes collectifs.",
+    color: "#14B8A6",
+    emoji: "🗳️",
+    moduleIds: ["m12a"],
+  },
+  {
+    id: "scenario",
+    label: "Le Scénario",
+    description:
+      "Transformer les choix collectifs en scénario structuré : frise narrative, scènes IA, missions d'écriture collaborative.",
+    color: "#10B981",
+    emoji: "✏️",
+    moduleIds: ["m6"],
+  },
+  {
+    id: "mise-en-scene",
+    label: "La Mise en scène",
+    description:
+      "Apprendre le langage visuel : les 4 plans fondamentaux, comparer les cadrages, créer un mini-storyboard.",
+    color: "#F59E0B",
+    emoji: "🎥",
+    moduleIds: ["m7"],
+  },
+  {
+    id: "equipe",
+    label: "L'Équipe",
+    description: "Former l'équipe de tournage : quiz des métiers, choix des rôles par mérite, cartes talents.",
+    color: "#EF4444",
+    emoji: "🎭",
+    moduleIds: ["m8"],
+  },
   // ── Modules bonus (hors programme de base) ──
-  { id: "scene", label: "Émotion Cachée", description: "Explorer les émotions cachées derrière les images. Checklist culturelle, scene builder, débat collectif. (Legacy — hors spec M2)", color: "#EC4899", emoji: "🎬", moduleIds: ["u2a", "u2b", "u2c", "u2d"] },
-  { id: "postprod", label: "La Post-prod", description: "Monter le film, ajouter la musique et les effets, finaliser le projet pour la projection.", color: "#06B6D4", emoji: "🎞️", moduleIds: ["m9"] },
-  { id: "cinema", label: "Le Cinéma", description: "Comprendre le langage cinématographique : plans, angles, montage, son. Les outils pour raconter en images.", color: "#F59E0B", emoji: "🎬", moduleIds: ["m2a", "m2b", "m2c", "m2d"] },
-  { id: "story", label: "L'Histoire", description: "Construire une histoire complète : personnages, conflits, structure narrative et parcours émotionnel.", color: "#4ECDC4", emoji: "📖", moduleIds: ["m2-perso", "m3", "m4", "m5"] },
-  { id: "cinedebat", label: "Ciné-Débat", description: "Analyser des extraits de films, débattre des choix artistiques et développer l'esprit critique cinématographique.", color: "#E11D48", emoji: "📽️", moduleIds: ["m11a", "m11b", "m11c", "m11d"] },
+  {
+    id: "scene",
+    label: "Émotion Cachée",
+    description:
+      "Explorer les émotions cachées derrière les images. Checklist culturelle, scene builder, débat collectif. (Legacy — hors spec M2)",
+    color: "#EC4899",
+    emoji: "🎬",
+    moduleIds: ["u2a", "u2b", "u2c", "u2d"],
+  },
+  {
+    id: "postprod",
+    label: "La Post-prod",
+    description: "Monter le film, ajouter la musique et les effets, finaliser le projet pour la projection.",
+    color: "#06B6D4",
+    emoji: "🎞️",
+    moduleIds: ["m9"],
+  },
+  {
+    id: "cinema",
+    label: "Le Cinéma",
+    description:
+      "Comprendre le langage cinématographique : plans, angles, montage, son. Les outils pour raconter en images.",
+    color: "#F59E0B",
+    emoji: "🎬",
+    moduleIds: ["m2a", "m2b", "m2c", "m2d"],
+  },
+  {
+    id: "story",
+    label: "L'Histoire",
+    description:
+      "Construire une histoire complète : personnages, conflits, structure narrative et parcours émotionnel.",
+    color: "#4ECDC4",
+    emoji: "📖",
+    moduleIds: ["m2-perso", "m3", "m4", "m5"],
+  },
+  {
+    id: "cinedebat",
+    label: "Ciné-Débat",
+    description:
+      "Analyser des extraits de films, débattre des choix artistiques et développer l'esprit critique cinématographique.",
+    color: "#E11D48",
+    emoji: "📽️",
+    moduleIds: ["m11a", "m11b", "m11c", "m11d"],
+  },
 ];
 
 /** Find module by its ID */

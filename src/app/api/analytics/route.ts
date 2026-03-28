@@ -7,7 +7,9 @@ import { withErrorHandler } from "@/lib/api-utils";
 // GET /api/analytics — cross-session analytics for a facilitator
 export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
@@ -32,10 +34,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   const sessionIds = sessions.map((s) => s.id);
 
   // Get student counts per session
-  const { data: students } = await supabase
-    .from("students")
-    .select("id, session_id")
-    .in("session_id", sessionIds);
+  const { data: students } = await supabase.from("students").select("id, session_id").in("session_id", sessionIds);
 
   // Get response counts per session
   const { data: responses } = await supabase
@@ -44,10 +43,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     .in("session_id", sessionIds);
 
   // Get vote counts
-  const { data: votes } = await supabase
-    .from("votes")
-    .select("id, session_id")
-    .in("session_id", sessionIds);
+  const { data: votes } = await supabase.from("votes").select("id, session_id").in("session_id", sessionIds);
 
   // Compute per-session metrics
   const sessionMetrics = sessions.map((session) => {
@@ -64,9 +60,8 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
       studentCount: sessionStudents.length,
       responseCount: sessionResponses.length,
       voteCount: sessionVotes.length,
-      responseRate: sessionStudents.length > 0
-        ? Math.round((sessionResponses.length / sessionStudents.length) * 100)
-        : 0,
+      responseRate:
+        sessionStudents.length > 0 ? Math.round((sessionResponses.length / sessionStudents.length) * 100) : 0,
     };
   });
 
@@ -76,9 +71,10 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
     totalStudents: students?.length || 0,
     totalResponses: responses?.length || 0,
     totalVotes: votes?.length || 0,
-    avgResponseRate: sessionMetrics.length > 0
-      ? Math.round(sessionMetrics.reduce((acc, m) => acc + m.responseRate, 0) / sessionMetrics.length)
-      : 0,
+    avgResponseRate:
+      sessionMetrics.length > 0
+        ? Math.round(sessionMetrics.reduce((acc, m) => acc + m.responseRate, 0) / sessionMetrics.length)
+        : 0,
   };
 
   // Weekly trends (last 8 weeks)

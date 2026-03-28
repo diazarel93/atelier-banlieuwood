@@ -141,8 +141,8 @@ export function CockpitModals({
 }: CockpitModalsProps) {
   const { removeStudent } = useCockpitActions();
   const debateResponses: ResponseForDebate[] = responses
-    .filter(r => !r.is_hidden && !r.reset_at)
-    .map(r => ({
+    .filter((r) => !r.is_hidden && !r.reset_at)
+    .map((r) => ({
       id: r.id,
       text: r.text,
       student_id: r.student_id,
@@ -151,7 +151,7 @@ export function CockpitModals({
       is_highlighted: r.is_highlighted || false,
     }));
 
-  const compareResponses: ResponseForCompare[] = visibleResponses.map(r => ({
+  const compareResponses: ResponseForCompare[] = visibleResponses.map((r) => ({
     id: r.id,
     text: r.text,
     studentName: r.students.display_name,
@@ -159,7 +159,7 @@ export function CockpitModals({
     is_highlighted: r.is_highlighted,
   }));
 
-  const exportResponses: ResponseForExport[] = responses.map(r => ({
+  const exportResponses: ResponseForExport[] = responses.map((r) => ({
     id: r.id,
     text: r.text,
     studentName: r.students.display_name,
@@ -185,15 +185,26 @@ export function CockpitModals({
       <WordCloud
         open={showWordCloud}
         onClose={() => setShowWordCloud(false)}
-        responses={responses.filter(r => !r.is_hidden && !r.reset_at)}
+        responses={responses.filter((r) => !r.is_hidden && !r.reset_at)}
       />
 
       <DebatePanel
         open={showDebate}
         onClose={() => setShowDebate(false)}
         responses={debateResponses}
-        onBroadcast={(msg) => { handleBroadcast(msg); setShowDebate(false); }}
-        onSpotlight={(r) => { setShowDebate(false); setSpotlightResponse({ studentName: r.studentName, studentAvatar: r.studentAvatar, text: r.text, highlighted: r.is_highlighted }); }}
+        onBroadcast={(msg) => {
+          handleBroadcast(msg);
+          setShowDebate(false);
+        }}
+        onSpotlight={(r) => {
+          setShowDebate(false);
+          setSpotlightResponse({
+            studentName: r.studentName,
+            studentAvatar: r.studentAvatar,
+            text: r.text,
+            highlighted: r.is_highlighted,
+          });
+        }}
       />
 
       <BroadcastModal
@@ -232,7 +243,12 @@ export function CockpitModals({
       <ConfirmModal
         open={kickTarget !== null}
         onClose={() => setKickTarget(null)}
-        onConfirm={() => { if (kickTarget) { removeStudent.mutate(kickTarget.id); setKickTarget(null); } }}
+        onConfirm={() => {
+          if (kickTarget) {
+            removeStudent.mutate(kickTarget.id);
+            setKickTarget(null);
+          }
+        }}
         title="Retirer cet eleve ?"
         description={`${kickTarget?.name || "L'eleve"} sera retire de la session.`}
         confirmLabel="Retirer"

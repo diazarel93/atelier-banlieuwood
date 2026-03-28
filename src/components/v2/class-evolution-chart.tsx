@@ -23,8 +23,16 @@ interface EvolutionData {
 }
 
 const STUDENT_COLORS = [
-  "#6366F1", "#EC4899", "#F59E0B", "#10B981", "#8B5CF6",
-  "#EF4444", "#06B6D4", "#F97316", "#84CC16", "#14B8A6",
+  "#6366F1",
+  "#EC4899",
+  "#F59E0B",
+  "#10B981",
+  "#8B5CF6",
+  "#EF4444",
+  "#06B6D4",
+  "#F97316",
+  "#84CC16",
+  "#14B8A6",
 ];
 
 interface ClassEvolutionChartProps {
@@ -39,9 +47,7 @@ export function ClassEvolutionChart({ classLabel }: ClassEvolutionChartProps) {
     queryFn: () => {
       const params = new URLSearchParams();
       if (classLabel) params.set("classLabel", classLabel);
-      return fetch(`/api/v2/class-students-evolution?${params}`).then((r) =>
-        r.json()
-      );
+      return fetch(`/api/v2/class-students-evolution?${params}`).then((r) => r.json());
     },
     staleTime: 30_000,
   });
@@ -60,9 +66,7 @@ export function ClassEvolutionChart({ classLabel }: ClassEvolutionChartProps) {
     return (
       <GlassCardV2 className="p-5 text-center">
         <h3 className="label-caps mb-2">Évolution par élève</h3>
-        <p className="text-sm text-bw-muted">
-          Disponible avec 2+ séances et 2+ élèves
-        </p>
+        <p className="text-sm text-bw-muted">Disponible avec 2+ séances et 2+ élèves</p>
       </GlassCardV2>
     );
   }
@@ -92,15 +96,9 @@ export function ClassEvolutionChart({ classLabel }: ClassEvolutionChartProps) {
               key={a.key}
               onClick={() => setSelectedAxis(a.key)}
               className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors cursor-pointer ${
-                selectedAxis === a.key
-                  ? "text-white"
-                  : "text-bw-muted hover:bg-bw-surface"
+                selectedAxis === a.key ? "text-white" : "text-bw-muted hover:bg-bw-surface"
               }`}
-              style={
-                selectedAxis === a.key
-                  ? { backgroundColor: a.color }
-                  : undefined
-              }
+              style={selectedAxis === a.key ? { backgroundColor: a.color } : undefined}
             >
               {a.shortLabel}
             </button>
@@ -129,13 +127,7 @@ export function ClassEvolutionChart({ classLabel }: ClassEvolutionChartProps) {
                 strokeWidth="1"
                 strokeDasharray="4 4"
               />
-              <text
-                x={padding.left - 8}
-                y={y + 4}
-                textAnchor="end"
-                className="fill-bw-muted"
-                fontSize="10"
-              >
+              <text x={padding.left - 8} y={y + 4} textAnchor="end" className="fill-bw-muted" fontSize="10">
                 {tick}
               </text>
             </g>
@@ -176,18 +168,9 @@ export function ClassEvolutionChart({ classLabel }: ClassEvolutionChartProps) {
               />
               {validPoints.map((vp, pi) => {
                 const x = padding.left + vp.idx * xStep;
-                const y =
-                  padding.top + chartH - (vp.score / 100) * chartH;
+                const y = padding.top + chartH - (vp.score / 100) * chartH;
                 return (
-                  <circle
-                    key={pi}
-                    cx={x}
-                    cy={y}
-                    r="2.5"
-                    fill="var(--card)"
-                    stroke={color}
-                    strokeWidth="1.5"
-                  >
+                  <circle key={pi} cx={x} cy={y} r="2.5" fill="var(--card)" stroke={color} strokeWidth="1.5">
                     <title>
                       {student.displayName}: {vp.score}%
                     </title>
@@ -206,14 +189,7 @@ export function ClassEvolutionChart({ classLabel }: ClassEvolutionChartProps) {
             month: "short",
           });
           return (
-            <text
-              key={i}
-              x={x}
-              y={height - 6}
-              textAnchor="middle"
-              className="fill-bw-muted"
-              fontSize="9"
-            >
+            <text key={i} x={x} y={height - 6} textAnchor="middle" className="fill-bw-muted" fontSize="9">
               {label}
             </text>
           );

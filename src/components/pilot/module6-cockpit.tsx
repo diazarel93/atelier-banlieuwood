@@ -29,7 +29,9 @@ function FriseView({ module6 }: { module6: Module6Data }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-bold text-bw-heading">Frise narrative</h3>
-        <span className="text-sm text-bw-muted tabular-nums">{filledCount}/{steps.length} etapes</span>
+        <span className="text-sm text-bw-muted tabular-nums">
+          {filledCount}/{steps.length} etapes
+        </span>
       </div>
       <div className="space-y-2">
         {steps.map((step, i) => (
@@ -39,9 +41,7 @@ function FriseView({ module6 }: { module6: Module6Data }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.04 }}
             className={`flex items-start gap-3 p-3 rounded-[18px] border transition-colors ${
-              step.winnerText
-                ? "bg-emerald-50 border-emerald-200"
-                : "bg-bw-surface border-black/[0.06]"
+              step.winnerText ? "bg-emerald-50 border-emerald-200" : "bg-bw-surface border-black/[0.06]"
             }`}
           >
             <div
@@ -54,14 +54,10 @@ function FriseView({ module6 }: { module6: Module6Data }) {
               <p className="text-sm font-semibold text-bw-heading">{step.label}</p>
               <p className="text-xs text-bw-muted">{step.description}</p>
               {step.winnerText && (
-                <p className="mt-1 text-sm text-emerald-700 font-medium truncate">
-                  {step.winnerText}
-                </p>
+                <p className="mt-1 text-sm text-emerald-700 font-medium truncate">{step.winnerText}</p>
               )}
             </div>
-            {step.winnerText && (
-              <span className="text-emerald-500 text-lg flex-shrink-0">✓</span>
-            )}
+            {step.winnerText && <span className="text-emerald-500 text-lg flex-shrink-0">✓</span>}
           </motion.div>
         ))}
       </div>
@@ -77,12 +73,16 @@ function ScenesView({ module6 }: { module6: Module6Data }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-bold text-bw-heading">Scenes du scenario</h3>
-        <span className="text-sm text-bw-muted tabular-nums">{readyCount}/{scenes.length} completes</span>
+        <span className="text-sm text-bw-muted tabular-nums">
+          {readyCount}/{scenes.length} completes
+        </span>
       </div>
       {!module6.scenesReady && scenes.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-3 py-8 text-center">
           <p className="text-sm text-bw-muted">Les scenes n'ont pas encore ete generees.</p>
-          <p className="text-xs text-bw-muted/60">Elles seront creees automatiquement a partir de la frise narrative.</p>
+          <p className="text-xs text-bw-muted/60">
+            Elles seront creees automatiquement a partir de la frise narrative.
+          </p>
         </div>
       )}
       <div className="grid gap-3">
@@ -144,7 +144,9 @@ function MissionView({ module6, connectedCount }: { module6: Module6Data; connec
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-bold text-bw-heading">Missions assignees</h3>
-        <span className="text-sm font-medium tabular-nums text-bw-teal">{assignedCount}/{connectedCount}</span>
+        <span className="text-sm font-medium tabular-nums text-bw-teal">
+          {assignedCount}/{connectedCount}
+        </span>
       </div>
 
       {/* Role distribution */}
@@ -174,16 +176,16 @@ function MissionView({ module6, connectedCount }: { module6: Module6Data; connec
             >
               <span className="text-sm flex-1 truncate text-bw-heading">{m.sceneTitle}</span>
               <span className="text-xs text-bw-muted">{m.role}</span>
-              <span className={`text-xs font-medium ${m.status === "done" || m.content ? "text-emerald-600" : "text-amber-500"}`}>
+              <span
+                className={`text-xs font-medium ${m.status === "done" || m.content ? "text-emerald-600" : "text-amber-500"}`}
+              >
                 {m.status === "done" || m.content ? "Soumis" : "En cours"}
               </span>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-sm text-bw-muted text-center py-4">
-          En attente de l'assignation des missions.
-        </p>
+        <p className="text-sm text-bw-muted text-center py-4">En attente de l'assignation des missions.</p>
       )}
     </div>
   );
@@ -197,7 +199,9 @@ function EcritureView({ module6, connectedCount }: { module6: Module6Data; conne
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-bold text-bw-heading">Ecriture en cours</h3>
-        <span className="text-sm font-medium tabular-nums text-bw-teal">{doneCount}/{missions.length || connectedCount}</span>
+        <span className="text-sm font-medium tabular-nums text-bw-teal">
+          {doneCount}/{missions.length || connectedCount}
+        </span>
       </div>
       {/* Progress bar */}
       <div className="h-2 bg-black/[0.04] rounded-full overflow-hidden">
@@ -221,13 +225,13 @@ function EcritureView({ module6, connectedCount }: { module6: Module6Data; conne
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-bw-heading">{m.sceneTitle}</span>
-                <span className={`text-xs font-medium ${m.status === "done" || m.content ? "text-emerald-600" : "text-amber-500"}`}>
+                <span
+                  className={`text-xs font-medium ${m.status === "done" || m.content ? "text-emerald-600" : "text-amber-500"}`}
+                >
                   {m.status === "done" || m.content ? "Soumis" : "En cours..."}
                 </span>
               </div>
-              {m.content && (
-                <p className="mt-1 text-xs text-bw-muted line-clamp-3">{m.content}</p>
-              )}
+              {m.content && <p className="mt-1 text-xs text-bw-muted line-clamp-3">{m.content}</p>}
             </div>
           ))}
         </div>
@@ -250,16 +254,16 @@ function AssemblageView({ module6 }: { module6: Module6Data }) {
       <div className="flex items-center justify-between">
         <h3 className="text-base font-bold text-bw-heading">Assemblage du scenario</h3>
         {scenario?.validated && (
-          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">
-            Valide
-          </span>
+          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Valide</span>
         )}
       </div>
       {/* Mission completion summary */}
       <div className="p-3 rounded-[18px] bg-bw-surface border border-black/[0.06]">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-semibold text-bw-heading">Contributions recues</span>
-          <span className="text-sm font-bold tabular-nums text-bw-teal">{doneCount}/{missions.length}</span>
+          <span className="text-sm font-bold tabular-nums text-bw-teal">
+            {doneCount}/{missions.length}
+          </span>
         </div>
         <div className="h-2 bg-black/[0.04] rounded-full overflow-hidden">
           <motion.div
@@ -277,9 +281,7 @@ function AssemblageView({ module6 }: { module6: Module6Data }) {
         </div>
       )}
       {!scenario?.fullText && (
-        <p className="text-sm text-bw-muted text-center py-4">
-          Le scenario sera assemble a partir des contributions.
-        </p>
+        <p className="text-sm text-bw-muted text-center py-4">Le scenario sera assemble a partir des contributions.</p>
       )}
     </div>
   );

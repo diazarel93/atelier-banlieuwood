@@ -19,12 +19,10 @@ export function InterSessionCard({ sessionId, currentModule }: InterSessionCardP
         <div className="flex items-start gap-4">
           <div className="text-2xl">🎬</div>
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-bw-heading">
-              Inter-séance : Générer les scènes
-            </h3>
+            <h3 className="text-sm font-semibold text-bw-heading">Inter-séance : Générer les scènes</h3>
             <p className="text-xs text-bw-muted mt-1">
-              Génère 4-6 scènes incomplètes à partir des choix collectifs du Module 5 (Construction Collective).
-              Les élèves les compléteront pendant le Module 6.
+              Génère 4-6 scènes incomplètes à partir des choix collectifs du Module 5 (Construction Collective). Les
+              élèves les compléteront pendant le Module 6.
             </p>
             <button
               onClick={async () => {
@@ -60,12 +58,10 @@ export function InterSessionCard({ sessionId, currentModule }: InterSessionCardP
         <div className="flex items-start gap-4">
           <div className="text-2xl">📋</div>
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-bw-heading">
-              Inter-séance : Fiches de tournage
-            </h3>
+            <h3 className="text-sm font-semibold text-bw-heading">Inter-séance : Fiches de tournage</h3>
             <p className="text-xs text-bw-muted mt-1">
-              Génère 6 fiches par rôle (réalisateur, cadreur, scripte, assistant, son, acteur)
-              à partir du scénario et du storyboard.
+              Génère 6 fiches par rôle (réalisateur, cadreur, scripte, assistant, son, acteur) à partir du scénario et
+              du storyboard.
             </p>
             <button
               onClick={async () => {
@@ -101,12 +97,10 @@ export function InterSessionCard({ sessionId, currentModule }: InterSessionCardP
         <div className="flex items-start gap-4">
           <div className="text-2xl">🏆</div>
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-bw-heading">
-              Inter-séance : Calculer les points
-            </h3>
+            <h3 className="text-sm font-semibold text-bw-heading">Inter-séance : Calculer les points</h3>
             <p className="text-xs text-bw-muted mt-1">
-              Calcule les scores de participation, créativité et engagement de chaque élève.
-              L'ordre de choix des rôles sera basé sur ce classement (invisible aux élèves).
+              Calcule les scores de participation, créativité et engagement de chaque élève. L'ordre de choix des rôles
+              sera basé sur ce classement (invisible aux élèves).
             </p>
             <button
               onClick={async () => {

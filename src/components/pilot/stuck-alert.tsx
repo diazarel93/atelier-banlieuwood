@@ -33,11 +33,10 @@ export function StuckAlert({ students, onNudgeAll, isPending }: StuckAlertProps)
             <span className="text-sm flex-shrink-0">⚠️</span>
             <div className="min-w-0">
               <p className="text-xs text-bw-amber font-semibold">
-                {students.length} élève{students.length > 1 ? "s" : ""} bloqué{students.length > 1 ? "s" : ""} depuis +1min
+                {students.length} élève{students.length > 1 ? "s" : ""} bloqué{students.length > 1 ? "s" : ""} depuis
+                +1min
               </p>
-              <p className="text-xs text-bw-amber/80 truncate font-medium">
-                {students.map(s => s.name).join(", ")}
-              </p>
+              <p className="text-xs text-bw-amber/80 truncate font-medium">{students.map((s) => s.name).join(", ")}</p>
             </div>
           </div>
           <button

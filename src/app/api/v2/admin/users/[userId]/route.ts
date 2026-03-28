@@ -9,7 +9,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // PATCH /api/v2/admin/users/[userId] — validate/reject/deactivate a user
 export const PATCH = withErrorHandler<{ userId: string }>(async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ userId: string }> }
+  { params }: { params: Promise<{ userId: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "admin-user-action", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -25,10 +25,7 @@ export const PATCH = withErrorHandler<{ userId: string }>(async function PATCH(
   const { action } = await req.json();
 
   if (!["validate", "reject", "deactivate", "reactivate"].includes(action)) {
-    return NextResponse.json(
-      { error: "Action invalide (validate/reject/deactivate/reactivate)" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Action invalide (validate/reject/deactivate/reactivate)" }, { status: 400 });
   }
 
   const admin = createAdminClient();

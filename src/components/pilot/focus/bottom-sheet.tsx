@@ -57,9 +57,7 @@ export function BottomSheet({ open, onClose, title, children }: BottomSheetProps
               </div>
             )}
 
-            <div className="px-5 pb-5">
-              {children}
-            </div>
+            <div className="px-5 pb-5">{children}</div>
           </motion.div>
         </>
       )}

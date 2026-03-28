@@ -18,7 +18,11 @@ interface StoryboardViewProps {
 export function StoryboardView({ module7 }: StoryboardViewProps) {
   const storyboard = module7.storyboard;
   const storyboardScenes = storyboard?.scenes as
-    | { sceneId: string; title: string; plans: { position: number; planType: string; description: string; imageUrl?: string }[] }[]
+    | {
+        sceneId: string;
+        title: string;
+        plans: { position: number; planType: string; description: string; imageUrl?: string }[];
+      }[]
     | undefined;
   const scenes = module7.scenes || [];
 
@@ -31,9 +35,7 @@ export function StoryboardView({ module7 }: StoryboardViewProps) {
       >
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white">Storyboard validé !</h2>
-          <p className="text-sm text-bw-teal mt-1">
-            Le facilitateur a validé le storyboard de votre film.
-          </p>
+          <p className="text-sm text-bw-teal mt-1">Le facilitateur a validé le storyboard de votre film.</p>
         </div>
 
         <div className="w-full space-y-6">
@@ -45,9 +47,7 @@ export function StoryboardView({ module7 }: StoryboardViewProps) {
               transition={{ delay: i * 0.1 }}
               className="p-4 rounded-xl bg-bw-teal/10 border border-bw-teal/20"
             >
-              <p className="text-xs text-bw-teal font-mono mb-3">
-                {scene.title}
-              </p>
+              <p className="text-xs text-bw-teal font-mono mb-3">{scene.title}</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {scene.plans.map((plan) => {
                   const color = PLAN_COLORS[plan.planType] || "#CBD5E1";
@@ -100,9 +100,7 @@ export function StoryboardView({ module7 }: StoryboardViewProps) {
     >
       <div className="text-center">
         <h2 className="text-2xl font-bold text-white">Storyboard</h2>
-        <p className="text-sm text-white/50 mt-1">
-          En attente de la validation du facilitateur...
-        </p>
+        <p className="text-sm text-white/50 mt-1">En attente de la validation du facilitateur...</p>
       </div>
 
       <div className="w-full space-y-3">

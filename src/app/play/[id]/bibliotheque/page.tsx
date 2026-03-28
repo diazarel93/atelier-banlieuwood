@@ -76,7 +76,9 @@ export default function BibliothequePage() {
     try {
       const stored = localStorage.getItem(`bw-student-${sessionId}`);
       if (stored) studentId = JSON.parse(stored).studentId;
-    } catch { /* no student */ }
+    } catch {
+      /* no student */
+    }
 
     if (!studentId) {
       setLoading(false);
@@ -85,7 +87,9 @@ export default function BibliothequePage() {
 
     fetch(`/api/sessions/${sessionId}/bibliotheque?studentId=${studentId}`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d) setData(d); })
+      .then((d) => {
+        if (d) setData(d);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [sessionId]);
@@ -106,7 +110,9 @@ export default function BibliothequePage() {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center bg-bw-bg gap-4 px-4">
         <p className="text-bw-muted">Bibliothèque introuvable</p>
-        <a href={ROUTES.play(sessionId)} className="text-bw-primary text-sm">Retour</a>
+        <a href={ROUTES.play(sessionId)} className="text-bw-primary text-sm">
+          Retour
+        </a>
       </div>
     );
   }
@@ -169,21 +175,11 @@ export default function BibliothequePage() {
       {/* Content */}
       <div className="px-4 py-6 max-w-lg mx-auto">
         <AnimatePresence mode="wait">
-          {tab === "contributions" && (
-            <ContributionsTab key="contributions" data={data} />
-          )}
-          {tab === "film" && (
-            <FilmTab key="film" data={data} />
-          )}
-          {tab === "galerie" && (
-            <GalerieTab key="galerie" data={data} />
-          )}
-          {tab === "imagination" && (
-            <ImaginationTab key="imagination" data={data} />
-          )}
-          {tab === "creation" && (
-            <CreationTab key="creation" data={data} />
-          )}
+          {tab === "contributions" && <ContributionsTab key="contributions" data={data} />}
+          {tab === "film" && <FilmTab key="film" data={data} />}
+          {tab === "galerie" && <GalerieTab key="galerie" data={data} />}
+          {tab === "imagination" && <ImaginationTab key="imagination" data={data} />}
+          {tab === "creation" && <CreationTab key="creation" data={data} />}
         </AnimatePresence>
       </div>
     </div>
@@ -208,16 +204,12 @@ function ContributionsTab({ data }: { data: BiblioData }) {
         />
       </div>
 
-      {!hasContent && (
-        <EmptyState message="Aucune contribution pour le moment. Joue pour remplir ta bibliothèque !" />
-      )}
+      {!hasContent && <EmptyState message="Aucune contribution pour le moment. Joue pour remplir ta bibliothèque !" />}
 
       {/* Response list */}
       <div className="space-y-3">
         {myResponses.map((resp, i) => {
-          const wasChosen = data.collectiveChoices.some(
-            (c) => c.isMine && c.chosenText === resp.text
-          );
+          const wasChosen = data.collectiveChoices.some((c) => c.isMine && c.chosenText === resp.text);
           return (
             <motion.div
               key={resp.id}
@@ -225,9 +217,7 @@ function ContributionsTab({ data }: { data: BiblioData }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.03 }}
               className={`rounded-xl p-4 border space-y-2 ${
-                wasChosen
-                  ? "bg-bw-amber/5 border-bw-amber/30"
-                  : "bg-bw-elevated border-white/[0.06]"
+                wasChosen ? "bg-bw-amber/5 border-bw-amber/30" : "bg-bw-elevated border-white/[0.06]"
               }`}
             >
               <div className="flex items-start justify-between gap-2">
@@ -300,9 +290,7 @@ function FilmTab({ data }: { data: BiblioData }) {
             )}
             <div
               className={`rounded-xl p-4 border ${
-                choice.isMine
-                  ? "bg-bw-amber/5 border-bw-amber/30"
-                  : "bg-bw-elevated border-white/[0.06]"
+                choice.isMine ? "bg-bw-amber/5 border-bw-amber/30" : "bg-bw-elevated border-white/[0.06]"
               }`}
             >
               {choice.isMine && (
@@ -342,9 +330,7 @@ function GalerieTab({ data }: { data: BiblioData }) {
         <div key={group.situationId} className="space-y-2">
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-bw-violet" />
-            <span className="text-xs font-medium text-bw-muted uppercase tracking-wider">
-              Question {gi + 1}
-            </span>
+            <span className="text-xs font-medium text-bw-muted uppercase tracking-wider">Question {gi + 1}</span>
           </div>
           <div className="grid gap-2">
             {group.responses.map((r) => (
@@ -375,7 +361,13 @@ function ImaginationTab({ data }: { data: BiblioData }) {
               <div key={etsi.imageId} className="rounded-xl overflow-hidden border border-white/[0.06]">
                 {img && (
                   <div className="p-3 bg-bw-elevated/50 flex items-center gap-3">
-                    <SafeImage src={img.url} alt={img.title} width={64} height={48} className="w-16 h-12 rounded-lg object-cover bg-bw-bg" />
+                    <SafeImage
+                      src={img.url}
+                      alt={img.title}
+                      width={64}
+                      height={48}
+                      className="w-16 h-12 rounded-lg object-cover bg-bw-bg"
+                    />
                     <div>
                       <p className="text-xs font-medium">{img.title}</p>
                       <p className="text-xs text-bw-muted">{img.description}</p>
@@ -400,7 +392,8 @@ function ImaginationTab({ data }: { data: BiblioData }) {
               <div>
                 <p className="font-bold text-lg">{data.personnage.prenom}</p>
                 <p className="text-xs text-bw-muted">
-                  {data.personnage.trait && TRAITS.find((t) => t.key === data.personnage!.trait)?.label || data.personnage.trait}
+                  {(data.personnage.trait && TRAITS.find((t) => t.key === data.personnage!.trait)?.label) ||
+                    data.personnage.trait}
                 </p>
               </div>
             </div>
@@ -452,9 +445,7 @@ function ImaginationTab({ data }: { data: BiblioData }) {
               <div
                 key={idea.id}
                 className={`rounded-lg p-3 border flex items-start justify-between gap-2 ${
-                  idea.isMine
-                    ? "bg-cyan-500/5 border-cyan-500/20"
-                    : "bg-bw-elevated border-white/[0.06]"
+                  idea.isMine ? "bg-cyan-500/5 border-cyan-500/20" : "bg-bw-elevated border-white/[0.06]"
                 }`}
               >
                 <p className="text-sm flex-1">{idea.text}</p>
@@ -462,9 +453,7 @@ function ImaginationTab({ data }: { data: BiblioData }) {
                   <span className="text-xs text-bw-primary">{idea.votes}</span>
                   <span className="text-xs">❤️</span>
                   {idea.isMine && (
-                    <span className="text-xs text-cyan-400 bg-cyan-500/20 px-1.5 py-0.5 rounded-full ml-1">
-                      Moi
-                    </span>
+                    <span className="text-xs text-cyan-400 bg-cyan-500/20 px-1.5 py-0.5 rounded-full ml-1">Moi</span>
                   )}
                 </div>
               </div>
@@ -540,7 +529,10 @@ function CreationTab({ data }: { data: BiblioData }) {
             )}
             <div className="grid gap-1.5">
               {Object.entries(data.budget.choices || {}).map(([cat, choice]) => (
-                <div key={cat} className="flex items-center justify-between text-xs py-1 border-b border-white/[0.04] last:border-0">
+                <div
+                  key={cat}
+                  className="flex items-center justify-between text-xs py-1 border-b border-white/[0.04] last:border-0"
+                >
                   <span className="text-bw-muted capitalize">{cat}</span>
                   <span>{choice}</span>
                 </div>
@@ -550,9 +542,7 @@ function CreationTab({ data }: { data: BiblioData }) {
         </Section>
       )}
 
-      {!data.scenes.length && !data.budget && (
-        <EmptyState message="Pas encore de créations. Continue à jouer !" />
-      )}
+      {!data.scenes.length && !data.budget && <EmptyState message="Pas encore de créations. Continue à jouer !" />}
     </motion.div>
   );
 }
@@ -581,7 +571,16 @@ function EmptyState({ message }: { message: string }) {
   return (
     <div className="text-center py-12">
       <div className="w-16 h-16 rounded-full bg-white/[0.03] mx-auto flex items-center justify-center mb-4">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-bw-muted">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          className="text-bw-muted"
+        >
           <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
         </svg>
       </div>

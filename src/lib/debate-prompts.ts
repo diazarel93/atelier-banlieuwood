@@ -24,7 +24,10 @@ const DEBATE_PROMPTS: DebatePrompt[] = [
   // Argument
   { text: "Trouvez un compromis entre les deux réponses les plus populaires.", category: "argument" },
   { text: "Donnez UN argument pour convaincre quelqu'un qui n'est pas d'accord.", category: "argument" },
-  { text: "Si vous deviez choisir entre ces réponses pour un film, laquelle ferait la meilleure scène ?", category: "argument" },
+  {
+    text: "Si vous deviez choisir entre ces réponses pour un film, laquelle ferait la meilleure scène ?",
+    category: "argument",
+  },
   { text: "Quel est le point commun entre toutes les réponses ?", category: "argument" },
 
   // Creative

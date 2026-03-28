@@ -16,12 +16,8 @@ export function FacilitatorTipsCard({ guide }: FacilitatorTipsCardProps) {
 
       {/* Intro à dire */}
       <div className="rounded-xl bg-[var(--color-bw-surface-dim)] p-4 mb-4">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-bw-primary">
-          Intro à dire
-        </span>
-        <p className="text-sm text-bw-heading mt-2 italic leading-relaxed">
-          &ldquo;{guide.introADire}&rdquo;
-        </p>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-bw-primary">Intro à dire</span>
+        <p className="text-sm text-bw-heading mt-2 italic leading-relaxed">&ldquo;{guide.introADire}&rdquo;</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

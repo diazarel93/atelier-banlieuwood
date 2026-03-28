@@ -13,7 +13,10 @@ export function ElapsedTimer({ startedAt, variant = "badge" }: ElapsedTimerProps
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
-    if (!startedAt) { setElapsed(0); return; }
+    if (!startedAt) {
+      setElapsed(0);
+      return;
+    }
     setElapsed(Math.floor((Date.now() - startedAt) / 1000));
     const interval = setInterval(() => {
       setElapsed(Math.floor((Date.now() - startedAt) / 1000));
@@ -29,11 +32,7 @@ export function ElapsedTimer({ startedAt, variant = "badge" }: ElapsedTimerProps
 
   // ── Plain variant: just text ──
   if (variant === "plain") {
-    return (
-      <span className="text-[13px] font-medium text-[#7D828A] tabular-nums">
-        {timeStr}
-      </span>
-    );
+    return <span className="text-[13px] font-medium text-[#7D828A] tabular-nums">{timeStr}</span>;
   }
 
   // ── Pill variant: colored rounded pill ──
@@ -62,7 +61,15 @@ export function ElapsedTimer({ startedAt, variant = "badge" }: ElapsedTimerProps
       className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs tabular-nums"
       style={{ color, background: `${color}10` }}
     >
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <svg
+        width="10"
+        height="10"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      >
         <circle cx="12" cy="12" r="10" />
         <path d="M12 6v6l4 2" />
       </svg>

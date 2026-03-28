@@ -7,7 +7,7 @@ import { generateRelance } from "@/lib/ai";
 // POST — Generate an AI relance for a student's response (facilitator only)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
@@ -23,16 +23,10 @@ export const POST = withErrorHandler(async function POST(
   const { studentId, responseId } = parsed.data;
 
   if (!studentId || !responseId) {
-    return NextResponse.json(
-      { error: "studentId et responseId requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "studentId et responseId requis" }, { status: 400 });
   }
   if (!isValidUUID(studentId) || !isValidUUID(responseId)) {
-    return NextResponse.json(
-      { error: "studentId ou responseId invalide" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "studentId ou responseId invalide" }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -47,10 +41,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (respErr || !response) {
-    return NextResponse.json(
-      { error: "Réponse introuvable" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Réponse introuvable" }, { status: 404 });
   }
 
   // Fetch the situation (for the original prompt + nudge fallback)
@@ -61,10 +52,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!situation) {
-    return NextResponse.json(
-      { error: "Situation introuvable" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Situation introuvable" }, { status: 404 });
   }
 
   // Fetch session level
@@ -97,10 +85,7 @@ export const POST = withErrorHandler(async function POST(
   });
 
   // Store in DB for traceability
-  await admin
-    .from("responses")
-    .update({ relance_text: relanceText })
-    .eq("id", responseId);
+  await admin.from("responses").update({ relance_text: relanceText }).eq("id", responseId);
 
   return NextResponse.json({ relanceText });
 });
@@ -108,7 +93,7 @@ export const POST = withErrorHandler(async function POST(
 // PATCH — Store student's response to the relance (facilitator only)
 export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const auth = await requireFacilitator(sessionId);
@@ -127,16 +112,10 @@ export const PATCH = withErrorHandler(async function PATCH(
   const { responseId, relanceResponse } = parsed.data;
 
   if (!responseId || !relanceResponse?.trim()) {
-    return NextResponse.json(
-      { error: "responseId et relanceResponse requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "responseId et relanceResponse requis" }, { status: 400 });
   }
   if (!isValidUUID(responseId)) {
-    return NextResponse.json(
-      { error: "responseId invalide" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "responseId invalide" }, { status: 400 });
   }
 
   const cleanText = relanceResponse.trim().slice(0, 500);

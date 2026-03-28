@@ -46,11 +46,7 @@ export default function StudentLoginPage() {
         }}
       />
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
           <motion.div
@@ -97,7 +93,11 @@ export default function StudentLoginPage() {
             <form onSubmit={handleMagicLink} className="space-y-5">
               {/* Display Name */}
               <div>
-                <label htmlFor="studio-displayName" className="text-sm font-semibold mb-1.5 block" style={{ color: "#1A1A2E" }}>
+                <label
+                  htmlFor="studio-displayName"
+                  className="text-sm font-semibold mb-1.5 block"
+                  style={{ color: "#1A1A2E" }}
+                >
                   Ton prenom ou pseudo
                 </label>
                 <input
@@ -139,7 +139,11 @@ export default function StudentLoginPage() {
 
               {/* Email */}
               <div>
-                <label htmlFor="studio-email" className="text-sm font-semibold mb-1.5 block" style={{ color: "#1A1A2E" }}>
+                <label
+                  htmlFor="studio-email"
+                  className="text-sm font-semibold mb-1.5 block"
+                  style={{ color: "#1A1A2E" }}
+                >
                   Ton email
                 </label>
                 <input
@@ -158,7 +162,9 @@ export default function StudentLoginPage() {
               </div>
 
               {error && (
-                <p className="text-sm text-red-500 font-medium" role="alert" aria-live="assertive">{error}</p>
+                <p className="text-sm text-red-500 font-medium" role="alert" aria-live="assertive">
+                  {error}
+                </p>
               )}
 
               <button

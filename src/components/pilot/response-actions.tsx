@@ -125,7 +125,15 @@ function InlineActionsInner({
               : "text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10"
           }`}
         >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill={isHighlighted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill={isHighlighted ? "currentColor" : "none"}
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
           {isHighlighted ? "Projete" : "Projeter"}
@@ -141,16 +149,29 @@ function InlineActionsInner({
               : "text-bw-muted hover:text-bw-text hover:bg-[#EDE9F7]"
           }`}
         >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
           </svg>
           {teacherComment ? "Commente" : "Parler"}
         </button>
 
         {teacherComment && !isCommenting && (
-          <button onClick={handleDeleteComment} aria-label="Supprimer le commentaire"
+          <button
+            onClick={handleDeleteComment}
+            aria-label="Supprimer le commentaire"
             className="px-1 py-1 rounded-md text-xs cursor-pointer transition-colors text-bw-muted hover:text-bw-danger focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
-            title="Supprimer commentaire">✕</button>
+            title="Supprimer commentaire"
+          >
+            ✕
+          </button>
         )}
 
         <div className="flex-1" />
@@ -158,7 +179,7 @@ function InlineActionsInner({
         {/* Overflow menu — remaining actions */}
         <div className="relative">
           <button
-            onClick={() => setShowOverflow(p => !p)}
+            onClick={() => setShowOverflow((p) => !p)}
             aria-label="Plus d'actions"
             className="flex items-center px-2 py-1 rounded-xl text-xs text-bw-muted hover:text-bw-text hover:bg-[#EDE9F7] cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
           >
@@ -176,34 +197,58 @@ function InlineActionsInner({
                   className="absolute right-0 bottom-full mb-1.5 z-50 w-44 bg-bw-surface border border-black/[0.06] rounded-xl shadow-2xl overflow-hidden"
                 >
                   {/* Relancer */}
-                  <button onClick={() => { setShowNudgePicker(!showNudgePicker); setShowOverflow(false); }}
-                    className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-black/[0.05] cursor-pointer transition-colors flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setShowNudgePicker(!showNudgePicker);
+                      setShowOverflow(false);
+                    }}
+                    className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-black/[0.05] cursor-pointer transition-colors flex items-center gap-2"
+                  >
                     <span className="w-4 text-center">🔄</span> Relancer
                   </button>
                   {/* Noter */}
-                  <button onClick={() => { setShowScorePicker(!showScorePicker); setShowOverflow(false); }}
+                  <button
+                    onClick={() => {
+                      setShowScorePicker(!showScorePicker);
+                      setShowOverflow(false);
+                    }}
                     disabled={isScorePending}
-                    className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-black/[0.05] cursor-pointer transition-colors flex items-center gap-2 disabled:opacity-40">
+                    className="w-full text-left px-3 py-2 text-xs text-bw-text hover:bg-black/[0.05] cursor-pointer transition-colors flex items-center gap-2 disabled:opacity-40"
+                  >
                     <span className="w-4 text-center">⭐</span> {teacherScore > 0 ? `Note: ${teacherScore}/5` : "Noter"}
                   </button>
                   {/* Annotation flags */}
-                  {onFlag && ([
-                    { key: "star", icon: "⭐", label: "Excellent" },
-                    { key: "flag", icon: "🚩", label: "A revoir" },
-                    { key: "bookmark", icon: "🔖", label: "A projeter" },
-                  ] as const).map((f) => (
-                    <button key={f.key}
-                      onClick={() => { onFlag(responseId, teacherFlag === f.key ? null : f.key); setShowOverflow(false); }}
-                      className={`w-full text-left px-3 py-2 text-xs hover:bg-black/[0.05] cursor-pointer transition-colors flex items-center gap-2 ${
-                        teacherFlag === f.key ? "text-bw-teal" : "text-bw-text"
-                      }`}>
-                      <span className="w-4 text-center">{f.icon}</span> {teacherFlag === f.key ? `✓ ${f.label}` : f.label}
-                    </button>
-                  ))}
+                  {onFlag &&
+                    (
+                      [
+                        { key: "star", icon: "⭐", label: "Excellent" },
+                        { key: "flag", icon: "🚩", label: "A revoir" },
+                        { key: "bookmark", icon: "🔖", label: "A projeter" },
+                      ] as const
+                    ).map((f) => (
+                      <button
+                        key={f.key}
+                        onClick={() => {
+                          onFlag(responseId, teacherFlag === f.key ? null : f.key);
+                          setShowOverflow(false);
+                        }}
+                        className={`w-full text-left px-3 py-2 text-xs hover:bg-black/[0.05] cursor-pointer transition-colors flex items-center gap-2 ${
+                          teacherFlag === f.key ? "text-bw-teal" : "text-bw-text"
+                        }`}
+                      >
+                        <span className="w-4 text-center">{f.icon}</span>{" "}
+                        {teacherFlag === f.key ? `✓ ${f.label}` : f.label}
+                      </button>
+                    ))}
                   {/* Signaler */}
-                  <button onClick={() => { handleWarn(); setShowOverflow(false); }}
+                  <button
+                    onClick={() => {
+                      handleWarn();
+                      setShowOverflow(false);
+                    }}
                     disabled={isWarnPending}
-                    className="w-full text-left px-3 py-2 text-xs text-bw-danger hover:bg-bw-danger/10 cursor-pointer transition-colors flex items-center gap-2 disabled:opacity-40 border-t border-black/[0.04]">
+                    className="w-full text-left px-3 py-2 text-xs text-bw-danger hover:bg-bw-danger/10 cursor-pointer transition-colors flex items-center gap-2 disabled:opacity-40 border-t border-black/[0.04]"
+                  >
                     <span className="w-4 text-center">🚩</span> Signaler {warnings > 0 && `(${warnings}/3)`}
                   </button>
                 </motion.div>
@@ -296,9 +341,7 @@ function InlineActionsInner({
             className="overflow-hidden"
           >
             <div className="bg-bw-surface border border-bw-green/20 rounded-xl p-2.5 space-y-2">
-              <span className="text-xs text-bw-green font-medium uppercase tracking-wider">
-                Note qualite
-              </span>
+              <span className="text-xs text-bw-green font-medium uppercase tracking-wider">Note qualite</span>
               <div className="flex items-center gap-1" role="radiogroup" aria-label="Note de 1 à 5">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -336,7 +379,10 @@ function InlineActionsInner({
                 </span>
               </div>
               <button
-                onClick={() => { setShowScorePicker(false); setHoverStar(0); }}
+                onClick={() => {
+                  setShowScorePicker(false);
+                  setHoverStar(0);
+                }}
                 aria-label="Fermer le sélecteur de note"
                 className="w-full py-1 text-xs text-bw-muted hover:text-bw-text cursor-pointer focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
               >
@@ -369,16 +415,19 @@ function InlineActionsInner({
                 className="bg-bw-bg border-[#DDD7EC] text-xs text-bw-heading placeholder:text-bw-muted focus:border-bw-teal resize-none min-h-0 p-2"
               />
               <div className="flex gap-1.5">
-                <button onClick={onCancelComment}
+                <button
+                  onClick={onCancelComment}
                   aria-label="Annuler le commentaire"
-                  className="flex-1 py-1.5 rounded-xl bg-bw-bg text-bw-muted text-xs font-medium cursor-pointer border border-black/[0.04] focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none">
+                  className="flex-1 py-1.5 rounded-xl bg-bw-bg text-bw-muted text-xs font-medium cursor-pointer border border-black/[0.04] focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
+                >
                   Annuler
                 </button>
                 <button
                   onClick={handleSubmitComment}
                   disabled={!commentText.trim() || isCommentPending}
                   aria-label="Envoyer le commentaire"
-                  className="flex-1 py-1.5 rounded-xl bg-bw-teal text-black text-xs font-semibold cursor-pointer hover:brightness-110 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none">
+                  className="flex-1 py-1.5 rounded-xl bg-bw-teal text-black text-xs font-semibold cursor-pointer hover:brightness-110 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
+                >
                   {isCommentPending ? "..." : "Envoyer"}
                 </button>
               </div>
@@ -479,7 +528,15 @@ function GenericInlineActionsInner({
               : "text-bw-muted hover:text-bw-text hover:bg-[#EDE9F7]"
           }`}
         >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
           </svg>
           {savedComment ? "Commenté" : "Parler"}
@@ -496,7 +553,15 @@ function GenericInlineActionsInner({
                 : "text-bw-muted hover:text-bw-amber hover:bg-bw-amber/10"
             }`}
           >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
               <polyline points="23 4 23 10 17 10" />
               <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
             </svg>
@@ -512,7 +577,15 @@ function GenericInlineActionsInner({
                 : "text-bw-muted hover:text-bw-amber hover:bg-bw-amber/10"
             }`}
           >
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
               <path d="M6 9l6 6 6-6" />
             </svg>
           </button>
@@ -530,7 +603,15 @@ function GenericInlineActionsInner({
                 : "text-bw-muted hover:text-bw-primary hover:bg-bw-primary/10"
             }`}
           >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill={isHighlighted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill={isHighlighted ? "currentColor" : "none"}
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
             {isHighlighted ? "Projeté" : "Projeter"}
@@ -548,7 +629,15 @@ function GenericInlineActionsInner({
               : "text-bw-muted hover:text-bw-green hover:bg-bw-green/10"
           }`}
         >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill={localScore > 0 ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill={localScore > 0 ? "currentColor" : "none"}
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
           {localScore > 0 ? `${localScore}/5` : "Noter"}
@@ -562,7 +651,15 @@ function GenericInlineActionsInner({
           className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors text-bw-muted hover:text-bw-danger hover:bg-bw-danger/10 disabled:opacity-40 ml-auto focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
           title={`Signaler — ${warnings}/3 avertissement${warnings > 1 ? "s" : ""}`}
         >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
             <line x1="4" y1="22" x2="4" y2="15" />
           </svg>
@@ -655,9 +752,7 @@ function GenericInlineActionsInner({
             className="overflow-hidden"
           >
             <div className="bg-bw-surface border border-bw-green/20 rounded-xl p-2.5 space-y-2">
-              <span className="text-xs text-bw-green font-medium uppercase tracking-wider">
-                Note qualite
-              </span>
+              <span className="text-xs text-bw-green font-medium uppercase tracking-wider">Note qualite</span>
               <div className="flex items-center gap-1" role="radiogroup" aria-label="Note de 1 à 5">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -697,7 +792,10 @@ function GenericInlineActionsInner({
                 </span>
               </div>
               <button
-                onClick={() => { setShowScorePicker(false); setHoverStar(0); }}
+                onClick={() => {
+                  setShowScorePicker(false);
+                  setHoverStar(0);
+                }}
                 aria-label="Fermer le sélecteur de note"
                 className="w-full py-1 text-xs text-bw-muted hover:text-bw-text cursor-pointer focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
               >
@@ -730,9 +828,14 @@ function GenericInlineActionsInner({
                 className="bg-bw-bg border-[#DDD7EC] text-xs text-bw-heading placeholder:text-bw-muted focus:border-bw-teal resize-none min-h-0 p-2"
               />
               <div className="flex gap-1.5">
-                <button onClick={() => { setIsCommenting(false); setCommentText(""); }}
+                <button
+                  onClick={() => {
+                    setIsCommenting(false);
+                    setCommentText("");
+                  }}
                   aria-label="Annuler le commentaire"
-                  className="flex-1 py-1.5 rounded-xl bg-bw-bg text-bw-muted text-xs font-medium cursor-pointer border border-black/[0.04] focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none">
+                  className="flex-1 py-1.5 rounded-xl bg-bw-bg text-bw-muted text-xs font-medium cursor-pointer border border-black/[0.04] focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
+                >
                   Annuler
                 </button>
                 <button
@@ -746,7 +849,8 @@ function GenericInlineActionsInner({
                   }}
                   disabled={!commentText.trim()}
                   aria-label="Envoyer le commentaire"
-                  className="flex-1 py-1.5 rounded-xl bg-bw-teal text-black text-xs font-semibold cursor-pointer hover:brightness-110 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none">
+                  className="flex-1 py-1.5 rounded-xl bg-bw-teal text-black text-xs font-semibold cursor-pointer hover:brightness-110 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none"
+                >
                   Envoyer
                 </button>
               </div>
@@ -760,7 +864,12 @@ function GenericInlineActionsInner({
         <div className="mt-1.5 flex items-start gap-1.5 bg-bw-teal/5 rounded-xl px-2.5 py-1.5 border border-bw-teal/10">
           <span className="text-xs text-bw-teal flex-shrink-0 mt-0.5">Prof:</span>
           <span className="text-xs text-bw-teal/80 leading-snug flex-1">{savedComment}</span>
-          <button onClick={() => setSavedComment(null)} className="text-bw-muted hover:text-bw-danger text-xs cursor-pointer">✕</button>
+          <button
+            onClick={() => setSavedComment(null)}
+            className="text-bw-muted hover:text-bw-danger text-xs cursor-pointer"
+          >
+            ✕
+          </button>
         </div>
       )}
     </div>

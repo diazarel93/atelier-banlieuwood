@@ -19,13 +19,7 @@ interface RevealModeProps {
   situationPrompt: string;
 }
 
-const PHASE_LABELS = [
-  "Compteur",
-  "Aperçu",
-  "Familles",
-  "Révélation",
-  "Discussion",
-];
+const PHASE_LABELS = ["Compteur", "Aperçu", "Familles", "Révélation", "Discussion"];
 
 // Simple Jaccard-based clustering for phase 2
 function computeClusters(responses: RevealResponse[]): { label: string; responses: RevealResponse[] }[] {
@@ -40,7 +34,7 @@ function computeClusters(responses: RevealResponse[]): { label: string; response
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/[^a-z\s'-]/g, " ")
         .split(/\s+/)
-        .filter((w) => w.length > 2)
+        .filter((w) => w.length > 2),
     );
     return { response: r, words };
   });
@@ -119,11 +113,7 @@ function PhaseCounter({ count, color }: { count: number; color: string }) {
         className="w-32 h-32 rounded-full mx-auto flex items-center justify-center"
         style={{ background: `linear-gradient(135deg, ${color}30, ${color}10)`, border: `3px solid ${color}50` }}
       >
-        <motion.span
-          key={displayed}
-          className="text-6xl font-bold tabular-nums"
-          style={{ color }}
-        >
+        <motion.span key={displayed} className="text-6xl font-bold tabular-nums" style={{ color }}>
           {displayed}
         </motion.span>
       </motion.div>
@@ -154,11 +144,7 @@ function PhasePreview({ responses, color }: { responses: RevealResponse[]; color
   }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="text-center space-y-6"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center space-y-6">
       <p className="text-xl font-cinema tracking-wider text-bw-muted">Aperçu des réponses</p>
       <motion.div
         animate={{ filter: blurred ? "blur(8px)" : "blur(0px)" }}
@@ -175,11 +161,7 @@ function PhaseFamilies({ responses, color }: { responses: RevealResponse[]; colo
   const clusters = useMemo(() => computeClusters(responses), [responses]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="w-full max-w-4xl mx-auto space-y-6"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full max-w-4xl mx-auto space-y-6">
       <p className="text-xl font-cinema tracking-wider text-bw-muted text-center">Familles de réponses</p>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <AnimatePresence mode="popLayout">
@@ -195,12 +177,8 @@ function PhaseFamilies({ responses, color }: { responses: RevealResponse[]; colo
               <p className="text-lg font-bold" style={{ color }}>
                 {cluster.label}
               </p>
-              <p className="text-3xl font-bold text-white tabular-nums">
-                {cluster.responses.length}
-              </p>
-              <p className="text-sm text-bw-muted">
-                {cluster.responses.length === 1 ? "élève" : "élèves"}
-              </p>
+              <p className="text-3xl font-bold text-white tabular-nums">{cluster.responses.length}</p>
+              <p className="text-sm text-bw-muted">{cluster.responses.length === 1 ? "élève" : "élèves"}</p>
             </motion.div>
           ))}
         </AnimatePresence>
@@ -220,14 +198,12 @@ function PhaseRevelation({ responses, color }: { responses: RevealResponse[]; co
   }, [revealedCount, responses.length]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="w-full max-w-3xl mx-auto space-y-4"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full max-w-3xl mx-auto space-y-4">
       <div className="flex items-center justify-between px-2">
         <p className="text-xl font-cinema tracking-wider text-bw-muted">Révélation</p>
-        <p className="text-sm text-bw-muted tabular-nums">{revealedCount}/{responses.length}</p>
+        <p className="text-sm text-bw-muted tabular-nums">
+          {revealedCount}/{responses.length}
+        </p>
       </div>
       <div className="space-y-3">
         <AnimatePresence mode="popLayout">
@@ -238,7 +214,10 @@ function PhaseRevelation({ responses, color }: { responses: RevealResponse[]; co
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 20 }}
               className="rounded-xl p-4 flex items-start gap-3"
-              style={{ background: "rgba(34,37,43,0.7)", border: `1px solid ${i === revealedCount - 1 ? color + "60" : "rgba(255,255,255,0.06)"}` }}
+              style={{
+                background: "rgba(34,37,43,0.7)",
+                border: `1px solid ${i === revealedCount - 1 ? color + "60" : "rgba(255,255,255,0.06)"}`,
+              }}
             >
               <span className="text-2xl flex-shrink-0">{r.avatar}</span>
               <div className="min-w-0 flex-1">
@@ -256,11 +235,7 @@ function PhaseRevelation({ responses, color }: { responses: RevealResponse[]; co
 // Phase 4: Full discussion view
 function PhaseDiscussion({ responses, color, prompt }: { responses: RevealResponse[]; color: string; prompt: string }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="w-full max-w-4xl mx-auto space-y-6"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full max-w-4xl mx-auto space-y-6">
       <div className="text-center space-y-3">
         <motion.div
           initial={{ scale: 0 }}
@@ -269,7 +244,15 @@ function PhaseDiscussion({ responses, color, prompt }: { responses: RevealRespon
           className="w-16 h-16 rounded-full mx-auto flex items-center justify-center"
           style={{ background: `${color}20`, border: `2px solid ${color}50` }}
         >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={color}
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
         </motion.div>
@@ -320,7 +303,10 @@ export function RevealMode({ phase, responsesCount, responses, categoryColor, si
               }}
             />
             {i < PHASE_LABELS.length - 1 && (
-              <div className="w-6 h-px" style={{ backgroundColor: i < phase ? categoryColor + "40" : "rgba(255,255,255,0.08)" }} />
+              <div
+                className="w-6 h-px"
+                style={{ backgroundColor: i < phase ? categoryColor + "40" : "rgba(255,255,255,0.08)" }}
+              />
             )}
           </div>
         ))}

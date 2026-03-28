@@ -29,7 +29,12 @@ interface SessionExportProps {
 
 function generateMarkdown(props: Omit<SessionExportProps, "open" | "onClose" | "sessionId">): string {
   const { sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount } = props;
-  const now = new Date().toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  const now = new Date().toLocaleDateString("fr-FR", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   let md = `# Résumé de séance — ${sessionTitle}\n\n`;
   md += `**Date** : ${now}\n`;
@@ -41,9 +46,9 @@ function generateMarkdown(props: Omit<SessionExportProps, "open" | "onClose" | "
   md += `---\n\n`;
   md += `## Réponses (${responses.length})\n\n`;
 
-  const highlighted = responses.filter(r => r.is_highlighted);
-  const scored = responses.filter(r => r.teacher_score);
-  const commented = responses.filter(r => r.teacher_comment);
+  const highlighted = responses.filter((r) => r.is_highlighted);
+  const scored = responses.filter((r) => r.teacher_score);
+  const commented = responses.filter((r) => r.teacher_comment);
 
   if (highlighted.length > 0) {
     md += `### Réponses mises en avant\n\n`;
@@ -93,15 +98,17 @@ function downloadMarkdown(content: string, filename: string) {
 function downloadCSV(responses: ExportResponse[], filename: string) {
   const escapeCSV = (s: string) => `"${s.replace(/"/g, '""')}"`;
   const header = "Eleve,Reponse,Note Prof,Note IA,Mis en avant,Commentaire Prof,Heure";
-  const rows = responses.map(r => [
-    escapeCSV(r.studentName),
-    escapeCSV(r.text),
-    r.teacher_score || "",
-    r.ai_score || "",
-    r.is_highlighted ? "Oui" : "Non",
-    escapeCSV(r.teacher_comment || ""),
-    new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
-  ].join(","));
+  const rows = responses.map((r) =>
+    [
+      escapeCSV(r.studentName),
+      escapeCSV(r.text),
+      r.teacher_score || "",
+      r.ai_score || "",
+      r.is_highlighted ? "Oui" : "Non",
+      escapeCSV(r.teacher_comment || ""),
+      new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+    ].join(","),
+  );
   const csv = "\uFEFF" + [header, ...rows].join("\n"); // BOM for Excel FR
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -114,15 +121,21 @@ function downloadCSV(responses: ExportResponse[], filename: string) {
 
 function downloadPDF(props: Omit<SessionExportProps, "open" | "onClose" | "sessionId">) {
   const { sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount } = props;
-  const now = new Date().toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  const now = new Date().toLocaleDateString("fr-FR", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
-  const highlighted = responses.filter(r => r.is_highlighted);
-  const scored = responses.filter(r => r.teacher_score);
-  const avgScore = scored.length > 0
-    ? (scored.reduce((a, r) => a + (r.teacher_score || 0), 0) / scored.length).toFixed(1)
-    : null;
+  const highlighted = responses.filter((r) => r.is_highlighted);
+  const scored = responses.filter((r) => r.teacher_score);
+  const avgScore =
+    scored.length > 0 ? (scored.reduce((a, r) => a + (r.teacher_score || 0), 0) / scored.length).toFixed(1) : null;
 
-  const responsesHTML = responses.map(r => `
+  const responsesHTML = responses
+    .map(
+      (r) => `
     <div style="padding:10px 14px;margin:6px 0;border-radius:8px;border-left:3px solid ${r.is_highlighted ? "#F5A45B" : "#333"};background:${r.is_highlighted ? "#FFF7ED" : "#FAFAFA"}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
         <strong style="font-size:13px;color:#222">${r.studentName}</strong>
@@ -132,7 +145,9 @@ function downloadPDF(props: Omit<SessionExportProps, "open" | "onClose" | "sessi
       ${r.teacher_score ? `<span style="font-size:11px;color:#F5A45B;font-weight:600">Note : ${r.teacher_score}/5</span>` : ""}
       ${r.teacher_comment ? `<p style="font-size:12px;color:#666;margin:4px 0 0;font-style:italic">Prof : ${r.teacher_comment}</p>` : ""}
     </div>
-  `).join("");
+  `,
+    )
+    .join("");
 
   const html = `<!DOCTYPE html>
 <html lang="fr">
@@ -209,7 +224,11 @@ export function SessionExport({
   const [exportMode, setExportMode] = useState<"current" | "full">("current");
   const [fullMarkdown, setFullMarkdown] = useState<string | null>(null);
   const [fullLoading, setFullLoading] = useState(false);
-  const [fullStats, setFullStats] = useState<{ totalResponses: number; starredCount: number; highlightedCount: number } | null>(null);
+  const [fullStats, setFullStats] = useState<{
+    totalResponses: number;
+    starredCount: number;
+    highlightedCount: number;
+  } | null>(null);
 
   // Reset state when modal opens
   useEffect(() => {
@@ -243,19 +262,29 @@ export function SessionExport({
     }
   }, [exportMode, fullMarkdown, fullLoading, fetchFullExport]);
 
-  const currentMarkdown = generateMarkdown({ sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount });
-  const activeMarkdown = exportMode === "full" ? (fullMarkdown || "Chargement...") : currentMarkdown;
+  const currentMarkdown = generateMarkdown({
+    sessionTitle,
+    level,
+    moduleLabel,
+    questionPrompt,
+    responses,
+    studentCount,
+  });
+  const activeMarkdown = exportMode === "full" ? fullMarkdown || "Chargement..." : currentMarkdown;
   const slug = sessionTitle.replace(/[^a-zA-Z0-9]/g, "-").slice(0, 30);
-  const filename = exportMode === "full"
-    ? `seance-complete-${slug}-${new Date().toISOString().slice(0, 10)}.md`
-    : `seance-${slug}-${new Date().toISOString().slice(0, 10)}.md`;
+  const filename =
+    exportMode === "full"
+      ? `seance-complete-${slug}-${new Date().toISOString().slice(0, 10)}.md`
+      : `seance-${slug}-${new Date().toISOString().slice(0, 10)}.md`;
 
   return (
     <AnimatePresence>
       {open && (
         <>
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
@@ -271,7 +300,9 @@ export function SessionExport({
                 <span className="text-lg">📋</span>
                 <h3 className="text-sm font-semibold">Export de séance</h3>
               </div>
-              <button onClick={onClose} className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">&#10005;</button>
+              <button onClick={onClose} className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer">
+                &#10005;
+              </button>
             </div>
 
             {/* Mode toggle — current question vs full session */}
@@ -281,7 +312,9 @@ export function SessionExport({
                   <button
                     onClick={() => setExportMode("current")}
                     className={`px-3 py-1.5 rounded-md cursor-pointer transition-all ${
-                      exportMode === "current" ? "bg-white shadow-sm text-bw-heading" : "text-bw-muted hover:text-bw-text"
+                      exportMode === "current"
+                        ? "bg-white shadow-sm text-bw-heading"
+                        : "text-bw-muted hover:text-bw-text"
                     }`}
                   >
                     Question actuelle
@@ -322,11 +355,18 @@ export function SessionExport({
             {/* Actions */}
             <div className="px-5 py-3 border-t border-black/[0.04] flex items-center justify-between flex-shrink-0">
               <p className="text-xs text-bw-muted">
-                {exportMode === "current" ? `${responses.length} réponses` : fullStats ? `${fullStats.totalResponses} réponses (toutes questions)` : "..."}, {filename}
+                {exportMode === "current"
+                  ? `${responses.length} réponses`
+                  : fullStats
+                    ? `${fullStats.totalResponses} réponses (toutes questions)`
+                    : "..."}
+                , {filename}
               </p>
               <div className="flex gap-2">
                 <button
-                  onClick={() => { navigator.clipboard.writeText(activeMarkdown); }}
+                  onClick={() => {
+                    navigator.clipboard.writeText(activeMarkdown);
+                  }}
                   disabled={fullLoading}
                   className="px-4 py-2 rounded-xl text-xs font-medium cursor-pointer border border-black/[0.04] hover:border-black/10 text-bw-muted hover:text-bw-heading transition-colors disabled:opacity-40"
                 >
@@ -349,7 +389,9 @@ export function SessionExport({
                 )}
                 {exportMode === "current" && (
                   <button
-                    onClick={() => downloadPDF({ sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount })}
+                    onClick={() =>
+                      downloadPDF({ sessionTitle, level, moduleLabel, questionPrompt, responses, studentCount })
+                    }
                     className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all hover:brightness-110"
                     style={{ backgroundColor: "#F5A45B", color: "white" }}
                   >

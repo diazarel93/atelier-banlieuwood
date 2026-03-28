@@ -6,7 +6,7 @@ import { isValidUUID, withErrorHandler } from "@/lib/api-utils";
 // GET — fetch recap data for a student (collective story + personal contributions)
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const studentId = req.nextUrl.searchParams.get("studentId");
@@ -17,7 +17,9 @@ export const GET = withErrorHandler(async function GET(
 
   // Auth check: require authenticated user who owns this session
   const supabase = await createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
@@ -98,7 +100,14 @@ export const GET = withErrorHandler(async function GET(
   }));
 
   // Module 10 data — pitch + personnage for this student
-  let myPitch: { objectif: string; obstacle: string; pitchText: string; chronoSeconds: number | null; prenom: string; trait: string | null } | null = null;
+  let myPitch: {
+    objectif: string;
+    obstacle: string;
+    pitchText: string;
+    chronoSeconds: number | null;
+    prenom: string;
+    trait: string | null;
+  } | null = null;
   if (studentId && isValidUUID(studentId)) {
     const { data: pitch } = await admin
       .from("module10_pitchs")

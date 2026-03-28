@@ -8,7 +8,11 @@ export interface QuestionTransitionCelebrationProps {
   moduleColor: string;
 }
 
-export function QuestionTransitionCelebration({ showTransition, completedQuestion, moduleColor }: QuestionTransitionCelebrationProps) {
+export function QuestionTransitionCelebration({
+  showTransition,
+  completedQuestion,
+  moduleColor,
+}: QuestionTransitionCelebrationProps) {
   return (
     <AnimatePresence>
       {showTransition && (
@@ -33,7 +37,15 @@ export function QuestionTransitionCelebration({ showTransition, completedQuestio
               className="w-16 h-16 rounded-full flex items-center justify-center"
               style={{ background: `${moduleColor}25`, border: `2px solid ${moduleColor}` }}
             >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={moduleColor} strokeWidth="3" strokeLinecap="round">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={moduleColor}
+                strokeWidth="3"
+                strokeLinecap="round"
+              >
                 <path d="M20 6L9 17l-5-5" />
               </svg>
             </motion.div>

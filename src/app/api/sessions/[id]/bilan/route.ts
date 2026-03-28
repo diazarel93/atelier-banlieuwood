@@ -9,11 +9,13 @@ import { withErrorHandler } from "@/lib/api-utils";
 // GET — return cached bilan (404 if not generated)
 export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const supabase = await createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
@@ -51,11 +53,13 @@ export const GET = withErrorHandler(async function GET(
 // POST — generate (or re-generate with ?force=true)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const supabase = await createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
@@ -118,7 +122,7 @@ export const POST = withErrorHandler(async function POST(
       ai_provider: provider,
       generated_at: new Date().toISOString(),
     },
-    { onConflict: "session_id,report_type" }
+    { onConflict: "session_id,report_type" },
   );
 
   return NextResponse.json({

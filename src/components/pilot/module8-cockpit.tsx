@@ -7,7 +7,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Module8Data } from "@/hooks/use-session-polling";
 
 function InitialAvatar({ name, size = 40 }: { name: string; size?: number }) {
-  const initials = name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+  const initials = name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
   return (
     <div
       className="rounded-full bg-bw-primary/10 text-bw-primary flex items-center justify-center font-bold text-xs mx-auto"
@@ -50,8 +55,13 @@ function QuizView({ module8, connectedCount }: { module8: Module8Data; connected
         ))}
       </div>
       <div className="flex items-center gap-2 text-sm text-bw-muted">
-        <div className="led led-writing" style={{ background: "#F3A765", boxShadow: "0 0 8px rgba(243,167,101,0.4)" }} />
-        <span>{connectedCount} eleve{connectedCount > 1 ? "s" : ""} en train de repondre</span>
+        <div
+          className="led led-writing"
+          style={{ background: "#F3A765", boxShadow: "0 0 8px rgba(243,167,101,0.4)" }}
+        />
+        <span>
+          {connectedCount} eleve{connectedCount > 1 ? "s" : ""} en train de repondre
+        </span>
       </div>
     </div>
   );
@@ -67,7 +77,13 @@ const QUICK_TAGS = [
   { key: "leadership", label: "Leadership", emoji: "👑" },
 ] as const;
 
-function QuickTagBar({ sessionId, ranking }: { sessionId: string; ranking: { studentId: string; displayName: string }[] }) {
+function QuickTagBar({
+  sessionId,
+  ranking,
+}: {
+  sessionId: string;
+  ranking: { studentId: string; displayName: string }[];
+}) {
   const [selectedStudent, setSelectedStudent] = useState("");
   const [sending, setSending] = useState<string | null>(null);
 
@@ -102,7 +118,9 @@ function QuickTagBar({ sessionId, ranking }: { sessionId: string; ranking: { stu
       >
         <option value="">Sélectionner un élève...</option>
         {ranking.map((r) => (
-          <option key={r.studentId} value={r.studentId}>{r.displayName}</option>
+          <option key={r.studentId} value={r.studentId}>
+            {r.displayName}
+          </option>
         ))}
       </select>
       <div className="flex flex-wrap gap-1">
@@ -147,7 +165,10 @@ function DebriefView({ module8, sessionId }: { module8: Module8Data; sessionId: 
                 <span className="text-lg">{c.metierEmoji}</span>
                 <span className="text-sm font-semibold text-bw-heading">{c.metierLabel}</span>
                 {total > 0 && (
-                  <span className="ml-auto text-sm font-bold tabular-nums" style={{ color: pctCorrect >= 50 ? "#6EC6B0" : "#F3A765" }}>
+                  <span
+                    className="ml-auto text-sm font-bold tabular-nums"
+                    style={{ color: pctCorrect >= 50 ? "#6EC6B0" : "#F3A765" }}
+                  >
                     {pctCorrect}%
                   </span>
                 )}
@@ -168,12 +189,14 @@ function DebriefView({ module8, sessionId }: { module8: Module8Data; sessionId: 
                   />
                 </div>
               )}
-              {total === 0 && (
-                <p className="text-xs text-bw-muted/60">En attente des reponses...</p>
-              )}
+              {total === 0 && <p className="text-xs text-bw-muted/60">En attente des reponses...</p>}
               <div className="mt-2 text-[10px] text-bw-muted">
-                <p><span className="font-medium text-bw-heading">Idee recue :</span> {c.commonBelief}</p>
-                <p><span className="font-medium text-emerald-600">Realite :</span> {c.reality}</p>
+                <p>
+                  <span className="font-medium text-bw-heading">Idee recue :</span> {c.commonBelief}
+                </p>
+                <p>
+                  <span className="font-medium text-emerald-600">Realite :</span> {c.reality}
+                </p>
               </div>
             </motion.div>
           );
@@ -181,15 +204,21 @@ function DebriefView({ module8, sessionId }: { module8: Module8Data; sessionId: 
       </div>
 
       {/* Quick tags — facilitator observations during debrief */}
-      {studentList.length > 0 && (
-        <QuickTagBar sessionId={sessionId} ranking={studentList} />
-      )}
+      {studentList.length > 0 && <QuickTagBar sessionId={sessionId} ranking={studentList} />}
     </div>
   );
 }
 
 // ── Position 3: Role choice ──
-function RoleChoiceView({ module8, sessionId, connectedCount }: { module8: Module8Data; sessionId: string; connectedCount: number }) {
+function RoleChoiceView({
+  module8,
+  sessionId,
+  connectedCount,
+}: {
+  module8: Module8Data;
+  sessionId: string;
+  connectedCount: number;
+}) {
   const queryClient = useQueryClient();
   const ranking = module8.ranking || [];
   const takenRoles = module8.takenRoles || [];
@@ -222,7 +251,9 @@ function RoleChoiceView({ module8, sessionId, connectedCount }: { module8: Modul
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-bold text-bw-heading">Choix des roles</h3>
-        <span className="text-sm font-medium tabular-nums text-bw-teal">{chosenCount}/{connectedCount}</span>
+        <span className="text-sm font-medium tabular-nums text-bw-teal">
+          {chosenCount}/{connectedCount}
+        </span>
       </div>
 
       {/* Compute points button */}
@@ -259,9 +290,7 @@ function RoleChoiceView({ module8, sessionId, connectedCount }: { module8: Modul
                     {role.roleLabel}
                   </span>
                 )}
-                {!r.hasChosen && (
-                  <span className="text-xs text-amber-500">...</span>
-                )}
+                {!r.hasChosen && <span className="text-xs text-amber-500">...</span>}
               </motion.div>
             );
           })}
@@ -280,9 +309,7 @@ function RoleChoiceView({ module8, sessionId, connectedCount }: { module8: Modul
                 style={{ background: `${role.color}15`, color: role.color }}
               >
                 {role.emoji} {role.label}
-                {role.count > 0 && (
-                  <span className="text-[10px] font-bold tabular-nums opacity-60">×{role.count}</span>
-                )}
+                {role.count > 0 && <span className="text-[10px] font-bold tabular-nums opacity-60">×{role.count}</span>}
               </span>
             ))}
           </div>
@@ -411,11 +438,11 @@ function TeamRecapView({ module8 }: { module8: Module8Data }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-bold text-bw-heading">Equipe de tournage</h3>
-        <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-          formula === "F3"
-            ? "bg-violet-100 text-violet-700"
-            : "bg-blue-100 text-blue-700"
-        }`}>
+        <span
+          className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+            formula === "F3" ? "bg-violet-100 text-violet-700" : "bg-blue-100 text-blue-700"
+          }`}
+        >
           {formula === "F3" ? "Rotation (F3)" : "Rôles fixes (F2)"}
         </span>
       </div>
@@ -440,16 +467,12 @@ function TeamRecapView({ module8 }: { module8: Module8Data }) {
             >
               {member.roleEmoji} {member.roleLabel}
             </span>
-            {member.isVeto && (
-              <span className="block text-[9px] text-amber-500 mt-0.5">veto</span>
-            )}
+            {member.isVeto && <span className="block text-[9px] text-amber-500 mt-0.5">veto</span>}
           </motion.div>
         ))}
       </div>
       {team.length === 0 && (
-        <p className="text-sm text-bw-muted text-center py-4">
-          En attente de la constitution de l'equipe.
-        </p>
+        <p className="text-sm text-bw-muted text-center py-4">En attente de la constitution de l'equipe.</p>
       )}
     </div>
   );
@@ -494,9 +517,7 @@ function TalentCardView({ module8, sessionId }: { module8: Module8Data; sessionI
           </button>
         )}
       </div>
-      <p className="text-xs text-bw-muted">
-        Chaque eleve decouvre sa carte talent personnalisee sur son ecran.
-      </p>
+      <p className="text-xs text-bw-muted">Chaque eleve decouvre sa carte talent personnalisee sur son ecran.</p>
       {card ? (
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -517,7 +538,10 @@ function TalentCardView({ module8, sessionId }: { module8: Module8Data; sessionI
             {card.strengths.length > 0 && (
               <div className="flex flex-wrap justify-center gap-1 mt-2">
                 {card.strengths.map((s, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded-full text-[10px] bg-bw-primary/10 text-bw-primary font-medium">
+                  <span
+                    key={i}
+                    className="px-2 py-0.5 rounded-full text-[10px] bg-bw-primary/10 text-bw-primary font-medium"
+                  >
                     {s}
                   </span>
                 ))}

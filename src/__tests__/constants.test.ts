@@ -53,10 +53,7 @@ describe("PRODUCTION_CATEGORIES (Budget)", () => {
   });
 
   it("cheapest full combo fits within budget", () => {
-    const minTotal = PRODUCTION_CATEGORIES.reduce(
-      (sum, cat) => sum + cat.options[0].cost,
-      0
-    );
+    const minTotal = PRODUCTION_CATEGORIES.reduce((sum, cat) => sum + cat.options[0].cost, 0);
     expect(minTotal).toBeLessThanOrEqual(BUDGET_TOTAL);
   });
 

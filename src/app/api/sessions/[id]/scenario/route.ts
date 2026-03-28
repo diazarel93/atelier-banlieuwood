@@ -7,7 +7,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // GET — fetch scenario data for a session (facilitator only)
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
 
@@ -23,16 +23,9 @@ export const GET = withErrorHandler(async function GET(
     .eq("session_id", sessionId)
     .order("scene_number");
 
-  const { data: missions } = await admin
-    .from("module6_missions")
-    .select("*")
-    .eq("session_id", sessionId);
+  const { data: missions } = await admin.from("module6_missions").select("*").eq("session_id", sessionId);
 
-  const { data: scenario } = await admin
-    .from("module6_scenario")
-    .select("*")
-    .eq("session_id", sessionId)
-    .single();
+  const { data: scenario } = await admin.from("module6_scenario").select("*").eq("session_id", sessionId).single();
 
   return NextResponse.json({ scenes: scenes || [], missions: missions || [], scenario });
 });
@@ -40,7 +33,7 @@ export const GET = withErrorHandler(async function GET(
 // POST — handle various module actions (M6 missions, M7 comparisons/decoupages, M8 quiz/roles)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "scenario", { max: 20, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -79,9 +72,12 @@ export const POST = withErrorHandler(async function POST(
         chosen_plan: chosenPlan,
         reasoning: reasoning || "",
       },
-      { onConflict: "session_id,student_id,comparison_key" }
+      { onConflict: "session_id,student_id,comparison_key" },
     );
-    if (error) { console.error("[scenario comparison]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+    if (error) {
+      console.error("[scenario comparison]", error.message);
+      return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    }
     return NextResponse.json({ success: true });
   }
 
@@ -95,9 +91,12 @@ export const POST = withErrorHandler(async function POST(
         scene_id: sceneId,
         plans,
       },
-      { onConflict: "session_id,student_id,scene_id" }
+      { onConflict: "session_id,student_id,scene_id" },
     );
-    if (error) { console.error("[scenario decoupage]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+    if (error) {
+      console.error("[scenario decoupage]", error.message);
+      return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    }
     return NextResponse.json({ success: true });
   }
 
@@ -115,9 +114,12 @@ export const POST = withErrorHandler(async function POST(
         metier_key: metierKey,
         correct,
       },
-      { onConflict: "session_id,student_id,metier_key" }
+      { onConflict: "session_id,student_id,metier_key" },
     );
-    if (error) { console.error("[scenario quiz-metier]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+    if (error) {
+      console.error("[scenario quiz-metier]", error.message);
+      return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    }
     return NextResponse.json({ success: true, correct });
   }
 
@@ -143,7 +145,10 @@ export const POST = withErrorHandler(async function POST(
       student_id: studentId,
       role_key: roleKey,
     });
-    if (error) { console.error("[scenario choose-role]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+    if (error) {
+      console.error("[scenario choose-role]", error.message);
+      return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    }
     return NextResponse.json({ success: true });
   }
 
@@ -153,7 +158,7 @@ export const POST = withErrorHandler(async function POST(
 // PATCH — update mission content (M6)
 export const PATCH = withErrorHandler(async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "scenario", { max: 20, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -179,26 +184,19 @@ export const PATCH = withErrorHandler(async function PATCH(
     .eq("student_id", studentId)
     .eq("session_id", sessionId);
 
-  if (error) { console.error("[scenario PATCH]", error.message); return NextResponse.json({ error: "Erreur serveur" }, { status: 500 }); }
+  if (error) {
+    console.error("[scenario PATCH]", error.message);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
 
   // Also update the scene content by appending the contribution
-  const { data: mission } = await admin
-    .from("module6_missions")
-    .select("scene_id, role")
-    .eq("id", missionId)
-    .single();
+  const { data: mission } = await admin.from("module6_missions").select("scene_id, role").eq("id", missionId).single();
 
   if (mission) {
-    const { data: scene } = await admin
-      .from("module6_scenes")
-      .select("content")
-      .eq("id", mission.scene_id)
-      .single();
+    const { data: scene } = await admin.from("module6_scenes").select("content").eq("id", mission.scene_id).single();
 
     const prefix = `[${mission.role.toUpperCase()}] `;
-    const newContent = scene?.content
-      ? `${scene.content}\n\n${prefix}${content}`
-      : `${prefix}${content}`;
+    const newContent = scene?.content ? `${scene.content}\n\n${prefix}${content}` : `${prefix}${content}`;
 
     await admin
       .from("module6_scenes")

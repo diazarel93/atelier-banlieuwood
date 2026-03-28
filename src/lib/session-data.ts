@@ -114,68 +114,70 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
   const supabase = createAdminClient();
 
   // Fetch all data in parallel
-  const [sessionRes, studentsRes, responsesRes, votesRes, choicesRes, budgetsRes,
-    m10EtsiRes, m10PersoRes, m10PitchsRes, m10IdeasRes,
-    m12PoolsRes, m12WinnersRes] =
-    await Promise.all([
-      supabase
-        .from("sessions")
-        .select("id, title, level, template, status, thematique, created_at")
-        .eq("id", sessionId)
-        .is("deleted_at", null)
-        .single(),
-      supabase
-        .from("students")
-        .select("id, display_name, avatar, is_active")
-        .eq("session_id", sessionId),
-      supabase
-        .from("responses")
-        .select("id, student_id, situation_id, text, is_hidden, is_vote_option, relance_text, relance_response, submitted_at")
-        .eq("session_id", sessionId),
-      supabase
-        .from("votes")
-        .select("id, student_id, situation_id, chosen_response_id")
-        .eq("session_id", sessionId),
-      supabase
-        .from("collective_choices")
-        .select("id, situation_id, category, restitution_label, chosen_text, source_response_id")
-        .eq("session_id", sessionId),
-      supabase
-        .from("module2_budgets")
-        .select("id, student_id, choices, credits_remaining, summary")
-        .eq("session_id", sessionId),
-      // Module 10 data
-      supabase
-        .from("module10_etsi")
-        .select("id, student_id, etsi_text, submitted_at")
-        .eq("session_id", sessionId)
-        .order("submitted_at"),
-      supabase
-        .from("module10_personnages")
-        .select("id, student_id, prenom, age, trait_dominant, force, faiblesse, avatar_data")
-        .eq("session_id", sessionId),
-      supabase
-        .from("module10_pitchs")
-        .select("id, student_id, objectif, obstacle, pitch_text, chrono_seconds, submitted_at")
-        .eq("session_id", sessionId)
-        .order("submitted_at"),
-      supabase
-        .from("module10_idea_bank")
-        .select("id, student_id, text, votes")
-        .eq("session_id", sessionId)
-        .order("votes", { ascending: false }),
-      // Module 12 data
-      supabase
-        .from("module12_pools")
-        .select("manche, cards, generated_at")
-        .eq("session_id", sessionId)
-        .order("manche"),
-      supabase
-        .from("module12_winners")
-        .select("manche, card_id, winning_text, validated_at")
-        .eq("session_id", sessionId)
-        .order("manche"),
-    ]);
+  const [
+    sessionRes,
+    studentsRes,
+    responsesRes,
+    votesRes,
+    choicesRes,
+    budgetsRes,
+    m10EtsiRes,
+    m10PersoRes,
+    m10PitchsRes,
+    m10IdeasRes,
+    m12PoolsRes,
+    m12WinnersRes,
+  ] = await Promise.all([
+    supabase
+      .from("sessions")
+      .select("id, title, level, template, status, thematique, created_at")
+      .eq("id", sessionId)
+      .is("deleted_at", null)
+      .single(),
+    supabase.from("students").select("id, display_name, avatar, is_active").eq("session_id", sessionId),
+    supabase
+      .from("responses")
+      .select(
+        "id, student_id, situation_id, text, is_hidden, is_vote_option, relance_text, relance_response, submitted_at",
+      )
+      .eq("session_id", sessionId),
+    supabase.from("votes").select("id, student_id, situation_id, chosen_response_id").eq("session_id", sessionId),
+    supabase
+      .from("collective_choices")
+      .select("id, situation_id, category, restitution_label, chosen_text, source_response_id")
+      .eq("session_id", sessionId),
+    supabase
+      .from("module2_budgets")
+      .select("id, student_id, choices, credits_remaining, summary")
+      .eq("session_id", sessionId),
+    // Module 10 data
+    supabase
+      .from("module10_etsi")
+      .select("id, student_id, etsi_text, submitted_at")
+      .eq("session_id", sessionId)
+      .order("submitted_at"),
+    supabase
+      .from("module10_personnages")
+      .select("id, student_id, prenom, age, trait_dominant, force, faiblesse, avatar_data")
+      .eq("session_id", sessionId),
+    supabase
+      .from("module10_pitchs")
+      .select("id, student_id, objectif, obstacle, pitch_text, chrono_seconds, submitted_at")
+      .eq("session_id", sessionId)
+      .order("submitted_at"),
+    supabase
+      .from("module10_idea_bank")
+      .select("id, student_id, text, votes")
+      .eq("session_id", sessionId)
+      .order("votes", { ascending: false }),
+    // Module 12 data
+    supabase.from("module12_pools").select("manche, cards, generated_at").eq("session_id", sessionId).order("manche"),
+    supabase
+      .from("module12_winners")
+      .select("manche, card_id, winning_text, validated_at")
+      .eq("session_id", sessionId)
+      .order("manche"),
+  ]);
 
   if (sessionRes.error || !sessionRes.data) {
     throw new Error("Session introuvable");
@@ -189,7 +191,9 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
   const budgets = (budgetsRes.data || []) as SessionFullData["budgets"];
 
   // Module 10 data (may be empty if session didn't use M10)
-  const m10Etsi = (m10EtsiRes.data || []) as SessionFullData["module10"] extends undefined ? never : NonNullable<SessionFullData["module10"]>["etsiResponses"];
+  const m10Etsi = (m10EtsiRes.data || []) as SessionFullData["module10"] extends undefined
+    ? never
+    : NonNullable<SessionFullData["module10"]>["etsiResponses"];
   const m10Perso = (m10PersoRes.data || []) as NonNullable<SessionFullData["module10"]>["personnages"];
   const m10Pitchs = (m10PitchsRes.data || []) as NonNullable<SessionFullData["module10"]>["pitchs"];
   const m10Ideas = (m10IdeasRes.data || []) as NonNullable<SessionFullData["module10"]>["ideaBank"];
@@ -210,15 +214,11 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
     visibleResponses: visibleResponses.length,
     totalVotes: votes.length,
     totalChoices: collectiveChoices.length,
-    participationRate: students.length > 0
-      ? Math.round((respondingStudentIds.size / students.length) * 100)
-      : 0,
-    avgResponseLength: visibleResponses.length > 0
-      ? Math.round(
-          visibleResponses.reduce((sum, r) => sum + r.text.length, 0) /
-            visibleResponses.length
-        )
-      : 0,
+    participationRate: students.length > 0 ? Math.round((respondingStudentIds.size / students.length) * 100) : 0,
+    avgResponseLength:
+      visibleResponses.length > 0
+        ? Math.round(visibleResponses.reduce((sum, r) => sum + r.text.length, 0) / visibleResponses.length)
+        : 0,
   };
 
   return {
@@ -228,20 +228,24 @@ export async function getSessionFullData(sessionId: string): Promise<SessionFull
     votes,
     collectiveChoices,
     budgets,
-    ...(hasM10Data ? {
-      module10: {
-        etsiResponses: m10Etsi,
-        personnages: m10Perso,
-        pitchs: m10Pitchs,
-        ideaBank: m10Ideas,
-      },
-    } : {}),
-    ...(hasM12Data ? {
-      module12: {
-        pools: m12Pools,
-        winners: m12Winners,
-      },
-    } : {}),
+    ...(hasM10Data
+      ? {
+          module10: {
+            etsiResponses: m10Etsi,
+            personnages: m10Perso,
+            pitchs: m10Pitchs,
+            ideaBank: m10Ideas,
+          },
+        }
+      : {}),
+    ...(hasM12Data
+      ? {
+          module12: {
+            pools: m12Pools,
+            winners: m12Winners,
+          },
+        }
+      : {}),
     stats,
   };
 }

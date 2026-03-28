@@ -58,7 +58,8 @@ function DeltaBadge({ value }: { value: number }) {
         positive ? "text-[var(--color-bw-green)]" : "text-[var(--color-bw-danger)]"
       }`}
     >
-      {positive ? "+" : ""}{value}
+      {positive ? "+" : ""}
+      {value}
     </span>
   );
 }
@@ -127,19 +128,11 @@ export function ProfileHero({
   }
 
   const hasScores =
-    scores &&
-    (scores.comprehension > 0 ||
-      scores.creativite > 0 ||
-      scores.expression > 0 ||
-      scores.engagement > 0);
+    scores && (scores.comprehension > 0 || scores.creativite > 0 || scores.expression > 0 || scores.engagement > 0);
 
   const cp = resolveTalentProfile(creativeProfile);
-  const positiveTags = (facilitatorTags || []).filter(
-    (t) => !["perturbateur", "decrochage"].includes(t.tag)
-  );
-  const warningTags = (facilitatorTags || []).filter(
-    (t) => ["perturbateur", "decrochage"].includes(t.tag)
-  );
+  const positiveTags = (facilitatorTags || []).filter((t) => !["perturbateur", "decrochage"].includes(t.tag));
+  const warningTags = (facilitatorTags || []).filter((t) => ["perturbateur", "decrochage"].includes(t.tag));
 
   return (
     <GlassCardV2 className="p-5">
@@ -165,9 +158,7 @@ export function ProfileHero({
                 </div>
               ) : (
                 <>
-                  <h1 className="text-heading-xl text-bw-heading truncate">
-                    {displayName}
-                  </h1>
+                  <h1 className="text-heading-xl text-bw-heading truncate">{displayName}</h1>
                   {onRename && (
                     <button
                       type="button"
@@ -180,7 +171,13 @@ export function ProfileHero({
                         <span className="block h-3.5 w-3.5 rounded-full border-2 border-bw-muted/30 border-t-bw-primary animate-spin" />
                       ) : (
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                          <path d="M10 1.5l2.5 2.5L4.5 12H2v-2.5L10 1.5z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path
+                            d="M10 1.5l2.5 2.5L4.5 12H2v-2.5L10 1.5z"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                       )}
                     </button>
@@ -197,29 +194,19 @@ export function ProfileHero({
               )}
             </div>
             <div className="flex items-center gap-3 mt-1 flex-wrap">
-              {classLabel && (
-                <span className="text-body-xs text-bw-muted font-medium">
-                  {classLabel}
-                </span>
-              )}
+              {classLabel && <span className="text-body-xs text-bw-muted font-medium">{classLabel}</span>}
               <span className="text-body-xs text-bw-muted">
-                <span className="font-semibold text-bw-heading tabular-nums">
-                  {sessionCount}
-                </span>{" "}
-                seance{sessionCount !== 1 ? "s" : ""}
+                <span className="font-semibold text-bw-heading tabular-nums">{sessionCount}</span> seance
+                {sessionCount !== 1 ? "s" : ""}
               </span>
               <span className="text-body-xs text-bw-muted">
-                <span className="font-semibold text-bw-heading tabular-nums">
-                  {totalResponses}
-                </span>{" "}
-                reponse{totalResponses !== 1 ? "s" : ""}
+                <span className="font-semibold text-bw-heading tabular-nums">{totalResponses}</span> reponse
+                {totalResponses !== 1 ? "s" : ""}
               </span>
               {avgAiScore !== null && avgAiScore !== undefined && (
                 <span className="text-body-xs text-bw-muted">
                   Score IA moy.{" "}
-                  <span className="font-semibold text-bw-heading tabular-nums">
-                    {avgAiScore.toFixed(1)}
-                  </span>
+                  <span className="font-semibold text-bw-heading tabular-nums">{avgAiScore.toFixed(1)}</span>
                 </span>
               )}
               {avgResponseTimeMs != null && avgResponseTimeMs > 0 && (
@@ -231,9 +218,7 @@ export function ProfileHero({
                 </span>
               )}
               {lastActiveAt && (
-                <span className="text-body-xs text-bw-muted">
-                  Actif {formatRelativeDate(lastActiveAt)}
-                </span>
+                <span className="text-body-xs text-bw-muted">Actif {formatRelativeDate(lastActiveAt)}</span>
               )}
             </div>
 
@@ -249,7 +234,12 @@ export function ProfileHero({
                       title={`${def?.label || t.tag} (${t.count}x)`}
                     >
                       {def?.emoji} {def?.label || t.tag}
-                      {t.count > 1 && <span className="opacity-60">{"\u00D7"}{t.count}</span>}
+                      {t.count > 1 && (
+                        <span className="opacity-60">
+                          {"\u00D7"}
+                          {t.count}
+                        </span>
+                      )}
                     </span>
                   );
                 })}
@@ -262,7 +252,12 @@ export function ProfileHero({
                       title={`${def?.label || t.tag} (${t.count}x)`}
                     >
                       {def?.emoji} {def?.label || t.tag}
-                      {t.count > 1 && <span className="opacity-60">{"\u00D7"}{t.count}</span>}
+                      {t.count > 1 && (
+                        <span className="opacity-60">
+                          {"\u00D7"}
+                          {t.count}
+                        </span>
+                      )}
                     </span>
                   );
                 })}
@@ -276,16 +271,8 @@ export function ProfileHero({
           <div className="flex items-center gap-3 shrink-0">
             {AXES.map((axis) => (
               <div key={axis.key} className="flex flex-col items-center gap-0.5">
-                <StatRing
-                  value={scores[axis.key]}
-                  label={axis.label}
-                  color={axis.color}
-                  size={56}
-                  strokeWidth={4}
-                />
-                {deltas && deltas[axis.key] !== undefined && (
-                  <DeltaBadge value={deltas[axis.key]} />
-                )}
+                <StatRing value={scores[axis.key]} label={axis.label} color={axis.color} size={56} strokeWidth={4} />
+                {deltas && deltas[axis.key] !== undefined && <DeltaBadge value={deltas[axis.key]} />}
               </div>
             ))}
           </div>

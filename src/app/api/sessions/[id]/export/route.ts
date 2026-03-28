@@ -5,7 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 // GET — export the collective story as structured data
 export const GET = withErrorHandler(async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
 
@@ -34,10 +34,7 @@ export const GET = withErrorHandler(async function GET(
     .order("validated_at", { ascending: true });
 
   // Get students
-  const { data: students } = await supabase
-    .from("students")
-    .select("display_name, avatar")
-    .eq("session_id", sessionId);
+  const { data: students } = await supabase.from("students").select("display_name, avatar").eq("session_id", sessionId);
 
   // Get budget data if exists
   const { data: budgets } = await supabase
@@ -55,7 +52,15 @@ export const GET = withErrorHandler(async function GET(
   lines.push("");
 
   // Group choices by category
-  const CATEGORY_ORDER = ["personnage", "liens", "environnement", "conflit", "trajectoire", "intention", "renforcement"];
+  const CATEGORY_ORDER = [
+    "personnage",
+    "liens",
+    "environnement",
+    "conflit",
+    "trajectoire",
+    "intention",
+    "renforcement",
+  ];
   const CATEGORY_LABELS: Record<string, string> = {
     personnage: "Personnage",
     liens: "Liens",
@@ -89,8 +94,10 @@ export const GET = withErrorHandler(async function GET(
         const catA = CATEGORY_ORDER.indexOf(a.category);
         const catB = CATEGORY_ORDER.indexOf(b.category);
         if (catA !== catB) return catA - catB;
-        return ((a.situations as { position: number })?.position || 0) -
-               ((b.situations as { position: number })?.position || 0);
+        return (
+          ((a.situations as { position: number })?.position || 0) -
+          ((b.situations as { position: number })?.position || 0)
+        );
       });
 
       let currentCategory = "";
@@ -118,7 +125,7 @@ export const GET = withErrorHandler(async function GET(
 
     const avgBudget: Record<string, number> = {};
     for (const cat of CATEGORY_ORDER) {
-      const vals = budgets.map((b) => ((b.choices as Record<string, number>)?.[cat] || 0));
+      const vals = budgets.map((b) => (b.choices as Record<string, number>)?.[cat] || 0);
       avgBudget[cat] = Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
     }
 
@@ -147,7 +154,9 @@ export const GET = withErrorHandler(async function GET(
     lines.push("");
     for (const r of starred) {
       const sName = (students || []).find((s) => s.display_name)?.display_name || "";
-      lines.push(`- ${r.text}${r.teacher_score ? ` (${r.teacher_score}/5)` : ""}${r.teacher_comment ? ` — _${r.teacher_comment}_` : ""}`);
+      lines.push(
+        `- ${r.text}${r.teacher_score ? ` (${r.teacher_score}/5)` : ""}${r.teacher_comment ? ` — _${r.teacher_comment}_` : ""}`,
+      );
     }
     lines.push("");
   }

@@ -4,8 +4,7 @@ export function DarkLayout({ children }: { children: React.ReactNode }) {
       className="dark min-h-dvh text-bw-heading"
       style={{
         backgroundColor: "#08090E",
-        background:
-          "linear-gradient(145deg, #08090E 0%, #0A0C12 35%, #08090E 100%)",
+        background: "linear-gradient(145deg, #08090E 0%, #0A0C12 35%, #08090E 100%)",
       }}
     >
       {/* Cinematic ambient glow spots */}
@@ -29,9 +28,7 @@ export function DarkLayout({ children }: { children: React.ReactNode }) {
           }}
         />
       </div>
-      <div className="relative z-10">
-        {children}
-      </div>
+      <div className="relative z-10">{children}</div>
     </div>
   );
 }

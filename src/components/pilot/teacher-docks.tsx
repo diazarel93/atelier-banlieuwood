@@ -50,7 +50,13 @@ export interface ContextDocksProps extends ContextPanelProps {
   onClearTimer?: () => void;
   onTimerExpired?: () => void;
   // Teams
-  teams?: { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[];
+  teams?: {
+    id: string;
+    team_name: string;
+    team_color: string;
+    team_number: number;
+    students: { id: string; display_name: string; avatar: string }[];
+  }[];
   // Broadcast
   onBroadcast?: () => void;
 }
@@ -85,14 +91,18 @@ export function ContextDocks(props: ContextDocksProps) {
     try {
       const saved = localStorage.getItem(UPPER_KEY);
       return saved === "guide" || saved === "stats" || saved === "timer" ? saved : null;
-    } catch { return null; }
+    } catch {
+      return null;
+    }
   });
   const [lowerOpen, setLowerOpen] = useState<LowerTab | null>(() => {
     if (typeof window === "undefined") return null;
     try {
       const saved = localStorage.getItem(LOWER_KEY);
       return saved === "students" || saved === "broadcast" || saved === "teams" ? saved : null;
-    } catch { return null; }
+    } catch {
+      return null;
+    }
   });
 
   // Track previous response count for pulse animation
@@ -109,8 +119,16 @@ export function ContextDocks(props: ContextDocksProps) {
   }, [props.responsesCount, upperOpen]);
 
   // Persist open state
-  useEffect(() => { try { localStorage.setItem(UPPER_KEY, upperOpen || ""); } catch {} }, [upperOpen]);
-  useEffect(() => { try { localStorage.setItem(LOWER_KEY, lowerOpen || ""); } catch {} }, [lowerOpen]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(UPPER_KEY, upperOpen || "");
+    } catch {}
+  }, [upperOpen]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(LOWER_KEY, lowerOpen || "");
+    } catch {}
+  }, [lowerOpen]);
 
   function toggleUpper(tab: UpperTab) {
     setUpperOpen((prev) => (prev === tab ? null : tab));
@@ -135,15 +153,26 @@ export function ContextDocks(props: ContextDocksProps) {
   // ── Keyboard shortcuts ──
   const handleKey = useCallback((e: KeyboardEvent) => {
     const tag = (e.target as HTMLElement)?.tagName;
-    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (e.target as HTMLElement)?.isContentEditable) return;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (e.target as HTMLElement)?.isContentEditable)
+      return;
 
     const key = e.key.toLowerCase();
-    if (key === "g") { e.preventDefault(); toggleUpper("guide"); }
-    else if (key === "s" && !e.ctrlKey && !e.metaKey) { e.preventDefault(); toggleUpper("stats"); }
-    else if (key === "e") { e.preventDefault(); toggleLower("students"); }
-    else if (key === "t" && !e.ctrlKey && !e.metaKey) { e.preventDefault(); toggleUpper("timer"); }
-    else if (key === "b" && !e.ctrlKey && !e.metaKey) { e.preventDefault(); toggleLower("broadcast"); }
-     
+    if (key === "g") {
+      e.preventDefault();
+      toggleUpper("guide");
+    } else if (key === "s" && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      toggleUpper("stats");
+    } else if (key === "e") {
+      e.preventDefault();
+      toggleLower("students");
+    } else if (key === "t" && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      toggleUpper("timer");
+    } else if (key === "b" && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      toggleLower("broadcast");
+    }
   }, []);
 
   useEffect(() => {
@@ -151,7 +180,7 @@ export function ContextDocks(props: ContextDocksProps) {
     return () => window.removeEventListener("keydown", handleKey);
   }, [handleKey]);
 
-  const hasGuideContent = !!(props.questionGuide || (props.moduleGuide?.aQuoiEtreAttentif?.length));
+  const hasGuideContent = !!(props.questionGuide || props.moduleGuide?.aQuoiEtreAttentif?.length);
   const hasTimer = !!(props.timerEndsAt && new Date(props.timerEndsAt).getTime() > Date.now());
   const stuckCount = (props.studentStates || []).filter((s) => s.state === "stuck").length;
   const pct = props.totalStudents > 0 ? Math.round((props.responsesCount / props.totalStudents) * 100) : 0;
@@ -213,7 +242,13 @@ export function ContextDocks(props: ContextDocksProps) {
               <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
                 {upperOpen === "guide" && <GuideContent {...props} />}
                 {upperOpen === "stats" && <StatsContent {...props} />}
-                {upperOpen === "timer" && <TimerContent timerEndsAt={props.timerEndsAt} onClearTimer={props.onClearTimer} onTimerExpired={props.onTimerExpired} />}
+                {upperOpen === "timer" && (
+                  <TimerContent
+                    timerEndsAt={props.timerEndsAt}
+                    onClearTimer={props.onClearTimer}
+                    onTimerExpired={props.onTimerExpired}
+                  />
+                )}
               </div>
             </motion.div>
           )}
@@ -287,7 +322,10 @@ export function ContextDocks(props: ContextDocksProps) {
       {(upperOpen || lowerOpen) && (
         <div
           className="fixed inset-0 z-20 hidden lg:block"
-          onClick={() => { setUpperOpen(null); setLowerOpen(null); }}
+          onClick={() => {
+            setUpperOpen(null);
+            setLowerOpen(null);
+          }}
         />
       )}
     </>
@@ -343,11 +381,7 @@ function DockButton({
           : hasContent
             ? `linear-gradient(135deg, ${color}15, ${color}05)`
             : undefined,
-        border: active
-          ? `1.5px solid ${color}50`
-          : hasContent
-            ? `1px solid ${color}20`
-            : "1px solid transparent",
+        border: active ? `1.5px solid ${color}50` : hasContent ? `1px solid ${color}20` : "1px solid transparent",
       }}
     >
       <span className="leading-none">{emoji}</span>
@@ -405,10 +439,7 @@ function DockButton({
 
 // ─── GUIDE TAB CONTENT ─────────────────────────────────────────
 
-function GuideContent({
-  questionGuide,
-  moduleGuide,
-}: ContextPanelProps) {
+function GuideContent({ questionGuide, moduleGuide }: ContextPanelProps) {
   const [alertsExpanded, setAlertsExpanded] = useState(false);
 
   return (
@@ -478,8 +509,13 @@ function GuideContent({
               {moduleGuide.aQuoiEtreAttentif.length}
             </span>
             <svg
-              width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F59E0B"
-              strokeWidth="2" strokeLinecap="round"
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#F59E0B"
+              strokeWidth="2"
+              strokeLinecap="round"
               className={`ml-auto transition-transform ${alertsExpanded ? "rotate-180" : ""}`}
             >
               <path d="M6 9l6 6 6-6" />
@@ -526,37 +562,44 @@ function StatsContent({
       </div>
 
       {/* Progress ring */}
-      <div className="flex items-center gap-3 p-2.5 rounded-xl" style={{ background: "linear-gradient(135deg, rgba(78,205,196,0.06), transparent)" }}>
+      <div
+        className="flex items-center gap-3 p-2.5 rounded-xl"
+        style={{ background: "linear-gradient(135deg, rgba(78,205,196,0.06), transparent)" }}
+      >
         <div className="relative w-14 h-14 flex-shrink-0">
           <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
             <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(78,205,196,0.1)" strokeWidth="3" />
             <circle
-              cx="18" cy="18" r="15.5" fill="none" strokeWidth="3"
+              cx="18"
+              cy="18"
+              r="15.5"
+              fill="none"
+              strokeWidth="3"
               strokeLinecap="round"
               strokeDasharray={`${pct * 0.974} 100`}
               className="transition-all duration-500"
               style={{ stroke: pct === 100 ? "#10B981" : "#4ECDC4" }}
             />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-xs font-bold tabular-nums" style={{ color: pct === 100 ? "#10B981" : "#4ECDC4" }}>
+          <span
+            className="absolute inset-0 flex items-center justify-center text-xs font-bold tabular-nums"
+            style={{ color: pct === 100 ? "#10B981" : "#4ECDC4" }}
+          >
             {pct}%
           </span>
         </div>
         <div className="space-y-0.5">
-          <p className="text-xs text-bw-text">{responsesCount}/{totalStudents} réponses</p>
-          <p className="text-xs text-bw-muted">
-            {totalStudents - responsesCount} en attente
+          <p className="text-xs text-bw-text">
+            {responsesCount}/{totalStudents} réponses
           </p>
+          <p className="text-xs text-bw-muted">{totalStudents - responsesCount} en attente</p>
         </div>
       </div>
 
       {/* Progress bar */}
       <div className="space-y-1">
         <div className="h-1.5 bg-bw-elevated rounded-full overflow-hidden">
-          <div
-            className="h-full bg-bw-teal rounded-full transition-all duration-500"
-            style={{ width: `${pct}%` }}
-          />
+          <div className="h-full bg-bw-teal rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
         </div>
       </div>
 
@@ -667,7 +710,17 @@ function BroadcastContent({ onBroadcast }: { onBroadcast?: () => void }) {
 
 // ─── TEAMS TAB CONTENT ─────────────────────────────────────────
 
-function TeamsContent({ teams }: { teams: { id: string; team_name: string; team_color: string; team_number: number; students: { id: string; display_name: string; avatar: string }[] }[] }) {
+function TeamsContent({
+  teams,
+}: {
+  teams: {
+    id: string;
+    team_name: string;
+    team_color: string;
+    team_number: number;
+    students: { id: string; display_name: string; avatar: string }[];
+  }[];
+}) {
   if (teams.length === 0) {
     return (
       <div className="text-center py-6 space-y-2">
@@ -699,7 +752,9 @@ function TeamsContent({ teams }: { teams: { id: string; team_name: string; team_
             </div>
             <div className="flex flex-wrap gap-1">
               {team.students.map((s) => (
-                <span key={s.id} className="text-xs" title={s.display_name}>{s.avatar}</span>
+                <span key={s.id} className="text-xs" title={s.display_name}>
+                  {s.avatar}
+                </span>
               ))}
             </div>
           </div>
@@ -756,9 +811,7 @@ function StudentsContent({
                 <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: STATE_COLORS[studentState] }} />
                 {STATE_LABELS[studentState]}
               </span>
-              {selectedStudent.warnings > 0 && (
-                <span className="text-bw-amber">{selectedStudent.warnings} avert.</span>
-              )}
+              {selectedStudent.warnings > 0 && <span className="text-bw-amber">{selectedStudent.warnings} avert.</span>}
             </div>
           </div>
         </div>
@@ -828,7 +881,10 @@ function StudentsContent({
                 Envoyer
               </button>
               <button
-                onClick={() => { setNudgeStudentId(null); setNudgeText(""); }}
+                onClick={() => {
+                  setNudgeStudentId(null);
+                  setNudgeText("");
+                }}
                 className="text-xs px-2 py-1 rounded text-bw-muted hover:text-bw-heading cursor-pointer"
               >
                 Annuler
@@ -903,21 +959,12 @@ function StudentsContent({
                 onClick={() => onSelectStudent(s)}
                 className="w-full flex items-center gap-2 px-2 py-1.5 rounded-xl cursor-pointer transition-colors duration-200 hover:bg-black/[0.03] text-left"
               >
-                <span
-                  className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ backgroundColor: STATE_COLORS[state] }}
-                />
+                <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: STATE_COLORS[state] }} />
                 <span className="text-sm flex-shrink-0">{s.avatar}</span>
                 <span className="text-xs text-bw-text truncate flex-1">{s.display_name}</span>
-                {state === "responded" && (
-                  <span className="text-xs text-bw-teal font-medium flex-shrink-0">OK</span>
-                )}
-                {state === "stuck" && (
-                  <span className="text-xs text-bw-amber flex-shrink-0">bloqué</span>
-                )}
-                {s.warnings > 0 && (
-                  <span className="text-xs text-bw-amber flex-shrink-0">{s.warnings}</span>
-                )}
+                {state === "responded" && <span className="text-xs text-bw-teal font-medium flex-shrink-0">OK</span>}
+                {state === "stuck" && <span className="text-xs text-bw-amber flex-shrink-0">bloqué</span>}
+                {s.warnings > 0 && <span className="text-xs text-bw-amber flex-shrink-0">{s.warnings}</span>}
               </button>
             );
           })}
@@ -985,8 +1032,18 @@ export function ContextPanel(props: ContextPanelProps) {
     return (
       <aside className="w-full flex flex-col h-full flex-shrink-0">
         <div className="flex items-center justify-between px-3 py-2.5 border-b border-black/[0.04] flex-shrink-0">
-          <button onClick={() => props.onSelectStudent(null)} className="text-xs text-bw-muted hover:text-bw-heading cursor-pointer transition-colors">← Retour</button>
-          <button onClick={props.onClose} className="text-xs text-bw-muted hover:text-bw-heading cursor-pointer transition-colors">✕</button>
+          <button
+            onClick={() => props.onSelectStudent(null)}
+            className="text-xs text-bw-muted hover:text-bw-heading cursor-pointer transition-colors"
+          >
+            ← Retour
+          </button>
+          <button
+            onClick={props.onClose}
+            className="text-xs text-bw-muted hover:text-bw-heading cursor-pointer transition-colors"
+          >
+            ✕
+          </button>
         </div>
         <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
           <div className="flex items-center gap-2">
@@ -1006,42 +1063,94 @@ export function ContextPanel(props: ContextPanelProps) {
               <button
                 onClick={() => {
                   if (nudgeStudentId === props.selectedStudent!.id) {
-                    if (nudgeText.trim()) { props.onNudge!(props.selectedStudent!.id, nudgeText.trim()); setNudgeStudentId(null); setNudgeText(""); toast.success("Message envoyé"); }
-                  } else { setNudgeStudentId(props.selectedStudent!.id); setNudgeText(""); }
+                    if (nudgeText.trim()) {
+                      props.onNudge!(props.selectedStudent!.id, nudgeText.trim());
+                      setNudgeStudentId(null);
+                      setNudgeText("");
+                      toast.success("Message envoyé");
+                    }
+                  } else {
+                    setNudgeStudentId(props.selectedStudent!.id);
+                    setNudgeText("");
+                  }
                 }}
                 className="flex-1 py-1.5 px-2 rounded-xl text-xs font-medium bg-bw-teal/10 text-bw-teal border border-bw-teal/20 cursor-pointer"
-              >Envoyer un message</button>
+              >
+                Envoyer un message
+              </button>
             )}
             {props.onWarn && (
-              <button onClick={() => props.onWarn!(props.selectedStudent!.id)}
+              <button
+                onClick={() => props.onWarn!(props.selectedStudent!.id)}
                 className="py-1.5 px-2 rounded-xl text-xs font-medium bg-bw-amber/10 text-bw-amber border border-bw-amber/20 cursor-pointer"
-              >Avertir</button>
+              >
+                Avertir
+              </button>
             )}
           </div>
           {nudgeStudentId === props.selectedStudent.id && props.onNudge && (
             <div className="space-y-1.5">
-              <input type="text" value={nudgeText} onChange={(e) => setNudgeText(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter" && nudgeText.trim()) { props.onNudge!(props.selectedStudent!.id, nudgeText.trim()); setNudgeStudentId(null); setNudgeText(""); toast.success("Message envoyé"); } }}
-                placeholder="Ton message..." autoFocus
-                className="w-full px-2.5 py-1.5 rounded-xl bg-bw-surface border border-black/[0.04] text-xs text-white placeholder:text-bw-muted outline-none focus:border-bw-teal/40" />
+              <input
+                type="text"
+                value={nudgeText}
+                onChange={(e) => setNudgeText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && nudgeText.trim()) {
+                    props.onNudge!(props.selectedStudent!.id, nudgeText.trim());
+                    setNudgeStudentId(null);
+                    setNudgeText("");
+                    toast.success("Message envoyé");
+                  }
+                }}
+                placeholder="Ton message..."
+                autoFocus
+                className="w-full px-2.5 py-1.5 rounded-xl bg-bw-surface border border-black/[0.04] text-xs text-white placeholder:text-bw-muted outline-none focus:border-bw-teal/40"
+              />
               <div className="flex gap-1.5">
-                <button onClick={() => { if (nudgeText.trim()) { props.onNudge!(props.selectedStudent!.id, nudgeText.trim()); setNudgeStudentId(null); setNudgeText(""); toast.success("Message envoyé"); } }}
-                  disabled={!nudgeText.trim()} className="text-xs px-2 py-1 rounded bg-bw-teal text-black font-medium cursor-pointer disabled:opacity-40">Envoyer</button>
-                <button onClick={() => { setNudgeStudentId(null); setNudgeText(""); }} className="text-xs px-2 py-1 rounded text-bw-muted hover:text-bw-heading cursor-pointer">Annuler</button>
+                <button
+                  onClick={() => {
+                    if (nudgeText.trim()) {
+                      props.onNudge!(props.selectedStudent!.id, nudgeText.trim());
+                      setNudgeStudentId(null);
+                      setNudgeText("");
+                      toast.success("Message envoyé");
+                    }
+                  }}
+                  disabled={!nudgeText.trim()}
+                  className="text-xs px-2 py-1 rounded bg-bw-teal text-black font-medium cursor-pointer disabled:opacity-40"
+                >
+                  Envoyer
+                </button>
+                <button
+                  onClick={() => {
+                    setNudgeStudentId(null);
+                    setNudgeText("");
+                  }}
+                  className="text-xs px-2 py-1 rounded text-bw-muted hover:text-bw-heading cursor-pointer"
+                >
+                  Annuler
+                </button>
               </div>
             </div>
           )}
           <div className="space-y-2">
-            <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Réponses ({props.studentResponses.length})</p>
+            <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">
+              Réponses ({props.studentResponses.length})
+            </p>
             {props.studentResponses.length === 0 ? (
               <p className="text-xs text-bw-muted">Aucune réponse pour ce module</p>
             ) : (
               <div className="space-y-1.5">
                 {props.studentResponses.map((r) => (
-                  <div key={r.id} className={`bg-bw-surface rounded-xl p-2.5 border text-xs leading-relaxed ${r.is_hidden ? "border-bw-amber/20 opacity-60" : r.is_highlighted ? "border-bw-teal/30" : "border-black/[0.04]"}`}>
+                  <div
+                    key={r.id}
+                    className={`bg-bw-surface rounded-xl p-2.5 border text-xs leading-relaxed ${r.is_hidden ? "border-bw-amber/20 opacity-60" : r.is_highlighted ? "border-bw-teal/30" : "border-black/[0.04]"}`}
+                  >
                     <p className="text-bw-text">{r.text}</p>
                     <div className="flex items-center gap-2 mt-1.5">
-                      <span className="text-xs text-bw-muted">{new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
+                      <span className="text-xs text-bw-muted">
+                        {new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                      </span>
                       {r.is_hidden && <span className="text-xs text-bw-amber">Masquée</span>}
                       {r.is_highlighted && <span className="text-xs text-bw-teal">Mise en avant</span>}
                     </div>
@@ -1060,19 +1169,30 @@ export function ContextPanel(props: ContextPanelProps) {
       <div className="border-b border-black/[0.04] flex-shrink-0">
         <div className="flex items-center justify-between px-3 py-2">
           <div className="flex items-center gap-0.5">
-            {([
+            {[
               { id: "guide" as const, label: "Guide", icon: "📖", activeColor: "#F5A45B" },
               { id: "students" as const, label: "Élèves", icon: "👥", activeColor: "#4ECDC4" },
               { id: "stats" as const, label: "Stats", icon: "📊", activeColor: "#8B5CF6" },
-            ]).map((tab) => (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
                 className={`px-2.5 py-1.5 rounded-xl text-xs font-medium cursor-pointer transition-all duration-200 ${activeTab === tab.id ? "text-white" : "text-bw-muted hover:text-bw-text hover:bg-black/[0.03]"}`}
-                style={activeTab === tab.id ? { background: `${tab.activeColor}15`, color: tab.activeColor } : undefined}>
-                <span className="mr-0.5">{tab.icon}</span>{tab.label}
+                style={
+                  activeTab === tab.id ? { background: `${tab.activeColor}15`, color: tab.activeColor } : undefined
+                }
+              >
+                <span className="mr-0.5">{tab.icon}</span>
+                {tab.label}
               </button>
             ))}
           </div>
-          <button onClick={props.onClose} className="text-xs text-bw-muted hover:text-bw-heading cursor-pointer transition-colors ml-1">✕</button>
+          <button
+            onClick={props.onClose}
+            className="text-xs text-bw-muted hover:text-bw-heading cursor-pointer transition-colors ml-1"
+          >
+            ✕
+          </button>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
@@ -1081,26 +1201,61 @@ export function ContextPanel(props: ContextPanelProps) {
         {activeTab === "stats" && (
           <div className="space-y-4">
             <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Stats live</p>
-            <div className="flex items-center gap-3 p-2.5 rounded-xl" style={{ background: "linear-gradient(135deg, rgba(78,205,196,0.06), transparent)" }}>
+            <div
+              className="flex items-center gap-3 p-2.5 rounded-xl"
+              style={{ background: "linear-gradient(135deg, rgba(78,205,196,0.06), transparent)" }}
+            >
               <div className="relative w-14 h-14 flex-shrink-0">
                 <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
                   <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(78,205,196,0.1)" strokeWidth="3" />
-                  <circle cx="18" cy="18" r="15.5" fill="none" strokeWidth="3" strokeLinecap="round" strokeDasharray={`${pct * 0.974} 100`} className="transition-all duration-500" style={{ stroke: pct === 100 ? "#10B981" : "#4ECDC4" }} />
+                  <circle
+                    cx="18"
+                    cy="18"
+                    r="15.5"
+                    fill="none"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeDasharray={`${pct * 0.974} 100`}
+                    className="transition-all duration-500"
+                    style={{ stroke: pct === 100 ? "#10B981" : "#4ECDC4" }}
+                  />
                 </svg>
-                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold tabular-nums" style={{ color: pct === 100 ? "#10B981" : "#4ECDC4" }}>{pct}%</span>
+                <span
+                  className="absolute inset-0 flex items-center justify-center text-xs font-bold tabular-nums"
+                  style={{ color: pct === 100 ? "#10B981" : "#4ECDC4" }}
+                >
+                  {pct}%
+                </span>
               </div>
               <div className="space-y-0.5">
-                <p className="text-xs text-bw-text">{props.responsesCount}/{props.totalStudents} réponses</p>
+                <p className="text-xs text-bw-text">
+                  {props.responsesCount}/{props.totalStudents} réponses
+                </p>
                 <p className="text-xs text-bw-muted">{props.totalStudents - props.responsesCount} en attente</p>
               </div>
             </div>
             <div className="h-1.5 bg-bw-elevated rounded-full overflow-hidden">
-              <div className="h-full bg-bw-teal rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
+              <div
+                className="h-full bg-bw-teal rounded-full transition-all duration-500"
+                style={{ width: `${pct}%` }}
+              />
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {props.hiddenCount > 0 && <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-bw-amber/10 text-bw-amber">{props.hiddenCount} masquée{props.hiddenCount !== 1 ? "s" : ""}</span>}
-              {props.sessionStatus === "responding" && props.voteOptionCount > 0 && <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-bw-primary/10 text-bw-primary">{props.voteOptionCount} sélectionnée{props.voteOptionCount !== 1 ? "s" : ""}</span>}
-              {highlightedCount > 0 && <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-bw-teal/10 text-bw-teal">{highlightedCount} mise{highlightedCount !== 1 ? "s" : ""} en avant</span>}
+              {props.hiddenCount > 0 && (
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-bw-amber/10 text-bw-amber">
+                  {props.hiddenCount} masquée{props.hiddenCount !== 1 ? "s" : ""}
+                </span>
+              )}
+              {props.sessionStatus === "responding" && props.voteOptionCount > 0 && (
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-bw-primary/10 text-bw-primary">
+                  {props.voteOptionCount} sélectionnée{props.voteOptionCount !== 1 ? "s" : ""}
+                </span>
+              )}
+              {highlightedCount > 0 && (
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-bw-teal/10 text-bw-teal">
+                  {highlightedCount} mise{highlightedCount !== 1 ? "s" : ""} en avant
+                </span>
+              )}
             </div>
             <div className="space-y-1.5">
               <p className="text-xs uppercase tracking-wider text-bw-muted font-semibold">Rythme d&apos;arrivée</p>

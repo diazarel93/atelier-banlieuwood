@@ -29,8 +29,16 @@ export interface ScenarioMission {
 // 3 actes narratifs
 export const ACTS = [
   { key: "setup", label: "Situation initiale", description: "Le monde normal du héros, avant que tout bascule." },
-  { key: "confrontation", label: "Confrontation", description: "Les obstacles s'accumulent, le héros est mis à l'épreuve." },
-  { key: "resolution", label: "Résolution", description: "Le climax et le dénouement — comment l'histoire se termine." },
+  {
+    key: "confrontation",
+    label: "Confrontation",
+    description: "Les obstacles s'accumulent, le héros est mis à l'épreuve.",
+  },
+  {
+    key: "resolution",
+    label: "Résolution",
+    description: "Le climax et le dénouement — comment l'histoire se termine.",
+  },
 ] as const;
 
 // 5 profils créatifs (Adrian) → missions d'écriture
@@ -40,24 +48,59 @@ export const ACTS = [
 // Provocateur = comment mettre plus de tension ? → tension
 // Stratège = comment ça se termine ? → structure
 export const MISSION_TYPES = [
-  { key: "dialogue", label: "Acteur", description: "Écris les répliques : comment parlent les personnages ?", emoji: "🎭" },
-  { key: "description", label: "Créatif", description: "Enrichis la scène : lieux, ambiance, détails visuels", emoji: "🎨" },
-  { key: "coherence", label: "Détective", description: "Vérifie que tout colle : incohérences, détails manquants", emoji: "🔍" },
-  { key: "tension", label: "Provocateur", description: "Renforce la tension : conflits, obstacles, surprises", emoji: "⚡" },
+  {
+    key: "dialogue",
+    label: "Acteur",
+    description: "Écris les répliques : comment parlent les personnages ?",
+    emoji: "🎭",
+  },
+  {
+    key: "description",
+    label: "Créatif",
+    description: "Enrichis la scène : lieux, ambiance, détails visuels",
+    emoji: "🎨",
+  },
+  {
+    key: "coherence",
+    label: "Détective",
+    description: "Vérifie que tout colle : incohérences, détails manquants",
+    emoji: "🔍",
+  },
+  {
+    key: "tension",
+    label: "Provocateur",
+    description: "Renforce la tension : conflits, obstacles, surprises",
+    emoji: "⚡",
+  },
   { key: "structure", label: "Stratège", description: "Structure la scène : début, progression, fin", emoji: "🧩" },
 ] as const;
 
 // 8 ingrédients collectifs (1 par manche M12) — représentation minimale
 // Adrian : chaque choix collectif doit être visible sur la frise
 export const FRISE_STEPS = [
-  { key: "ton",                  label: "Le Ton",                description: "L'ambiance et le genre du film.",                    winnerManche: 1 },
-  { key: "situation-initiale",   label: "Situation initiale",    description: "Le quotidien du héros, son monde.",                  winnerManche: 2 },
-  { key: "personnages",          label: "Les Personnages",       description: "Qui sont les personnages de l'histoire ?",           winnerManche: 3 },
-  { key: "objectif",             label: "L'Objectif",            description: "Ce que le héros veut accomplir.",                    winnerManche: 4 },
-  { key: "obstacle",             label: "L'Obstacle",            description: "Ce qui empêche le héros d'atteindre son objectif.",  winnerManche: 5 },
-  { key: "premiere-scene",       label: "La Première Scène",     description: "Comment le film commence.",                          winnerManche: 6 },
-  { key: "relation",             label: "La Relation",           description: "La relation au cœur de l'histoire.",                 winnerManche: 7 },
-  { key: "moment-fort",          label: "Le Moment Fort",        description: "Le moment le plus intense du film.",                 winnerManche: 8 },
+  { key: "ton", label: "Le Ton", description: "L'ambiance et le genre du film.", winnerManche: 1 },
+  {
+    key: "situation-initiale",
+    label: "Situation initiale",
+    description: "Le quotidien du héros, son monde.",
+    winnerManche: 2,
+  },
+  {
+    key: "personnages",
+    label: "Les Personnages",
+    description: "Qui sont les personnages de l'histoire ?",
+    winnerManche: 3,
+  },
+  { key: "objectif", label: "L'Objectif", description: "Ce que le héros veut accomplir.", winnerManche: 4 },
+  {
+    key: "obstacle",
+    label: "L'Obstacle",
+    description: "Ce qui empêche le héros d'atteindre son objectif.",
+    winnerManche: 5,
+  },
+  { key: "premiere-scene", label: "La Première Scène", description: "Comment le film commence.", winnerManche: 6 },
+  { key: "relation", label: "La Relation", description: "La relation au cœur de l'histoire.", winnerManche: 7 },
+  { key: "moment-fort", label: "Le Moment Fort", description: "Le moment le plus intense du film.", winnerManche: 8 },
 ] as const;
 
 /**
@@ -65,10 +108,7 @@ export const FRISE_STEPS = [
  * @param winners - Choix collectifs de chaque manche M12 { 1: "texte", 2: "texte", ... }
  * @param level - Niveau scolaire (primaire/college/lycee)
  */
-export function generateScenesPrompt(
-  winners: Record<number, string>,
-  level: string
-): string {
+export function generateScenesPrompt(winners: Record<number, string>, level: string): string {
   const tone = winners[1] || "non défini";
   const situation = winners[2] || "non définie";
   const personnages = winners[3] || "non définis";
@@ -78,16 +118,19 @@ export function generateScenesPrompt(
   const relation = winners[7] || "";
   const momentFort = winners[8] || "";
 
-  const complexity = level === "primaire"
-    ? "Utilise un vocabulaire simple et des phrases courtes. 4 scènes maximum."
-    : level === "lycee"
-    ? "Tu peux utiliser un vocabulaire riche et des situations complexes. 5-6 scènes."
-    : "Utilise un vocabulaire accessible mais précis. 5 scènes.";
+  const complexity =
+    level === "primaire"
+      ? "Utilise un vocabulaire simple et des phrases courtes. 4 scènes maximum."
+      : level === "lycee"
+        ? "Tu peux utiliser un vocabulaire riche et des situations complexes. 5-6 scènes."
+        : "Utilise un vocabulaire accessible mais précis. 5 scènes.";
 
   const optionalElements = [
     relation && `- **Relation clé** : ${relation}`,
     momentFort && `- **Moment fort** : ${momentFort}`,
-  ].filter(Boolean).join("\n");
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   return `Tu es un scénariste expérimenté qui aide des élèves à écrire leur premier scénario.
 
@@ -129,7 +172,7 @@ Réponds en JSON :
  */
 export function assignMissions(
   students: { id: string; creativeProfile?: string }[],
-  scenes: { id: string; sceneNumber: number; title: string }[]
+  scenes: { id: string; sceneNumber: number; title: string }[],
 ): { studentId: string; sceneId: string; role: string; task: string; isScribe: boolean }[] {
   const roles: string[] = MISSION_TYPES.map((m) => m.key);
   const missions: { studentId: string; sceneId: string; role: string; task: string; isScribe: boolean }[] = [];

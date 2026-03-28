@@ -8,7 +8,7 @@ import { log } from "@/lib/logger";
 // POST — Facilitateur generates scenes from M12 winners via AI (facilitator only)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "scenario-generate", { max: 5, windowSec: 60 });
   if (rl) {
@@ -48,7 +48,7 @@ export const POST = withErrorHandler(async function POST(
   if (Object.keys(winners).length === 0) {
     return NextResponse.json(
       { error: "Aucun choix collectif M12 trouvé. Lancez d'abord le module Construction Collective." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -85,17 +85,45 @@ export const POST = withErrorHandler(async function POST(
       scenes = parsed.scenes || [];
     }
   } catch (err) {
-    log.error("AI scene generation failed, using fallback", { route: "/api/sessions/[id]/scenario-generate", error: String(err) });
+    log.error("AI scene generation failed, using fallback", {
+      route: "/api/sessions/[id]/scenario-generate",
+      error: String(err),
+    });
   }
 
   // Fallback: generate basic scenes if AI failed
   if (scenes.length === 0) {
     scenes = [
-      { sceneNumber: 1, title: "Le début", description: `${winners[2] || "Le quotidien du héros"} — le monde normal avant que tout change.`, act: "setup" },
-      { sceneNumber: 2, title: "L'incident", description: `${winners[4] || "Un événement"} vient bouleverser la routine.`, act: "setup" },
-      { sceneNumber: 3, title: "La quête", description: `${winners[3] || "Le héros"} doit surmonter ${winners[5] || "un obstacle"}.`, act: "confrontation" },
-      { sceneNumber: 4, title: "Le climax", description: `Le moment de vérité : tout se joue maintenant.`, act: "confrontation" },
-      { sceneNumber: 5, title: "Le dénouement", description: `Comment l'histoire se termine et ce qui a changé.`, act: "resolution" },
+      {
+        sceneNumber: 1,
+        title: "Le début",
+        description: `${winners[2] || "Le quotidien du héros"} — le monde normal avant que tout change.`,
+        act: "setup",
+      },
+      {
+        sceneNumber: 2,
+        title: "L'incident",
+        description: `${winners[4] || "Un événement"} vient bouleverser la routine.`,
+        act: "setup",
+      },
+      {
+        sceneNumber: 3,
+        title: "La quête",
+        description: `${winners[3] || "Le héros"} doit surmonter ${winners[5] || "un obstacle"}.`,
+        act: "confrontation",
+      },
+      {
+        sceneNumber: 4,
+        title: "Le climax",
+        description: `Le moment de vérité : tout se joue maintenant.`,
+        act: "confrontation",
+      },
+      {
+        sceneNumber: 5,
+        title: "Le dénouement",
+        description: `Comment l'histoire se termine et ce qui a changé.`,
+        act: "resolution",
+      },
     ];
   }
 
@@ -104,14 +132,17 @@ export const POST = withErrorHandler(async function POST(
   for (const scene of scenes) {
     const { data: inserted, error } = await admin
       .from("module6_scenes")
-      .upsert({
-        session_id: sessionId,
-        scene_number: scene.sceneNumber,
-        title: scene.title,
-        description: scene.description,
-        act: scene.act,
-        status: "incomplete",
-      }, { onConflict: "session_id,scene_number" })
+      .upsert(
+        {
+          session_id: sessionId,
+          scene_number: scene.sceneNumber,
+          title: scene.title,
+          description: scene.description,
+          act: scene.act,
+          status: "incomplete",
+        },
+        { onConflict: "session_id,scene_number" },
+      )
       .select("id, scene_number, title")
       .single();
 
@@ -126,7 +157,7 @@ export const POST = withErrorHandler(async function POST(
       id: s.id,
       creativeProfile: s.creative_profile || undefined,
     })),
-    insertedScenes
+    insertedScenes,
   );
 
   // 6. Insert missions (with scribe flag)
@@ -141,15 +172,14 @@ export const POST = withErrorHandler(async function POST(
         is_scribe: mission.isScribe,
         status: "pending",
       },
-      { onConflict: "session_id,student_id,scene_id" }
+      { onConflict: "session_id,student_id,scene_id" },
     );
   }
 
   // 7. Create empty scenario entry
-  await admin.from("module6_scenario").upsert(
-    { session_id: sessionId, full_text: "", validated: false },
-    { onConflict: "session_id" }
-  );
+  await admin
+    .from("module6_scenario")
+    .upsert({ session_id: sessionId, full_text: "", validated: false }, { onConflict: "session_id" });
 
   return NextResponse.json({
     success: true,

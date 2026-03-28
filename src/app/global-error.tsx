@@ -3,13 +3,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
-export default function GlobalError({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     Sentry.captureException(error);
   }, [error]);
@@ -17,7 +11,15 @@ export default function GlobalError({
   return (
     <html lang="fr">
       <body style={{ background: "#0F1117", color: "#E5E7EB", fontFamily: "system-ui, sans-serif" }}>
-        <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
+        <div
+          style={{
+            minHeight: "100dvh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "2rem",
+          }}
+        >
           <div style={{ textAlign: "center", maxWidth: "400px" }}>
             <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>🎬</div>
             <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "0.5rem" }}>

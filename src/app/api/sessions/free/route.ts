@@ -18,18 +18,12 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
   const { displayName, avatar, level } = parsed.data;
 
   if (!displayName?.trim() || !avatar || !level) {
-    return NextResponse.json(
-      { error: "Nom, avatar et niveau requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Nom, avatar et niveau requis" }, { status: 400 });
   }
 
   const VALID_LEVELS = ["primaire", "college", "lycee"];
   if (!VALID_LEVELS.includes(level)) {
-    return NextResponse.json(
-      { error: "Niveau invalide" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Niveau invalide" }, { status: 400 });
   }
 
   const cleanName = String(displayName).trim().slice(0, 30);
@@ -54,10 +48,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
     .single();
 
   if (sessionError || !session) {
-    return NextResponse.json(
-      { error: sessionError?.message || "Erreur lors de la création" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: sessionError?.message || "Erreur lors de la création" }, { status: 500 });
   }
 
   // Create the solo student
@@ -72,10 +63,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
     .single();
 
   if (studentError || !student) {
-    return NextResponse.json(
-      { error: "Erreur lors de l'inscription" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erreur lors de l'inscription" }, { status: 500 });
   }
 
   return NextResponse.json({

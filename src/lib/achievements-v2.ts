@@ -5,13 +5,7 @@
 
 export type AchievementTier = "bronze" | "silver" | "gold";
 
-export type AchievementCategory =
-  | "narration"
-  | "vote"
-  | "expression"
-  | "streak"
-  | "social"
-  | "special";
+export type AchievementCategory = "narration" | "vote" | "expression" | "streak" | "social" | "special";
 
 export interface AchievementTierDef {
   tier: AchievementTier;
@@ -480,20 +474,14 @@ export function getAchievementsByCategory(category: AchievementCategory): Achiev
   return ACHIEVEMENTS.filter((a) => a.category === category);
 }
 
-export function getNextTier(
-  achievement: AchievementDef,
-  currentProgress: number,
-): AchievementTierDef | null {
+export function getNextTier(achievement: AchievementDef, currentProgress: number): AchievementTierDef | null {
   for (const tier of achievement.tiers) {
     if (currentProgress < tier.threshold) return tier;
   }
   return null;
 }
 
-export function getCurrentTier(
-  achievement: AchievementDef,
-  currentProgress: number,
-): AchievementTierDef | null {
+export function getCurrentTier(achievement: AchievementDef, currentProgress: number): AchievementTierDef | null {
   let current: AchievementTierDef | null = null;
   for (const tier of achievement.tiers) {
     if (currentProgress >= tier.threshold) current = tier;

@@ -7,7 +7,7 @@ import { safeJson, withErrorHandler } from "@/lib/api-utils";
 // POST — student submits checklist (Module 2 séance 1)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "checklist", { max: 10, windowSec: 60 });
   if (rl) {
@@ -20,36 +20,24 @@ export const POST = withErrorHandler(async function POST(
   const { studentId, selectedItems, chosenItem, sceneMarquante, deeperReflection } = parsed.data;
 
   if (!studentId || !Array.isArray(selectedItems)) {
-    return NextResponse.json(
-      { error: "studentId et selectedItems requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "studentId et selectedItems requis" }, { status: 400 });
   }
 
   // Validate minimum items
   if (selectedItems.length < MIN_CHECKLIST) {
-    return NextResponse.json(
-      { error: `Minimum ${MIN_CHECKLIST} contenus à sélectionner` },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: `Minimum ${MIN_CHECKLIST} contenus à sélectionner` }, { status: 400 });
   }
 
   // Validate all keys
   for (const key of selectedItems) {
     if (!isValidContentKey(key)) {
-      return NextResponse.json(
-        { error: `Contenu invalide : ${key}` },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: `Contenu invalide : ${key}` }, { status: 400 });
     }
   }
 
   // Validate chosenItem if provided
   if (chosenItem && !selectedItems.includes(chosenItem)) {
-    return NextResponse.json(
-      { error: "Le contenu choisi doit faire partie de la sélection" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Le contenu choisi doit faire partie de la sélection" }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -63,17 +51,11 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!session || session.current_module !== 2 || (session.current_seance || 1) !== 1) {
-    return NextResponse.json(
-      { error: "La checklist n'est pas disponible pour cette séance" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "La checklist n'est pas disponible pour cette séance" }, { status: 400 });
   }
 
   if (session.status !== "responding") {
-    return NextResponse.json(
-      { error: "Les réponses ne sont pas ouvertes" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Les réponses ne sont pas ouvertes" }, { status: 400 });
   }
 
   // Verify student belongs to session
@@ -85,10 +67,7 @@ export const POST = withErrorHandler(async function POST(
     .single();
 
   if (!student) {
-    return NextResponse.json(
-      { error: "Joueur introuvable dans cette partie" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Joueur introuvable dans cette partie" }, { status: 404 });
   }
 
   // Upsert checklist
@@ -103,7 +82,7 @@ export const POST = withErrorHandler(async function POST(
         scene_marquante: sceneMarquante && typeof sceneMarquante === "string" ? sceneMarquante.trim() : null,
         deeper_reflection: deeperReflection && typeof deeperReflection === "string" ? deeperReflection.trim() : null,
       },
-      { onConflict: "session_id,student_id" }
+      { onConflict: "session_id,student_id" },
     )
     .select()
     .single();
@@ -119,7 +98,7 @@ export const POST = withErrorHandler(async function POST(
 // GET — all checklists for session + top items
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
   const admin = createAdminClient();

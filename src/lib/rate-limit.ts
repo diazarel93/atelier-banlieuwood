@@ -32,7 +32,7 @@ interface RateLimitOptions {
 export function checkRateLimit(
   ip: string,
   route: string,
-  opts: RateLimitOptions
+  opts: RateLimitOptions,
 ): { error: string; retryAfterSec: number } | null {
   const key = `${ip}:${route}`;
   const now = Date.now();

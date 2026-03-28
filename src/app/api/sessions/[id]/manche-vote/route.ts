@@ -6,7 +6,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 // GET — get vote results for a manche (facilitator only)
 export const GET = withErrorHandler(async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: sessionId } = await params;
 
@@ -58,7 +58,7 @@ export const GET = withErrorHandler(async function GET(
 // POST — student votes on a manche (upsert)
 export const POST = withErrorHandler(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "manche-vote", { max: 20, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -111,18 +111,16 @@ export const POST = withErrorHandler(async function POST(
   }
 
   // Upsert vote
-  const { error } = await admin
-    .from("module12_votes")
-    .upsert(
-      {
-        session_id: sessionId,
-        student_id: studentId,
-        manche,
-        card_id: cardId,
-        voted_at: new Date().toISOString(),
-      },
-      { onConflict: "session_id,student_id,manche" }
-    );
+  const { error } = await admin.from("module12_votes").upsert(
+    {
+      session_id: sessionId,
+      student_id: studentId,
+      manche,
+      card_id: cardId,
+      voted_at: new Date().toISOString(),
+    },
+    { onConflict: "session_id,student_id,manche" },
+  );
 
   if (error) {
     console.error("[manche-vote POST]", error.message);

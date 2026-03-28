@@ -42,16 +42,26 @@ export const metadata: Metadata = {
   description:
     "Ecrivez un court-metrage ensemble. De 5 a 30 joueurs sur tablette ou ordinateur. En classe, en famille ou entre amis. Gratuit, sans compte pour les joueurs.",
   keywords: [
-    "jeu educatif", "creation collaborative", "cinema", "court-metrage",
-    "classe", "famille", "storytelling", "EdTech", "serious game",
-    "ecriture collaborative", "pedagogie", "IA",
+    "jeu educatif",
+    "creation collaborative",
+    "cinema",
+    "court-metrage",
+    "classe",
+    "famille",
+    "storytelling",
+    "EdTech",
+    "serious game",
+    "ecriture collaborative",
+    "pedagogie",
+    "IA",
   ],
   authors: [{ name: "Banlieuwood" }],
   creator: "Banlieuwood",
   metadataBase: new URL("https://banlieuwood.fr"),
   openGraph: {
     title: "Banlieuwood — Ecrivez un court-metrage ensemble",
-    description: "Le jeu ou 5 a 30 joueurs construisent une histoire de film ensemble, chacun sur sa tablette ou son ordinateur. Gratuit, sans inscription.",
+    description:
+      "Le jeu ou 5 a 30 joueurs construisent une histoire de film ensemble, chacun sur sa tablette ou son ordinateur. Gratuit, sans inscription.",
     type: "website",
     siteName: "Banlieuwood",
     locale: "fr_FR",
@@ -91,7 +101,8 @@ export default function RootLayout({
               applicationCategory: "EducationalApplication",
               operatingSystem: "Web",
               offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-              description: "Jeu collaboratif de creation cinematographique. 5 a 30 joueurs ecrivent un court-metrage ensemble.",
+              description:
+                "Jeu collaboratif de creation cinematographique. 5 a 30 joueurs ecrivent un court-metrage ensemble.",
               educationalUse: ["classroom", "group activity"],
               audience: { "@type": "EducationalAudience", educationalRole: "student" },
               inLanguage: "fr",
@@ -99,11 +110,18 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${jakarta.variable} ${bebasNeue.variable} ${courierPrime.variable} ${caveat.variable} font-sans antialiased bg-bw-bg text-bw-text`}>
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-bw-primary focus:text-white focus:text-sm focus:font-semibold">
+      <body
+        className={`${jakarta.variable} ${bebasNeue.variable} ${courierPrime.variable} ${caveat.variable} font-sans antialiased bg-bw-bg text-bw-text`}
+      >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-bw-primary focus:text-white focus:text-sm focus:font-semibold"
+        >
           Aller au contenu principal
         </a>
-        <Providers><main id="main-content">{children}</main></Providers>
+        <Providers>
+          <main id="main-content">{children}</main>
+        </Providers>
         <Analytics />
         <ServiceWorkerRegister />
       </body>

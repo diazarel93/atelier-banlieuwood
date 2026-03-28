@@ -8,7 +8,12 @@ describe("Situation handler parallelization logic", () => {
       Promise.resolve({ data: { id: "r1", teacher_nudge: null } }), // response check
       Promise.resolve({ data: { warnings: 0, kicked: false } }), // student info
       Promise.resolve(null), // team
-      Promise.resolve({ data: [{ id: "r1", text: "opt1" }, { id: "r2", text: "opt2" }] }), // vote options
+      Promise.resolve({
+        data: [
+          { id: "r1", text: "opt1" },
+          { id: "r2", text: "opt2" },
+        ],
+      }), // vote options
       Promise.resolve({ data: null }), // hasVoted
       Promise.resolve({ data: { id: "cc1", chosen_text: "test" } }), // collective choice
       Promise.resolve({ count: 5 }), // connected count
@@ -43,7 +48,16 @@ describe("Situation handler parallelization logic", () => {
   });
 
   it("should correctly unpack parallel results", async () => {
-    const [responseResult, studentResult, , voteOptionsResult, hasVotedResult, collectiveChoiceResult, connectedCountResult, responsesCountResult] = await Promise.all([
+    const [
+      responseResult,
+      studentResult,
+      ,
+      voteOptionsResult,
+      hasVotedResult,
+      collectiveChoiceResult,
+      connectedCountResult,
+      responsesCountResult,
+    ] = await Promise.all([
       Promise.resolve({ data: { id: "resp-1", teacher_nudge: "Bravo !" } }),
       Promise.resolve({ data: { warnings: 2, kicked: false } }),
       Promise.resolve({ id: "team-1", teamName: "Alpha", teamColor: "#ff0000", teamNumber: 1 }),
@@ -108,7 +122,7 @@ describe("Parallel query error resilience", () => {
         Promise.resolve({ data: null }),
         Promise.reject(new Error("DB connection lost")),
         Promise.resolve({ count: 0 }),
-      ])
+      ]),
     ).rejects.toThrow("DB connection lost");
   });
 

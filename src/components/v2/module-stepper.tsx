@@ -29,12 +29,9 @@ export function ModuleStepperV2({ steps, className }: ModuleStepperV2Props) {
               <div
                 className={cn(
                   "flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all",
-                  isDone &&
-                    "text-white",
-                  isCurrent &&
-                    "text-white ring-2 ring-offset-2 ring-offset-[var(--card)]",
-                  !isDone && !isCurrent &&
-                    "bg-[var(--color-bw-surface-dim)] text-bw-muted"
+                  isDone && "text-white",
+                  isCurrent && "text-white ring-2 ring-offset-2 ring-offset-[var(--card)]",
+                  !isDone && !isCurrent && "bg-[var(--color-bw-surface-dim)] text-bw-muted",
                 )}
                 style={
                   isDone || isCurrent
@@ -45,16 +42,12 @@ export function ModuleStepperV2({ steps, className }: ModuleStepperV2Props) {
                     : undefined
                 }
               >
-                {isDone ? (
-                  <IconCheck />
-                ) : (
-                  i + 1
-                )}
+                {isDone ? <IconCheck /> : i + 1}
               </div>
               <span
                 className={cn(
                   "text-xs font-medium hidden sm:inline whitespace-nowrap",
-                  isCurrent ? "text-bw-heading" : "text-bw-muted"
+                  isCurrent ? "text-bw-heading" : "text-bw-muted",
                 )}
               >
                 {step.label}
@@ -66,9 +59,7 @@ export function ModuleStepperV2({ steps, className }: ModuleStepperV2Props) {
               <div
                 className={cn(
                   "h-0.5 w-4 sm:w-6 rounded-full",
-                  isDone
-                    ? "bg-[var(--color-bw-border)]"
-                    : "bg-[var(--color-bw-border-subtle)]"
+                  isDone ? "bg-[var(--color-bw-border)]" : "bg-[var(--color-bw-border-subtle)]",
                 )}
                 style={isDone ? { backgroundColor: step.color, opacity: 0.3 } : undefined}
               />

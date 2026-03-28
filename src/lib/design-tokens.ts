@@ -46,7 +46,7 @@ export const DEPTH_COLORS: Record<string, string> = {
 /** AI bilan: key moment category → color */
 export const MOMENT_COLORS: Record<string, string> = {
   tournant: COLORS.primary,
-  "créatif": COLORS.violet,
+  créatif: COLORS.violet,
   collectif: COLORS.teal,
   tension: COLORS.danger,
 };
@@ -55,7 +55,7 @@ export const MOMENT_COLORS: Record<string, string> = {
 export const TREND_LABELS: Record<string, { label: string; icon: string }> = {
   croissant: { label: "Croissant", icon: "↗" },
   stable: { label: "Stable", icon: "→" },
-  "décroissant": { label: "Décroissant", icon: "↘" },
+  décroissant: { label: "Décroissant", icon: "↘" },
 };
 
 /** Score thresholds for competency bars */

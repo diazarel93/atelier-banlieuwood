@@ -15,9 +15,7 @@ export function PitchListCard({ pitchs, count }: PitchListCardProps) {
   return (
     <div className="space-y-3">
       <div>
-        <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide">
-          Pitchs des élèves
-        </h3>
+        <h3 className="text-sm font-semibold text-bw-heading uppercase tracking-wide">Pitchs des élèves</h3>
         <p className="text-xs text-bw-muted mt-0.5">
           {count} pitch{count > 1 ? "s" : ""} créé{count > 1 ? "s" : ""}
         </p>
@@ -26,21 +24,14 @@ export function PitchListCard({ pitchs, count }: PitchListCardProps) {
         {visible.map((p) => (
           <GlassCardV2 key={p.id} className="p-4 space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-base">
-                {p.students?.avatar || "👤"}
-              </span>
+              <span className="text-base">{p.students?.avatar || "👤"}</span>
               <div className="flex-1 min-w-0">
                 <span className="text-sm font-medium text-bw-heading">
-                  {p.module10_personnages?.prenom ||
-                    p.students?.display_name ||
-                    "Élève"}
+                  {p.module10_personnages?.prenom || p.students?.display_name || "Élève"}
                 </span>
-                {p.module10_personnages?.prenom &&
-                  p.students?.display_name && (
-                    <span className="text-xs text-bw-muted ml-1.5">
-                      ({p.students.display_name})
-                    </span>
-                  )}
+                {p.module10_personnages?.prenom && p.students?.display_name && (
+                  <span className="text-xs text-bw-muted ml-1.5">({p.students.display_name})</span>
+                )}
               </div>
               {p.chrono_seconds != null && (
                 <span className="text-xs text-bw-muted tabular-nums border border-[var(--color-bw-border)] rounded-md px-1.5 py-0.5">
@@ -56,9 +47,7 @@ export function PitchListCard({ pitchs, count }: PitchListCardProps) {
                 Obstacle : {p.obstacle}
               </span>
             </div>
-            <p className="text-sm text-bw-heading leading-relaxed whitespace-pre-wrap">
-              {p.pitch_text}
-            </p>
+            <p className="text-sm text-bw-heading leading-relaxed whitespace-pre-wrap">{p.pitch_text}</p>
           </GlassCardV2>
         ))}
       </div>

@@ -12,7 +12,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
  */
 export const POST = withErrorHandler<{ profileId: string }>(async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ profileId: string }> }
+  { params }: { params: Promise<{ profileId: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "student-notes", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });
@@ -35,17 +35,14 @@ export const POST = withErrorHandler<{ profileId: string }>(async function POST(
   };
 
   if (!noteType || !content) {
-    return NextResponse.json(
-      { error: "noteType et content requis" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "noteType et content requis" }, { status: 400 });
   }
 
   const validTypes = ["observation", "strength", "concern", "goal"];
   if (!validTypes.includes(noteType)) {
     return NextResponse.json(
       { error: `noteType invalide. Valeurs acceptées : ${validTypes.join(", ")}` },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -71,7 +68,7 @@ export const POST = withErrorHandler<{ profileId: string }>(async function POST(
 
 export const DELETE = withErrorHandler<{ profileId: string }>(async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ profileId: string }> }
+  { params }: { params: Promise<{ profileId: string }> },
 ) {
   const rl = checkRateLimit(getIP(req), "student-notes", { max: 30, windowSec: 60 });
   if (rl) return NextResponse.json({ error: rl.error }, { status: 429 });

@@ -3,13 +3,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string }
-  reset: () => void
-}) {
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     Sentry.captureException(error);
   }, [error]);
@@ -54,16 +48,11 @@ export default function Error({
 
         {/* Description */}
         <p className="mt-5 max-w-md text-sm leading-relaxed text-bw-muted">
-          Un probleme est survenu sur le plateau. L&apos;equipe technique intervient
-          pour relancer la prise.
+          Un probleme est survenu sur le plateau. L&apos;equipe technique intervient pour relancer la prise.
         </p>
 
         {/* Error digest (dev info) */}
-        {error.digest && (
-          <p className="mt-3 font-mono text-xs text-bw-placeholder">
-            Ref: {error.digest}
-          </p>
-        )}
+        {error.digest && <p className="mt-3 font-mono text-xs text-bw-placeholder">Ref: {error.digest}</p>}
 
         {/* CTA button */}
         <button
@@ -71,11 +60,15 @@ export default function Error({
           className="btn-glow mt-10 inline-flex items-center gap-2.5 rounded-xl bg-gradient-to-br from-bw-primary to-bw-primary-600 px-8 py-3.5 text-sm font-semibold tracking-wide text-white shadow-[0_0_24px_rgba(255,107,53,0.3),0_4px_16px_rgba(255,107,53,0.2)] transition-all duration-300 hover:shadow-[0_0_32px_rgba(255,107,53,0.45),0_6px_24px_rgba(255,107,53,0.3)] hover:brightness-110"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182"
+            />
           </svg>
           Relancer la scene
         </button>
       </div>
     </div>
-  )
+  );
 }

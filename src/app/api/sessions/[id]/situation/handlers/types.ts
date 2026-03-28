@@ -8,5 +8,5 @@ export type ModuleHandler = (
   req: NextRequest,
   session: Record<string, unknown>,
   sessionId: string,
-  admin: AdminClient
+  admin: AdminClient,
 ) => Promise<Response>;

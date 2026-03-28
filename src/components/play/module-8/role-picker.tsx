@@ -17,7 +17,7 @@ export function RolePicker({ module8, sessionId, studentId }: RolePickerProps) {
   const isMyTurn = module8.isMyTurn || false;
   const [submitting, setSubmitting] = useState(false);
   const [chosen, setChosen] = useState<string | null>(
-    takenRoles.find((r) => r.studentId === studentId)?.roleKey || null
+    takenRoles.find((r) => r.studentId === studentId)?.roleKey || null,
   );
 
   const handleChoose = async (roleKey: string) => {
@@ -92,8 +92,8 @@ export function RolePicker({ module8, sessionId, studentId }: RolePickerProps) {
                 chosen === role.key
                   ? "bg-bw-teal/20 border-2 border-bw-teal"
                   : isMyTurn && !hasChosen
-                  ? "bg-white/5 border border-white/[0.06] hover:bg-white/10 hover:border-white/20 cursor-pointer"
-                  : "bg-white/5 border border-white/[0.06] opacity-60"
+                    ? "bg-white/5 border border-white/[0.06] hover:bg-white/10 hover:border-white/20 cursor-pointer"
+                    : "bg-white/5 border border-white/[0.06] opacity-60"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -113,18 +113,11 @@ export function RolePicker({ module8, sessionId, studentId }: RolePickerProps) {
         <div className="w-full space-y-2 mt-2">
           <p className="text-xs text-white/40 uppercase tracking-wider">Rôles attribués</p>
           {takenRoles.map((role) => (
-            <div
-              key={role.roleKey}
-              className="flex items-center gap-2 p-2 rounded-xl bg-white/5 text-xs"
-            >
+            <div key={role.roleKey} className="flex items-center gap-2 p-2 rounded-xl bg-white/5 text-xs">
               <span className="text-bw-teal font-semibold">{role.roleLabel}</span>
               <span className="text-white/30">—</span>
-              <span className="text-white/50">
-                {role.studentId === studentId ? "Toi !" : "Attribué"}
-              </span>
-              {role.isVeto && (
-                <span className="ml-auto text-bw-amber text-xs">Veto BW</span>
-              )}
+              <span className="text-white/50">{role.studentId === studentId ? "Toi !" : "Attribué"}</span>
+              {role.isVeto && <span className="ml-auto text-bw-amber text-xs">Veto BW</span>}
             </div>
           ))}
         </div>

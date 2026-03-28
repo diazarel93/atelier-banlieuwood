@@ -16,10 +16,7 @@ interface TicketRevealProps {
   maxVisible?: number;
 }
 
-export function TicketReveal({
-  responses,
-  maxVisible = 3,
-}: TicketRevealProps) {
+export function TicketReveal({ responses, maxVisible = 3 }: TicketRevealProps) {
   const visible = responses.slice(0, maxVisible);
 
   return (
@@ -77,21 +74,15 @@ export function TicketReveal({
               <div className="flex-1 flex flex-col min-w-0">
                 {/* Response text */}
                 <div className="px-5 py-4 flex-1">
-                  <p className="text-bw-text text-sm leading-relaxed line-clamp-4">
-                    {response.text}
-                  </p>
+                  <p className="text-bw-text text-sm leading-relaxed line-clamp-4">{response.text}</p>
                 </div>
 
                 {/* Teacher comment banner */}
                 {response.teacher_comment && (
                   <div className="px-5 py-2.5 bg-bw-teal/10 border-t border-bw-teal/20">
                     <p className="text-bw-teal text-xs italic leading-snug flex items-start gap-1.5">
-                      <span className="shrink-0 mt-0.5 opacity-70">
-                        &#9733;
-                      </span>
-                      <span className="line-clamp-2">
-                        {response.teacher_comment}
-                      </span>
+                      <span className="shrink-0 mt-0.5 opacity-70">&#9733;</span>
+                      <span className="line-clamp-2">{response.teacher_comment}</span>
                     </p>
                   </div>
                 )}

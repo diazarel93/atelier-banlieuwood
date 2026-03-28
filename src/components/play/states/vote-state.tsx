@@ -17,15 +17,7 @@ export interface VoteStateProps {
   playSound?: (name: SoundName) => void;
 }
 
-export function VoteState({
-  voteOptions,
-  situation,
-  sessionId,
-  studentId,
-  onVote,
-  voting,
-  playSound,
-}: VoteStateProps) {
+export function VoteState({ voteOptions, situation, sessionId, studentId, onVote, voting, playSound }: VoteStateProps) {
   const [votedId, setVotedId] = useState<string | null>(null);
   const [reactions, setReactions] = useState<Record<string, ReactionCounts>>({});
   const categoryColor = CATEGORY_COLORS[situation.category] || "#FF6B35";
@@ -37,18 +29,21 @@ export function VoteState({
     let cancelled = false;
     async function load() {
       try {
-        const res = await fetch(
-          `/api/sessions/${sessionId}/reactions?situationId=${situation.id}`
-        );
+        const res = await fetch(`/api/sessions/${sessionId}/reactions?situationId=${situation.id}`);
         if (res.ok) {
           const json = await res.json();
           if (!cancelled) setReactions(json.reactions || {});
         }
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     }
     load();
     const interval = setInterval(load, 8000);
-    return () => { cancelled = true; clearInterval(interval); };
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
   }, [sessionId, situation.id]);
 
   function handleTap(optionId: string) {
@@ -74,16 +69,24 @@ export function VoteState({
           className="w-10 h-10 sm:w-14 sm:h-14 rounded-full mx-auto flex items-center justify-center"
           style={{ background: `linear-gradient(135deg, ${categoryColor}30, ${categoryColor}15)` }}
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={categoryColor} strokeWidth="2" strokeLinecap="round">
-            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" />
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={categoryColor}
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+            <path d="M22 4L12 14.01l-3-3" />
           </svg>
         </motion.div>
-        <h2
-          className="text-xl sm:text-2xl tracking-wider font-cinema"
-        >
-          CHOISIS LA MEILLEURE
-        </h2>
-        <div className="h-0.5 w-12 mx-auto rounded-full" style={{ background: `linear-gradient(90deg, ${categoryColor}, ${categoryColor}60)` }} />
+        <h2 className="text-xl sm:text-2xl tracking-wider font-cinema">CHOISIS LA MEILLEURE</h2>
+        <div
+          className="h-0.5 w-12 mx-auto rounded-full"
+          style={{ background: `linear-gradient(90deg, ${categoryColor}, ${categoryColor}60)` }}
+        />
         <p className="text-xs text-bw-muted">Tap pour voter</p>
       </div>
 
@@ -134,9 +137,7 @@ export function VoteState({
                   {letter}
                 </div>
                 <div className="flex-1 pt-1.5">
-                  <p className={`text-sm leading-relaxed ${isVoted ? "text-white" : "text-bw-text"}`}>
-                    {option.text}
-                  </p>
+                  <p className={`text-sm leading-relaxed ${isVoted ? "text-white" : "text-bw-text"}`}>{option.text}</p>
                   <ReactionBar
                     responseId={option.id}
                     studentId={studentId}

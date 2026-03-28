@@ -70,15 +70,10 @@ export function SpatialClassroomGrid({ studentStates, onStudentClick }: SpatialC
     <div className="px-2 pb-2.5">
       {/* Tableau (whiteboard) */}
       <div className="flex justify-center mb-2">
-        <div
-          className="h-[3px] rounded-full"
-          style={{ width: "55%", background: "#D9CFC0" }}
-        />
+        <div className="h-[3px] rounded-full" style={{ width: "55%", background: "#D9CFC0" }} />
       </div>
       <div className="text-center mb-2.5">
-        <span className="text-[9px] font-bold uppercase tracking-widest text-[#C4BDB2]">
-          Tableau
-        </span>
+        <span className="text-[9px] font-bold uppercase tracking-widest text-[#C4BDB2]">Tableau</span>
       </div>
 
       {/* Desk layout: columns separated by aisles */}
@@ -88,12 +83,7 @@ export function SpatialClassroomGrid({ studentStates, onStudentClick }: SpatialC
             {col.map((pair, rowIdx) => (
               <div key={rowIdx} className="flex" style={{ gap: 2 }}>
                 {pair.map((s) => (
-                  <StudentCircle
-                    key={s.id}
-                    student={s}
-                    size={circleSize}
-                    onClick={() => onStudentClick(s.id)}
-                  />
+                  <StudentCircle key={s.id} student={s} size={circleSize} onClick={() => onStudentClick(s.id)} />
                 ))}
                 {/* Empty seat if desk has only 1 student */}
                 {pair.length === 1 && (
@@ -117,10 +107,7 @@ export function SpatialClassroomGrid({ studentStates, onStudentClick }: SpatialC
       <div className="flex items-center justify-center gap-3 mt-3">
         {LEGEND.map((item) => (
           <div key={item.state} className="flex items-center gap-1">
-            <span
-              className="w-2 h-2 rounded-full flex-shrink-0"
-              style={{ background: item.color }}
-            />
+            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: item.color }} />
             <span className="text-[9px] font-semibold text-[#B0A99E]">{item.label}</span>
           </div>
         ))}
@@ -172,7 +159,9 @@ function StudentCircle({
       whileHover={{ scale: 1.15 }}
       whileTap={{ scale: 0.92 }}
     >
-      <span className="leading-none select-none" style={{ fontSize }}>{student.avatar || "👤"}</span>
+      <span className="leading-none select-none" style={{ fontSize }}>
+        {student.avatar || "👤"}
+      </span>
       {hasHand && (
         <motion.span
           className="absolute -top-1.5 -right-1.5 text-[9px] drop-shadow-sm"

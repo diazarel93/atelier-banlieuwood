@@ -49,8 +49,21 @@ function SeatChip({ student, onClick }: { student: PlanStudent; onClick: () => v
         {student.display_name.split(" ")[0]}
       </span>
       {student.state === "responded" && (
-        <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center" style={{ background: c.dot }}>
-          <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round"><path d="M5 12l5 5L20 7" /></svg>
+        <span
+          className="absolute -top-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center"
+          style={{ background: c.dot }}
+        >
+          <svg
+            width="7"
+            height="7"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="4"
+            strokeLinecap="round"
+          >
+            <path d="M5 12l5 5L20 7" />
+          </svg>
         </span>
       )}
       {student.state === "stuck" && (
@@ -59,14 +72,18 @@ function SeatChip({ student, onClick }: { student: PlanStudent; onClick: () => v
           transition={{ repeat: Infinity, duration: 1.5 }}
           className="absolute -top-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center text-[7px] font-black text-white"
           style={{ background: c.dot }}
-        >!</motion.span>
+        >
+          !
+        </motion.span>
       )}
       {student.hand_raised_at && (
         <motion.span
           animate={{ y: [0, -2, 0] }}
           transition={{ repeat: Infinity, duration: 0.8 }}
           className="absolute -top-2 -right-2 text-[11px]"
-        >✋</motion.span>
+        >
+          ✋
+        </motion.span>
       )}
     </button>
   );
@@ -110,7 +127,8 @@ export function ClassroomPlanCompact({ students, onStudentClick }: ClassroomPlan
 
   // Stats
   const stats = useMemo(() => {
-    let responded = 0, stuck = 0;
+    let responded = 0,
+      stuck = 0;
     for (const s of students) {
       if (s.state === "responded") responded++;
       else if (s.state === "stuck") stuck++;
@@ -125,28 +143,24 @@ export function ClassroomPlanCompact({ students, onStudentClick }: ClassroomPlan
         {[...rows].reverse().map((row, revIdx) => {
           const rowIdx = rows.length - 1 - revIdx;
           return (
-          <div key={rowIdx} className="flex items-center gap-1">
-            {/* Row label */}
-            <span className="w-4 text-[9px] font-bold text-gray-300 text-right shrink-0 tabular-nums select-none">
-              {rowIdx + 1}
-            </span>
-            {/* Desks */}
-            <div className="flex-1 flex justify-center gap-2">
-              {row.map(([left, right], deskIdx) => (
-                <div
-                  key={`${rowIdx}-${deskIdx}`}
-                  className="flex gap-0.5 rounded-xl bg-gray-50 border border-gray-200 p-1"
-                >
-                  <SeatChip student={left} onClick={() => onStudentClick(left.id)} />
-                  {right ? (
-                    <SeatChip student={right} onClick={() => onStudentClick(right.id)} />
-                  ) : (
-                    <EmptySeat />
-                  )}
-                </div>
-              ))}
+            <div key={rowIdx} className="flex items-center gap-1">
+              {/* Row label */}
+              <span className="w-4 text-[9px] font-bold text-gray-300 text-right shrink-0 tabular-nums select-none">
+                {rowIdx + 1}
+              </span>
+              {/* Desks */}
+              <div className="flex-1 flex justify-center gap-2">
+                {row.map(([left, right], deskIdx) => (
+                  <div
+                    key={`${rowIdx}-${deskIdx}`}
+                    className="flex gap-0.5 rounded-xl bg-gray-50 border border-gray-200 p-1"
+                  >
+                    <SeatChip student={left} onClick={() => onStudentClick(left.id)} />
+                    {right ? <SeatChip student={right} onClick={() => onStudentClick(right.id)} /> : <EmptySeat />}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
           );
         })}
       </div>
