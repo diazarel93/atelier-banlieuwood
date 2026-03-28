@@ -19,8 +19,11 @@ export interface FormulaConfig {
   label: string;
   description: string;
   duration: string;
+  sessionFormat: string;
   /** Role of each spec module in this formula */
   modules: Record<SpecModuleId, ModuleRole>;
+  /** Ordered sequence of active modules for this formula */
+  sequence: SpecModuleId[];
 }
 
 export const FORMULAS: Record<FormulaId, FormulaConfig> = {
@@ -29,9 +32,10 @@ export const FORMULAS: Record<FormulaId, FormulaConfig> = {
     label: "Decouverte",
     description: "Seance unique de decouverte. Ideal pour un premier contact.",
     duration: "55-60 min",
+    sessionFormat: "1 seance",
     modules: {
       M1: "core",
-      M2: "optional",
+      M2: "optional", // B_QCM integre dans M3 B4a selon dynamique de groupe
       M3: "core",
       M4: "inactive",
       M5: "inactive",
@@ -39,28 +43,32 @@ export const FORMULAS: Record<FormulaId, FormulaConfig> = {
       M7: "inactive",
       M8: "inactive",
     },
+    sequence: ["M1", "M3"], // M2 (B_QCM) est integre dans le flux M3
   },
   F1: {
     id: "F1",
     label: "Legere",
     description: "Programme court sur ~3 seances. Observation, idee et pitch.",
     duration: "~3 x 60 min",
+    sessionFormat: "3 seances minimum",
     modules: {
-      M1: "support",
-      M2: "core",
+      M1: "support", // Rappel condense, pas re-enseigne integralement
+      M2: "core",    // B_QCM enseigne formellement avant M3
       M3: "core",
-      M4: "probable",
-      M5: "plausible",
+      M4: "probable", // Non valide terrain — pitch individuel
+      M5: "plausible", // Tres conditionnel — n'activer qu'apres M4 valide
       M6: "inactive",
       M7: "inactive",
       M8: "inactive",
     },
+    sequence: ["M1", "M2", "M3", "M4", "M5"],
   },
   F2: {
     id: "F2",
     label: "Complete",
     description: "Programme complet avec tous les modules. Du regard au tournage.",
     duration: "~8 x 60 min",
+    sessionFormat: "8 seances (noyau) + extensions",
     modules: {
       M1: "core",
       M2: "core",
@@ -71,6 +79,7 @@ export const FORMULAS: Record<FormulaId, FormulaConfig> = {
       M7: "core",
       M8: "core",
     },
+    sequence: ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"],
   },
 };
 
