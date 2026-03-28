@@ -62,6 +62,7 @@
 - JAMAIS skip les hooks (`--no-verify`)
 - TOUJOURS verifier build + tests avant push
 - TOUJOURS lire un fichier avant de le modifier
+- TOUJOURS formater avec Prettier avant de commit (`npx prettier --write "src/**/*.{ts,tsx}"`)
 - Pas de refactoring non demande
 - Pas de features bonus non demandees
 - iPad Safari = cible principale
