@@ -97,9 +97,15 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
 
       {/* ══ SIDEBAR — Desktop ══ */}
       <aside className="hidden lg:flex w-[220px] flex-col bg-[var(--sidebar)] border-r border-[var(--sidebar-border)] sticky top-0 h-dvh overflow-y-auto flex-shrink-0">
-        {/* User info */}
-        <div className="px-4 py-5 border-b border-[var(--sidebar-border)]">
-          <div className="text-body-sm font-bold text-[var(--color-bw-heading)]">{firstName || "Utilisateur"}</div>
+        {/* Logo + User info */}
+        <div className="px-4 py-4 border-b border-[var(--sidebar-border)]">
+          <Link href={ROUTES.dashboard} className="flex items-center gap-2.5 mb-3 group">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] flex items-center justify-center text-white text-body-xs font-bold shadow-[0_0_12px_rgba(139,92,246,0.3)] group-hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] transition-shadow duration-200">
+              BW
+            </div>
+            <span className="text-body-sm font-extrabold text-[var(--color-bw-heading)]">Banlieuwood</span>
+          </Link>
+          <div className="text-body-sm font-medium text-[var(--color-bw-heading)]">{firstName || "Utilisateur"}</div>
           <div className="text-body-xs text-[var(--color-bw-muted)]">{role}</div>
         </div>
 
@@ -267,27 +273,61 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       {/* ══ MAIN CONTENT ══ */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Desktop top bar */}
-        <header className="hidden lg:flex items-center justify-between h-14 px-6 border-b border-[var(--color-bw-border)] bg-[var(--color-bw-bg)]/80 backdrop-blur-xl sticky top-0 z-30">
-          <div className="flex items-center gap-3">
-            <Link href={ROUTES.dashboard} className="flex items-center gap-2">
-              <span className="text-lg">🎬</span>
-              <span className="text-sm font-bold text-[var(--color-bw-heading)]">Banlieuwood</span>
+        <header className="hidden lg:flex items-center justify-between h-14 px-6 border-b border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/60 backdrop-blur-xl sticky top-0 z-30">
+          {/* Left: Breadcrumb */}
+          <div className="flex items-center gap-2 text-body-sm">
+            <Link
+              href={ROUTES.dashboard}
+              className="text-[var(--color-bw-muted)] hover:text-[var(--color-bw-heading)] transition-colors"
+            >
+              🎬 Banlieuwood
             </Link>
+            <span className="text-[var(--color-bw-border)]">/</span>
+            <span className="text-[var(--color-bw-heading)] font-medium truncate max-w-[200px]">
+              {pathname === ROUTES.dashboard
+                ? "Tableau de bord"
+                : pathname.startsWith("/v2/seances/new")
+                  ? "Nouvelle séance"
+                  : pathname.startsWith("/v2/seances")
+                    ? "Séances"
+                    : pathname.startsWith("/v2/bibliotheque")
+                      ? "Bibliothèque"
+                      : pathname.startsWith("/v2/settings")
+                        ? "Réglages"
+                        : pathname.startsWith("/v2/aide")
+                          ? "Aide"
+                          : pathname.startsWith("/v2/eleves")
+                            ? "Élèves"
+                            : pathname.startsWith("/v2/statistiques")
+                              ? "Statistiques"
+                              : pathname.startsWith("/v2/fiche-cours")
+                                ? "Fiche de cours"
+                                : ""}
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Search */}
+          {/* Right: Search + Actions + Avatar */}
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setCommandPaletteOpen(true)}
-              className="flex items-center gap-2 rounded-lg border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/40 px-3 py-1.5 text-sm text-[var(--color-bw-muted)] hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+              className="flex items-center gap-2 rounded-lg border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/40 px-3 py-1.5 text-body-sm text-[var(--color-bw-muted)] hover:bg-[var(--color-bw-surface-dim)] hover:border-[var(--color-bw-border-accent)] transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none"
             >
               <IconSearch size={14} />
               Rechercher...
-              <kbd className="ml-4 text-xs bg-[var(--color-bw-surface-dim)] rounded px-1.5 py-0.5 border border-[var(--color-bw-border)]">
+              <kbd className="ml-4 text-body-xs bg-[var(--color-bw-surface-dim)] rounded px-1.5 py-0.5 border border-[var(--color-bw-border)]">
                 ⌘K
               </kbd>
             </button>
             <FullscreenToggle />
             <NotificationBell />
+            {/* Avatar */}
+            <div className="flex items-center gap-2 pl-2 border-l border-[var(--color-bw-border)]">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] flex items-center justify-center text-white text-body-xs font-bold">
+                {firstName?.charAt(0)?.toUpperCase() || "U"}
+              </div>
+              <span className="text-body-sm font-medium text-[var(--color-bw-heading)] hidden xl:inline">
+                {firstName}
+              </span>
+            </div>
           </div>
         </header>
 
