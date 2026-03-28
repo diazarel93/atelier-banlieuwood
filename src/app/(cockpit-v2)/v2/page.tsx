@@ -161,7 +161,7 @@ export default function DashboardV2Page() {
                 </div>
                 <Link
                   href={ROUTES.pilot(activeSession.id)}
-                  className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-600 transition-colors"
+                  className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-600 btn-hover glow-green"
                 >
                   Retourner au cockpit →
                 </Link>
@@ -202,7 +202,7 @@ export default function DashboardV2Page() {
                     <Link
                       href={ROUTES.pilot(s.id)}
                       prefetch={false}
-                      className="shrink-0 rounded-lg bg-bw-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-bw-primary-500 transition-all"
+                      className="shrink-0 rounded-lg bg-bw-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-bw-primary-500 btn-hover"
                     >
                       Lancer
                     </Link>
@@ -247,7 +247,13 @@ export default function DashboardV2Page() {
               },
             ].map((kpi) => (
               <div key={kpi.label} className="card-interactive relative overflow-hidden p-5">
-                <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ backgroundColor: kpi.color }} />
+                <div
+                  className="absolute top-0 left-0 right-0 h-[3px]"
+                  style={{
+                    background: `linear-gradient(90deg, ${kpi.color}, ${kpi.color}66)`,
+                    boxShadow: `0 1px 8px ${kpi.color}33`,
+                  }}
+                />
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col gap-1.5">
                     <span className="text-body-xs font-semibold text-bw-muted uppercase tracking-wider">
@@ -294,9 +300,27 @@ export default function DashboardV2Page() {
                           className="border-b border-[var(--color-bw-border)] last:border-b-0 hover:bg-bw-primary/[0.02] transition-colors duration-150"
                         >
                           <td className="p-3 text-bw-heading">
-                            {new Date(s.scheduledAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                            <div className="flex items-center gap-2">
+                              <span
+                                className="w-2 h-2 rounded-full shrink-0"
+                                style={{
+                                  backgroundColor:
+                                    s.status === "done"
+                                      ? "var(--color-bw-green)"
+                                      : s.status === "responding" || s.status === "voting"
+                                        ? "var(--color-bw-teal)"
+                                        : "var(--color-bw-amber)",
+                                }}
+                              />
+                              {new Date(s.scheduledAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                            </div>
                           </td>
-                          <td className="p-3 font-medium text-bw-heading">{s.classLabel || s.title}</td>
+                          <td className="p-3">
+                            <div>
+                              <span className="font-semibold text-bw-heading">{s.title}</span>
+                              {s.classLabel && <span className="text-body-xs text-bw-muted ml-2">{s.classLabel}</span>}
+                            </div>
+                          </td>
                           <td className="p-3">
                             <span
                               className="inline-flex px-2.5 py-0.5 rounded-full text-body-xs font-bold"
@@ -481,15 +505,23 @@ export default function DashboardV2Page() {
         </div>
       </div>
 
-      {/* Empty state */}
+      {/* Empty state — expressive */}
       {!data?.todaySessions?.length && !data?.recentSessions?.length && (
-        <div className="text-center py-16">
-          <div className="text-5xl mb-4">🎬</div>
-          <h2 className="text-xl font-bold text-bw-heading mb-2">Bienvenue sur Banlieuwood !</h2>
-          <p className="text-sm text-bw-muted mb-6">Créez votre première séance pour commencer.</p>
+        <div className="text-center py-20">
+          <motion.div
+            animate={{ y: [0, -8, 0] }}
+            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+            className="text-7xl mb-6"
+          >
+            🎬
+          </motion.div>
+          <h2 className="text-display text-bw-heading mb-3">C&apos;est calme ici !</h2>
+          <p className="text-body-sm text-bw-muted mb-8 max-w-sm mx-auto">
+            Créez votre première séance pour voir la magie opérer. Vos élèves n&apos;attendent que ça.
+          </p>
           <Link
             href={ROUTES.seanceNew}
-            className="px-8 py-3 rounded-xl text-sm font-bold text-white bg-bw-primary shadow-sm hover:bg-bw-primary-500"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] glow-accent hover:shadow-[0_0_30px_rgba(139,92,246,0.35)] transition-all duration-200"
           >
             + Nouvelle séance
           </Link>
