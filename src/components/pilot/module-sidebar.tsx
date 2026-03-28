@@ -3,6 +3,7 @@
 import { memo, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { type ModuleDef, type PhaseDef } from "@/lib/modules-data";
+import type { SpecModuleId } from "@/lib/spec-modules";
 
 interface ModuleSidebarProps {
   modules: ModuleDef[];
@@ -17,6 +18,8 @@ interface ModuleSidebarProps {
   sessionStatus?: string;
   currentQuestionIndex?: number;
   totalModuleQuestions?: number;
+  /** Spec module IDs enabled for this session (from formula). Null = all enabled. */
+  modulesEnabled?: SpecModuleId[] | null;
 }
 
 function ModuleSidebarInner({
@@ -29,6 +32,7 @@ function ModuleSidebarInner({
   moduleStartedAt,
   currentQuestionIndex,
   totalModuleQuestions,
+  modulesEnabled,
 }: ModuleSidebarProps) {
   const [expandedPhaseId, setExpandedPhaseId] = useState<string | null>(null);
 
@@ -44,10 +48,21 @@ function ModuleSidebarInner({
     return () => clearInterval(iv);
   }, [moduleStartedAt]);
 
+  /** Check if a module is visible given modulesEnabled filter */
+  function isModuleVisible(mod: ModuleDef): boolean {
+    if (mod.disabled) return false;
+    // If modulesEnabled is null/undefined, show all (backward compat)
+    if (!modulesEnabled) return true;
+    // If module has a specModule, check if it's in the enabled list
+    if (mod.specModule) return modulesEnabled.includes(mod.specModule);
+    // Bonus modules (no specModule) are hidden when a formula is active
+    return false;
+  }
+
   function getModuleStatus(mod: ModuleDef): "completed" | "active" | "available" | "locked" {
     if (completedModules.includes(mod.id)) return "completed";
     if (mod.id === activeModuleId) return "active";
-    if (mod.disabled) return "locked";
+    if (mod.disabled || !isModuleVisible(mod)) return "locked";
     return "available";
   }
 
@@ -58,19 +73,19 @@ function ModuleSidebarInner({
   const visiblePhases = phases.filter((phase) =>
     phase.moduleIds.some((id) => {
       const mod = modules.find((m) => m.id === id);
-      return mod && !mod.disabled;
+      return mod && isModuleVisible(mod);
     })
   );
 
   function getPhaseProgress(phase: PhaseDef) {
     const phaseMods = phase.moduleIds
       .map((id) => modules.find((m) => m.id === id))
-      .filter((m): m is ModuleDef => !!m && !m.disabled);
+      .filter((m): m is ModuleDef => !!m && isModuleVisible(m));
     const done = phaseMods.filter((m) => completedModules.includes(m.id)).length;
     return { done, total: phaseMods.length, allDone: done === phaseMods.length && done > 0 };
   }
 
-  const allMods = modules.filter((m) => !m.disabled);
+  const allMods = modules.filter((m) => isModuleVisible(m));
   const globalDone = allMods.filter((m) => completedModules.includes(m.id)).length;
   const globalPct = allMods.length > 0 ? Math.round((globalDone / allMods.length) * 100) : 0;
 
