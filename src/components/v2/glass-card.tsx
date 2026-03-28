@@ -6,8 +6,9 @@ import { cn } from "@/lib/utils";
 const glassCardVariants = cva("rounded-2xl bg-card transition-all duration-200", {
   variants: {
     variant: {
-      default: "border border-[var(--color-bw-border)] glass-shadow",
-      elevated: "border border-[var(--color-bw-border)] glass-shadow-elevated",
+      default: "border border-[var(--color-bw-border)] glass-shadow ring-1 ring-inset ring-[var(--glass-border-hover)]",
+      elevated:
+        "border border-[var(--color-bw-border)] glass-shadow-elevated ring-1 ring-inset ring-[var(--glass-border-hover)]",
       flat: "border border-[var(--color-bw-border-subtle)]",
       ghost: "border border-transparent hover:border-[var(--color-bw-border-subtle)] hover:bg-card/60",
     },

@@ -32,7 +32,7 @@ function SessionRow({ session }: { session: SessionSummary }) {
   const barColor = STATUS_BAR_COLORS[session.status] || STATUS_BAR_COLORS.draft;
 
   return (
-    <div className="relative flex items-center gap-3 py-3 pl-4 rounded-xl hover:bg-bw-primary/[0.025] transition-colors duration-100">
+    <div className="relative flex items-center gap-3 py-3 pl-4 rounded-xl hover:bg-[var(--color-bw-violet)]/[0.04] transition-colors duration-100">
       {/* Left status bar */}
       <div className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full" style={{ backgroundColor: barColor }} />
 
@@ -56,7 +56,7 @@ function SessionRow({ session }: { session: SessionSummary }) {
         <Link
           href={ROUTES.pilot(session.id)}
           prefetch={false}
-          className="shrink-0 rounded-lg bg-bw-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-bw-primary-500 active:scale-95 transition-all duration-150"
+          className="shrink-0 rounded-lg bg-[var(--color-bw-violet)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[var(--color-bw-violet-500)] shadow-[0_0_8px_rgba(139,92,246,0.2)] active:scale-95 transition-all duration-150"
         >
           {ss.ctaShort}
         </Link>
@@ -134,7 +134,7 @@ export function TodaySessions({ todaySessions, tomorrowSessions, className }: To
       {/* New session CTA — solid, not dashed */}
       <Link
         href={ROUTES.seanceNew}
-        className="group flex items-center justify-center gap-2 rounded-xl bg-bw-primary/[0.06] py-3.5 text-sm font-medium text-bw-primary hover:bg-bw-primary/[0.10] active:scale-[0.98] transition-all duration-150"
+        className="group flex items-center justify-center gap-2 rounded-xl bg-[var(--color-bw-violet)]/[0.08] py-3.5 text-sm font-medium text-[var(--color-bw-violet-200)] hover:bg-[var(--color-bw-violet)]/[0.14] active:scale-[0.98] transition-all duration-150"
       >
         <svg
           width="15"

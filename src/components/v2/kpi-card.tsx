@@ -20,8 +20,13 @@ export function KpiCard({ label, value, trend, icon, color, className }: KpiCard
 
   return (
     <GlassCardV2 className={cn("relative overflow-hidden p-5", className)}>
-      {/* Top accent bar — 3px, full width */}
-      {color && <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ backgroundColor: color }} />}
+      {/* Top accent bar — 3px with subtle glow */}
+      {color && (
+        <div
+          className="absolute top-0 left-0 right-0 h-[3px]"
+          style={{ backgroundColor: color, boxShadow: `0 1px 8px ${color}33` }}
+        />
+      )}
 
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1.5">
@@ -39,8 +44,9 @@ export function KpiCard({ label, value, trend, icon, color, className }: KpiCard
           <div
             className="flex h-10 w-10 items-center justify-center rounded-xl"
             style={{
-              backgroundColor: color ? `${color}30` : "var(--color-bw-surface-dim)",
+              backgroundColor: color ? `${color}18` : "var(--color-bw-surface-dim)",
               color: color || "var(--color-bw-muted)",
+              boxShadow: color ? `0 0 12px ${color}15` : undefined,
             }}
           >
             {icon}
