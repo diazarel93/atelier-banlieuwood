@@ -138,12 +138,11 @@ export default function DashboardV2Page() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-2xl border bg-card p-5"
+              className="card-primary p-5 glow-green"
               style={{
                 borderLeftWidth: 4,
                 borderLeftColor: "var(--color-bw-green)",
-                borderColor: "rgba(16,185,129,0.2)",
-                background: "linear-gradient(135deg, rgba(16,185,129,0.04), transparent)",
+                background: "linear-gradient(135deg, rgba(16,185,129,0.04), var(--card))",
               }}
             >
               <div className="flex items-center justify-between flex-wrap gap-3">
@@ -247,10 +246,7 @@ export default function DashboardV2Page() {
                 color: "var(--color-axis-expression, #EC4899)",
               },
             ].map((kpi) => (
-              <div
-                key={kpi.label}
-                className="relative overflow-hidden rounded-2xl border border-[var(--color-bw-border)] bg-card p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
-              >
+              <div key={kpi.label} className="card-interactive relative overflow-hidden p-5">
                 <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ backgroundColor: kpi.color }} />
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col gap-1.5">

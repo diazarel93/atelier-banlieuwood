@@ -1571,20 +1571,22 @@ body {
    ═══════════════════════════════════════════════════════════════ */
 
 .theme-lavande[data-theme="dark"] {
-  /* ── Surfaces — V6 deep cinema dark ── */
-  --background: #0c0c18;
+  /* ── Surfaces — 6 levels of depth (Linear-inspired) ── */
+  --color-surface-0: #08081a; /* absolute bg — behind everything */
+  --background: #0c0c18; /* page bg — surface 1 */
   --color-bw-bg: #0c0c18;
-  --color-bw-surface-dim: #13132a;
-  --color-bw-surface: #1a1a35;
-  --color-bw-surface-bright: #1a1a35;
-  --color-bw-elevated: #161633;
-  --color-bw-popover: #161633;
+  --color-bw-surface-dim: #13132a; /* structural — sidebar, header = surface 2 */
+  --color-bw-surface: #1a1a35; /* surface 3 — hover, alt */
+  --color-bw-surface-bright: #1e1e40; /* surface 5 — modals, dropdowns */
+  --color-bw-elevated: #161633; /* surface 3 — cards */
+  --color-bw-popover: #1e1e40; /* surface 5 — popovers */
 
-  /* ── Borders ── */
+  /* ── Borders — 3 levels ── */
   --color-bw-border: #2a2a50;
-  --color-bw-border-subtle: rgba(139, 92, 246, 0.08);
+  --color-bw-border-subtle: rgba(255, 255, 255, 0.04); /* most subtle */
   --color-bw-border-strong: rgba(255, 255, 255, 0.12);
   --color-bw-border-focus: rgba(139, 92, 246, 0.35);
+  --color-bw-border-accent: rgba(139, 92, 246, 0.2); /* hover accent */
   --border: #2a2a50;
 
   /* ── Text ── */
@@ -1654,6 +1656,104 @@ body {
   scrollbar-color: rgba(139, 92, 246, 0.15) transparent;
 
   color-scheme: dark;
+}
+
+/* ── Card hierarchy (design expert — 4 levels) ── */
+.card-primary {
+  background: var(--card);
+  border: 1px solid var(--color-bw-border);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(139, 92, 246, 0.06);
+  border-radius: 16px;
+}
+.card-standard {
+  background: var(--card);
+  border: 1px solid var(--color-bw-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+}
+.card-subtle {
+  background: transparent;
+  border: 1px solid var(--color-bw-border-subtle);
+  border-radius: 16px;
+}
+.card-interactive {
+  background: var(--card);
+  border: 1px solid var(--color-bw-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 32px rgba(139, 92, 246, 0.12),
+    0 0 0 1px rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+/* ── Glow utilities ── */
+.glow-accent {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+}
+.glow-accent-strong {
+  box-shadow:
+    0 0 30px rgba(139, 92, 246, 0.25),
+    0 0 60px rgba(139, 92, 246, 0.1);
+}
+.glow-green {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+.glow-orange {
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.15);
+}
+
+/* ── Sidebar active indicator ── */
+.nav-active-bar {
+  position: relative;
+}
+.nav-active-bar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--color-bw-violet, #8b5cf6);
+}
+
+/* ── Typography calibration (Linear-inspired) ── */
+.text-display {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+.text-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.text-subtitle {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+.text-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.text-micro {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  opacity: 0.6;
 }
 
 .theme-lavande[data-theme="dark"] .shimmer {

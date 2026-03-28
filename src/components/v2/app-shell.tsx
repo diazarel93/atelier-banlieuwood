@@ -117,7 +117,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                 className={cn(
                   "flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-medium transition-all duration-200 w-full focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
                   isActive
-                    ? "bg-[var(--sidebar-accent)] text-[var(--color-bw-violet)] font-semibold"
+                    ? "bg-[var(--sidebar-accent)] text-[var(--color-bw-violet)] font-semibold nav-active-bar"
                     : "text-[var(--color-bw-muted)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--color-bw-heading)]",
                 )}
               >
@@ -130,7 +130,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           {/* Create session CTA */}
           <Link
             href={ROUTES.seanceNew}
-            className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-bold text-white bg-[var(--color-bw-violet)] hover:bg-[var(--color-bw-violet-500)] transition-all mt-3 shadow-[0_0_12px_rgba(139,92,246,0.2)]"
+            className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-bold text-white bg-gradient-to-r from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] hover:shadow-[0_0_24px_rgba(139,92,246,0.35)] transition-all duration-200 mt-3 glow-accent"
           >
             <IconPlus />
             Nouvelle séance
