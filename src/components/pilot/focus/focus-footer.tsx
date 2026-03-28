@@ -1,35 +1,24 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { type NextAction } from "@/lib/cockpit-next-action";
 import { FloatingNextAction } from "@/components/pilot/floating-next-action";
 
 interface FocusFooterProps {
-  // Status
   sessionStatus: string;
   isStandardQA: boolean;
-
-  // Response counts
   respondedCount: number;
   totalStudents: number;
   voteOptionCount: number;
   totalVotes?: number;
   allResponded: boolean;
-
-  // Next action
   nextAction: NextAction | null;
   onNextAction: () => void;
   isPending: boolean;
-
-  // Standard QA selection bar
   onSelectionBarAction: () => void;
   onQuickVote: () => void;
-
-  // Plus menu
   onOpenPlus: () => void;
-
-  // Projeter (broadcast highlight)
   onProjectResponses: () => void;
 }
 
@@ -51,77 +40,80 @@ export function FocusFooter({
 }: FocusFooterProps) {
   const footerRef = useRef<HTMLDivElement | null>(null);
 
-  // Don't show footer when session is done
   if (sessionStatus === "done") return null;
 
-  // Determine CTA
+  // CTA logic
   let ctaLabel = "";
-  let ctaColor = "#2C2C2C";
+  let ctaGradient = "from-gray-800 to-gray-900";
   let ctaAction = onNextAction;
   let ctaDisabled = false;
   let showCountChip = false;
   let countChipText = "";
+  let countChipColor = "bg-gray-100 text-gray-700";
   let showQuickVote = false;
 
   if (isStandardQA && sessionStatus === "responding") {
-    // Standard QA responding: show selection bar compact
     showCountChip = true;
     countChipText = `${respondedCount}/${totalStudents}`;
+    countChipColor = allResponded
+      ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+      : "bg-gray-50 text-gray-700 border border-gray-200";
     if (voteOptionCount < 2) {
-      ctaLabel = `${voteOptionCount}/2 min — sélectionner`;
-      ctaColor = "#B0A99E";
+      ctaLabel = `${voteOptionCount}/2 min — selectionner`;
+      ctaGradient = "from-gray-300 to-gray-400";
       ctaDisabled = true;
       ctaAction = onSelectionBarAction;
       showQuickVote = respondedCount >= 2;
     } else {
       ctaLabel = "LANCER LE VOTE";
+      ctaGradient = "from-orange-500 to-orange-600";
       ctaAction = onSelectionBarAction;
     }
   } else if (isStandardQA && sessionStatus === "voting") {
     showCountChip = true;
     countChipText = `${totalVotes}/${totalStudents} votes`;
-    ctaLabel = "VOIR RÉSULTATS";
+    countChipColor = "bg-orange-50 text-orange-700 border border-orange-200";
+    ctaLabel = "VOIR RESULTATS";
+    ctaGradient = "from-purple-500 to-purple-600";
     ctaAction = onSelectionBarAction;
     ctaDisabled = totalVotes === 0;
-  } else if (nextAction && nextAction.action) {
-    // Module / non-QA: use nextAction
+  } else if (isStandardQA && sessionStatus === "reviewing") {
+    ctaLabel = nextAction?.label || "SUIVANT";
+    ctaGradient = "from-emerald-500 to-emerald-600";
+    ctaAction = onSelectionBarAction;
+  } else if (nextAction?.action) {
     ctaLabel = nextAction.label;
-    ctaColor = nextAction.color || "#2C2C2C";
+    ctaGradient = "from-gray-800 to-gray-900";
     ctaDisabled = !!nextAction.disabled;
     showCountChip = sessionStatus === "responding";
     countChipText = `${respondedCount}/${totalStudents}`;
-  } else {
-    // No action available — minimal footer
-    if (sessionStatus === "responding") {
-      showCountChip = true;
-      countChipText = `${respondedCount}/${totalStudents}`;
-    }
+  } else if (sessionStatus === "responding") {
+    showCountChip = true;
+    countChipText = `${respondedCount}/${totalStudents}`;
   }
 
   return (
     <>
-      {/* Footer bar */}
       <div
         ref={footerRef}
-        className="shrink-0 border-t border-gray-100 bg-white"
+        className="shrink-0 border-t border-gray-200 bg-white/90 backdrop-blur-sm"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 8px)" }}
       >
-        <div className="flex items-center gap-2.5 px-4 py-3 max-w-2xl mx-auto">
+        <div className="flex items-center gap-2 px-4 py-2.5 max-w-2xl mx-auto">
           {/* Count chip */}
           {showCountChip && (
-            <span className="shrink-0 px-3 py-1.5 rounded-full bg-gray-100 text-[13px] font-bold text-gray-700 tabular-nums">
+            <span className={`shrink-0 px-3 py-1.5 rounded-lg text-[12px] font-bold tabular-nums ${countChipColor}`}>
               {countChipText}
             </span>
           )}
 
-          {/* Quick vote button (compact) */}
+          {/* Quick vote */}
           {showQuickVote && (
             <motion.button
               onClick={onQuickVote}
-              className="shrink-0 flex items-center gap-1 px-3 py-2 rounded-xl text-[12px] font-bold text-white cursor-pointer"
-              style={{ background: "#F5A45B" }}
+              className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-white cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 shadow-sm"
               whileTap={{ scale: 0.95 }}
-              title="Vote rapide"
+              title="Vote rapide (top 2)"
             >
               <svg
                 width="12"
@@ -131,7 +123,6 @@ export function FocusFooter({
                 stroke="currentColor"
                 strokeWidth="2.5"
                 strokeLinecap="round"
-                strokeLinejoin="round"
               >
                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
               </svg>
@@ -139,37 +130,52 @@ export function FocusFooter({
             </motion.button>
           )}
 
-          {/* CTA button (full width) */}
+          {/* CTA button */}
           {ctaLabel && (
             <motion.button
               onClick={ctaAction}
               disabled={ctaDisabled || isPending}
-              className={`flex-1 h-12 rounded-2xl text-[14px] font-bold cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
-                allResponded && !ctaDisabled ? "ring-2 ring-emerald-300/50" : ""
+              className={`flex-1 h-11 rounded-xl text-[13px] font-bold tracking-wide cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed text-white shadow-md bg-gradient-to-r ${ctaGradient} ${
+                allResponded && !ctaDisabled ? "ring-2 ring-emerald-400/40" : ""
               }`}
-              style={{
-                backgroundColor: ctaDisabled ? "#E8DFD2" : ctaColor,
-                color: ctaDisabled ? "#B0A99E" : "white",
-                boxShadow: ctaDisabled ? undefined : "0 4px 16px rgba(0,0,0,0.12)",
-              }}
               whileTap={ctaDisabled ? {} : { scale: 0.97 }}
               animate={allResponded && !ctaDisabled ? { scale: [1, 1.01, 1] } : {}}
               transition={allResponded && !ctaDisabled ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : {}}
             >
               {isPending ? "..." : ctaLabel}
               {!ctaDisabled && nextAction?.shortcut && (
-                <kbd className="inline-flex items-center justify-center w-5 h-5 ml-2 rounded bg-white/[0.15] text-[10px] font-mono">
+                <kbd className="inline-flex items-center justify-center w-5 h-5 ml-2 rounded bg-white/20 text-[9px] font-mono">
                   {nextAction.shortcut}
                 </kbd>
               )}
             </motion.button>
           )}
 
-          {/* Projeter button */}
+          {/* Project button */}
           <button
             onClick={onProjectResponses}
-            className="shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
-            title="Projeter"
+            className="shrink-0 flex items-center justify-center w-11 h-11 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors cursor-pointer"
+            title="Projeter les reponses"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="M8 21h8M12 17v4" />
+            </svg>
+          </button>
+
+          {/* Plus menu */}
+          <button
+            onClick={onOpenPlus}
+            className="shrink-0 flex items-center justify-center w-11 h-11 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors cursor-pointer"
+            title="Plus d'actions"
           >
             <svg
               width="18"
@@ -177,31 +183,8 @@ export function FocusFooter({
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-              <line x1="8" y1="21" x2="16" y2="21" />
-              <line x1="12" y1="17" x2="12" y2="21" />
-            </svg>
-          </button>
-
-          {/* Plus button */}
-          <button
-            onClick={onOpenPlus}
-            className="shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
-            title="Plus d'actions"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
               strokeWidth="2.5"
               strokeLinecap="round"
-              strokeLinejoin="round"
             >
               <circle cx="12" cy="12" r="1" />
               <circle cx="12" cy="5" r="1" />
@@ -211,7 +194,6 @@ export function FocusFooter({
         </div>
       </div>
 
-      {/* Floating next action (appears when footer scrolls out) */}
       <FloatingNextAction
         nextAction={nextAction}
         onExecute={onNextAction}
