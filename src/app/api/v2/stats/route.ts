@@ -8,7 +8,9 @@ import { withErrorHandler } from "@/lib/api-utils";
 /**
  * GET /api/v2/stats?classLabel=X&sessionId=Y&dateFrom=YYYY-MM-DD&dateTo=YYYY-MM-DD
  * Competency axes for the V2 Statistiques page.
- * OIE scoring has been removed (R2 doctrine compliance) — data source pending replacement.
+ * OIE scoring has been removed (R2 doctrine compliance).
+ * Future data source: B8_2 implication scores (table: implication_scores).
+ * Mapping B8_2 → axes not yet specified by Banlieuwood — DO NOT implement until confirmed.
  */
 export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
   const supabase = await createServerSupabase();
