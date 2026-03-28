@@ -466,6 +466,7 @@ export default function PilotPage() {
                   },
                   onOpenModules: () => {},
                   onOpenScreen: () => window.open(ROUTES.screen(sessionId), "_blank"),
+                  onModuleSelect: (moduleId: string) => doLaunchModule(moduleId, true),
                   studentWarnings: Object.fromEntries((session.students || []).map((s) => [s.id, s.warnings || 0])),
                 }}
               >

@@ -54,6 +54,7 @@ export interface CockpitActionsValue {
   onSelectStudent: (student: Student) => void;
   onOpenModules?: () => void;
   onOpenScreen?: () => void;
+  onModuleSelect?: (moduleId: string) => void;
 }
 
 // ── Combined type (backwards-compatible) ──
@@ -89,6 +90,7 @@ export function CockpitProvider({ value, children }: { value: CockpitContextValu
       onSelectStudent: value.onSelectStudent,
       onOpenModules: value.onOpenModules,
       onOpenScreen: value.onOpenScreen,
+      onModuleSelect: value.onModuleSelect,
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }),
     [],

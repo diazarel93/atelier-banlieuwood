@@ -24,6 +24,7 @@ import { BottomSheet } from "./bottom-sheet";
 import { CockpitModals } from "@/components/pilot/cockpit-modals";
 import { VotingResults } from "@/components/pilot/voting-results";
 import { InlineReformulation } from "@/components/pilot/inline-reformulation";
+import { getModuleByDb } from "@/lib/modules-data";
 import { V6ControlPanels } from "@/components/pilot/v6-control-panels";
 import { V6VoteControls } from "@/components/pilot/v6-vote-controls";
 import { V6ActivityFeed, type ActivityItem } from "@/components/pilot/v6-activity-feed";
@@ -109,6 +110,7 @@ export function FocusCockpit() {
     nudgeStudent,
     warnStudent,
     toggleStudentActive,
+    onModuleSelect,
   } = useCockpitActions();
 
   const { studentWarnings } = useCockpitData();
@@ -312,6 +314,11 @@ export function FocusCockpit() {
         timerEndsAt={session.timer_ends_at}
         currentScreenMode={currentScreenMode}
         onOpenStudents={() => setShowStudentSheet(true)}
+        activeModuleId={
+          session.current_module ? getModuleByDb(session.current_module, session.current_seance || 1)?.id || null : null
+        }
+        completedModuleIds={session.completed_modules || []}
+        onModuleSelect={(moduleId) => onModuleSelect?.(moduleId)}
       />
 
       {/* ── V6 SCROLLABLE CENTER ── */}
@@ -494,13 +501,13 @@ export function FocusCockpit() {
                 currentScreenMode={currentScreenMode}
                 onScreenModeChange={(mode) => {
                   updateSession.mutate({
-                    broadcast_message: `__SCREEN_${mode}`,
+                    broadcast_message: `__SCREEN_MODE:${mode}`,
                     broadcast_at: new Date().toISOString(),
                   });
                 }}
                 onLockScreen={() => {
                   updateSession.mutate({
-                    broadcast_message: "__SCREEN_black",
+                    broadcast_message: "__SCREEN_MODE:black",
                     broadcast_at: new Date().toISOString(),
                   });
                 }}

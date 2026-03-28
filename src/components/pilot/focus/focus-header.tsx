@@ -167,7 +167,8 @@ export function FocusHeader({
       return {
         id: phase.id,
         firstModuleId: enabledIds[0],
-        label: `P${idx + 1}`,
+        label: phase.label,
+        shortLabel: `P${idx + 1}`,
         emoji: phase.emoji,
         color: phase.color,
         isActive,
@@ -436,10 +437,11 @@ export function FocusHeader({
                 background: m.isActive ? `${m.color}15` : m.isDone ? "rgba(52,211,153,0.05)" : "transparent",
                 color: m.isActive ? m.color : m.isDone ? "#34d399" : "#64748b",
               }}
-              title={moduleLabel}
+              title={m.label}
             >
               <span>{m.isLocked ? "🔒" : m.isDone ? "✅" : m.emoji}</span>
-              {m.label}
+              <span className="hidden sm:inline">{m.label}</span>
+              <span className="sm:hidden">{m.shortLabel}</span>
             </button>
           </div>
         ))}
