@@ -17,22 +17,17 @@ const StudentFiche = dynamic(
   () => import("@/components/pilot/student-fiche").then((m) => ({ default: m.StudentFiche })),
   { ssr: false },
 );
-import { FocusFooter } from "./focus-footer";
 import { FocusQuestionCard } from "./focus-question-card";
 import { FocusModuleContent } from "./focus-module-content";
 import { PlusMenuContent } from "./plus-menu-content";
 import { BottomSheet } from "./bottom-sheet";
 import { CockpitModals } from "@/components/pilot/cockpit-modals";
-import { BulkResponseToolbar } from "@/components/pilot/bulk-response-toolbar";
-import { ResponseStreamSection } from "@/components/pilot/response-stream-section";
 import { VotingResults } from "@/components/pilot/voting-results";
 import { InlineReformulation } from "@/components/pilot/inline-reformulation";
-import { ClassroomPlanCompact } from "@/components/pilot/classroom-plan-compact";
 import { V6ControlPanels } from "@/components/pilot/v6-control-panels";
 import { V6VoteControls } from "@/components/pilot/v6-vote-controls";
 import { V6ActivityFeed, type ActivityItem } from "@/components/pilot/v6-activity-feed";
 import { useStuckDetection } from "@/hooks/use-stuck-detection";
-import type { StudentState } from "@/components/pilot/pulse-ring";
 import type { ResponseCardResponse } from "@/components/pilot/response-card";
 import type { Response } from "@/hooks/use-pilot-session";
 
@@ -127,22 +122,7 @@ export function FocusCockpit() {
     respondingOpenedAt: session.status === "responding" ? respondingOpenedAt : null,
   });
 
-  const miniStudentStates = useMemo(() => {
-    return activeStudents.map((s) => {
-      const responded = state.respondedStudentIds.has(s.id);
-      const level = stuckLevels.get(s.id) || "ok";
-      let st: StudentState = "active";
-      if (responded) st = "responded";
-      else if (level === "stuck" || level === "slow") st = "stuck";
-      return {
-        id: s.id,
-        state: st,
-        display_name: s.display_name,
-        avatar: s.avatar || "\u{1F464}",
-        hand_raised_at: s.hand_raised_at,
-      };
-    });
-  }, [activeStudents, state.respondedStudentIds, stuckLevels]);
+  // V6: miniStudentStates removed — classroom plan is in V6Sidebar
 
   // ── Student fiche slide-over ──
   const [ficheStudentId, setFicheStudentId] = useState<string | null>(null);
@@ -267,9 +247,7 @@ export function FocusCockpit() {
   // ── Remote Control Mode ──
   if (remoteMode) {
     return (
-      <div
-        className={`flex-1 flex flex-col overflow-hidden bg-gray-50/50 relative ${isDarkMode ? "cockpit-dark" : ""}`}
-      >
+      <div className="flex-1 flex flex-col overflow-hidden bg-[#0c0c18] relative">
         <RemoteControlView
           questionText={universalQuestionText}
           respondedCount={unifiedRespondedCount}
@@ -599,22 +577,22 @@ export function FocusCockpit() {
               <button
                 key={s.id}
                 onClick={() => handleSelectStudent(s)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer text-left"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#1a1a35] transition-colors cursor-pointer text-left"
               >
                 <span className="text-2xl">{s.avatar}</span>
-                <span className="flex-1 text-[14px] font-medium text-gray-900 truncate">{s.display_name}</span>
+                <span className="flex-1 text-[14px] font-medium text-[#f0f0f8] truncate">{s.display_name}</span>
                 {s.hand_raised_at && (
                   <span className="text-sm" title="Main levée">
                     ✋
                   </span>
                 )}
                 <span
-                  className={`w-2.5 h-2.5 rounded-full shrink-0 ${hasResponded ? "bg-emerald-500" : "bg-gray-300"}`}
+                  className={`w-2.5 h-2.5 rounded-full shrink-0 ${hasResponded ? "bg-emerald-500" : "bg-[#64748b]"}`}
                 />
               </button>
             );
           })}
-          {studentList.length === 0 && <p className="text-center text-sm text-gray-400 py-4">Aucun élève connecté</p>}
+          {studentList.length === 0 && <p className="text-center text-sm text-[#64748b] py-4">Aucun élève connecté</p>}
         </div>
       </BottomSheet>
 

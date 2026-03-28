@@ -25,10 +25,10 @@ import type { StudentState } from "@/components/pilot/pulse-ring";
 import { useSound } from "@/hooks/use-sound";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { ConfirmModal } from "@/components/confirm-modal";
-import { ModuleSidebar, SidebarDrawer } from "@/components/pilot/module-sidebar";
+// V6: ModuleSidebar/SidebarDrawer removed — module selection via header rail
 import { WelcomePanel } from "@/components/pilot/welcome-panel";
 import { ModuleBriefing } from "@/components/pilot/module-briefing";
-import { ContextPanel } from "@/components/pilot/teacher-docks";
+// V6: ContextPanel removed — context info in V6Sidebar tabs
 import { getNextAction, type NextAction } from "@/lib/cockpit-next-action";
 const TeamManager = dynamic(() => import("@/components/pilot/team-manager").then((m) => ({ default: m.TeamManager })), {
   ssr: false,
@@ -417,29 +417,7 @@ export default function PilotPage() {
 
       {/* ── BODY: Sidebar + Main ── */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Module sidebar — overlay drawer, hidden by default */}
-        <SidebarDrawer open={sidebarOpen} onClose={() => setSidebarOpen(false)}>
-          <ModuleSidebar
-            modules={MODULES}
-            phases={PHASES}
-            activeModuleId={activeModule?.id || null}
-            selectedModuleId={moduleView === "briefing" ? selectedModuleId : null}
-            completedModules={session.completed_modules || []}
-            onSelectModule={(id) => {
-              handleSelectModule(id);
-              setSidebarOpen(false);
-            }}
-            onQuickLaunch={(id) => {
-              handleQuickLaunchModule(id);
-              setSidebarOpen(false);
-            }}
-            responsesCount={responses?.length || 0}
-            moduleStartedAt={moduleStartedAt}
-            sessionStatus={session.status}
-            currentQuestionIndex={hasActiveModule ? currentQuestionIndex : undefined}
-            totalModuleQuestions={hasActiveModule ? totalQuestions : undefined}
-          />
-        </SidebarDrawer>
+        {/* V6: Module sidebar removed — selection via header module rail */}
 
         {/* Centre — contenu principal (full width) */}
         <div className="flex-1 overflow-hidden flex flex-col">
@@ -486,7 +464,7 @@ export default function PilotPage() {
                     setSelectedStudentId(s.id);
                     setShowStudents(false);
                   },
-                  onOpenModules: () => setSidebarOpen(!sidebarOpen),
+                  onOpenModules: () => {},
                   onOpenScreen: () => window.open(ROUTES.screen(sessionId), "_blank"),
                   studentWarnings: Object.fromEntries((session.students || []).map((s) => [s.id, s.warnings || 0])),
                 }}
@@ -543,73 +521,7 @@ export default function PilotPage() {
         isPending={confirmAction.isPending}
       />
 
-      {/* Mobile context drawer */}
-      <AnimatePresence>
-        {mobileContextOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
-              onClick={() => setMobileContextOpen(false)}
-            />
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed right-0 top-0 bottom-0 z-50 w-[320px] max-w-[85vw] bg-bw-bg border-l border-black/[0.06] overflow-y-auto lg:hidden"
-            >
-              <div className="flex items-center justify-between px-4 py-3 border-b border-black/[0.06]">
-                <span className="text-sm font-semibold">Contexte</span>
-                <button
-                  onClick={() => setMobileContextOpen(false)}
-                  className="text-bw-muted hover:text-bw-heading cursor-pointer text-sm"
-                >
-                  ✕
-                </button>
-              </div>
-              <ContextPanel
-                moduleGuide={activeModule ? getModuleGuide(activeModule.id) : undefined}
-                questionGuide={
-                  session &&
-                  activeModule &&
-                  (session.current_module === 3 ||
-                    session.current_module === 4 ||
-                    session.current_module === 9 ||
-                    session.current_module === 2 ||
-                    session.current_module === 10)
-                    ? getQuestionGuide(
-                        session.current_seance || 1,
-                        (session.current_situation_index || 0) + 1,
-                        session.current_module,
-                      )
-                    : undefined
-                }
-                responsesCount={responses?.length || 0}
-                totalStudents={activeStudents.length}
-                hiddenCount={responses?.filter((r) => r.is_hidden).length || 0}
-                voteOptionCount={responses?.filter((r) => r.is_vote_option && !r.is_hidden).length || 0}
-                sessionStatus={session.status}
-                selectedStudent={null}
-                studentResponses={[]}
-                onSelectStudent={() => {}}
-                onClose={() => setMobileContextOpen(false)}
-                students={session.students?.map((s) => ({ ...s, warnings: s.warnings || 0 })) || []}
-                studentStates={pageStudentStates}
-                onNudge={(studentId, text) => {
-                  const studentResponse = responses?.find((r) => r.student_id === studentId);
-                  if (studentResponse) {
-                    nudgeStudent.mutate({ responseId: studentResponse.id, nudgeText: text });
-                  }
-                }}
-                onWarn={(studentId) => warnStudent.mutate(studentId)}
-              />
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {/* V6: Mobile context drawer removed — context in V6Sidebar tabs */}
 
       {/* Command Palette ⌘K */}
       <CommandPalette
@@ -624,7 +536,7 @@ export default function PilotPage() {
         onToggleDarkMode={() => {}}
         isDarkMode={false}
         onOpenStudents={() => setShowStudents(true)}
-        onOpenModules={() => setSidebarOpen(true)}
+        onOpenModules={() => {}}
         onUpdateSession={(updates) => updateSession.mutate(updates)}
       />
     </div>
