@@ -62,18 +62,29 @@ export function FocusQuestionCard({
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`rounded-2xl bg-white border p-5 shadow-sm ${
+      className={`rounded-2xl bg-white border-l-4 border p-5 shadow-sm ${
         isPreviewing ? "border-amber-300 bg-amber-50/30" : "border-gray-100"
       }`}
+      style={{ borderLeftColor: isPreviewing ? undefined : catColor }}
     >
+      {/* Top color accent bar */}
+      <div className="h-1 -mx-5 -mt-5 mb-4 rounded-t-2xl" style={{ backgroundColor: catColor + "22" }} />
+
       {/* Category badge + nav */}
       <div className="flex items-center justify-between mb-3">
-        <span
-          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold text-white"
-          style={{ backgroundColor: catColor }}
-        >
-          {categoryLabel}
-        </span>
+        <div className="flex items-center gap-2">
+          <span
+            className="inline-flex items-center px-3 py-1 rounded-lg text-[11px] font-bold text-white shadow-sm"
+            style={{ backgroundColor: catColor }}
+          >
+            {categoryLabel}
+          </span>
+          {hasNav && (
+            <span className="text-[11px] font-semibold text-gray-400 tabular-nums">
+              Q{currentIndex + 1}/{maxSituations}
+            </span>
+          )}
+        </div>
 
         {hasNav && (
           <div className="flex items-center gap-1.5 relative" ref={listRef}>
@@ -239,7 +250,7 @@ export function FocusQuestionCard({
       )}
 
       {/* Question text */}
-      <p className="text-[20px] sm:text-[22px] font-bold text-gray-900 leading-snug">{questionText}</p>
+      <p className="text-[18px] sm:text-[22px] font-bold text-gray-900 leading-snug mt-1">{questionText}</p>
     </motion.div>
   );
 }
