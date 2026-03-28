@@ -82,8 +82,8 @@ export default function SeancesPage() {
     const count = selected.size;
     if (count === 0) return;
     confirm.requestConfirm({
-      title: `Archiver ${count} seance${count > 1 ? "s" : ""} ?`,
-      description: `${count} seance${count > 1 ? "s seront archivees" : " sera archivee"}. Vous pourrez les retrouver dans l'onglet Archives.`,
+      title: `Archiver ${count} s\u00e9ance${count > 1 ? "s" : ""} ?`,
+      description: `${count} s\u00e9ance${count > 1 ? "s seront archiv\u00e9es" : " sera archiv\u00e9e"}. Vous pourrez les retrouver dans l'onglet Archives.`,
       confirmLabel: "Archiver",
       confirmVariant: "danger",
       action: async () => {
@@ -91,9 +91,9 @@ export default function SeancesPage() {
         const results = await Promise.allSettled(ids.map((id) => fetch(`/api/sessions/${id}`, { method: "DELETE" })));
         const succeeded = results.filter((r) => r.status === "fulfilled" && (r.value as Response).ok).length;
         if (succeeded === ids.length) {
-          toast.success(`${succeeded} seance${succeeded > 1 ? "s archivees" : " archivee"}`);
+          toast.success(`${succeeded} s\u00e9ance${succeeded > 1 ? "s archiv\u00e9es" : " archiv\u00e9e"}`);
         } else {
-          toast.error(`${succeeded}/${ids.length} archivees. Certaines ont echoue.`);
+          toast.error(`${succeeded}/${ids.length} archiv\u00e9es. Certaines ont \u00e9chou\u00e9.`);
         }
         clearSelection();
         queryClient.invalidateQueries({ queryKey: ["sessions"] });
@@ -348,7 +348,7 @@ export default function SeancesPage() {
       {selected.size > 0 && (
         <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 rounded-2xl bg-card border border-[var(--color-bw-border)] shadow-xl px-4 py-2.5 animate-in slide-in-from-bottom-4 duration-200">
           <span className="text-sm font-medium text-bw-heading tabular-nums">
-            {selected.size} selectionnee{selected.size > 1 ? "s" : ""}
+            {selected.size} s&#233;lectionn&#233;e{selected.size > 1 ? "s" : ""}
           </span>
           <button
             type="button"
