@@ -12,7 +12,7 @@ const TAGS = [
 export function SessionNotesPanel() {
   const { session } = useCockpitData();
   const { updateSession } = useCockpitActions();
-  const sess = session as unknown as Record<string, unknown>;
+  const sess = (session as unknown as Record<string, unknown>) ?? {};
   const [notes, setNotes] = useState((sess.teacher_notes as string) || "");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
