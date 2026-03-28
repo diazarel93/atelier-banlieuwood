@@ -625,6 +625,7 @@ export default function PilotPage() {
         isDarkMode={false}
         onOpenStudents={() => setShowStudents(true)}
         onOpenModules={() => setSidebarOpen(true)}
+        onUpdateSession={(updates) => updateSession.mutate(updates)}
       />
     </div>
   );

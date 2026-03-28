@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { useCockpitActions } from "@/components/pilot/cockpit-context";
 
 interface CommandAction {
   id: string;
@@ -23,6 +22,7 @@ interface CommandPaletteProps {
   onOpenStudents: () => void;
   onOpenModules: () => void;
   onSelectModule?: (moduleIndex: number) => void;
+  onUpdateSession?: (updates: Record<string, unknown>) => void;
 }
 
 export function CommandPalette({
@@ -36,10 +36,10 @@ export function CommandPalette({
   onOpenStudents,
   onOpenModules,
   onSelectModule,
+  onUpdateSession,
 }: CommandPaletteProps) {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { updateSession } = useCockpitActions();
 
   useEffect(() => {
     if (open) {
@@ -75,14 +75,14 @@ export function CommandPalette({
         label: "Lancer le vote",
         icon: "🗳️",
         category: "Session",
-        action: () => updateSession.mutate({ status: "voting", timer_ends_at: null }),
+        action: () => onUpdateSession?.({ status: "voting", timer_ends_at: null }),
       },
       {
         id: "review",
         label: "Voir les resultats",
         icon: "📊",
         category: "Session",
-        action: () => updateSession.mutate({ status: "reviewing", timer_ends_at: null }),
+        action: () => onUpdateSession?.({ status: "reviewing", timer_ends_at: null }),
       },
       { id: "students", label: "Voir les eleves", icon: "👥", category: "Navigation", action: onOpenStudents },
       { id: "modules", label: "Changer de module", icon: "📚", category: "Navigation", action: onOpenModules },
@@ -118,7 +118,7 @@ export function CommandPalette({
     onOpenStudents,
     onOpenModules,
     onSelectModule,
-    updateSession,
+    onUpdateSession,
   ]);
 
   const filtered = useMemo(() => {
