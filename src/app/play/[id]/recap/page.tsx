@@ -82,8 +82,21 @@ function RecapPageInner() {
     } catch { /* no student */ }
 
     const params = studentId ? `?studentId=${studentId}` : "";
+    // Try authenticated recap first (facilitator), fallback to student-public endpoint
     fetch(`/api/sessions/${sessionId}/recap${params}`)
-      .then((r) => r.ok ? r.json() : null)
+      .then((r) => {
+        if (r.ok) return r.json();
+        // Fallback to public student recap if auth fails (student view)
+        return fetch(`/api/sessions/${sessionId}/recap-student${params}`).then((r2) =>
+          r2.ok ? r2.json().then((d) => ({
+            session: { id: sessionId, title: d.sessionTitle, status: "done" },
+            story: d.story.map((s: { category: string; restitutionLabel: string; chosenText: string; isMine: boolean }, i: number) => ({ id: String(i), ...s })),
+            myResponses: [],
+            myChosenCount: d.myChosenCount,
+            totalChoices: d.totalChoices,
+          })) : null
+        );
+      })
       .then((d) => { if (d) setData(d); })
       .catch(() => {})
       .finally(() => setLoading(false));
