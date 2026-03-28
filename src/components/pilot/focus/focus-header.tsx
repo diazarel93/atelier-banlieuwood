@@ -162,8 +162,8 @@ export function FocusHeader({
       });
       const allDone = enabledIds.length > 0 && enabledIds.every((id) => completedModuleIds.includes(id));
       const isActive = activeModuleId ? phase.moduleIds.includes(activeModuleId) : false;
-      const activePhaseIdx = PHASES.findIndex((p) => activeModuleId && p.moduleIds.includes(activeModuleId));
-      const isLocked = activePhaseIdx >= 0 && idx > activePhaseIdx + 2;
+      // No locking — intervenant can navigate freely between all phases
+      const isLocked = false;
       return {
         id: phase.id,
         firstModuleId: enabledIds[0],
@@ -324,25 +324,13 @@ export function FocusHeader({
             </button>
           )}
 
-          {/* Module selector dropdown */}
-          {onOpenModules && (
-            <button
-              onClick={() => onOpenModules()}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#1a1a35] hover:bg-[#2a2a50] border border-[#2a2a50] transition-colors cursor-pointer text-[11px] font-medium"
-              style={{ color: moduleColor }}
-              title="Changer de module"
-            >
-              <span
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold text-white"
-                style={{ backgroundColor: moduleColor }}
-              >
-                {moduleLabel}
-              </span>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M6 9l6 6 6-6" />
-              </svg>
-            </button>
-          )}
+          {/* Current module badge (info only — navigation via rail below) */}
+          <span
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold text-white"
+            style={{ backgroundColor: moduleColor }}
+          >
+            {moduleLabel}
+          </span>
 
           {/* Go/Pause button */}
           {onTogglePause && (
