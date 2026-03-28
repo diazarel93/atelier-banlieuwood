@@ -5,22 +5,19 @@ import { useCockpitData, useCockpitActions } from "@/components/pilot/cockpit-co
 import { useStuckDetection } from "@/hooks/use-stuck-detection";
 import { STUCK_DETECTION_DELAY_MS } from "@/components/pilot/pilot-settings";
 import { FocusCockpit } from "@/components/pilot/focus/focus-cockpit";
-import { ClasseSidebar } from "./classe-sidebar";
-import { AssistantSidebar } from "./assistant-sidebar";
+import { V6Sidebar } from "@/components/pilot/v6-sidebar";
 import { createTimelineEvent, type TimelineEvent } from "@/components/pilot/session-timeline";
 import { toast } from "sonner";
 
 // ═══════════════════════════════════════════════════════════════
-// COMMAND COCKPIT — 3-column "Command Center" layout
+// COMMAND COCKPIT V6 — 2-column layout
 //
-// Desktop ≥1280px: left sidebar + center + right sidebar
-// Tablet 1024-1279: left sidebar + center
-// Mobile <1024px: center only (FocusCockpit)
+// Desktop ≥1280px: main (scrollable) + right sidebar 360px
+// Tablet <1280px: main only, sidebar as overlay
+// Mobile <768px: main only, sidebar fullscreen
 //
-// Wraps FocusCockpit at center — zero duplication.
+// Left sidebar (ClasseSidebar) is REMOVED — merged into V6Sidebar.
 // ═══════════════════════════════════════════════════════════════
-
-// ── Lightweight hook for sidebar data (avoids duplicating FocusCockpit state) ──
 
 function useCommandSidebarData() {
   const { session, sessionId, responses, activeStudents, situationData } = useCockpitData();
@@ -58,10 +55,10 @@ function useCommandSidebarData() {
     respondingOpenedAt: session.status === "responding" ? respondingOpenedAt : null,
   });
 
-  // Session started at (when this component mounts)
+  // Session started at
   const [sessionStartedAt] = useState<number>(() => Date.now());
 
-  // Timeline events — track key moments
+  // Timeline events
   const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[]>([]);
   const trackedRef = useRef<Set<string>>(new Set());
   const prevStatusRef = useRef(session.status);
@@ -91,7 +88,6 @@ function useCommandSidebarData() {
 
     if (curr === "responding" && prev !== "responding") {
       addEvent("question_launched", "Question lancee", undefined, "info");
-      // Reset tracking for new question
       trackedRef.current = new Set(["question_launched-Question lancee"]);
       prevResponseCountRef.current = 0;
     }
@@ -123,18 +119,6 @@ function useCommandSidebarData() {
     prevResponseCountRef.current = count;
   }, [responses.length, activeStudents.length, session.status, addEvent]);
 
-  // Track broadcast messages
-  const prevBroadcastRef = useRef<string | null>(null);
-  const broadcastMsg = (session as unknown as Record<string, unknown>).broadcast_at as string | null | undefined;
-  useEffect(() => {
-    if (!broadcastMsg || broadcastMsg === prevBroadcastRef.current) return;
-    prevBroadcastRef.current = broadcastMsg;
-    const msg = (session as unknown as Record<string, unknown>).broadcast_message as string | null;
-    if (msg && !msg.startsWith("__SCREEN_")) {
-      addEvent("broadcast_sent", "Message envoye", msg.slice(0, 40), "info");
-    }
-  }, [broadcastMsg, session, addEvent]);
-
   // Track stuck detection
   const prevStuckCountRef = useRef(0);
   useEffect(() => {
@@ -161,53 +145,9 @@ function useCommandSidebarData() {
   };
 }
 
-// ── Alert action handler ──
-function useAlertActions() {
-  const { updateSession, onSelectStudent } = useCockpitActions();
-  const { activeStudents } = useCockpitData();
-
-  return useCallback(
-    (actionId: string) => {
-      switch (actionId) {
-        case "broadcast":
-          updateSession.mutate({
-            broadcast_message: "N'oubliez pas de repondre a la question !",
-            broadcast_at: new Date().toISOString(),
-          });
-          toast.success("Relance envoyee a la classe");
-          break;
-        case "hint":
-          updateSession.mutate({
-            broadcast_message: "Petit indice : relisez bien la question et prenez votre temps.",
-            broadcast_at: new Date().toISOString(),
-          });
-          toast.success("Indice envoye a la classe");
-          break;
-        case "vote":
-          updateSession.mutate({ status: "voting", timer_ends_at: null });
-          toast.success("Vote lance");
-          break;
-        case "debate":
-          toast("Lancez le debat a l'oral !", { icon: "🎭" });
-          break;
-        case "see-hand": {
-          // Select the first student with hand raised
-          const handStudent = activeStudents.find((s) => s.hand_raised_at);
-          if (handStudent) onSelectStudent(handStudent);
-          break;
-        }
-        case "see-alerts":
-          toast("Consultez la liste des eleves", { icon: "👀" });
-          break;
-      }
-    },
-    [updateSession, activeStudents, onSelectStudent],
-  );
-}
-
 export function CommandCockpit() {
   const sidebarData = useCommandSidebarData();
-  const handleAlertAction = useAlertActions();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Dispatch student selection to FocusCockpit via custom event
   const handleSidebarSelectStudent = useCallback((student: { id: string }) => {
@@ -216,37 +156,61 @@ export function CommandCockpit() {
 
   return (
     <div className="flex-1 flex overflow-hidden">
-      {/* ── Left: Classe sidebar (visible ≥ lg / 1024px) ── */}
-      <aside className="hidden lg:flex w-60 flex-col border-r border-[#2a2a50] overflow-y-auto flex-shrink-0">
-        <ClasseSidebar
-          activeStudents={sidebarData.activeStudents}
-          allStudents={sidebarData.session.students || []}
-          respondedStudentIds={sidebarData.respondedStudentIds}
-          stuckLevels={sidebarData.stuckLevels}
-          sessionStatus={sidebarData.session.status}
-          onSelectStudent={handleSidebarSelectStudent}
-        />
-      </aside>
-
-      {/* ── Center: FocusCockpit (always visible) ── */}
+      {/* ── Main content (always visible, scrollable) ── */}
       <div className="flex-1 flex flex-col min-w-0">
         <FocusCockpit />
       </div>
 
-      {/* ── Right: Assistant sidebar (visible ≥ xl / 1280px) ── */}
-      <aside className="hidden xl:flex w-[260px] flex-col border-l border-[#2a2a50] overflow-y-auto flex-shrink-0">
-        <AssistantSidebar
-          session={sidebarData.session}
-          responses={sidebarData.responses}
-          activeStudents={sidebarData.activeStudents}
-          stuckLevels={sidebarData.stuckLevels}
-          respondedStudentIds={sidebarData.respondedStudentIds}
-          respondingOpenedAt={sidebarData.respondingOpenedAt}
-          timelineEvents={sidebarData.timelineEvents}
-          sessionStartedAt={sidebarData.sessionStartedAt}
-          onAlertAction={handleAlertAction}
-        />
-      </aside>
+      {/* ── Right sidebar V6 (desktop: inline 360px, tablet: overlay) ── */}
+      {sidebarOpen && (
+        <aside className="hidden lg:flex w-[360px] flex-col border-l border-[#2a2a50] overflow-y-auto flex-shrink-0">
+          <V6Sidebar
+            activeStudents={sidebarData.activeStudents}
+            allStudents={sidebarData.session.students || []}
+            respondedStudentIds={sidebarData.respondedStudentIds}
+            stuckLevels={sidebarData.stuckLevels}
+            sessionStatus={sidebarData.session.status}
+            onSelectStudent={handleSidebarSelectStudent}
+            responses={sidebarData.responses}
+            timelineEvents={sidebarData.timelineEvents}
+            sessionStartedAt={sidebarData.sessionStartedAt}
+          />
+        </aside>
+      )}
+
+      {/* ── Tablet/mobile sidebar overlay ── */}
+      {sidebarOpen && (
+        <aside className="lg:hidden fixed top-0 right-0 bottom-0 z-50 w-[340px] max-w-[90vw] bg-[#0c0c18] shadow-[-4px_0_24px_rgba(0,0,0,0.4)] flex flex-col overflow-y-auto">
+          {/* Close button */}
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-lg bg-[#1a1a35] border border-[#2a2a50] text-[#94a3b8] hover:text-[#f0f0f8] z-10 cursor-pointer"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+          <V6Sidebar
+            activeStudents={sidebarData.activeStudents}
+            allStudents={sidebarData.session.students || []}
+            respondedStudentIds={sidebarData.respondedStudentIds}
+            stuckLevels={sidebarData.stuckLevels}
+            sessionStatus={sidebarData.session.status}
+            onSelectStudent={handleSidebarSelectStudent}
+            responses={sidebarData.responses}
+            timelineEvents={sidebarData.timelineEvents}
+            sessionStartedAt={sidebarData.sessionStartedAt}
+          />
+        </aside>
+      )}
     </div>
   );
 }
