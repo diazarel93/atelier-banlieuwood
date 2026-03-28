@@ -84,7 +84,7 @@ export default function FicheCoursPageV2() {
   }
 
   return (
-    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
+    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 pt-16 lg:pt-8 pb-8">
       <BreadcrumbV2 items={[{ label: "Fiche de cours" }]} />
 
       <div className="max-w-2xl mx-auto mt-6 space-y-6">

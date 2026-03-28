@@ -82,7 +82,7 @@ export default function StatistiquesPage() {
   const hasStudents = data && data.students.length > 0;
 
   return (
-    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
+    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 pt-16 lg:pt-6 pb-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>

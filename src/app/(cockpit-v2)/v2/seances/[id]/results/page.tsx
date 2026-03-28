@@ -18,7 +18,7 @@ export default function ResultsPageV2() {
   return (
     <Suspense
       fallback={
-        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
+        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 pt-16 lg:pt-8 pb-8">
           <div className="h-64 rounded-2xl bg-card shimmer" />
         </div>
       }
@@ -43,7 +43,7 @@ function ResultsPageInner() {
   // ── Loading ──
   if (data.isLoading) {
     return (
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 pt-16 lg:pt-8 pb-8">
         <BreadcrumbV2 items={[{ label: "Séances", href: "/v2/seances" }, { label: "..." }]} />
         <div className="mt-4 space-y-4">
           <div className="h-32 rounded-2xl bg-card shimmer" />
@@ -57,7 +57,7 @@ function ResultsPageInner() {
   // ── Error ──
   if (data.isError || !data.exportData) {
     return (
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 pt-16 lg:pt-8 pb-8">
         <BreadcrumbV2 items={[{ label: "Séances", href: "/v2/seances" }, { label: "Résultats" }]} />
         <GlassCardV2 className="p-8 text-center mt-4">
           <p className="text-bw-muted text-sm mb-4">Impossible de charger les résultats de cette séance.</p>
@@ -81,7 +81,7 @@ function ResultsPageInner() {
   }
 
   return (
-    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-8">
+    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 pt-16 lg:pt-8 pb-8">
       {/* Breadcrumb */}
       <BreadcrumbV2
         items={[

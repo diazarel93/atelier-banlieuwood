@@ -170,7 +170,7 @@ export default function BibliothequePage() {
   }, [catalog]);
 
   return (
-    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 py-6">
+    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 pt-16 lg:pt-6 pb-6">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-heading-lg text-bw-heading">Bibliothèque pédagogique</h1>
