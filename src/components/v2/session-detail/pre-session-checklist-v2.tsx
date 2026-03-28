@@ -154,7 +154,7 @@ export function PreSessionChecklistV2({
                 <button onClick={() => setProjectorChecked((v) => !v)} className="mt-0.5 shrink-0 cursor-pointer">
                   <div
                     className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${
-                      projectorChecked ? "bg-emerald-500" : "border-2 border-gray-300"
+                      projectorChecked ? "bg-emerald-500" : "border-2 border-[var(--color-bw-border)]"
                     }`}
                   >
                     {projectorChecked && (
@@ -177,7 +177,7 @@ export function PreSessionChecklistV2({
                 <div className="mt-0.5 shrink-0">
                   <div
                     className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${
-                      item.checked ? "bg-emerald-500" : "border-2 border-gray-300"
+                      item.checked ? "bg-emerald-500" : "border-2 border-[var(--color-bw-border)]"
                     }`}
                   >
                     {item.checked && (
