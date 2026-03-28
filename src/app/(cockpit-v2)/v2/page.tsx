@@ -7,6 +7,7 @@ import { useDashboardSummary } from "@/hooks/use-dashboard-v2";
 import { useAuthUser } from "@/hooks/use-auth-user";
 import { ROUTES } from "@/lib/routes";
 import { PHASES, MAIN_PHASE_IDS } from "@/lib/modules-data";
+import { MiniCalendar } from "@/components/v2/mini-calendar";
 
 // ═══════════════════════════════════════════════════════════════
 // DASHBOARD V2 — 2-column layout matching spec
@@ -274,7 +275,7 @@ export default function DashboardV2Page() {
           {data?.recentSessions && data.recentSessions.length > 0 && (
             <div>
               <h3 className="text-sm font-bold text-bw-heading mb-3">Séances récentes</h3>
-              <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border)]">
+              <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border)] scrollbar-thin">
                 <table className="w-full text-body-sm" style={{ borderCollapse: "collapse" }}>
                   <thead>
                     <tr>
@@ -475,6 +476,12 @@ export default function DashboardV2Page() {
               </div>
             </div>
           )}
+
+          {/* Agenda calendrier */}
+          <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-4">
+            <h3 className="label-caps text-bw-muted mb-3">Agenda</h3>
+            <MiniCalendar sessionDates={(data?.sessionDates || []).map((d) => new Date(d))} />
+          </div>
         </div>
       </div>
 
