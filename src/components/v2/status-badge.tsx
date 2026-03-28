@@ -50,29 +50,31 @@ export function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full font-medium",
         cfg.style,
-        size === "sm" ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-0.5 text-[11px]",
+        size === "sm" ? "px-2 py-0.5 text-body-xs" : "px-2.5 py-0.5 text-body-xs",
       )}
+      aria-label={`Statut : ${cfg.label}`}
     >
       <span
         className={cn(
           "rounded-full shrink-0",
           cfg.dot,
-          cfg.pulse && "animate-pulse",
+          cfg.pulse && "motion-safe:animate-pulse",
           size === "sm" ? "h-1.5 w-1.5" : "h-2 w-2",
         )}
+        aria-hidden="true"
       />
       {cfg.label}
     </span>
   );
 }
 
-/** Status bar color (hex) for left-border accents */
+/** Status bar color for left-border accents — using CSS variable values */
 export const STATUS_BAR_COLORS: Record<SessionStatus, string> = {
-  draft: "#9CA3AF",
-  waiting: "#F59E0B",
-  responding: "#4ECDC4",
-  paused: "#F59E0B",
-  done: "#10B981",
+  draft: "var(--color-bw-muted, #9CA3AF)",
+  waiting: "var(--color-bw-amber, #F59E0B)",
+  responding: "var(--color-bw-teal, #4ECDC4)",
+  paused: "var(--color-bw-amber, #F59E0B)",
+  done: "var(--color-bw-green, #10B981)",
 };
 
 /** Status background tint class for cards */
