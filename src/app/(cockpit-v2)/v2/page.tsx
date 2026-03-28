@@ -140,7 +140,7 @@ export default function DashboardV2Page() {
               className="rounded-2xl border bg-card p-5"
               style={{
                 borderLeftWidth: 4,
-                borderLeftColor: "#10B981",
+                borderLeftColor: "var(--color-bw-green)",
                 borderColor: "rgba(16,185,129,0.2)",
                 background: "linear-gradient(135deg, rgba(16,185,129,0.04), transparent)",
               }}
@@ -148,14 +148,14 @@ export default function DashboardV2Page() {
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 animate-pulse">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-body-xs font-bold bg-emerald-100 text-emerald-700 motion-safe:animate-pulse">
                       ● EN COURS
                     </span>
                     <span className="text-sm font-bold text-bw-heading">
                       {activeSession.classLabel || activeSession.title}
                     </span>
                   </div>
-                  <p className="text-[12px] text-bw-muted">
+                  <p className="text-body-xs text-bw-muted">
                     {activeSession.title} — {activeSession.studentCount} élèves connectés
                   </p>
                 </div>
@@ -177,17 +177,17 @@ export default function DashboardV2Page() {
                 {data.todaySessions.map((s) => (
                   <div
                     key={s.id}
-                    className="flex items-center gap-3 py-2 pl-3 rounded-xl hover:bg-bw-primary/[0.025] transition-colors relative"
+                    className="flex items-center gap-3 py-2 pl-3 rounded-xl hover:bg-bw-primary/[0.025] transition-colors duration-150 relative"
                   >
                     <div
                       className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
                       style={{
                         backgroundColor:
                           s.status === "done"
-                            ? "#10B981"
+                            ? "var(--color-bw-green)"
                             : s.status === "waiting" || s.status === "draft"
-                              ? "#F59E0B"
-                              : "#4ECDC4",
+                              ? "var(--color-bw-amber)"
+                              : "var(--color-bw-teal)",
                       }}
                     />
                     <span className="text-xs font-medium text-bw-muted tabular-nums w-10 shrink-0">
@@ -231,7 +231,7 @@ export default function DashboardV2Page() {
                 icon: "⏱",
                 value: stats?.activeSessions || 0,
                 label: "En cours",
-                color: "var(--color-axis-engagement, #F59E0B)",
+                color: "var(--color-axis-engagement, var(--color-bw-amber))",
               },
               {
                 icon: "≡",
@@ -248,7 +248,7 @@ export default function DashboardV2Page() {
             ].map((kpi) => (
               <div
                 key={kpi.label}
-                className="relative overflow-hidden rounded-2xl border border-[var(--color-bw-border)] bg-card p-5"
+                className="relative overflow-hidden rounded-2xl border border-[var(--color-bw-border)] bg-card p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
               >
                 <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ backgroundColor: kpi.color }} />
                 <div className="flex items-start justify-between">
@@ -275,13 +275,13 @@ export default function DashboardV2Page() {
             <div>
               <h3 className="text-sm font-bold text-bw-heading mb-3">Séances récentes</h3>
               <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border)]">
-                <table className="w-full text-[13px]" style={{ borderCollapse: "collapse" }}>
+                <table className="w-full text-body-sm" style={{ borderCollapse: "collapse" }}>
                   <thead>
                     <tr>
                       {["DATE", "CLASSE", "FORMULE", "ÉLÈVES", "PARTICIPATION", "ACTIONS"].map((h) => (
                         <th
                           key={h}
-                          className="p-3 text-left text-[11px] uppercase tracking-wider text-bw-muted bg-[var(--color-bw-surface-dim)] border-b border-[var(--color-bw-border)]"
+                          className="p-3 text-left text-body-xs uppercase tracking-wider text-bw-muted bg-[var(--color-bw-surface-dim)] border-b border-[var(--color-bw-border)]"
                         >
                           {h}
                         </th>
@@ -294,7 +294,7 @@ export default function DashboardV2Page() {
                       return (
                         <tr
                           key={s.id}
-                          className="border-b border-[var(--color-bw-border)] last:border-b-0 hover:bg-bw-primary/[0.02]"
+                          className="border-b border-[var(--color-bw-border)] last:border-b-0 hover:bg-bw-primary/[0.02] transition-colors duration-150"
                         >
                           <td className="p-3 text-bw-heading">
                             {new Date(s.scheduledAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
@@ -302,7 +302,7 @@ export default function DashboardV2Page() {
                           <td className="p-3 font-medium text-bw-heading">{s.classLabel || s.title}</td>
                           <td className="p-3">
                             <span
-                              className="inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-bold"
+                              className="inline-flex px-2.5 py-0.5 rounded-full text-body-xs font-bold"
                               style={{
                                 background: `${FORMULA_COLORS[formula] || "#8b5cf6"}15`,
                                 color: FORMULA_COLORS[formula] || "#8b5cf6",
@@ -318,7 +318,7 @@ export default function DashboardV2Page() {
                           <td className="p-3">
                             <Link
                               href={ROUTES.seanceResults(s.id)}
-                              className="text-bw-primary hover:underline text-[12px]"
+                              className="text-bw-primary hover:underline text-body-xs"
                             >
                               Voir
                             </Link>
@@ -369,7 +369,7 @@ export default function DashboardV2Page() {
             <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="label-caps text-bw-muted">Actions requises</h3>
-                <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-bw-primary text-white text-[10px] font-bold px-1.5">
+                <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-bw-primary text-white text-body-xs font-bold px-1.5">
                   {data.recentSessions.filter((s) => s.status === "done").length}
                 </span>
               </div>
@@ -439,10 +439,10 @@ export default function DashboardV2Page() {
                 {data.recentSessions.slice(0, 6).map((s) => {
                   const statusColor =
                     s.status === "done"
-                      ? "#10B981"
+                      ? "var(--color-bw-green)"
                       : s.status === "responding" || s.status === "voting"
-                        ? "#4ECDC4"
-                        : "#F59E0B";
+                        ? "var(--color-bw-teal)"
+                        : "var(--color-bw-amber)";
                   const statusLabel =
                     s.status === "done"
                       ? "Terminée"
@@ -458,13 +458,13 @@ export default function DashboardV2Page() {
                       <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: statusColor }} />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-bw-heading truncate">{s.title}</p>
-                        <p className="text-[11px] text-bw-muted">
+                        <p className="text-body-xs text-bw-muted">
                           {new Date(s.scheduledAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ·{" "}
                           {s.studentCount} élèves · {s.classLabel}
                         </p>
                       </div>
                       <span
-                        className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                        className="text-body-xs font-semibold px-2 py-0.5 rounded-full"
                         style={{ backgroundColor: `${statusColor}15`, color: statusColor }}
                       >
                         {statusLabel}

@@ -225,7 +225,7 @@ export default function AidePage() {
                 <div className="flex items-center gap-1 shrink-0 ml-3">
                   {s.keys.map((key, i) => (
                     <span key={i}>
-                      {i > 0 && <span className="text-[10px] text-bw-muted mx-0.5">+</span>}
+                      {i > 0 && <span className="text-body-xs text-bw-muted mx-0.5">+</span>}
                       <kbd className="inline-flex items-center justify-center rounded-md border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)] px-1.5 py-0.5 text-xs font-medium text-bw-heading min-w-[24px] text-center">
                         {key}
                       </kbd>
