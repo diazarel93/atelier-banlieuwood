@@ -29,7 +29,7 @@ interface Session {
 
 async function fetchSessions(): Promise<Session[]> {
   const res = await fetch("/api/sessions");
-  if (!res.ok) throw new Error("Erreur chargement seances");
+  if (!res.ok) throw new Error("Erreur chargement s\u00e9ances");
   return res.json();
 }
 
@@ -199,8 +199,8 @@ export default function SeancesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-heading-lg text-bw-heading">Seances</h1>
-          <p className="text-sm text-bw-muted mt-0.5">Gerez et preparez vos seances</p>
+          <h1 className="text-heading-lg text-bw-heading">S&#233;ances</h1>
+          <p className="text-sm text-bw-muted mt-0.5">G&#233;rez et pr&#233;parez vos s&#233;ances</p>
         </div>
         <div className="flex items-center gap-3">
           {/* Search */}
@@ -273,7 +273,7 @@ export default function SeancesPage() {
                 </svg>
               }
               title="Erreur de chargement"
-              description="Impossible de charger les seances."
+              description="Impossible de charger les s\u00e9ances."
               accent="amber"
               action={{ label: "Reessayer", onClick: () => refetch() }}
             />
@@ -300,13 +300,15 @@ export default function SeancesPage() {
                   <path d="M16 2v4M8 2v4M3 10h18" />
                 </svg>
               }
-              title={tab === "archived" ? "Aucune seance archivee" : "Aucune seance dans cette categorie"}
+              title={
+                tab === "archived" ? "Aucune s\u00e9ance archiv\u00e9e" : "Aucune s\u00e9ance dans cette cat\u00e9gorie"
+              }
               description={
                 tab === "archived"
-                  ? "Les seances archivees apparaitront ici."
-                  : "Creez une nouvelle seance pour commencer."
+                  ? "Les s\u00e9ances archiv\u00e9es appara\u00eetront ici."
+                  : "Cr\u00e9ez une nouvelle s\u00e9ance pour commencer."
               }
-              action={tab !== "archived" ? { label: "Creer une seance", href: ROUTES.seanceNew } : undefined}
+              action={tab !== "archived" ? { label: "Cr\u00e9er une s\u00e9ance", href: ROUTES.seanceNew } : undefined}
             />
           ) : (
             <div className="flex flex-col gap-6">

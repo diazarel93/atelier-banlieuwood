@@ -40,7 +40,7 @@ export function SeanceTabs({ active, counts, onChange, className }: SeanceTabsPr
   return (
     <div
       role="tablist"
-      aria-label="Filtrer les seances"
+      aria-label="Filtrer les s\u00e9ances"
       className={cn(
         "flex items-center gap-1 rounded-xl bg-[var(--color-bw-surface-dim)] p-1 overflow-x-auto",
         className,
