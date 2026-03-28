@@ -137,10 +137,12 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-6">
         {/* ── Section 1: Profil ── */}
-        <GlassCardV2 className="p-5">
-          <h2 className="text-heading-xs text-bw-heading mb-4">Profil</h2>
+        <GlassCardV2 className="p-6">
+          <h2 className="text-heading-xs text-bw-heading mb-4 flex items-center gap-2">
+            <span className="text-lg">👤</span> Profil
+          </h2>
           <div className="space-y-4">
             <div>
               <label className="block text-body-xs font-medium text-bw-muted mb-1">Nom</label>
@@ -170,8 +172,10 @@ export default function SettingsPage() {
         </GlassCardV2>
 
         {/* ── Section 2: Préférences ── */}
-        <GlassCardV2 className="p-5">
-          <h2 className="text-heading-xs text-bw-heading mb-4">Préférences</h2>
+        <GlassCardV2 className="p-6">
+          <h2 className="text-heading-xs text-bw-heading mb-4 flex items-center gap-2">
+            <span className="text-lg">⚙️</span> Préférences
+          </h2>
           <div className="space-y-4">
             <div>
               <label htmlFor="default-level" className="block text-body-xs font-medium text-bw-muted mb-1">
@@ -208,8 +212,10 @@ export default function SettingsPage() {
         </GlassCardV2>
 
         {/* ── Section 3: Sécurité ── */}
-        <GlassCardV2 className="p-5">
-          <h2 className="text-heading-xs text-bw-heading mb-4">Sécurité</h2>
+        <GlassCardV2 className="p-6">
+          <h2 className="text-heading-xs text-bw-heading mb-4 flex items-center gap-2">
+            <span className="text-lg">🔒</span> Sécurité
+          </h2>
           <div className="space-y-4">
             <div>
               <label htmlFor="new-password" className="block text-body-xs font-medium text-bw-muted mb-1">
@@ -254,8 +260,10 @@ export default function SettingsPage() {
         </GlassCardV2>
 
         {/* ── Section 4: Compte ── */}
-        <GlassCardV2 className="p-5">
-          <h2 className="text-heading-xs text-bw-heading mb-4">Compte</h2>
+        <GlassCardV2 className="p-6">
+          <h2 className="text-heading-xs text-bw-heading mb-4 flex items-center gap-2">
+            <span className="text-lg">🚪</span> Compte
+          </h2>
           <div className="flex items-center gap-3">
             <button
               type="button"
