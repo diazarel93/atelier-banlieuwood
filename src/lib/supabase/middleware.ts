@@ -125,6 +125,23 @@ export async function updateSession(request: NextRequest) {
       url.pathname = "/v2";
       return NextResponse.redirect(url);
     }
+
+    // R4(2b) — Role separation: professeur cannot pilot sessions
+    if (pathname.startsWith("/session") && role === "professeur") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/v2";
+      return NextResponse.redirect(url);
+    }
+
+    // R4(2b) — Role separation: intervenant cannot access post-session analytics
+    if (role === "intervenant" && (
+      pathname.startsWith("/v2/statistiques") ||
+      pathname.startsWith("/v2/eleves")
+    )) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/v2";
+      return NextResponse.redirect(url);
+    }
   }
 
   return supabaseResponse;

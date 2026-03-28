@@ -30,18 +30,18 @@ interface NavItem {
   href: string;
   label: string;
   icon: React.ReactNode;
+  /** Hide from intervenants (post-session only views) */
+  professeurOnly?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
   { href: ROUTES.dashboard, label: "Dashboard", icon: <IconDashboard /> },
   { href: ROUTES.seances, label: "Séances", icon: <IconSeances /> },
-  { href: ROUTES.eleves, label: "Élèves", icon: <IconEleves /> },
-  { href: ROUTES.statistiques, label: "Statistiques", icon: <IconStatistiques /> },
+  { href: ROUTES.eleves, label: "Élèves", icon: <IconEleves />, professeurOnly: true },
+  { href: ROUTES.statistiques, label: "Statistiques", icon: <IconStatistiques />, professeurOnly: true },
   { href: ROUTES.bibliotheque, label: "Modules", icon: <IconModules /> },
   { href: ROUTES.ficheCours, label: "Fiche de cours", icon: <IconFicheCours /> },
 ];
-
-const BOTTOM_NAV_ITEMS = NAV_ITEMS.slice(0, 4); // Dashboard, Séances, Élèves, Statistiques
 
 export function AppShellV2({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -49,6 +49,13 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const { data: authUser } = useAuthUser();
   const isAdmin = authUser?.role === "admin";
+  const isIntervenant = authUser?.role === "intervenant";
+
+  // R4(2b): filter nav items based on role
+  const visibleNavItems = NAV_ITEMS.filter((item) =>
+    !item.professeurOnly || !isIntervenant
+  );
+  const bottomNavItems = visibleNavItems.slice(0, 4);
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -94,7 +101,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
 
           {/* Desktop nav links */}
           <nav aria-label="Navigation principale" className="hidden md:flex items-center gap-0.5 h-14">
-            {NAV_ITEMS.map((item) => {
+            {visibleNavItems.map((item) => {
               const isActive =
                 item.href === ROUTES.dashboard
                   ? pathname === ROUTES.dashboard
@@ -255,7 +262,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           {/* Primary nav */}
           <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-bw-muted/60">Navigation</p>
           <div className="flex flex-col gap-1">
-            {NAV_ITEMS.map((item) => {
+            {visibleNavItems.map((item) => {
               const isActive =
                 item.href === ROUTES.dashboard
                   ? pathname === ROUTES.dashboard
@@ -355,7 +362,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         {/* Subtle film-strip perforation line above nav */}
         <div className="film-strip-line absolute top-0 left-4 right-4 -translate-y-px" aria-hidden="true" />
         <div className="flex items-center justify-around h-14">
-          {BOTTOM_NAV_ITEMS.map((item) => {
+          {bottomNavItems.map((item) => {
             const isActive =
               item.href === ROUTES.dashboard
                 ? pathname === ROUTES.dashboard
