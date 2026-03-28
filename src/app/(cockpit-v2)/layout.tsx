@@ -9,17 +9,17 @@ export const metadata: Metadata = {
   },
   robots: { index: false, follow: false },
   other: {
-    "theme-color": "#EEEAF6",
+    "theme-color": "#0c0c18",
   },
 };
 
 export default function CockpitV2Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="theme-lavande min-h-dvh bg-[var(--background)]">
-      {/* V2: Light theme by default — clear any old dark preference */}
+    <div className="theme-lavande min-h-dvh bg-[var(--background)]" data-theme="dark">
+      {/* V2: Dark theme — unified with landing + cockpit */}
       <script
         dangerouslySetInnerHTML={{
-          __html: `try{var el=document.currentScript.parentElement;el.removeAttribute("data-theme");localStorage.setItem("bw-theme","light")}catch(e){}`,
+          __html: `try{localStorage.setItem("bw-theme","dark")}catch(e){}`,
         }}
       />
       <AppShellV2>
