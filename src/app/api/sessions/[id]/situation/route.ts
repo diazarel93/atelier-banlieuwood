@@ -237,7 +237,7 @@ export const GET = withErrorHandler(async function GET(
     let budgetStats: { averages: Record<string, number>; submittedCount: number } | null = null;
     const budgets = Array.isArray(budgetResult.data) ? budgetResult.data : null;
     if (budgets && budgets.length > 0) {
-      const budgetKeys = ["acteurs", "decors", "technique", "son", "montage"];
+      const budgetKeys = ["acteurs", "decors", "effets", "musique", "duree"];
       const averages: Record<string, number> = {};
       for (const cat of budgetKeys) {
         const values = budgets.map((b: { choices: unknown }) => ((b.choices as Record<string, number>)?.[cat] || 0));
