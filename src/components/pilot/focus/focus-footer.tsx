@@ -57,7 +57,7 @@ export function FocusFooter({
     countChipText = `${respondedCount}/${totalStudents}`;
     countChipColor = allResponded
       ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-      : "bg-gray-50 text-gray-700 border border-gray-200";
+      : "bg-[#1a1a35] text-[#94a3b8] border border-[#2a2a50]";
     if (voteOptionCount < 2) {
       ctaLabel = `${voteOptionCount}/2 min — selectionner`;
       ctaGradient = "from-gray-300 to-gray-400";
@@ -96,7 +96,7 @@ export function FocusFooter({
     <>
       <div
         ref={footerRef}
-        className="shrink-0 border-t border-gray-200 bg-white/90 backdrop-blur-sm"
+        className="shrink-0 border-t border-[#2a2a50] bg-[#13132a]/90 backdrop-blur-md"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 8px)" }}
       >
         <div className="flex items-center gap-2 px-4 py-2.5 max-w-2xl mx-auto">
@@ -154,7 +154,7 @@ export function FocusFooter({
           {/* Project button */}
           <button
             onClick={onProjectResponses}
-            className="shrink-0 flex items-center justify-center w-11 h-11 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors cursor-pointer"
+            className="shrink-0 flex items-center justify-center w-11 h-11 rounded-xl bg-[#1a1a35] hover:bg-[#2a2a50] border border-[#2a2a50] transition-colors cursor-pointer"
             title="Projeter les reponses"
           >
             <svg
@@ -174,7 +174,7 @@ export function FocusFooter({
           {/* Plus menu */}
           <button
             onClick={onOpenPlus}
-            className="shrink-0 flex items-center justify-center w-11 h-11 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors cursor-pointer"
+            className="shrink-0 flex items-center justify-center w-11 h-11 rounded-xl bg-[#1a1a35] hover:bg-[#2a2a50] border border-[#2a2a50] transition-colors cursor-pointer"
             title="Plus d'actions"
           >
             <svg

@@ -314,7 +314,7 @@ export function FocusCockpit() {
   }
 
   return (
-    <div className={`flex-1 flex flex-col overflow-hidden bg-gray-50/50 ${isDarkMode ? "cockpit-dark" : ""}`}>
+    <div className="flex-1 flex flex-col overflow-hidden bg-[#0c0c18] text-[#f0f0f8]">
       {/* ── HEADER ── */}
       <FocusHeader
         sessionId={sessionId}

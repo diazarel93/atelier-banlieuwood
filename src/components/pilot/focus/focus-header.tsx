@@ -89,14 +89,14 @@ export function FocusHeader({
   return (
     <div className="shrink-0">
       {/* ── Main header bar ── */}
-      <div className="flex items-center gap-3 px-4 py-2.5 border-b border-gray-100">
+      <div className="flex items-center gap-3 px-4 py-2.5 border-b border-[#2a2a50] bg-[#13132a]/90 backdrop-blur-md">
         {/* Left: Logo + module */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
           {/* Menu modules */}
           {onOpenModules && (
             <button
               onClick={() => onOpenModules()}
-              className="flex items-center justify-center w-9 h-9 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors cursor-pointer"
+              className="flex items-center justify-center w-9 h-9 rounded-xl bg-[#1a1a35] hover:bg-[#2a2a50] border border-[#2a2a50] transition-colors cursor-pointer"
               title="Menu des modules"
             >
               <svg
@@ -172,7 +172,7 @@ export function FocusHeader({
           {/* Students */}
           <button
             onClick={onOpenStudents}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors text-[12px] font-semibold cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#1a1a35] hover:bg-[#2a2a50] border border-[#2a2a50] transition-colors text-[12px] font-semibold cursor-pointer"
             title="Voir les eleves"
           >
             <svg
@@ -195,7 +195,7 @@ export function FocusHeader({
           {/* Screen */}
           <button
             onClick={() => window.open(ROUTES.screen(sessionId), "bw-screen")}
-            className="relative flex items-center justify-center w-9 h-9 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors cursor-pointer"
+            className="relative flex items-center justify-center w-9 h-9 rounded-lg bg-[#1a1a35] hover:bg-[#2a2a50] border border-[#2a2a50] transition-colors cursor-pointer"
             title={isScreenConnected ? "Ecran connecte" : "Ouvrir l'ecran"}
           >
             <svg
@@ -219,7 +219,7 @@ export function FocusHeader({
           {onOpenCommandPalette && (
             <button
               onClick={onOpenCommandPalette}
-              className="flex items-center gap-1 px-2 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors cursor-pointer text-[11px] text-gray-500 font-medium"
+              className="flex items-center gap-1 px-2 py-1.5 rounded-lg bg-[#1a1a35] hover:bg-[#2a2a50] border border-[#2a2a50] transition-colors cursor-pointer text-[11px] text-[#94a3b8] font-medium"
               title="Commandes (⌘K)"
             >
               <svg
@@ -241,7 +241,7 @@ export function FocusHeader({
           {/* Fullscreen */}
           <button
             onClick={toggleFullscreen}
-            className="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors cursor-pointer"
+            className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#1a1a35] hover:bg-[#2a2a50] border border-[#2a2a50] transition-colors cursor-pointer"
             title={isFullscreen ? "Quitter le plein ecran" : "Plein ecran"}
           >
             <svg
