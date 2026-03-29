@@ -142,11 +142,11 @@ export default function DashboardV2Page() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="card-primary p-5 glow-green"
+              className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-5"
               style={{
                 borderLeftWidth: 4,
                 borderLeftColor: "var(--color-bw-green)",
-                background: "linear-gradient(135deg, rgba(16,185,129,0.04), var(--card))",
+                background: "linear-gradient(135deg, rgba(16,185,129,0.06), transparent)",
               }}
             >
               <div className="flex items-center justify-between flex-wrap gap-3">
@@ -175,7 +175,7 @@ export default function DashboardV2Page() {
 
           {/* Séances du jour */}
           {data?.todaySessions && data.todaySessions.length > 0 && (
-            <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-5">
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-5">
               <h3 className="label-caps mb-3">Aujourd&apos;hui</h3>
               <div className="space-y-2">
                 {data.todaySessions.map((s) => (
@@ -250,7 +250,10 @@ export default function DashboardV2Page() {
                 color: "var(--color-axis-expression, #EC4899)",
               },
             ].map((kpi) => (
-              <div key={kpi.label} className="card-interactive relative overflow-hidden p-6">
+              <div
+                key={kpi.label}
+                className="relative overflow-hidden p-6 rounded-2xl border border-[var(--color-bw-border-subtle)] transition-all duration-200 hover:-translate-y-0.5"
+              >
                 <div
                   className="absolute top-0 left-0 right-0 h-[3px]"
                   style={{
@@ -311,14 +314,14 @@ export default function DashboardV2Page() {
           {data?.recentSessions && data.recentSessions.length > 0 && (
             <div>
               <h3 className="text-sm font-bold text-bw-heading mb-3">Séances récentes</h3>
-              <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border)] scrollbar-thin">
+              <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border-subtle)] scrollbar-thin">
                 <table className="w-full text-body-sm" style={{ borderCollapse: "collapse" }}>
                   <thead>
                     <tr>
                       {["DATE", "CLASSE", "FORMULE", "ÉLÈVES", "PARTICIPATION", "ACTIONS"].map((h) => (
                         <th
                           key={h}
-                          className="p-3 text-left text-body-xs uppercase tracking-wider text-bw-muted bg-[var(--color-bw-surface-dim)] border-b border-[var(--color-bw-border)]"
+                          className="p-3 text-left text-body-xs uppercase tracking-wider text-bw-muted border-b border-[var(--color-bw-border-subtle)]"
                         >
                           {h}
                         </th>
@@ -332,7 +335,7 @@ export default function DashboardV2Page() {
                       return (
                         <tr
                           key={s.id}
-                          className="border-b border-[var(--color-bw-border)] last:border-b-0 hover:bg-bw-primary/[0.02] transition-colors duration-150"
+                          className="border-b border-[var(--color-bw-border-subtle)] last:border-b-0 hover:bg-bw-primary/[0.02] transition-colors duration-150"
                         >
                           <td className="p-3 text-bw-heading">
                             <div className="flex items-center gap-2">
@@ -387,7 +390,7 @@ export default function DashboardV2Page() {
         <div className="lg:col-span-4 space-y-5">
           {/* Quoi de neuf */}
           {activeSessions.length > 0 && (
-            <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-4">
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
               <h3 className="label-caps text-bw-muted mb-3">Quoi de neuf</h3>
               <div className="space-y-2">
                 <div className="flex items-start gap-2.5 rounded-lg px-3 py-2 text-sm bg-bw-danger-100/50">
@@ -416,7 +419,7 @@ export default function DashboardV2Page() {
 
           {/* Actions requises */}
           {data?.recentSessions?.filter((s) => s.status === "done").length ? (
-            <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-4">
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="label-caps text-bw-muted">Actions requises</h3>
                 <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-bw-primary text-white text-body-xs font-bold px-1.5">
@@ -442,7 +445,7 @@ export default function DashboardV2Page() {
           ) : null}
 
           {/* Modules progression */}
-          <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-4">
+          <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
             <h3 className="label-caps text-bw-muted mb-3">Modules</h3>
             <div className="flex flex-col gap-3">
               {mainPhases.map((phase) => {
@@ -483,7 +486,7 @@ export default function DashboardV2Page() {
 
           {/* Historique récent */}
           {data?.recentSessions && data.recentSessions.length > 0 && (
-            <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-4">
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
               <h3 className="label-caps text-bw-muted mb-3">Historique récent</h3>
               <div className="space-y-2">
                 {data.recentSessions.slice(0, 6).map((s) => {
@@ -527,7 +530,7 @@ export default function DashboardV2Page() {
           )}
 
           {/* Agenda calendrier */}
-          <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-4">
+          <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
             <h3 className="label-caps text-bw-muted mb-3">Agenda</h3>
             <MiniCalendar sessionDates={(data?.sessionDates || []).map((d) => new Date(d))} />
           </div>
