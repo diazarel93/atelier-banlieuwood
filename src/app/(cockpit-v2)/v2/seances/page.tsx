@@ -212,7 +212,7 @@ export default function SeancesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-heading-lg text-bw-heading font-extrabold">Séances</h1>
+          <h1 className="text-display-sm text-bw-heading font-cinema">Séances</h1>
           <p className="text-sm text-bw-text mt-0.5">Gérez et préparez vos séances</p>
         </div>
         <div className="flex items-center gap-3">
@@ -270,25 +270,11 @@ export default function SeancesPage() {
         <div className="lg:col-span-8 xl:col-span-9">
           {isError ? (
             <EmptyState
-              icon={
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  aria-hidden="true"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 8v4M12 16h.01" />
-                </svg>
-              }
-              title="Erreur de chargement"
-              description="Impossible de charger les séances."
+              icon={<span className="text-5xl">🎞️</span>}
+              title="Coupez ! Erreur technique"
+              description="Impossible de charger les séances. On retente la prise ?"
               accent="amber"
-              action={{ label: "Reessayer", onClick: () => refetch() }}
+              action={{ label: "Réessayer", onClick: () => refetch() }}
             />
           ) : currentlyLoading ? (
             <div className="flex flex-col gap-4">
@@ -298,28 +284,14 @@ export default function SeancesPage() {
             </div>
           ) : grouped.length === 0 ? (
             <EmptyState
-              icon={
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  aria-hidden="true"
-                >
-                  <rect x="3" y="4" width="18" height="18" rx="2" />
-                  <path d="M16 2v4M8 2v4M3 10h18" />
-                </svg>
-              }
-              title={tab === "archived" ? "Aucune séance archivée" : "Aucune séance dans cette catégorie"}
+              icon={<span className="text-5xl">{tab === "archived" ? "📦" : "🎬"}</span>}
+              title={tab === "archived" ? "Aucune séance archivée" : "Le plateau est vide !"}
               description={
                 tab === "archived"
                   ? "Les séances archivées apparaîtront ici."
-                  : "Créez une nouvelle séance pour commencer."
+                  : "Lancez votre première prise pour voir la magie opérer."
               }
-              action={tab !== "archived" ? { label: "Créer une séance", href: ROUTES.seanceNew } : undefined}
+              action={tab !== "archived" ? { label: "Nouvelle séance", href: ROUTES.seanceNew } : undefined}
             />
           ) : (
             <div className="flex flex-col gap-6">

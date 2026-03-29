@@ -48,7 +48,7 @@ export function HeroStrip({ exportData, feedback, onCopy, onCsv, onPdf, onDownlo
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         {/* Title block */}
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold text-bw-heading truncate">{session.title}</h1>
+          <h1 className="text-display-sm text-bw-heading font-cinema truncate">{session.title}</h1>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-bw-muted">
             <span>{session.date}</span>
             <span className="inline-block w-1 h-1 rounded-full bg-bw-muted" />

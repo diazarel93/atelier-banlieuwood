@@ -14,7 +14,7 @@ const glassCardVariants = cva(
         ghost: "border border-transparent hover:border-[var(--color-bw-border-subtle)] hover:bg-card/60",
       },
       hover: {
-        true: "glass-interactive hover:-translate-y-0.5 active:scale-[0.995] active:translate-y-0 active:duration-75",
+        true: "glass-interactive hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(139,92,246,0.15)] active:scale-[0.97] active:translate-y-0 active:duration-75",
         false: "",
       },
     },

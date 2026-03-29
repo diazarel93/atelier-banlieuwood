@@ -66,7 +66,7 @@ export default function AdminInvitationsPage() {
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 space-y-6">
       <BreadcrumbV2 items={[{ label: "Admin", href: "/v2/admin" }, { label: "Invitations" }]} />
 
-      <h1 className="text-heading-lg text-bw-heading">Invitations</h1>
+      <h1 className="text-display-sm text-bw-heading font-cinema">Invitations</h1>
 
       {/* Create invitation form */}
       <GlassCardV2 className="p-6 space-y-4">

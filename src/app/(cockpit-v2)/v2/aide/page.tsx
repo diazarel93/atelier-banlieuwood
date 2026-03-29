@@ -192,7 +192,7 @@ export default function AidePage() {
     <div className="mx-auto max-w-[900px] px-4 sm:px-6 pt-16 lg:pt-6 pb-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-heading-lg text-bw-heading">Aide</h1>
+        <h1 className="text-display-sm text-bw-heading font-cinema">Aide</h1>
         <p className="text-sm text-bw-muted mt-0.5">Guides, FAQ et raccourcis pour utiliser Banlieuwood</p>
       </div>
 
@@ -202,7 +202,10 @@ export default function AidePage() {
           <h2 className="label-caps mb-4">Guide rapide</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {GUIDE_ITEMS.map((item) => (
-              <div key={item.title} className="flex gap-3 p-4 rounded-2xl border border-[var(--color-bw-border-subtle)] transition-all duration-200 hover:-translate-y-0.5">
+              <div
+                key={item.title}
+                className="flex gap-3 p-4 rounded-2xl border border-[var(--color-bw-border-subtle)] transition-all duration-200 hover:-translate-y-0.5"
+              >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--color-bw-violet)]/10 text-[var(--color-bw-violet)]">
                   {item.icon}
                 </div>

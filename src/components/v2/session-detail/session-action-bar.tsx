@@ -29,7 +29,7 @@ export function SessionActionBar({
         <Link
           href={ROUTES.pilot(sessionId)}
           prefetch={false}
-          className="inline-flex items-center gap-2 rounded-xl bg-bw-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
+          className="inline-flex items-center gap-2 rounded-xl bg-bw-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-bw-primary-500 active:scale-[0.97] transition-all btn-glow"
         >
           <svg
             width="16"

@@ -87,7 +87,7 @@ export default function AdminUsersPage() {
       <BreadcrumbV2 items={[{ label: "Admin", href: "/v2/admin" }, { label: "Utilisateurs" }]} />
 
       <div className="flex items-center justify-between">
-        <h1 className="text-heading-lg text-bw-heading">Utilisateurs</h1>
+        <h1 className="text-display-sm text-bw-heading font-cinema">Utilisateurs</h1>
         <p className="text-sm text-bw-muted">
           {searchQuery && users.length !== allUsers.length
             ? `${users.length} / ${allUsers.length} utilisateur${allUsers.length > 1 ? "s" : ""}`

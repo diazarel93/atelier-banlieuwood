@@ -88,7 +88,7 @@ export default function DashboardV2Page() {
       {/* ── Greeting row ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-heading-lg text-bw-heading">
+          <h1 className="text-display-sm text-bw-heading font-cinema">
             <span className="bg-gradient-to-r from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] bg-clip-text text-transparent">
               {getGreeting()}, {firstName} !
             </span>
@@ -126,7 +126,7 @@ export default function DashboardV2Page() {
           )}
           <Link
             href={ROUTES.seanceNew}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 transition-all"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 active:scale-[0.97] transition-all"
           >
             + Nouvelle séance
           </Link>
@@ -178,10 +178,11 @@ export default function DashboardV2Page() {
             <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-5">
               <h3 className="label-caps mb-3">Aujourd&apos;hui</h3>
               <div className="space-y-2">
-                {data.todaySessions.map((s) => (
+                {data.todaySessions.map((s, i) => (
                   <div
                     key={s.id}
-                    className="flex items-center gap-3 py-2 pl-3 rounded-xl hover:bg-bw-primary/[0.025] transition-colors duration-150 relative"
+                    className="flex items-center gap-3 py-2 pl-3 rounded-xl hover:bg-bw-primary/[0.025] transition-colors duration-150 relative animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both"
+                    style={{ animationDelay: `${i * 60}ms` }}
                   >
                     <div
                       className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
@@ -252,7 +253,10 @@ export default function DashboardV2Page() {
             ].map((kpi) => (
               <div
                 key={kpi.label}
-                className="relative overflow-hidden p-6 rounded-2xl border border-[var(--color-bw-border-subtle)] transition-all duration-200 hover:-translate-y-0.5"
+                className="relative overflow-hidden p-6 rounded-2xl border border-[var(--color-bw-border-subtle)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(139,92,246,0.12)]"
+                style={{
+                  background: `linear-gradient(135deg, ${kpi.color}08 0%, transparent 60%)`,
+                }}
               >
                 <div
                   className="absolute top-0 left-0 right-0 h-[3px]"
@@ -541,15 +545,15 @@ export default function DashboardV2Page() {
       {!data?.todaySessions?.length && !data?.recentSessions?.length && (
         <div className="text-center py-20">
           <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-            className="text-7xl mb-6"
+            animate={{ y: [0, -10, 0], rotate: [0, -3, 3, 0] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            className="text-8xl mb-6 drop-shadow-[0_0_24px_rgba(139,92,246,0.3)]"
           >
             🎬
           </motion.div>
-          <h2 className="text-display text-bw-heading mb-3">C&apos;est calme ici !</h2>
+          <h2 className="text-display-md text-bw-heading font-cinema mb-3">Action !</h2>
           <p className="text-body-sm text-bw-muted mb-8 max-w-sm mx-auto">
-            Créez votre première séance pour voir la magie opérer. Vos élèves n&apos;attendent que ça.
+            Le plateau est prêt. Créez votre première séance et lancez le tournage.
           </p>
           <Link
             href={ROUTES.seanceNew}

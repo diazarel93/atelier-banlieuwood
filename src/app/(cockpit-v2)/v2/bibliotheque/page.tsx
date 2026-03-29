@@ -173,7 +173,7 @@ export default function BibliothequePage() {
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 pt-16 lg:pt-6 pb-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-heading-lg text-bw-heading">Bibliothèque pédagogique</h1>
+        <h1 className="text-display-sm text-bw-heading font-cinema">Bibliothèque pédagogique</h1>
         <p className="text-sm text-bw-muted mt-1 max-w-2xl">
           Découvrez le parcours Banlieuwood : chaque phase et chaque module sont conçus pour développer la créativité,
           l&apos;expression et l&apos;esprit critique des élèves, en lien avec le Socle Commun de l&apos;Éducation

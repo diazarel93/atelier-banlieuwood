@@ -45,7 +45,7 @@ export function SessionHeroStrip({
         </span>
       </div>
 
-      <h2 className="text-2xl font-bold text-bw-heading leading-tight mb-2">{title}</h2>
+      <h2 className="text-display-sm text-bw-heading font-cinema mb-2">{title}</h2>
 
       {currentModule && (
         <p className="text-sm text-bw-muted mb-4">
