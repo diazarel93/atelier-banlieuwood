@@ -1642,6 +1642,8 @@ body {
   --glass-border-hover: rgba(139, 92, 246, 0.15);
 
   /* ── Semantic colors (dark-safe) ── */
+  --color-bw-teal-50: #0a2926;
+  --color-bw-teal-600: #5ddcd4;
   --color-bw-green-100: #064e3b;
   --color-bw-green: #34d399;
   --color-bw-danger-100: #450a0a;
