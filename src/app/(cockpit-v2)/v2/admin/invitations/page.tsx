@@ -142,7 +142,7 @@ export default function AdminInvitationsPage() {
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                          inv.type === "invite" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"
+                          inv.type === "invite" ? "bg-bw-teal-50 text-bw-teal-700" : "bg-bw-violet-100 text-bw-violet"
                         }`}
                       >
                         {inv.type === "invite" ? "Invitation" : "Demande"}
@@ -152,9 +152,9 @@ export default function AdminInvitationsPage() {
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                           inv.status === "pending"
-                            ? "bg-amber-100 text-amber-700"
+                            ? "bg-bw-amber-100 text-bw-amber-500"
                             : inv.status === "accepted"
-                              ? "bg-green-100 text-green-700"
+                              ? "bg-bw-teal-50 text-bw-teal-700"
                               : "bg-[var(--color-bw-surface-dim)] text-bw-muted"
                         }`}
                       >

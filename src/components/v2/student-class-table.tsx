@@ -34,14 +34,14 @@ function getActivityBadge(lastActiveAt: string): {
 }
 
 const BADGE_STYLES: Record<ActivityTier, string> = {
-  active: "bg-[var(--color-bw-green-100)] text-emerald-700 dark:text-emerald-300 ring-1 ring-inset ring-emerald-600/20",
-  recent: "bg-[var(--color-bw-amber-100)] text-amber-700 dark:text-amber-300 ring-1 ring-inset ring-amber-600/20",
+  active: "bg-bw-teal-50 text-bw-teal-700 ring-1 ring-inset ring-bw-teal/20",
+  recent: "bg-bw-amber-100 text-bw-amber-500 ring-1 ring-inset ring-bw-amber/20",
   inactive: "bg-[var(--color-bw-surface-dim)] text-bw-muted ring-1 ring-inset ring-[var(--color-bw-border)]",
 };
 
 const DOT_STYLES: Record<ActivityTier, string> = {
-  active: "bg-emerald-500",
-  recent: "bg-amber-400",
+  active: "bg-bw-teal",
+  recent: "bg-bw-amber",
   inactive: "bg-[var(--color-bw-border)]",
 };
 

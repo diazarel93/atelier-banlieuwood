@@ -25,19 +25,19 @@ const CARDS = [
     key: "mostVoted" as const,
     label: "La plus votée",
     icon: "\uD83D\uDD25",
-    borderColor: "#FF6B35",
+    borderColor: "var(--color-bw-primary, #FF6B35)",
   },
   {
     key: "mostCreative" as const,
     label: "Interprétation originale",
     icon: "\uD83D\uDCA1",
-    borderColor: "#8B5CF6",
+    borderColor: "var(--color-bw-violet, #8B5CF6)",
   },
   {
     key: "mostDivisive" as const,
     label: "Réponse qui divise",
     icon: "\u26A1",
-    borderColor: "#EF4444",
+    borderColor: "var(--color-bw-danger, #EF4444)",
   },
 ] as const;
 

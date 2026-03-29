@@ -32,7 +32,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
       {!fiche && !loading && (
         <button
           onClick={onGenerate}
-          className="w-full rounded-xl border-2 border-dashed border-purple-400/30 py-4 text-sm font-medium text-purple-600 hover:bg-purple-50 transition-colors cursor-pointer"
+          className="w-full rounded-xl border-2 border-dashed border-bw-violet/30 py-4 text-sm font-medium text-bw-violet hover:bg-bw-violet-50 transition-colors cursor-pointer"
         >
           Générer la fiche pédagogique
         </button>
@@ -40,7 +40,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
 
       {loading && (
         <GlassCardV2 className="py-8 text-center">
-          <div className="inline-block w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mb-2" />
+          <div className="inline-block w-5 h-5 border-2 border-bw-violet border-t-transparent rounded-full animate-spin mb-2" />
           <p className="text-sm text-bw-muted">Génération de la fiche pédagogique...</p>
         </GlassCardV2>
       )}
@@ -54,7 +54,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
           )}
 
           {/* Title + Duration */}
-          <GlassCardV2 className="p-5 border-l-4 border-l-purple-500">
+          <GlassCardV2 className="p-5 border-l-4 border-l-bw-violet">
             <h4 className="text-base font-semibold text-bw-heading">{fiche.title}</h4>
             <p className="text-sm text-bw-muted mt-1">{fiche.duration}</p>
           </GlassCardV2>
@@ -124,7 +124,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
             <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">Conseils d&apos;animation</p>
             {fiche.animationTips.map((tip, i) => (
               <div key={i} className="flex items-start gap-3">
-                <span className="text-xs font-mono text-purple-600 border border-purple-200 rounded-md px-1.5 py-0.5 shrink-0 mt-0.5">
+                <span className="text-xs font-mono text-bw-violet border border-bw-violet-200 rounded-md px-1.5 py-0.5 shrink-0 mt-0.5">
                   {tip.timing}
                 </span>
                 <div>
@@ -157,7 +157,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
                   onClick={() => setFicheTab(lvl)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                     ficheTab === lvl
-                      ? "bg-purple-100 text-purple-700"
+                      ? "bg-bw-violet-100 text-bw-violet"
                       : "text-bw-muted hover:bg-[var(--color-bw-surface-dim)]"
                   }`}
                 >
@@ -176,7 +176,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
             <ul className="space-y-2">
               {fiche.evaluation.map((crit, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-bw-heading">
-                  <span className="text-emerald-500 shrink-0 mt-0.5">&#10003;</span>
+                  <span className="text-bw-teal shrink-0 mt-0.5">&#10003;</span>
                   {typeof crit === "string" ? crit : Object.values(crit as Record<string, string>).join(" — ")}
                 </li>
               ))}
@@ -185,8 +185,8 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
 
           {/* Session recap */}
           {fiche.sessionRecap && (
-            <GlassCardV2 className="p-5 border-l-4 border-l-emerald-400">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600">
+            <GlassCardV2 className="p-5 border-l-4 border-l-bw-teal">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-bw-teal-600">
                 Résumé de session
               </span>
               <p className="text-sm text-bw-heading mt-2">{fiche.sessionRecap}</p>

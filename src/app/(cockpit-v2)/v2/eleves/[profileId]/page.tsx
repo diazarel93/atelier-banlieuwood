@@ -179,7 +179,7 @@ export default function EleveDetailPage() {
                             {sh.classLabel && <span className="ml-2 text-bw-muted">· {sh.classLabel}</span>}
                           </p>
                         </div>
-                        <span className="shrink-0 ml-3 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                        <span className="shrink-0 ml-3 inline-flex items-center gap-1 rounded-full bg-bw-teal-50 px-2.5 py-0.5 text-xs font-semibold text-bw-teal-700">
                           <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
                             <path
                               d="M2 5l2 2 4-4"

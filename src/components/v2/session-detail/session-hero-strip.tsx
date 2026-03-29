@@ -56,7 +56,7 @@ export function SessionHeroStrip({
 
       <div className="flex items-center gap-4 text-sm">
         <span className="flex items-center gap-1.5 text-bw-muted">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-bw-teal animate-pulse" />
           {activeStudentCount} élève{activeStudentCount !== 1 ? "s" : ""}
         </span>
         {currentModule && (

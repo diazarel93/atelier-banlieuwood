@@ -28,9 +28,9 @@ interface Portfolio {
 }
 
 const TALENT_LABELS: Record<string, { label: string; emoji: string; color: string }> = {
-  jeu: { label: "Jeu d'acteur", emoji: "🎭", color: "#E54D2E" },
-  image: { label: "Image & Visuel", emoji: "📸", color: "#9B59B6" },
-  technique: { label: "Technique", emoji: "🎬", color: "#3498DB" },
+  jeu: { label: "Jeu d'acteur", emoji: "🎭", color: "var(--color-bw-primary, #FF6B35)" },
+  image: { label: "Image & Visuel", emoji: "📸", color: "var(--color-bw-violet, #8B5CF6)" },
+  technique: { label: "Technique", emoji: "🎬", color: "var(--color-bw-teal, #4ECDC4)" },
 };
 
 const ROLE_LABELS: Record<string, { label: string; emoji: string }> = {

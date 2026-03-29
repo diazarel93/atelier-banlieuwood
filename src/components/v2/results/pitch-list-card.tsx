@@ -43,7 +43,7 @@ export function PitchListCard({ pitchs, count }: PitchListCardProps) {
               <span className="text-xs rounded-md bg-[var(--color-bw-surface-dim)] px-1.5 py-0.5 text-bw-muted">
                 Objectif : {p.objectif}
               </span>
-              <span className="text-xs rounded-md bg-[var(--color-bw-danger-100)] px-1.5 py-0.5 text-red-600 dark:text-red-400">
+              <span className="text-xs rounded-md bg-bw-danger-100 px-1.5 py-0.5 text-bw-danger">
                 Obstacle : {p.obstacle}
               </span>
             </div>

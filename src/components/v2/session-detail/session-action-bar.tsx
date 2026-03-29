@@ -151,7 +151,7 @@ export function SessionActionBar({
         <button
           type="button"
           onClick={onArchive}
-          className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-2 rounded-xl border border-bw-danger/20 px-4 py-2.5 text-sm font-medium text-bw-danger hover:bg-bw-danger-100 transition-colors cursor-pointer"
         >
           <svg
             width="16"

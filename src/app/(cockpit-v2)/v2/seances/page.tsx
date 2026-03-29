@@ -364,7 +364,7 @@ export default function SeancesPage() {
           <button
             type="button"
             onClick={handleBulkArchive}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-red-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-600 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-bw-danger px-3 py-1.5 text-sm font-semibold text-white hover:brightness-110 transition-all"
           >
             <svg
               width="14"

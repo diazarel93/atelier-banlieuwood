@@ -91,7 +91,7 @@ export default function SessionDetailPage() {
         <BreadcrumbV2 items={[{ label: "Séances", href: ROUTES.seances }]} />
         <GlassCardV2 className="p-8 text-center mt-4">
           <p className="text-bw-muted text-sm mb-4">Session introuvable ou erreur de chargement</p>
-          {error && <p className="text-xs text-red-400 mb-4 font-mono">{error.message}</p>}
+          {error && <p className="text-xs text-bw-danger mb-4 font-mono">{error.message}</p>}
           <Link
             href={ROUTES.seances}
             className="rounded-lg border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"

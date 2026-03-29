@@ -18,7 +18,7 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
         {!bible && !loading && (
           <button
             onClick={() => onGenerate(false)}
-            className="rounded-lg bg-purple-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-purple-700 transition-colors cursor-pointer"
+            className="rounded-lg bg-bw-violet px-3 py-1.5 text-xs font-medium text-white hover:bg-bw-violet-500 transition-colors cursor-pointer"
           >
             Générer la Bible
           </button>
@@ -35,7 +35,7 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
 
       {loading && (
         <GlassCardV2 className="py-8 text-center">
-          <div className="inline-block w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mb-2" />
+          <div className="inline-block w-5 h-5 border-2 border-bw-violet border-t-transparent rounded-full animate-spin mb-2" />
           <p className="text-sm text-bw-muted">Génération de la Bible du Film...</p>
         </GlassCardV2>
       )}
@@ -82,23 +82,23 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
           <GlassCardV2 className="p-5 space-y-2">
             <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">Univers</p>
             <div>
-              <span className="text-xs font-bold text-purple-600 uppercase">Lieu & Époque</span>
+              <span className="text-xs font-bold text-bw-violet uppercase">Lieu & Époque</span>
               <p className="text-sm text-bw-heading">{bible.world.setting}</p>
             </div>
             <div>
-              <span className="text-xs font-bold text-purple-600 uppercase">Ambiance</span>
+              <span className="text-xs font-bold text-bw-violet uppercase">Ambiance</span>
               <p className="text-sm text-bw-heading">{bible.world.atmosphere}</p>
             </div>
             {bible.world.rules && (
               <div>
-                <span className="text-xs font-bold text-purple-600 uppercase">Règles</span>
+                <span className="text-xs font-bold text-bw-violet uppercase">Règles</span>
                 <p className="text-sm text-bw-heading">{bible.world.rules}</p>
               </div>
             )}
           </GlassCardV2>
 
           {/* Conflict */}
-          <GlassCardV2 className="p-5 border-l-4 border-l-red-400 space-y-2">
+          <GlassCardV2 className="p-5 border-l-4 border-l-bw-primary space-y-2">
             <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">Conflit central</p>
             <p className="text-sm text-bw-heading">{bible.conflict.central}</p>
             <div className="flex gap-4 text-xs">
@@ -116,7 +116,7 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
             <div className="space-y-3">
               {(["act1", "act2", "act3"] as const).map((act, i) => (
                 <div key={act} className="flex gap-3">
-                  <div className="shrink-0 w-7 h-7 rounded-full bg-purple-50 border border-purple-200 flex items-center justify-center text-xs font-bold text-purple-600">
+                  <div className="shrink-0 w-7 h-7 rounded-full bg-bw-violet-50 border border-bw-violet-200 flex items-center justify-center text-xs font-bold text-bw-violet">
                     {i + 1}
                   </div>
                   <div>
@@ -135,20 +135,20 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
             <GlassCardV2 className="p-5 space-y-2">
               <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">Style</p>
               <div>
-                <span className="text-xs font-bold text-purple-600 uppercase">Genre</span>
+                <span className="text-xs font-bold text-bw-violet uppercase">Genre</span>
                 <p className="text-sm text-bw-heading">{bible.style.genre}</p>
               </div>
               <div>
-                <span className="text-xs font-bold text-purple-600 uppercase">Ton</span>
+                <span className="text-xs font-bold text-bw-violet uppercase">Ton</span>
                 <p className="text-sm text-bw-heading">{bible.style.tone}</p>
               </div>
               <div>
-                <span className="text-xs font-bold text-purple-600 uppercase">Identité visuelle</span>
+                <span className="text-xs font-bold text-bw-violet uppercase">Identité visuelle</span>
                 <p className="text-sm text-bw-heading">{bible.style.visualIdentity}</p>
               </div>
               {bible.style.influences && bible.style.influences.length > 0 && (
                 <div>
-                  <span className="text-xs font-bold text-purple-600 uppercase">Influences</span>
+                  <span className="text-xs font-bold text-bw-violet uppercase">Influences</span>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {bible.style.influences.map((inf, i) => (
                       <span
@@ -168,7 +168,7 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
                 {bible.themes?.map((t, i) => (
                   <span
                     key={i}
-                    className="text-xs rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-emerald-700"
+                    className="text-xs rounded-md bg-bw-teal-50 border border-bw-teal-200 px-1.5 py-0.5 text-bw-teal-700"
                   >
                     {t}
                   </span>

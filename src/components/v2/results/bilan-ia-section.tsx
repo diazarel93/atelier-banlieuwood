@@ -4,10 +4,10 @@ import { GlassCardV2 } from "@/components/v2/glass-card";
 import type { BilanData } from "@/hooks/use-results-data";
 
 const COLLAB_COLORS: Record<string, string> = {
-  faible: "#EF4444",
-  moyen: "#F59E0B",
-  bon: "#4ECDC4",
-  excellent: "#10B981",
+  faible: "var(--color-bw-danger, #EF4444)",
+  moyen: "var(--color-bw-amber, #F59E0B)",
+  bon: "var(--color-bw-teal, #4ECDC4)",
+  excellent: "var(--color-bw-green, #10B981)",
 };
 
 const TREND_LABELS: Record<string, { label: string; icon: string }> = {
@@ -17,16 +17,16 @@ const TREND_LABELS: Record<string, { label: string; icon: string }> = {
 };
 
 const DEPTH_COLORS: Record<string, string> = {
-  superficiel: "#F59E0B",
-  correct: "#4ECDC4",
-  approfondi: "#10B981",
+  superficiel: "var(--color-bw-amber, #F59E0B)",
+  correct: "var(--color-bw-teal, #4ECDC4)",
+  approfondi: "var(--color-bw-green, #10B981)",
 };
 
 const MOMENT_COLORS: Record<string, string> = {
-  tournant: "#FF6B35",
-  créatif: "#8B5CF6",
-  collectif: "#4ECDC4",
-  tension: "#EF4444",
+  tournant: "var(--color-bw-primary, #FF6B35)",
+  créatif: "var(--color-bw-violet, #8B5CF6)",
+  collectif: "var(--color-bw-teal, #4ECDC4)",
+  tension: "var(--color-bw-danger, #EF4444)",
 };
 
 interface BilanIaSectionProps {

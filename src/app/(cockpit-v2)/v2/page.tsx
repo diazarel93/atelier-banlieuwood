@@ -22,7 +22,11 @@ function getGreeting(): string {
   return "Bonsoir";
 }
 
-const FORMULA_COLORS: Record<string, string> = { F0: "#f472b6", F1: "#fbbf24", F2: "#8b5cf6" };
+const FORMULA_COLORS: Record<string, string> = {
+  F0: "var(--color-bw-pink, #ec4899)",
+  F1: "var(--color-bw-gold, #d4a843)",
+  F2: "var(--color-bw-violet, #8b5cf6)",
+};
 const mainPhases = PHASES.filter((p) => (MAIN_PHASE_IDS as readonly string[]).includes(p.id));
 
 export default function DashboardV2Page() {
@@ -148,7 +152,7 @@ export default function DashboardV2Page() {
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-body-xs font-bold bg-emerald-100 text-emerald-700 motion-safe:animate-pulse">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-body-xs font-bold bg-bw-teal-50 text-bw-teal-700 motion-safe:animate-pulse">
                       ● EN COURS
                     </span>
                     <span className="text-sm font-bold text-bw-heading">
@@ -161,7 +165,7 @@ export default function DashboardV2Page() {
                 </div>
                 <Link
                   href={ROUTES.pilot(activeSession.id)}
-                  className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-600 btn-hover glow-green"
+                  className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-bw-teal hover:bg-bw-teal-600 btn-hover glow-green"
                 >
                   Retourner au cockpit →
                 </Link>

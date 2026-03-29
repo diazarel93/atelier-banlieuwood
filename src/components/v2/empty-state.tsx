@@ -44,7 +44,7 @@ export function EmptyState({ icon, title, description, action, accent = "primary
   const styles = ACCENT_STYLES[accent];
 
   const actionClasses =
-    "inline-flex items-center gap-1.5 rounded-xl bg-[var(--color-bw-violet)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_12px_rgba(139,92,246,0.25)] hover:bg-[var(--color-bw-violet-500)] hover:shadow-[0_0_20px_rgba(139,92,246,0.35)] active:scale-[0.98] transition-all duration-150";
+    "inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-5 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-bw-glow-primary)] hover:bg-bw-primary-500 hover:shadow-[0_0_20px_rgba(255,107,53,0.35)] active:scale-[0.98] transition-all duration-150";
 
   return (
     <GlassCardV2 className={`py-14 px-8 flex flex-col items-center text-center max-w-md mx-auto ${className || ""}`}>

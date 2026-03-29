@@ -15,9 +15,9 @@ type SortDir = "asc" | "desc";
 
 function scoreColor(score: number | null): string {
   if (score === null) return "text-bw-muted";
-  if (score < 2) return "text-red-500";
-  if (score < 3) return "text-amber-500";
-  return "text-emerald-500";
+  if (score < 2) return "text-bw-danger";
+  if (score < 3) return "text-bw-amber";
+  return "text-bw-teal";
 }
 
 function formatTime(ms: number | null): string {

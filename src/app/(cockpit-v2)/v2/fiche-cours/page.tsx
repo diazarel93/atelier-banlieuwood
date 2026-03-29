@@ -100,7 +100,7 @@ export default function FicheCoursPageV2() {
         {/* Loading spinner */}
         {loading && (
           <div className="flex items-center justify-center gap-3 py-8">
-            <div className="w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-bw-violet border-t-transparent rounded-full animate-spin" />
             <span className="text-sm text-bw-muted">L&apos;IA prépare la fiche pédagogique...</span>
           </div>
         )}

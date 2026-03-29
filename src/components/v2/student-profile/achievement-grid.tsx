@@ -15,7 +15,7 @@ interface AchievementGridProps {
 const TIER_COLORS: Record<string, string> = {
   bronze: "#CD7F32",
   silver: "#C0C0C0",
-  gold: "#FFD700",
+  gold: "var(--color-bw-gold, #D4A843)",
 };
 
 const TIER_EMOJI: Record<string, string> = {
@@ -50,7 +50,7 @@ export function AchievementGrid({ achievements }: AchievementGridProps) {
           {achievements.map((a) => (
             <div
               key={a.id}
-              className="flex flex-col items-center gap-1 rounded-xl p-2.5 bg-[var(--color-bw-surface-dim)]"
+              className="flex flex-col items-center gap-1 rounded-xl p-2.5 bg-[var(--color-bw-surface-dim)] hover:scale-105 hover:shadow-sm transition-all duration-200"
             >
               <span className="text-xl">{TIER_EMOJI[a.tier] || "🏅"}</span>
               <span
