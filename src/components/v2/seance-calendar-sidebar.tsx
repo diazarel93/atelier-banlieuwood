@@ -33,8 +33,8 @@ export function SeanceCalendarSidebar({
               <div key={phase.id} className="flex items-center gap-2">
                 <span className="text-sm">{phase.emoji}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-bw-heading truncate">{phase.label}</p>
-                  <div className="mt-0.5 h-1 w-full rounded-full bg-[var(--color-bw-surface-dim)] overflow-hidden">
+                  <p className="text-xs font-semibold text-bw-heading truncate">{phase.label}</p>
+                  <div className="mt-0.5 h-1 w-full rounded-full bg-[var(--color-bw-surface)] overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
