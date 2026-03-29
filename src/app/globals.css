@@ -1589,19 +1589,19 @@ body {
   --color-bw-border-accent: rgba(139, 92, 246, 0.2); /* hover accent */
   --border: #2a2a50;
 
-  /* ── Text ── */
-  --color-bw-heading: #f0f0f8;
-  --color-bw-text: #94a3b8;
-  --color-bw-muted: #64748b;
-  --color-bw-ink: #f0f0f8;
-  --color-bw-placeholder: #475569;
-  --foreground: #f0f0f8;
+  /* ── Text — boosted contrast for dark readability ── */
+  --color-bw-heading: #f8f8ff;
+  --color-bw-text: #c8d0e0;
+  --color-bw-muted: #8892a8;
+  --color-bw-ink: #f8f8ff;
+  --color-bw-placeholder: #5a6478;
+  --foreground: #f8f8ff;
 
-  /* ── Card / Popover ── */
-  --card: #161633;
-  --card-foreground: #f0f0f8;
-  --popover: #161633;
-  --popover-foreground: #f0f0f8;
+  /* ── Card / Popover — slightly brighter for depth ── */
+  --card: #191940;
+  --card-foreground: #f8f8ff;
+  --popover: #1e1e4a;
+  --popover-foreground: #f8f8ff;
 
   /* ── Secondary / Muted ── */
   --secondary: #13132a;

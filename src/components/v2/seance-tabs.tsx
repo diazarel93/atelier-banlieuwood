@@ -17,8 +17,8 @@ const TABS: { key: SeanceTab; label: string }[] = [
   { key: "upcoming", label: "A venir" },
   { key: "active", label: "En cours" },
   { key: "draft", label: "Brouillons" },
-  { key: "done", label: "Terminees" },
-  { key: "archived", label: "Archivees" },
+  { key: "done", label: "Terminées" },
+  { key: "archived", label: "Archivées" },
 ];
 
 export function SeanceTabs({ active, counts, onChange, className }: SeanceTabsProps) {
