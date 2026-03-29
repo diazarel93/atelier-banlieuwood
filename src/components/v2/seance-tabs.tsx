@@ -57,8 +57,8 @@ export function SeanceTabs({ active, counts, onChange, className }: SeanceTabsPr
           className={cn(
             "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 whitespace-nowrap focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
             active === tab.key
-              ? "bg-card text-bw-heading shadow-sm font-semibold"
-              : "text-bw-muted hover:text-bw-heading hover:bg-card/50",
+              ? "bg-[var(--color-bw-border-subtle)] text-bw-heading font-semibold"
+              : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-border-subtle)]",
           )}
         >
           {tab.label}

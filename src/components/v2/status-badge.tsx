@@ -80,8 +80,8 @@ export const STATUS_BAR_COLORS: Record<SessionStatus, string> = {
 /** Status background tint class for cards */
 export const STATUS_BG_TINT: Record<SessionStatus, string> = {
   draft: "",
-  waiting: "bg-bw-amber-100/20",
-  responding: "bg-bw-teal-50/30",
+  waiting: "",
+  responding: "",
   paused: "",
   done: "",
 };
