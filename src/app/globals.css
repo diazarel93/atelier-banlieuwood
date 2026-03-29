@@ -1597,10 +1597,10 @@ body {
   --color-bw-placeholder: #5a6478;
   --foreground: #f8f8ff;
 
-  /* ── Card / Popover — slightly brighter for depth ── */
-  --card: #191940;
+  /* ── Card / Popover — deep violet, subtle distinction from bg ── */
+  --card: #151530;
   --card-foreground: #f8f8ff;
-  --popover: #1e1e4a;
+  --popover: #1a1a38;
   --popover-foreground: #f8f8ff;
 
   /* ── Secondary / Muted ── */
