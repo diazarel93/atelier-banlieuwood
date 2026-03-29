@@ -11,7 +11,7 @@
    Grille 8px · Soft shadows · Warm paper
    ═══════════════════════════════════════════════════════════════ */
 
-@theme inline {
+@theme {
   /* ── Layout ── */
   --color-background: var(--background);
   --color-foreground: var(--foreground);

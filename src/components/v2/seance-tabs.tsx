@@ -14,7 +14,7 @@ interface SeanceTabsProps {
 }
 
 const TABS: { key: SeanceTab; label: string }[] = [
-  { key: "upcoming", label: "A venir" },
+  { key: "upcoming", label: "À venir" },
   { key: "active", label: "En cours" },
   { key: "draft", label: "Brouillons" },
   { key: "done", label: "Terminées" },

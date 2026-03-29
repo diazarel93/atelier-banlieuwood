@@ -83,7 +83,7 @@ export function FullscreenToggle() {
       <button
         type="button"
         onClick={toggle}
-        aria-label={isFullscreen ? "Quitter le plein ecran" : "Plein ecran"}
+        aria-label={isFullscreen ? "Quitter le plein ecran" : "Plein écran"}
         className="p-2 min-h-11 min-w-11 flex items-center justify-center rounded-lg text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
       >
         {isFullscreen ? (
