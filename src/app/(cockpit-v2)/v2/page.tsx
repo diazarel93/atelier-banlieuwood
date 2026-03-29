@@ -85,7 +85,7 @@ export default function DashboardV2Page() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-heading-lg text-bw-heading">
-            <span className="text-gradient-cinema">
+            <span className="bg-gradient-to-r from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] bg-clip-text text-transparent">
               {getGreeting()}, {firstName} !
             </span>
           </h1>
@@ -246,7 +246,7 @@ export default function DashboardV2Page() {
                 color: "var(--color-axis-expression, #EC4899)",
               },
             ].map((kpi) => (
-              <div key={kpi.label} className="card-interactive relative overflow-hidden p-5">
+              <div key={kpi.label} className="card-interactive relative overflow-hidden p-6">
                 <div
                   className="absolute top-0 left-0 right-0 h-[3px]"
                   style={{
@@ -255,17 +255,47 @@ export default function DashboardV2Page() {
                   }}
                 />
                 <div className="flex items-start justify-between">
-                  <div className="flex flex-col gap-1.5">
-                    <span className="text-body-xs font-semibold text-bw-muted uppercase tracking-wider">
-                      {kpi.label}
-                    </span>
-                    <span className="text-2xl font-bold tabular-nums text-bw-heading">{kpi.value}</span>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[11px] font-bold text-bw-text uppercase tracking-[0.06em]">{kpi.label}</span>
+                    <span className="text-3xl font-black tabular-nums text-bw-heading">{kpi.value}</span>
                   </div>
                   <div
-                    className="flex h-10 w-10 items-center justify-center rounded-xl text-lg"
-                    style={{ backgroundColor: `${kpi.color}20`, color: kpi.color }}
+                    className="flex h-11 w-11 items-center justify-center rounded-xl"
+                    style={{ backgroundColor: `${kpi.color}15`, color: kpi.color }}
                   >
-                    {kpi.icon}
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      {kpi.icon === "✓" && (
+                        <>
+                          <path d="M20 6L9 17l-5-5" />
+                        </>
+                      )}
+                      {kpi.icon === "⏱" && (
+                        <>
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 6v6l4 2" />
+                        </>
+                      )}
+                      {kpi.icon === "≡" && (
+                        <>
+                          <path d="M3 6h18M3 12h18M3 18h14" />
+                        </>
+                      )}
+                      {kpi.icon === "👥" && (
+                        <>
+                          <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
+                          <circle cx="9" cy="7" r="4" />
+                          <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+                        </>
+                      )}
+                    </svg>
                   </div>
                 </div>
                 {/* Trends will be added when API supports them */}
@@ -293,7 +323,8 @@ export default function DashboardV2Page() {
                   </thead>
                   <tbody>
                     {data.recentSessions.slice(0, 5).map((s) => {
-                      const formula = s.level?.toUpperCase() || "F2";
+                      const levelLabel =
+                        s.level === "primaire" ? "Primaire" : s.level === "lycee" ? "Lycée" : "Collège";
                       return (
                         <tr
                           key={s.id}
@@ -316,20 +347,14 @@ export default function DashboardV2Page() {
                             </div>
                           </td>
                           <td className="p-3">
-                            <div>
-                              <span className="font-semibold text-bw-heading">{s.title}</span>
-                              {s.classLabel && <span className="text-body-xs text-bw-muted ml-2">{s.classLabel}</span>}
+                            <div className="flex flex-col">
+                              <span className="font-semibold text-bw-heading truncate max-w-[200px]">{s.title}</span>
+                              {s.classLabel && <span className="text-body-xs text-bw-muted">{s.classLabel}</span>}
                             </div>
                           </td>
                           <td className="p-3">
-                            <span
-                              className="inline-flex px-2.5 py-0.5 rounded-full text-body-xs font-bold"
-                              style={{
-                                background: `${FORMULA_COLORS[formula] || "#8b5cf6"}15`,
-                                color: FORMULA_COLORS[formula] || "#8b5cf6",
-                              }}
-                            >
-                              {formula}
+                            <span className="inline-flex px-2.5 py-0.5 rounded-full text-body-xs font-bold bg-[var(--color-bw-violet)]/10 text-[var(--color-bw-violet)]">
+                              {levelLabel}
                             </span>
                           </td>
                           <td className="p-3 text-bw-heading tabular-nums">{s.studentCount}</td>
@@ -339,9 +364,9 @@ export default function DashboardV2Page() {
                           <td className="p-3">
                             <Link
                               href={ROUTES.seanceResults(s.id)}
-                              className="text-bw-primary hover:underline text-body-xs"
+                              className="px-3 py-1 rounded-lg text-body-xs font-medium text-[var(--color-bw-violet)] bg-[var(--color-bw-violet)]/8 hover:bg-[var(--color-bw-violet)]/15 transition-colors duration-150"
                             >
-                              Voir
+                              Voir →
                             </Link>
                           </td>
                         </tr>
@@ -432,8 +457,8 @@ export default function DashboardV2Page() {
                       {phase.emoji}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-bw-heading truncate">{phase.label}</p>
-                      <div className="mt-1 h-1.5 w-full rounded-full bg-[var(--color-bw-surface-dim)] overflow-hidden">
+                      <p className="text-sm font-semibold text-bw-heading truncate">{phase.label}</p>
+                      <div className="mt-1 h-1.5 w-full rounded-full bg-[var(--color-bw-surface)] overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all duration-500"
                           style={{
@@ -443,7 +468,7 @@ export default function DashboardV2Page() {
                         />
                       </div>
                     </div>
-                    <span className="text-xs text-bw-muted tabular-nums whitespace-nowrap">
+                    <span className="text-body-xs font-semibold text-bw-text tabular-nums whitespace-nowrap">
                       {doneCount}/{total} · {pct}%
                     </span>
                   </div>
@@ -478,7 +503,7 @@ export default function DashboardV2Page() {
                     >
                       <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: statusColor }} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-bw-heading truncate">{s.title}</p>
+                        <p className="text-sm font-semibold text-bw-heading truncate">{s.title}</p>
                         <p className="text-body-xs text-bw-muted">
                           {new Date(s.scheduledAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ·{" "}
                           {s.studentCount} élèves · {s.classLabel}
