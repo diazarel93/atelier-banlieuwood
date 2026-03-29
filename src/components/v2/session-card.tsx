@@ -74,16 +74,16 @@ export function SessionCardV2({
                 {moduleLabel}
               </span>
             )}
-            {classLabel && <span className="text-body-xs text-bw-muted font-medium">{classLabel}</span>}
+            {classLabel && <span className="text-body-xs text-bw-text font-medium">{classLabel}</span>}
           </div>
           <StatusBadge status={status} size="sm" />
         </div>
 
         {/* Title */}
-        <h3 className="text-heading-xs text-bw-heading leading-snug mb-1 line-clamp-1">{title}</h3>
+        <h3 className="text-heading-xs text-bw-heading font-semibold leading-snug mb-1 line-clamp-1">{title}</h3>
 
         {/* Meta row */}
-        <div className="flex items-center gap-3 text-body-xs text-bw-muted">
+        <div className="flex items-center gap-3 text-body-xs text-bw-text">
           {scheduledAt && (
             <span className="flex items-center gap-1 tabular-nums">
               <IconClock size={12} />

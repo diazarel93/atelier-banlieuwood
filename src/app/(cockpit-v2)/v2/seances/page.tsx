@@ -212,8 +212,8 @@ export default function SeancesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-heading-lg text-bw-heading">Séances</h1>
-          <p className="text-sm text-bw-muted mt-0.5">Gérez et préparez vos séances</p>
+          <h1 className="text-heading-lg text-bw-heading font-extrabold">Séances</h1>
+          <p className="text-sm text-bw-text mt-0.5">Gérez et préparez vos séances</p>
         </div>
         <div className="flex items-center gap-3">
           {/* Search */}
@@ -251,12 +251,12 @@ export default function SeancesPage() {
           </div>
           <Link
             href={ROUTES.seanceNew}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-bw-primary px-3 py-1.5 text-sm font-semibold text-white hover:bg-bw-primary-500 transition-colors btn-glow"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-4 py-2 text-sm font-bold text-white hover:bg-bw-primary-500 transition-all btn-hover"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
-            Nouvelle seance
+            + Nouvelle séance
           </Link>
         </div>
       </div>
