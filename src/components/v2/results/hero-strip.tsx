@@ -22,23 +22,23 @@ export function HeroStrip({ exportData, feedback, onCopy, onCsv, onPdf, onDownlo
     {
       value: studentsCount,
       label: "Élèves",
-      color: "#6366F1",
+      color: "var(--color-bw-teal, #4ECDC4)",
     },
     {
       value: stats?.totalResponses ?? choicesCount,
       label: "Réponses",
-      color: "#8B5CF6",
+      color: "var(--color-bw-violet, #8B5CF6)",
     },
     {
       value: stats?.participationRate ?? 0,
       label: "Participation",
-      color: "#EC4899",
+      color: "var(--color-bw-primary, #FF6B35)",
       isPercent: true,
     },
     {
       value: feedback?.overallScore ?? 0,
       label: "Score global",
-      color: "#F59E0B",
+      color: "var(--color-bw-gold, #D4A843)",
       isPercent: true,
     },
   ];
@@ -48,7 +48,7 @@ export function HeroStrip({ exportData, feedback, onCopy, onCsv, onPdf, onDownlo
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         {/* Title block */}
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold text-bw-heading truncate">{session.title}</h1>
+          <h1 className="text-display-sm text-bw-heading font-cinema truncate">{session.title}</h1>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-bw-muted">
             <span>{session.date}</span>
             <span className="inline-block w-1 h-1 rounded-full bg-bw-muted" />

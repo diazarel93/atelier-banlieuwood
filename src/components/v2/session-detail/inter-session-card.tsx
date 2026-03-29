@@ -15,7 +15,7 @@ export function InterSessionCard({ sessionId, currentModule }: InterSessionCardP
   // M6 (dbModule=5): Generate scenes from M12 winners
   if (currentModule === 5) {
     return (
-      <GlassCardV2 variant="flat" className="p-5 border-l-4 border-l-emerald-500">
+      <GlassCardV2 variant="flat" className="p-5 border-l-4 border-l-bw-teal">
         <div className="flex items-start gap-4">
           <div className="text-2xl">🎬</div>
           <div className="flex-1">
@@ -41,7 +41,7 @@ export function InterSessionCard({ sessionId, currentModule }: InterSessionCardP
                 }
               }}
               disabled={loading}
-              className="mt-3 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors disabled:opacity-50"
+              className="mt-3 inline-flex items-center gap-2 rounded-xl bg-bw-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-bw-teal-500 transition-colors disabled:opacity-50"
             >
               {loading ? "Génération en cours..." : "Générer les scènes IA"}
             </button>
@@ -54,7 +54,7 @@ export function InterSessionCard({ sessionId, currentModule }: InterSessionCardP
   // M7 (dbModule=7): Generate fiches de tournage for M8
   if (currentModule === 7) {
     return (
-      <GlassCardV2 variant="flat" className="p-5 border-l-4 border-l-violet-500">
+      <GlassCardV2 variant="flat" className="p-5 border-l-4 border-l-bw-violet">
         <div className="flex items-start gap-4">
           <div className="text-2xl">📋</div>
           <div className="flex-1">
@@ -80,7 +80,7 @@ export function InterSessionCard({ sessionId, currentModule }: InterSessionCardP
                 }
               }}
               disabled={loading}
-              className="mt-3 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-500 transition-colors disabled:opacity-50"
+              className="mt-3 inline-flex items-center gap-2 rounded-xl bg-bw-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-bw-violet-500 transition-colors disabled:opacity-50"
             >
               {loading ? "Génération en cours..." : "Générer les fiches de tournage"}
             </button>
@@ -93,7 +93,7 @@ export function InterSessionCard({ sessionId, currentModule }: InterSessionCardP
   // M8 (dbModule=8): Compute points from all modules
   if (currentModule === 8) {
     return (
-      <GlassCardV2 variant="flat" className="p-5 border-l-4 border-l-amber-500">
+      <GlassCardV2 variant="flat" className="p-5 border-l-4 border-l-bw-amber">
         <div className="flex items-start gap-4">
           <div className="text-2xl">🏆</div>
           <div className="flex-1">
@@ -119,7 +119,7 @@ export function InterSessionCard({ sessionId, currentModule }: InterSessionCardP
                 }
               }}
               disabled={loading}
-              className="mt-3 inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-500 transition-colors disabled:opacity-50"
+              className="mt-3 inline-flex items-center gap-2 rounded-xl bg-bw-amber-500 px-4 py-2 text-sm font-semibold text-white hover:bg-bw-amber transition-colors disabled:opacity-50"
             >
               {loading ? "Calcul en cours..." : "Calculer les points"}
             </button>

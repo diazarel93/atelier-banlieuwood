@@ -269,7 +269,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       {/* Palette */}
       <div
         ref={paletteRef}
-        className="relative w-full max-w-lg mx-4 rounded-2xl bg-card shadow-2xl border border-[var(--color-bw-border)] overflow-hidden"
+        className="relative w-full max-w-lg mx-4 rounded-2xl bg-card glass-shadow-elevated border border-[var(--color-bw-border)] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search input — ARIA combobox */}

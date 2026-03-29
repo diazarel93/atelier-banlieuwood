@@ -60,7 +60,7 @@ export default function ElevesPage() {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 mt-4">
         <div>
-          <h1 className="text-heading-lg text-bw-heading">Mes élèves</h1>
+          <h1 className="text-display-sm text-bw-heading font-cinema">Mes élèves</h1>
           <p className="text-sm text-bw-muted mt-0.5">
             {profiles.length} élève{profiles.length !== 1 ? "s" : ""} au total
           </p>

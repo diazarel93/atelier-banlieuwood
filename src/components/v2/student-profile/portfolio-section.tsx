@@ -28,9 +28,9 @@ interface Portfolio {
 }
 
 const TALENT_LABELS: Record<string, { label: string; emoji: string; color: string }> = {
-  jeu: { label: "Jeu d'acteur", emoji: "🎭", color: "#E54D2E" },
-  image: { label: "Image & Visuel", emoji: "📸", color: "#9B59B6" },
-  technique: { label: "Technique", emoji: "🎬", color: "#3498DB" },
+  jeu: { label: "Jeu d'acteur", emoji: "🎭", color: "var(--color-bw-primary, #FF6B35)" },
+  image: { label: "Image & Visuel", emoji: "📸", color: "var(--color-bw-violet, #8B5CF6)" },
+  technique: { label: "Technique", emoji: "🎬", color: "var(--color-bw-teal, #4ECDC4)" },
 };
 
 const ROLE_LABELS: Record<string, { label: string; emoji: string }> = {
@@ -128,8 +128,8 @@ export function PortfolioSection({ portfolio }: PortfolioSectionProps) {
                     <span
                       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-body-xs font-semibold"
                       style={{
-                        background: `${tc?.color || "#666"}15`,
-                        color: tc?.color || "#666",
+                        background: `${tc?.color || "var(--color-bw-muted, #666)"}15`,
+                        color: tc?.color || "var(--color-bw-muted, #666)",
                       }}
                     >
                       {tc?.emoji || "🏆"} {tc?.label || talentCard.talentCategory}

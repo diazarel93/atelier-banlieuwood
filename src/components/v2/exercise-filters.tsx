@@ -43,7 +43,7 @@ export function ExerciseFilters({
             type="button"
             onClick={() => onPhaseChange(null)}
             className={cn(
-              "text-left rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+              "text-left rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
               !selectedPhase
                 ? "bg-[var(--color-bw-surface-dim)] text-bw-heading"
                 : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
@@ -78,7 +78,7 @@ export function ExerciseFilters({
             type="button"
             onClick={() => onDurationChange(null)}
             className={cn(
-              "text-left rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+              "text-left rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
               !selectedDuration
                 ? "bg-[var(--color-bw-surface-dim)] text-bw-heading"
                 : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",
@@ -92,7 +92,7 @@ export function ExerciseFilters({
               type="button"
               onClick={() => onDurationChange(d.id === selectedDuration ? null : d.id)}
               className={cn(
-                "text-left rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+                "text-left rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
                 selectedDuration === d.id
                   ? "bg-[var(--color-bw-surface-dim)] text-bw-heading"
                   : "text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)]",

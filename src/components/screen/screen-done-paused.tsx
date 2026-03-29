@@ -178,7 +178,7 @@ export function ScreenDone({
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: ((allChoices ?? []).length) * 0.3 + 0.5 }}
+            transition={{ delay: (allChoices ?? []).length * 0.3 + 0.5 }}
             className="text-xl text-bw-muted mt-8"
           >
             Merci &#224; tous !

@@ -1643,9 +1643,14 @@ body {
 
   /* ── Semantic colors (dark-safe) ── */
   --color-bw-teal-50: #0a2926;
+  --color-bw-teal-200: #1a4a46;
   --color-bw-teal-600: #5ddcd4;
+  --color-bw-teal-700: #2ab5a8;
   --color-bw-green-100: #064e3b;
   --color-bw-green: #34d399;
+  --color-bw-violet-50: #1a1529;
+  --color-bw-violet-100: #2d1f4d;
+  --color-bw-violet-200: #4a3a7a;
   --color-bw-danger-100: #450a0a;
   --color-bw-danger: #f87171;
   --color-bw-amber-100: #451a03;

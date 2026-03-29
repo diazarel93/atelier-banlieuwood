@@ -10,73 +10,30 @@ export default function V2Error({ error, reset }: { error: Error & { digest?: st
   }, [error]);
 
   return (
-    <div
-      className="theme-lavande"
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "2rem",
-        background: "#F8F7FC",
-        color: "#1a1a2e",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <div style={{ textAlign: "center", maxWidth: "440px" }}>
-        <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⚠️</div>
-        <h2 style={{ fontSize: "1.25rem", fontWeight: "bold", marginBottom: "0.5rem" }}>Erreur du tableau de bord</h2>
-        <p style={{ color: "#6B7280", marginBottom: "1rem", fontSize: "0.875rem" }}>
-          Le tableau de bord a rencontre un probleme.
-        </p>
-        {/* Show error details for debugging */}
-        <div
-          style={{
-            background: "rgba(239,68,68,0.05)",
-            border: "1px solid rgba(239,68,68,0.15)",
-            borderRadius: "0.75rem",
-            padding: "0.75rem",
-            marginBottom: "1.5rem",
-            textAlign: "left",
-          }}
-        >
-          <p style={{ fontSize: "0.7rem", color: "#EF4444", fontFamily: "monospace", wordBreak: "break-word" }}>
-            {error.message}
-          </p>
-          {error.digest && (
-            <p style={{ fontSize: "0.65rem", color: "#9CA3AF", marginTop: "0.25rem" }}>Ref: {error.digest}</p>
-          )}
+    <div className="theme-lavande min-h-dvh flex items-center justify-center p-8 bg-[var(--background)] text-bw-heading font-sans">
+      <div className="text-center max-w-[440px]">
+        <div className="text-5xl mb-4">⚠️</div>
+        <h2 className="text-heading-lg mb-2">Erreur du tableau de bord</h2>
+        <p className="text-sm text-bw-muted mb-4">Le tableau de bord a rencontré un problème.</p>
+
+        {/* Error details */}
+        <div className="bg-bw-danger/5 border border-bw-danger/15 rounded-xl p-3 mb-6 text-left">
+          <p className="text-[11px] text-bw-danger font-mono break-words">{error.message}</p>
+          {error.digest && <p className="text-[10px] text-bw-muted mt-1">Ref: {error.digest}</p>}
         </div>
-        <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center" }}>
+
+        <div className="flex gap-3 justify-center">
           <button
             onClick={reset}
-            style={{
-              background: "#FF6B35",
-              color: "white",
-              border: "none",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "0.75rem",
-              fontWeight: 600,
-              cursor: "pointer",
-              fontSize: "0.875rem",
-            }}
+            className="bg-bw-primary text-white px-6 py-3 rounded-xl font-semibold text-sm cursor-pointer hover:bg-bw-primary-500 transition-colors"
           >
-            Reessayer
+            Réessayer
           </button>
           <button
             onClick={() => (window.location.href = "/v2/seances")}
-            style={{
-              background: "rgba(0,0,0,0.05)",
-              color: "#1a1a2e",
-              border: "1px solid rgba(0,0,0,0.1)",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "0.75rem",
-              fontWeight: 600,
-              cursor: "pointer",
-              fontSize: "0.875rem",
-            }}
+            className="bg-[var(--color-bw-surface-dim)] text-bw-heading border border-[var(--color-bw-border)] px-6 py-3 rounded-xl font-semibold text-sm cursor-pointer hover:bg-[var(--color-bw-surface)] transition-colors"
           >
-            Retour aux seances
+            Retour aux séances
           </button>
         </div>
       </div>

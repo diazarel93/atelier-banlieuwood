@@ -15,7 +15,7 @@ export function StatsKpiRow({ scores, className }: StatsKpiRowProps) {
       {AXES.map((axis) => (
         <div
           key={axis.key}
-          className="relative flex flex-col items-center gap-2 rounded-2xl bg-card overflow-hidden border border-[var(--color-bw-border)] ring-1 ring-inset ring-[var(--glass-border-hover)] p-5"
+          className="relative flex flex-col items-center gap-2 rounded-2xl overflow-hidden border border-[var(--color-bw-border-subtle)] p-5"
         >
           {/* Colored top accent */}
           <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ backgroundColor: axis.color }} />

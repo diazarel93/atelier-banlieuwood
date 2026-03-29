@@ -16,11 +16,11 @@ interface SessionTimelineProps {
 }
 
 const EVENT_CONFIG: Record<string, { label: string; color: string }> = {
-  session_start: { label: "Début de séance", color: "#9CA3AF" },
-  situation_start: { label: "Question", color: "#FF6B35" },
-  vote_start: { label: "Vote", color: "#8B5CF6" },
-  collective_choice: { label: "Choix collectif", color: "#10B981" },
-  session_end: { label: "Fin de séance", color: "#9CA3AF" },
+  session_start: { label: "Début de séance", color: "var(--color-bw-muted, #9CA3AF)" },
+  situation_start: { label: "Question", color: "var(--color-bw-primary, #FF6B35)" },
+  vote_start: { label: "Vote", color: "var(--color-bw-violet, #8B5CF6)" },
+  collective_choice: { label: "Choix collectif", color: "var(--color-bw-green, #10B981)" },
+  session_end: { label: "Fin de séance", color: "var(--color-bw-muted, #9CA3AF)" },
 };
 
 const RELEVANT_TYPES = new Set(Object.keys(EVENT_CONFIG));
@@ -105,7 +105,7 @@ export function SessionTimeline({ events, totalDurationMs }: SessionTimelineProp
               {timelineNodes.map((node, i) => {
                 const config = EVENT_CONFIG[node.event_type] || {
                   label: node.event_type,
-                  color: "#888",
+                  color: "var(--color-bw-muted, #888)",
                 };
                 return (
                   <div key={i} className="relative flex items-start gap-3">

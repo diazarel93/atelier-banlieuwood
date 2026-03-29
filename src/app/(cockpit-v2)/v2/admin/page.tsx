@@ -24,7 +24,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 space-y-8">
       <div>
-        <h1 className="text-heading-lg text-bw-heading">Administration</h1>
+        <h1 className="text-display-sm text-bw-heading font-cinema">Administration</h1>
         <p className="text-sm text-bw-muted mt-1">Gestion des utilisateurs et des acces</p>
       </div>
 

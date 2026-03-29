@@ -97,7 +97,7 @@ export function TeacherNotesCard({ notes, onSave, isSaving }: TeacherNotesCardPr
         </span>
         <span className="flex items-center gap-2">
           {saved && (
-            <span className="text-[10px] font-medium text-emerald-500 animate-in fade-in duration-300">Enregistre</span>
+            <span className="text-[10px] font-medium text-bw-teal animate-in fade-in duration-300">Enregistré</span>
           )}
           {isSaving && <span className="text-[10px] font-medium text-bw-muted">...</span>}
           <svg

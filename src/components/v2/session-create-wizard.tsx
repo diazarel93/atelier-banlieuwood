@@ -197,11 +197,11 @@ export function SessionCreateWizard() {
                   maxLength={100}
                   className={cn(
                     "h-10 rounded-lg border bg-card px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
-                    titleError ? "border-red-400" : "border-[var(--color-bw-border)]",
+                    titleError ? "border-bw-danger" : "border-[var(--color-bw-border)]",
                   )}
                   autoFocus
                 />
-                {titleError && <span className="text-xs text-red-500">{titleError}</span>}
+                {titleError && <span className="text-xs text-bw-danger">{titleError}</span>}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="wizard-class" className="text-xs font-medium text-bw-muted">
@@ -219,7 +219,7 @@ export function SessionCreateWizard() {
                   autoComplete="off"
                   className={cn(
                     "h-10 rounded-lg border bg-card px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
-                    classLabelError ? "border-red-400" : "border-[var(--color-bw-border)]",
+                    classLabelError ? "border-bw-danger" : "border-[var(--color-bw-border)]",
                   )}
                 />
                 {classLabels.length > 0 && (
@@ -229,7 +229,7 @@ export function SessionCreateWizard() {
                     ))}
                   </datalist>
                 )}
-                {classLabelError && <span className="text-xs text-red-500">{classLabelError}</span>}
+                {classLabelError && <span className="text-xs text-bw-danger">{classLabelError}</span>}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-bw-muted">Niveau</label>
@@ -290,7 +290,7 @@ export function SessionCreateWizard() {
                   value={data.scheduledAt}
                   onChange={(v) => update({ scheduledAt: v })}
                 />
-                {scheduledAtError && <span className="text-xs text-red-500">{scheduledAtError}</span>}
+                {scheduledAtError && <span className="text-xs text-bw-danger">{scheduledAtError}</span>}
               </div>
 
               {/* Repeat toggle — only shown when a date is set */}
@@ -415,10 +415,10 @@ export function SessionCreateWizard() {
                   maxLength={200}
                   className={cn(
                     "h-10 rounded-lg border bg-card px-3 text-sm text-bw-heading placeholder:text-bw-placeholder focus:outline-none focus:ring-2 focus:ring-bw-primary/30 focus:border-bw-primary transition-colors",
-                    thematiqueError ? "border-red-400" : "border-[var(--color-bw-border)]",
+                    thematiqueError ? "border-bw-danger" : "border-[var(--color-bw-border)]",
                   )}
                 />
-                {thematiqueError && <span className="text-xs text-red-500">{thematiqueError}</span>}
+                {thematiqueError && <span className="text-xs text-bw-danger">{thematiqueError}</span>}
               </div>
             </motion.div>
           )}

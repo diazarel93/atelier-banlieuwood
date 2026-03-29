@@ -3,10 +3,10 @@
 import { GlassCardV2 } from "@/components/v2/glass-card";
 
 const MOMENT_COLORS: Record<string, string> = {
-  tournant: "#FF6B35",
-  créatif: "#8B5CF6",
-  collectif: "#4ECDC4",
-  tension: "#EF4444",
+  tournant: "var(--color-bw-primary, #FF6B35)",
+  créatif: "var(--color-bw-violet, #8B5CF6)",
+  collectif: "var(--color-bw-teal, #4ECDC4)",
+  tension: "var(--color-bw-danger, #EF4444)",
 };
 
 interface PedagogicalTipsCardProps {
@@ -38,7 +38,7 @@ export function PedagogicalTipsCard({ recommendations, keyMoments }: Pedagogical
         <div className="space-y-2">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-bw-muted">Moments clés</p>
           {topMoments.map((m, i) => {
-            const color = MOMENT_COLORS[m.category] || "#888";
+            const color = MOMENT_COLORS[m.category] || "var(--color-bw-muted, #888)";
             return (
               <div key={i} className="pl-4 border-l-2 py-1" style={{ borderLeftColor: color }}>
                 <span className="text-xs font-semibold uppercase" style={{ color }}>

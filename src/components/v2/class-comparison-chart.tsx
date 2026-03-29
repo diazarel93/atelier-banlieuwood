@@ -20,7 +20,16 @@ interface ComparisonData {
   totalSessions: number;
 }
 
-const CLASS_COLORS = ["#6366F1", "#EC4899", "#F59E0B", "#10B981", "#8B5CF6", "#EF4444", "#06B6D4", "#F97316"];
+const CLASS_COLORS = [
+  "var(--color-bw-violet, #8B5CF6)",
+  "var(--color-bw-pink, #EC4899)",
+  "var(--color-bw-amber, #F59E0B)",
+  "var(--color-bw-green, #10B981)",
+  "var(--color-bw-primary, #FF6B35)",
+  "var(--color-bw-danger, #EF4444)",
+  "var(--color-bw-teal, #4ECDC4)",
+  "var(--color-bw-gold, #D4A843)",
+];
 
 export function ClassComparisonChart() {
   const { data, isLoading } = useQuery<ComparisonData>({

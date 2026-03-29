@@ -22,7 +22,11 @@ function getGreeting(): string {
   return "Bonsoir";
 }
 
-const FORMULA_COLORS: Record<string, string> = { F0: "#f472b6", F1: "#fbbf24", F2: "#8b5cf6" };
+const FORMULA_COLORS: Record<string, string> = {
+  F0: "var(--color-bw-pink, #ec4899)",
+  F1: "var(--color-bw-gold, #d4a843)",
+  F2: "var(--color-bw-violet, #8b5cf6)",
+};
 const mainPhases = PHASES.filter((p) => (MAIN_PHASE_IDS as readonly string[]).includes(p.id));
 
 export default function DashboardV2Page() {
@@ -84,7 +88,7 @@ export default function DashboardV2Page() {
       {/* ── Greeting row ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-heading-lg text-bw-heading">
+          <h1 className="text-display-sm text-bw-heading font-cinema">
             <span className="bg-gradient-to-r from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] bg-clip-text text-transparent">
               {getGreeting()}, {firstName} !
             </span>
@@ -122,7 +126,7 @@ export default function DashboardV2Page() {
           )}
           <Link
             href={ROUTES.seanceNew}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 transition-all"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 active:scale-[0.97] transition-all"
           >
             + Nouvelle séance
           </Link>
@@ -138,17 +142,17 @@ export default function DashboardV2Page() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="card-primary p-5 glow-green"
+              className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-5"
               style={{
                 borderLeftWidth: 4,
                 borderLeftColor: "var(--color-bw-green)",
-                background: "linear-gradient(135deg, rgba(16,185,129,0.04), var(--card))",
+                background: "linear-gradient(135deg, rgba(16,185,129,0.06), transparent)",
               }}
             >
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-body-xs font-bold bg-emerald-100 text-emerald-700 motion-safe:animate-pulse">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-body-xs font-bold bg-bw-teal-50 text-bw-teal-700 motion-safe:animate-pulse">
                       ● EN COURS
                     </span>
                     <span className="text-sm font-bold text-bw-heading">
@@ -161,7 +165,7 @@ export default function DashboardV2Page() {
                 </div>
                 <Link
                   href={ROUTES.pilot(activeSession.id)}
-                  className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-600 btn-hover glow-green"
+                  className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-bw-teal hover:bg-bw-teal-600 btn-hover glow-green"
                 >
                   Retourner au cockpit →
                 </Link>
@@ -171,13 +175,14 @@ export default function DashboardV2Page() {
 
           {/* Séances du jour */}
           {data?.todaySessions && data.todaySessions.length > 0 && (
-            <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-5">
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-5">
               <h3 className="label-caps mb-3">Aujourd&apos;hui</h3>
               <div className="space-y-2">
-                {data.todaySessions.map((s) => (
+                {data.todaySessions.map((s, i) => (
                   <div
                     key={s.id}
-                    className="flex items-center gap-3 py-2 pl-3 rounded-xl hover:bg-bw-primary/[0.025] transition-colors duration-150 relative"
+                    className="flex items-center gap-3 py-2 pl-3 rounded-xl hover:bg-bw-primary/[0.025] transition-colors duration-150 relative animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both"
+                    style={{ animationDelay: `${i * 60}ms` }}
                   >
                     <div
                       className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
@@ -246,7 +251,13 @@ export default function DashboardV2Page() {
                 color: "var(--color-axis-expression, #EC4899)",
               },
             ].map((kpi) => (
-              <div key={kpi.label} className="card-interactive relative overflow-hidden p-6">
+              <div
+                key={kpi.label}
+                className="relative overflow-hidden p-6 rounded-2xl border border-[var(--color-bw-border-subtle)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(139,92,246,0.12)]"
+                style={{
+                  background: `linear-gradient(135deg, ${kpi.color}08 0%, transparent 60%)`,
+                }}
+              >
                 <div
                   className="absolute top-0 left-0 right-0 h-[3px]"
                   style={{
@@ -307,14 +318,14 @@ export default function DashboardV2Page() {
           {data?.recentSessions && data.recentSessions.length > 0 && (
             <div>
               <h3 className="text-sm font-bold text-bw-heading mb-3">Séances récentes</h3>
-              <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border)] scrollbar-thin">
+              <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border-subtle)] scrollbar-thin">
                 <table className="w-full text-body-sm" style={{ borderCollapse: "collapse" }}>
                   <thead>
                     <tr>
                       {["DATE", "CLASSE", "FORMULE", "ÉLÈVES", "PARTICIPATION", "ACTIONS"].map((h) => (
                         <th
                           key={h}
-                          className="p-3 text-left text-body-xs uppercase tracking-wider text-bw-muted bg-[var(--color-bw-surface-dim)] border-b border-[var(--color-bw-border)]"
+                          className="p-3 text-left text-body-xs uppercase tracking-wider text-bw-muted border-b border-[var(--color-bw-border-subtle)]"
                         >
                           {h}
                         </th>
@@ -328,7 +339,7 @@ export default function DashboardV2Page() {
                       return (
                         <tr
                           key={s.id}
-                          className="border-b border-[var(--color-bw-border)] last:border-b-0 hover:bg-bw-primary/[0.02] transition-colors duration-150"
+                          className="border-b border-[var(--color-bw-border-subtle)] last:border-b-0 hover:bg-bw-primary/[0.02] transition-colors duration-150"
                         >
                           <td className="p-3 text-bw-heading">
                             <div className="flex items-center gap-2">
@@ -383,7 +394,7 @@ export default function DashboardV2Page() {
         <div className="lg:col-span-4 space-y-5">
           {/* Quoi de neuf */}
           {activeSessions.length > 0 && (
-            <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-4">
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
               <h3 className="label-caps text-bw-muted mb-3">Quoi de neuf</h3>
               <div className="space-y-2">
                 <div className="flex items-start gap-2.5 rounded-lg px-3 py-2 text-sm bg-bw-danger-100/50">
@@ -412,7 +423,7 @@ export default function DashboardV2Page() {
 
           {/* Actions requises */}
           {data?.recentSessions?.filter((s) => s.status === "done").length ? (
-            <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-4">
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="label-caps text-bw-muted">Actions requises</h3>
                 <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-bw-primary text-white text-body-xs font-bold px-1.5">
@@ -438,7 +449,7 @@ export default function DashboardV2Page() {
           ) : null}
 
           {/* Modules progression */}
-          <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-4">
+          <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
             <h3 className="label-caps text-bw-muted mb-3">Modules</h3>
             <div className="flex flex-col gap-3">
               {mainPhases.map((phase) => {
@@ -479,7 +490,7 @@ export default function DashboardV2Page() {
 
           {/* Historique récent */}
           {data?.recentSessions && data.recentSessions.length > 0 && (
-            <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-4">
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
               <h3 className="label-caps text-bw-muted mb-3">Historique récent</h3>
               <div className="space-y-2">
                 {data.recentSessions.slice(0, 6).map((s) => {
@@ -523,7 +534,7 @@ export default function DashboardV2Page() {
           )}
 
           {/* Agenda calendrier */}
-          <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card p-4">
+          <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
             <h3 className="label-caps text-bw-muted mb-3">Agenda</h3>
             <MiniCalendar sessionDates={(data?.sessionDates || []).map((d) => new Date(d))} />
           </div>
@@ -534,15 +545,15 @@ export default function DashboardV2Page() {
       {!data?.todaySessions?.length && !data?.recentSessions?.length && (
         <div className="text-center py-20">
           <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-            className="text-7xl mb-6"
+            animate={{ y: [0, -10, 0], rotate: [0, -3, 3, 0] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            className="text-8xl mb-6 drop-shadow-[0_0_24px_rgba(139,92,246,0.3)]"
           >
             🎬
           </motion.div>
-          <h2 className="text-display text-bw-heading mb-3">C&apos;est calme ici !</h2>
+          <h2 className="text-display-md text-bw-heading font-cinema mb-3">Action !</h2>
           <p className="text-body-sm text-bw-muted mb-8 max-w-sm mx-auto">
-            Créez votre première séance pour voir la magie opérer. Vos élèves n&apos;attendent que ça.
+            Le plateau est prêt. Créez votre première séance et lancez le tournage.
           </p>
           <Link
             href={ROUTES.seanceNew}

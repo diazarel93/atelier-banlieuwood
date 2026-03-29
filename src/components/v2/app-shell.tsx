@@ -219,7 +219,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       )}
       <div
         className={cn(
-          "lg:hidden fixed top-0 left-0 bottom-0 z-50 w-[280px] max-w-[85vw] bg-[var(--sidebar)] shadow-2xl flex flex-col transition-transform duration-300 ease-out border-r border-[var(--sidebar-border)]",
+          "lg:hidden fixed top-0 left-0 bottom-0 z-50 w-[280px] max-w-[85vw] bg-[var(--sidebar)] glass-shadow-elevated flex flex-col transition-transform duration-300 ease-out border-r border-[var(--sidebar-border)]",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >

@@ -18,14 +18,14 @@ interface FacilitatorTimelineProps {
 }
 
 const STATUS_DOTS: Record<string, { color: string; label: string }> = {
-  done: { color: "#10B981", label: "Terminée" },
-  results: { color: "#6366F1", label: "Résultats" },
-  responding: { color: "#F59E0B", label: "En cours" },
-  reviewing: { color: "#F59E0B", label: "En cours" },
-  voting: { color: "#F59E0B", label: "En cours" },
-  waiting: { color: "#94A3B8", label: "En attente" },
-  draft: { color: "#64748B", label: "Brouillon" },
-  paused: { color: "#EF4444", label: "Pause" },
+  done: { color: "var(--color-bw-green, #10B981)", label: "Terminée" },
+  results: { color: "var(--color-bw-violet, #8B5CF6)", label: "Résultats" },
+  responding: { color: "var(--color-bw-teal, #4ECDC4)", label: "En cours" },
+  reviewing: { color: "var(--color-bw-amber, #F59E0B)", label: "En cours" },
+  voting: { color: "var(--color-bw-amber, #F59E0B)", label: "En cours" },
+  waiting: { color: "var(--color-bw-placeholder, #94A3B8)", label: "En attente" },
+  draft: { color: "var(--color-bw-muted, #64748B)", label: "Brouillon" },
+  paused: { color: "var(--color-bw-danger, #EF4444)", label: "Pause" },
 };
 
 function formatRelativeDate(dateStr: string): string {
@@ -62,7 +62,7 @@ export function FacilitatorTimeline({ sessions }: FacilitatorTimelineProps) {
               <Link
                 key={session.id}
                 href={ROUTES.seanceDetail(session.id)}
-                className="flex items-start gap-3 group relative pl-5 py-1 rounded-lg hover:bg-[var(--color-bw-surface-dim)] transition-colors -ml-1 pr-2"
+                className="flex items-start gap-3 group relative pl-5 py-1 rounded-lg hover:bg-[var(--color-bw-surface-dim)] transition-colors duration-200 -ml-1 pr-2 focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none"
               >
                 {/* Dot */}
                 <div

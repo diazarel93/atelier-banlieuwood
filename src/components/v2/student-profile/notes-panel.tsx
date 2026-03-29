@@ -123,7 +123,7 @@ export function NotesPanel({ notes, onAdd, onDelete, isAdding }: NotesPanelProps
                 <button
                   type="button"
                   onClick={() => onDelete(note.id)}
-                  className="text-bw-muted hover:text-[var(--color-bw-danger)] transition-colors shrink-0 cursor-pointer p-1 rounded-md hover:bg-[var(--color-bw-danger-100)]"
+                  className="text-bw-muted hover:text-[var(--color-bw-danger)] transition-colors duration-200 shrink-0 cursor-pointer p-1 rounded-md hover:bg-[var(--color-bw-danger-100)] focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none"
                   title="Supprimer"
                 >
                   <svg

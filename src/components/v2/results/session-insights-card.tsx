@@ -4,10 +4,10 @@ import { GlassCardV2 } from "@/components/v2/glass-card";
 import type { BilanData } from "@/hooks/use-results-data";
 
 const COLLAB_COLORS: Record<string, string> = {
-  faible: "#EF4444",
-  moyen: "#F59E0B",
-  bon: "#4ECDC4",
-  excellent: "#10B981",
+  faible: "var(--color-bw-danger, #EF4444)",
+  moyen: "var(--color-bw-amber, #F59E0B)",
+  bon: "var(--color-bw-teal, #4ECDC4)",
+  excellent: "var(--color-bw-green, #10B981)",
 };
 
 const TREND_ICONS: Record<string, string> = {
@@ -17,9 +17,9 @@ const TREND_ICONS: Record<string, string> = {
 };
 
 const DEPTH_COLORS: Record<string, string> = {
-  superficiel: "#F59E0B",
-  correct: "#4ECDC4",
-  approfondi: "#10B981",
+  superficiel: "var(--color-bw-amber, #F59E0B)",
+  correct: "var(--color-bw-teal, #4ECDC4)",
+  approfondi: "var(--color-bw-green, #10B981)",
 };
 
 interface SessionInsightsCardProps {
@@ -30,9 +30,9 @@ interface SessionInsightsCardProps {
 export function SessionInsightsCard({ bilan, onViewFull }: SessionInsightsCardProps) {
   if (!bilan) return null;
 
-  const collabColor = COLLAB_COLORS[bilan.groupDynamics.collaborationLevel] || "#888";
+  const collabColor = COLLAB_COLORS[bilan.groupDynamics.collaborationLevel] || "var(--color-bw-muted, #888)";
   const trendIcon = TREND_ICONS[bilan.engagement.participationTrend] || "→";
-  const depthColor = DEPTH_COLORS[bilan.engagement.depth] || "#888";
+  const depthColor = DEPTH_COLORS[bilan.engagement.depth] || "var(--color-bw-muted, #888)";
 
   return (
     <GlassCardV2 className="p-5 border-l-4 border-l-bw-primary">

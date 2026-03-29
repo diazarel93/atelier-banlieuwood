@@ -132,7 +132,7 @@ export default function SettingsPage() {
           <IconSettings size={20} />
         </div>
         <div>
-          <h1 className="text-heading-lg text-bw-heading">Réglages</h1>
+          <h1 className="text-display-sm text-bw-heading font-cinema">Réglages</h1>
           <p className="text-sm text-bw-muted">Gérez votre profil et vos préférences</p>
         </div>
       </div>

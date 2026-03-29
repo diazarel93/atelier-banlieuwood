@@ -18,9 +18,9 @@ interface User {
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  active: { label: "Actif", color: "bg-green-100 text-green-700" },
-  pending: { label: "En attente", color: "bg-amber-100 text-amber-700" },
-  rejected: { label: "Refuse", color: "bg-red-100 text-red-700" },
+  active: { label: "Actif", color: "bg-bw-teal-50 text-bw-teal-700" },
+  pending: { label: "En attente", color: "bg-bw-amber-100 text-bw-amber-500" },
+  rejected: { label: "Refusé", color: "bg-bw-danger-100 text-bw-danger" },
   deactivated: { label: "Desactive", color: "bg-[var(--color-bw-surface-dim)] text-bw-muted" },
 };
 
@@ -87,7 +87,7 @@ export default function AdminUsersPage() {
       <BreadcrumbV2 items={[{ label: "Admin", href: "/v2/admin" }, { label: "Utilisateurs" }]} />
 
       <div className="flex items-center justify-between">
-        <h1 className="text-heading-lg text-bw-heading">Utilisateurs</h1>
+        <h1 className="text-display-sm text-bw-heading font-cinema">Utilisateurs</h1>
         <p className="text-sm text-bw-muted">
           {searchQuery && users.length !== allUsers.length
             ? `${users.length} / ${allUsers.length} utilisateur${allUsers.length > 1 ? "s" : ""}`
@@ -213,7 +213,7 @@ export default function AdminUsersPage() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="text-xs rounded-lg text-green-600 border-green-200 hover:bg-green-50"
+                                className="text-xs rounded-lg text-bw-teal-600 border-bw-teal-200 hover:bg-bw-teal-50"
                                 onClick={() => actionMutation.mutate({ userId: user.id, action: "validate" })}
                                 disabled={actionMutation.isPending}
                               >
@@ -222,7 +222,7 @@ export default function AdminUsersPage() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="text-xs rounded-lg text-red-600 border-red-200 hover:bg-red-50"
+                                className="text-xs rounded-lg text-bw-danger border-bw-danger/20 hover:bg-bw-danger-100"
                                 onClick={() => actionMutation.mutate({ userId: user.id, action: "reject" })}
                                 disabled={actionMutation.isPending}
                               >
@@ -234,7 +234,7 @@ export default function AdminUsersPage() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="text-xs rounded-lg text-amber-600 border-amber-200 hover:bg-amber-50"
+                              className="text-xs rounded-lg text-bw-amber-500 border-bw-amber/20 hover:bg-bw-amber-100"
                               onClick={() => actionMutation.mutate({ userId: user.id, action: "deactivate" })}
                               disabled={actionMutation.isPending}
                             >
@@ -245,7 +245,7 @@ export default function AdminUsersPage() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="text-xs rounded-lg text-green-600 border-green-200 hover:bg-green-50"
+                              className="text-xs rounded-lg text-bw-teal-600 border-bw-teal-200 hover:bg-bw-teal-50"
                               onClick={() => actionMutation.mutate({ userId: user.id, action: "reactivate" })}
                               disabled={actionMutation.isPending}
                             >

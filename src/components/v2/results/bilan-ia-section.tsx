@@ -4,10 +4,10 @@ import { GlassCardV2 } from "@/components/v2/glass-card";
 import type { BilanData } from "@/hooks/use-results-data";
 
 const COLLAB_COLORS: Record<string, string> = {
-  faible: "#EF4444",
-  moyen: "#F59E0B",
-  bon: "#4ECDC4",
-  excellent: "#10B981",
+  faible: "var(--color-bw-danger, #EF4444)",
+  moyen: "var(--color-bw-amber, #F59E0B)",
+  bon: "var(--color-bw-teal, #4ECDC4)",
+  excellent: "var(--color-bw-green, #10B981)",
 };
 
 const TREND_LABELS: Record<string, { label: string; icon: string }> = {
@@ -17,16 +17,16 @@ const TREND_LABELS: Record<string, { label: string; icon: string }> = {
 };
 
 const DEPTH_COLORS: Record<string, string> = {
-  superficiel: "#F59E0B",
-  correct: "#4ECDC4",
-  approfondi: "#10B981",
+  superficiel: "var(--color-bw-amber, #F59E0B)",
+  correct: "var(--color-bw-teal, #4ECDC4)",
+  approfondi: "var(--color-bw-green, #10B981)",
 };
 
 const MOMENT_COLORS: Record<string, string> = {
-  tournant: "#FF6B35",
-  créatif: "#8B5CF6",
-  collectif: "#4ECDC4",
-  tension: "#EF4444",
+  tournant: "var(--color-bw-primary, #FF6B35)",
+  créatif: "var(--color-bw-violet, #8B5CF6)",
+  collectif: "var(--color-bw-teal, #4ECDC4)",
+  tension: "var(--color-bw-danger, #EF4444)",
 };
 
 interface BilanIaSectionProps {
@@ -88,8 +88,8 @@ export function BilanIaSection({ bilan, loading, provider, onGenerate, onDownloa
               <span
                 className="text-xs font-semibold uppercase px-2 py-0.5 rounded-full"
                 style={{
-                  backgroundColor: `${COLLAB_COLORS[bilan.groupDynamics.collaborationLevel] || "#666"}20`,
-                  color: COLLAB_COLORS[bilan.groupDynamics.collaborationLevel] || "#666",
+                  backgroundColor: `${COLLAB_COLORS[bilan.groupDynamics.collaborationLevel] || "var(--color-bw-muted, #666)"}20`,
+                  color: COLLAB_COLORS[bilan.groupDynamics.collaborationLevel] || "var(--color-bw-muted, #666)",
                 }}
               >
                 {bilan.groupDynamics.collaborationLevel}
@@ -116,7 +116,7 @@ export function BilanIaSection({ bilan, loading, provider, onGenerate, onDownloa
               <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Moments clés</p>
               <div className="space-y-2">
                 {bilan.keyMoments.map((m, i) => {
-                  const color = MOMENT_COLORS[m.category] || "#888";
+                  const color = MOMENT_COLORS[m.category] || "var(--color-bw-muted, #888)";
                   return (
                     <div key={i} className="pl-4 border-l-2 py-1" style={{ borderLeftColor: color }}>
                       <span className="text-xs font-semibold uppercase" style={{ color }}>
@@ -142,8 +142,8 @@ export function BilanIaSection({ bilan, loading, provider, onGenerate, onDownloa
               <span
                 className="text-xs px-2 py-0.5 rounded-full"
                 style={{
-                  backgroundColor: `${DEPTH_COLORS[bilan.engagement.depth] || "#666"}20`,
-                  color: DEPTH_COLORS[bilan.engagement.depth] || "#666",
+                  backgroundColor: `${DEPTH_COLORS[bilan.engagement.depth] || "var(--color-bw-muted, #666)"}20`,
+                  color: DEPTH_COLORS[bilan.engagement.depth] || "var(--color-bw-muted, #666)",
                 }}
               >
                 {bilan.engagement.depth}

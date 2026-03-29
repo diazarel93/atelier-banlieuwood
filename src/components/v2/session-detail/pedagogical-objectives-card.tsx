@@ -18,7 +18,7 @@ export function PedagogicalObjectivesCard({ guide }: PedagogicalObjectivesCardPr
         {guide.socleCommun.map((code) => {
           const colors = SOCLE_COLORS[code] || {
             bg: "#66666620",
-            text: "#666",
+            text: "var(--color-bw-muted, #666)",
           };
           return (
             <span
@@ -37,7 +37,7 @@ export function PedagogicalObjectivesCard({ guide }: PedagogicalObjectivesCardPr
       <ul className="space-y-2">
         {guide.competences.map((comp, i) => (
           <li key={i} className="flex items-start gap-2 text-sm text-bw-heading">
-            <span className="text-emerald-500 mt-0.5 shrink-0">&#10003;</span>
+            <span className="text-bw-teal mt-0.5 shrink-0">&#10003;</span>
             {comp}
           </li>
         ))}

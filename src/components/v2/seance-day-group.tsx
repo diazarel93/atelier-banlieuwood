@@ -36,8 +36,12 @@ export function SeanceDayGroup({
     <div className={cn("flex flex-col gap-2", className)}>
       <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide px-1">{label}</h3>
       <div className="flex flex-col gap-2">
-        {sessions.map((s) => (
-          <div key={s.id} className="flex items-stretch gap-2">
+        {sessions.map((s, i) => (
+          <div
+            key={s.id}
+            className="flex items-stretch gap-2 animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both"
+            style={{ animationDelay: `${i * 50}ms` }}
+          >
             {onToggleSelect && (
               <div className="flex items-center pl-1">
                 <button
