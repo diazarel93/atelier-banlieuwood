@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const glassCardVariants = cva(
-  "rounded-2xl bg-[var(--color-bw-elevated,var(--card))] transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
+  "rounded-2xl bg-[#151530] transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
   {
     variants: {
       variant: {
