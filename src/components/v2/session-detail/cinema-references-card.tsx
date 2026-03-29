@@ -11,7 +11,7 @@ const CINEMA_REFS = [
     year: 1995,
     director: "Kassovitz",
     theme: "Tension sociale",
-    color: "#EF4444",
+    color: "var(--color-bw-danger, #EF4444)",
     poster: "/gfdhSzPyAWtAizqs4ytc0MwOlQg.jpg",
   },
   {
@@ -19,7 +19,7 @@ const CINEMA_REFS = [
     year: 2019,
     director: "Ladj Ly",
     theme: "Banlieue & regard",
-    color: "#FF6B35",
+    color: "var(--color-bw-primary, #FF6B35)",
     poster: "/sOy9Sa9Noro1VjZjdTTh7U3XmcU.jpg",
   },
   {
@@ -27,7 +27,7 @@ const CINEMA_REFS = [
     year: 2016,
     director: "Houda Benyamina",
     theme: "Rêves de grandeur",
-    color: "#8B5CF6",
+    color: "var(--color-bw-violet, #8B5CF6)",
     poster: "/6P12dmdR0XFXXOPx1HsI8kT6yMX.jpg",
   },
   {
@@ -35,7 +35,7 @@ const CINEMA_REFS = [
     year: 2011,
     director: "Nakache & Toledano",
     theme: "Amitié inattendue",
-    color: "#4ECDC4",
+    color: "var(--color-bw-teal, #4ECDC4)",
     poster: "/i97FM40bOMKvKIo3hjQviETE5yf.jpg",
   },
   {
@@ -43,7 +43,7 @@ const CINEMA_REFS = [
     year: 1959,
     director: "Truffaut",
     theme: "Enfance & liberté",
-    color: "#F59E0B",
+    color: "var(--color-bw-amber, #F59E0B)",
     poster: "/nHZQrKd96pCytnuTCsFibhrRyIR.jpg",
   },
   {
@@ -51,7 +51,7 @@ const CINEMA_REFS = [
     year: 2007,
     director: "Kechiche",
     theme: "Famille & persévérance",
-    color: "#10B981",
+    color: "var(--color-bw-green, #10B981)",
     poster: "/fqEJAEiFlo8flo5AQMeLLP5Rmno.jpg",
   },
   {
@@ -59,7 +59,7 @@ const CINEMA_REFS = [
     year: 2014,
     director: "Sciamma",
     theme: "Identité & sororité",
-    color: "#EC4899",
+    color: "var(--color-bw-pink, #EC4899)",
     poster: "/nFHw4N7eEpbXwFkUH61P0zs1FTm.jpg",
   },
   {
@@ -67,7 +67,7 @@ const CINEMA_REFS = [
     year: 2005,
     director: "Haneke",
     theme: "Secrets & culpabilité",
-    color: "#6366F1",
+    color: "var(--color-bw-violet, #8B5CF6)",
     poster: "/vSIGVNCLDnw1NYH8mgSrxC5jYQn.jpg",
   },
 ];

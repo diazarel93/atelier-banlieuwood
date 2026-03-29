@@ -156,7 +156,7 @@ export function StudentClassTable({ students, className }: StudentClassTableProp
                           <td className="px-5 py-3">
                             <Link
                               href={ROUTES.eleveDetail(student.profileId)}
-                              className="group flex items-center gap-2.5"
+                              className="group flex items-center gap-2.5 rounded-lg focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none"
                             >
                               <Avatar name={student.displayName} emoji={student.avatar} />
                               <span className="font-medium text-bw-heading truncate max-w-[180px] group-hover:text-bw-primary transition-colors duration-150">

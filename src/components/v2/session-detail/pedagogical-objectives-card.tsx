@@ -18,7 +18,7 @@ export function PedagogicalObjectivesCard({ guide }: PedagogicalObjectivesCardPr
         {guide.socleCommun.map((code) => {
           const colors = SOCLE_COLORS[code] || {
             bg: "#66666620",
-            text: "#666",
+            text: "var(--color-bw-muted, #666)",
           };
           return (
             <span

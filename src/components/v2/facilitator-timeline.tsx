@@ -62,7 +62,7 @@ export function FacilitatorTimeline({ sessions }: FacilitatorTimelineProps) {
               <Link
                 key={session.id}
                 href={ROUTES.seanceDetail(session.id)}
-                className="flex items-start gap-3 group relative pl-5 py-1 rounded-lg hover:bg-[var(--color-bw-surface-dim)] transition-colors -ml-1 pr-2"
+                className="flex items-start gap-3 group relative pl-5 py-1 rounded-lg hover:bg-[var(--color-bw-surface-dim)] transition-colors duration-200 -ml-1 pr-2 focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none"
               >
                 {/* Dot */}
                 <div

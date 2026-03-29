@@ -128,8 +128,8 @@ export function PortfolioSection({ portfolio }: PortfolioSectionProps) {
                     <span
                       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-body-xs font-semibold"
                       style={{
-                        background: `${tc?.color || "#666"}15`,
-                        color: tc?.color || "#666",
+                        background: `${tc?.color || "var(--color-bw-muted, #666)"}15`,
+                        color: tc?.color || "var(--color-bw-muted, #666)",
                       }}
                     >
                       {tc?.emoji || "🏆"} {tc?.label || talentCard.talentCategory}

@@ -55,7 +55,7 @@ export function AchievementGrid({ achievements }: AchievementGridProps) {
               <span className="text-xl">{TIER_EMOJI[a.tier] || "🏅"}</span>
               <span
                 className="text-body-xs font-medium text-center leading-tight truncate max-w-full"
-                style={{ color: TIER_COLORS[a.tier] || "#888" }}
+                style={{ color: TIER_COLORS[a.tier] || "var(--color-bw-muted, #888)" }}
               >
                 {a.name}
               </span>

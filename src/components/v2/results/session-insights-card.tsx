@@ -30,9 +30,9 @@ interface SessionInsightsCardProps {
 export function SessionInsightsCard({ bilan, onViewFull }: SessionInsightsCardProps) {
   if (!bilan) return null;
 
-  const collabColor = COLLAB_COLORS[bilan.groupDynamics.collaborationLevel] || "#888";
+  const collabColor = COLLAB_COLORS[bilan.groupDynamics.collaborationLevel] || "var(--color-bw-muted, #888)";
   const trendIcon = TREND_ICONS[bilan.engagement.participationTrend] || "→";
-  const depthColor = DEPTH_COLORS[bilan.engagement.depth] || "#888";
+  const depthColor = DEPTH_COLORS[bilan.engagement.depth] || "var(--color-bw-muted, #888)";
 
   return (
     <GlassCardV2 className="p-5 border-l-4 border-l-bw-primary">

@@ -118,7 +118,7 @@ export function FullscreenToggle() {
           onClick={() => setShowPwaHint(false)}
         >
           <div
-            className="mx-4 max-w-sm rounded-2xl bg-card p-6 shadow-2xl border border-[var(--color-bw-border)]"
+            className="mx-4 max-w-sm rounded-2xl bg-card p-6 glass-shadow-elevated border border-[var(--color-bw-border)]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-center space-y-4">

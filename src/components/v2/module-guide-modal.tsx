@@ -80,7 +80,7 @@ export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalP
 
       {/* Modal */}
       <motion.div
-        className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto mt-12 mb-8 mx-4 bg-card rounded-2xl border border-[var(--color-bw-border)] shadow-2xl"
+        className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto mt-12 mb-8 mx-4 bg-card rounded-2xl border border-[var(--color-bw-border)] glass-shadow-elevated"
         initial={{ opacity: 0, y: 24, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 24, scale: 0.96 }}
@@ -217,7 +217,7 @@ export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalP
                   {guide.socleCommun.map((code) => {
                     const colors = SOCLE_COLORS[code] || {
                       bg: "#66666620",
-                      text: "#666",
+                      text: "var(--color-bw-muted, #666)",
                     };
                     return (
                       <span
@@ -286,7 +286,7 @@ export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalP
                   </p>
                   <ul className="space-y-1.5">
                     {guide.aQuoiEtreAttentif.map((point, i) => (
-                      <li key={i} className="text-xs text-bw-heading leading-relaxed pl-3 border-l-2 border-amber-400">
+                      <li key={i} className="text-xs text-bw-heading leading-relaxed pl-3 border-l-2 border-bw-amber">
                         {point}
                       </li>
                     ))}

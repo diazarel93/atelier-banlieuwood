@@ -38,7 +38,7 @@ export function PedagogicalTipsCard({ recommendations, keyMoments }: Pedagogical
         <div className="space-y-2">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-bw-muted">Moments clés</p>
           {topMoments.map((m, i) => {
-            const color = MOMENT_COLORS[m.category] || "#888";
+            const color = MOMENT_COLORS[m.category] || "var(--color-bw-muted, #888)";
             return (
               <div key={i} className="pl-4 border-l-2 py-1" style={{ borderLeftColor: color }}>
                 <span className="text-xs font-semibold uppercase" style={{ color }}>

@@ -67,8 +67,18 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
                 <span
                   className="text-xs font-bold px-2 py-0.5 rounded-full shrink-0 mt-0.5"
                   style={{
-                    backgroundColor: (SOCLE_COLORS[obj.socleCommun] || { bg: "#66666620", text: "#666" }).bg,
-                    color: (SOCLE_COLORS[obj.socleCommun] || { bg: "#66666620", text: "#666" }).text,
+                    backgroundColor: (
+                      SOCLE_COLORS[obj.socleCommun] || {
+                        bg: "var(--color-bw-muted, #666)20",
+                        text: "var(--color-bw-muted, #666)",
+                      }
+                    ).bg,
+                    color: (
+                      SOCLE_COLORS[obj.socleCommun] || {
+                        bg: "var(--color-bw-muted, #666)20",
+                        text: "var(--color-bw-muted, #666)",
+                      }
+                    ).text,
                   }}
                 >
                   {obj.socleCommun}
@@ -89,7 +99,12 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
               const domaine = fiche.competencies[key];
               if (!domaine) return null;
               const isOpen = openDomaine === key;
-              const color = key === "domaine1" ? "#3B82F6" : key === "domaine3" ? "#10B981" : "#8B5CF6";
+              const color =
+                key === "domaine1"
+                  ? "var(--color-bw-teal, #4ECDC4)"
+                  : key === "domaine3"
+                    ? "var(--color-bw-green, #10B981)"
+                    : "var(--color-bw-violet, #8B5CF6)";
               return (
                 <div key={key} className="border-t border-[var(--color-bw-border)]">
                   <button
@@ -140,7 +155,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
             <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Relancer les élèves</p>
             <ul className="space-y-2">
               {fiche.relaunchTips.map((tip, i) => (
-                <li key={i} className="text-sm text-bw-heading pl-3 border-l-2 border-amber-400">
+                <li key={i} className="text-sm text-bw-heading pl-3 border-l-2 border-bw-amber">
                   {tip}
                 </li>
               ))}

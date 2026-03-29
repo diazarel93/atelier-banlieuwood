@@ -103,7 +103,7 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
             <p className="text-sm text-bw-heading">{bible.conflict.central}</p>
             <div className="flex gap-4 text-xs">
               <span>
-                <span className="font-bold text-amber-500">Enjeux : </span>
+                <span className="font-bold text-bw-amber">Enjeux : </span>
                 <span className="text-bw-heading">{bible.conflict.stakes}</span>
               </span>
             </div>
