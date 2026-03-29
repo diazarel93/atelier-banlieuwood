@@ -8,10 +8,8 @@ const glassCardVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          "border border-[var(--color-bw-border)] glass-shadow ring-1 ring-inset ring-[var(--glass-border-hover)]",
-        elevated:
-          "border border-[var(--color-bw-border)] glass-shadow-elevated ring-1 ring-inset ring-[var(--glass-border-hover)]",
+        default: "border border-[var(--color-bw-border)] glass-shadow",
+        elevated: "border border-[var(--color-bw-border)] glass-shadow-elevated",
         flat: "border border-[var(--color-bw-border-subtle)]",
         ghost: "border border-transparent hover:border-[var(--color-bw-border-subtle)] hover:bg-card/60",
       },
