@@ -33,7 +33,7 @@ function getPhaseProgress(phase: PhaseDef, completedModules: string[]): { done: 
 
 export function PhaseStepper({
   phases,
-  modules,
+  modules: _modules,
   activeModuleId,
   completedModules,
   onPhaseClick,

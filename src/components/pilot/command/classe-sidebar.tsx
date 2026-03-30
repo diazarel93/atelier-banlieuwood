@@ -72,7 +72,7 @@ export function ClasseSidebar({
       thinking = 0,
       blocked = 0,
       absent = 0;
-    const allIds = new Set(allStudents.map((s) => s.id));
+    const _allIds = new Set(allStudents.map((s) => s.id));
     const activeIds = new Set(activeStudents.map((s) => s.id));
 
     for (const s of activeStudents) {
@@ -88,7 +88,7 @@ export function ClasseSidebar({
     return { responded, thinking, blocked, absent };
   }, [activeStudents, allStudents, respondedStudentIds, stuckLevels]);
 
-  const isResponding = sessionStatus === "responding";
+  const _isResponding = sessionStatus === "responding";
 
   return (
     <div className="flex flex-col h-full bg-[#0c0c18]">

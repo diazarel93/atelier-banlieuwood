@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
@@ -14,14 +14,12 @@ import { logAudit } from "@/lib/audit-log";
 import { useQueryClient } from "@tanstack/react-query";
 import { getSeanceMax } from "@/lib/constants";
 import dynamic from "next/dynamic";
-import { getModuleGuide, getQuestionGuide, type QuestionGuide } from "@/lib/guide-data";
 
 const QRCodeSVG = dynamic(() => import("qrcode.react").then((mod) => ({ default: mod.QRCodeSVG })), {
   ssr: false,
   loading: () => <div className="w-full h-full bg-white/5 rounded animate-pulse" />,
 });
-import { MODULES, PHASES, getModuleByDb, getPhaseForModule } from "@/lib/modules-data";
-import type { StudentState } from "@/components/pilot/pulse-ring";
+import { MODULES, getModuleByDb } from "@/lib/modules-data";
 import { useSound } from "@/hooks/use-sound";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { ConfirmModal } from "@/components/confirm-modal";
@@ -29,19 +27,16 @@ import { ConfirmModal } from "@/components/confirm-modal";
 import { WelcomePanel } from "@/components/pilot/welcome-panel";
 // R4: ModuleBriefing removed — direct launch, no briefing step
 // V6: ContextPanel removed — context info in V6Sidebar tabs
-import { getNextAction, type NextAction } from "@/lib/cockpit-next-action";
 const TeamManager = dynamic(() => import("@/components/pilot/team-manager").then((m) => ({ default: m.TeamManager })), {
   ssr: false,
 });
 import { ROUTES } from "@/lib/routes";
-import { CockpitProvider, useCockpit } from "@/components/pilot/cockpit-context";
+import { CockpitProvider } from "@/components/pilot/cockpit-context";
 import { CommandPalette } from "@/components/pilot/command-palette";
 const CommandCockpit = dynamic(
   () => import("@/components/pilot/command/command-cockpit").then((m) => ({ default: m.CommandCockpit })),
   { ssr: false },
 );
-
-import type { Session, Student, Response } from "@/hooks/use-pilot-session";
 
 // ——————————————————————————————————————————————————————
 // MAIN PAGE — Unified layout with sidebar
@@ -52,21 +47,21 @@ import type { Session, Student, Response } from "@/hooks/use-pilot-session";
 export default function PilotPage() {
   const { id: sessionId } = useParams<{ id: string }>();
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
   const { status: connectionStatus } = useRealtimeInvalidation(sessionId);
   const isOnline = useOnlineStatus();
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [actorId, setActorId] = useState<string>("system");
-  const [codeCopied, setCodeCopied] = useState(false);
+  const [_codeCopied, setCodeCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
-  const [showStudents, setShowStudents] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [mobileContextOpen, setMobileContextOpen] = useState(false);
+  const [_showStudents, setShowStudents] = useState(false);
+  const [_sidebarOpen, setSidebarOpen] = useState(false);
+  const [_mobileContextOpen, _setMobileContextOpen] = useState(false);
   const [cmdOpen, setCmdOpen] = useState(false);
   const [pendingModuleSwitch, setPendingModuleSwitch] = useState<{ moduleId: string; isQuickLaunch: boolean } | null>(
     null,
   );
-  const { play: playSound } = useSound();
+  const { play: _playSound } = useSound();
 
   // Confirmation dialog for destructive actions (#1)
   const confirmAction = useConfirmAction();
@@ -75,12 +70,12 @@ export default function PilotPage() {
   const undoStack = useUndoStack();
 
   // Briefing / cockpit flow
-  const [moduleView, setModuleView] = useState<"briefing" | "cockpit">("cockpit");
-  const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
-  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
+  const [_moduleView, setModuleView] = useState<"briefing" | "cockpit">("cockpit");
+  const [_selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
+  const [_selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   // Right panel removed — floating docks handle their own state
 
-  const sidebarWidth = 0; // Sidebar is now overlay, no offset needed
+  const _sidebarWidth = 0; // Sidebar is now overlay, no offset needed
 
   // Effective connection status: combine navigator.onLine + channel status (#2)
   const effectiveConnectionStatus = !isOnline ? ("disconnected" as const) : connectionStatus;
@@ -119,7 +114,7 @@ export default function PilotPage() {
     sessionLoading,
     teams,
     situationData,
-    situation,
+    situation: _situation,
     responses,
     voteData,
     collectiveChoices,
@@ -189,8 +184,8 @@ export default function PilotPage() {
   );
 
   // State for comment popover
-  const [commentingResponse, setCommentingResponse] = useState<string | null>(null);
-  const [commentText, setCommentText] = useState("");
+  const [_commentingResponse, _setCommentingResponse] = useState<string | null>(null);
+  const [_commentText, _setCommentText] = useState("");
 
   const copyCode = useCallback(() => {
     if (!session) return;
@@ -200,7 +195,7 @@ export default function PilotPage() {
   }, [session]);
 
   // R4: Module selection — directly launches module (no briefing)
-  function handleSelectModule(moduleId: string) {
+  function _handleSelectModule(moduleId: string) {
     doLaunchModule(moduleId, true);
   }
 
@@ -237,7 +232,7 @@ export default function PilotPage() {
   // R4: handleLaunchModule/handleResumeModule removed — direct launch only
 
   // R4: Quick launch module — directly launches
-  function handleQuickLaunchModule(moduleId: string) {
+  function _handleQuickLaunchModule(moduleId: string) {
     doLaunchModule(moduleId, true);
   }
 
@@ -288,7 +283,7 @@ export default function PilotPage() {
   }
 
   // Question counter for top bar
-  const questionCounter = useMemo(() => {
+  const _questionCounter = useMemo(() => {
     if (!session || !activeModule) return null;
     const isM1Pos = session.current_module === 1 && (session.current_seance || 1) === 1;
     const isM1Image =
@@ -301,7 +296,7 @@ export default function PilotPage() {
   }, [session, activeModule]);
 
   // Compute student states at PilotPage level (needed by ContextPanel + CockpitContent)
-  const pageStudentStates = useMemo(() => {
+  const _pageStudentStates = useMemo(() => {
     if (!session?.students) return [];
     return session.students.map((s) => {
       const hasResponded = responses.some((r) => r.student_id === s.id);
@@ -312,8 +307,8 @@ export default function PilotPage() {
   }, [session?.students, responses]);
 
   // Question index & total for top bar dots
-  const currentQuestionIndex = session?.current_situation_index || 0;
-  const totalQuestions = useMemo(() => {
+  const _currentQuestionIndex = session?.current_situation_index || 0;
+  const _totalQuestions = useMemo(() => {
     if (!session || !activeModule) return 0;
     const isM1Pos = session.current_module === 1 && (session.current_seance || 1) === 1;
     const isM1Image =

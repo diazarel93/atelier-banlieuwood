@@ -143,8 +143,6 @@ export const GET = withErrorHandler(async function GET(
     .eq("session_id", sessionId)
     .order("submitted_at");
 
-  const studentMap = new Map((students || []).map((s) => [s.display_name, s]));
-
   // Starred responses section
   const starred = (responses || []).filter((r) => r.teacher_flag === "star");
   if (starred.length > 0) {
@@ -153,7 +151,6 @@ export const GET = withErrorHandler(async function GET(
     lines.push("## ⭐ Réponses Excellentes");
     lines.push("");
     for (const r of starred) {
-      const sName = (students || []).find((s) => s.display_name)?.display_name || "";
       lines.push(
         `- ${r.text}${r.teacher_score ? ` (${r.teacher_score}/5)` : ""}${r.teacher_comment ? ` — _${r.teacher_comment}_` : ""}`,
       );

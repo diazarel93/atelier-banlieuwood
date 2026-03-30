@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { ROUTES } from "@/lib/routes";
-import { ETSI_IMAGES, getEtsiImage, OBJECTIFS, OBSTACLES, TRAITS } from "@/lib/module10-data";
+import { getEtsiImage, OBJECTIFS, OBSTACLES, TRAITS } from "@/lib/module10-data";
 import { EMOTIONS } from "@/lib/module5-data";
 import { BrandLogo } from "@/components/brand-logo";
 import { DiceBearAvatar } from "@/components/avatar-dicebear";

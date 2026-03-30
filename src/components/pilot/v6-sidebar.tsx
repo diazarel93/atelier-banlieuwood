@@ -53,7 +53,7 @@ export function V6Sidebar({
   allStudents,
   respondedStudentIds,
   stuckLevels,
-  sessionStatus,
+  sessionStatus: _sessionStatus,
   onSelectStudent,
   onNudgeStudent,
   onEncourageStudent,

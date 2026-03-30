@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import type { StudentState } from "./pulse-ring";
+import type { StudentState as _StudentState } from "./pulse-ring";
 import type { SeatStudent } from "./seat-card";
 import { DeskPair, type DeskSize } from "./desk-pair";
 import { STATE_STYLE } from "./state-styles";
@@ -171,11 +171,11 @@ export function ClassroomMap({
   teams,
   responses,
   moduleResponseTexts,
-  sessionStatus,
-  onNudge,
-  onWarn,
-  onBroadcast,
-  onNudgeAllStuck,
+  sessionStatus: _sessionStatus,
+  onNudge: _onNudge,
+  onWarn: _onWarn,
+  onBroadcast: _onBroadcast,
+  onNudgeAllStuck: _onNudgeAllStuck,
   onStudentClick,
   layout = "rows",
   desksPerRow = 3,

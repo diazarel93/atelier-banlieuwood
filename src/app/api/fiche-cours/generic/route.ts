@@ -43,7 +43,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
 
     // Match by level + template
     const match = template
-      ? cached?.find((c: { content: unknown; ai_provider: string; generated_at: string }) => true) // single row expected from unique constraint
+      ? cached?.find(() => true) // single row expected from unique constraint
       : cached?.[0];
 
     if (match) {

@@ -114,7 +114,7 @@ const PARTNERS = [
 ];
 
 export default function Home() {
-  const [scrolled, setScrolled] = useState(false);
+  const [_scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);

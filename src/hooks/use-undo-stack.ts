@@ -57,7 +57,7 @@ export function useUndoStack() {
         action: {
           label: "Refaire",
           onClick: () => {
-            Promise.resolve(entry.redo()).catch((err) => {
+            Promise.resolve(entry.redo()).catch((_err) => {
               toast.error("Erreur lors du rétablissement");
             });
             setRedoStack((r) => r.filter((e) => e.id !== entry.id));

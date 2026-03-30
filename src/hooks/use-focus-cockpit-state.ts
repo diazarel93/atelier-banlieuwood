@@ -27,7 +27,13 @@ import { STUCK_DETECTION_DELAY_MS } from "@/components/pilot/pilot-settings";
 
 export function useFocusCockpitState() {
   const { session, sessionId, responses, activeStudents, voteData, situationData, teams } = useCockpitData();
-  const { updateSession, toggleHide, toggleVoteOption, highlightResponse, onModuleComplete } = useCockpitActions();
+  const {
+    updateSession,
+    toggleHide: _toggleHide,
+    toggleVoteOption,
+    highlightResponse,
+    onModuleComplete,
+  } = useCockpitActions();
   const modals = useCockpitModals();
   const moduleFlags = useCockpitModuleFlags(session);
   const { isDarkMode, setIsDarkMode } = useCockpitDarkMode();

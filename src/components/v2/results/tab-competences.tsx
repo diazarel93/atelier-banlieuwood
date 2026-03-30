@@ -1,6 +1,5 @@
 "use client";
 
-import { StatsKpiRow } from "@/components/v2/stats-kpi-row";
 import type { FeedbackData } from "@/hooks/use-results-data";
 import { CompetencyBarsCard } from "./competency-bars-card";
 import { ParticipationTable } from "./participation-table";
