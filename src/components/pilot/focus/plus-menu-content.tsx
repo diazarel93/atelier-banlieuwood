@@ -86,7 +86,7 @@ function ToggleItem({
     >
       <div className="flex items-center gap-2">
         <span className="text-lg">{icon}</span>
-        <span className="text-[13px] font-medium text-[#f0f0f8]">{label}</span>
+        <span className="text-[13px] font-medium text-gray-800">{label}</span>
       </div>
       <div className={`w-10 h-6 rounded-full transition-colors relative ${active ? "bg-emerald-500" : "bg-[#2a2a50]"}`}>
         <div

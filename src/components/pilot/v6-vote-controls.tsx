@@ -24,24 +24,24 @@ export function V6VoteControls({
   onReset,
 }: V6VoteControlsProps) {
   return (
-    <section className="rounded-2xl border border-[#2a2a50] bg-[#161633] p-5">
+    <section className="rounded-2xl border-2 border-bw-violet-border bg-[#161633] p-5 shadow-[0_0_20px_rgba(139,92,246,0.08)]">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-[14px] font-bold text-[#f0f0f8]">Controles Vote</h3>
         <div className="flex items-center gap-2">
           {voteState === "open" && (
-            <span className="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-pulse">
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-pulse">
               {totalVotes} votes
             </span>
           )}
           <span
-            className={`text-[10px] font-semibold px-2.5 py-1 rounded-lg border ${
+            className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${
               voteState === "open"
                 ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                 : voteState === "revealed"
-                  ? "bg-[#fbbf24]/10 text-[#fbbf24] border-[#fbbf24]/20"
+                  ? "bg-bw-amber/10 text-bw-amber border-bw-amber/20"
                   : voteState === "revealing"
-                    ? "bg-[#8b5cf6]/10 text-[#8b5cf6] border-[#8b5cf6]/20"
+                    ? "bg-bw-violet/10 text-bw-violet border-bw-violet/20"
                     : "bg-[#1a1a35] text-[#64748b] border-[#2a2a50]"
             }`}
           >
@@ -56,7 +56,7 @@ export function V6VoteControls({
           {onReset && (
             <button
               onClick={onReset}
-              className="text-[9px] font-semibold px-2 py-1 rounded-md bg-[#1a1a35] border border-[#2a2a50] text-[#64748b] hover:text-[#94a3b8] cursor-pointer transition-colors flex items-center gap-1"
+              className="text-[11px] font-semibold px-2 py-1 min-h-[44px] rounded-md bg-[#1a1a35] border border-[#2a2a50] text-[#64748b] hover:text-[#94a3b8] cursor-pointer transition-colors flex items-center gap-1"
             >
               <svg
                 width="10"
@@ -82,10 +82,10 @@ export function V6VoteControls({
         <button
           onClick={onOpenVote}
           disabled={voteState === "open"}
-          className={`py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
+          className={`min-h-[44px] py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
             voteState === "open"
-              ? "bg-[#8b5cf6]/15 text-[#8b5cf6] border border-[#8b5cf6]/30"
-              : "bg-[#8b5cf6] text-white"
+              ? "bg-bw-violet/15 text-bw-violet border border-bw-violet/30"
+              : "bg-bw-violet text-white"
           }`}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -98,8 +98,8 @@ export function V6VoteControls({
         <button
           onClick={onCloseVote}
           disabled={voteState !== "open"}
-          className={`py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
-            voteState === "open" ? "bg-[#fb923c] text-white" : "bg-[#2a2a50] text-[#64748b]"
+          className={`min-h-[44px] py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
+            voteState === "open" ? "bg-bw-primary text-white" : "bg-[#2a2a50] text-[#64748b]"
           }`}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -113,8 +113,8 @@ export function V6VoteControls({
         <button
           onClick={onReveal}
           disabled={voteState !== "closed" || totalVotes === 0}
-          className={`py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
-            voteState === "closed" && totalVotes > 0 ? "bg-[#ec4899] text-white" : "bg-[#2a2a50] text-[#64748b]"
+          className={`min-h-[44px] py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
+            voteState === "closed" && totalVotes > 0 ? "bg-bw-pink text-white" : "bg-[#2a2a50] text-[#64748b]"
           }`}
         >
           <svg
@@ -135,8 +135,8 @@ export function V6VoteControls({
         <button
           onClick={onNext}
           disabled={voteState !== "revealed"}
-          className={`py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
-            voteState === "revealed" ? "bg-[#34d399] text-white" : "bg-[#2a2a50] text-[#64748b]"
+          className={`min-h-[44px] py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
+            voteState === "revealed" ? "bg-bw-green text-white" : "bg-[#2a2a50] text-[#64748b]"
           }`}
         >
           <svg

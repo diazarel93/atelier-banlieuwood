@@ -182,7 +182,7 @@ export function CockpitFooterBar({
                     style={{
                       background: "rgba(255,252,245,0.8)",
                       border: "1px solid rgba(230,219,207,0.6)",
-                      color: "#8B6914",
+                      color: "var(--color-bw-gold-text)",
                     }}
                   >
                     📝 <span className="hidden sm:inline">Exemple</span>
@@ -268,7 +268,7 @@ export function CockpitFooterBar({
                     style={{
                       background: "rgba(255,248,230,0.8)",
                       border: "1px solid rgba(230,219,207,0.6)",
-                      color: "#8B6914",
+                      color: "var(--color-bw-gold-text)",
                     }}
                   >
                     ⚖️ <span className="hidden sm:inline">Comparer</span>
@@ -382,7 +382,11 @@ export function CockpitFooterBar({
                       }
                       disabled={updateSession.isPending}
                       className="w-full h-9 rounded-lg text-[13px] font-medium cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed border"
-                      style={{ color: "#8B5CF6", borderColor: "#8B5CF620", background: "#8B5CF608" }}
+                      style={{
+                        color: "var(--color-bw-violet)",
+                        borderColor: "rgba(139,92,246,0.12)",
+                        background: "rgba(139,92,246,0.03)",
+                      }}
                     >
                       <span className="flex items-center justify-center gap-1.5">
                         <svg
@@ -417,7 +421,7 @@ export function CockpitFooterBar({
                 >
                   {nextAction.label}{" "}
                   {nextAction.shortcut && (
-                    <kbd className="inline-flex items-center justify-center w-5 h-5 ml-1.5 rounded bg-black/[0.08] text-[10px] font-mono">
+                    <kbd className="inline-flex items-center justify-center w-5 h-5 ml-1.5 rounded bg-black/[0.08] text-[11px] font-mono">
                       {nextAction.shortcut}
                     </kbd>
                   )}
@@ -461,7 +465,7 @@ export function CockpitFooterBar({
                 style={{
                   background: "rgba(255,255,255,0.7)",
                   border: "1px solid rgba(255,255,255,0.5)",
-                  color: "#7A7A7A",
+                  color: "var(--color-bw-muted)",
                 }}
               >
                 Passer
@@ -484,7 +488,7 @@ export function CockpitFooterBar({
               <button
                 onClick={() => setFocusMode((f) => !f)}
                 title={focusMode ? "Quitter le mode focus" : "Mode focus (F)"}
-                className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
+                className={`w-11 h-11 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
                   focusMode
                     ? "bg-bw-violet/15 text-bw-violet border-bw-violet/30"
                     : "text-bw-text hover:text-bw-heading bg-white border-bw-border"
@@ -506,7 +510,7 @@ export function CockpitFooterBar({
               <button
                 onClick={() => updateSession.mutate({ sharing_enabled: !sharingEnabled })}
                 title={sharingEnabled ? "Partage activé" : "Partage désactivé"}
-                className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
+                className={`w-11 h-11 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
                   sharingEnabled
                     ? "bg-bw-teal/15 text-bw-teal border-bw-teal/30"
                     : "text-bw-text hover:text-bw-heading bg-white border-bw-border"
@@ -529,7 +533,7 @@ export function CockpitFooterBar({
               <button
                 onClick={() => updateSession.mutate({ help_enabled: !helpEnabled })}
                 title={helpEnabled ? "Aide élève activée" : "Aide élève désactivée"}
-                className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
+                className={`w-11 h-11 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
                   helpEnabled
                     ? "bg-purple-500/15 text-purple-500 border-purple-500/30"
                     : "text-bw-text hover:text-bw-heading bg-white border-bw-border"
@@ -552,7 +556,7 @@ export function CockpitFooterBar({
               <button
                 onClick={() => updateSession.mutate({ mute_sounds: !muteSounds })}
                 title={muteSounds ? "Sons désactivés" : "Sons activés"}
-                className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
+                className={`w-11 h-11 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
                   muteSounds
                     ? "text-bw-text hover:text-bw-heading bg-white border-bw-border"
                     : "bg-bw-amber/15 text-bw-amber border-bw-amber/30"
@@ -584,7 +588,7 @@ export function CockpitFooterBar({
               <button
                 onClick={() => setShowShortcuts(true)}
                 title="Raccourcis clavier (?)"
-                className="w-8 h-8 rounded-[10px] flex items-center justify-center text-bw-text hover:text-bw-heading bg-white border border-bw-border transition-all cursor-pointer"
+                className="w-11 h-11 rounded-[10px] flex items-center justify-center text-bw-text hover:text-bw-heading bg-white border border-bw-border transition-all cursor-pointer"
               >
                 <svg
                   width="14"

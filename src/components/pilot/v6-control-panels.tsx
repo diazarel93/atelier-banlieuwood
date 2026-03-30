@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ROUTES } from "@/lib/routes";
 
 // ═══════════════════════════════════════════════════════════════
@@ -44,6 +44,14 @@ export function V6ControlPanels({
   const [projActive, setProjActive] = useState(false);
   const [autoSync, setAutoSync] = useState(true);
   const [notes, setNotes] = useState(sessionNotes);
+  const [confirmEnd, setConfirmEnd] = useState(false);
+
+  useEffect(() => {
+    if (confirmEnd) {
+      const t = setTimeout(() => setConfirmEnd(false), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [confirmEnd]);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -213,8 +221,19 @@ export function V6ControlPanels({
             Verrou ecrans
           </button>
           <button
-            onClick={onEndSession}
-            className="flex-1 py-2.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 text-[11px] font-semibold cursor-pointer hover:bg-red-500/15 transition-colors flex items-center justify-center gap-1.5"
+            onClick={() => {
+              if (confirmEnd) {
+                onEndSession?.();
+                setConfirmEnd(false);
+              } else {
+                setConfirmEnd(true);
+              }
+            }}
+            className={`flex-1 py-2.5 rounded-lg border text-[11px] font-semibold cursor-pointer transition-colors flex items-center justify-center gap-1.5 ${
+              confirmEnd
+                ? "border-red-500 bg-red-500/30 text-red-300 animate-pulse"
+                : "border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/15"
+            }`}
           >
             <svg
               width="12"
@@ -227,7 +246,7 @@ export function V6ControlPanels({
             >
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
-            Terminer
+            {confirmEnd ? "Confirmer ?" : "Terminer"}
           </button>
         </div>
       </section>

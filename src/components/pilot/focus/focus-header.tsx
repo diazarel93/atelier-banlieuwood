@@ -78,9 +78,9 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
   },
   waiting: {
     label: "ATTENTE",
-    color: "text-[#64748b]",
-    bg: "bg-[#1a1a35] border-[#2a2a50]",
-    dot: "bg-[#64748b]",
+    color: "text-[#94a3b8]",
+    bg: "bg-bw-cockpit-surface border-[rgba(245,245,244,0.08)]",
+    dot: "bg-[#94a3b8]",
   },
   paused: {
     label: "PAUSE",
@@ -90,9 +90,9 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
   },
   done: {
     label: "TERMINE",
-    color: "text-[#64748b]",
-    bg: "bg-[#1a1a35] border-[#2a2a50]",
-    dot: "bg-[#64748b]",
+    color: "text-[#94a3b8]",
+    bg: "bg-bw-cockpit-surface border-[rgba(245,245,244,0.08)]",
+    dot: "bg-[#94a3b8]",
   },
 };
 
@@ -181,13 +181,13 @@ export function FocusHeader({
   return (
     <div className="shrink-0">
       {/* ══ BAR 1: Main header ══ */}
-      <div className="flex items-center gap-3 px-4 py-2.5 border-b border-[#2a2a50] bg-[#13132a]/90 backdrop-blur-md">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-[rgba(245,245,244,0.08)] bg-bw-cockpit-canvas/90 backdrop-blur-md">
         {/* Left: Logo + info */}
         <div className="flex items-center gap-3 min-w-0">
           <span className="text-xl flex-shrink-0">🎬</span>
           <div className="min-w-0">
-            <div className="text-[14px] font-extrabold text-[#8b5cf6] leading-tight">BANLIEUWOOD</div>
-            <div className="text-[10px] text-[#64748b] truncate">
+            <div className="text-[14px] font-extrabold text-bw-violet-main leading-tight">BANLIEUWOOD</div>
+            <div className="text-[11px] text-[#94a3b8] truncate">
               {classLabel || sessionTitle} — P{moduleLabel}
             </div>
           </div>
@@ -197,7 +197,7 @@ export function FocusHeader({
         <div className="hidden sm:flex items-center gap-3 flex-1 justify-center">
           {/* LIVE/PAUSE pill */}
           <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${statusCfg.bg} ${statusCfg.color}`}
+            className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider border ${statusCfg.bg} ${statusCfg.color}`}
           >
             <motion.span
               className={`w-2 h-2 rounded-full ${statusCfg.dot}`}
@@ -209,7 +209,7 @@ export function FocusHeader({
 
           {/* Elapsed timer */}
           {timerActive ? (
-            <div className="shrink-0 px-2.5 py-1 rounded-lg bg-orange-500/10 border border-orange-500/30">
+            <div className="shrink-0 px-3 py-1 rounded-lg bg-orange-500/10 border border-orange-500/30">
               <CountdownTimer endsAt={timerEndsAt!} size="sm" />
             </div>
           ) : sessionStatus === "responding" ? (
@@ -219,7 +219,7 @@ export function FocusHeader({
           ) : null}
 
           {/* Users count */}
-          <span className="flex items-center gap-1.5 text-[12px]">
+          <span className="flex items-center gap-2 text-[12px]">
             <svg
               width="13"
               height="13"
@@ -235,8 +235,8 @@ export function FocusHeader({
               <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
-            <strong className="text-[#f0f0f8]">{activeStudentCount}</strong>
-            <span className="text-[#64748b]">/{totalStudents}</span>
+            <strong className="text-bw-cockpit-text">{activeStudentCount}</strong>
+            <span className="text-[#94a3b8]">/{totalStudents}</span>
           </span>
 
           {/* Hands raised */}
@@ -300,12 +300,12 @@ export function FocusHeader({
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           {/* Command palette */}
           {onOpenCommandPalette && (
             <button
               onClick={onOpenCommandPalette}
-              className="flex items-center gap-1 px-2 py-1.5 rounded-lg bg-[#1a1a35] hover:bg-[#2a2a50] border border-[#2a2a50] transition-colors cursor-pointer text-[11px] text-[#94a3b8] font-medium"
+              className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-lg bg-bw-cockpit-surface hover:bg-[rgba(245,245,244,0.08)] border border-[rgba(245,245,244,0.08)] transition-colors cursor-pointer text-[11px] text-[#94a3b8] font-medium"
               title="Commandes (⌘K)"
             >
               <svg
@@ -320,13 +320,13 @@ export function FocusHeader({
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.3-4.3" />
               </svg>
-              <kbd className="font-mono text-[10px]">⌘K</kbd>
+              <kbd className="font-mono text-[11px]">⌘K</kbd>
             </button>
           )}
 
           {/* Current module badge (info only — navigation via rail below) */}
           <span
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold text-white"
+            className="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-[11px] font-bold text-white"
             style={{ backgroundColor: moduleColor }}
           >
             {moduleLabel}
@@ -336,7 +336,7 @@ export function FocusHeader({
           {onTogglePause && (
             <button
               onClick={onTogglePause}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-bold text-white cursor-pointer transition-all ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[12px] font-bold text-white cursor-pointer transition-all ${
                 isPaused
                   ? "bg-gradient-to-r from-emerald-500 to-emerald-600"
                   : "bg-gradient-to-r from-orange-500 to-orange-600"
@@ -365,7 +365,7 @@ export function FocusHeader({
           {onToggleSidebar && (
             <button
               onClick={onToggleSidebar}
-              className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#1a1a35] hover:bg-[#2a2a50] border border-[#2a2a50] transition-colors cursor-pointer"
+              className="flex items-center justify-center w-11 h-11 rounded-lg bg-bw-cockpit-surface hover:bg-[rgba(245,245,244,0.08)] border border-[rgba(245,245,244,0.08)] transition-colors cursor-pointer"
               title={sidebarOpen ? "Masquer le panneau" : "Afficher le panneau"}
             >
               {sidebarOpen ? (
@@ -403,7 +403,7 @@ export function FocusHeader({
       </div>
 
       {/* ══ BAR 2: Module rail P1-P8 ══ */}
-      <nav className="flex items-center gap-1 px-4 py-2 overflow-x-auto border-b border-[#2a2a50] bg-[#13132a]/60 backdrop-blur-sm">
+      <nav className="flex items-center gap-1 px-4 py-2 overflow-x-auto border-b border-[rgba(245,245,244,0.08)] bg-bw-cockpit-canvas/60 backdrop-blur-sm">
         {moduleRail.map((m, i) => (
           <div key={m.id} className="flex items-center">
             {/* Connecting line */}
@@ -411,7 +411,7 @@ export function FocusHeader({
               <div
                 className="w-4 h-[2px] mx-0.5 rounded-sm flex-shrink-0"
                 style={{
-                  background: m.isDone || moduleRail[i - 1]?.isDone ? "#34d399" : "#2a2a50",
+                  background: m.isDone || moduleRail[i - 1]?.isDone ? "#34d399" : "rgba(245,245,244,0.08)",
                 }}
               />
             )}
@@ -419,11 +419,11 @@ export function FocusHeader({
             <button
               onClick={() => !m.isLocked && m.firstModuleId && onModuleSelect?.(m.firstModuleId)}
               disabled={m.isLocked}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all flex-shrink-0 border cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all flex-shrink-0 border cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               style={{
-                borderColor: m.isActive ? `${m.color}66` : m.isDone ? "rgba(52,211,153,0.3)" : "#2a2a50",
+                borderColor: m.isActive ? `${m.color}66` : m.isDone ? "rgba(52,211,153,0.3)" : "rgba(245,245,244,0.08)",
                 background: m.isActive ? `${m.color}15` : m.isDone ? "rgba(52,211,153,0.05)" : "transparent",
-                color: m.isActive ? m.color : m.isDone ? "#34d399" : "#64748b",
+                color: m.isActive ? m.color : m.isDone ? "#34d399" : "#94a3b8",
               }}
               title={m.label}
             >

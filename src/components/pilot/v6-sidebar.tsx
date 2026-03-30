@@ -130,35 +130,40 @@ export function V6Sidebar({
     return responses;
   }, [responses, responseFilter]);
 
-  const tabs: { id: SidebarTab; label: string; count?: number }[] = [
-    { id: "students", label: "Eleves", count: counts.all },
+  const tabs: { id: SidebarTab; label: string; count?: number; alertCount?: number }[] = [
+    { id: "students", label: "Eleves", count: counts.all, alertCount: counts.off > 0 ? counts.off : undefined },
     { id: "responses", label: "Reponses", count: responses.length },
     { id: "timeline", label: "Timeline" },
     { id: "notes", label: "Notes" },
   ];
 
   return (
-    <div className="flex flex-col h-full bg-[#0c0c18]">
+    <div className="flex flex-col h-full bg-bw-cockpit-canvas">
       {/* ── Tab bar ── */}
-      <div className="flex items-center border-b border-[#2a2a50] px-1 pt-1">
+      <div className="flex items-center border-b border-bw-cockpit-border px-1 pt-1">
         {tabs.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`flex items-center gap-1.5 px-3 py-2.5 text-[11px] font-semibold transition-colors cursor-pointer border-b-2 ${
+            className={`flex items-center gap-2 px-3 py-3 min-h-[44px] text-[11px] font-semibold transition-colors cursor-pointer border-b-2 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2 ${
               tab === t.id
-                ? "text-[#8b5cf6] border-[#8b5cf6]"
-                : "text-[#64748b] border-transparent hover:text-[#94a3b8]"
+                ? "text-bw-violet-main border-bw-violet-main"
+                : "text-[#94a3b8] border-transparent hover:text-[#94a3b8]"
             }`}
           >
             {t.label}
             {typeof t.count === "number" && (
               <span
-                className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
-                  tab === t.id ? "bg-[#8b5cf6]/15 text-[#8b5cf6]" : "bg-[#1a1a35] text-[#64748b]"
+                className={`text-[11px] font-bold px-2 py-1 rounded-full ${
+                  tab === t.id ? "bg-bw-violet-main/15 text-bw-violet-main" : "bg-bw-cockpit-surface text-[#94a3b8]"
                 }`}
               >
                 {t.count}
+              </span>
+            )}
+            {typeof t.alertCount === "number" && (
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">
+                {t.alertCount} off
               </span>
             )}
           </button>
@@ -181,7 +186,7 @@ export function V6Sidebar({
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
-                  className="absolute left-2.5 top-[8px] text-[#64748b]"
+                  className="absolute left-3 top-[8px] text-[#94a3b8]"
                 >
                   <circle cx="11" cy="11" r="8" />
                   <path d="m21 21-4.3-4.3" />
@@ -190,7 +195,7 @@ export function V6Sidebar({
                   value={studentSearch}
                   onChange={(e) => setStudentSearch(e.target.value)}
                   placeholder="Chercher un eleve..."
-                  className="w-full pl-8 pr-3 py-2 text-[11px] rounded-lg border border-[#2a2a50] bg-[#1a1a35] text-[#c4b5fd] outline-none focus:border-[#8b5cf6]/40 placeholder:text-[#475569]"
+                  className="w-full pl-8 pr-3 py-2 text-[11px] rounded-lg border border-bw-cockpit-border bg-bw-cockpit-surface text-[#c4b5fd] outline-none focus:border-bw-violet-main/40 placeholder:text-[#94a3b8]"
                 />
               </div>
             </div>
@@ -209,10 +214,10 @@ export function V6Sidebar({
                 <button
                   key={f.id}
                   onClick={() => setStudentFilter(f.id)}
-                  className={`text-[9px] font-semibold px-2 py-1 rounded-md whitespace-nowrap cursor-pointer transition-colors border ${
+                  className={`text-[11px] font-semibold px-3 py-2 min-h-[44px] rounded-md whitespace-nowrap cursor-pointer transition-colors border focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2 ${
                     studentFilter === f.id
-                      ? "bg-[#8b5cf6]/10 text-[#8b5cf6] border-[#8b5cf6]/30"
-                      : "bg-transparent text-[#64748b] border-transparent hover:text-[#94a3b8]"
+                      ? "bg-bw-violet-main/10 text-bw-violet-main border-bw-violet-main/30"
+                      : "bg-transparent text-[#94a3b8] border-transparent hover:text-[#94a3b8]"
                   }`}
                 >
                   {f.label}
@@ -233,15 +238,17 @@ export function V6Sidebar({
                   <button
                     key={student.id}
                     onClick={() => onSelectStudent(student)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-[#1a1a35] transition-colors cursor-pointer text-left border-b border-[#2a2a50]/50"
+                    className="w-full flex items-center gap-3 px-3 py-2 hover:bg-bw-cockpit-surface transition-colors cursor-pointer text-left border-b border-bw-cockpit-border/50 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
                   >
                     {/* Avatar */}
                     <span className="text-lg flex-shrink-0">{student.avatar || "👤"}</span>
 
                     {/* Name + meta */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[12px] font-medium text-[#f0f0f8] truncate">{student.display_name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[12px] font-medium text-bw-cockpit-text truncate">
+                          {student.display_name}
+                        </span>
                         {student.hand_raised_at && (
                           <motion.span
                             className="text-xs flex-shrink-0"
@@ -253,14 +260,18 @@ export function V6Sidebar({
                         )}
                       </div>
                       {/* Status label — doctrine: no XP/scores/levels */}
-                      <span className="text-[9px] text-[#64748b] mt-0.5">
-                        {isOnline ? (responded ? "a repondu" : "en ligne") : "hors ligne"}
+                      <span
+                        className={`text-[11px] mt-0.5 ${
+                          !isOnline ? "text-red-400 font-semibold uppercase" : "text-[#94a3b8]"
+                        }`}
+                      >
+                        {isOnline ? (responded ? "a repondu" : "en ligne") : "HORS LIGNE"}
                       </span>
                     </div>
 
                     {/* Status dot */}
                     <motion.span
-                      className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                      className="w-3 h-3 rounded-full flex-shrink-0"
                       style={{ background: dotColor }}
                       animate={
                         !responded && (level === "stuck" || level === "slow")
@@ -279,7 +290,7 @@ export function V6Sidebar({
                           e.stopPropagation();
                           onNudgeStudent(student.id);
                         }}
-                        className="text-[9px] px-1.5 py-0.5 rounded bg-orange-900/20 text-orange-400 border border-orange-500/30 hover:bg-orange-900/40 cursor-pointer flex-shrink-0"
+                        className="text-[11px] px-3 py-2 min-h-[44px] rounded bg-orange-900/20 text-orange-400 border border-orange-500/30 hover:bg-orange-900/40 cursor-pointer flex-shrink-0 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
                         title="Relancer"
                       >
                         🔔
@@ -291,7 +302,7 @@ export function V6Sidebar({
                           e.stopPropagation();
                           onEncourageStudent(student.id);
                         }}
-                        className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-900/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-900/40 cursor-pointer flex-shrink-0"
+                        className="text-[11px] px-3 py-2 min-h-[44px] rounded bg-emerald-900/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-900/40 cursor-pointer flex-shrink-0 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
                         title="Encourager"
                       >
                         👏
@@ -304,7 +315,7 @@ export function V6Sidebar({
               {filteredStudents.length === 0 && (
                 <div className="text-center py-8 px-3">
                   <span className="text-2xl">📡</span>
-                  <p className="text-[11px] text-[#64748b] mt-2">Aucun eleve dans ce filtre</p>
+                  <p className="text-[11px] text-[#94a3b8] mt-2">Aucun eleve dans ce filtre</p>
                 </div>
               )}
             </div>
@@ -315,7 +326,7 @@ export function V6Sidebar({
         {tab === "responses" && (
           <div className="flex flex-col h-full">
             {/* Filters */}
-            <div className="flex gap-1 px-3 py-2 border-b border-[#2a2a50]">
+            <div className="flex gap-1 px-3 py-2 border-b border-bw-cockpit-border">
               {(
                 [
                   { id: "all" as const, label: "Toutes" },
@@ -327,10 +338,10 @@ export function V6Sidebar({
                 <button
                   key={f.id}
                   onClick={() => setResponseFilter(f.id)}
-                  className={`text-[9px] font-semibold px-2 py-1 rounded-md whitespace-nowrap cursor-pointer transition-colors border ${
+                  className={`text-[11px] font-semibold px-3 py-2 min-h-[44px] rounded-md whitespace-nowrap cursor-pointer transition-colors border focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2 ${
                     responseFilter === f.id
-                      ? "bg-[#8b5cf6]/10 text-[#8b5cf6] border-[#8b5cf6]/30"
-                      : "bg-transparent text-[#64748b] border-transparent hover:text-[#94a3b8]"
+                      ? "bg-bw-violet-main/10 text-bw-violet-main border-bw-violet-main/30"
+                      : "bg-transparent text-[#94a3b8] border-transparent hover:text-[#94a3b8]"
                   }`}
                 >
                   {f.label}
@@ -343,29 +354,31 @@ export function V6Sidebar({
               {filteredResponses.map((r) => (
                 <div
                   key={r.id}
-                  className="px-3 py-2.5 border-b border-[#2a2a50]/50 hover:bg-[#1a1a35] transition-colors"
+                  className="px-3 py-3 border-b border-bw-cockpit-border/50 hover:bg-bw-cockpit-surface transition-colors"
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-sm">{r.students?.avatar || "👤"}</span>
-                    <span className="text-[11px] font-bold text-[#f0f0f8]">{r.students?.display_name || "Eleve"}</span>
-                    <span className="text-[9px] text-[#64748b] ml-auto">
+                    <span className="text-[11px] font-bold text-bw-cockpit-text">
+                      {r.students?.display_name || "Eleve"}
+                    </span>
+                    <span className="text-[11px] text-[#94a3b8] ml-auto">
                       {new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                     </span>
                   </div>
                   <p className="text-[11px] text-[#94a3b8] leading-relaxed line-clamp-2">{r.text}</p>
-                  <div className="flex items-center gap-1.5 mt-1.5">
+                  <div className="flex items-center gap-2 mt-2">
                     {r.is_vote_option && (
-                      <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      <span className="text-[11px] font-bold px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                         VALIDE
                       </span>
                     )}
                     {r.is_highlighted && (
-                      <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-[#fbbf24]/10 text-[#fbbf24] border border-[#fbbf24]/20">
+                      <span className="text-[11px] font-bold px-2 py-1 rounded bg-[#fbbf24]/10 text-[#fbbf24] border border-[#fbbf24]/20">
                         ⭐
                       </span>
                     )}
                     {r.is_hidden && (
-                      <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20">
+                      <span className="text-[11px] font-bold px-2 py-1 rounded bg-red-500/10 text-red-400 border border-red-500/20">
                         MASQUE
                       </span>
                     )}
@@ -376,7 +389,7 @@ export function V6Sidebar({
               {filteredResponses.length === 0 && (
                 <div className="text-center py-8 px-3">
                   <span className="text-2xl">📝</span>
-                  <p className="text-[11px] text-[#64748b] mt-2">Aucune reponse</p>
+                  <p className="text-[11px] text-[#94a3b8] mt-2">Aucune reponse</p>
                 </div>
               )}
             </div>
@@ -394,7 +407,7 @@ export function V6Sidebar({
         {tab === "notes" && (
           <div className="px-3 py-3 flex flex-col gap-3">
             {/* Tags */}
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {NOTE_TAGS.map((tag) => (
                 <button
                   key={tag.id}
@@ -404,7 +417,7 @@ export function V6Sidebar({
                     setNotes(updated);
                     onNotesChange?.(updated);
                   }}
-                  className="text-[10px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer transition-colors border"
+                  className="text-[11px] font-semibold px-3 py-1 min-h-[44px] rounded-lg cursor-pointer transition-colors border focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
                   style={{
                     background: `${tag.color}15`,
                     borderColor: `${tag.color}30`,
@@ -424,7 +437,7 @@ export function V6Sidebar({
                 onNotesChange?.(e.target.value);
               }}
               placeholder="Notes de session..."
-              className="w-full min-h-[200px] p-3 rounded-xl border border-[#2a2a50] bg-[#1a1a35] text-[12px] text-[#94a3b8] font-sans resize-y outline-none focus:border-[#8b5cf6]/40 placeholder:text-[#475569]"
+              className="w-full min-h-[200px] p-3 rounded-xl border border-bw-cockpit-border bg-bw-cockpit-surface text-[12px] text-[#94a3b8] font-sans resize-y outline-none focus:border-bw-violet-main/40 placeholder:text-[#94a3b8]"
             />
           </div>
         )}
