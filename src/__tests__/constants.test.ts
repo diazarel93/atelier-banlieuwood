@@ -64,7 +64,7 @@ describe("PRODUCTION_CATEGORIES (Budget)", () => {
 
 describe("generateBudgetSummary", () => {
   it("generates summary text from choices", () => {
-    const choices = { acteurs: 5, decors: 5, effets: 0, musique: 0, duree: 5 };
+    const choices = { acteurs: 5, decors: 10, effets: 0, musique: 0 };
     const summary = generateBudgetSummary(choices);
     expect(summary).toContain("casting");
     expect(summary).toContain("décors");

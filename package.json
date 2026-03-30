@@ -15,7 +15,12 @@
     "scrape": "npx tsx scripts/scraper/index.ts",
     "scrape:phase1": "npx tsx scripts/scraper/index.ts --phase 1",
     "scrape:phase2": "npx tsx scripts/scraper/index.ts --phase 2",
-    "scrape:phase3": "npx tsx scripts/scraper/index.ts --phase 3"
+    "scrape:phase3": "npx tsx scripts/scraper/index.ts --phase 3",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": ["prettier --write"],
+    "src/**/*.css": ["prettier --write"]
   },
   "dependencies": {
     "@dicebear/collection": "^9.4.0",
@@ -58,6 +63,8 @@
     "@vitest/coverage-v8": "^4.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
     "shadcn": "^3.8.5",
     "tailwindcss": "^4",

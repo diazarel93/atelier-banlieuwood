@@ -91,7 +91,7 @@ export function FocusQuestionCard({
             <button
               onClick={onPrev}
               disabled={currentIndex <= 0}
-              className="w-7 h-7 rounded-full bg-[#1a1a35] hover:bg-[#2a2a50] disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
+              className="w-11 h-11 rounded-full bg-[#1a1a35] hover:bg-[#2a2a50] disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
             >
               <svg
                 width="12"
@@ -134,7 +134,7 @@ export function FocusQuestionCard({
             <button
               onClick={onNext}
               disabled={currentIndex >= maxSituations - 1}
-              className="w-7 h-7 rounded-full bg-[#1a1a35] hover:bg-[#2a2a50] disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
+              className="w-11 h-11 rounded-full bg-[#1a1a35] hover:bg-[#2a2a50] disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
             >
               <svg
                 width="12"
@@ -213,7 +213,7 @@ export function FocusQuestionCard({
                               {sit.prompt}
                             </p>
                             {sit.category && (
-                              <span className="text-[10px] text-[#64748b] uppercase tracking-wider">
+                              <span className="text-[11px] text-[#64748b] uppercase tracking-wider">
                                 {sit.restitutionLabel || sit.category}
                               </span>
                             )}

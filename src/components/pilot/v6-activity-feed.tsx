@@ -31,14 +31,14 @@ export function V6ActivityFeed({ items, onClear }: V6ActivityFeedProps) {
         <div className="flex items-center gap-2.5">
           <span className="text-base">📻</span>
           <span className="text-[13px] font-bold text-[#f0f0f8]">Activite</span>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#8b5cf6]/10 text-[#8b5cf6]">
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-bw-violet/10 text-bw-violet">
             {items.length}
           </span>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setSoundOn(!soundOn)}
-            className={`text-[10px] font-semibold px-2 py-1 rounded-md cursor-pointer border flex items-center gap-1 transition-colors ${
+            className={`text-[11px] font-semibold px-2 py-1 min-h-[44px] rounded-md cursor-pointer border flex items-center gap-1 transition-colors ${
               soundOn
                 ? "bg-[#1a1a35] border-[#2a2a50] text-emerald-400"
                 : "bg-[#1a1a35] border-[#2a2a50] text-[#64748b]"
@@ -49,7 +49,7 @@ export function V6ActivityFeed({ items, onClear }: V6ActivityFeedProps) {
           {onClear && (
             <button
               onClick={onClear}
-              className="text-[10px] font-semibold px-2 py-1 rounded-md bg-red-500/8 border border-red-500/20 text-red-400 cursor-pointer hover:bg-red-500/15 transition-colors"
+              className="text-[11px] font-semibold px-2 py-1 min-h-[44px] rounded-md bg-red-500/8 border border-red-500/20 text-red-400 cursor-pointer hover:bg-red-500/15 transition-colors"
             >
               Effacer tout
             </button>
@@ -66,7 +66,7 @@ export function V6ActivityFeed({ items, onClear }: V6ActivityFeedProps) {
           >
             <span className="text-sm flex-shrink-0">{item.icon}</span>
             <span className="text-[11px] text-[#94a3b8] flex-1 truncate">{item.text}</span>
-            <span className="text-[9px] text-[#64748b] flex-shrink-0 tabular-nums">{item.time}</span>
+            <span className="text-[11px] text-[#64748b] flex-shrink-0 tabular-nums">{item.time}</span>
           </div>
         ))}
       </div>

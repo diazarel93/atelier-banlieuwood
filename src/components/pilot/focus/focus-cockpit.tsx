@@ -29,12 +29,17 @@ import { V6ControlPanels } from "@/components/pilot/v6-control-panels";
 import { V6VoteControls } from "@/components/pilot/v6-vote-controls";
 import { V6ActivityFeed, type ActivityItem } from "@/components/pilot/v6-activity-feed";
 import { useStuckDetection } from "@/hooks/use-stuck-detection";
+import { useOnlineStatus } from "@/hooks/use-online-status";
+import { useQueryClient } from "@tanstack/react-query";
 import type { ResponseCardResponse } from "@/components/pilot/response-card";
 import type { Response } from "@/hooks/use-pilot-session";
 
 export function FocusCockpit() {
   const [remoteMode, setRemoteMode] = useState(false);
+  const isOnline = useOnlineStatus();
+  const queryClient = useQueryClient();
   const state = useFocusCockpitState();
+
   const {
     session,
     sessionId,
@@ -246,10 +251,29 @@ export function FocusCockpit() {
     }
   }
 
+  // ── Skeleton loading: guard before data is ready ──
+  if (!session?.id) {
+    return (
+      <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-bw-cockpit-canvas">
+        <div className="h-10 w-48 rounded-lg bg-bw-cockpit-surface animate-pulse" />
+        <div className="rounded-2xl border border-[rgba(245,245,244,0.08)] bg-bw-cockpit-surface p-6 space-y-4">
+          <div className="h-4 w-24 rounded bg-bw-cockpit-elevated animate-pulse" />
+          <div className="h-6 w-3/4 rounded bg-bw-cockpit-elevated animate-pulse" />
+          <div className="h-2 w-full rounded-full bg-bw-cockpit-elevated animate-pulse" />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="h-32 rounded-2xl bg-bw-cockpit-surface animate-pulse" />
+          <div className="h-32 rounded-2xl bg-bw-cockpit-surface animate-pulse" />
+        </div>
+        <div className="h-20 rounded-2xl bg-bw-cockpit-surface animate-pulse" />
+      </div>
+    );
+  }
+
   // ── Remote Control Mode ──
   if (remoteMode) {
     return (
-      <div className="flex-1 flex flex-col overflow-hidden bg-[#0c0c18] relative">
+      <div className="flex-1 flex flex-col overflow-hidden bg-bw-cockpit-canvas relative">
         <RemoteControlView
           questionText={universalQuestionText}
           respondedCount={unifiedRespondedCount}
@@ -297,7 +321,20 @@ export function FocusCockpit() {
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden bg-[#0c0c18] text-[#f0f0f8]">
+    <div className="flex-1 flex flex-col overflow-hidden bg-bw-cockpit-canvas text-bw-cockpit-text">
+      {/* ── CONNECTION LOST BANNER ── */}
+      {!isOnline && (
+        <div className="sticky top-0 z-40 flex items-center justify-center gap-3 px-4 py-2 bg-red-500/90 text-white text-[13px] text-center">
+          <span>Connexion perdue — les données ne sont plus à jour</span>
+          <button
+            onClick={() => queryClient.invalidateQueries()}
+            className="px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 text-white text-[12px] font-semibold transition-colors cursor-pointer"
+          >
+            Réessayer
+          </button>
+        </div>
+      )}
+
       {/* ── HEADER ── */}
       <FocusHeader
         sessionId={sessionId}
@@ -325,7 +362,7 @@ export function FocusCockpit() {
       <div className="flex-1 overflow-y-auto">
         <div className="px-5 py-5 space-y-4">
           {/* ═══ MODULE SECTION CARD ═══ */}
-          <section className="rounded-2xl border border-[#2a2a50] bg-[#161633] overflow-hidden">
+          <section className="rounded-2xl border border-[rgba(245,245,244,0.08)] bg-bw-cockpit-surface overflow-hidden">
             {/* Top accent bar */}
             <div className="h-1" style={{ background: `linear-gradient(90deg, ${moduleColor}, ${moduleColor}66)` }} />
 
@@ -336,12 +373,12 @@ export function FocusCockpit() {
                   Phase — Q{currentQIndex + 1}/{moduleFlags.maxSituations}
                 </div>
               </div>
-              <h1 className="text-lg font-extrabold text-[#f0f0f8] mb-1">{moduleLabel}</h1>
+              <h1 className="text-lg font-extrabold text-bw-cockpit-text mb-1">{moduleLabel}</h1>
 
               {/* Progress bar */}
               {session.status === "responding" && activeStudents.length > 0 && (
                 <div className="flex items-center gap-3 mt-3">
-                  <span className="text-[11px] font-semibold text-[#64748b]">
+                  <span className="text-[11px] font-semibold text-[#94a3b8]">
                     {unifiedRespondedCount}/{activeStudents.length} ont repondu
                   </span>
                   <div className="flex-1 h-2 rounded-full bg-[#1a1a35] overflow-hidden">
@@ -462,24 +499,24 @@ export function FocusCockpit() {
                   >
                     🎬
                   </motion.div>
-                  <h3 className="text-xl font-bold text-[#f0f0f8]">C&apos;est dans la boîte !</h3>
+                  <h3 className="text-xl font-bold text-bw-cockpit-text">C&apos;est dans la boîte !</h3>
                 </div>
 
                 {/* Stats cards */}
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="bg-[#161633] rounded-xl border border-[#2a2a50] p-3 text-center">
+                  <div className="bg-bw-cockpit-surface rounded-xl border border-[rgba(245,245,244,0.08)] p-3 text-center">
                     <p className="text-2xl font-bold text-emerald-600 tabular-nums">{activeStudents.length}</p>
-                    <p className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Élèves</p>
+                    <p className="text-[11px] text-[#94a3b8] uppercase tracking-wider mt-0.5">Élèves</p>
                   </div>
-                  <div className="bg-[#161633] rounded-xl border border-[#2a2a50] p-3 text-center">
+                  <div className="bg-bw-cockpit-surface rounded-xl border border-[rgba(245,245,244,0.08)] p-3 text-center">
                     <p className="text-2xl font-bold text-orange-500 tabular-nums">{responses.length}</p>
-                    <p className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Réponses</p>
+                    <p className="text-[11px] text-[#94a3b8] uppercase tracking-wider mt-0.5">Réponses</p>
                   </div>
-                  <div className="bg-[#161633] rounded-xl border border-[#2a2a50] p-3 text-center">
+                  <div className="bg-bw-cockpit-surface rounded-xl border border-[rgba(245,245,244,0.08)] p-3 text-center">
                     <p className="text-2xl font-bold text-purple-500 tabular-nums">
                       {responses.filter((r) => r.is_highlighted).length}
                     </p>
-                    <p className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Mises en avant</p>
+                    <p className="text-[11px] text-[#94a3b8] uppercase tracking-wider mt-0.5">Mises en avant</p>
                   </div>
                 </div>
 
@@ -621,17 +658,17 @@ export function FocusCockpit() {
         onClose={() => setShowStudentSheet(false)}
         title={`Élèves (${activeStudents.length})`}
       >
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           {studentList.map((s) => {
             const hasResponded = state.respondedStudentIds.has(s.id);
             return (
               <button
                 key={s.id}
                 onClick={() => handleSelectStudent(s)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#1a1a35] transition-colors cursor-pointer text-left"
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-[#1a1a35] transition-colors cursor-pointer text-left"
               >
                 <span className="text-2xl">{s.avatar}</span>
-                <span className="flex-1 text-[14px] font-medium text-[#f0f0f8] truncate">{s.display_name}</span>
+                <span className="flex-1 text-[14px] font-medium text-bw-cockpit-text truncate">{s.display_name}</span>
                 {s.hand_raised_at && (
                   <span className="text-sm" title="Main levée">
                     ✋
@@ -643,7 +680,7 @@ export function FocusCockpit() {
               </button>
             );
           })}
-          {studentList.length === 0 && <p className="text-center text-sm text-[#64748b] py-4">Aucun élève connecté</p>}
+          {studentList.length === 0 && <p className="text-center text-sm text-[#94a3b8] py-4">Aucun élève connecté</p>}
         </div>
       </BottomSheet>
 
@@ -670,7 +707,7 @@ export function FocusCockpit() {
                   animate={{ x: 0 }}
                   exit={{ x: "100%" }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="w-full max-w-md h-full bg-[#161633] border-l border-[#2a2a50] shadow-2xl overflow-y-auto"
+                  className="w-full max-w-md h-full bg-bw-cockpit-surface border-l border-[rgba(245,245,244,0.08)] shadow-2xl overflow-y-auto"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <StudentFiche

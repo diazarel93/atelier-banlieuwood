@@ -16,7 +16,8 @@ export const POST = withErrorHandler(async function POST(
 
   const parsed = await safeJson(req);
   if ("error" in parsed) return parsed.error;
-  let { studentId, raised } = parsed.data as { studentId: string; raised: boolean };
+  const { studentId: _sid, raised } = parsed.data as { studentId: string; raised: boolean };
+  let studentId = _sid;
 
   // Prefer token-based auth over body studentId
   const tokenCookie = req.cookies.get("bw-student-token")?.value;

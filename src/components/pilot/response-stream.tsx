@@ -1,9 +1,31 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { ResponseCard, type ResponseCardResponse } from "./response-card";
 import { useCockpit } from "./cockpit-context";
+
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.08, delayChildren: 0.05 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 12, scale: 0.97 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] },
+  },
+  exit: {
+    opacity: 0,
+    x: -20,
+    transition: { duration: 0.15, ease: "easeIn" as const },
+  },
+};
 
 const PAGE_SIZE = 20;
 
@@ -87,18 +109,28 @@ export function ResponseStream({ responses, winnerResponseId, onValidate, onSpot
     );
   }
 
+  const renderCardWithMotion = (r: ResponseCardResponse) => (
+    <motion.div key={r.id} variants={itemVariants} layout>
+      {renderCard(r)}
+    </motion.div>
+  );
+
   return (
     <div className="space-y-2">
       <AnimatePresence mode="popLayout">
-        {/* Selected pinned at top */}
-        {selected.length > 0 && sessionStatus === "responding" && (
-          <>
-            {selected.map(renderCard)}
-            {rest.length > 0 && <div className="border-t border-[#2a2a50] my-2" />}
-          </>
-        )}
-        {/* Rest of responses (paginated) */}
-        {sessionStatus === "responding" ? displayedRest.map(renderCard) : displayedAll.map(renderCard)}
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-2">
+          {/* Selected pinned at top */}
+          {selected.length > 0 && sessionStatus === "responding" && (
+            <>
+              {selected.map(renderCardWithMotion)}
+              {rest.length > 0 && <div className="border-t border-[#2a2a50] my-2" />}
+            </>
+          )}
+          {/* Rest of responses (paginated) */}
+          {sessionStatus === "responding"
+            ? displayedRest.map(renderCardWithMotion)
+            : displayedAll.map(renderCardWithMotion)}
+        </motion.div>
       </AnimatePresence>
 
       {/* Show more button */}

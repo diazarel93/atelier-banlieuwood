@@ -22,6 +22,7 @@ export function StatRing({
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (Math.min(100, Math.max(0, value)) / 100) * circumference;
+  const isComplete = value >= 100;
 
   return (
     <div className={cn("flex flex-col items-center gap-1", className)}>
@@ -53,7 +54,11 @@ export function StatRing({
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
-            className="transition-[stroke-dashoffset] duration-700 ease-out"
+            className={cn(
+              "transition-[stroke-dashoffset] duration-700 ease-out",
+              isComplete && "animate-[ring-pulse_1s_ease-out]",
+            )}
+            style={isComplete ? { filter: `drop-shadow(0 0 6px ${color})` } : undefined}
           />
         </svg>
         {/* Center label */}

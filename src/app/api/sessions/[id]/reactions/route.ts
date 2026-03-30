@@ -24,7 +24,8 @@ export const POST = withErrorHandler(async function POST(
     return NextResponse.json({ error: formatZodError(validated.error) }, { status: 400 });
   }
 
-  let { responseId, studentId, emoji } = validated.data;
+  const { responseId, studentId: _sid, emoji } = validated.data;
+  let studentId = _sid;
 
   // Prefer token-based auth over body studentId
   const tokenCookie = req.cookies.get("bw-student-token")?.value;

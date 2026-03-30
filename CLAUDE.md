@@ -55,6 +55,18 @@
 - Font titres : Bebas Neue
 - Font body : Plus Jakarta Sans
 
+## Coaching Mode
+
+Quand l'utilisateur dit "coach", "coach moi", "formation", ou "tips" :
+1. Observe ce qu'il vient de faire (le dernier code, la derniere feature)
+2. Donne 1 feedback constructif sur ce qu'il peut ameliorer (archi, secu, perf, pattern)
+3. Explique POURQUOI c'est mieux (pas juste "fais ca")
+4. Donne un exemple concret dans le contexte de son code actuel
+
+Quand l'utilisateur fait une erreur de pattern (any, pas de validation, mauvaise archi) :
+- Corrige ET explique pourquoi c'est mieux, en 2-3 phrases max
+- Ne pas faire de cours non demande — juste signaler et expliquer brievement
+
 ## Rules
 
 - JAMAIS push sur main directement
