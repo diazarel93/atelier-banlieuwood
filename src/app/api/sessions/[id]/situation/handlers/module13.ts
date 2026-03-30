@@ -83,7 +83,7 @@ export async function handleModule13(
   let hasSubmitted = false;
   let submittedCount = 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let positionData: Record<string, any> = {};
+  const positionData: Record<string, any> = {};
 
   // ── Position 1: Montage (scene order) ──
   if (position === 1) {

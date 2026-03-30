@@ -56,13 +56,13 @@ export function useCockpitModuleState(
     session.current_module,
   );
 
-  const moduleSubmittedIds = useMemo(() => {
+  const moduleSubmittedIds = (() => {
     const ids = new Set<string>();
     if (module10Data?.allSubmissions) {
       for (const s of module10Data.allSubmissions) ids.add(s.studentId);
     }
     return ids;
-  }, [module10Data?.allSubmissions]);
+  })();
 
   const universalQuestionText = useMemo((): string | null => {
     if (situation?.prompt) return situation.prompt;

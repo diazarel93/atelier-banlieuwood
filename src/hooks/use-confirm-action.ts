@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 
 export interface ConfirmActionState<T = unknown> {
   /** Whether the confirm dialog is open */
@@ -67,7 +67,10 @@ export function useConfirmAction<T = unknown>(): ConfirmActionState<T> {
     isPending: false,
   });
 
+  const actionRef = useRef<(() => void | Promise<void>) | null>(null);
+
   const requestConfirm = useCallback((config: ConfirmConfig<T>) => {
+    actionRef.current = config.action;
     setState({
       open: true,
       title: config.title,
@@ -80,20 +83,23 @@ export function useConfirmAction<T = unknown>(): ConfirmActionState<T> {
   }, []);
 
   const onClose = useCallback(() => {
+    actionRef.current = null;
     setState((s) => ({ ...s, open: false, action: null }));
   }, []);
 
   const onConfirm = useCallback(async () => {
-    if (!state.action) return;
+    const action = actionRef.current;
+    if (!action) return;
     setState((s) => ({ ...s, isPending: true }));
     try {
-      await state.action();
+      await action();
+      actionRef.current = null;
       setState((s) => ({ ...s, open: false, action: null, isPending: false }));
     } catch {
       // Keep dialog open on error so user can retry
       setState((s) => ({ ...s, isPending: false }));
     }
-  }, [state.action]);
+  }, []);
 
   return {
     open: state.open,

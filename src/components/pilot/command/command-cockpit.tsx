@@ -25,13 +25,13 @@ function useCommandSidebarData() {
 
   // Responded student IDs
   const module10Data = (situationData as { module10?: { allSubmissions?: { studentId: string }[] } })?.module10;
-  const respondedStudentIds = useMemo(() => {
+  const respondedStudentIds = (() => {
     const ids = new Set(responses.map((r) => r.student_id));
     if (module10Data?.allSubmissions) {
       for (const s of module10Data.allSubmissions) ids.add(s.studentId);
     }
     return ids;
-  }, [responses, module10Data?.allSubmissions]);
+  })();
 
   const activeStudentIds = useMemo(
     () => new Set((session.students || []).filter((s) => s.is_active).map((s) => s.id)),
