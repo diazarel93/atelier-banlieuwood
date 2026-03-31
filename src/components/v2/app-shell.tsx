@@ -118,13 +118,13 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         {/* Logo + User info */}
         <div className="px-4 py-4 border-b border-[var(--sidebar-border)]">
           <Link href={ROUTES.dashboard} className="flex items-center gap-2.5 mb-3 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] flex items-center justify-center text-white text-body-xs font-bold shadow-[0_0_12px_rgba(139,92,246,0.3)] group-hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] transition-shadow duration-200">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--color-bw-primary)] to-[var(--color-bw-gold)] flex items-center justify-center text-white text-body-xs font-bold shadow-[0_0_12px_rgba(255,107,53,0.4)] group-hover:shadow-[0_0_20px_rgba(255,107,53,0.6)] transition-shadow duration-200">
               BW
             </div>
-            <span className="text-body-sm font-extrabold text-[var(--color-bw-heading)]">Banlieuwood</span>
+            <span className="text-body-sm font-extrabold text-[var(--sidebar-foreground)]">Banlieuwood</span>
           </Link>
-          <div className="text-body-sm font-medium text-[var(--color-bw-heading)]">{firstName || "Utilisateur"}</div>
-          <div className="text-body-xs text-[var(--color-bw-muted)]">{role}</div>
+          <div className="text-body-sm font-medium text-[var(--sidebar-foreground)]">{firstName || "Utilisateur"}</div>
+          <div className="text-body-xs text-[var(--sidebar-muted-foreground)]">{role}</div>
         </div>
 
         {/* Navigation */}
@@ -139,10 +139,10 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-medium transition-all duration-200 w-full focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
+                  "flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-medium transition-all duration-200 w-full focus-visible:ring-2 focus-visible:ring-[var(--sidebar-primary)]/50 focus-visible:outline-none",
                   isActive
-                    ? "bg-[var(--sidebar-accent)] text-[var(--color-bw-violet)] font-semibold nav-active-bar"
-                    : "text-[var(--color-bw-muted)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--color-bw-heading)]",
+                    ? "bg-[var(--sidebar-accent)] text-[var(--sidebar-primary)] font-semibold"
+                    : "text-[var(--sidebar-muted-foreground)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-foreground)]",
                 )}
               >
                 <span className="text-base">{item.emoji}</span>
@@ -155,7 +155,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           {!isProfesseur && (
             <Link
               href={ROUTES.seanceNew}
-              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-bold text-white bg-gradient-to-r from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] hover:shadow-[0_0_24px_rgba(139,92,246,0.35)] transition-all duration-200 mt-3 glow-accent"
+              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-bold text-white bg-gradient-to-r from-[var(--color-bw-primary)] to-[var(--color-bw-gold)] shadow-[0_0_16px_rgba(255,107,53,0.3)] hover:shadow-[0_0_24px_rgba(255,107,53,0.5)] transition-all duration-200 mt-3"
             >
               <IconPlus />
               Nouvelle séance
@@ -169,10 +169,10 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             <Link
               href={ROUTES.admin}
               className={cn(
-                "flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-medium transition-all duration-200 w-full focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
+                "flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-medium transition-all duration-200 w-full focus-visible:ring-2 focus-visible:ring-[var(--sidebar-primary)]/50 focus-visible:outline-none",
                 pathname.startsWith("/v2/admin")
-                  ? "bg-[var(--sidebar-accent)] text-[var(--color-bw-violet)]"
-                  : "text-[var(--color-bw-muted)] hover:text-[var(--color-bw-heading)] hover:bg-[var(--sidebar-accent)]",
+                  ? "bg-[var(--sidebar-accent)] text-[var(--sidebar-primary)]"
+                  : "text-[var(--sidebar-muted-foreground)] hover:text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)]",
               )}
             >
               <span className="text-base">🛡️</span>
@@ -182,10 +182,10 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           <Link
             href={ROUTES.settings}
             className={cn(
-              "flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-medium transition-all duration-200 w-full focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
+              "flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-medium transition-all duration-200 w-full focus-visible:ring-2 focus-visible:ring-[var(--sidebar-primary)]/50 focus-visible:outline-none",
               pathname.startsWith("/v2/settings")
-                ? "bg-[var(--sidebar-accent)] text-[var(--color-bw-violet)]"
-                : "text-[var(--color-bw-muted)] hover:text-[var(--color-bw-heading)] hover:bg-[var(--sidebar-accent)]",
+                ? "bg-[var(--sidebar-accent)] text-[var(--sidebar-primary)]"
+                : "text-[var(--sidebar-muted-foreground)] hover:text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)]",
             )}
           >
             <span className="text-base">⚙️</span>
@@ -194,10 +194,10 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           <Link
             href={ROUTES.aide}
             className={cn(
-              "flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-medium transition-all duration-200 w-full focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
+              "flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-medium transition-all duration-200 w-full focus-visible:ring-2 focus-visible:ring-[var(--sidebar-primary)]/50 focus-visible:outline-none",
               pathname.startsWith("/v2/aide")
-                ? "bg-[var(--sidebar-accent)] text-[var(--color-bw-violet)]"
-                : "text-[var(--color-bw-muted)] hover:text-[var(--color-bw-heading)] hover:bg-[var(--sidebar-accent)]",
+                ? "bg-[var(--sidebar-accent)] text-[var(--sidebar-primary)]"
+                : "text-[var(--sidebar-muted-foreground)] hover:text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)]",
             )}
           >
             <span className="text-base">❓</span>
@@ -217,13 +217,13 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       <div className="lg:hidden fixed top-0 left-0 right-0 z-40 h-14 flex items-center justify-between px-4 bg-[var(--sidebar)]/95 backdrop-blur-xl border-b border-[var(--sidebar-border)]">
         <Link href={ROUTES.dashboard} className="flex items-center gap-2">
           <span className="text-lg">🎬</span>
-          <span className="text-sm font-bold text-[var(--color-bw-heading)]">Banlieuwood</span>
+          <span className="text-sm font-bold text-[var(--sidebar-foreground)]">Banlieuwood</span>
         </Link>
         <div className="flex items-center gap-2">
           <NotificationBell />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-2 rounded-lg text-[var(--color-bw-muted)] hover:text-[var(--color-bw-heading)] hover:bg-[var(--sidebar-accent)]"
+            className="p-2 rounded-lg text-[var(--sidebar-muted-foreground)] hover:text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)]"
           >
             {mobileOpen ? <IconClose /> : <IconHamburger />}
           </button>
@@ -246,15 +246,15 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         <div className="flex items-center justify-between px-4 h-14 border-b border-[var(--sidebar-border)]">
           <Link href={ROUTES.dashboard} className="flex items-center gap-2">
             <span className="text-lg">🎬</span>
-            <span className="text-sm font-bold text-[var(--color-bw-heading)]">Banlieuwood</span>
+            <span className="text-sm font-bold text-[var(--sidebar-foreground)]">Banlieuwood</span>
           </Link>
-          <button onClick={() => setMobileOpen(false)} className="p-2 rounded-lg text-[var(--color-bw-muted)]">
+          <button onClick={() => setMobileOpen(false)} className="p-2 rounded-lg text-[var(--sidebar-muted-foreground)]">
             <IconClose />
           </button>
         </div>
         <div className="px-4 py-3 border-b border-[var(--sidebar-border)]">
-          <div className="text-body-sm font-bold text-[var(--color-bw-heading)]">{firstName || "Utilisateur"}</div>
-          <div className="text-body-xs text-[var(--color-bw-muted)]">{role}</div>
+          <div className="text-body-sm font-bold text-[var(--sidebar-foreground)]">{firstName || "Utilisateur"}</div>
+          <div className="text-body-xs text-[var(--sidebar-muted-foreground)]">{role}</div>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
           {visibleNavItems.map((item) => {
@@ -266,10 +266,10 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
                 className={cn(
-                  "flex items-center gap-2.5 px-3.5 py-3 rounded-xl text-sm font-medium transition-all duration-200 w-full focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
+                  "flex items-center gap-2.5 px-3.5 py-3 rounded-xl text-sm font-medium transition-all duration-200 w-full focus-visible:ring-2 focus-visible:ring-[var(--sidebar-primary)]/50 focus-visible:outline-none",
                   isActive
-                    ? "bg-[var(--sidebar-accent)] text-[var(--color-bw-violet)]"
-                    : "text-[var(--color-bw-muted)] hover:text-[var(--color-bw-heading)]",
+                    ? "bg-[var(--sidebar-accent)] text-[var(--sidebar-primary)]"
+                    : "text-[var(--sidebar-muted-foreground)] hover:text-[var(--sidebar-foreground)]",
                 )}
               >
                 <span className="text-base">{item.emoji}</span>
@@ -283,7 +283,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             <Link
               href={ROUTES.seanceNew}
               onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-center gap-2 w-full rounded-xl bg-[var(--color-bw-violet)] px-4 py-3 text-sm font-semibold text-white shadow-[0_0_12px_rgba(139,92,246,0.25)]"
+              className="flex items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r from-[var(--color-bw-primary)] to-[var(--color-bw-gold)] px-4 py-3 text-sm font-semibold text-white shadow-[0_0_16px_rgba(255,107,53,0.3)]"
             >
               <IconPlus />
               Nouvelle séance
@@ -346,8 +346,8 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                 className={cn(
                   "flex flex-col items-center justify-center gap-0.5 px-3 min-h-[44px] rounded-lg transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
                   isActive
-                    ? "text-[var(--color-bw-violet)]"
-                    : "text-[var(--color-bw-muted)] hover:text-[var(--color-bw-heading)]",
+                    ? "text-[var(--sidebar-primary)]"
+                    : "text-[var(--sidebar-muted-foreground)] hover:text-[var(--sidebar-foreground)]",
                 )}
               >
                 <span>{item.emoji}</span>
