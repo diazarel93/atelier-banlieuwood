@@ -92,7 +92,7 @@ export default function DashboardV2Page() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-display-sm text-bw-heading font-cinema">
-            <span className="bg-gradient-to-r from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[var(--color-bw-primary)] to-[var(--color-bw-gold)] bg-clip-text text-transparent">
               {getGreeting()}, {firstName} !
             </span>
           </h1>
@@ -336,7 +336,7 @@ export default function DashboardV2Page() {
                             </div>
                           </td>
                           <td className="p-3">
-                            <span className="inline-flex px-2.5 py-0.5 rounded-full text-body-xs font-bold bg-[var(--color-bw-violet)]/10 text-[var(--color-bw-violet)]">
+                            <span className="inline-flex px-2.5 py-0.5 rounded-full text-body-xs font-bold bg-bw-primary/10 text-bw-primary">
                               {levelLabel}
                             </span>
                           </td>
@@ -347,7 +347,7 @@ export default function DashboardV2Page() {
                           <td className="p-3">
                             <Link
                               href={ROUTES.seanceResults(s.id)}
-                              className="inline-flex items-center px-3 min-h-[44px] rounded-lg text-body-xs font-medium text-[var(--color-bw-violet)] bg-[var(--color-bw-violet)]/8 hover:bg-[var(--color-bw-violet)]/15 transition-colors duration-150"
+                              className="inline-flex items-center px-3 min-h-[44px] rounded-lg text-body-xs font-medium text-bw-primary bg-bw-primary/8 hover:bg-bw-primary/15 transition-colors duration-150"
                             >
                               Voir →
                             </Link>
@@ -484,7 +484,7 @@ export default function DashboardV2Page() {
           </p>
           <Link
             href={ROUTES.seanceNew}
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] glow-accent hover:shadow-[0_0_30px_rgba(139,92,246,0.35)] transition-all duration-200"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-bw-primary to-[var(--color-bw-gold)] hover:shadow-[0_0_30px_rgba(255,107,53,0.35)] transition-all duration-200"
           >
             + Nouvelle séance
           </Link>
