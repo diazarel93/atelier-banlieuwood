@@ -16,7 +16,7 @@ interface QrJoinCardProps {
 export function QrJoinCard({ joinCode, joinUrl }: QrJoinCardProps) {
   return (
     <GlassCardV2 className="p-6 text-center">
-      <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-4">Rejoindre la séance</p>
+      <p className="label-caps text-bw-muted mb-4">Rejoindre la séance</p>
 
       <div className="inline-block bg-white p-3 rounded-xl border border-[var(--color-bw-border)]">
         <QRCodeSVG value={`${joinUrl}?code=${joinCode}`} size={120} />
