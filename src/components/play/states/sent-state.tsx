@@ -156,8 +156,8 @@ export function SentState({
   connectedCount,
   streak,
   lastXpGain,
-  sessionId,
-  studentId,
+  sessionId: _sessionId,
+  studentId: _studentId,
   currentModule,
   currentSeance,
 }: SentStateProps) {

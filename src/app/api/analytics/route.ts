@@ -5,7 +5,7 @@ import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { withErrorHandler } from "@/lib/api-utils";
 
 // GET /api/analytics — cross-session analytics for a facilitator
-export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET() {
   const supabase = await createServerSupabase();
   const {
     data: { user },

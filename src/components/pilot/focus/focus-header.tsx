@@ -5,10 +5,8 @@ import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { ElapsedTimer } from "@/components/pilot/elapsed-timer";
 import { CountdownTimer } from "@/components/countdown-timer";
-import { ROUTES } from "@/lib/routes";
-import { useScreenConnection } from "@/hooks/use-screen-connection";
 import { useCockpitActions } from "@/components/pilot/cockpit-context";
-import { MODULES, PHASES, getModuleById } from "@/lib/modules-data";
+import { PHASES, getModuleById } from "@/lib/modules-data";
 
 // ═══════════════════════════════════════════════════════════════
 // FOCUS HEADER V6 — 2-bar cinema cockpit header
@@ -103,19 +101,19 @@ function formatTimer(seconds: number): string {
 }
 
 export function FocusHeader({
-  sessionId,
+  sessionId: _sessionId,
   sessionTitle,
   moduleLabel,
   moduleColor,
-  currentQIndex,
-  maxSituations,
+  currentQIndex: _currentQIndex,
+  maxSituations: _maxSituations,
   respondingOpenedAt,
   activeStudentCount,
-  respondedCount,
+  respondedCount: _respondedCount,
   totalStudents,
   sessionStatus,
   timerEndsAt,
-  onOpenStudents,
+  onOpenStudents: _onOpenStudents,
   onOpenCommandPalette,
   activeModuleId,
   completedModuleIds = [],
@@ -129,9 +127,9 @@ export function FocusHeader({
   disconnectedCount = 0,
   globalTimerSeconds,
 }: FocusHeaderProps) {
-  const router = useRouter();
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const { onOpenModules } = useCockpitActions();
+  const _router = useRouter();
+  const [_isFullscreen, setIsFullscreen] = useState(false);
+  const { onOpenModules: _onOpenModules } = useCockpitActions();
 
   useEffect(() => {
     const onChange = () => setIsFullscreen(!!document.fullscreenElement);
@@ -139,7 +137,7 @@ export function FocusHeader({
     return () => document.removeEventListener("fullscreenchange", onChange);
   }, []);
 
-  const toggleFullscreen = useCallback(() => {
+  const _toggleFullscreen = useCallback(() => {
     if (document.fullscreenElement) document.exitFullscreen();
     else document.documentElement.requestFullscreen();
   }, []);

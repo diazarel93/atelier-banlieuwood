@@ -14,7 +14,6 @@ const mockSession = {
 };
 
 // Track what queries are made
-let mockFromCalls: { table: string; action: string; args: unknown[] }[] = [];
 
 function makeSingleResult(data: unknown, error?: unknown) {
   return { data, error: error || null };
@@ -67,7 +66,6 @@ describe("POST /api/sessions", () => {
     authUser = mockUser;
     facilitatorResult = makeSingleResult(mockFacilitator);
     insertResult = makeSingleResult(mockSession);
-    mockFromCalls = [];
   });
 
   function makeReq(body: Record<string, unknown>) {

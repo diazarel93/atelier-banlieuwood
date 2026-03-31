@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRealtimeInvalidation, getPollingInterval } from "@/hooks/use-realtime-invalidation";
 import { getModuleByDb, getPhaseForModule } from "@/lib/modules-data";
 import { getModuleGuide } from "@/lib/guide-data";
-import { getSessionState, getSessionUrls, type SessionUrls } from "@/lib/session-state";
+import { getSessionState, getSessionUrls } from "@/lib/session-state";
 import { DEMO_STUDENT_NAMES } from "@/lib/demo-data";
 import { toast } from "sonner";
 

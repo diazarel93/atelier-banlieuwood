@@ -267,7 +267,7 @@ function buildAssistant(scenes: SceneInput[]): FicheTournage {
   return { title: "Fiche Assistant réal", emoji: "📝", sections };
 }
 
-function buildSon(scenes: SceneInput[], scenario: ScenarioInput | null): FicheTournage {
+function buildSon(scenes: SceneInput[], _scenario: ScenarioInput | null): FicheTournage {
   const sections: FicheSection[] = [];
   for (const scene of scenes) {
     // Extract dialogue lines (lines starting with character names in CAPS or with —)
@@ -284,7 +284,7 @@ function buildSon(scenes: SceneInput[], scenario: ScenarioInput | null): FicheTo
   return { title: "Fiche Son", emoji: "🎙️", sections };
 }
 
-function buildActeur(scenes: SceneInput[], scenario: ScenarioInput | null): FicheTournage {
+function buildActeur(scenes: SceneInput[], _scenario: ScenarioInput | null): FicheTournage {
   const sections: FicheSection[] = scenes.map((s) => ({
     heading: `Scène ${s.sceneNumber || ""} : ${s.title}`,
     content: `${s.description}\n\nTexte :\n${s.content || "(pas encore écrit)"}\n\nNotes d'interprétation : (à compléter)`,

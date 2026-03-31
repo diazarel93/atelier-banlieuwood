@@ -5,9 +5,9 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { useDashboardSummary } from "@/hooks/use-dashboard-v2";
 import { useAuthUser } from "@/hooks/use-auth-user";
-import { ROUTES } from "@/lib/routes";
 import { PHASES, MAIN_PHASE_IDS } from "@/lib/modules-data";
 import { MiniCalendar } from "@/components/v2/mini-calendar";
+import { ROUTES } from "@/lib/routes";
 
 // ═══════════════════════════════════════════════════════════════
 // DASHBOARD V2 — 2-column layout matching spec
@@ -22,11 +22,6 @@ function getGreeting(): string {
   return "Bonsoir";
 }
 
-const FORMULA_COLORS: Record<string, string> = {
-  F0: "var(--color-bw-pink, #ec4899)",
-  F1: "var(--color-bw-gold, #d4a843)",
-  F2: "var(--color-bw-violet, #8b5cf6)",
-};
 const mainPhases = PHASES.filter((p) => (MAIN_PHASE_IDS as readonly string[]).includes(p.id));
 
 export default function DashboardV2Page() {

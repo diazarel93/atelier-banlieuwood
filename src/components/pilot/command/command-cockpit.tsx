@@ -3,11 +3,9 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useCockpitData, useCockpitActions } from "@/components/pilot/cockpit-context";
 import { useStuckDetection } from "@/hooks/use-stuck-detection";
-import { STUCK_DETECTION_DELAY_MS } from "@/components/pilot/pilot-settings";
 import { FocusCockpit } from "@/components/pilot/focus/focus-cockpit";
 import { V6Sidebar } from "@/components/pilot/v6-sidebar";
 import { createTimelineEvent, type TimelineEvent } from "@/components/pilot/session-timeline";
-import { toast } from "sonner";
 
 // ═══════════════════════════════════════════════════════════════
 // COMMAND COCKPIT V6 — 2-column layout
@@ -20,7 +18,7 @@ import { toast } from "sonner";
 // ═══════════════════════════════════════════════════════════════
 
 function useCommandSidebarData() {
-  const { session, sessionId, responses, activeStudents, situationData } = useCockpitData();
+  const { session, sessionId: _sessionId, responses, activeStudents, situationData } = useCockpitData();
   const { onSelectStudent } = useCockpitActions();
 
   // Responded student IDs

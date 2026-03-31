@@ -65,7 +65,6 @@ import { AmbientGradients } from "@/components/screen/ambient-gradients";
 import { BriefingOverlay } from "@/components/screen/briefing-overlay";
 import { QuestionTransitionCelebration } from "@/components/screen/question-transition";
 import { StoryFilmstrip } from "@/components/screen/story-filmstrip";
-import { HighlightedResponsesPanel } from "@/components/screen/highlighted-panel";
 import { ScreenHeader } from "@/components/screen/screen-header";
 import { ObjectiveBanner } from "@/components/screen/objective-banner";
 import { FloatingReactions } from "@/components/screen/floating-reactions";

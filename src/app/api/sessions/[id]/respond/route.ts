@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rate-limit";
 import { safeJson, broadcastSessionUpdate, withErrorHandler } from "@/lib/api-utils";
 import { respondSchema, formatZodError } from "@/lib/schemas";
-import { getSeanceMax, MODULE_SEANCE_SITUATIONS } from "@/lib/constants";
+import { MODULE_SEANCE_SITUATIONS } from "@/lib/constants";
 import { logSessionEvent } from "@/lib/event-logger";
 import * as Sentry from "@sentry/nextjs";
 import { verifyStudentToken } from "@/lib/student-token";

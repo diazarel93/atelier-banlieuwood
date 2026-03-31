@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Non-source directories
+    "docs/**",
+    "scripts/**",
   ]),
   // Downgrade strict React Compiler rules to warnings (to be fixed incrementally)
   {
@@ -26,6 +29,15 @@ const eslintConfig = defineConfig([
       "react-hooks/static-components": "warn",
       "react/no-unescaped-entities": "warn",
       "@typescript-eslint/no-empty-object-type": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+        },
+      ],
     },
   },
 ]);

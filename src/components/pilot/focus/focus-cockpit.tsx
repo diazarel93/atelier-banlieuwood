@@ -50,55 +50,55 @@ export function FocusCockpit() {
     voteData,
     situation,
     visibleResponses,
-    voteOptionCount,
+    voteOptionCount: _voteOptionCount,
     currentQIndex,
     respondedCount,
     nextAction,
     moduleFlags,
     moduleLabel,
     moduleColor,
-    questionGuide,
-    filteredResponses,
+    questionGuide: _questionGuide,
+    filteredResponses: _filteredResponses,
     isPreviewing,
     displayIndex,
-    stuckStudents,
-    notRespondedStudents,
+    stuckStudents: _stuckStudents,
+    notRespondedStudents: _notRespondedStudents,
     universalQuestionText,
     universalCategoryLabel,
     unifiedRespondedCount,
     isStandardQA,
-    winnerResponseId,
-    allResponded,
+    winnerResponseId: _winnerResponseId,
+    allResponded: _allResponded,
     respondingOpenedAt,
     broadcastHistory,
-    previewIndex,
+    previewIndex: _previewIndex,
     setPreviewIndex,
     autoAdvance,
     setAutoAdvance,
-    autoAdvanceCountdown,
+    autoAdvanceCountdown: _autoAdvanceCountdown,
     plusOpen,
     setPlusOpen,
     showStudentSheet,
     setShowStudentSheet,
-    selectedResponseIds,
-    setSelectedResponseIds,
-    responseFilter,
-    setResponseFilter,
-    responseSortMode,
-    setResponseSortMode,
+    selectedResponseIds: _selectedResponseIds,
+    setSelectedResponseIds: _setSelectedResponseIds,
+    responseFilter: _responseFilter,
+    setResponseFilter: _setResponseFilter,
+    responseSortMode: _responseSortMode,
+    setResponseSortMode: _setResponseSortMode,
     reformulating,
     setReformulating,
     isDarkMode,
     setIsDarkMode,
     modals,
-    budgetSubmitted,
-    goToSituation,
+    budgetSubmitted: _budgetSubmitted,
+    goToSituation: _goToSituation,
     handleNextAction,
-    handleSelectionBarAction,
+    handleSelectionBarAction: _handleSelectionBarAction,
     handleQuickVote,
     handleBroadcast,
     handleNudgeAllStuck,
-    handleHighlightAllVisible,
+    handleHighlightAllVisible: _handleHighlightAllVisible,
     handleClearAllHighlights,
     handleHighlightBoth,
   } = state;
@@ -107,8 +107,8 @@ export function FocusCockpit() {
     updateSession,
     validateChoice,
     toggleHide,
-    aiEvaluate,
-    onSelectStudent,
+    aiEvaluate: _aiEvaluate,
+    onSelectStudent: _onSelectStudent,
     toggleVoteOption,
     commentResponse,
     highlightResponse,
@@ -123,9 +123,9 @@ export function FocusCockpit() {
   const { studentWarnings } = useCockpitData();
 
   // ── Plan de classe (collapsible in center) ──
-  const [showPlan, setShowPlan] = useState(false);
+  const [_showPlan, _setShowPlan] = useState(false);
   const activeStudentIds = useMemo(() => new Set(activeStudents.map((s) => s.id)), [activeStudents]);
-  const stuckLevels = useStuckDetection({
+  const _stuckLevels = useStuckDetection({
     respondedStudentIds: state.respondedStudentIds,
     activeStudentIds,
     respondingOpenedAt: session.status === "responding" ? respondingOpenedAt : null,
@@ -201,7 +201,7 @@ export function FocusCockpit() {
   });
 
   // Highlight all visible handler for response stream
-  function handleHideAllVisible() {
+  function _handleHideAllVisible() {
     const toHide = responses.filter((r) => !r.is_hidden);
     for (const r of toHide) toggleHide.mutate({ responseId: r.id, is_hidden: true });
     toast.success(`${toHide.length} réponse${toHide.length > 1 ? "s" : ""} masquée${toHide.length > 1 ? "s" : ""}`);
@@ -210,7 +210,7 @@ export function FocusCockpit() {
   // Student list for bottom sheet
   const studentList = (session.students || []).filter((s) => s.is_active && !s.kicked);
 
-  const highlightedCount = responses.filter((r) => r.is_highlighted).length;
+  const _highlightedCount = responses.filter((r) => r.is_highlighted).length;
 
   // Timer handlers for plus menu
   function handleSetTimer(seconds: number) {

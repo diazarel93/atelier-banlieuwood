@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { AxesScores } from "@/lib/axes-mapping";
 import { getAuthUser } from "@/lib/auth-helpers";
-import { log } from "@/lib/logger";
 import { withErrorHandler } from "@/lib/api-utils";
 
 /**
@@ -26,7 +25,7 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   const isAdmin = authUser?.role === "admin";
 
   const url = new URL(req.url);
-  const classLabel = url.searchParams.get("classLabel");
+
   const sessionId = url.searchParams.get("sessionId");
   const dateFrom = url.searchParams.get("dateFrom");
   const dateTo = url.searchParams.get("dateTo");

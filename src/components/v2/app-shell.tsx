@@ -17,13 +17,10 @@ import {
   IconStatistiques,
   IconModules,
   IconFicheCours,
-  IconAdmin,
   IconPlus,
   IconSearch,
   IconHamburger,
   IconClose,
-  IconSettings,
-  IconHelp,
 } from "./icons";
 
 // ═══════════════════════════════════════════════════════════════

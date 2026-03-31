@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { withErrorHandler } from "@/lib/api-utils";
 
@@ -7,7 +7,7 @@ import { withErrorHandler } from "@/lib/api-utils";
  * Compare scores across all classes for the facilitator.
  * OIE scoring has been removed — returns empty comparison data with student counts.
  */
-export const GET = withErrorHandler<Record<string, never>>(async function GET(req: NextRequest) {
+export const GET = withErrorHandler<Record<string, never>>(async function GET() {
   const supabase = await createServerSupabase();
   const {
     data: { user },

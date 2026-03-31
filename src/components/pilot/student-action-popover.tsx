@@ -24,7 +24,7 @@ export function StudentActionPopover({
   onClose,
   onNudge,
   onWarn,
-  onViewResponse,
+  onViewResponse: _onViewResponse,
   onBroadcast,
 }: {
   student: SeatStudent;

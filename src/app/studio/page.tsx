@@ -9,7 +9,6 @@ import {
   ACHIEVEMENTS,
   CATEGORIES,
   ACHIEVEMENT_MAP,
-  getCurrentTier,
   TIER_COLORS,
   type UnlockedAchievement,
 } from "@/lib/achievements-v2";
