@@ -34,7 +34,7 @@ export function CollectiveStoryCards({ markdownLines }: CollectiveStoryCardsProp
       <div className="grid gap-3">
         {choices.map((c, i) => (
           <GlassCardV2 key={i} className="p-4 border-l-4" style={{ borderLeftColor: c.color }}>
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: c.color }}>
+            <span className="label-caps" style={{ color: c.color }}>
               {c.label}
             </span>
             <p className="text-sm text-bw-heading leading-relaxed mt-1">{c.text}</p>
