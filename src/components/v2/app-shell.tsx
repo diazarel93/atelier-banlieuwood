@@ -223,7 +223,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           <NotificationBell />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-2 rounded-lg text-[var(--sidebar-muted-foreground)] hover:text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)]"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-[var(--sidebar-muted-foreground)] hover:text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)]"
           >
             {mobileOpen ? <IconClose /> : <IconHamburger />}
           </button>
@@ -250,7 +250,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           </Link>
           <button
             onClick={() => setMobileOpen(false)}
-            className="p-2 rounded-lg text-[var(--sidebar-muted-foreground)]"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-[var(--sidebar-muted-foreground)]"
           >
             <IconClose />
           </button>
