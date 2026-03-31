@@ -69,11 +69,7 @@ const DIRECTIONS: DirectionConfig[] = [
       "La timeline horizontale rend ce rythme VISIBLE et navigable. " +
       "Aucun EdTech ne presente l'interface prof comme une timeline — c'est " +
       "un differenciant fort et coherent avec l'identite cinema.",
-    references: [
-      "Walter Murch / salle montage Apocalypse Now",
-      "DaVinci Resolve timeline UI",
-      "Linear roadmap view",
-    ],
+    references: ["Walter Murch / salle montage Apocalypse Now", "DaVinci Resolve timeline UI", "Linear roadmap view"],
     layoutAscii: `
 ┌──────────────────────────────────────────────────────┐
 │ HEADER  [Live] Session M2   24 eleves   ⏱ 42:18     │
@@ -96,8 +92,7 @@ const DIRECTIONS: DirectionConfig[] = [
       p3: "Sidebar classe : pastilles statut + compteur collectif (gauche, 1 tap pour detail)",
       p4: "Notes de session, notifications, command palette (menu +, 2+ taps)",
     },
-    actionPrincipale:
-      "Bouton 'Suivant' fixe en bas-droite de la timeline — toujours visible, 0 tap",
+    actionPrincipale: "Bouton 'Suivant' fixe en bas-droite de la timeline — toujours visible, 0 tap",
     navigation:
       "Timeline horizontale scrollable. Tap sur un module = jump. " +
       "Le flux temporel est le fil conducteur : on avance, on recule, on saute.",
@@ -157,11 +152,7 @@ const DIRECTIONS: DirectionConfig[] = [
       "classiques cachent 50% de l'info derriere des tabs. La regie broadcast " +
       "dit : tout est visible, organise en zones claires. Dense mais pas " +
       "chaotique — comme Linear le fait pour le project management.",
-    references: [
-      "Regie JT 20h France 2 (multi-ecrans)",
-      "NASA Mission Control Houston",
-      "Linear app dark mode",
-    ],
+    references: ["Regie JT 20h France 2 (multi-ecrans)", "NASA Mission Control Houston", "Linear app dark mode"],
     layoutAscii: `
 ┌──────────────────────────────────────────────────────┐
 │ HEADER  [Live●] M2 Budget   24/28   ⏱ 42:18  [⌘K]  │
@@ -188,8 +179,7 @@ const DIRECTIONS: DirectionConfig[] = [
       p3: "Sidebar classe (gauche) + rail modules (bas-gauche) — navigation laterale",
       p4: "Assistant sidebar : timeline, notes, notifications (bas-droite, panneau depliable)",
     },
-    actionPrincipale:
-      "Boutons d'action contextuels fixes entre question et reponses — toujours visibles, 0 tap",
+    actionPrincipale: "Boutons d'action contextuels fixes entre question et reponses — toujours visibles, 0 tap",
     navigation:
       "3 zones fixes. Navigation par zones : gauche = classe, centre = action, " +
       "droite = feedback. Zero scrolling dans le viewport principal. " +
@@ -288,8 +278,7 @@ const DIRECTIONS: DirectionConfig[] = [
       p3: "Actions : Reveler / Suivant (bas, toujours visibles mais secondaires)",
       p4: "Drawers lateraux : classe (swipe gauche) et reponses (swipe droite) — 1 geste",
     },
-    actionPrincipale:
-      "Bouton 'Reveler' centre en bas — le geste du projectionniste qui lance le film",
+    actionPrincipale: "Bouton 'Reveler' centre en bas — le geste du projectionniste qui lance le film",
     navigation:
       "Focus stack : l'ecran montre UN element. Les drawers lateraux " +
       "glissent par swipe (gauche = classe, droite = reponses). " +
@@ -358,10 +347,17 @@ function ModulePickerPanel({ d }: { d: DirectionConfig }) {
   ];
   return (
     <div className="rounded-2xl overflow-hidden border" style={{ borderColor: d.border, background: d.canvas }}>
-      <div className="flex items-center gap-2 px-3 py-2.5 border-b" style={{ borderColor: d.border, background: d.surface }}>
-        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent2 }}>Navigation modules</span>
+      <div
+        className="flex items-center gap-2 px-3 py-2.5 border-b"
+        style={{ borderColor: d.border, background: d.surface }}
+      >
+        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent2 }}>
+          Navigation modules
+        </span>
         <div className="flex-1" />
-        <span className="text-[9px]" style={{ color: d.muted }}>5 modules · M2 actif</span>
+        <span className="text-[9px]" style={{ color: d.muted }}>
+          5 modules · M2 actif
+        </span>
       </div>
       <div className="p-3 space-y-1.5">
         {modules.map((m) => {
@@ -378,24 +374,41 @@ function ModulePickerPanel({ d }: { d: DirectionConfig }) {
               }}
             >
               {/* Indicateur statut */}
-              <span className="w-2 h-2 rounded-full shrink-0" style={{
-                background: isActive ? d.accent1 : isDone ? d.accent3 : isNext ? d.accent2 : `${d.muted}30`
-              }} />
+              <span
+                className="w-2 h-2 rounded-full shrink-0"
+                style={{
+                  background: isActive ? d.accent1 : isDone ? d.accent3 : isNext ? d.accent2 : `${d.muted}30`,
+                }}
+              />
               {/* Numero */}
-              <span className="text-[10px] font-black w-6 shrink-0" style={{ color: isActive ? d.accent1 : isDone ? d.accent3 : d.muted }}>{m.num}</span>
+              <span
+                className="text-[10px] font-black w-6 shrink-0"
+                style={{ color: isActive ? d.accent1 : isDone ? d.accent3 : d.muted }}
+              >
+                {m.num}
+              </span>
               {/* Titre */}
-              <span className="text-[12px] font-medium flex-1" style={{ color: isActive ? d.text : isDone ? d.muted : isNext ? `${d.text}80` : `${d.muted}50` }}>
+              <span
+                className="text-[12px] font-medium flex-1"
+                style={{ color: isActive ? d.text : isDone ? d.muted : isNext ? `${d.text}80` : `${d.muted}50` }}
+              >
                 {m.title}
               </span>
               {/* Question count */}
-              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded" style={{
-                color: isActive ? d.accent1 : isDone ? d.accent3 : `${d.muted}50`,
-                background: isActive ? d.accent1Bg : "transparent"
-              }}>
+              <span
+                className="text-[9px] font-mono px-1.5 py-0.5 rounded"
+                style={{
+                  color: isActive ? d.accent1 : isDone ? d.accent3 : `${d.muted}50`,
+                  background: isActive ? d.accent1Bg : "transparent",
+                }}
+              >
                 {m.questions}Q
               </span>
               {/* Badge statut */}
-              <span className="text-[9px] font-semibold" style={{ color: isActive ? d.accent1 : isDone ? d.accent3 : isNext ? d.accent2 : `${d.muted}30` }}>
+              <span
+                className="text-[9px] font-semibold"
+                style={{ color: isActive ? d.accent1 : isDone ? d.accent3 : isNext ? d.accent2 : `${d.muted}30` }}
+              >
                 {isActive ? "● En cours" : isDone ? "✓ Fait" : isNext ? "Suivant" : "—"}
               </span>
             </button>
@@ -422,81 +435,167 @@ function MiniCockpitA({ d }: { d: DirectionConfig }) {
       </p>
       <div className="rounded-2xl overflow-hidden border" style={{ borderColor: d.border, background: d.canvas }}>
         {/* Header */}
-        <div className="flex items-center gap-3 px-4 py-3 border-b" style={{ borderColor: d.border, background: d.surface }}>
-          <span className="inline-block w-2 h-2 rounded-full" style={{ background: d.accent1, boxShadow: `0 0 8px ${d.accent1}` }} />
-          <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: d.accent1 }}>Live</span>
-          <span className="text-[11px]" style={{ color: d.border }}>|</span>
-          <span className="text-[13px] font-medium" style={{ color: d.text }}>M2 — Budget & Financement</span>
+        <div
+          className="flex items-center gap-3 px-4 py-3 border-b"
+          style={{ borderColor: d.border, background: d.surface }}
+        >
+          <span
+            className="inline-block w-2 h-2 rounded-full"
+            style={{ background: d.accent1, boxShadow: `0 0 8px ${d.accent1}` }}
+          />
+          <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: d.accent1 }}>
+            Live
+          </span>
+          <span className="text-[11px]" style={{ color: d.border }}>
+            |
+          </span>
+          <span className="text-[13px] font-medium" style={{ color: d.text }}>
+            M2 — Budget & Financement
+          </span>
           <div className="flex-1" />
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border" style={{ color: d.accent3, background: d.accent3Bg, borderColor: d.accent3Border }}>
+          <span
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border"
+            style={{ color: d.accent3, background: d.accent3Bg, borderColor: d.accent3Border }}
+          >
             24 eleves
           </span>
-          <span className="text-[13px] font-mono tabular-nums" style={{ color: d.muted }}>42:18</span>
+          <span className="text-[13px] font-mono tabular-nums" style={{ color: d.muted }}>
+            42:18
+          </span>
         </div>
         <div className="flex">
-          <div className="w-[100px] border-r p-3 space-y-2" style={{ borderColor: d.border, background: `${d.surface}80` }}>
-            <p className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: d.muted }}>Classe</p>
+          <div
+            className="w-[100px] border-r p-3 space-y-2"
+            style={{ borderColor: d.border, background: `${d.surface}80` }}
+          >
+            <p className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: d.muted }}>
+              Classe
+            </p>
             <div className="flex flex-wrap gap-1">
               {Array.from({ length: 24 }).map((_, i) => (
-                <span key={i} className="w-2.5 h-2.5 rounded-full" style={{ background: i < 18 ? d.accent3 : i < 22 ? d.accent2 : `${d.muted}40` }} />
+                <span
+                  key={i}
+                  className="w-2.5 h-2.5 rounded-full"
+                  style={{ background: i < 18 ? d.accent3 : i < 22 ? d.accent2 : `${d.muted}40` }}
+                />
               ))}
             </div>
-            <p className="text-[10px] tabular-nums" style={{ color: d.accent3 }}>18/24</p>
+            <p className="text-[10px] tabular-nums" style={{ color: d.accent3 }}>
+              18/24
+            </p>
           </div>
           <div className="flex-1 p-4 space-y-2">
             <div className="rounded-xl border p-4" style={{ borderColor: d.accent1Border, background: d.surface }}>
               <div className="h-0.5 rounded-full mb-3" style={{ background: d.accent1 }} />
-              <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: d.accent1 }}>Question 3/8</span>
+              <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: d.accent1 }}>
+                Question 3/8
+              </span>
               <p className="text-[15px] font-bold leading-snug mt-2 mb-3" style={{ color: d.text }}>
                 Quel est le role principal du cadreur dans une mise en scene ?
               </p>
               <div className="flex items-center gap-3">
                 <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: d.elevated }}>
-                  <div className="h-full rounded-full" style={{ width: "75%", background: `linear-gradient(90deg, ${d.accent1}, ${d.accent2})` }} />
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: "75%", background: `linear-gradient(90deg, ${d.accent1}, ${d.accent2})` }}
+                  />
                 </div>
-                <span className="text-[11px] font-mono" style={{ color: d.muted }}>75%</span>
+                <span className="text-[11px] font-mono" style={{ color: d.muted }}>
+                  75%
+                </span>
               </div>
             </div>
-            <div className="rounded-xl border p-3 space-y-1.5" style={{ borderColor: d.border, background: `${d.surface}60` }}>
-              <p className="text-[10px] uppercase tracking-wider font-semibold mb-2" style={{ color: d.muted }}>Reponses en flux</p>
+            <div
+              className="rounded-xl border p-3 space-y-1.5"
+              style={{ borderColor: d.border, background: `${d.surface}60` }}
+            >
+              <p className="text-[10px] uppercase tracking-wider font-semibold mb-2" style={{ color: d.muted }}>
+                Reponses en flux
+              </p>
               {[
                 { text: "Le cadrage definit le regard du spectateur...", new: true },
                 { text: "C'est lui qui compose l'image avec le realisateur", new: false },
                 { text: "Il gere la mise au point et les mouvements camera", new: false },
               ].map((r, i) => (
-                <div key={i} className="flex items-start gap-2 px-2 py-1.5 rounded-lg" style={{ background: r.new ? d.accent1Bg : "transparent", border: `1px solid ${r.new ? d.accent1Border : "transparent"}` }}>
-                  <span className="w-1.5 h-1.5 rounded-full mt-1 shrink-0" style={{ background: r.new ? d.accent1 : `${d.muted}50` }} />
-                  <p className="text-[11px] leading-snug" style={{ color: r.new ? d.text : d.muted }}>{r.text}</p>
+                <div
+                  key={i}
+                  className="flex items-start gap-2 px-2 py-1.5 rounded-lg"
+                  style={{
+                    background: r.new ? d.accent1Bg : "transparent",
+                    border: `1px solid ${r.new ? d.accent1Border : "transparent"}`,
+                  }}
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full mt-1 shrink-0"
+                    style={{ background: r.new ? d.accent1 : `${d.muted}50` }}
+                  />
+                  <p className="text-[11px] leading-snug" style={{ color: r.new ? d.text : d.muted }}>
+                    {r.text}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </div>
         <div className="border-t px-4 py-3" style={{ borderColor: d.border, background: d.surface }}>
-          <p className="text-[10px] uppercase tracking-wider font-semibold mb-2" style={{ color: d.muted }}>Timeline seance</p>
+          <p className="text-[10px] uppercase tracking-wider font-semibold mb-2" style={{ color: d.muted }}>
+            Timeline seance
+          </p>
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
             {[
-              { label: "M1", done: true }, { label: "Q1", done: true }, { label: "Q2", done: true },
-              { label: "Q3", active: true }, { label: "Q4", done: false }, { label: "Q5", done: false },
-              { label: "M3", done: false }, { label: "Q6", done: false }, { label: "Q7", done: false }, { label: "M4", done: false },
+              { label: "M1", done: true },
+              { label: "Q1", done: true },
+              { label: "Q2", done: true },
+              { label: "Q3", active: true },
+              { label: "Q4", done: false },
+              { label: "Q5", done: false },
+              { label: "M3", done: false },
+              { label: "Q6", done: false },
+              { label: "Q7", done: false },
+              { label: "M4", done: false },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-1.5">
-                <button className="px-2 py-1 rounded text-[10px] font-semibold border whitespace-nowrap" style={
-                  item.active ? { background: d.accent1Bg, color: d.accent1, borderColor: d.accent1Border }
-                    : item.done ? { background: "transparent", color: d.accent3, borderColor: d.accent3Border, opacity: 0.7 }
-                      : { background: "transparent", color: d.muted, borderColor: "transparent", opacity: 0.4 }
-                }>
-                  {item.done && !item.active ? "✓ " : ""}{item.label}
+                <button
+                  className="px-2 py-1 rounded text-[10px] font-semibold border whitespace-nowrap"
+                  style={
+                    item.active
+                      ? { background: d.accent1Bg, color: d.accent1, borderColor: d.accent1Border }
+                      : item.done
+                        ? { background: "transparent", color: d.accent3, borderColor: d.accent3Border, opacity: 0.7 }
+                        : { background: "transparent", color: d.muted, borderColor: "transparent", opacity: 0.4 }
+                  }
+                >
+                  {item.done && !item.active ? "✓ " : ""}
+                  {item.label}
                 </button>
-                {i < 9 && <span className="text-[8px]" style={{ color: `${d.muted}30` }}>&mdash;</span>}
+                {i < 9 && (
+                  <span className="text-[8px]" style={{ color: `${d.muted}30` }}>
+                    &mdash;
+                  </span>
+                )}
               </div>
             ))}
           </div>
         </div>
-        <div className="flex items-center justify-between px-4 py-2.5 border-t" style={{ borderColor: d.border, background: d.elevated }}>
-          <button className="px-3 py-1.5 rounded-lg text-[11px] font-semibold" style={{ color: d.muted }}>&larr; Prec</button>
-          <button className="px-4 py-1.5 rounded-lg text-[11px] font-bold border" style={{ color: d.accent2, background: d.accent2Bg, borderColor: d.accent2Border }}>Reveler</button>
-          <button className="px-4 py-1.5 rounded-lg text-[11px] font-bold" style={{ color: d.canvas, background: d.accent1 }}>Suivant &rarr;</button>
+        <div
+          className="flex items-center justify-between px-4 py-2.5 border-t"
+          style={{ borderColor: d.border, background: d.elevated }}
+        >
+          <button className="px-3 py-1.5 rounded-lg text-[11px] font-semibold" style={{ color: d.muted }}>
+            &larr; Prec
+          </button>
+          <button
+            className="px-4 py-1.5 rounded-lg text-[11px] font-bold border"
+            style={{ color: d.accent2, background: d.accent2Bg, borderColor: d.accent2Border }}
+          >
+            Reveler
+          </button>
+          <button
+            className="px-4 py-1.5 rounded-lg text-[11px] font-bold"
+            style={{ color: d.canvas, background: d.accent1 }}
+          >
+            Suivant &rarr;
+          </button>
         </div>
       </div>
 
@@ -505,13 +604,19 @@ function MiniCockpitA({ d }: { d: DirectionConfig }) {
         États interactifs
       </p>
       <div className="grid grid-cols-2 gap-3">
-
         {/* État 2 : Résultats révélés (après clic "Reveler") */}
         <div className="rounded-2xl overflow-hidden border" style={{ borderColor: d.border, background: d.canvas }}>
-          <div className="flex items-center gap-2 px-3 py-2.5 border-b" style={{ borderColor: d.border, background: d.surface }}>
-            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent2 }}>Résultats révélés</span>
+          <div
+            className="flex items-center gap-2 px-3 py-2.5 border-b"
+            style={{ borderColor: d.border, background: d.surface }}
+          >
+            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent2 }}>
+              Résultats révélés
+            </span>
             <div className="flex-1" />
-            <span className="text-[9px] px-1.5 py-0.5 rounded" style={{ color: d.accent2, background: d.accent2Bg }}>18 réponses</span>
+            <span className="text-[9px] px-1.5 py-0.5 rounded" style={{ color: d.accent2, background: d.accent2Bg }}>
+              18 réponses
+            </span>
           </div>
           <div className="p-3">
             <p className="text-[11px] font-bold mb-3" style={{ color: d.text }}>
@@ -525,44 +630,75 @@ function MiniCockpitA({ d }: { d: DirectionConfig }) {
             ].map((r) => (
               <div key={r.label} className="mb-2">
                 <div className="flex justify-between mb-0.5">
-                  <span className="text-[10px]" style={{ color: d.muted }}>{r.label}</span>
-                  <span className="text-[10px] font-bold tabular-nums" style={{ color: r.c }}>{r.count}</span>
+                  <span className="text-[10px]" style={{ color: d.muted }}>
+                    {r.label}
+                  </span>
+                  <span className="text-[10px] font-bold tabular-nums" style={{ color: r.c }}>
+                    {r.count}
+                  </span>
                 </div>
                 <div className="h-1.5 rounded-full overflow-hidden" style={{ background: d.elevated }}>
                   <div className="h-full rounded-full" style={{ width: `${r.pct}%`, background: r.c }} />
                 </div>
               </div>
             ))}
-            <p className="text-[9px] mt-2 text-center" style={{ color: `${d.muted}50` }}>Pas de nom affiché — données agrégées</p>
+            <p className="text-[9px] mt-2 text-center" style={{ color: `${d.muted}50` }}>
+              Pas de nom affiché — données agrégées
+            </p>
           </div>
         </div>
 
         {/* État 3 : Timeline — retour sur question passée (tap Q2) */}
         <div className="rounded-2xl overflow-hidden border" style={{ borderColor: d.border, background: d.canvas }}>
-          <div className="flex items-center gap-2 px-3 py-2.5 border-b" style={{ borderColor: d.border, background: d.surface }}>
-            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent3 }}>Timeline — Q2 sélectionnée</span>
+          <div
+            className="flex items-center gap-2 px-3 py-2.5 border-b"
+            style={{ borderColor: d.border, background: d.surface }}
+          >
+            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent3 }}>
+              Timeline — Q2 sélectionnée
+            </span>
           </div>
           {/* Timeline avec Q2 highlighted */}
           <div className="px-3 pt-3 pb-2">
             <div className="flex items-center gap-1 overflow-x-auto pb-1 mb-3">
               {[
-                { label: "Q1", past: true }, { label: "Q2", selected: true }, { label: "Q3", current: true },
-                { label: "Q4" }, { label: "Q5" },
+                { label: "Q1", past: true },
+                { label: "Q2", selected: true },
+                { label: "Q3", current: true },
+                { label: "Q4" },
+                { label: "Q5" },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-1">
-                  <button className="px-2 py-0.5 rounded text-[9px] font-semibold border" style={
-                    item.selected ? { background: d.accent3Bg, color: d.accent3, borderColor: d.accent3Border }
-                      : item.current ? { background: d.accent1Bg, color: d.accent1, borderColor: d.accent1Border }
-                        : item.past ? { color: `${d.muted}60`, borderColor: "transparent" }
-                          : { color: `${d.muted}30`, borderColor: "transparent" }
-                  }>{item.label}</button>
-                  {i < 4 && <span className="text-[7px]" style={{ color: `${d.muted}20` }}>—</span>}
+                  <button
+                    className="px-2 py-0.5 rounded text-[9px] font-semibold border"
+                    style={
+                      item.selected
+                        ? { background: d.accent3Bg, color: d.accent3, borderColor: d.accent3Border }
+                        : item.current
+                          ? { background: d.accent1Bg, color: d.accent1, borderColor: d.accent1Border }
+                          : item.past
+                            ? { color: `${d.muted}60`, borderColor: "transparent" }
+                            : { color: `${d.muted}30`, borderColor: "transparent" }
+                    }
+                  >
+                    {item.label}
+                  </button>
+                  {i < 4 && (
+                    <span className="text-[7px]" style={{ color: `${d.muted}20` }}>
+                      —
+                    </span>
+                  )}
                 </div>
               ))}
             </div>
             {/* Question passée avec résultats déjà révélés — */}
-            <div className="rounded-xl border p-3" style={{ borderColor: d.accent3Border, background: `${d.surface}80` }}>
-              <span className="text-[9px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: d.accent3 }}>Q2 — Passé · Résultats</span>
+            <div
+              className="rounded-xl border p-3"
+              style={{ borderColor: d.accent3Border, background: `${d.surface}80` }}
+            >
+              <span className="text-[9px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: d.accent3 }}>
+                Q2 — Passé · Résultats
+              </span>
               <p className="text-[12px] font-bold mb-2" style={{ color: d.text }}>
                 Qu&apos;est-ce qu&apos;un champ-contrechamp ?
               </p>
@@ -573,8 +709,12 @@ function MiniCockpitA({ d }: { d: DirectionConfig }) {
               ].map((r) => (
                 <div key={r.label} className="mb-1.5">
                   <div className="flex justify-between mb-0.5">
-                    <span className="text-[9px]" style={{ color: d.muted }}>{r.label}</span>
-                    <span className="text-[9px] font-bold" style={{ color: r.c }}>{r.pct}%</span>
+                    <span className="text-[9px]" style={{ color: d.muted }}>
+                      {r.label}
+                    </span>
+                    <span className="text-[9px] font-bold" style={{ color: r.c }}>
+                      {r.pct}%
+                    </span>
                   </div>
                   <div className="h-1 rounded-full overflow-hidden" style={{ background: d.elevated }}>
                     <div className="h-full rounded-full" style={{ width: `${r.pct}%`, background: r.c }} />
@@ -603,62 +743,143 @@ function MiniCockpitB({ d }: { d: DirectionConfig }) {
         État 1 — Vue principale (3 zones simultanées)
       </p>
       <div className="rounded-2xl overflow-hidden border" style={{ borderColor: d.border, background: d.canvas }}>
-        <div className="flex items-center gap-2 px-3 py-2 border-b" style={{ borderColor: d.border, background: d.surface }}>
-          <span className="inline-block w-2 h-2 rounded-full" style={{ background: d.accent1, boxShadow: `0 0 6px ${d.accent1}` }} />
-          <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: d.accent1 }}>Live</span>
-          <span className="text-[12px] font-medium" style={{ color: d.text }}>M2 Budget</span>
+        <div
+          className="flex items-center gap-2 px-3 py-2 border-b"
+          style={{ borderColor: d.border, background: d.surface }}
+        >
+          <span
+            className="inline-block w-2 h-2 rounded-full"
+            style={{ background: d.accent1, boxShadow: `0 0 6px ${d.accent1}` }}
+          />
+          <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: d.accent1 }}>
+            Live
+          </span>
+          <span className="text-[12px] font-medium" style={{ color: d.text }}>
+            M2 Budget
+          </span>
           <div className="flex-1" />
-          <span className="text-[10px] font-semibold px-2 py-0.5 rounded border" style={{ color: d.accent2, background: d.accent2Bg, borderColor: d.accent2Border }}>24/28</span>
-          <span className="text-[12px] font-mono tabular-nums" style={{ color: d.muted }}>42:18</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ color: d.muted, background: d.elevated }}>⌘K</span>
+          <span
+            className="text-[10px] font-semibold px-2 py-0.5 rounded border"
+            style={{ color: d.accent2, background: d.accent2Bg, borderColor: d.accent2Border }}
+          >
+            24/28
+          </span>
+          <span className="text-[12px] font-mono tabular-nums" style={{ color: d.muted }}>
+            42:18
+          </span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ color: d.muted, background: d.elevated }}>
+            ⌘K
+          </span>
         </div>
         <div className="flex" style={{ minHeight: 180 }}>
-          <div className="w-[90px] border-r p-2 flex flex-col gap-2" style={{ borderColor: d.border, background: `${d.surface}60` }}>
-            <p className="text-[9px] uppercase tracking-wider font-bold" style={{ color: d.muted }}>Classe</p>
+          <div
+            className="w-[90px] border-r p-2 flex flex-col gap-2"
+            style={{ borderColor: d.border, background: `${d.surface}60` }}
+          >
+            <p className="text-[9px] uppercase tracking-wider font-bold" style={{ color: d.muted }}>
+              Classe
+            </p>
             <div className="flex flex-wrap gap-1">
               {Array.from({ length: 24 }).map((_, i) => (
-                <span key={i} className="w-2 h-2 rounded-full" style={{ background: i < 18 ? d.accent2 : i < 22 ? d.accent3 : `${d.muted}30` }} />
+                <span
+                  key={i}
+                  className="w-2 h-2 rounded-full"
+                  style={{ background: i < 18 ? d.accent2 : i < 22 ? d.accent3 : `${d.muted}30` }}
+                />
               ))}
             </div>
             <div className="h-px my-1" style={{ background: d.border }} />
-            <p className="text-[9px] uppercase tracking-wider font-bold" style={{ color: d.muted }}>Modules</p>
+            <p className="text-[9px] uppercase tracking-wider font-bold" style={{ color: d.muted }}>
+              Modules
+            </p>
             {["M1 ✓", "M2 ●", "M3", "M4"].map((m, i) => (
-              <span key={m} className="text-[9px] font-semibold px-1.5 py-0.5 rounded" style={
-                i === 1 ? { color: d.accent1, background: d.accent1Bg } : { color: `${d.muted}${i === 0 ? '80' : '50'}` }
-              }>{m}</span>
+              <span
+                key={m}
+                className="text-[9px] font-semibold px-1.5 py-0.5 rounded"
+                style={
+                  i === 1
+                    ? { color: d.accent1, background: d.accent1Bg }
+                    : { color: `${d.muted}${i === 0 ? "80" : "50"}` }
+                }
+              >
+                {m}
+              </span>
             ))}
           </div>
           <div className="flex-1 p-3 flex flex-col gap-2 border-r" style={{ borderColor: d.border }}>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: d.accent1 }}>Q3/8</span>
-              <span className="text-[10px] ml-2" style={{ color: d.muted }}>Choix multiple</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: d.accent1 }}>
+                Q3/8
+              </span>
+              <span className="text-[10px] ml-2" style={{ color: d.muted }}>
+                Choix multiple
+              </span>
             </div>
-            <p className="text-[13px] font-bold leading-snug" style={{ color: d.text }}>Quel est le role principal du cadreur ?</p>
+            <p className="text-[13px] font-bold leading-snug" style={{ color: d.text }}>
+              Quel est le role principal du cadreur ?
+            </p>
             <div className="grid grid-cols-3 gap-1.5 mt-1">
-              {[{ v: "18", l: "Repondu", c: d.accent1 }, { v: "6", l: "Attente", c: d.accent3 }, { v: "75%", l: "Taux", c: d.accent2 }].map((k) => (
-                <div key={k.l} className="text-center py-1.5 rounded-lg border" style={{ background: `${k.c}08`, borderColor: `${k.c}20` }}>
-                  <span className="text-lg font-black block" style={{ color: k.c }}>{k.v}</span>
-                  <span className="text-[8px] uppercase tracking-wider" style={{ color: d.muted }}>{k.l}</span>
+              {[
+                { v: "18", l: "Repondu", c: d.accent1 },
+                { v: "6", l: "Attente", c: d.accent3 },
+                { v: "75%", l: "Taux", c: d.accent2 },
+              ].map((k) => (
+                <div
+                  key={k.l}
+                  className="text-center py-1.5 rounded-lg border"
+                  style={{ background: `${k.c}08`, borderColor: `${k.c}20` }}
+                >
+                  <span className="text-lg font-black block" style={{ color: k.c }}>
+                    {k.v}
+                  </span>
+                  <span className="text-[8px] uppercase tracking-wider" style={{ color: d.muted }}>
+                    {k.l}
+                  </span>
                 </div>
               ))}
             </div>
             <div className="flex gap-1.5 mt-auto">
-              <button className="flex-1 py-1.5 rounded-lg text-[10px] font-bold border" style={{ color: d.accent2, borderColor: d.accent2Border }}>Reveler</button>
-              <button className="flex-1 py-1.5 rounded-lg text-[10px] font-bold border" style={{ color: d.muted, borderColor: d.border }}>Projeter</button>
-              <button className="flex-1 py-1.5 rounded-lg text-[10px] font-bold" style={{ color: d.canvas, background: d.accent1 }}>Suivant</button>
+              <button
+                className="flex-1 py-1.5 rounded-lg text-[10px] font-bold border"
+                style={{ color: d.accent2, borderColor: d.accent2Border }}
+              >
+                Reveler
+              </button>
+              <button
+                className="flex-1 py-1.5 rounded-lg text-[10px] font-bold border"
+                style={{ color: d.muted, borderColor: d.border }}
+              >
+                Projeter
+              </button>
+              <button
+                className="flex-1 py-1.5 rounded-lg text-[10px] font-bold"
+                style={{ color: d.canvas, background: d.accent1 }}
+              >
+                Suivant
+              </button>
             </div>
           </div>
           <div className="w-[130px] p-2 flex flex-col gap-1.5" style={{ background: `${d.surface}40` }}>
-            <p className="text-[9px] uppercase tracking-wider font-bold" style={{ color: d.muted }}>Reponses live</p>
+            <p className="text-[9px] uppercase tracking-wider font-bold" style={{ color: d.muted }}>
+              Reponses live
+            </p>
             {[
               { text: "Le cadrage definit le regard...", time: "8s" },
               { text: "C'est lui qui choisit l'angle...", time: "23s" },
               { text: "Il travaille avec le real...", time: "41s" },
               { text: "Le cadreur compose l'image...", time: "1m" },
             ].map((r, i) => (
-              <div key={i} className="px-2 py-1.5 rounded-lg border" style={{ borderColor: d.border, background: i === 0 ? d.accent1Bg : "transparent" }}>
-                <p className="text-[10px] leading-tight" style={{ color: i === 0 ? d.text : d.muted }}>{r.text}</p>
-                <span className="text-[8px]" style={{ color: `${d.muted}60` }}>il y a {r.time}</span>
+              <div
+                key={i}
+                className="px-2 py-1.5 rounded-lg border"
+                style={{ borderColor: d.border, background: i === 0 ? d.accent1Bg : "transparent" }}
+              >
+                <p className="text-[10px] leading-tight" style={{ color: i === 0 ? d.text : d.muted }}>
+                  {r.text}
+                </p>
+                <span className="text-[8px]" style={{ color: `${d.muted}60` }}>
+                  il y a {r.time}
+                </span>
               </div>
             ))}
           </div>
@@ -670,26 +891,41 @@ function MiniCockpitB({ d }: { d: DirectionConfig }) {
         États interactifs
       </p>
       <div className="grid grid-cols-2 gap-3">
-
         {/* État 2 : Panel Assistant ouvert (col 3 étendue — notes + timeline) */}
         <div className="rounded-2xl overflow-hidden border" style={{ borderColor: d.border, background: d.canvas }}>
-          <div className="flex items-center gap-2 px-3 py-2.5 border-b" style={{ borderColor: d.border, background: d.surface }}>
-            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent3 }}>Panel Assistant</span>
+          <div
+            className="flex items-center gap-2 px-3 py-2.5 border-b"
+            style={{ borderColor: d.border, background: d.surface }}
+          >
+            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent3 }}>
+              Panel Assistant
+            </span>
             <div className="flex-1" />
-            <span className="text-[9px]" style={{ color: d.muted }}>Col. droite étendue</span>
+            <span className="text-[9px]" style={{ color: d.muted }}>
+              Col. droite étendue
+            </span>
           </div>
           <div className="p-3 space-y-3">
             {/* Notes de session */}
             <div>
-              <p className="text-[9px] uppercase tracking-wider font-bold mb-1.5" style={{ color: d.muted }}>Notes de séance</p>
+              <p className="text-[9px] uppercase tracking-wider font-bold mb-1.5" style={{ color: d.muted }}>
+                Notes de séance
+              </p>
               <div className="rounded-lg border px-2.5 py-2" style={{ borderColor: d.border, background: d.surface }}>
-                <p className="text-[11px]" style={{ color: d.muted }}>Groupe très actif sur les questions de cadrage. Revoir la notion de profondeur de champ au prochain cours...</p>
-                <span className="text-[9px] mt-1 block" style={{ color: `${d.muted}50` }}>Dernière modif : 09:12</span>
+                <p className="text-[11px]" style={{ color: d.muted }}>
+                  Groupe très actif sur les questions de cadrage. Revoir la notion de profondeur de champ au prochain
+                  cours...
+                </p>
+                <span className="text-[9px] mt-1 block" style={{ color: `${d.muted}50` }}>
+                  Dernière modif : 09:12
+                </span>
               </div>
             </div>
             {/* Mini timeline de séance */}
             <div>
-              <p className="text-[9px] uppercase tracking-wider font-bold mb-1.5" style={{ color: d.muted }}>Progression séance</p>
+              <p className="text-[9px] uppercase tracking-wider font-bold mb-1.5" style={{ color: d.muted }}>
+                Progression séance
+              </p>
               <div className="space-y-1">
                 {[
                   { label: "Module 1 — Intro", done: true, time: "08h35" },
@@ -698,10 +934,24 @@ function MiniCockpitB({ d }: { d: DirectionConfig }) {
                   { label: "Q3 Rôle cadreur ←", active: true, time: "09h04" },
                   { label: "Q4 Plan séquence", done: false, time: "—" },
                 ].map((item) => (
-                  <div key={item.label} className="flex items-center gap-2 px-2 py-1 rounded" style={{ background: item.active ? d.accent1Bg : "transparent" }}>
-                    <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: item.active ? d.accent1 : item.done ? d.accent3 : `${d.muted}30` }} />
-                    <span className="text-[10px] flex-1" style={{ color: item.active ? d.text : item.done ? d.muted : `${d.muted}40` }}>{item.label}</span>
-                    <span className="text-[9px] font-mono" style={{ color: `${d.muted}50` }}>{item.time}</span>
+                  <div
+                    key={item.label}
+                    className="flex items-center gap-2 px-2 py-1 rounded"
+                    style={{ background: item.active ? d.accent1Bg : "transparent" }}
+                  >
+                    <span
+                      className="w-1.5 h-1.5 rounded-full shrink-0"
+                      style={{ background: item.active ? d.accent1 : item.done ? d.accent3 : `${d.muted}30` }}
+                    />
+                    <span
+                      className="text-[10px] flex-1"
+                      style={{ color: item.active ? d.text : item.done ? d.muted : `${d.muted}40` }}
+                    >
+                      {item.label}
+                    </span>
+                    <span className="text-[9px] font-mono" style={{ color: `${d.muted}50` }}>
+                      {item.time}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -711,27 +961,65 @@ function MiniCockpitB({ d }: { d: DirectionConfig }) {
 
         {/* État 3 : Vue Projection (ce que les élèves voient sur le mur) */}
         <div className="rounded-2xl overflow-hidden border" style={{ borderColor: d.border, background: d.canvas }}>
-          <div className="flex items-center gap-2 px-3 py-2.5 border-b" style={{ borderColor: d.border, background: d.surface }}>
-            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent2 }}>Vue Projection</span>
+          <div
+            className="flex items-center gap-2 px-3 py-2.5 border-b"
+            style={{ borderColor: d.border, background: d.surface }}
+          >
+            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent2 }}>
+              Vue Projection
+            </span>
             <div className="flex-1" />
-            <span className="text-[9px]" style={{ color: d.muted }}>Écran projeté → élèves</span>
+            <span className="text-[9px]" style={{ color: d.muted }}>
+              Écran projeté → élèves
+            </span>
           </div>
           {/* Simulation de l'écran projeté : minimaliste, lisible à 5m — textes 24px min (Phase 0) */}
-          <div className="flex flex-col items-center justify-center px-6 py-8" style={{ background: "#0a0a0a", minHeight: 200 }}>
-            <span className="text-[11px] font-bold uppercase tracking-[0.3em] mb-3 block" style={{ color: d.accent1 }}>Question 3 / 8</span>
-            <p className="text-[24px] font-black leading-snug text-center mb-6" style={{ color: "#ffffff", letterSpacing: "-0.01em" }}>
-              Quel est le role<br />principal du cadreur ?
+          <div
+            className="flex flex-col items-center justify-center px-6 py-8"
+            style={{ background: "#0a0a0a", minHeight: 200 }}
+          >
+            <span className="text-[11px] font-bold uppercase tracking-[0.3em] mb-3 block" style={{ color: d.accent1 }}>
+              Question 3 / 8
+            </span>
+            <p
+              className="text-[24px] font-black leading-snug text-center mb-6"
+              style={{ color: "#ffffff", letterSpacing: "-0.01em" }}
+            >
+              Quel est le role
+              <br />
+              principal du cadreur ?
             </p>
             {/* Options de réponse — 18px min pour lecture à 3-8m */}
             <div className="w-full space-y-2">
-              {["A. Le cadrage et le regard", "B. La gestion du son", "C. L'éclairage scène", "D. Le montage final"].map((opt, i) => (
-                <div key={opt} className="flex items-center gap-3 px-4 py-3 rounded-xl border" style={{ borderColor: i === 0 ? `${d.accent1}40` : "rgba(255,255,255,0.08)", background: i === 0 ? `${d.accent1}10` : "transparent" }}>
-                  <span className="text-[14px] font-black w-5" style={{ color: i === 0 ? d.accent1 : "rgba(255,255,255,0.3)" }}>{["A","B","C","D"][i]}</span>
-                  <span className="text-[16px]" style={{ color: i === 0 ? "#ffffff" : "rgba(255,255,255,0.4)" }}>{opt.slice(3)}</span>
+              {[
+                "A. Le cadrage et le regard",
+                "B. La gestion du son",
+                "C. L'éclairage scène",
+                "D. Le montage final",
+              ].map((opt, i) => (
+                <div
+                  key={opt}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl border"
+                  style={{
+                    borderColor: i === 0 ? `${d.accent1}40` : "rgba(255,255,255,0.08)",
+                    background: i === 0 ? `${d.accent1}10` : "transparent",
+                  }}
+                >
+                  <span
+                    className="text-[14px] font-black w-5"
+                    style={{ color: i === 0 ? d.accent1 : "rgba(255,255,255,0.3)" }}
+                  >
+                    {["A", "B", "C", "D"][i]}
+                  </span>
+                  <span className="text-[16px]" style={{ color: i === 0 ? "#ffffff" : "rgba(255,255,255,0.4)" }}>
+                    {opt.slice(3)}
+                  </span>
                 </div>
               ))}
             </div>
-            <p className="text-[11px] mt-4" style={{ color: "rgba(255,255,255,0.2)" }}>Répondez sur votre appareil</p>
+            <p className="text-[11px] mt-4" style={{ color: "rgba(255,255,255,0.2)" }}>
+              Répondez sur votre appareil
+            </p>
           </div>
         </div>
       </div>
@@ -755,17 +1043,36 @@ function MiniCockpitC({ d }: { d: DirectionConfig }) {
       <div className="rounded-2xl overflow-hidden border" style={{ borderColor: d.border, background: d.canvas }}>
         {/* Header minimal */}
         <div className="flex items-center justify-center gap-4 px-4 py-2 border-b" style={{ borderColor: d.border }}>
-          <span className="inline-block w-2 h-2 rounded-full" style={{ background: d.accent1, boxShadow: `0 0 8px ${d.accent1}` }} />
-          <span className="text-[12px] font-medium" style={{ color: d.muted }}>M2</span>
-          <span className="text-[11px]" style={{ color: d.border }}>|</span>
-          <span className="text-[12px]" style={{ color: d.muted }}>24 eleves</span>
-          <span className="text-[11px]" style={{ color: d.border }}>|</span>
-          <span className="text-[12px] font-mono tabular-nums" style={{ color: d.muted }}>42:18</span>
+          <span
+            className="inline-block w-2 h-2 rounded-full"
+            style={{ background: d.accent1, boxShadow: `0 0 8px ${d.accent1}` }}
+          />
+          <span className="text-[12px] font-medium" style={{ color: d.muted }}>
+            M2
+          </span>
+          <span className="text-[11px]" style={{ color: d.border }}>
+            |
+          </span>
+          <span className="text-[12px]" style={{ color: d.muted }}>
+            24 eleves
+          </span>
+          <span className="text-[11px]" style={{ color: d.border }}>
+            |
+          </span>
+          <span className="text-[12px] font-mono tabular-nums" style={{ color: d.muted }}>
+            42:18
+          </span>
         </div>
 
         {/* FOCUS CENTRAL — boite centree avec espace autour */}
-        <div className="flex flex-col items-center px-10 py-6" style={{ background: `radial-gradient(ellipse at center, ${d.accent1}08, transparent 65%)` }}>
-          <div className="w-full max-w-[78%] rounded-2xl border p-5" style={{ borderColor: d.accent1Border, background: d.surface, boxShadow: `0 0 24px ${d.accent1}12` }}>
+        <div
+          className="flex flex-col items-center px-10 py-6"
+          style={{ background: `radial-gradient(ellipse at center, ${d.accent1}08, transparent 65%)` }}
+        >
+          <div
+            className="w-full max-w-[78%] rounded-2xl border p-5"
+            style={{ borderColor: d.accent1Border, background: d.surface, boxShadow: `0 0 24px ${d.accent1}12` }}
+          >
             <span className="text-[11px] font-bold uppercase tracking-[0.3em] block mb-3" style={{ color: d.accent1 }}>
               Question 3 / 8
             </span>
@@ -773,13 +1080,18 @@ function MiniCockpitC({ d }: { d: DirectionConfig }) {
               Quel est le role principal du cadreur dans une mise en scene ?
             </p>
             <div className="h-1.5 rounded-full overflow-hidden mb-2" style={{ background: d.elevated }}>
-              <div className="h-full rounded-full" style={{ width: "75%", background: `linear-gradient(90deg, ${d.accent1}, ${d.accent2})` }} />
+              <div
+                className="h-full rounded-full"
+                style={{ width: "75%", background: `linear-gradient(90deg, ${d.accent1}, ${d.accent2})` }}
+              />
             </div>
             <p className="text-[11px] text-center" style={{ color: d.muted }}>
               <span style={{ color: d.accent1 }}>18</span> reponses sur 24
             </p>
           </div>
-          <p className="text-[9px] mt-3 tracking-wider uppercase" style={{ color: `${d.muted}40` }}>plein ecran · focus total</p>
+          <p className="text-[9px] mt-3 tracking-wider uppercase" style={{ color: `${d.muted}40` }}>
+            plein ecran · focus total
+          </p>
         </div>
 
         {/* KPIs */}
@@ -791,8 +1103,12 @@ function MiniCockpitC({ d }: { d: DirectionConfig }) {
             { v: "42:18", l: "Temps", c: d.muted },
           ].map((k) => (
             <div key={k.l} className="flex flex-col items-center py-2 rounded-xl" style={{ background: `${k.c}08` }}>
-              <span className="text-xl font-black tabular-nums" style={{ color: k.c }}>{k.v}</span>
-              <span className="text-[9px] uppercase tracking-wider" style={{ color: d.muted }}>{k.l}</span>
+              <span className="text-xl font-black tabular-nums" style={{ color: k.c }}>
+                {k.v}
+              </span>
+              <span className="text-[9px] uppercase tracking-wider" style={{ color: d.muted }}>
+                {k.l}
+              </span>
             </div>
           ))}
         </div>
@@ -802,7 +1118,14 @@ function MiniCockpitC({ d }: { d: DirectionConfig }) {
           <button className="px-3 py-2 rounded-xl text-[11px] font-semibold" style={{ color: d.muted }}>
             &larr; Prec
           </button>
-          <button className="px-8 py-3 rounded-2xl text-[13px] font-black uppercase tracking-wider" style={{ color: d.canvas, background: `linear-gradient(135deg, ${d.accent1}, ${d.accent2})`, boxShadow: `0 4px 20px ${d.accent1}40` }}>
+          <button
+            className="px-8 py-3 rounded-2xl text-[13px] font-black uppercase tracking-wider"
+            style={{
+              color: d.canvas,
+              background: `linear-gradient(135deg, ${d.accent1}, ${d.accent2})`,
+              boxShadow: `0 4px 20px ${d.accent1}40`,
+            }}
+          >
             Reveler
           </button>
           <button className="px-3 py-2 rounded-xl text-[11px] font-semibold" style={{ color: d.muted }}>
@@ -813,10 +1136,14 @@ function MiniCockpitC({ d }: { d: DirectionConfig }) {
         {/* Drawer handles */}
         <div className="flex border-t" style={{ borderColor: d.border }}>
           <div className="flex-1 py-2 text-center border-r" style={{ borderColor: d.border }}>
-            <span className="text-[10px]" style={{ color: `${d.muted}60` }}>&larr; Swipe : Classe</span>
+            <span className="text-[10px]" style={{ color: `${d.muted}60` }}>
+              &larr; Swipe : Classe
+            </span>
           </div>
           <div className="flex-1 py-2 text-center">
-            <span className="text-[10px]" style={{ color: `${d.muted}60` }}>Reponses : Swipe &rarr;</span>
+            <span className="text-[10px]" style={{ color: `${d.muted}60` }}>
+              Reponses : Swipe &rarr;
+            </span>
           </div>
         </div>
       </div>
@@ -826,13 +1153,22 @@ function MiniCockpitC({ d }: { d: DirectionConfig }) {
         États drawers — contenus à l&apos;ouverture
       </p>
       <div className="grid grid-cols-2 gap-3">
-
         {/* Drawer Classe (swipe gauche) */}
         <div className="rounded-2xl overflow-hidden border" style={{ borderColor: d.border, background: d.canvas }}>
-          <div className="flex items-center gap-2 px-3 py-2.5 border-b" style={{ borderColor: d.border, background: d.surface }}>
-            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent3 }}>← Classe</span>
+          <div
+            className="flex items-center gap-2 px-3 py-2.5 border-b"
+            style={{ borderColor: d.border, background: d.surface }}
+          >
+            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent3 }}>
+              ← Classe
+            </span>
             <div className="flex-1" />
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ color: d.accent3, background: d.accent3Bg }}>24</span>
+            <span
+              className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+              style={{ color: d.accent3, background: d.accent3Bg }}
+            >
+              24
+            </span>
           </div>
           {/* Barre de statut global */}
           <div className="px-3 pt-3 pb-2">
@@ -840,7 +1176,9 @@ function MiniCockpitC({ d }: { d: DirectionConfig }) {
               <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: d.elevated }}>
                 <div className="h-full rounded-full" style={{ width: "75%", background: d.accent3 }} />
               </div>
-              <span className="text-[10px] font-mono" style={{ color: d.accent3 }}>18/24</span>
+              <span className="text-[10px] font-mono" style={{ color: d.accent3 }}>
+                18/24
+              </span>
             </div>
             <div className="flex gap-2 text-[9px]" style={{ color: d.muted }}>
               <span style={{ color: d.accent3 }}>● 18 ont repondu</span>
@@ -858,48 +1196,89 @@ function MiniCockpitC({ d }: { d: DirectionConfig }) {
               { nom: "Amira K.", statut: "en attente", couleur: d.accent2 },
               { nom: "Noah R.", statut: "absent", couleur: d.muted },
             ].map((e) => (
-              <div key={e.nom} className="flex items-center gap-2 px-2 py-1.5 rounded-lg" style={{ background: `${d.surface}80` }}>
+              <div
+                key={e.nom}
+                className="flex items-center gap-2 px-2 py-1.5 rounded-lg"
+                style={{ background: `${d.surface}80` }}
+              >
                 <span className="w-2 h-2 rounded-full shrink-0" style={{ background: e.couleur }} />
-                <span className="text-[11px] font-medium flex-1" style={{ color: e.statut === "repondu" ? d.text : d.muted }}>{e.nom}</span>
-                <span className="text-[9px]" style={{ color: e.couleur }}>{e.statut}</span>
+                <span
+                  className="text-[11px] font-medium flex-1"
+                  style={{ color: e.statut === "repondu" ? d.text : d.muted }}
+                >
+                  {e.nom}
+                </span>
+                <span className="text-[9px]" style={{ color: e.couleur }}>
+                  {e.statut}
+                </span>
               </div>
             ))}
-            <p className="text-[9px] text-center pt-1" style={{ color: `${d.muted}50` }}>+ 18 autres élèves</p>
+            <p className="text-[9px] text-center pt-1" style={{ color: `${d.muted}50` }}>
+              + 18 autres élèves
+            </p>
           </div>
         </div>
 
         {/* Drawer Reponses (swipe droite) */}
         <div className="rounded-2xl overflow-hidden border" style={{ borderColor: d.border, background: d.canvas }}>
-          <div className="flex items-center gap-2 px-3 py-2.5 border-b" style={{ borderColor: d.border, background: d.surface }}>
-            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent1 }}>Réponses →</span>
+          <div
+            className="flex items-center gap-2 px-3 py-2.5 border-b"
+            style={{ borderColor: d.border, background: d.surface }}
+          >
+            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: d.accent1 }}>
+              Réponses →
+            </span>
             <div className="flex-1" />
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ color: d.accent1, background: d.accent1Bg }}>18</span>
+            <span
+              className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+              style={{ color: d.accent1, background: d.accent1Bg }}
+            >
+              18
+            </span>
           </div>
           {/* Filtres rapides */}
           <div className="flex gap-1.5 px-3 pt-3 pb-2">
             {["Tous", "Recents", "Similaires"].map((f, i) => (
-              <button key={f} className="px-2 py-1 rounded-lg text-[9px] font-semibold border" style={
-                i === 0
-                  ? { color: d.accent1, background: d.accent1Bg, borderColor: d.accent1Border }
-                  : { color: d.muted, borderColor: "transparent", background: "transparent" }
-              }>{f}</button>
+              <button
+                key={f}
+                className="px-2 py-1 rounded-lg text-[9px] font-semibold border"
+                style={
+                  i === 0
+                    ? { color: d.accent1, background: d.accent1Bg, borderColor: d.accent1Border }
+                    : { color: d.muted, borderColor: "transparent", background: "transparent" }
+                }
+              >
+                {f}
+              </button>
             ))}
           </div>
           {/* Stream de reponses */}
           <div className="px-3 pb-3 space-y-1.5">
             {[
               { text: "Le cadrage definit le regard du spectateur et guide son attention.", new: true, time: "8s" },
-              { text: "C'est lui qui compose l'image avec le realisateur, angle et profondeur.", new: true, time: "23s" },
+              {
+                text: "C'est lui qui compose l'image avec le realisateur, angle et profondeur.",
+                new: true,
+                time: "23s",
+              },
               { text: "Il gere la mise au point, les mouvements camera et la stabilite.", new: false, time: "41s" },
               { text: "Le cadreur traduit la vision du realisateur en image concrete.", new: false, time: "1m" },
               { text: "Son role c'est de trouver le meilleur angle pour chaque scene.", new: false, time: "1m12s" },
             ].map((r, i) => (
-              <div key={i} className="rounded-lg border px-2.5 py-2" style={{
-                borderColor: r.new ? d.accent1Border : d.border,
-                background: r.new ? d.accent1Bg : `${d.surface}60`,
-              }}>
-                <p className="text-[11px] leading-snug" style={{ color: r.new ? d.text : d.muted }}>{r.text}</p>
-                <span className="text-[8px] mt-0.5 block" style={{ color: `${d.muted}50` }}>il y a {r.time}</span>
+              <div
+                key={i}
+                className="rounded-lg border px-2.5 py-2"
+                style={{
+                  borderColor: r.new ? d.accent1Border : d.border,
+                  background: r.new ? d.accent1Bg : `${d.surface}60`,
+                }}
+              >
+                <p className="text-[11px] leading-snug" style={{ color: r.new ? d.text : d.muted }}>
+                  {r.text}
+                </p>
+                <span className="text-[8px] mt-0.5 block" style={{ color: `${d.muted}50` }}>
+                  il y a {r.time}
+                </span>
               </div>
             ))}
           </div>
@@ -945,7 +1324,11 @@ function DirectionCard({ d, index }: { d: DirectionConfig; index: number }) {
         {/* References culturelles */}
         <div className="flex flex-wrap gap-2">
           {d.references.map((ref) => (
-            <span key={ref} className="inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] font-semibold border" style={{ color: d.accent2, background: d.accent2Bg, borderColor: d.accent2Border }}>
+            <span
+              key={ref}
+              className="inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] font-semibold border"
+              style={{ color: d.accent2, background: d.accent2Bg, borderColor: d.accent2Border }}
+            >
               {ref}
             </span>
           ))}
@@ -956,18 +1339,25 @@ function DirectionCard({ d, index }: { d: DirectionConfig; index: number }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="rounded-2xl border p-5" style={{ background: d.surface, borderColor: d.border }}>
           <SectionLabel color={d.accent2}>Origine culturelle</SectionLabel>
-          <p className="text-[13px] leading-relaxed" style={{ color: d.muted }}>{d.origin}</p>
+          <p className="text-[13px] leading-relaxed" style={{ color: d.muted }}>
+            {d.origin}
+          </p>
         </div>
         <div className="rounded-2xl border p-5" style={{ background: d.surface, borderColor: d.border }}>
           <SectionLabel color={d.accent1}>Logique strategique</SectionLabel>
-          <p className="text-[13px] leading-relaxed" style={{ color: d.muted }}>{d.logique}</p>
+          <p className="text-[13px] leading-relaxed" style={{ color: d.muted }}>
+            {d.logique}
+          </p>
         </div>
       </div>
 
       {/* ── Layout ASCII ── */}
       <div className="rounded-2xl border p-5" style={{ background: d.canvas, borderColor: d.border }}>
         <SectionLabel color={d.accent3}>Architecture UI/UX &mdash; Layout iPad landscape</SectionLabel>
-        <pre className="text-[11px] leading-relaxed font-mono whitespace-pre overflow-x-auto" style={{ color: d.accent3 }}>
+        <pre
+          className="text-[11px] leading-relaxed font-mono whitespace-pre overflow-x-auto"
+          style={{ color: d.accent3 }}
+        >
           {d.layoutAscii}
         </pre>
       </div>
@@ -986,8 +1376,12 @@ function DirectionCard({ d, index }: { d: DirectionConfig; index: number }) {
             { label: "P4 (2+ taps)", value: d.hierarchie.p4, color: d.muted },
           ].map((h) => (
             <div key={h.label} className="flex gap-3 items-baseline">
-              <span className="text-[10px] font-bold uppercase tracking-wider shrink-0 w-24" style={{ color: h.color }}>{h.label}</span>
-              <span className="text-[12px]" style={{ color: d.muted }}>{h.value}</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider shrink-0 w-24" style={{ color: h.color }}>
+                {h.label}
+              </span>
+              <span className="text-[12px]" style={{ color: d.muted }}>
+                {h.value}
+              </span>
             </div>
           ))}
         </div>
@@ -1011,10 +1405,17 @@ function DirectionCard({ d, index }: { d: DirectionConfig; index: number }) {
             { hex: d.elevated, label: "Elevated" },
           ].map((s) => (
             <div key={s.label}>
-              <div className="h-14 rounded-lg mb-1.5 border flex items-end px-2 py-1.5" style={{ background: s.hex, borderColor: d.border }}>
-                <span className="text-[9px] font-mono" style={{ color: `${d.text}40` }}>{s.hex}</span>
+              <div
+                className="h-14 rounded-lg mb-1.5 border flex items-end px-2 py-1.5"
+                style={{ background: s.hex, borderColor: d.border }}
+              >
+                <span className="text-[9px] font-mono" style={{ color: `${d.text}40` }}>
+                  {s.hex}
+                </span>
               </div>
-              <p className="text-[12px] font-medium" style={{ color: d.text }}>{s.label}</p>
+              <p className="text-[12px] font-medium" style={{ color: d.text }}>
+                {s.label}
+              </p>
             </div>
           ))}
         </div>
@@ -1028,8 +1429,12 @@ function DirectionCard({ d, index }: { d: DirectionConfig; index: number }) {
               <div className="h-14 rounded-lg mb-1.5 flex items-center justify-center" style={{ background: a.bg }}>
                 <div className="w-6 h-6 rounded-full" style={{ background: a.color }} />
               </div>
-              <p className="text-[12px] font-medium" style={{ color: d.text }}>{a.label}</p>
-              <p className="text-[10px] font-mono" style={{ color: d.muted }}>{a.color}</p>
+              <p className="text-[12px] font-medium" style={{ color: d.text }}>
+                {a.label}
+              </p>
+              <p className="text-[10px] font-mono" style={{ color: d.muted }}>
+                {a.color}
+              </p>
             </div>
           ))}
         </div>
@@ -1047,8 +1452,12 @@ function DirectionCard({ d, index }: { d: DirectionConfig; index: number }) {
               { label: "KPIs", value: d.typo.kpi },
             ].map((t) => (
               <div key={t.label}>
-                <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: d.accent1 }}>{t.label}</span>
-                <p className="text-[11px]" style={{ color: d.muted }}>{t.value}</p>
+                <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: d.accent1 }}>
+                  {t.label}
+                </span>
+                <p className="text-[11px]" style={{ color: d.muted }}>
+                  {t.value}
+                </p>
               </div>
             ))}
           </div>
@@ -1062,8 +1471,12 @@ function DirectionCard({ d, index }: { d: DirectionConfig; index: number }) {
               { label: "Micro-interactions", value: d.motion.micro },
             ].map((m) => (
               <div key={m.label}>
-                <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: d.accent3 }}>{m.label}</span>
-                <p className="text-[11px]" style={{ color: d.muted }}>{m.value}</p>
+                <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: d.accent3 }}>
+                  {m.label}
+                </span>
+                <p className="text-[11px]" style={{ color: d.muted }}>
+                  {m.value}
+                </p>
               </div>
             ))}
           </div>
@@ -1083,8 +1496,12 @@ function DirectionCard({ d, index }: { d: DirectionConfig; index: number }) {
             { label: "Unicite / differenciation", value: d.scores.unicite },
           ].map((s) => (
             <div key={s.label} className="flex flex-col">
-              <span className="text-[11px] uppercase tracking-wider mb-1" style={{ color: d.muted }}>{s.label}</span>
-              <span className="text-lg font-black" style={{ color: d.accent1 }}>{s.value}</span>
+              <span className="text-[11px] uppercase tracking-wider mb-1" style={{ color: d.muted }}>
+                {s.label}
+              </span>
+              <span className="text-lg font-black" style={{ color: d.accent1 }}>
+                {s.value}
+              </span>
             </div>
           ))}
         </div>
@@ -1101,54 +1518,66 @@ const PHASE0 = {
     {
       titre: "Card-based progressive disclosure",
       source: "adamfard.com/blog/edtech-design-trends + Muzli Dashboard 2026",
-      principe: "L'enseignant voit les données actives sans surcharge. Les cartes permettent de n'afficher que ce qui est pertinent maintenant. Zones modulaires indépendantes — si une zone est vide, elle disparaît sans casser le layout.",
-      applicable: "Valide le pattern Direction A (question centrale + stream séparé) et Direction C (drawers indépendants).",
+      principe:
+        "L'enseignant voit les données actives sans surcharge. Les cartes permettent de n'afficher que ce qui est pertinent maintenant. Zones modulaires indépendantes — si une zone est vide, elle disparaît sans casser le layout.",
+      applicable:
+        "Valide le pattern Direction A (question centrale + stream séparé) et Direction C (drawers indépendants).",
     },
     {
       titre: "Dark mode premium avec accents haute saturation",
       source: "Muzli 2026 — Orbix Studio, Felix/Mirhayot",
-      principe: "Fonds très sombres (#0A0A16) + accents néon/saturés. Particulièrement adapté aux environnements de projection : salle sombre = dark mode lisible, light mode = lavé par le projecteur.",
-      applicable: "Valide fonctionnellement la Direction B (premium dark). Suggère que Direction A devrait proposer un mode sombre optionnel.",
+      principe:
+        "Fonds très sombres (#0A0A16) + accents néon/saturés. Particulièrement adapté aux environnements de projection : salle sombre = dark mode lisible, light mode = lavé par le projecteur.",
+      applicable:
+        "Valide fonctionnellement la Direction B (premium dark). Suggère que Direction A devrait proposer un mode sombre optionnel.",
     },
     {
       titre: "Badges de statut temps réel sans tableaux",
       source: "Multiple sources EdTech dashboard 2025-2026",
-      principe: "Statut élèves = badge coloré (vert/orange/gris), jamais un tableau à colonnes. Reconnaissance visuelle < 200ms. Un tableau requiert de lire. Un badge se lit d'un coup d'oeil.",
-      applicable: "Drawer Classe Direction C — les badges par élève sont le pattern validé. Les tableaux de données sont l'anti-pattern.",
+      principe:
+        "Statut élèves = badge coloré (vert/orange/gris), jamais un tableau à colonnes. Reconnaissance visuelle < 200ms. Un tableau requiert de lire. Un badge se lit d'un coup d'oeil.",
+      applicable:
+        "Drawer Classe Direction C — les badges par élève sont le pattern validé. Les tableaux de données sont l'anti-pattern.",
     },
   ],
   patternsMorts: [
     {
       pattern: "Navigation à dropdowns pendant une session live",
       preuve: "Anti-pattern explicite — retours Mentimeter ('trop d'étapes pour changer d'activité')",
-      risque: "L'enseignant cherche une action pendant que les élèves attendent. Chaque dropdown = silence inconfortable devant la classe.",
+      risque:
+        "L'enseignant cherche une action pendant que les élèves attendent. Chaque dropdown = silence inconfortable devant la classe.",
     },
     {
       pattern: "Dense tabular layouts (tableaux classiques)",
       preuve: "Anti-pattern dans tous les dashboards EdTech 2026 analysés",
-      risque: "Lisible sur desktop assis, illisible sur iPad debout à 60cm. Contrastes insuffisants en salle lumineuse.",
+      risque:
+        "Lisible sur desktop assis, illisible sur iPad debout à 60cm. Contrastes insuffisants en salle lumineuse.",
     },
     {
       pattern: "Modals emboîtées pour actions urgentes",
       preuve: "Cité explicitement — adamfard.com analyse EdTech",
-      risque: "Modal → autre modal = 3+ taps pour une action fréquente. Sur un cockpit live : toute action > 1 tap est un bug d'architecture.",
+      risque:
+        "Modal → autre modal = 3+ taps pour une action fréquente. Sur un cockpit live : toute action > 1 tap est un bug d'architecture.",
     },
   ],
   plaintes: [
     {
       plainte: '"Tracking individual student progress is tedious"',
       source: "Common Sense Education — reviews Kahoot enseignants",
-      implication: "La vue classe doit montrer le statut en un coup d'oeil. Drawer Classe = scanning-first, pas navigation-first.",
+      implication:
+        "La vue classe doit montrer le statut en un coup d'oeil. Drawer Classe = scanning-first, pas navigation-first.",
     },
     {
       plainte: '"Hard to read questions and answers on a projected screen"',
       source: "Reviews Kahoot — Common Sense Education, GetApp",
-      implication: "Mode projection ≠ juste un autre écran. Textes minimum 24px en mode projection (lu à 3-8m par 24 élèves).",
+      implication:
+        "Mode projection ≠ juste un autre écran. Textes minimum 24px en mode projection (lu à 3-8m par 24 élèves).",
     },
     {
       plainte: '"Template changes broke our workflow" (Mentimeter 2024)',
       source: "Reviews Capterra Mentimeter",
-      implication: "Les enseignants ont des rituels. Tout redesign en cours d'année = trahison. Design system stable obligatoire.",
+      implication:
+        "Les enseignants ont des rituels. Tout redesign en cours d'année = trahison. Design system stable obligatoire.",
     },
     {
       plainte: "Interface gamifiée inadaptée au secondaire/professionnel",
@@ -1156,8 +1585,10 @@ const PHASE0 = {
       implication: "Valide la doctrine Banlieuwood 'pas de gamification agressive, cinema premium'.",
     },
   ],
-  lacune: "Aucun outil existant n'est conçu pour la posture physique réelle : debout, en mouvement, iPad posé sur pupitre, en train de parler, interrompu toutes les 30 secondes. Tous les concurrents (Kahoot, Nearpod, Mentimeter, Wooclap) sont conçus pour un utilisateur assis devant un ordinateur de bureau.",
-  implication: "La Phase 2 doit tester chaque direction contre cette contrainte physique. Toute direction qui requiert de 'chercher' une action échoue dès le départ. La révélation des résultats est un moment absent chez tous les concurrents — c'est l'opportunité de différenciation la plus forte.",
+  lacune:
+    "Aucun outil existant n'est conçu pour la posture physique réelle : debout, en mouvement, iPad posé sur pupitre, en train de parler, interrompu toutes les 30 secondes. Tous les concurrents (Kahoot, Nearpod, Mentimeter, Wooclap) sont conçus pour un utilisateur assis devant un ordinateur de bureau.",
+  implication:
+    "La Phase 2 doit tester chaque direction contre cette contrainte physique. Toute direction qui requiert de 'chercher' une action échoue dès le départ. La révélation des résultats est un moment absent chez tous les concurrents — c'est l'opportunité de différenciation la plus forte.",
 };
 
 // ─── ONGLET RAPPORTS ────────────────────────────────────────────────────────
@@ -1172,11 +1603,23 @@ function Phase0Report() {
         </p>
         <div className="space-y-3">
           {PHASE0.patternsDominants.map((p, i) => (
-            <div key={i} className="rounded-xl border p-4" style={{ borderColor: "rgba(255,107,53,0.1)", background: "rgba(255,107,53,0.02)" }}>
-              <p className="text-[13px] font-bold mb-1" style={{ color: "#f5f0e8" }}>{p.titre}</p>
-              <p className="text-[10px] font-mono mb-2" style={{ color: "rgba(255,107,53,0.5)" }}>SOURCE : {p.source}</p>
-              <p className="text-[12px] leading-relaxed mb-2" style={{ color: "#a89e8e" }}>{p.principe}</p>
-              <p className="text-[12px] leading-relaxed" style={{ color: "#ff6b35" }}>→ {p.applicable}</p>
+            <div
+              key={i}
+              className="rounded-xl border p-4"
+              style={{ borderColor: "rgba(255,107,53,0.1)", background: "rgba(255,107,53,0.02)" }}
+            >
+              <p className="text-[13px] font-bold mb-1" style={{ color: "#f5f0e8" }}>
+                {p.titre}
+              </p>
+              <p className="text-[10px] font-mono mb-2" style={{ color: "rgba(255,107,53,0.5)" }}>
+                SOURCE : {p.source}
+              </p>
+              <p className="text-[12px] leading-relaxed mb-2" style={{ color: "#a89e8e" }}>
+                {p.principe}
+              </p>
+              <p className="text-[12px] leading-relaxed" style={{ color: "#ff6b35" }}>
+                → {p.applicable}
+              </p>
             </div>
           ))}
         </div>
@@ -1189,10 +1632,20 @@ function Phase0Report() {
         </p>
         <div className="space-y-2">
           {PHASE0.patternsMorts.map((p, i) => (
-            <div key={i} className="rounded-xl border p-3" style={{ borderColor: "rgba(192,57,43,0.1)", background: "rgba(192,57,43,0.02)" }}>
-              <p className="text-[12px] font-bold mb-1 line-through" style={{ color: "#c0392b" }}>{p.pattern}</p>
-              <p className="text-[11px] mb-1" style={{ color: "#5a3a35" }}>Preuve : {p.preuve}</p>
-              <p className="text-[11px]" style={{ color: "#a89e8e" }}>Risque : {p.risque}</p>
+            <div
+              key={i}
+              className="rounded-xl border p-3"
+              style={{ borderColor: "rgba(192,57,43,0.1)", background: "rgba(192,57,43,0.02)" }}
+            >
+              <p className="text-[12px] font-bold mb-1 line-through" style={{ color: "#c0392b" }}>
+                {p.pattern}
+              </p>
+              <p className="text-[11px] mb-1" style={{ color: "#5a3a35" }}>
+                Preuve : {p.preuve}
+              </p>
+              <p className="text-[11px]" style={{ color: "#a89e8e" }}>
+                Risque : {p.risque}
+              </p>
             </div>
           ))}
         </div>
@@ -1205,10 +1658,20 @@ function Phase0Report() {
         </p>
         <div className="space-y-2">
           {PHASE0.plaintes.map((p, i) => (
-            <div key={i} className="rounded-xl border p-3" style={{ borderColor: "rgba(212,168,67,0.1)", background: "rgba(212,168,67,0.02)" }}>
-              <p className="text-[12px] font-bold mb-1 italic" style={{ color: "#D4A843" }}>{p.plainte}</p>
-              <p className="text-[10px] font-mono mb-1" style={{ color: "rgba(212,168,67,0.4)" }}>SOURCE : {p.source}</p>
-              <p className="text-[11px]" style={{ color: "#a89e8e" }}>→ {p.implication}</p>
+            <div
+              key={i}
+              className="rounded-xl border p-3"
+              style={{ borderColor: "rgba(212,168,67,0.1)", background: "rgba(212,168,67,0.02)" }}
+            >
+              <p className="text-[12px] font-bold mb-1 italic" style={{ color: "#D4A843" }}>
+                {p.plainte}
+              </p>
+              <p className="text-[10px] font-mono mb-1" style={{ color: "rgba(212,168,67,0.4)" }}>
+                SOURCE : {p.source}
+              </p>
+              <p className="text-[11px]" style={{ color: "#a89e8e" }}>
+                → {p.implication}
+              </p>
             </div>
           ))}
         </div>
@@ -1216,13 +1679,27 @@ function Phase0Report() {
 
       {/* Lacune + Implication */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="rounded-xl border p-4" style={{ borderColor: "rgba(78,205,196,0.15)", background: "rgba(78,205,196,0.03)" }}>
-          <p className="text-[10px] uppercase tracking-widest font-bold mb-2" style={{ color: "#4ECDC4" }}>Lacune de l&apos;état de l&apos;art EdTech</p>
-          <p className="text-[12px] leading-relaxed" style={{ color: "#a89e8e" }}>{PHASE0.lacune}</p>
+        <div
+          className="rounded-xl border p-4"
+          style={{ borderColor: "rgba(78,205,196,0.15)", background: "rgba(78,205,196,0.03)" }}
+        >
+          <p className="text-[10px] uppercase tracking-widest font-bold mb-2" style={{ color: "#4ECDC4" }}>
+            Lacune de l&apos;état de l&apos;art EdTech
+          </p>
+          <p className="text-[12px] leading-relaxed" style={{ color: "#a89e8e" }}>
+            {PHASE0.lacune}
+          </p>
         </div>
-        <div className="rounded-xl border p-4" style={{ borderColor: "rgba(255,107,53,0.15)", background: "rgba(255,107,53,0.03)" }}>
-          <p className="text-[10px] uppercase tracking-widest font-bold mb-2" style={{ color: "#ff6b35" }}>Implication directe pour ce projet</p>
-          <p className="text-[12px] leading-relaxed" style={{ color: "#a89e8e" }}>{PHASE0.implication}</p>
+        <div
+          className="rounded-xl border p-4"
+          style={{ borderColor: "rgba(255,107,53,0.15)", background: "rgba(255,107,53,0.03)" }}
+        >
+          <p className="text-[10px] uppercase tracking-widest font-bold mb-2" style={{ color: "#ff6b35" }}>
+            Implication directe pour ce projet
+          </p>
+          <p className="text-[12px] leading-relaxed" style={{ color: "#a89e8e" }}>
+            {PHASE0.implication}
+          </p>
         </div>
       </div>
     </div>
@@ -1238,28 +1715,52 @@ function Phase2TextReport() {
       {DIRECTIONS.map((d, i) => {
         const letter = ["A", "B", "C"][i];
         return (
-          <div key={d.name} className="rounded-xl border p-5" style={{ borderColor: `${d.accent1}20`, background: `${d.accent1}04` }}>
+          <div
+            key={d.name}
+            className="rounded-xl border p-5"
+            style={{ borderColor: `${d.accent1}20`, background: `${d.accent1}04` }}
+          >
             <div className="flex items-center gap-3 mb-3">
-              <span className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0"
-                style={{ background: `${d.accent1}15`, color: d.accent1, border: `1px solid ${d.accent1}25` }}>
+              <span
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0"
+                style={{ background: `${d.accent1}15`, color: d.accent1, border: `1px solid ${d.accent1}25` }}
+              >
                 {letter}
               </span>
-              <p className="text-[14px] font-bold" style={{ color: "#f5f0e8" }}>{d.name}</p>
+              <p className="text-[14px] font-bold" style={{ color: "#f5f0e8" }}>
+                {d.name}
+              </p>
             </div>
-            <p className="text-[12px] leading-relaxed mb-4" style={{ color: "#a89e8e" }}>{d.concept}</p>
+            <p className="text-[12px] leading-relaxed mb-4" style={{ color: "#a89e8e" }}>
+              {d.concept}
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
               <div>
-                <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: d.accent1 }}>Origine</p>
-                <p className="text-[11px] leading-relaxed" style={{ color: "#6b5a50" }}>{d.origin.split(".")[0]}.</p>
+                <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: d.accent1 }}>
+                  Origine
+                </p>
+                <p className="text-[11px] leading-relaxed" style={{ color: "#6b5a50" }}>
+                  {d.origin.split(".")[0]}.
+                </p>
               </div>
               <div>
-                <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: d.accent2 }}>Logique stratégique</p>
-                <p className="text-[11px] leading-relaxed" style={{ color: "#6b5a50" }}>{d.logique.split(".")[0]}.</p>
+                <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: d.accent2 }}>
+                  Logique stratégique
+                </p>
+                <p className="text-[11px] leading-relaxed" style={{ color: "#6b5a50" }}>
+                  {d.logique.split(".")[0]}.
+                </p>
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
               {d.references.map((ref) => (
-                <span key={ref} className="text-[10px] px-2 py-1 rounded-md border" style={{ color: d.accent3, borderColor: `${d.accent3}20`, background: `${d.accent3}08` }}>{ref}</span>
+                <span
+                  key={ref}
+                  className="text-[10px] px-2 py-1 rounded-md border"
+                  style={{ color: d.accent3, borderColor: `${d.accent3}20`, background: `${d.accent3}08` }}
+                >
+                  {ref}
+                </span>
               ))}
             </div>
           </div>
@@ -1272,11 +1773,17 @@ function Phase2TextReport() {
 function PhasePending({ instruction }: { instruction: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="w-12 h-12 rounded-2xl mb-4 flex items-center justify-center"
-        style={{ background: "rgba(245,240,232,0.03)", border: "1px dashed rgba(245,240,232,0.1)" }}>
-        <span className="text-[20px]" style={{ color: "#3a3a3a" }}>○</span>
+      <div
+        className="w-12 h-12 rounded-2xl mb-4 flex items-center justify-center"
+        style={{ background: "rgba(245,240,232,0.03)", border: "1px dashed rgba(245,240,232,0.1)" }}
+      >
+        <span className="text-[20px]" style={{ color: "#3a3a3a" }}>
+          ○
+        </span>
       </div>
-      <p className="text-[12px] max-w-sm leading-relaxed" style={{ color: "#3a3a3a" }}>{instruction}</p>
+      <p className="text-[12px] max-w-sm leading-relaxed" style={{ color: "#3a3a3a" }}>
+        {instruction}
+      </p>
     </div>
   );
 }
@@ -1286,8 +1793,22 @@ function RapportsTab() {
   const phases = [
     { id: "phase0", num: "00", label: "Phase 0", title: "Rapport de Veille", status: "done", date: "2026-03-30" },
     { id: "phase1", num: "01", label: "Phase 1", title: "Brief Créatif", status: "pending", date: null },
-    { id: "phase2", num: "02", label: "Phase 2", title: "Directions — Specs & Argumentaire", status: "done", date: "2026-03-30" },
-    { id: "verdict", num: "03", label: "Verdict", title: "Creative Director — Décision finale", status: "pending", date: null },
+    {
+      id: "phase2",
+      num: "02",
+      label: "Phase 2",
+      title: "Directions — Specs & Argumentaire",
+      status: "done",
+      date: "2026-03-30",
+    },
+    {
+      id: "verdict",
+      num: "03",
+      label: "Verdict",
+      title: "Creative Director — Décision finale",
+      status: "pending",
+      date: null,
+    },
   ];
 
   return (
@@ -1296,25 +1817,33 @@ function RapportsTab() {
         const isDone = phase.status === "done";
         const isOpen = open === phase.id;
         return (
-          <div key={phase.id} className="rounded-2xl border overflow-hidden transition-colors"
+          <div
+            key={phase.id}
+            className="rounded-2xl border overflow-hidden transition-colors"
             style={{
               borderColor: isDone ? "rgba(255,107,53,0.15)" : "rgba(245,240,232,0.05)",
               background: isOpen ? "rgba(255,107,53,0.02)" : "rgba(245,240,232,0.01)",
-            }}>
+            }}
+          >
             <button
               className="w-full flex items-center gap-4 px-5 py-4 text-left"
               onClick={() => setOpen(isOpen ? "" : phase.id)}
             >
-              <span className="w-8 h-8 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0"
+              <span
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0"
                 style={{
                   background: isDone ? "rgba(255,107,53,0.12)" : "rgba(245,240,232,0.04)",
                   color: isDone ? "#ff6b35" : "#3a3a3a",
                   border: `1px solid ${isDone ? "rgba(255,107,53,0.2)" : "rgba(245,240,232,0.06)"}`,
-                }}>
+                }}
+              >
                 {phase.num}
               </span>
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] uppercase tracking-wider mb-0.5" style={{ color: isDone ? "#ff6b35" : "#3a3a3a" }}>
+                <p
+                  className="text-[10px] uppercase tracking-wider mb-0.5"
+                  style={{ color: isDone ? "#ff6b35" : "#3a3a3a" }}
+                >
                   {phase.label}
                 </p>
                 <p className="text-[14px] font-bold truncate" style={{ color: isDone ? "#f5f0e8" : "#3a3a3a" }}>
@@ -1322,12 +1851,18 @@ function RapportsTab() {
                 </p>
               </div>
               <div className="flex items-center gap-3 shrink-0">
-                {phase.date && <span className="text-[10px]" style={{ color: "#3a3a3a" }}>{phase.date}</span>}
-                <span className="text-[10px] px-2 py-1 rounded-md font-semibold"
+                {phase.date && (
+                  <span className="text-[10px]" style={{ color: "#3a3a3a" }}>
+                    {phase.date}
+                  </span>
+                )}
+                <span
+                  className="text-[10px] px-2 py-1 rounded-md font-semibold"
                   style={{
                     background: isDone ? "rgba(255,107,53,0.1)" : "rgba(245,240,232,0.04)",
                     color: isDone ? "#ff6b35" : "#3a3a3a",
-                  }}>
+                  }}
+                >
                   {isDone ? "Complété" : "En attente"}
                 </span>
                 <span className="text-[12px] w-4 text-center" style={{ color: "#3a3a3a" }}>
@@ -1360,37 +1895,81 @@ function DirectionsTab() {
   return (
     <div className="max-w-5xl">
       {/* Cadre : pourquoi ces 3 directions */}
-      <section className="rounded-2xl border p-6 mb-10"
-        style={{ background: "rgba(255,107,53,0.03)", borderColor: "rgba(255,107,53,0.12)" }}>
+      <section
+        className="rounded-2xl border p-6 mb-10"
+        style={{ background: "rgba(255,107,53,0.03)", borderColor: "rgba(255,107,53,0.12)" }}
+      >
         <p className="text-[11px] uppercase tracking-[0.2em] mb-4" style={{ color: "#ff6b35" }}>
           Pourquoi ces 3 directions et pas d&apos;autres
         </p>
         <p className="text-[14px] leading-relaxed mb-4" style={{ color: "#d4c5b0" }}>
-          J&apos;ai exploré 10 territoires visuels : salle de montage film, régie TV broadcast,
-          cabine de projection cinéma, salle de classe futuriste, cockpit d&apos;avion, galerie
-          d&apos;art contemporain, terminal sci-fi, studio photo, théâtre/coulisses, table de mixage.
+          J&apos;ai exploré 10 territoires visuels : salle de montage film, régie TV broadcast, cabine de projection
+          cinéma, salle de classe futuriste, cockpit d&apos;avion, galerie d&apos;art contemporain, terminal sci-fi,
+          studio photo, théâtre/coulisses, table de mixage.
         </p>
         <p className="text-[14px] leading-relaxed mb-3" style={{ color: "#a89e8e" }}>
           7 éliminés :
         </p>
         <ul className="space-y-1.5 text-[13px] mb-5" style={{ color: "#a89e8e" }}>
-          <li><strong style={{ color: "#d4c5b0" }}>Salle de classe futuriste</strong> — viole la doctrine : pas de design scolaire</li>
-          <li><strong style={{ color: "#d4c5b0" }}>Cockpit d&apos;avion</strong> — trop technique, émotion froide, pas cinéma</li>
-          <li><strong style={{ color: "#d4c5b0" }}>Galerie d&apos;art contemporain</strong> — trop neutre, manque la chaleur Banlieuwood</li>
-          <li><strong style={{ color: "#d4c5b0" }}>Terminal sci-fi</strong> — retrofuturisme niche, pas l&apos;identité pro recherchée</li>
-          <li><strong style={{ color: "#d4c5b0" }}>Studio photo</strong> — trop similaire à la salle de montage</li>
-          <li><strong style={{ color: "#d4c5b0" }}>Théâtre/coulisses</strong> — orienté spectacle, pas outil de maîtrise</li>
-          <li><strong style={{ color: "#d4c5b0" }}>Table de mixage audio</strong> — pertinent pour musique, pas le cockpit général</li>
+          <li>
+            <strong style={{ color: "#d4c5b0" }}>Salle de classe futuriste</strong> — viole la doctrine : pas de design
+            scolaire
+          </li>
+          <li>
+            <strong style={{ color: "#d4c5b0" }}>Cockpit d&apos;avion</strong> — trop technique, émotion froide, pas
+            cinéma
+          </li>
+          <li>
+            <strong style={{ color: "#d4c5b0" }}>Galerie d&apos;art contemporain</strong> — trop neutre, manque la
+            chaleur Banlieuwood
+          </li>
+          <li>
+            <strong style={{ color: "#d4c5b0" }}>Terminal sci-fi</strong> — retrofuturisme niche, pas l&apos;identité
+            pro recherchée
+          </li>
+          <li>
+            <strong style={{ color: "#d4c5b0" }}>Studio photo</strong> — trop similaire à la salle de montage
+          </li>
+          <li>
+            <strong style={{ color: "#d4c5b0" }}>Théâtre/coulisses</strong> — orienté spectacle, pas outil de maîtrise
+          </li>
+          <li>
+            <strong style={{ color: "#d4c5b0" }}>Table de mixage audio</strong> — pertinent pour musique, pas le cockpit
+            général
+          </li>
         </ul>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { letter: "A", name: "Salle de Montage", color: "#FF6B35", desc: "Timeline horizontale. Le temps de la séance avance de gauche à droite. L'intervenant est un monteur." },
-            { letter: "B", name: "Régie Broadcast", color: "#D4A843", desc: "Zones de contrôle simultanées. Tout visible en même temps, zero tabs. L'intervenant est un réalisateur TV." },
-            { letter: "C", name: "Cabine de Projection", color: "#4ECDC4", desc: "Focus central exclusif. Un seul élément domine, le reste en drawers. L'intervenant est un projectionniste." },
+            {
+              letter: "A",
+              name: "Salle de Montage",
+              color: "#FF6B35",
+              desc: "Timeline horizontale. Le temps de la séance avance de gauche à droite. L'intervenant est un monteur.",
+            },
+            {
+              letter: "B",
+              name: "Régie Broadcast",
+              color: "#D4A843",
+              desc: "Zones de contrôle simultanées. Tout visible en même temps, zero tabs. L'intervenant est un réalisateur TV.",
+            },
+            {
+              letter: "C",
+              name: "Cabine de Projection",
+              color: "#4ECDC4",
+              desc: "Focus central exclusif. Un seul élément domine, le reste en drawers. L'intervenant est un projectionniste.",
+            },
           ].map((d) => (
-            <div key={d.letter} className="rounded-xl border p-4" style={{ borderColor: `${d.color}20`, background: `${d.color}05` }}>
-              <p className="text-[12px] font-bold mb-1" style={{ color: d.color }}>{d.letter} — {d.name}</p>
-              <p className="text-[11px]" style={{ color: "#a89e8e" }}>{d.desc}</p>
+            <div
+              key={d.letter}
+              className="rounded-xl border p-4"
+              style={{ borderColor: `${d.color}20`, background: `${d.color}05` }}
+            >
+              <p className="text-[12px] font-bold mb-1" style={{ color: d.color }}>
+                {d.letter} — {d.name}
+              </p>
+              <p className="text-[11px]" style={{ color: "#a89e8e" }}>
+                {d.desc}
+              </p>
             </div>
           ))}
         </div>
@@ -1402,7 +1981,9 @@ function DirectionsTab() {
           <div key={d.name}>
             <DirectionCard d={d} index={i} />
             {i < DIRECTIONS.length - 1 && (
-              <div className="mt-16"><Divider color="rgba(245,240,232,0.06)" /></div>
+              <div className="mt-16">
+                <Divider color="rgba(245,240,232,0.06)" />
+              </div>
             )}
           </div>
         ))}
@@ -1411,21 +1992,41 @@ function DirectionsTab() {
       {/* Prochaine étape */}
       <div className="mt-16">
         <Divider color="rgba(255,107,53,0.15)" />
-        <section className="rounded-2xl border p-6 mt-8"
-          style={{ background: "rgba(255,107,53,0.03)", borderColor: "rgba(255,107,53,0.12)" }}>
+        <section
+          className="rounded-2xl border p-6 mt-8"
+          style={{ background: "rgba(255,107,53,0.03)", borderColor: "rgba(255,107,53,0.12)" }}
+        >
           <p className="text-[11px] uppercase tracking-[0.2em] mb-4" style={{ color: "#ff6b35" }}>
             Prochaine étape — Choix du client
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
-              { label: "Direction A", value: "Salle de Montage", note: "La plus proche du code existant (effort S). Timeline horizontale = métaphore forte. Le choix le plus rapide à implémenter." },
-              { label: "Direction B", value: "Régie Broadcast", note: "La plus dense et moderne. Tout visible sans tabs. Layout 3 colonnes conforme à la SPEC V3. Le choix performance/densité." },
-              { label: "Direction C", value: "Cabine de Projection", note: "La plus émotionnelle et unique. Focus total, gestes iPad natifs (swipe drawers). Le choix identité cinéma maximale." },
+              {
+                label: "Direction A",
+                value: "Salle de Montage",
+                note: "La plus proche du code existant (effort S). Timeline horizontale = métaphore forte. Le choix le plus rapide à implémenter.",
+              },
+              {
+                label: "Direction B",
+                value: "Régie Broadcast",
+                note: "La plus dense et moderne. Tout visible sans tabs. Layout 3 colonnes conforme à la SPEC V3. Le choix performance/densité.",
+              },
+              {
+                label: "Direction C",
+                value: "Cabine de Projection",
+                note: "La plus émotionnelle et unique. Focus total, gestes iPad natifs (swipe drawers). Le choix identité cinéma maximale.",
+              },
             ].map(({ label, value, note }) => (
               <div key={label}>
-                <p className="text-[11px] uppercase tracking-wider mb-1" style={{ color: "#a89e8e" }}>{label}</p>
-                <p className="text-[14px] font-bold mb-1" style={{ color: "#f5f0e8" }}>{value}</p>
-                <p className="text-[12px] leading-relaxed" style={{ color: "#a89e8e" }}>{note}</p>
+                <p className="text-[11px] uppercase tracking-wider mb-1" style={{ color: "#a89e8e" }}>
+                  {label}
+                </p>
+                <p className="text-[14px] font-bold mb-1" style={{ color: "#f5f0e8" }}>
+                  {value}
+                </p>
+                <p className="text-[12px] leading-relaxed" style={{ color: "#a89e8e" }}>
+                  {note}
+                </p>
               </div>
             ))}
           </div>
@@ -1451,11 +2052,19 @@ function ComparativeTab() {
           return (
             <div key={d.name} className="space-y-3">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-md flex items-center justify-center text-[11px] font-black"
-                  style={{ background: `${accentColors[i]}15`, color: accentColors[i], border: `1px solid ${accentColors[i]}30` }}>
+                <span
+                  className="w-6 h-6 rounded-md flex items-center justify-center text-[11px] font-black"
+                  style={{
+                    background: `${accentColors[i]}15`,
+                    color: accentColors[i],
+                    border: `1px solid ${accentColors[i]}30`,
+                  }}
+                >
                   {letter}
                 </span>
-                <span className="text-[12px] font-bold" style={{ color: "#f5f0e8" }}>{d.name}</span>
+                <span className="text-[12px] font-bold" style={{ color: "#f5f0e8" }}>
+                  {d.name}
+                </span>
               </div>
               <div style={{ fontSize: "0.72em" }}>
                 <PreviewComp d={d} />
@@ -1467,10 +2076,17 @@ function ComparativeTab() {
                   { l: "Modernité", v: d.scores.modernite },
                   { l: "Effort", v: d.scores.effort },
                 ].map((s) => (
-                  <div key={s.l} className="rounded-lg px-2 py-1.5 border"
-                    style={{ borderColor: "rgba(245,240,232,0.06)", background: "rgba(245,240,232,0.02)" }}>
-                    <p className="text-[9px] uppercase tracking-wider" style={{ color: "#a89e8e" }}>{s.l}</p>
-                    <p className="text-[13px] font-black" style={{ color: accentColors[i] }}>{s.v}</p>
+                  <div
+                    key={s.l}
+                    className="rounded-lg px-2 py-1.5 border"
+                    style={{ borderColor: "rgba(245,240,232,0.06)", background: "rgba(245,240,232,0.02)" }}
+                  >
+                    <p className="text-[9px] uppercase tracking-wider" style={{ color: "#a89e8e" }}>
+                      {s.l}
+                    </p>
+                    <p className="text-[13px] font-black" style={{ color: accentColors[i] }}>
+                      {s.v}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -1484,10 +2100,30 @@ function ComparativeTab() {
         <table className="w-full text-[13px]" style={{ color: "#d4c5b0" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid rgba(245,240,232,0.08)" }}>
-              <th className="text-left py-3 pr-4 text-[11px] uppercase tracking-wider font-semibold" style={{ color: "#a89e8e" }}>Critère</th>
-              <th className="text-center py-3 px-4 text-[11px] uppercase tracking-wider font-semibold" style={{ color: "#FF6B35" }}>A — Montage</th>
-              <th className="text-center py-3 px-4 text-[11px] uppercase tracking-wider font-semibold" style={{ color: "#D4A843" }}>B — Régie</th>
-              <th className="text-center py-3 px-4 text-[11px] uppercase tracking-wider font-semibold" style={{ color: "#4ECDC4" }}>C — Cabine</th>
+              <th
+                className="text-left py-3 pr-4 text-[11px] uppercase tracking-wider font-semibold"
+                style={{ color: "#a89e8e" }}
+              >
+                Critère
+              </th>
+              <th
+                className="text-center py-3 px-4 text-[11px] uppercase tracking-wider font-semibold"
+                style={{ color: "#FF6B35" }}
+              >
+                A — Montage
+              </th>
+              <th
+                className="text-center py-3 px-4 text-[11px] uppercase tracking-wider font-semibold"
+                style={{ color: "#D4A843" }}
+              >
+                B — Régie
+              </th>
+              <th
+                className="text-center py-3 px-4 text-[11px] uppercase tracking-wider font-semibold"
+                style={{ color: "#4ECDC4" }}
+              >
+                C — Cabine
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -1500,7 +2136,9 @@ function ComparativeTab() {
               { label: "Unicité / différenciation", a: "7/10", b: "8/10", c: "9/10" },
             ].map((row) => (
               <tr key={row.label} style={{ borderBottom: "1px solid rgba(245,240,232,0.04)" }}>
-                <td className="py-2.5 pr-4" style={{ color: "#a89e8e" }}>{row.label}</td>
+                <td className="py-2.5 pr-4" style={{ color: "#a89e8e" }}>
+                  {row.label}
+                </td>
                 <td className="text-center py-2.5 px-4 font-bold">{row.a}</td>
                 <td className="text-center py-2.5 px-4 font-bold">{row.b}</td>
                 <td className="text-center py-2.5 px-4 font-bold">{row.c}</td>
@@ -1526,11 +2164,17 @@ export default function DesignPreviewPage() {
       {/* ── Header ── */}
       <div className="px-6 sm:px-10 pt-10 pb-6">
         <div className="flex items-center gap-3 mb-3">
-          <span className="text-[10px] uppercase tracking-[0.3em]" style={{ color: "#ff6b35" }}>Banlieuwood</span>
+          <span className="text-[10px] uppercase tracking-[0.3em]" style={{ color: "#ff6b35" }}>
+            Banlieuwood
+          </span>
           <span style={{ color: "rgba(255,255,255,0.1)" }}>·</span>
-          <span className="text-[10px] uppercase tracking-[0.2em]" style={{ color: "#a89e8e" }}>Design Cockpit</span>
+          <span className="text-[10px] uppercase tracking-[0.2em]" style={{ color: "#a89e8e" }}>
+            Design Cockpit
+          </span>
           <span style={{ color: "rgba(255,255,255,0.1)" }}>·</span>
-          <span className="text-[10px] font-mono" style={{ color: "#3a3a3a" }}>2026-03-30</span>
+          <span className="text-[10px] font-mono" style={{ color: "#3a3a3a" }}>
+            2026-03-30
+          </span>
         </div>
         <h1
           className="text-5xl sm:text-6xl font-black uppercase mb-2"

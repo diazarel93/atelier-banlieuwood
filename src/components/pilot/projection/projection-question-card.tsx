@@ -26,8 +26,7 @@ export function ProjectionQuestionCard({
 }: ProjectionQuestionCardProps) {
   if (!questionText) return null;
 
-  const catColor =
-    CATEGORY_COLORS[categoryLabel as keyof typeof CATEGORY_COLORS] || "#FF6B35";
+  const catColor = CATEGORY_COLORS[categoryLabel as keyof typeof CATEGORY_COLORS] || "#FF6B35";
   const hasNav = maxSituations > 1;
 
   return (
@@ -58,9 +57,7 @@ export function ProjectionQuestionCard({
         </div>
 
         {/* Texte question — 24px minimum (Phase 0 compliance) */}
-        <p className="text-[24px] font-bold text-[#2C2C2C] leading-snug">
-          {questionText}
-        </p>
+        <p className="text-[24px] font-bold text-[#2C2C2C] leading-snug">{questionText}</p>
       </div>
     </motion.div>
   );

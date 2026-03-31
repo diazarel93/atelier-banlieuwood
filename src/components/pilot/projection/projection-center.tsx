@@ -11,24 +11,24 @@ export function ProjectionCenter() {
 
   const moduleInfo = getModuleByDb(session.current_module, session.current_seance || 1);
   const seance = session.current_seance || 1;
-  const maxSituations = session.current_module === 1 && seance === 1
-    ? 8
-    : session.current_module === 4
+  const maxSituations =
+    session.current_module === 1 && seance === 1
       ? 8
-      : getSeanceMax(session.current_module, seance);
+      : session.current_module === 4
+        ? 8
+        : getSeanceMax(session.current_module, seance);
   const currentIndex = session.current_situation_index || 0;
 
   // Question text — from situationData or fallback
   const situationData = session as unknown as Record<string, unknown>;
-  const questionText =
-    (situationData?.current_question_text as string | undefined) ??
-    moduleInfo?.title ??
-    null;
+  const questionText = (situationData?.current_question_text as string | undefined) ?? moduleInfo?.title ?? null;
 
   // Category label
   const categoryKey = (session as unknown as Record<string, unknown>)?.current_category as string | undefined;
   const categoryLabel = categoryKey
-    ? (CATEGORY_COLORS[categoryKey] ? categoryKey : moduleInfo?.subtitle ?? "Module")
+    ? CATEGORY_COLORS[categoryKey]
+      ? categoryKey
+      : (moduleInfo?.subtitle ?? "Module")
     : (moduleInfo?.subtitle ?? "Module");
 
   // Response count

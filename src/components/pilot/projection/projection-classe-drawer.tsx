@@ -33,10 +33,7 @@ export function ProjectionClasseDrawer() {
         {activeStudents.map((student) => {
           const hasResponded = respondedIds.has(student.id);
           return (
-            <li
-              key={student.id}
-              className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg bg-white/60"
-            >
+            <li key={student.id} className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg bg-white/60">
               {/* Badge statut — AUCUN score, AUCUN classement (doctrine Banlieuwood) */}
               <span
                 className="flex-shrink-0 w-2.5 h-2.5 rounded-full"
@@ -49,11 +46,7 @@ export function ProjectionClasseDrawer() {
         })}
       </ul>
 
-      {activeStudents.length === 0 && (
-        <p className="text-center text-sm text-[#4A4A4A] py-6">
-          Aucun élève connecté
-        </p>
-      )}
+      {activeStudents.length === 0 && <p className="text-center text-sm text-[#4A4A4A] py-6">Aucun élève connecté</p>}
     </div>
   );
 }

@@ -64,7 +64,16 @@ export function ProjectionHeader({ sessionStartedAt }: ProjectionHeaderProps) {
         onClick={() => onOpenScreen?.()}
         className="flex items-center gap-1.5 px-3 min-h-11 rounded-lg bg-[#2C2C2C] text-white text-xs font-semibold hover:bg-[#4A4A4A] transition-colors cursor-pointer"
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <rect x="2" y="3" width="20" height="14" rx="2" />
           <path d="M8 21h8M12 17v4" />
         </svg>

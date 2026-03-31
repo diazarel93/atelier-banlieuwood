@@ -41,11 +41,7 @@ export function ProjectionFooter({ onOpenClasse, onOpenReponses, classeCount, re
     }
   }
 
-  const ctaLabel = isResponding
-    ? "Révéler"
-    : isLastQuestion
-      ? "Terminer"
-      : "Suivant →";
+  const ctaLabel = isResponding ? "Révéler" : isLastQuestion ? "Terminer" : "Suivant →";
 
   const totalActive = activeStudents.length;
 
@@ -56,7 +52,16 @@ export function ProjectionFooter({ onOpenClasse, onOpenReponses, classeCount, re
         onClick={onOpenClasse}
         className="relative flex items-center gap-1.5 min-h-11 px-4 rounded-xl bg-[#E8DFD2] text-[#2C2C2C] text-sm font-semibold hover:bg-[#DDD4C4] transition-colors cursor-pointer"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
           <circle cx="9" cy="7" r="4" />
           <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
@@ -85,7 +90,16 @@ export function ProjectionFooter({ onOpenClasse, onOpenReponses, classeCount, re
         className="relative flex items-center gap-1.5 min-h-11 px-4 rounded-xl bg-[#E8DFD2] text-[#2C2C2C] text-sm font-semibold hover:bg-[#DDD4C4] transition-colors cursor-pointer"
       >
         Réponses
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
         </svg>
         {reponseCount > 0 && (

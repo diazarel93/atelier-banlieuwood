@@ -21,10 +21,7 @@ function ScoreBar({ value, max = 5 }: { value: number; max?: number }) {
   return (
     <div className="flex gap-0.5">
       {Array.from({ length: max }).map((_, i) => (
-        <div
-          key={i}
-          className={`h-1.5 w-4 rounded-full ${i < value ? "bg-white" : "bg-white/20"}`}
-        />
+        <div key={i} className={`h-1.5 w-4 rounded-full ${i < value ? "bg-white" : "bg-white/20"}`} />
       ))}
     </div>
   );
@@ -46,9 +43,7 @@ export function DirectionCard({
   return (
     <div
       className={`flex flex-col rounded-2xl border overflow-hidden ${
-        recommended
-          ? "border-[#FF6B35]/40 ring-1 ring-[#FF6B35]/20"
-          : "border-white/10"
+        recommended ? "border-[#FF6B35]/40 ring-1 ring-[#FF6B35]/20" : "border-white/10"
       } bg-white/5`}
     >
       {/* Header */}

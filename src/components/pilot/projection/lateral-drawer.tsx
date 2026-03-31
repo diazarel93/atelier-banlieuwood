@@ -83,15 +83,7 @@ export function LateralDrawer({ side, open, onClose, title, badge, children }: L
   );
 }
 
-function DrawerHeader({
-  title,
-  badge,
-  onClose,
-}: {
-  title: string;
-  badge?: number;
-  onClose?: () => void;
-}) {
+function DrawerHeader({ title, badge, onClose }: { title: string; badge?: number; onClose?: () => void }) {
   return (
     <div className="flex items-center justify-between px-4 py-3 border-b border-[#E8DFD2] flex-shrink-0">
       <div className="flex items-center gap-2">
@@ -108,7 +100,15 @@ function DrawerHeader({
           className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-[#4A4A4A] hover:bg-[#E8DFD2] transition-colors cursor-pointer"
           aria-label="Fermer"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
