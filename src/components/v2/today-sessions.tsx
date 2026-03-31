@@ -4,7 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/lib/routes";
 import { GlassCardV2 } from "./glass-card";
-import { StatusBadge, type SessionStatus } from "./status-badge";
+import { StatusBadge, STATUS_BAR_COLORS, type SessionStatus } from "./status-badge";
 import { getSessionState } from "@/lib/session-state";
 import type { SessionSummary } from "@/hooks/use-dashboard-v2";
 
@@ -14,14 +14,6 @@ interface TodaySessionsProps {
   className?: string;
 }
 
-const STATUS_BAR_COLORS: Record<string, string> = {
-  draft: "var(--color-bw-muted, #9CA3AF)",
-  waiting: "var(--color-bw-amber, #F59E0B)",
-  responding: "var(--color-bw-teal, #4ECDC4)",
-  paused: "var(--color-bw-amber, #F59E0B)",
-  done: "var(--color-bw-green, #10B981)",
-};
-
 function SessionRow({ session }: { session: SessionSummary }) {
   const ss = getSessionState(session.status);
   const time = new Date(session.scheduledAt).toLocaleTimeString("fr-FR", {
@@ -29,7 +21,7 @@ function SessionRow({ session }: { session: SessionSummary }) {
     minute: "2-digit",
   });
 
-  const barColor = STATUS_BAR_COLORS[session.status] || STATUS_BAR_COLORS.draft;
+  const barColor = STATUS_BAR_COLORS[session.status as SessionStatus] || STATUS_BAR_COLORS.draft;
 
   return (
     <div className="relative flex items-center gap-3 py-3 pl-4 rounded-xl hover:bg-[var(--color-bw-violet)]/[0.04] transition-colors duration-100">
