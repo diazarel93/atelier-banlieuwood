@@ -50,7 +50,7 @@ export function FocusCockpit() {
     voteData,
     situation,
     visibleResponses,
-    voteOptionCount: _voteOptionCount,
+    voteOptionCount,
     currentQIndex,
     respondedCount,
     nextAction,
