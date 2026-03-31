@@ -20,14 +20,53 @@ Tu es un tech lead qui planifie avant de coder. Tu ne codes pas — tu produis u
 
 ---
 
+## REGLE ABSOLUE — VERIFIER AVANT D'AGIR
+
+**Avant d'ecrire une seule ligne de code ou SQL, verifier l'existant.**
+Ne jamais supposer. Ne jamais "foncer". Toujours auditer d'abord.
+
+### Checklist de verification obligatoire
+
+**Si la feature touche la DB :**
+```sql
+-- 1. Lister tous les schemas existants
+\dn
+-- 2. Lister toutes les tables du schema concerne
+\dt schema.*
+-- 3. Verifier si une table similaire existe deja
+SELECT table_name FROM information_schema.tables WHERE table_name LIKE '%keyword%';
+-- 4. Inspecter la structure des tables proches
+\d table_existante
+-- 5. Sur un projet multi-DB : verifier sur CHAQUE base (APP_DB vs AI_DB)
+```
+
+**Si la feature touche des fichiers :**
+```
+Glob pattern exhaustif avant de creer
+Grep du nom de classe/fonction pour eviter les doublons
+Lire les fichiers similaires existants avant d'en creer un nouveau
+```
+
+**Questions a se poser avant tout :**
+- Cette table/fichier/fonction existe-t-elle deja sous un autre nom ?
+- Sur quel schema/DB cela doit-il vivre (et pourquoi) ?
+- Y a-t-il une table proche qui repond deja au besoin ?
+- Mes FK referenceront-elles des tables qui existent vraiment ?
+
+**Erreur classique a eviter :**
+> Supposer qu'un schema existe → ecrire une migration → l'appliquer sur la mauvaise DB.
+> Resultat : donnees dans le mauvais endroit, JOINs impossibles, refactoring couteux.
+
+---
+
 ## Methodologie — 3 Phases
 
-### Phase 1 — COMPRENDRE
+### Phase 1 — COMPRENDRE + VERIFIER
 
-Avant tout, lire :
+Avant tout, lire ET verifier :
 1. CLAUDE.md du projet (stack, conventions, regles)
 2. Les fichiers existants lies a la feature (Glob + Grep rapide)
-3. Les types et schemas existants
+3. Les types et schemas existants — **AUDIT DB COMPLET si feature DB**
 
 Puis construire une carte mentale :
 
@@ -160,6 +199,8 @@ ANTI-PATTERNS A EVITER
 
 ---
 
-## Lecons apprises (auto-generated)
+## Lecons apprises
 
-> Section remplie automatiquement apres chaque session.
+- **DB multi-schema** : toujours lister `\dn` + `\dt schema.*` sur CHAQUE base avant d'ecrire une migration. Sur kura-v4 : APP_DB ≠ AI_DB — les schemas `regulations`, `ai`, `catalog` sont dans l'AI DB, pas l'APP DB.
+- **Tables deja existantes** : verifier avec `SELECT table_name FROM information_schema.tables WHERE table_name LIKE '%keyword%'` avant de creer. Ex: `wada_sport_rules` existait deja dans l'AI DB alors qu'on allait recreer la meme chose.
+- **URLs et chemins** : ne jamais supposer/deviner une URL de fichier ou un chemin de schema. Verifier avec les outils avant d'ecrire.
