@@ -22,7 +22,7 @@ export function PedagogicalTipsCard({ recommendations, keyMoments }: Pedagogical
 
   return (
     <GlassCardV2 className="p-5">
-      <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-4">Pistes pédagogiques</h3>
+      <h3 className="label-caps text-bw-muted mb-4">Pistes pédagogiques</h3>
 
       {topRecs.length > 0 && (
         <ol className="space-y-1.5 list-decimal list-inside mb-4">
@@ -36,7 +36,7 @@ export function PedagogicalTipsCard({ recommendations, keyMoments }: Pedagogical
 
       {topMoments.length > 0 && (
         <div className="space-y-2">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-bw-muted">Moments clés</p>
+          <p className="label-caps text-bw-muted">Moments clés</p>
           {topMoments.map((m, i) => {
             const color = MOMENT_COLORS[m.category] || "var(--color-bw-muted, #888)";
             return (

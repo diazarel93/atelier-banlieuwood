@@ -12,7 +12,7 @@ export function ParticipationTable({ students }: ParticipationTableProps) {
 
   return (
     <GlassCardV2 className="p-5">
-      <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Participation des élèves</p>
+      <p className="label-caps text-bw-muted mb-3">Participation des élèves</p>
       <div className="space-y-2">
         {students.slice(0, 15).map((s) => (
           <div key={s.id} className="flex items-center gap-3 px-3 py-2 rounded-xl bg-[var(--color-bw-surface-dim)]">

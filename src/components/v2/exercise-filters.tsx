@@ -37,7 +37,7 @@ export function ExerciseFilters({
     <GlassCardV2 className={cn("p-4 flex flex-col gap-5", className)}>
       {/* Phase filter */}
       <div>
-        <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-2">Phase</h3>
+        <h3 className="label-caps text-bw-muted mb-2">Phase</h3>
         <div className="flex flex-col gap-1">
           <button
             type="button"
@@ -72,7 +72,7 @@ export function ExerciseFilters({
 
       {/* Duration filter */}
       <div>
-        <h3 className="text-xs font-semibold text-bw-muted uppercase tracking-wide mb-2">Durée</h3>
+        <h3 className="label-caps text-bw-muted mb-2">Durée</h3>
         <div className="flex flex-col gap-1">
           <button
             type="button"

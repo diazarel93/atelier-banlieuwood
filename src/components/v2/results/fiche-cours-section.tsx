@@ -61,7 +61,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
 
           {/* Objectives */}
           <GlassCardV2 className="p-5 space-y-2">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">Objectifs</p>
+            <p className="label-caps text-bw-muted">Objectifs</p>
             {fiche.objectives.map((obj, i) => (
               <div key={i} className="flex items-start gap-3">
                 <span
@@ -91,7 +91,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
           {/* Competencies accordion */}
           <GlassCardV2 className="overflow-hidden">
             <div className="px-5 pt-5 pb-2">
-              <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">
+              <p className="label-caps text-bw-muted">
                 Compétences du socle commun
               </p>
             </div>
@@ -136,7 +136,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
 
           {/* Animation tips */}
           <GlassCardV2 className="p-5 space-y-3">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">Conseils d&apos;animation</p>
+            <p className="label-caps text-bw-muted">Conseils d&apos;animation</p>
             {fiche.animationTips.map((tip, i) => (
               <div key={i} className="flex items-start gap-3">
                 <span className="text-xs font-mono text-bw-violet border border-bw-violet-200 rounded-md px-1.5 py-0.5 shrink-0 mt-0.5">
@@ -152,7 +152,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
 
           {/* Relaunch tips */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Relancer les élèves</p>
+            <p className="label-caps text-bw-muted mb-3">Relancer les élèves</p>
             <ul className="space-y-2">
               {fiche.relaunchTips.map((tip, i) => (
                 <li key={i} className="text-sm text-bw-heading pl-3 border-l-2 border-bw-amber">
@@ -164,7 +164,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
 
           {/* Level adaptation tabs */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Adaptation par niveau</p>
+            <p className="label-caps text-bw-muted mb-3">Adaptation par niveau</p>
             <div className="flex gap-1 mb-3">
               {(["primaire", "college", "lycee"] as const).map((lvl) => (
                 <button
@@ -185,7 +185,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
 
           {/* Evaluation criteria */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
+            <p className="label-caps text-bw-muted mb-3">
               Critères d&apos;évaluation
             </p>
             <ul className="space-y-2">
@@ -201,7 +201,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
           {/* Session recap */}
           {fiche.sessionRecap && (
             <GlassCardV2 className="p-5 border-l-4 border-l-bw-teal">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-bw-teal-600">
+              <span className="label-caps text-bw-teal-600">
                 Résumé de session
               </span>
               <p className="text-sm text-bw-heading mt-2">{fiche.sessionRecap}</p>

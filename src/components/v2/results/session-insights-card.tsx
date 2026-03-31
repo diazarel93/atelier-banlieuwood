@@ -38,7 +38,7 @@ export function SessionInsightsCard({ bilan, onViewFull }: SessionInsightsCardPr
     <GlassCardV2 className="p-5 border-l-4 border-l-bw-primary">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-bw-primary">Synthèse IA</span>
+          <span className="label-caps">Synthèse IA</span>
           <p className="text-sm leading-relaxed mt-2 italic text-bw-heading">&ldquo;{bilan.narrativeSummary}&rdquo;</p>
 
           {/* Chips */}

@@ -106,7 +106,7 @@ export function StudentDetailCard({ sessionId, feedback }: StudentDetailCardProp
             </div>
             <div className="text-right shrink-0">
               <p className="text-lg font-bold text-bw-primary tabular-nums">{studentXp}</p>
-              <p className="text-[10px] font-medium text-bw-muted uppercase tracking-wider">XP</p>
+              <p className="label-caps text-bw-muted">XP</p>
             </div>
           </div>
 

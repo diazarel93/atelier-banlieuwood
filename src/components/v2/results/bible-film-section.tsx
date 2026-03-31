@@ -44,20 +44,20 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
         <div className="grid gap-4">
           {/* Logline */}
           <GlassCardV2 className="p-5 border-l-4 border-l-bw-primary">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-bw-primary">Logline</span>
+            <span className="label-caps">Logline</span>
             <p className="text-sm font-medium text-bw-heading italic mt-1">&ldquo;{bible.logline}&rdquo;</p>
           </GlassCardV2>
 
           {/* Synopsis */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-2">Synopsis</p>
+            <p className="label-caps text-bw-muted mb-2">Synopsis</p>
             <p className="text-sm text-bw-heading leading-relaxed">{bible.synopsis}</p>
           </GlassCardV2>
 
           {/* Characters */}
           {bible.characters && bible.characters.length > 0 && (
             <GlassCardV2 className="p-5">
-              <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Personnages</p>
+              <p className="label-caps text-bw-muted mb-3">Personnages</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {bible.characters.map((c, i) => (
                   <div
@@ -80,7 +80,7 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
 
           {/* World */}
           <GlassCardV2 className="p-5 space-y-2">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">Univers</p>
+            <p className="label-caps text-bw-muted">Univers</p>
             <div>
               <span className="text-xs font-bold text-bw-violet uppercase">Lieu & Époque</span>
               <p className="text-sm text-bw-heading">{bible.world.setting}</p>
@@ -99,7 +99,7 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
 
           {/* Conflict */}
           <GlassCardV2 className="p-5 border-l-4 border-l-bw-primary space-y-2">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">Conflit central</p>
+            <p className="label-caps text-bw-muted">Conflit central</p>
             <p className="text-sm text-bw-heading">{bible.conflict.central}</p>
             <div className="flex gap-4 text-xs">
               <span>
@@ -112,7 +112,7 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
 
           {/* 3-Act Structure */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Structure en 3 actes</p>
+            <p className="label-caps text-bw-muted mb-3">Structure en 3 actes</p>
             <div className="space-y-3">
               {(["act1", "act2", "act3"] as const).map((act, i) => (
                 <div key={act} className="flex gap-3">
@@ -133,7 +133,7 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
           {/* Style & Themes */}
           <div className="grid gap-4 sm:grid-cols-2">
             <GlassCardV2 className="p-5 space-y-2">
-              <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">Style</p>
+              <p className="label-caps text-bw-muted">Style</p>
               <div>
                 <span className="text-xs font-bold text-bw-violet uppercase">Genre</span>
                 <p className="text-sm text-bw-heading">{bible.style.genre}</p>
@@ -163,7 +163,7 @@ export function BibleFilmSection({ bible, loading, provider, onGenerate }: Bible
               )}
             </GlassCardV2>
             <GlassCardV2 className="p-5">
-              <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-2">Thèmes</p>
+              <p className="label-caps text-bw-muted mb-2">Thèmes</p>
               <div className="flex flex-wrap gap-1.5">
                 {bible.themes?.map((t, i) => (
                   <span

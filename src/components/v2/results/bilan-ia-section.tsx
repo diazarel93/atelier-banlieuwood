@@ -75,7 +75,7 @@ export function BilanIaSection({ bilan, loading, provider, onGenerate, onDownloa
 
           {/* Narrative summary */}
           <GlassCardV2 className="p-5 border-l-4 border-l-bw-primary">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-bw-primary">Résumé narratif</span>
+            <span className="label-caps">Résumé narratif</span>
             <p className="text-sm leading-relaxed mt-2 italic text-bw-heading">
               &ldquo;{bilan.narrativeSummary}&rdquo;
             </p>
@@ -84,7 +84,7 @@ export function BilanIaSection({ bilan, loading, provider, onGenerate, onDownloa
           {/* Group dynamics */}
           <GlassCardV2 className="p-5">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-bw-muted">Dynamique de groupe</span>
+              <span className="label-caps text-bw-muted">Dynamique de groupe</span>
               <span
                 className="text-xs font-semibold uppercase px-2 py-0.5 rounded-full"
                 style={{
@@ -113,7 +113,7 @@ export function BilanIaSection({ bilan, loading, provider, onGenerate, onDownloa
           {/* Key moments */}
           {bilan.keyMoments.length > 0 && (
             <GlassCardV2 className="p-5">
-              <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Moments clés</p>
+              <p className="label-caps text-bw-muted mb-3">Moments clés</p>
               <div className="space-y-2">
                 {bilan.keyMoments.map((m, i) => {
                   const color = MOMENT_COLORS[m.category] || "var(--color-bw-muted, #888)";
@@ -132,7 +132,7 @@ export function BilanIaSection({ bilan, loading, provider, onGenerate, onDownloa
 
           {/* Engagement */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-2">Engagement</p>
+            <p className="label-caps text-bw-muted mb-2">Engagement</p>
             <p className="text-sm text-bw-heading mb-3">{bilan.engagement.summary}</p>
             <div className="flex items-center gap-3">
               <span className="text-xs rounded-md bg-[var(--color-bw-surface-dim)] px-1.5 py-0.5 text-bw-muted">
@@ -153,7 +153,7 @@ export function BilanIaSection({ bilan, loading, provider, onGenerate, onDownloa
 
           {/* Recommendations */}
           <GlassCardV2 className="p-5">
-            <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
+            <p className="label-caps text-bw-muted mb-3">
               Recommandations pédagogiques
             </p>
             <ol className="space-y-2 list-decimal list-inside">
