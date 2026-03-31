@@ -93,18 +93,18 @@ export function MiniCalendar({
           type="button"
           onClick={() => setMonthOffset((o) => o - 1)}
           aria-label="Mois précédent"
-          className="p-2 min-h-9 min-w-9 flex items-center justify-center rounded-md text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
         >
           <IconChevronLeft />
         </button>
-        <span className="text-sm font-semibold text-bw-heading">
+        <span className="text-heading-xs font-semibold text-bw-heading">
           {MONTHS[monthIdx]} {year}
         </span>
         <button
           type="button"
           onClick={() => setMonthOffset((o) => o + 1)}
           aria-label="Mois suivant"
-          className="p-2 min-h-9 min-w-9 flex items-center justify-center rounded-md text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors"
         >
           <IconChevronRightNav />
         </button>
@@ -123,7 +123,7 @@ export function MiniCalendar({
       <div className="grid grid-cols-7 gap-0.5">
         {days.map((date, i) => {
           if (!date) {
-            return <div key={`empty-${i}`} className="h-7" />;
+            return <div key={`empty-${i}`} className="h-9" />;
           }
 
           const isToday = isSameDay(date, now);
@@ -139,7 +139,7 @@ export function MiniCalendar({
               onClick={() => onSelectDate?.(date)}
               aria-label={dateLabel}
               className={cn(
-                "relative flex h-7 w-full items-center justify-center rounded-md text-xs transition-colors",
+                "relative flex h-9 w-full items-center justify-center rounded-md text-xs transition-colors",
                 isSelected
                   ? "bg-bw-primary text-white font-semibold"
                   : isToday

@@ -177,6 +177,12 @@
   --color-bw-amber-border: rgba(245, 158, 11, 0.25);
   --color-bw-amber-bg: rgba(245, 158, 11, 0.08);
 
+  /* ── 4 Axes pédagogiques — disponibles dans tous les thèmes ── */
+  --color-axis-comprehension: #6366f1; /* indigo  */
+  --color-axis-creativite: #8b5cf6;   /* violet  */
+  --color-axis-expression: #ec4899;   /* pink    */
+  --color-axis-engagement: #f59e0b;   /* amber   */
+
   /* ── shadcn compat ── */
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);

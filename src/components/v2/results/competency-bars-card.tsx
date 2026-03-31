@@ -42,15 +42,13 @@ export function CompetencyBarsCard({ feedback }: CompetencyBarsCardProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
             {feedback.strengths && (
               <div className="rounded-xl bg-bw-teal-50 border border-bw-teal-200 p-3">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-bw-teal-600">Point fort</span>
+                <span className="label-caps text-bw-teal-600">Point fort</span>
                 <p className="text-xs text-bw-heading mt-1">{feedback.strengths.detail}</p>
               </div>
             )}
             {feedback.weakness && (
               <div className="rounded-xl bg-bw-amber-100 border border-bw-amber/20 p-3">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-bw-amber-500">
-                  Progression
-                </span>
+                <span className="label-caps text-bw-amber-500">Progression</span>
                 <p className="text-xs text-bw-heading mt-1">{feedback.weakness.detail}</p>
               </div>
             )}
@@ -60,7 +58,7 @@ export function CompetencyBarsCard({ feedback }: CompetencyBarsCardProps) {
 
       {/* Competency bars */}
       <GlassCardV2 className="p-5 space-y-3">
-        <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide">Compétences narratives</p>
+        <p className="label-caps text-bw-muted">Compétences narratives</p>
         {feedback.competencies.map((comp) => (
           <div
             key={comp.key}

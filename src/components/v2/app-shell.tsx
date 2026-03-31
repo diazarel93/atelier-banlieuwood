@@ -223,7 +223,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           <NotificationBell />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-2 rounded-lg text-[var(--color-bw-muted)] hover:text-[var(--color-bw-heading)] hover:bg-[var(--sidebar-accent)]"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-[var(--color-bw-muted)] hover:text-[var(--color-bw-heading)] hover:bg-[var(--sidebar-accent)]"
           >
             {mobileOpen ? <IconClose /> : <IconHamburger />}
           </button>
@@ -248,7 +248,10 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             <span className="text-lg">🎬</span>
             <span className="text-sm font-bold text-[var(--color-bw-heading)]">Banlieuwood</span>
           </Link>
-          <button onClick={() => setMobileOpen(false)} className="p-2 rounded-lg text-[var(--color-bw-muted)]">
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-[var(--color-bw-muted)]"
+          >
             <IconClose />
           </button>
         </div>
@@ -344,7 +347,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
+                  "flex flex-col items-center justify-center gap-0.5 px-3 min-h-[44px] rounded-lg transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-bw-primary/50 focus-visible:outline-none",
                   isActive
                     ? "text-[var(--color-bw-violet)]"
                     : "text-[var(--color-bw-muted)] hover:text-[var(--color-bw-heading)]",
