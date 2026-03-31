@@ -248,7 +248,10 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             <span className="text-lg">🎬</span>
             <span className="text-sm font-bold text-[var(--sidebar-foreground)]">Banlieuwood</span>
           </Link>
-          <button onClick={() => setMobileOpen(false)} className="p-2 rounded-lg text-[var(--sidebar-muted-foreground)]">
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="p-2 rounded-lg text-[var(--sidebar-muted-foreground)]"
+          >
             <IconClose />
           </button>
         </div>
