@@ -33,8 +33,8 @@ const TeamManager = dynamic(() => import("@/components/pilot/team-manager").then
 import { ROUTES } from "@/lib/routes";
 import { CockpitProvider } from "@/components/pilot/cockpit-context";
 import { CommandPalette } from "@/components/pilot/command-palette";
-const CommandCockpit = dynamic(
-  () => import("@/components/pilot/command/command-cockpit").then((m) => ({ default: m.CommandCockpit })),
+const ProjectionCockpit = dynamic(
+  () => import("@/components/pilot/projection").then((m) => ({ default: m.ProjectionCockpit })),
   { ssr: false },
 );
 
@@ -433,7 +433,7 @@ export default function PilotPage() {
                   studentWarnings: Object.fromEntries((session.students || []).map((s) => [s.id, s.warnings || 0])),
                 }}
               >
-                <CommandCockpit />
+                <ProjectionCockpit />
               </CockpitProvider>
             </ErrorBoundary>
           ) : (
