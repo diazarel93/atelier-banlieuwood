@@ -145,17 +145,19 @@ export function V6Sidebar({
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`flex items-center gap-2 px-3 py-3 min-h-[44px] text-[11px] font-semibold transition-colors cursor-pointer border-b-2 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2 ${
+            className={`flex items-center gap-2 px-3 py-3 min-h-[44px] label-caps transition-colors cursor-pointer border-b-2 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2 ${
               tab === t.id
                 ? "text-bw-violet-main border-bw-violet-main"
-                : "text-[#94a3b8] border-transparent hover:text-[#94a3b8]"
+                : "text-bw-cockpit-muted border-transparent hover:text-bw-cockpit-muted"
             }`}
           >
             {t.label}
             {typeof t.count === "number" && (
               <span
-                className={`text-[11px] font-bold px-2 py-1 rounded-full ${
-                  tab === t.id ? "bg-bw-violet-main/15 text-bw-violet-main" : "bg-bw-cockpit-surface text-[#94a3b8]"
+                className={`label-caps px-2 py-1 rounded-full ${
+                  tab === t.id
+                    ? "bg-bw-violet-main/15 text-bw-violet-main"
+                    : "bg-bw-cockpit-surface text-bw-cockpit-muted"
                 }`}
               >
                 {t.count}
@@ -186,7 +188,7 @@ export function V6Sidebar({
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
-                  className="absolute left-3 top-[8px] text-[#94a3b8]"
+                  className="absolute left-3 top-[8px] text-bw-cockpit-muted"
                 >
                   <circle cx="11" cy="11" r="8" />
                   <path d="m21 21-4.3-4.3" />
@@ -195,7 +197,7 @@ export function V6Sidebar({
                   value={studentSearch}
                   onChange={(e) => setStudentSearch(e.target.value)}
                   placeholder="Chercher un eleve..."
-                  className="w-full pl-8 pr-3 py-2 text-[11px] rounded-lg border border-bw-cockpit-border bg-bw-cockpit-surface text-[#c4b5fd] outline-none focus:border-bw-violet-main/40 placeholder:text-[#94a3b8]"
+                  className="w-full pl-8 pr-3 py-2 text-[11px] rounded-lg border border-bw-cockpit-border bg-bw-cockpit-surface text-bw-violet-main outline-none focus:border-bw-violet-main/40 placeholder:text-bw-cockpit-muted"
                 />
               </div>
             </div>
@@ -214,10 +216,10 @@ export function V6Sidebar({
                 <button
                   key={f.id}
                   onClick={() => setStudentFilter(f.id)}
-                  className={`text-[11px] font-semibold px-3 py-2 min-h-[44px] rounded-md whitespace-nowrap cursor-pointer transition-colors border focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2 ${
+                  className={`label-caps px-3 py-2 min-h-[44px] rounded-md whitespace-nowrap cursor-pointer transition-colors border focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2 ${
                     studentFilter === f.id
                       ? "bg-bw-violet-main/10 text-bw-violet-main border-bw-violet-main/30"
-                      : "bg-transparent text-[#94a3b8] border-transparent hover:text-[#94a3b8]"
+                      : "bg-transparent text-bw-cockpit-muted border-transparent hover:text-bw-cockpit-muted"
                   }`}
                 >
                   {f.label}
@@ -246,7 +248,7 @@ export function V6Sidebar({
                     {/* Name + meta */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-[12px] font-medium text-bw-cockpit-text truncate">
+                        <span className="text-body-xs font-medium text-bw-cockpit-text truncate">
                           {student.display_name}
                         </span>
                         {student.hand_raised_at && (
@@ -262,7 +264,7 @@ export function V6Sidebar({
                       {/* Status label — doctrine: no XP/scores/levels */}
                       <span
                         className={`text-[11px] mt-0.5 ${
-                          !isOnline ? "text-red-400 font-semibold uppercase" : "text-[#94a3b8]"
+                          !isOnline ? "text-red-400 font-semibold uppercase" : "text-bw-cockpit-muted"
                         }`}
                       >
                         {isOnline ? (responded ? "a repondu" : "en ligne") : "HORS LIGNE"}
@@ -315,7 +317,7 @@ export function V6Sidebar({
               {filteredStudents.length === 0 && (
                 <div className="text-center py-8 px-3">
                   <span className="text-2xl">📡</span>
-                  <p className="text-[11px] text-[#94a3b8] mt-2">Aucun eleve dans ce filtre</p>
+                  <p className="label-caps text-bw-cockpit-muted mt-2">Aucun eleve dans ce filtre</p>
                 </div>
               )}
             </div>
@@ -338,10 +340,10 @@ export function V6Sidebar({
                 <button
                   key={f.id}
                   onClick={() => setResponseFilter(f.id)}
-                  className={`text-[11px] font-semibold px-3 py-2 min-h-[44px] rounded-md whitespace-nowrap cursor-pointer transition-colors border focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2 ${
+                  className={`label-caps px-3 py-2 min-h-[44px] rounded-md whitespace-nowrap cursor-pointer transition-colors border focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2 ${
                     responseFilter === f.id
                       ? "bg-bw-violet-main/10 text-bw-violet-main border-bw-violet-main/30"
-                      : "bg-transparent text-[#94a3b8] border-transparent hover:text-[#94a3b8]"
+                      : "bg-transparent text-bw-cockpit-muted border-transparent hover:text-bw-cockpit-muted"
                   }`}
                 >
                   {f.label}
@@ -358,27 +360,25 @@ export function V6Sidebar({
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-sm">{r.students?.avatar || "👤"}</span>
-                    <span className="text-[11px] font-bold text-bw-cockpit-text">
-                      {r.students?.display_name || "Eleve"}
-                    </span>
-                    <span className="text-[11px] text-[#94a3b8] ml-auto">
+                    <span className="label-caps text-bw-cockpit-text">{r.students?.display_name || "Eleve"}</span>
+                    <span className="label-caps text-bw-cockpit-muted ml-auto">
                       {new Date(r.submitted_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#94a3b8] leading-relaxed line-clamp-2">{r.text}</p>
+                  <p className="label-caps text-bw-cockpit-muted leading-relaxed line-clamp-2">{r.text}</p>
                   <div className="flex items-center gap-2 mt-2">
                     {r.is_vote_option && (
-                      <span className="text-[11px] font-bold px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      <span className="label-caps px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                         VALIDE
                       </span>
                     )}
                     {r.is_highlighted && (
-                      <span className="text-[11px] font-bold px-2 py-1 rounded bg-[#fbbf24]/10 text-[#fbbf24] border border-[#fbbf24]/20">
+                      <span className="label-caps px-2 py-1 rounded bg-bw-amber/10 text-bw-amber border border-bw-amber/20">
                         ⭐
                       </span>
                     )}
                     {r.is_hidden && (
-                      <span className="text-[11px] font-bold px-2 py-1 rounded bg-red-500/10 text-red-400 border border-red-500/20">
+                      <span className="label-caps px-2 py-1 rounded bg-red-500/10 text-red-400 border border-red-500/20">
                         MASQUE
                       </span>
                     )}
@@ -389,7 +389,7 @@ export function V6Sidebar({
               {filteredResponses.length === 0 && (
                 <div className="text-center py-8 px-3">
                   <span className="text-2xl">📝</span>
-                  <p className="text-[11px] text-[#94a3b8] mt-2">Aucune reponse</p>
+                  <p className="label-caps text-bw-cockpit-muted mt-2">Aucune reponse</p>
                 </div>
               )}
             </div>
@@ -417,7 +417,7 @@ export function V6Sidebar({
                     setNotes(updated);
                     onNotesChange?.(updated);
                   }}
-                  className="text-[11px] font-semibold px-3 py-1 min-h-[44px] rounded-lg cursor-pointer transition-colors border focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
+                  className="label-caps px-3 py-1 min-h-[44px] rounded-lg cursor-pointer transition-colors border focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
                   style={{
                     background: `${tag.color}15`,
                     borderColor: `${tag.color}30`,
@@ -437,7 +437,7 @@ export function V6Sidebar({
                 onNotesChange?.(e.target.value);
               }}
               placeholder="Notes de session..."
-              className="w-full min-h-[200px] p-3 rounded-xl border border-bw-cockpit-border bg-bw-cockpit-surface text-[12px] text-[#94a3b8] font-sans resize-y outline-none focus:border-bw-violet-main/40 placeholder:text-[#94a3b8]"
+              className="w-full min-h-[200px] p-3 rounded-xl border border-bw-cockpit-border bg-bw-cockpit-surface text-[12px] text-bw-cockpit-muted font-sans resize-y outline-none focus:border-bw-violet-main/40 placeholder:text-bw-cockpit-muted"
             />
           </div>
         )}
