@@ -89,7 +89,7 @@ function DrawerHeader({ title, badge, onClose }: { title: string; badge?: number
       <div className="flex items-center gap-2">
         <span className="text-sm font-bold text-[#2C2C2C] uppercase tracking-wider">{title}</span>
         {badge !== undefined && badge > 0 && (
-          <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#FF6B35] text-white text-[11px] font-bold">
+          <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#4ECDC4] text-white text-[11px] font-bold">
             {badge}
           </span>
         )}

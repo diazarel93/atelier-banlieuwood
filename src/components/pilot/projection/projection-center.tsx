@@ -1,9 +1,16 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { motion } from "motion/react";
 import { useCockpitData, useCockpitActions } from "@/components/pilot/cockpit-context";
 import { getModuleByDb } from "@/lib/modules-data";
 import { CATEGORY_COLORS, getSeanceMax } from "@/lib/constants";
 import { ProjectionQuestionCard } from "./projection-question-card";
+
+function formatElapsed(ms: number): string {
+  const s = Math.floor(ms / 1000);
+  return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+}
 
 // Modules with a vote phase
 const VOTE_MODULES = new Set([2, 3, 4, 9]);
@@ -11,6 +18,13 @@ const VOTE_MODULES = new Set([2, 3, 4, 9]);
 export function ProjectionCenter() {
   const { session, responses, activeStudents, voteData } = useCockpitData();
   const { updateSession, onModuleComplete } = useCockpitActions();
+
+  const [sessionStartedAt] = useState<number>(() => Date.now());
+  const [elapsed, setElapsed] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setElapsed(Date.now() - sessionStartedAt), 1000);
+    return () => clearInterval(id);
+  }, [sessionStartedAt]);
 
   const moduleInfo = getModuleByDb(session.current_module, session.current_seance || 1);
   const seance = session.current_seance || 1;
@@ -44,48 +58,32 @@ export function ProjectionCenter() {
   const isVoteModule = VOTE_MODULES.has(session.current_module);
   const hasVoteResults = voteData !== undefined && voteData.totalVotes > 0;
   const canGoBack = currentIndex > 0;
+  const canNext = isReviewing;
 
   function handleReveal() {
     updateSession.mutate({ status: "reviewing" });
   }
-
   function handleOpenVote() {
     updateSession.mutate({ status: "voting", timer_ends_at: null });
   }
-
   function handleRevealVoteResults() {
     updateSession.mutate({ status: "reviewing" });
   }
-
   function handleNext() {
     if (isLastQuestion) {
       onModuleComplete();
     } else {
-      updateSession.mutate({
-        current_situation_index: currentIndex + 1,
-        status: "responding",
-      });
+      updateSession.mutate({ current_situation_index: currentIndex + 1, status: "responding" });
     }
   }
-
   function handlePrev() {
     if (canGoBack) {
-      updateSession.mutate({
-        current_situation_index: currentIndex - 1,
-        status: "responding",
-      });
+      updateSession.mutate({ current_situation_index: currentIndex - 1, status: "responding" });
     }
   }
 
-  // CTA principal selon l'état
-  type CTAState = {
-    label: string;
-    action: () => void;
-    color: string;
-  };
-
-  let cta: CTAState | null = null;
-
+  // CTA contextuel selon l'état
+  let cta: { label: string; action: () => void; color: string } | null = null;
   if (isResponding) {
     cta = { label: "Révéler les réponses", action: handleReveal, color: "#FF6B35" };
   } else if (isVoting) {
@@ -97,18 +95,21 @@ export function ProjectionCenter() {
   } else if (isReviewing && isVoteModule && !hasVoteResults) {
     cta = { label: "Lancer le vote", action: handleOpenVote, color: "#D4A843" };
   } else if (isReviewing) {
-    cta = {
-      label: isLastQuestion ? "Terminer le module" : "Suivant →",
-      action: handleNext,
-      color: "#2C2C2C",
-    };
+    cta = { label: isLastQuestion ? "Terminer le module" : "Suivant →", action: handleNext, color: "#2C2C2C" };
   }
 
-  const canNext = isReviewing;
+  // Gradient + glow par couleur CTA
+  function ctaStyle(color: string): React.CSSProperties {
+    if (color === "#FF6B35")
+      return { background: "linear-gradient(135deg, #FF6B35, #D4A843)", boxShadow: "0 4px 20px rgba(255,107,53,0.35)" };
+    if (color === "#4ECDC4") return { background: "linear-gradient(135deg, #4ECDC4, #2db8af)" };
+    if (color === "#D4A843") return { background: "linear-gradient(135deg, #D4A843, #FF6B35)" };
+    return { backgroundColor: color };
+  }
 
   return (
     <div className="w-full max-w-2xl mx-auto flex flex-col gap-5">
-      {/* Question card */}
+      {/* Question card — entrée avec effet blur "projecteur" Direction C */}
       <ProjectionQuestionCard
         questionText={questionText}
         categoryLabel={categoryLabel}
@@ -116,12 +117,12 @@ export function ProjectionCenter() {
         maxSituations={maxSituations}
       />
 
-      {/* Progress bar + counter */}
+      {/* Progress bar orange → or */}
       <div className="space-y-2">
         <div className="h-2 rounded-full bg-[#E8DFD2] overflow-hidden">
           <div
-            className="h-full rounded-full bg-[#4ECDC4] transition-all duration-500"
-            style={{ width: `${progressPct}%` }}
+            className="h-full rounded-full transition-all duration-500"
+            style={{ width: `${progressPct}%`, background: "linear-gradient(90deg, #FF6B35, #D4A843)" }}
           />
         </div>
         <p className="text-center text-sm text-[#4A4A4A]">
@@ -132,18 +133,19 @@ export function ProjectionCenter() {
         </p>
       </div>
 
-      {/* KPI row */}
-      <div className="grid grid-cols-3 gap-3">
+      {/* KPI row — 4 colonnes: Répondu / Attente / Taux / Temps */}
+      <div className="grid grid-cols-4 gap-2">
         {[
           { v: String(respondedCount), l: "Répondu", c: "#FF6B35" },
           { v: String(enAttente), l: "Attente", c: "#D4A843" },
           { v: `${progressPct}%`, l: "Taux", c: "#4ECDC4" },
+          { v: formatElapsed(elapsed), l: "Temps", c: "#a89e8e" },
         ].map((k) => (
-          <div key={k.l} className="flex flex-col items-center py-3 rounded-xl" style={{ background: `${k.c}18` }}>
-            <span className="text-2xl font-black tabular-nums" style={{ color: k.c }}>
+          <div key={k.l} className="flex flex-col items-center py-3 rounded-xl" style={{ background: `${k.c}14` }}>
+            <span className="text-[20px] font-black tabular-nums" style={{ color: k.c }}>
               {k.v}
             </span>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-[#4A4A4A]">{k.l}</span>
+            <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#4A4A4A]">{k.l}</span>
           </div>
         ))}
       </div>
@@ -159,15 +161,29 @@ export function ProjectionCenter() {
           ← Préc
         </button>
 
-        {/* CTA central */}
+        {/* CTA central — gradient + glow pulse signature Direction C */}
         {cta && (
-          <button
+          <motion.button
             onClick={cta.action}
-            className="flex-1 min-h-11 rounded-xl text-white font-bold text-base transition-colors cursor-pointer"
-            style={{ backgroundColor: cta.color }}
+            className="flex-1 min-h-11 rounded-2xl text-white font-black uppercase tracking-wider text-sm cursor-pointer"
+            style={ctaStyle(cta.color)}
+            animate={
+              cta.color === "#FF6B35"
+                ? {
+                    boxShadow: [
+                      "0 4px 20px rgba(255,107,53,0.35)",
+                      "0 4px 32px rgba(255,107,53,0.55)",
+                      "0 4px 20px rgba(255,107,53,0.35)",
+                    ],
+                  }
+                : {}
+            }
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
           >
             {cta.label}
-          </button>
+          </motion.button>
         )}
 
         {/* Suivant → */}

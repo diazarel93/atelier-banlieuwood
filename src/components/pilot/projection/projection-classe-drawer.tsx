@@ -37,7 +37,7 @@ export function ProjectionClasseDrawer() {
               {/* Badge statut — AUCUN score, AUCUN classement (doctrine Banlieuwood) */}
               <span
                 className="flex-shrink-0 w-2.5 h-2.5 rounded-full"
-                style={{ backgroundColor: hasResponded ? "#4ECDC4" : "#FF6B35" }}
+                style={{ backgroundColor: hasResponded ? "#4ECDC4" : "#D4A843" }}
                 title={hasResponded ? "A répondu" : "En attente"}
               />
               <span className="text-sm text-[#2C2C2C] truncate">{student.display_name}</span>
