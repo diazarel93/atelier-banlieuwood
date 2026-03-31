@@ -56,6 +56,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
   const { data: authUser } = useAuthUser();
   const isAdmin = authUser?.role === "admin";
   const isIntervenant = authUser?.role === "intervenant";
+  const isProfesseur = authUser?.role === "professeur";
 
   const visibleNavItems = NAV_ITEMS.filter((item) => !item.professeurOnly || !isIntervenant);
 
@@ -133,14 +134,16 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             );
           })}
 
-          {/* Create session CTA */}
-          <Link
-            href={ROUTES.seanceNew}
-            className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-bold text-white bg-gradient-to-r from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] hover:shadow-[0_0_24px_rgba(139,92,246,0.35)] transition-all duration-200 mt-3 glow-accent"
-          >
-            <IconPlus />
-            Nouvelle séance
-          </Link>
+          {/* Create session CTA — intervenants only */}
+          {!isProfesseur && (
+            <Link
+              href={ROUTES.seanceNew}
+              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm,10px)] text-body-sm font-bold text-white bg-gradient-to-r from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] hover:shadow-[0_0_24px_rgba(139,92,246,0.35)] transition-all duration-200 mt-3 glow-accent"
+            >
+              <IconPlus />
+              Nouvelle séance
+            </Link>
+          )}
         </nav>
 
         {/* Bottom nav */}
@@ -258,16 +261,18 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
-        <div className="px-3 pb-5 pt-3 border-t border-[var(--sidebar-border)]">
-          <Link
-            href={ROUTES.seanceNew}
-            onClick={() => setMobileOpen(false)}
-            className="flex items-center justify-center gap-2 w-full rounded-xl bg-[var(--color-bw-violet)] px-4 py-3 text-sm font-semibold text-white shadow-[0_0_12px_rgba(139,92,246,0.25)]"
-          >
-            <IconPlus />
-            Nouvelle séance
-          </Link>
-        </div>
+        {!isProfesseur && (
+          <div className="px-3 pb-5 pt-3 border-t border-[var(--sidebar-border)]">
+            <Link
+              href={ROUTES.seanceNew}
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center justify-center gap-2 w-full rounded-xl bg-[var(--color-bw-violet)] px-4 py-3 text-sm font-semibold text-white shadow-[0_0_12px_rgba(139,92,246,0.25)]"
+            >
+              <IconPlus />
+              Nouvelle séance
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* ══ MAIN CONTENT ══ */}

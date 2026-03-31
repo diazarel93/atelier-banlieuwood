@@ -25,6 +25,11 @@ export const GET = withErrorHandler<Record<string, never>>(async function GET(re
   const authUser = await getAuthUser(supabase);
   const isAdmin = authUser?.role === "admin";
 
+  // Intervenants n'ont pas accès aux statistiques (données post-séance professeur only)
+  if (authUser?.role === "intervenant") {
+    return NextResponse.json({ error: "Accès réservé aux professeurs" }, { status: 403 });
+  }
+
   const url = new URL(req.url);
   const classLabel = url.searchParams.get("classLabel");
   const sessionId = url.searchParams.get("sessionId");

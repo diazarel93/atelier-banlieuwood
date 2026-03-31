@@ -35,6 +35,7 @@ export default function DashboardV2Page() {
   const { data, isLoading, isError, refetch } = useDashboardSummary(classLabel, authUser?.role);
 
   const firstName = authUser?.name?.split(" ")[0] || "";
+  const isProfesseur = authUser?.role === "professeur";
   const stats = data?.stats;
   const completedModuleIds = data?.completedModuleIds || [];
 
@@ -124,12 +125,14 @@ export default function DashboardV2Page() {
               ))}
             </select>
           )}
-          <Link
-            href={ROUTES.seanceNew}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 active:scale-[0.97] transition-all"
-          >
-            + Nouvelle séance
-          </Link>
+          {!isProfesseur && (
+            <Link
+              href={ROUTES.seanceNew}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-bw-primary-500 active:scale-[0.97] transition-all"
+            >
+              + Nouvelle séance
+            </Link>
+          )}
         </div>
       </div>
 
@@ -163,12 +166,14 @@ export default function DashboardV2Page() {
                     {activeSession.title} — {activeSession.studentCount} élèves connectés
                   </p>
                 </div>
-                <Link
-                  href={ROUTES.pilot(activeSession.id)}
-                  className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-bw-teal hover:bg-bw-teal-600 btn-hover glow-green"
-                >
-                  Retourner au cockpit →
-                </Link>
+                {!isProfesseur && (
+                  <Link
+                    href={ROUTES.pilot(activeSession.id)}
+                    className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-bw-teal hover:bg-bw-teal-600 btn-hover glow-green"
+                  >
+                    Retourner au cockpit →
+                  </Link>
+                )}
               </div>
             </motion.div>
           )}

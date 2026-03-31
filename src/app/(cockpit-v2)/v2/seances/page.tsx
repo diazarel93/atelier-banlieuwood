@@ -13,6 +13,7 @@ import { useConfirmAction } from "@/hooks/use-confirm-action";
 import { ConfirmModal } from "@/components/confirm-modal";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useAuthUser } from "@/hooks/use-auth-user";
 
 interface Session {
   id: string;
@@ -62,6 +63,8 @@ function getDateLabel(dateStr: string): string {
 export default function SeancesPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { data: authUser } = useAuthUser();
+  const isProfesseur = authUser?.role === "professeur";
   const [tab, setTab] = useState<SeanceTab>("upcoming");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -249,15 +252,17 @@ export default function SeancesPage() {
               </button>
             )}
           </div>
-          <Link
-            href={ROUTES.seanceNew}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-4 py-2 text-sm font-bold text-white hover:bg-bw-primary-500 transition-all btn-hover"
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-            + Nouvelle séance
-          </Link>
+          {!isProfesseur && (
+            <Link
+              href={ROUTES.seanceNew}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-4 py-2 text-sm font-bold text-white hover:bg-bw-primary-500 transition-all btn-hover"
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              + Nouvelle séance
+            </Link>
+          )}
         </div>
       </div>
 
@@ -291,7 +296,9 @@ export default function SeancesPage() {
                   ? "Les séances archivées apparaîtront ici."
                   : "Lancez votre première prise pour voir la magie opérer."
               }
-              action={tab !== "archived" ? { label: "Nouvelle séance", href: ROUTES.seanceNew } : undefined}
+              action={
+                tab !== "archived" && !isProfesseur ? { label: "Nouvelle séance", href: ROUTES.seanceNew } : undefined
+              }
             />
           ) : (
             <div className="flex flex-col gap-6">
