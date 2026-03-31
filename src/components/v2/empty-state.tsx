@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "motion/react";
 import { GlassCardV2 } from "./glass-card";
 
 interface EmptyStateProps {
@@ -44,23 +45,29 @@ export function EmptyState({ icon, title, description, action, accent = "primary
   const styles = ACCENT_STYLES[accent];
 
   const actionClasses =
-    "inline-flex items-center gap-1.5 rounded-xl bg-bw-primary px-5 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-bw-glow-primary)] hover:bg-bw-primary-500 hover:shadow-[0_0_20px_rgba(255,107,53,0.35)] active:scale-[0.98] transition-all duration-150";
+    "inline-flex items-center gap-1.5 min-h-[44px] rounded-xl px-5 text-sm font-semibold text-white transition-all duration-150 active:scale-[0.97] hover:shadow-[0_4px_20px_rgba(255,107,53,0.35)]";
 
   return (
     <GlassCardV2 className={`py-14 px-8 flex flex-col items-center text-center max-w-md mx-auto ${className || ""}`}>
-      {/* Icon with gradient background + ring */}
-      <div
+      {/* Icon with gradient background + ring + float animation */}
+      <motion.div
+        animate={{ y: [0, -8, 0] }}
+        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
         className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl ring-1 ring-inset ${styles.ring} ${styles.bg} ${styles.icon}`}
       >
         {icon}
-      </div>
+      </motion.div>
 
       <h2 className="text-heading-md text-bw-heading mb-2">{title}</h2>
       <p className="text-body-sm text-bw-muted leading-relaxed mb-8 max-w-xs">{description}</p>
 
       {action &&
         (action.href ? (
-          <Link href={action.href} className={actionClasses}>
+          <Link
+            href={action.href}
+            className={actionClasses}
+            style={{ background: "linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))" }}
+          >
             {action.label}
             <svg
               width="14"
@@ -76,7 +83,12 @@ export function EmptyState({ icon, title, description, action, accent = "primary
             </svg>
           </Link>
         ) : (
-          <button type="button" onClick={action.onClick} className={actionClasses}>
+          <button
+            type="button"
+            onClick={action.onClick}
+            className={actionClasses}
+            style={{ background: "linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))" }}
+          >
             {action.label}
           </button>
         ))}
