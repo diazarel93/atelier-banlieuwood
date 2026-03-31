@@ -207,7 +207,7 @@ export default function DashboardV2Page() {
                     <Link
                       href={ROUTES.pilot(s.id)}
                       prefetch={false}
-                      className="shrink-0 rounded-lg bg-bw-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-bw-primary-500 btn-hover"
+                      className="shrink-0 inline-flex items-center rounded-lg bg-bw-primary px-3 min-h-[44px] text-xs font-semibold text-white hover:bg-bw-primary-500 btn-hover"
                     >
                       Lancer
                     </Link>
@@ -375,7 +375,7 @@ export default function DashboardV2Page() {
                           <td className="p-3">
                             <Link
                               href={ROUTES.seanceResults(s.id)}
-                              className="px-3 py-1 rounded-lg text-body-xs font-medium text-[var(--color-bw-violet)] bg-[var(--color-bw-violet)]/8 hover:bg-[var(--color-bw-violet)]/15 transition-colors duration-150"
+                              className="inline-flex items-center px-3 min-h-[44px] rounded-lg text-body-xs font-medium text-[var(--color-bw-violet)] bg-[var(--color-bw-violet)]/8 hover:bg-[var(--color-bw-violet)]/15 transition-colors duration-150"
                             >
                               Voir →
                             </Link>
