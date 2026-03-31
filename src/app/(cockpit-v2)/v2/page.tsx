@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { useDashboardSummary } from "@/hooks/use-dashboard-v2";
 import { useAuthUser } from "@/hooks/use-auth-user";
 import { PHASES, MAIN_PHASE_IDS } from "@/lib/modules-data";
@@ -26,6 +26,7 @@ function getGreeting(): string {
 const mainPhases = PHASES.filter((p) => (MAIN_PHASE_IDS as readonly string[]).includes(p.id));
 
 export default function DashboardV2Page() {
+  const prefersReducedMotion = useReducedMotion();
   const { data: authUser } = useAuthUser();
   const [classLabel, setClassLabel] = useState<string | null>(null);
   const { data, isLoading, isError, refetch } = useDashboardSummary(classLabel, authUser?.role);
@@ -100,10 +101,10 @@ export default function DashboardV2Page() {
               {todayCount} séance{todayCount > 1 ? "s" : ""} aujourd&apos;hui
             </p>
             {activeSessions.length > 0 && (
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-bw-green)]">
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-bw-teal-readable)]">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute h-full w-full rounded-full bg-[var(--color-bw-green)] opacity-75" />
-                  <span className="relative rounded-full h-2 w-2 bg-[var(--color-bw-green)]" />
+                  <span className="animate-ping absolute h-full w-full rounded-full bg-[var(--color-bw-teal-readable)] opacity-75" />
+                  <span className="relative rounded-full h-2 w-2 bg-[var(--color-bw-teal-readable)]" />
                 </span>
                 {activeSessions.length} en direct
               </span>
@@ -516,7 +517,7 @@ export default function DashboardV2Page() {
       {!data?.todaySessions?.length && !data?.recentSessions?.length && (
         <div className="text-center py-20">
           <motion.div
-            animate={{ y: [0, -10, 0], rotate: [0, -3, 3, 0] }}
+            animate={prefersReducedMotion ? {} : { y: [0, -10, 0], rotate: [0, -3, 3, 0] }}
             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
             className="text-8xl mb-6 drop-shadow-[0_0_24px_rgba(139,92,246,0.3)]"
           >
