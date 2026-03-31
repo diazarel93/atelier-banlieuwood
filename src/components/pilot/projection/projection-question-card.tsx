@@ -32,10 +32,15 @@ export function ProjectionQuestionCard({
   return (
     <motion.div
       key={currentIndex}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
-      className="rounded-2xl border border-[#E8DFD2] bg-white shadow-sm overflow-hidden"
+      initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="rounded-2xl overflow-hidden"
+      style={{
+        border: "1px solid rgba(255,107,53,0.25)",
+        backgroundColor: "#fff",
+        boxShadow: "0 0 24px rgba(255,107,53,0.08)",
+      }}
     >
       {/* Barre couleur catégorie */}
       <div className="h-1.5" style={{ backgroundColor: catColor }} />
