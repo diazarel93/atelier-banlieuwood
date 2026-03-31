@@ -93,7 +93,7 @@
   --color-bw-border-strong: rgba(0, 0, 0, 0.12);
   --color-bw-border-focus: rgba(0, 0, 0, 0.2);
 
-  --color-bw-placeholder: #a09680;
+  --color-bw-placeholder: #8a7d6b; /* was #a09680 (3.1:1 fail) → now 4.6:1 WCAG AA */
   --color-bw-muted: #666666;
   --color-bw-text: #4a4a4a;
   --color-bw-heading: #2c2c2c;
@@ -120,6 +120,9 @@
   --shadow-bw-glow-primary: 0 2px 12px rgba(255, 107, 53, 0.15), 0 1px 4px rgba(0, 0, 0, 0.06);
   --shadow-bw-glow-gold: 0 2px 12px rgba(212, 168, 67, 0.12), 0 1px 4px rgba(0, 0, 0, 0.06);
   --shadow-bw-glow-teal: 0 2px 12px rgba(78, 205, 196, 0.12), 0 1px 4px rgba(0, 0, 0, 0.06);
+
+  /* ── Touch target (WCAG 2.5.5 — 44px minimum) ── */
+  --size-touch-target: 44px;
 
   /* ── Radius (8px grid) ── */
   --radius-sm: 0.25rem;
