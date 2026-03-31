@@ -43,7 +43,7 @@ export function ProjectionCockpit() {
           className="flex-1 flex flex-col items-center justify-center px-6 py-4 min-w-0 overflow-y-auto"
           style={{ background: "radial-gradient(ellipse at center, rgba(255,107,53,0.05), transparent 65%)" }}
         >
-          <ProjectionCenter />
+          <ProjectionCenter sessionStartedAt={sessionStartedAt} />
         </main>
 
         {/* Drawer droit — Réponses */}
