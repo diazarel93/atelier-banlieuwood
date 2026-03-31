@@ -24,7 +24,7 @@ export async function handleModule1(
     .eq("session_id", sessionId)
     .eq("is_active", true);
 
-  const m1Team = await getStudentTeam(admin, studentId, sessionId);
+  await getStudentTeam(admin, studentId, sessionId);
 
   const sessionBase = {
     id: session.id,

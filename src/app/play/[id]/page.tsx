@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 
-import { useSessionPolling, SessionState } from "@/hooks/use-session-polling";
+import { useSessionPolling } from "@/hooks/use-session-polling";
 import { useRealtimeInvalidation } from "@/hooks/use-realtime-invalidation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useOfflineQueue } from "@/hooks/use-offline-queue";
@@ -141,10 +141,6 @@ const EtsiWriterState = dynamic(
 );
 const IdeaBankState = dynamic(
   () => import("@/components/play/module-10/idea-bank-state").then((m) => ({ default: m.IdeaBankState })),
-  { ssr: false },
-);
-const AvatarDoneState = dynamic(
-  () => import("@/components/play/module-10/avatar-done-state").then((m) => ({ default: m.AvatarDoneState })),
   { ssr: false },
 );
 const AvatarBuilderState = dynamic(

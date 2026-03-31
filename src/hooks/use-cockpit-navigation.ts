@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useCockpit } from "@/components/pilot/cockpit-context";
 import { useCockpitModuleFlags } from "@/hooks/use-cockpit-module-flags";
-import { getNextAction, type NextAction } from "@/lib/cockpit-next-action";
+import { getNextAction } from "@/lib/cockpit-next-action";
 
 /**
  * Navigation: goToSituation, next/prev/skip, auto-advance, preview mode.
@@ -24,7 +24,7 @@ export function useCockpitNavigation({
   const visibleResponses = responses.filter((r) => !r.is_hidden);
   const voteOptionCount = responses.filter((r) => r.is_vote_option && !r.is_hidden).length;
 
-  const { canGoNext, maxSituations, isBudgetQuiz } = useCockpitModuleFlags(session);
+  const { canGoNext, maxSituations, isBudgetQuiz: _isBudgetQuiz } = useCockpitModuleFlags(session);
 
   const budgetStats = (session as unknown as Record<string, unknown>)?.budgetStats as
     | { submittedCount: number }

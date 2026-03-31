@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { getAuthUser } from "@/lib/auth-helpers";
-import type { AuthUser } from "@/lib/auth";
+import type { AuthUser as _AuthUser } from "@/lib/auth";
 import * as Sentry from "@sentry/nextjs";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

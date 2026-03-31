@@ -39,7 +39,7 @@ function makeChain(resolveWith: () => { data: unknown; error: unknown | null }) 
   }
   chain.single = vi.fn().mockImplementation(() => Promise.resolve(resolveWith()));
   // Support .then() for fire-and-forget patterns (e.g. logSessionEvent)
-  chain.then = vi.fn().mockImplementation((onFulfilled?: () => void, onRejected?: () => void) => {
+  chain.then = vi.fn().mockImplementation((onFulfilled?: () => void) => {
     if (onFulfilled) onFulfilled();
     return Promise.resolve();
   });

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getPollingInterval, type ConnectionStatus } from "@/hooks/use-realtime-invalidation";
+import { getPollingInterval } from "@/hooks/use-realtime-invalidation";
 
 describe("Situation handler parallelization logic", () => {
   it("Promise.all should resolve all independent queries", async () => {

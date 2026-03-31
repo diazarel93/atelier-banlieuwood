@@ -55,7 +55,7 @@ function groupIntoCamps(responses: DebateResponse[]): { key: string; label: stri
   // Sort by group size descending, take top groups
   const sorted = [...groups.entries()].sort((a, b) => b[1].length - a[1].length);
 
-  return sorted.map(([key, resps], i) => ({
+  return sorted.map(([key, resps], _i) => ({
     key,
     label: resps[0].text.length > 50 ? resps[0].text.slice(0, 50) + "..." : resps[0].text,
     responses: resps,

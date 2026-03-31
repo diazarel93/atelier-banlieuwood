@@ -51,7 +51,7 @@ export const GET = withErrorHandler<{ profileId: string }>(async function GET(
 
   // ── Parallel queries ──
   const [
-    scoresRes,
+    _scoresRes,
     responsesRes,
     responseCountRes,
     tagsRes,
@@ -59,7 +59,7 @@ export const GET = withErrorHandler<{ profileId: string }>(async function GET(
     pitchRes,
     talentRes,
     roleRes,
-    reactionsRes,
+    _reactionsRes,
     achievementsRes,
     notesRes,
   ] = await Promise.all([

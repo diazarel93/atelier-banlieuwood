@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { CATEGORY_LABELS } from "@/lib/constants";
 import { withErrorHandler } from "@/lib/api-utils";
 
 // Competency categories derived from narrative categories

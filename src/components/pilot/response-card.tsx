@@ -84,7 +84,7 @@ function ResponseCardInner({
   const [commentText, setCommentText] = useState("");
   const swipeTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const x = useMotionValue(0);
-  const opacity = useTransform(x, [-120, 0, 120], [0.5, 1, 0.5]);
+  const _opacity = useTransform(x, [-120, 0, 120], [0.5, 1, 0.5]);
 
   // Cleanup swipe timeout on unmount
   useEffect(() => {
