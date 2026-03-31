@@ -122,21 +122,13 @@ export function StudentClassTable({ students, className }: StudentClassTableProp
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-[var(--color-bw-border)]">
-                      <th className="px-5 py-3 text-left label-caps text-bw-muted">
-                        Élève
-                      </th>
-                      <th className="px-3 py-3 text-center label-caps text-bw-muted w-20">
-                        Séances
-                      </th>
-                      <th className="px-3 py-3 text-center label-caps text-bw-muted w-24">
-                        Réponses
-                      </th>
+                      <th className="px-5 py-3 text-left label-caps text-bw-muted">Élève</th>
+                      <th className="px-3 py-3 text-center label-caps text-bw-muted w-20">Séances</th>
+                      <th className="px-3 py-3 text-center label-caps text-bw-muted w-24">Réponses</th>
                       <th className="px-3 py-3 text-center label-caps text-bw-muted hidden sm:table-cell w-32">
                         Activité
                       </th>
-                      <th className="px-3 py-3 text-center label-caps text-bw-muted w-24">
-                        Statut
-                      </th>
+                      <th className="px-3 py-3 text-center label-caps text-bw-muted w-24">Statut</th>
                     </tr>
                   </thead>
                   <tbody>

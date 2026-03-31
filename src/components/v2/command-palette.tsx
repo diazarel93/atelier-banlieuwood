@@ -309,11 +309,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               {/* Navigation section */}
               {navResults.length > 0 && (
                 <>
-                  {query && (
-                    <p className="px-4 pt-1 pb-1 label-caps text-bw-muted">
-                      Navigation
-                    </p>
-                  )}
+                  {query && <p className="px-4 pt-1 pb-1 label-caps text-bw-muted">Navigation</p>}
                   {navResults.map((cmd) => {
                     const idx = offset++;
                     return renderItem(cmd, idx);
@@ -324,9 +320,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               {/* Sessions section */}
               {sessionResults.length > 0 && (
                 <>
-                  <p className="px-4 pt-3 pb-1 label-caps text-bw-muted">
-                    Séances
-                  </p>
+                  <p className="px-4 pt-3 pb-1 label-caps text-bw-muted">Séances</p>
                   {sessionResults.map((cmd) => {
                     const idx = offset++;
                     return renderItem(cmd, idx);
@@ -337,9 +331,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               {/* Students section */}
               {studentResults.length > 0 && (
                 <>
-                  <p className="px-4 pt-3 pb-1 label-caps text-bw-muted">
-                    Élèves
-                  </p>
+                  <p className="px-4 pt-3 pb-1 label-caps text-bw-muted">Élèves</p>
                   {studentResults.map((cmd) => {
                     const idx = offset++;
                     return renderItem(cmd, idx);

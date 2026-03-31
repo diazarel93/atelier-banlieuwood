@@ -38,9 +38,7 @@ export function StatsDistributionChart({ scores, sessionCount, studentCount, cla
 
   return (
     <GlassCardV2 className={cn("p-5", className)}>
-      <h3 className="label-caps text-bw-muted mb-4">
-        Distribution des compétences
-      </h3>
+      <h3 className="label-caps text-bw-muted mb-4">Distribution des compétences</h3>
 
       <div className="flex items-center gap-6">
         {/* Donut */}

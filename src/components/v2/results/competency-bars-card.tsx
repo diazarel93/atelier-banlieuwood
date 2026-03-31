@@ -48,9 +48,7 @@ export function CompetencyBarsCard({ feedback }: CompetencyBarsCardProps) {
             )}
             {feedback.weakness && (
               <div className="rounded-xl bg-bw-amber-100 border border-bw-amber/20 p-3">
-                <span className="label-caps text-bw-amber-500">
-                  Progression
-                </span>
+                <span className="label-caps text-bw-amber-500">Progression</span>
                 <p className="text-xs text-bw-heading mt-1">{feedback.weakness.detail}</p>
               </div>
             )}

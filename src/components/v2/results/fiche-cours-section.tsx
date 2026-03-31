@@ -91,9 +91,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
           {/* Competencies accordion */}
           <GlassCardV2 className="overflow-hidden">
             <div className="px-5 pt-5 pb-2">
-              <p className="label-caps text-bw-muted">
-                Compétences du socle commun
-              </p>
+              <p className="label-caps text-bw-muted">Compétences du socle commun</p>
             </div>
             {(["domaine1", "domaine3", "domaine5"] as const).map((key) => {
               const domaine = fiche.competencies[key];
@@ -185,9 +183,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
 
           {/* Evaluation criteria */}
           <GlassCardV2 className="p-5">
-            <p className="label-caps text-bw-muted mb-3">
-              Critères d&apos;évaluation
-            </p>
+            <p className="label-caps text-bw-muted mb-3">Critères d&apos;évaluation</p>
             <ul className="space-y-2">
               {fiche.evaluation.map((crit, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-bw-heading">
@@ -201,9 +197,7 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
           {/* Session recap */}
           {fiche.sessionRecap && (
             <GlassCardV2 className="p-5 border-l-4 border-l-bw-teal">
-              <span className="label-caps text-bw-teal-600">
-                Résumé de session
-              </span>
+              <span className="label-caps text-bw-teal-600">Résumé de session</span>
               <p className="text-sm text-bw-heading mt-2">{fiche.sessionRecap}</p>
             </GlassCardV2>
           )}

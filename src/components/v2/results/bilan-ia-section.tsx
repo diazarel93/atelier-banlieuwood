@@ -153,9 +153,7 @@ export function BilanIaSection({ bilan, loading, provider, onGenerate, onDownloa
 
           {/* Recommendations */}
           <GlassCardV2 className="p-5">
-            <p className="label-caps text-bw-muted mb-3">
-              Recommandations pédagogiques
-            </p>
+            <p className="label-caps text-bw-muted mb-3">Recommandations pédagogiques</p>
             <ol className="space-y-2 list-decimal list-inside">
               {bilan.pedagogicalRecommendations.map((rec, i) => (
                 <li key={i} className="text-sm text-bw-heading">
