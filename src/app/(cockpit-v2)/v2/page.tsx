@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { useDashboardSummary } from "@/hooks/use-dashboard-v2";
 import { useAuthUser } from "@/hooks/use-auth-user";
 import { PHASES, MAIN_PHASE_IDS } from "@/lib/modules-data";
@@ -26,6 +26,7 @@ function getGreeting(): string {
 const mainPhases = PHASES.filter((p) => (MAIN_PHASE_IDS as readonly string[]).includes(p.id));
 
 export default function DashboardV2Page() {
+  const prefersReducedMotion = useReducedMotion();
   const { data: authUser } = useAuthUser();
   const [classLabel, setClassLabel] = useState<string | null>(null);
   const { data, isLoading, isError, refetch } = useDashboardSummary(classLabel, authUser?.role);
@@ -100,10 +101,10 @@ export default function DashboardV2Page() {
               {todayCount} séance{todayCount > 1 ? "s" : ""} aujourd&apos;hui
             </p>
             {activeSessions.length > 0 && (
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-bw-green)]">
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-bw-teal-readable)]">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute h-full w-full rounded-full bg-[var(--color-bw-green)] opacity-75" />
-                  <span className="relative rounded-full h-2 w-2 bg-[var(--color-bw-green)]" />
+                  <span className="animate-ping absolute h-full w-full rounded-full bg-[var(--color-bw-teal-readable)] opacity-75" />
+                  <span className="relative rounded-full h-2 w-2 bg-[var(--color-bw-teal-readable)]" />
                 </span>
                 {activeSessions.length} en direct
               </span>
@@ -116,7 +117,7 @@ export default function DashboardV2Page() {
               value={classLabel ?? ""}
               onChange={(e) => setClassLabel(e.target.value || null)}
               aria-label="Filtrer par classe"
-              className="rounded-lg border border-[var(--color-bw-border)] bg-card px-3 py-1.5 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+              className="input-premium min-h-[44px] rounded-lg border border-[var(--color-bw-border)] bg-card px-3 text-body-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
             >
               <option value="">Toutes les classes</option>
               {data.classLabels.map((cl) => (
@@ -178,7 +179,7 @@ export default function DashboardV2Page() {
                     <Link
                       href={ROUTES.pilot(s.id)}
                       prefetch={false}
-                      className="shrink-0 rounded-lg bg-bw-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-bw-primary-500 btn-hover"
+                      className="shrink-0 inline-flex items-center rounded-lg bg-bw-primary px-3 min-h-[44px] text-xs font-semibold text-white hover:bg-bw-primary-500 btn-hover"
                     >
                       Lancer
                     </Link>
@@ -346,7 +347,7 @@ export default function DashboardV2Page() {
                           <td className="p-3">
                             <Link
                               href={ROUTES.seanceResults(s.id)}
-                              className="px-3 py-1 rounded-lg text-body-xs font-medium text-[var(--color-bw-violet)] bg-[var(--color-bw-violet)]/8 hover:bg-[var(--color-bw-violet)]/15 transition-colors duration-150"
+                              className="inline-flex items-center px-3 min-h-[44px] rounded-lg text-body-xs font-medium text-[var(--color-bw-violet)] bg-[var(--color-bw-violet)]/8 hover:bg-[var(--color-bw-violet)]/15 transition-colors duration-150"
                             >
                               Voir →
                             </Link>
@@ -459,51 +460,6 @@ export default function DashboardV2Page() {
             </div>
           </div>
 
-          {/* Historique récent */}
-          {data?.recentSessions && data.recentSessions.length > 0 && (
-            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
-              <h3 className="label-caps text-bw-muted mb-3">Historique récent</h3>
-              <div className="space-y-2">
-                {data.recentSessions.slice(0, 6).map((s) => {
-                  const statusColor =
-                    s.status === "done"
-                      ? "var(--color-bw-green)"
-                      : s.status === "responding" || s.status === "voting"
-                        ? "var(--color-bw-teal)"
-                        : "var(--color-bw-amber)";
-                  const statusLabel =
-                    s.status === "done"
-                      ? "Terminée"
-                      : s.status === "responding" || s.status === "voting"
-                        ? "En cours"
-                        : "En attente";
-                  return (
-                    <Link
-                      key={s.id}
-                      href={ROUTES.seanceDetail(s.id)}
-                      className="flex items-center gap-2.5 py-1.5 hover:bg-[var(--color-bw-surface-dim)] rounded-lg px-2 transition-colors"
-                    >
-                      <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: statusColor }} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-bw-heading truncate">{s.title}</p>
-                        <p className="text-body-xs text-bw-muted">
-                          {new Date(s.scheduledAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ·{" "}
-                          {s.studentCount} élèves · {s.classLabel}
-                        </p>
-                      </div>
-                      <span
-                        className="text-body-xs font-semibold px-2 py-0.5 rounded-full"
-                        style={{ backgroundColor: `${statusColor}15`, color: statusColor }}
-                      >
-                        {statusLabel}
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
           {/* Agenda calendrier */}
           <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
             <h3 className="label-caps text-bw-muted mb-3">Agenda</h3>
@@ -516,7 +472,7 @@ export default function DashboardV2Page() {
       {!data?.todaySessions?.length && !data?.recentSessions?.length && (
         <div className="text-center py-20">
           <motion.div
-            animate={{ y: [0, -10, 0], rotate: [0, -3, 3, 0] }}
+            animate={prefersReducedMotion ? {} : { y: [0, -10, 0], rotate: [0, -3, 3, 0] }}
             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
             className="text-8xl mb-6 drop-shadow-[0_0_24px_rgba(139,92,246,0.3)]"
           >
