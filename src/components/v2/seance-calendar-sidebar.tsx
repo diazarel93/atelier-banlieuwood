@@ -23,7 +23,7 @@ export function SeanceCalendarSidebar({
     <div className={cn("flex flex-col gap-4", className)}>
       {/* Module progression */}
       <GlassCardV2 className="p-4">
-        <h3 className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Progression modules</h3>
+        <h3 className="label-caps text-bw-muted mb-3">Progression modules</h3>
         <div className="flex flex-col gap-2.5">
           {mainPhases.map((phase) => {
             const done = phase.moduleIds.filter((id) => completedModuleIds.includes(id)).length;

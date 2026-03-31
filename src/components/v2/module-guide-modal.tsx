@@ -93,10 +93,7 @@ export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalP
               <span className="text-sm" aria-hidden="true">
                 {exercise.phaseEmoji}
               </span>
-              <span
-                className="text-body-xs font-semibold uppercase tracking-wide"
-                style={{ color: exercise.phaseColor }}
-              >
+              <span className="label-caps" style={{ color: exercise.phaseColor }}>
                 {exercise.phaseLabel}
               </span>
             </div>
@@ -160,9 +157,7 @@ export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalP
               {/* Déroulé — timeline stepper (most useful, shown first) */}
               {guide.phases.length > 0 && (
                 <GlassCardV2 className="p-5">
-                  <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-4">
-                    Déroulé — {guide.phases.length} étapes
-                  </p>
+                  <p className="label-caps text-bw-muted mb-4">Déroulé — {guide.phases.length} étapes</p>
                   <div className="relative">
                     {/* Vertical line */}
                     <div className="absolute left-[18px] top-3 bottom-3 w-px bg-[var(--color-bw-border)]" />
@@ -200,9 +195,7 @@ export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalP
 
               {/* Intro à dire */}
               <GlassCardV2 className="p-5">
-                <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-                  Introduction à dire
-                </p>
+                <p className="label-caps text-bw-muted mb-3">Introduction à dire</p>
                 <div className="rounded-xl bg-[var(--color-bw-surface-dim)] p-4">
                   <p className="text-sm text-bw-heading italic leading-relaxed">&ldquo;{guide.introADire}&rdquo;</p>
                 </div>
@@ -210,9 +203,7 @@ export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalP
 
               {/* Socle commun + objectif */}
               <GlassCardV2 className="p-5">
-                <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-                  Objectifs pédagogiques
-                </p>
+                <p className="label-caps text-bw-muted mb-3">Objectifs pédagogiques</p>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {guide.socleCommun.map((code) => {
                     const colors = SOCLE_COLORS[code] || {
@@ -238,7 +229,7 @@ export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalP
 
               {/* Compétences */}
               <GlassCardV2 className="p-5">
-                <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Compétences visées</p>
+                <p className="label-caps text-bw-muted mb-3">Compétences visées</p>
                 <ul className="space-y-2">
                   {guide.competences.map((comp, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-bw-heading">
@@ -252,9 +243,7 @@ export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalP
               {/* Relancer + Challenger */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <GlassCardV2 className="p-4 border-l-4 border-l-[var(--color-bw-teal)]">
-                  <span className="text-body-xs font-bold uppercase tracking-wider text-[var(--color-bw-teal-600)]">
-                    Relancer
-                  </span>
+                  <span className="label-caps text-bw-teal-600">Relancer</span>
                   <ul className="mt-2 space-y-1.5">
                     {guide.commentRelancer.map((r, i) => (
                       <li key={i} className="text-xs text-bw-heading leading-relaxed">
@@ -265,9 +254,7 @@ export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalP
                 </GlassCardV2>
 
                 <GlassCardV2 className="p-4 border-l-4 border-l-[var(--color-bw-violet)]">
-                  <span className="text-body-xs font-bold uppercase tracking-wider text-[var(--color-bw-violet-600)]">
-                    Challenger
-                  </span>
+                  <span className="label-caps text-bw-violet">Challenger</span>
                   <ul className="mt-2 space-y-1.5">
                     {guide.commentChallenger.map((c, i) => (
                       <li key={i} className="text-xs text-bw-heading leading-relaxed">
@@ -281,9 +268,7 @@ export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalP
               {/* Points d'attention */}
               {guide.aQuoiEtreAttentif.length > 0 && (
                 <GlassCardV2 variant="flat" className="p-5">
-                  <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">
-                    Points d&apos;attention
-                  </p>
+                  <p className="label-caps text-bw-muted mb-3">Points d&apos;attention</p>
                   <ul className="space-y-1.5">
                     {guide.aQuoiEtreAttentif.map((point, i) => (
                       <li key={i} className="text-xs text-bw-heading leading-relaxed pl-3 border-l-2 border-bw-amber">
@@ -297,7 +282,7 @@ export function ModuleGuideModal({ exercise, guide, onClose }: ModuleGuideModalP
               {/* Conseils */}
               {guide.conseils.length > 0 && (
                 <GlassCardV2 variant="flat" className="p-5">
-                  <p className="text-xs font-semibold text-bw-heading uppercase tracking-wide mb-3">Conseils</p>
+                  <p className="label-caps text-bw-muted mb-3">Conseils</p>
                   <ul className="space-y-1.5">
                     {guide.conseils.map((conseil, i) => (
                       <li key={i} className="text-xs text-bw-heading leading-relaxed">
