@@ -89,7 +89,15 @@ export function V6VoteControls({
             onClick={onSelectForVote}
             className="min-h-[44px] py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 bg-bw-amber text-white col-span-2 sm:col-span-1"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               <path d="M9 11l3 3L22 4" />
               <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
             </svg>

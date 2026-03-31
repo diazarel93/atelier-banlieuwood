@@ -41,7 +41,9 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-[14px] font-bold text-[#f0f0f8]">Sélection pour le vote</h3>
-          <p className="text-[11px] text-[#64748b] mt-0.5">Choisis {MIN_SELECTIONS}–{MAX_SELECTIONS} réponses</p>
+          <p className="text-[11px] text-[#64748b] mt-0.5">
+            Choisis {MIN_SELECTIONS}–{MAX_SELECTIONS} réponses
+          </p>
         </div>
         <span
           className={`text-[13px] font-bold px-3 py-1 rounded-lg border transition-colors ${
@@ -86,7 +88,15 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
                   }`}
                 >
                   {isSelected && (
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round">
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                    >
                       <path d="M5 13l4 4L19 7" />
                     </svg>
                   )}
