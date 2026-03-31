@@ -7,7 +7,9 @@
 interface V6VoteControlsProps {
   voteState: "closed" | "open" | "revealing" | "revealed";
   totalVotes: number;
+  voteOptionCount?: number;
   onOpenVote: () => void;
+  onSelectForVote?: () => void;
   onCloseVote: () => void;
   onReveal: () => void;
   onNext: () => void;
@@ -17,12 +19,15 @@ interface V6VoteControlsProps {
 export function V6VoteControls({
   voteState,
   totalVotes,
+  voteOptionCount = 0,
   onOpenVote,
+  onSelectForVote,
   onCloseVote,
   onReveal,
   onNext,
   onReset,
 }: V6VoteControlsProps) {
+  const needsSelection = voteState === "closed" && voteOptionCount === 0 && !!onSelectForVote;
   return (
     <section className="rounded-2xl border-2 border-bw-violet-border bg-[#161633] p-5 shadow-[0_0_20px_rgba(139,92,246,0.08)]">
       {/* Header */}
@@ -78,21 +83,34 @@ export function V6VoteControls({
 
       {/* 4 buttons grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {/* Ouvrir */}
-        <button
-          onClick={onOpenVote}
-          disabled={voteState === "open"}
-          className={`min-h-[44px] py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
-            voteState === "open"
-              ? "bg-bw-violet/15 text-bw-violet border border-bw-violet/30"
-              : "bg-bw-violet text-white"
-          }`}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-          Ouvrir
-        </button>
+        {/* Sélectionner / Ouvrir */}
+        {needsSelection ? (
+          <button
+            onClick={onSelectForVote}
+            className="min-h-[44px] py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 bg-bw-amber text-white col-span-2 sm:col-span-1"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+            </svg>
+            Sélectionner
+          </button>
+        ) : (
+          <button
+            onClick={onOpenVote}
+            disabled={voteState === "open"}
+            className={`min-h-[44px] py-3 px-4 rounded-xl text-[12px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed ${
+              voteState === "open"
+                ? "bg-bw-violet/15 text-bw-violet border border-bw-violet/30"
+                : "bg-bw-violet text-white"
+            }`}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            {voteOptionCount > 0 ? `Ouvrir (${voteOptionCount})` : "Ouvrir"}
+          </button>
+        )}
 
         {/* Fermer */}
         <button

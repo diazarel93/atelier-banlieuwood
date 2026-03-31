@@ -27,6 +27,7 @@ import { InlineReformulation } from "@/components/pilot/inline-reformulation";
 import { getModuleByDb } from "@/lib/modules-data";
 import { V6ControlPanels } from "@/components/pilot/v6-control-panels";
 import { V6VoteControls } from "@/components/pilot/v6-vote-controls";
+import { VoteSelectionPanel } from "@/components/pilot/vote-selection-panel";
 import { V6ActivityFeed, type ActivityItem } from "@/components/pilot/v6-activity-feed";
 import { useStuckDetection } from "@/hooks/use-stuck-detection";
 import { useOnlineStatus } from "@/hooks/use-online-status";
@@ -36,6 +37,7 @@ import type { Response } from "@/hooks/use-pilot-session";
 
 export function FocusCockpit() {
   const [remoteMode, setRemoteMode] = useState(false);
+  const [showVoteSelection, setShowVoteSelection] = useState(false);
   const isOnline = useOnlineStatus();
   const queryClient = useQueryClient();
   const state = useFocusCockpitState();
@@ -555,16 +557,33 @@ export function FocusCockpit() {
 
               {/* Vote controls (only for standard QA modules) */}
               {isStandardQA && (
-                <V6VoteControls
-                  voteState={
-                    session.status === "voting" ? "open" : session.status === "reviewing" ? "revealed" : "closed"
-                  }
-                  totalVotes={voteData?.totalVotes || 0}
-                  onOpenVote={() => updateSession.mutate({ status: "voting", timer_ends_at: null })}
-                  onCloseVote={() => updateSession.mutate({ status: "responding", timer_ends_at: null })}
-                  onReveal={() => updateSession.mutate({ status: "reviewing", timer_ends_at: null })}
-                  onNext={handleNextAction}
-                />
+                <>
+                  {/* F3 — Sélection manuelle des réponses pour le vote */}
+                  <AnimatePresence>
+                    {showVoteSelection && (
+                      <VoteSelectionPanel
+                        responses={visibleResponses}
+                        onConfirm={() => {
+                          setShowVoteSelection(false);
+                          updateSession.mutate({ status: "voting", timer_ends_at: null });
+                        }}
+                        onCancel={() => setShowVoteSelection(false)}
+                      />
+                    )}
+                  </AnimatePresence>
+                  <V6VoteControls
+                    voteState={
+                      session.status === "voting" ? "open" : session.status === "reviewing" ? "revealed" : "closed"
+                    }
+                    totalVotes={voteData?.totalVotes || 0}
+                    voteOptionCount={voteOptionCount}
+                    onOpenVote={() => updateSession.mutate({ status: "voting", timer_ends_at: null })}
+                    onSelectForVote={() => setShowVoteSelection(true)}
+                    onCloseVote={() => updateSession.mutate({ status: "responding", timer_ends_at: null })}
+                    onReveal={() => updateSession.mutate({ status: "reviewing", timer_ends_at: null })}
+                    onNext={handleNextAction}
+                  />
+                </>
               )}
 
               {/* Activity feed — doctrine: anonymized, no student names */}
