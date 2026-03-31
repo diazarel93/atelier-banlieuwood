@@ -460,51 +460,6 @@ export default function DashboardV2Page() {
             </div>
           </div>
 
-          {/* Historique récent */}
-          {data?.recentSessions && data.recentSessions.length > 0 && (
-            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
-              <h3 className="label-caps text-bw-muted mb-3">Historique récent</h3>
-              <div className="space-y-2">
-                {data.recentSessions.slice(0, 6).map((s) => {
-                  const statusColor =
-                    s.status === "done"
-                      ? "var(--color-bw-green)"
-                      : s.status === "responding" || s.status === "voting"
-                        ? "var(--color-bw-teal)"
-                        : "var(--color-bw-amber)";
-                  const statusLabel =
-                    s.status === "done"
-                      ? "Terminée"
-                      : s.status === "responding" || s.status === "voting"
-                        ? "En cours"
-                        : "En attente";
-                  return (
-                    <Link
-                      key={s.id}
-                      href={ROUTES.seanceDetail(s.id)}
-                      className="flex items-center gap-2.5 py-1.5 hover:bg-[var(--color-bw-surface-dim)] rounded-lg px-2 transition-colors"
-                    >
-                      <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: statusColor }} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-bw-heading truncate">{s.title}</p>
-                        <p className="text-body-xs text-bw-muted">
-                          {new Date(s.scheduledAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ·{" "}
-                          {s.studentCount} élèves · {s.classLabel}
-                        </p>
-                      </div>
-                      <span
-                        className="text-body-xs font-semibold px-2 py-0.5 rounded-full"
-                        style={{ backgroundColor: `${statusColor}15`, color: statusColor }}
-                      >
-                        {statusLabel}
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
           {/* Agenda calendrier */}
           <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
             <h3 className="label-caps text-bw-muted mb-3">Agenda</h3>
