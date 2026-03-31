@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Student join flow", () => {
   test("shows join page with code input", async ({ page }) => {
     await page.goto("/join");
-    await expect(page.locator("label")).toContainText("Code");
+    await expect(page.locator("label").first()).toContainText("Code");
     // 6 individual code input boxes
     await expect(page.locator('input[maxlength="1"]')).toHaveCount(6);
   });
