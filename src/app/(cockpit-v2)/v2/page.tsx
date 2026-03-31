@@ -238,8 +238,8 @@ export default function DashboardV2Page() {
                 />
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col gap-2">
-                    <span className="text-[11px] font-bold text-bw-text uppercase tracking-[0.06em]">{kpi.label}</span>
-                    <span className="text-3xl font-black tabular-nums text-bw-heading">{kpi.value}</span>
+                    <span className="label-caps text-bw-muted">{kpi.label}</span>
+                    <span className="text-heading-xl font-black tabular-nums text-bw-heading">{kpi.value}</span>
                   </div>
                   <div
                     className="flex h-11 w-11 items-center justify-center rounded-xl"
@@ -288,7 +288,7 @@ export default function DashboardV2Page() {
           {/* Séances récentes (table) */}
           {data?.recentSessions && data.recentSessions.length > 0 && (
             <div>
-              <h3 className="text-sm font-bold text-bw-heading mb-3">Séances récentes</h3>
+              <h3 className="text-heading-sm text-bw-heading mb-3">Séances récentes</h3>
               <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border-subtle)] scrollbar-thin">
                 <table className="w-full text-body-sm" style={{ borderCollapse: "collapse" }}>
                   <thead>
@@ -439,7 +439,7 @@ export default function DashboardV2Page() {
                       {phase.emoji}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-bw-heading truncate">{phase.label}</p>
+                      <p className="text-heading-xs text-bw-heading truncate">{phase.label}</p>
                       <div className="mt-1 h-1.5 w-full rounded-full bg-[var(--color-bw-surface)] overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all duration-500"
@@ -485,7 +485,7 @@ export default function DashboardV2Page() {
                     >
                       <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: statusColor }} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-bw-heading truncate">{s.title}</p>
+                        <p className="text-heading-xs text-bw-heading truncate">{s.title}</p>
                         <p className="text-body-xs text-bw-muted">
                           {new Date(s.scheduledAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ·{" "}
                           {s.studentCount} élèves · {s.classLabel}
