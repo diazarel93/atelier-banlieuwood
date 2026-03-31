@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { GlassCardV2 } from "./glass-card";
 import { IconClock } from "./icons";
-import { StatusBadge, STATUS_BG_TINT, type SessionStatus } from "./status-badge";
+import { StatusBadge, STATUS_BAR_COLORS, STATUS_BG_TINT, type SessionStatus } from "./status-badge";
 
 interface SessionCardV2Props {
   title: string;
@@ -18,14 +18,6 @@ interface SessionCardV2Props {
   actions?: React.ReactNode;
   className?: string;
 }
-
-const STATUS_BAR_COLORS: Record<SessionStatus, string> = {
-  draft: "var(--color-bw-muted, #9CA3AF)",
-  waiting: "var(--color-bw-amber, #F59E0B)",
-  responding: "var(--color-bw-teal, #4ECDC4)",
-  paused: "var(--color-bw-amber, #F59E0B)",
-  done: "var(--color-bw-green, #10B981)",
-};
 
 function formatTime(dateStr: string) {
   const d = new Date(dateStr);
