@@ -25,7 +25,13 @@ interface TeamChatProps {
 
 const STICKERS = ["👍", "❤️", "🔥", "😂", "🎬", "💡", "👏", "🎯"];
 
-function TeamChatInner({ sessionId, teamId, studentId, studentName, studentAvatar }: TeamChatProps) {
+function TeamChatInner({
+  sessionId,
+  teamId,
+  studentId,
+  studentName: _studentName,
+  studentAvatar: _studentAvatar,
+}: TeamChatProps) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");

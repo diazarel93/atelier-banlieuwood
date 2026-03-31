@@ -67,7 +67,31 @@ Quand l'utilisateur fait une erreur de pattern (any, pas de validation, mauvaise
 - Corrige ET explique pourquoi c'est mieux, en 2-3 phrases max
 - Ne pas faire de cours non demande — juste signaler et expliquer brievement
 
+## Agents disponibles
+
+- `design-director` — DA senior Banlieuwood (doctrine cinema, iPad-first, 5 phases) → invoquer pour tout travail UI/design
+- `code-reviewer` — review securite + patterns + bugs avant push → invoquer avec "review" ou "pret a pusher ?"
+- `db-architect` — schema Supabase, RLS, migrations, index → invoquer pour tout travail DB
+- `feature-planner` — planifie avant de coder, decoupe en taches atomiques → invoquer avant toute feature M/L
+- `cto-advisor` — veille tech, architecture scalable, dette technique, decisions strategiques → invoquer pour vision long terme
+
+## Token Routing — OBLIGATOIRE
+
+| Tache | Modele | Commande |
+|-------|--------|----------|
+| Lire fichiers, typos, boilerplate, questions simples | Haiku | `/model haiku` |
+| Feature, debug, tests, composants UI, migrations | **Sonnet (defaut)** | `/model sonnet` |
+| Archi complexe, debug impossible, refacto 10+ fichiers | Opus | `/model opus` |
+
+**Regles d'economie :**
+- Lire le CLAUDE.md avant d'explorer le projet
+- Utiliser Glob/Grep avant de lancer un Agent (10x moins cher)
+- Ne jamais relire un fichier deja lu dans la conversation
+- Suggerer `/compact` si la conversation depasse ~50 echanges
+
 ## Rules
+
+> Voir aussi `RULES.md` — regles auto-generees qui s'enrichissent au fil du projet.
 
 - JAMAIS push sur main directement
 - JAMAIS commit des fichiers .env

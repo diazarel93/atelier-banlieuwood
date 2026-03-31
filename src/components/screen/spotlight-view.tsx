@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 
 // ═══════════════════════════════════════════════════════════════
 // SPOTLIGHT VIEW — Single response displayed large on projector

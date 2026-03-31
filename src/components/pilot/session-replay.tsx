@@ -54,7 +54,13 @@ const EVENT_LABELS: Record<string, string> = {
 
 const SPEEDS = [1, 2, 4, 8];
 
-export function SessionReplay({ events, totalDurationMs, students, responses, onClose }: SessionReplayProps) {
+export function SessionReplay({
+  events,
+  totalDurationMs,
+  students,
+  responses: _responses,
+  onClose,
+}: SessionReplayProps) {
   const [playing, setPlaying] = useState(false);
   const [playheadMs, setPlayheadMs] = useState(0);
   const [speed, setSpeed] = useState(1);

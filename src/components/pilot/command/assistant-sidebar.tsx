@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { AttentionPriority, computeAttentionQueue, type AttentionSignals } from "@/components/pilot/attention-priority";
+import { AttentionPriority, type AttentionSignals } from "@/components/pilot/attention-priority";
 import { SessionTimeline, type TimelineEvent } from "@/components/pilot/session-timeline";
 import type { Student, Response } from "@/hooks/use-pilot-session";
 import type { StuckLevel } from "@/hooks/use-stuck-detection";

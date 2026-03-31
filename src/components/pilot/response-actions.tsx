@@ -60,7 +60,7 @@ function InlineActionsInner({
 }: InlineActionsProps) {
   const [showNudgePicker, setShowNudgePicker] = useState(false);
   const [customNudge, setCustomNudge] = useState("");
-  const [lastNudge, setLastNudge] = useState(NUDGE_PRESETS[0]);
+  const [_lastNudge, setLastNudge] = useState(NUDGE_PRESETS[0]);
   const [showScorePicker, setShowScorePicker] = useState(false);
   const [hoverStar, setHoverStar] = useState(0);
   const [sentReaction, setSentReaction] = useState<string | null>(null);

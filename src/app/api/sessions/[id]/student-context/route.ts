@@ -179,14 +179,9 @@ export const PATCH = withErrorHandler(async function PATCH(
   const parsed = await safeJson(req);
   if ("error" in parsed) return parsed.error;
 
-  const { studentId, sessionXp, responses, retained, streak, bestStreak, totalVotes } = parsed.data as {
+  const { studentId, bestStreak } = parsed.data as {
     studentId?: string;
-    sessionXp?: number;
-    responses?: number;
-    retained?: number;
-    streak?: number;
     bestStreak?: number;
-    totalVotes?: number;
   };
 
   if (!studentId || !isValidUUID(studentId)) {
