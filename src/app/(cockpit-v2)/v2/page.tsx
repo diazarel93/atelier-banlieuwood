@@ -7,6 +7,7 @@ import { useDashboardSummary } from "@/hooks/use-dashboard-v2";
 import { useAuthUser } from "@/hooks/use-auth-user";
 import { PHASES, MAIN_PHASE_IDS } from "@/lib/modules-data";
 import { MiniCalendar } from "@/components/v2/mini-calendar";
+import { HeroNextSession } from "@/components/v2/hero-next-session";
 import { ROUTES } from "@/lib/routes";
 
 // ═══════════════════════════════════════════════════════════════
@@ -38,6 +39,11 @@ export default function DashboardV2Page() {
     () =>
       data?.todaySessions?.find((s) => s.status === "responding" || s.status === "voting" || s.status === "waiting"),
     [data?.todaySessions],
+  );
+
+  const nextSession = useMemo(
+    () => (!activeSession ? data?.todaySessions?.find((s) => s.status === "draft") : undefined),
+    [activeSession, data?.todaySessions],
   );
 
   if (isLoading) {
@@ -135,43 +141,8 @@ export default function DashboardV2Page() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* ═══ LEFT COLUMN ═══ */}
         <div className="lg:col-span-8 space-y-5">
-          {/* Session en cours */}
-          {activeSession && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-5"
-              style={{
-                borderLeftWidth: 4,
-                borderLeftColor: "var(--color-bw-green)",
-                background: "linear-gradient(135deg, rgba(16,185,129,0.06), transparent)",
-              }}
-            >
-              <div className="flex items-center justify-between flex-wrap gap-3">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-body-xs font-bold bg-bw-teal-50 text-bw-teal-700 motion-safe:animate-pulse">
-                      ● EN COURS
-                    </span>
-                    <span className="text-sm font-bold text-bw-heading">
-                      {activeSession.classLabel || activeSession.title}
-                    </span>
-                  </div>
-                  <p className="text-body-xs text-bw-muted">
-                    {activeSession.title} — {activeSession.studentCount} élèves connectés
-                  </p>
-                </div>
-                {!isProfesseur && (
-                  <Link
-                    href={ROUTES.pilot(activeSession.id)}
-                    className="px-5 py-2 rounded-xl text-sm font-bold text-white bg-bw-teal hover:bg-bw-teal-600 btn-hover glow-green"
-                  >
-                    Retourner au cockpit →
-                  </Link>
-                )}
-              </div>
-            </motion.div>
-          )}
+          {/* Hero — point focal P1 : session active ou prochaine séance */}
+          <HeroNextSession activeSession={activeSession} nextSession={nextSession} isProfesseur={isProfesseur} />
 
           {/* Séances du jour */}
           {data?.todaySessions && data.todaySessions.length > 0 && (
