@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/lib/routes";
+import { BreadcrumbV2 } from "./breadcrumb";
 import { NotificationBell } from "./notification-bell";
 import { FullscreenToggle } from "./fullscreen-toggle";
 import { CommandPalette } from "./command-palette";
@@ -34,6 +35,25 @@ interface NavItem {
   icon: React.ReactNode;
   emoji?: string;
   professeurOnly?: boolean;
+}
+
+const PAGE_LABELS: Array<{ prefix: string; label: string }> = [
+  { prefix: "/v2/seances/new", label: "Nouvelle séance" },
+  { prefix: "/v2/seances", label: "Séances" },
+  { prefix: "/v2/bibliotheque", label: "Bibliothèque" },
+  { prefix: "/v2/settings", label: "Réglages" },
+  { prefix: "/v2/aide", label: "Aide" },
+  { prefix: "/v2/eleves", label: "Élèves" },
+  { prefix: "/v2/statistiques", label: "Statistiques" },
+  { prefix: "/v2/fiche-cours", label: "Fiche de cours" },
+];
+
+function getPageBreadcrumb(pathname: string) {
+  const pageLabel =
+    pathname === ROUTES.dashboard
+      ? "Tableau de bord"
+      : (PAGE_LABELS.find((p) => pathname.startsWith(p.prefix))?.label ?? "");
+  return [{ label: "🎬 Banlieuwood", href: ROUTES.dashboard }, { label: pageLabel }];
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -277,36 +297,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         {/* Desktop top bar */}
         <header className="hidden lg:flex items-center justify-between h-14 px-6 border-b border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)]/60 backdrop-blur-xl sticky top-0 z-30">
           {/* Left: Breadcrumb */}
-          <div className="flex items-center gap-2 text-body-sm">
-            <Link
-              href={ROUTES.dashboard}
-              className="text-[var(--color-bw-muted)] hover:text-[var(--color-bw-heading)] transition-colors"
-            >
-              🎬 Banlieuwood
-            </Link>
-            <span className="text-[var(--color-bw-border)]">/</span>
-            <span className="text-[var(--color-bw-heading)] font-medium truncate max-w-[200px]">
-              {pathname === ROUTES.dashboard
-                ? "Tableau de bord"
-                : pathname.startsWith("/v2/seances/new")
-                  ? "Nouvelle séance"
-                  : pathname.startsWith("/v2/seances")
-                    ? "Séances"
-                    : pathname.startsWith("/v2/bibliotheque")
-                      ? "Bibliothèque"
-                      : pathname.startsWith("/v2/settings")
-                        ? "Réglages"
-                        : pathname.startsWith("/v2/aide")
-                          ? "Aide"
-                          : pathname.startsWith("/v2/eleves")
-                            ? "Élèves"
-                            : pathname.startsWith("/v2/statistiques")
-                              ? "Statistiques"
-                              : pathname.startsWith("/v2/fiche-cours")
-                                ? "Fiche de cours"
-                                : ""}
-            </span>
-          </div>
+          <BreadcrumbV2 items={getPageBreadcrumb(pathname)} />
           {/* Right: Search + Actions + Avatar */}
           <div className="flex items-center gap-3">
             <button
