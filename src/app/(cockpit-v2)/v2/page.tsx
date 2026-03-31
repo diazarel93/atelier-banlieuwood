@@ -117,7 +117,7 @@ export default function DashboardV2Page() {
               value={classLabel ?? ""}
               onChange={(e) => setClassLabel(e.target.value || null)}
               aria-label="Filtrer par classe"
-              className="rounded-lg border border-[var(--color-bw-border)] bg-card px-3 py-1.5 text-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+              className="input-premium min-h-[44px] rounded-lg border border-[var(--color-bw-border)] bg-card px-3 text-body-sm text-bw-heading focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
             >
               <option value="">Toutes les classes</option>
               {data.classLabels.map((cl) => (
