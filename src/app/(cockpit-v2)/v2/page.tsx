@@ -239,8 +239,8 @@ export default function DashboardV2Page() {
                 />
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col gap-2">
-                    <span className="label-caps text-bw-muted">{kpi.label}</span>
-                    <span className="text-heading-xl font-black tabular-nums text-bw-heading">{kpi.value}</span>
+                    <span className="text-[11px] font-bold text-bw-text uppercase tracking-[0.06em]">{kpi.label}</span>
+                    <span className="text-3xl font-black tabular-nums text-bw-heading">{kpi.value}</span>
                   </div>
                   <div
                     className="flex h-11 w-11 items-center justify-center rounded-xl"
@@ -289,7 +289,7 @@ export default function DashboardV2Page() {
           {/* Séances récentes (table) */}
           {data?.recentSessions && data.recentSessions.length > 0 && (
             <div>
-              <h3 className="text-heading-sm text-bw-heading mb-3">Séances récentes</h3>
+              <h3 className="text-sm font-bold text-bw-heading mb-3">Séances récentes</h3>
               <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border-subtle)] scrollbar-thin">
                 <table className="w-full text-body-sm" style={{ borderCollapse: "collapse" }}>
                   <thead>
@@ -440,7 +440,7 @@ export default function DashboardV2Page() {
                       {phase.emoji}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-heading-xs text-bw-heading truncate">{phase.label}</p>
+                      <p className="text-sm font-semibold text-bw-heading truncate">{phase.label}</p>
                       <div className="mt-1 h-1.5 w-full rounded-full bg-[var(--color-bw-surface)] overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all duration-500"
@@ -459,51 +459,6 @@ export default function DashboardV2Page() {
               })}
             </div>
           </div>
-
-          {/* Historique récent */}
-          {data?.recentSessions && data.recentSessions.length > 0 && (
-            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
-              <h3 className="label-caps text-bw-muted mb-3">Historique récent</h3>
-              <div className="space-y-2">
-                {data.recentSessions.slice(0, 6).map((s) => {
-                  const statusColor =
-                    s.status === "done"
-                      ? "var(--color-bw-green)"
-                      : s.status === "responding" || s.status === "voting"
-                        ? "var(--color-bw-teal)"
-                        : "var(--color-bw-amber)";
-                  const statusLabel =
-                    s.status === "done"
-                      ? "Terminée"
-                      : s.status === "responding" || s.status === "voting"
-                        ? "En cours"
-                        : "En attente";
-                  return (
-                    <Link
-                      key={s.id}
-                      href={ROUTES.seanceDetail(s.id)}
-                      className="flex items-center gap-2.5 py-1.5 hover:bg-[var(--color-bw-surface-dim)] rounded-lg px-2 transition-colors"
-                    >
-                      <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: statusColor }} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-heading-xs text-bw-heading truncate">{s.title}</p>
-                        <p className="text-body-xs text-bw-muted">
-                          {new Date(s.scheduledAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ·{" "}
-                          {s.studentCount} élèves · {s.classLabel}
-                        </p>
-                      </div>
-                      <span
-                        className="text-body-xs font-semibold px-2 py-0.5 rounded-full"
-                        style={{ backgroundColor: `${statusColor}15`, color: statusColor }}
-                      >
-                        {statusLabel}
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
 
           {/* Agenda calendrier */}
           <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">

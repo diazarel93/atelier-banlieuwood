@@ -15,11 +15,14 @@ function formatElapsed(ms: number): string {
 // Modules with a vote phase
 const VOTE_MODULES = new Set([2, 3, 4, 9]);
 
-export function ProjectionCenter() {
+interface ProjectionCenterProps {
+  sessionStartedAt: number;
+}
+
+export function ProjectionCenter({ sessionStartedAt }: ProjectionCenterProps) {
   const { session, responses, activeStudents, voteData } = useCockpitData();
   const { updateSession, onModuleComplete } = useCockpitActions();
 
-  const [sessionStartedAt] = useState<number>(() => Date.now());
   const [elapsed, setElapsed] = useState(0);
   useEffect(() => {
     const id = setInterval(() => setElapsed(Date.now() - sessionStartedAt), 1000);

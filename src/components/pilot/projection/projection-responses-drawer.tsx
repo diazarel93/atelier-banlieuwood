@@ -7,8 +7,7 @@ import type { ResponseCardResponse } from "@/components/pilot/response-card";
 export function ProjectionResponsesDrawer() {
   const { responses } = useCockpitData();
 
-  // Cast responses to the type ResponseStream expects
-  const streamResponses = responses as unknown as ResponseCardResponse[];
+  const streamResponses = responses as ResponseCardResponse[];
 
   return (
     <div className="h-full overflow-y-auto">
