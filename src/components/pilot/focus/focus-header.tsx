@@ -76,9 +76,9 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
   },
   waiting: {
     label: "ATTENTE",
-    color: "text-[#94a3b8]",
+    color: "text-bw-cockpit-muted",
     bg: "bg-bw-cockpit-surface border-[rgba(245,245,244,0.08)]",
-    dot: "bg-[#94a3b8]",
+    dot: "bg-bw-cockpit-muted",
   },
   paused: {
     label: "PAUSE",
@@ -88,9 +88,9 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
   },
   done: {
     label: "TERMINE",
-    color: "text-[#94a3b8]",
+    color: "text-bw-cockpit-muted",
     bg: "bg-bw-cockpit-surface border-[rgba(245,245,244,0.08)]",
-    dot: "bg-[#94a3b8]",
+    dot: "bg-bw-cockpit-muted",
   },
 };
 
@@ -185,7 +185,7 @@ export function FocusHeader({
           <span className="text-xl flex-shrink-0">🎬</span>
           <div className="min-w-0">
             <div className="text-[14px] font-extrabold text-bw-violet-main leading-tight">BANLIEUWOOD</div>
-            <div className="text-[11px] text-[#94a3b8] truncate">
+            <div className="text-[11px] text-bw-cockpit-muted truncate">
               {classLabel || sessionTitle} — P{moduleLabel}
             </div>
           </div>
@@ -226,7 +226,7 @@ export function FocusHeader({
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
-              className="text-[#94a3b8]"
+              className="text-bw-cockpit-muted"
             >
               <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
               <circle cx="9" cy="7" r="4" />
@@ -234,12 +234,12 @@ export function FocusHeader({
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
             <strong className="text-bw-cockpit-text">{activeStudentCount}</strong>
-            <span className="text-[#94a3b8]">/{totalStudents}</span>
+            <span className="text-bw-cockpit-muted">/{totalStudents}</span>
           </span>
 
           {/* Hands raised */}
           {handRaisedCount > 0 && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#fbbf24]/15 border border-[#fbbf24]/30 text-[11px] font-bold text-[#fbbf24]">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-bw-amber/15 border border-bw-amber/30 label-caps text-bw-amber">
               ✋ {handRaisedCount}
             </span>
           )}
@@ -277,7 +277,7 @@ export function FocusHeader({
           {/* Global countdown */}
           {typeof globalTimerSeconds === "number" && (
             <span
-              className={`text-[12px] font-mono font-bold ${globalTimerSeconds < 180 ? "text-[#f87171]" : "text-[#34d399]"}`}
+              className={`text-body-xs font-mono font-bold ${globalTimerSeconds < 180 ? "text-bw-danger" : "text-bw-teal-readable"}`}
             >
               <svg
                 width="12"
@@ -303,8 +303,8 @@ export function FocusHeader({
           {onOpenCommandPalette && (
             <button
               onClick={onOpenCommandPalette}
-              className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-lg bg-bw-cockpit-surface hover:bg-[rgba(245,245,244,0.08)] border border-[rgba(245,245,244,0.08)] transition-colors cursor-pointer text-[11px] text-[#94a3b8] font-medium"
-              title="Commandes (⌘K)"
+              aria-label="Ouvrir la palette de commandes (⌘K)"
+              className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-lg bg-bw-cockpit-surface hover:bg-[var(--color-bw-cockpit-border)] border border-[var(--color-bw-cockpit-border)] transition-colors cursor-pointer label-caps text-bw-cockpit-muted font-medium"
             >
               <svg
                 width="12"
@@ -324,7 +324,7 @@ export function FocusHeader({
 
           {/* Current module badge (info only — navigation via rail below) */}
           <span
-            className="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-[11px] font-bold text-white"
+            className="inline-flex items-center gap-1 px-3 py-1 rounded-lg label-caps text-white"
             style={{ backgroundColor: moduleColor }}
           >
             {moduleLabel}
@@ -334,7 +334,8 @@ export function FocusHeader({
           {onTogglePause && (
             <button
               onClick={onTogglePause}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[12px] font-bold text-white cursor-pointer transition-all ${
+              aria-label={isPaused ? "Reprendre la séance" : "Mettre en pause"}
+              className={`flex items-center gap-2 px-3 min-h-[44px] rounded-lg text-body-xs font-bold text-white cursor-pointer transition-all ${
                 isPaused
                   ? "bg-gradient-to-r from-emerald-500 to-emerald-600"
                   : "bg-gradient-to-r from-orange-500 to-orange-600"
@@ -363,8 +364,9 @@ export function FocusHeader({
           {onToggleSidebar && (
             <button
               onClick={onToggleSidebar}
-              className="flex items-center justify-center w-11 h-11 rounded-lg bg-bw-cockpit-surface hover:bg-[rgba(245,245,244,0.08)] border border-[rgba(245,245,244,0.08)] transition-colors cursor-pointer"
-              title={sidebarOpen ? "Masquer le panneau" : "Afficher le panneau"}
+              aria-label={sidebarOpen ? "Masquer le panneau" : "Afficher le panneau"}
+              aria-expanded={sidebarOpen}
+              className="flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg bg-bw-cockpit-surface hover:bg-[var(--color-bw-cockpit-border)] border border-[var(--color-bw-cockpit-border)] transition-colors cursor-pointer"
             >
               {sidebarOpen ? (
                 <svg
@@ -417,13 +419,18 @@ export function FocusHeader({
             <button
               onClick={() => !m.isLocked && m.firstModuleId && onModuleSelect?.(m.firstModuleId)}
               disabled={m.isLocked}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all flex-shrink-0 border cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label={m.isLocked ? `${m.label} — verrouillé` : m.label}
+              aria-current={m.isActive ? "step" : undefined}
+              className="flex items-center gap-2 px-3 py-1.5 min-h-[44px] rounded-lg label-caps whitespace-nowrap transition-all flex-shrink-0 border cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               style={{
-                borderColor: m.isActive ? `${m.color}66` : m.isDone ? "rgba(52,211,153,0.3)" : "rgba(245,245,244,0.08)",
+                borderColor: m.isActive
+                  ? `${m.color}66`
+                  : m.isDone
+                    ? "rgba(52,211,153,0.3)"
+                    : "var(--color-bw-cockpit-border)",
                 background: m.isActive ? `${m.color}15` : m.isDone ? "rgba(52,211,153,0.05)" : "transparent",
-                color: m.isActive ? m.color : m.isDone ? "#34d399" : "#94a3b8",
+                color: m.isActive ? m.color : m.isDone ? "#34d399" : "var(--color-bw-cockpit-muted)",
               }}
-              title={m.label}
             >
               <span>{m.isLocked ? "🔒" : m.isDone ? "✅" : m.emoji}</span>
               <span className="hidden sm:inline">{m.label}</span>
