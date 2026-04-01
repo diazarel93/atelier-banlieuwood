@@ -224,7 +224,7 @@ export default function ProjetPage() {
               </span>
             ))}
             <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#D4A843]/15 text-[#D4A843]">PEAC</span>
-            {["Ecole et cinema", "College au cinema"].map((b) => (
+            {["École et cinéma", "Collège au cinéma"].map((b) => (
               <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#4ECDC4]/15 text-[#4ECDC4]">
                 {b}
               </span>

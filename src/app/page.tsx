@@ -214,7 +214,7 @@ export default function Home() {
                       backgroundImage: "linear-gradient(90deg, #FF6B35 0%, #D4A843 55%, #4ECDC4 100%)",
                     }}
                   >
-                    plateau de cinema
+                    plateau de cinéma
                   </span>
                 </motion.h1>
 
