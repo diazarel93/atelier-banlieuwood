@@ -77,7 +77,7 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
                   isSelected
                     ? "border-bw-violet bg-bw-violet/10"
                     : isDisabled
-                      ? "border-bw-cockpit-canvas bg-bw-cockpit-canvas opacity-40 cursor-not-allowed"
+                      ? "border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas opacity-40 cursor-not-allowed"
                       : "border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas hover:border-bw-violet/40"
                 }`}
               >

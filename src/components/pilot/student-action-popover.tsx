@@ -8,7 +8,7 @@ const STATE_LABEL: Record<string, { label: string; color: string; bg: string }> 
   responded: { label: "A repondu", color: "#4CAF50", bg: "#F0FAF4" },
   active: { label: "En cours", color: "#F2C94C", bg: "#FFFCF5" },
   stuck: { label: "Bloque", color: "#EB5757", bg: "#FFF5F5" },
-  disconnected: { label: "Deconnecte", color: "#C4BDB2", bg: "#1a1a35" },
+  disconnected: { label: "Deconnecte", color: "#C4BDB2", bg: "rgba(0,0,0,0.04)" },
 };
 
 const QUICK_NUDGES = [
@@ -92,7 +92,7 @@ export function StudentActionPopover({
           style={{
             borderRadius: 16,
             background: "#FFFFFF",
-            border: "1px solid #2a2a50",
+            border: "1px solid rgba(61,43,16,0.12)",
             boxShadow: "0 16px 48px rgba(61,43,16,0.15), 0 4px 12px rgba(61,43,16,0.06)",
           }}
         >
@@ -114,7 +114,7 @@ export function StudentActionPopover({
               {student.avatar}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[15px] font-semibold text-[#2C2C2C] truncate">{student.display_name}</p>
+              <p className="text-[15px] font-semibold text-bw-heading truncate">{student.display_name}</p>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stateInfo.color }} />
@@ -123,28 +123,22 @@ export function StudentActionPopover({
                   </span>
                 </span>
                 {student.hand_raised_at && (
-                  <span className="text-[12px] font-medium" style={{ color: "#F5A45B" }}>
-                    ✋ Main levee
-                  </span>
+                  <span className="text-body-xs font-medium text-bw-primary">✋ Main levee</span>
                 )}
-                {warnings > 0 && (
-                  <span className="text-[12px] font-medium" style={{ color: "#F5A45B" }}>
-                    {warnings}/3 avert.
-                  </span>
-                )}
+                {warnings > 0 && <span className="text-body-xs font-medium text-bw-primary">{warnings}/3 avert.</span>}
               </div>
             </div>
             <button
               onClick={onClose}
               className="p-1.5 rounded-[8px] cursor-pointer transition-colors"
-              style={{ color: "#B0A99E" }}
+              style={{ color: "var(--color-bw-muted)" }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#1a1a35";
-                e.currentTarget.style.color = "#2C2C2C";
+                e.currentTarget.style.background = "rgba(61,43,16,0.05)";
+                e.currentTarget.style.color = "var(--color-bw-heading)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = "";
-                e.currentTarget.style.color = "#B0A99E";
+                e.currentTarget.style.color = "var(--color-bw-muted)";
               }}
             >
               <svg
@@ -170,7 +164,7 @@ export function StudentActionPopover({
               <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: "#4CAF50" }}>
                 Reponse
               </p>
-              <p className="text-[13px] text-[#2C2C2C] leading-relaxed">{lastResponse}</p>
+              <p className="text-body-sm text-bw-heading leading-relaxed">{lastResponse}</p>
             </div>
           )}
 
@@ -178,16 +172,16 @@ export function StudentActionPopover({
           {!lastResponse && student.state !== "disconnected" && (
             <div
               className="mx-3.5 mb-2.5 rounded-[10px] p-3"
-              style={{ background: "#FAF6EE", border: "1px solid #2a2a50" }}
+              style={{ background: "#FAF6EE", border: "1px solid rgba(61,43,16,0.12)" }}
             >
-              <p className="text-[12px] text-[#B0A99E]">Pas encore de reponse</p>
+              <p className="text-body-xs text-bw-muted">Pas encore de reponse</p>
             </div>
           )}
 
           {/* Quick nudge chips */}
           {!showNudgeInput && (student.state === "active" || student.state === "stuck") && (
             <div className="px-3.5 pb-2.5">
-              <p className="text-[11px] uppercase tracking-wider font-bold text-[#B0A99E] mb-1.5">Relance rapide</p>
+              <p className="label-caps text-bw-muted mb-1.5">Relance rapide</p>
               <div className="flex flex-wrap gap-1.5">
                 {QUICK_NUDGES.map((text) => (
                   <button
@@ -196,16 +190,16 @@ export function StudentActionPopover({
                     className="text-[12px] px-2.5 py-1.5 rounded-[8px] cursor-pointer transition-all leading-snug text-left"
                     style={{
                       background: "#FAF6EE",
-                      border: "1px solid #2a2a50",
-                      color: "#5B5B5B",
+                      border: "1px solid rgba(61,43,16,0.12)",
+                      color: "var(--color-bw-text)",
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = "#F0EBE0";
-                      e.currentTarget.style.borderColor = "#2a2a50";
+                      e.currentTarget.style.borderColor = "rgba(61,43,16,0.2)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background = "#FAF6EE";
-                      e.currentTarget.style.borderColor = "#2a2a50";
+                      e.currentTarget.style.borderColor = "rgba(61,43,16,0.12)";
                     }}
                   >
                     {text}
@@ -238,35 +232,33 @@ export function StudentActionPopover({
                       className="flex-1 rounded-[8px] px-3 py-2 text-[13px] outline-none transition-colors"
                       style={{
                         background: "#FAF6EE",
-                        border: "1px solid #2a2a50",
-                        color: "#2C2C2C",
+                        border: "1px solid rgba(61,43,16,0.12)",
+                        color: "var(--color-bw-heading)",
                       }}
                       onFocus={(e) => {
-                        e.currentTarget.style.borderColor = "#6B8CFF";
+                        e.currentTarget.style.borderColor = "var(--color-bw-violet)";
                       }}
                       onBlur={(e) => {
-                        e.currentTarget.style.borderColor = "#2a2a50";
+                        e.currentTarget.style.borderColor = "rgba(61,43,16,0.12)";
                       }}
                     />
                     <button
                       onClick={() => handleSendNudge()}
                       disabled={!nudgeText.trim()}
                       className="px-3.5 py-2 rounded-[8px] text-[13px] font-semibold text-white cursor-pointer transition-all disabled:opacity-30"
-                      style={{ background: "#2C2C2C" }}
+                      style={{ background: "var(--color-bw-heading)" }}
                     >
                       Envoyer
                     </button>
                   </div>
-                  <p className="text-[11px] mt-1 text-right tabular-nums" style={{ color: "#B0A99E" }}>
-                    {nudgeText.length}/300
-                  </p>
+                  <p className="text-body-xs mt-1 text-right tabular-nums text-bw-muted">{nudgeText.length}/300</p>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
           {/* Actions */}
-          <div className="p-2 flex gap-1.5" style={{ borderTop: "1px solid #2a2a50" }}>
+          <div className="p-2 flex gap-1.5" style={{ borderTop: "1px solid rgba(61,43,16,0.12)" }}>
             <ActionButton
               icon="💬"
               label={showNudgeInput ? "Annuler" : "Message"}
@@ -320,12 +312,17 @@ function ActionButton({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center gap-1.5 px-3 py-2.5 text-[12px] font-medium cursor-pointer transition-all ${grow ? "flex-1" : ""}`}
+      className={`flex items-center justify-center gap-1.5 px-3 py-2.5 text-body-xs font-medium cursor-pointer transition-all ${grow ? "flex-1" : ""}`}
       style={{
         borderRadius: 10,
-        color: variant === "warning" ? "#EB5757" : active ? "#6B8CFF" : "#5B5B5B",
+        color:
+          variant === "warning"
+            ? "var(--color-bw-danger)"
+            : active
+              ? "var(--color-bw-violet)"
+              : "var(--color-bw-muted)",
         background: variant === "warning" ? "#FFF5F5" : active ? "rgba(139,92,246,0.1)" : "#FAF6EE",
-        border: `1px solid ${variant === "warning" ? "#F5C4C4" : active ? "#D4DEFF" : "#2a2a50"}`,
+        border: `1px solid ${variant === "warning" ? "#F5C4C4" : active ? "rgba(139,92,246,0.25)" : "rgba(61,43,16,0.12)"}`,
       }}
     >
       <span className="text-sm">{icon}</span>

@@ -161,7 +161,7 @@ export function CommandCockpit() {
 
       {/* ── Right sidebar V6 (desktop: inline 360px, tablet: overlay) ── */}
       {sidebarOpen && (
-        <aside className="hidden lg:flex w-[360px] flex-col border-l border-[#2a2a50] overflow-y-auto flex-shrink-0">
+        <aside className="hidden lg:flex w-[360px] flex-col border-l border-[var(--color-bw-cockpit-border)] overflow-y-auto flex-shrink-0">
           <V6Sidebar
             activeStudents={sidebarData.activeStudents}
             allStudents={sidebarData.session.students || []}
@@ -178,11 +178,11 @@ export function CommandCockpit() {
 
       {/* ── Tablet/mobile sidebar overlay ── */}
       {sidebarOpen && (
-        <aside className="lg:hidden fixed top-0 right-0 bottom-0 z-50 w-[340px] max-w-[90vw] bg-[#0c0c18] shadow-[-4px_0_24px_rgba(0,0,0,0.4)] flex flex-col overflow-y-auto">
+        <aside className="lg:hidden fixed top-0 right-0 bottom-0 z-50 w-[340px] max-w-[90vw] bg-bw-cockpit-canvas shadow-[-4px_0_24px_rgba(0,0,0,0.4)] flex flex-col overflow-y-auto">
           {/* Close button */}
           <button
             onClick={() => setSidebarOpen(false)}
-            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-lg bg-[#1a1a35] border border-[#2a2a50] text-[#94a3b8] hover:text-[#f0f0f8] z-10 cursor-pointer"
+            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-lg bg-bw-cockpit-surface border border-[var(--color-bw-cockpit-border)] text-bw-cockpit-muted hover:text-white z-10 cursor-pointer"
           >
             <svg
               width="14"

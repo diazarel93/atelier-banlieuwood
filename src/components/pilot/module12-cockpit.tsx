@@ -170,7 +170,9 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
               key={card.cardId}
               layout
               className={`relative p-4 rounded-xl border transition-all ${
-                isWinner ? "bg-emerald-500/20 border-emerald-400" : "bg-[rgba(139,92,246,0.1)] border-[#2a2a50]"
+                isWinner
+                  ? "bg-emerald-500/20 border-emerald-400"
+                  : "bg-[rgba(139,92,246,0.1)] border-[var(--color-bw-cockpit-border)]"
               }`}
             >
               {/* Vote progress bar */}
@@ -211,7 +213,7 @@ export function Module12Cockpit({ sessionId, module12, connectedCount }: Module1
 
       {/* Winners history */}
       {module12.allWinners.length > 0 && (
-        <div className="mt-6 pt-4 border-t border-[#2a2a50]">
+        <div className="mt-6 pt-4 border-t border-[var(--color-bw-cockpit-border)]">
           <p className="text-xs text-white/40 uppercase tracking-wider mb-3">
             Choix de la classe ({module12.allWinners.length}/8)
           </p>

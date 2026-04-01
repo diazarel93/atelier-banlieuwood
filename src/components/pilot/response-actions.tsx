@@ -295,7 +295,7 @@ function InlineActionsInner({
                   value={customNudge}
                   onChange={(e) => setCustomNudge(e.target.value)}
                   placeholder="Message perso..."
-                  className="flex-1 h-auto bg-bw-bg border-[#2a2a50] text-xs text-bw-heading placeholder:text-bw-muted focus:border-bw-amber px-2 py-1.5"
+                  className="flex-1 h-auto bg-bw-bg border-bw-border text-xs text-bw-heading placeholder:text-bw-muted focus:border-bw-amber px-2 py-1.5"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && customNudge.trim()) {
                       onNudge(responseId, customNudge.trim());
@@ -412,7 +412,7 @@ function InlineActionsInner({
                 placeholder="Bien vu ! Creuse cette idée..."
                 rows={2}
                 autoFocus
-                className="bg-bw-bg border-[#2a2a50] text-xs text-bw-heading placeholder:text-bw-muted focus:border-bw-teal resize-none min-h-0 p-2"
+                className="bg-bw-bg border-bw-border text-xs text-bw-heading placeholder:text-bw-muted focus:border-bw-teal resize-none min-h-0 p-2"
               />
               <div className="flex gap-1.5">
                 <button
@@ -571,7 +571,7 @@ function GenericInlineActionsInner({
             onClick={() => setShowNudgePicker(!showNudgePicker)}
             aria-label="Choisir un autre message de relance"
             aria-expanded={showNudgePicker}
-            className={`flex items-center px-1 py-1 rounded-r-xl border-l border-[#2a2a50] text-xs cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
+            className={`flex items-center px-1 py-1 rounded-r-xl border-l border-bw-border text-xs cursor-pointer transition-colors focus-visible:ring-2 focus-visible:ring-bw-teal focus-visible:outline-none ${
               showNudgePicker
                 ? "bg-bw-amber/15 text-bw-amber"
                 : "text-bw-muted hover:text-bw-amber hover:bg-bw-amber/10"
@@ -706,7 +706,7 @@ function GenericInlineActionsInner({
                   value={customNudge}
                   onChange={(e) => setCustomNudge(e.target.value)}
                   placeholder="Message perso..."
-                  className="flex-1 h-auto bg-bw-bg border-[#2a2a50] text-xs text-bw-heading placeholder:text-bw-muted focus:border-bw-amber px-2 py-1.5"
+                  className="flex-1 h-auto bg-bw-bg border-bw-border text-xs text-bw-heading placeholder:text-bw-muted focus:border-bw-amber px-2 py-1.5"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && customNudge.trim()) {
                       onBroadcast(`${studentName} : ${customNudge.trim()}`);
@@ -825,7 +825,7 @@ function GenericInlineActionsInner({
                 placeholder="Bien vu ! Creuse cette idée..."
                 rows={2}
                 autoFocus
-                className="bg-bw-bg border-[#2a2a50] text-xs text-bw-heading placeholder:text-bw-muted focus:border-bw-teal resize-none min-h-0 p-2"
+                className="bg-bw-bg border-bw-border text-xs text-bw-heading placeholder:text-bw-muted focus:border-bw-teal resize-none min-h-0 p-2"
               />
               <div className="flex gap-1.5">
                 <button

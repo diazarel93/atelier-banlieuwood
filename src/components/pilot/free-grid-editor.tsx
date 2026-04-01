@@ -157,9 +157,13 @@ function DraggableFreeChip({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
             className="absolute z-40 bottom-full mb-2 left-1/2 -translate-x-1/2 w-[180px] rounded-[10px] p-2.5 pointer-events-none"
-            style={{ background: "#FFFFFF", border: "1px solid #2a2a50", boxShadow: "0 8px 24px rgba(61,43,16,0.12)" }}
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid rgba(61,43,16,0.12)",
+              boxShadow: "0 8px 24px rgba(61,43,16,0.12)",
+            }}
           >
-            <p className="text-[11px] text-[#5B5B5B] leading-snug line-clamp-3">{response}</p>
+            <p className="text-body-xs text-bw-muted leading-snug line-clamp-3">{response}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -375,17 +379,20 @@ export function FreeGridEditor({ sessionId, students, responseMap, onStudentClic
 
       {/* Unplaced tray */}
       {(unplacedStudents.length > 0 || placedStudentIds.length > 0) && (
-        <div className="rounded-[12px] p-3 space-y-2" style={{ background: "#1a1a35", border: "1px solid #2a2a50" }}>
+        <div
+          className="rounded-[12px] p-3 space-y-2"
+          style={{ background: "rgba(61,43,16,0.04)", border: "1px solid rgba(61,43,16,0.12)" }}
+        >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#B0A99E] uppercase tracking-wider">
+            <span className="label-caps text-bw-muted">
               {unplacedStudents.length > 0 ? `Non places (${unplacedStudents.length})` : "Tous places"}
             </span>
             <div className="flex gap-2">
               {unplacedStudents.length > 0 && (
                 <button
                   onClick={handleAutoPlace}
-                  className="text-[11px] font-semibold px-2.5 py-1 rounded-[8px] transition-colors cursor-pointer"
-                  style={{ background: "#6B8CFF", color: "#FFFFFF" }}
+                  className="text-body-xs font-semibold px-2.5 py-1 rounded-[8px] transition-colors cursor-pointer"
+                  style={{ background: "var(--color-bw-violet)", color: "#FFFFFF" }}
                 >
                   Placer tous
                 </button>
@@ -393,8 +400,12 @@ export function FreeGridEditor({ sessionId, students, responseMap, onStudentClic
               {placedStudentIds.length > 0 && (
                 <button
                   onClick={clearAll}
-                  className="text-[11px] font-semibold px-2.5 py-1 rounded-[8px] transition-colors cursor-pointer"
-                  style={{ background: "#FFFFFF", color: "#7A7A7A", border: "1px solid #2a2a50" }}
+                  className="text-body-xs font-semibold px-2.5 py-1 rounded-[8px] transition-colors cursor-pointer"
+                  style={{
+                    background: "#FFFFFF",
+                    color: "var(--color-bw-muted)",
+                    border: "1px solid rgba(61,43,16,0.12)",
+                  }}
                 >
                   Tout retirer
                 </button>
@@ -416,7 +427,7 @@ export function FreeGridEditor({ sessionId, students, responseMap, onStudentClic
           )}
 
           {selectedTrayStudent && (
-            <p className="text-[10px] text-[#6B8CFF] font-medium">
+            <p className="text-[10px] text-bw-violet font-medium">
               Cliquez sur une case vide pour placer {studentMap.get(selectedTrayStudent)?.display_name.split(" ")[0]}
             </p>
           )}

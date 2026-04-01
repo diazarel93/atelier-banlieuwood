@@ -67,7 +67,7 @@ function DeskPairInner({
         style={{
           borderRadius: 14,
           border: `1px solid ${
-            anyHand ? "#F5C4C4" : allResponded ? "#C6E9D0" : teamColor ? `${teamColor}30` : "#2a2a50"
+            anyHand ? "#F5C4C4" : allResponded ? "#C6E9D0" : teamColor ? `${teamColor}30` : "rgba(61,43,16,0.12)"
           }`,
           background: allResponded ? "#F7FDF9" : anyNeedsHelp ? "#FFFAFA" : "#FFFFFF",
           boxShadow: anyHand
@@ -83,7 +83,7 @@ function DeskPairInner({
           onClick={() => onStudentClick(left.id)}
           size={size}
         />
-        <div className="w-px my-2.5" style={{ background: "#2a2a50" }} />
+        <div className="w-px my-2.5" style={{ background: "rgba(61,43,16,0.12)" }} />
         {right ? (
           <DeskSeat
             student={right}
@@ -239,7 +239,7 @@ function DeskSeat({
             className="absolute z-30 bottom-full mb-2 left-1/2 -translate-x-1/2 w-[220px] rounded-[12px] p-3 pointer-events-none"
             style={{
               background: "#FFFFFF",
-              border: "1px solid #2a2a50",
+              border: "1px solid rgba(61,43,16,0.12)",
               boxShadow: "0 8px 24px rgba(61,43,16,0.12), 0 2px 6px rgba(61,43,16,0.06)",
             }}
           >
@@ -251,7 +251,11 @@ function DeskSeat({
             {/* Arrow */}
             <div
               className="absolute top-full left-1/2 -translate-x-1/2 w-2.5 h-2.5 rotate-45 -mt-1.5"
-              style={{ background: "#FFFFFF", borderRight: "1px solid #2a2a50", borderBottom: "1px solid #2a2a50" }}
+              style={{
+                background: "#FFFFFF",
+                borderRight: "1px solid rgba(61,43,16,0.12)",
+                borderBottom: "1px solid rgba(61,43,16,0.12)",
+              }}
             />
           </motion.div>
         )}

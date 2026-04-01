@@ -25,12 +25,12 @@ export function V6ActivityFeed({ items, onClear }: V6ActivityFeedProps) {
   if (items.length === 0) return null;
 
   return (
-    <section className="rounded-2xl border border-[#2a2a50] bg-[#161633] p-5">
+    <section className="rounded-2xl border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas p-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2.5">
           <span className="text-base">📻</span>
-          <span className="text-[13px] font-bold text-[#f0f0f8]">Activite</span>
+          <span className="text-body-sm font-bold text-white">Activite</span>
           <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-bw-violet/10 text-bw-violet">
             {items.length}
           </span>
@@ -38,10 +38,10 @@ export function V6ActivityFeed({ items, onClear }: V6ActivityFeedProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setSoundOn(!soundOn)}
-            className={`text-[11px] font-semibold px-2 py-1 min-h-[44px] rounded-md cursor-pointer border flex items-center gap-1 transition-colors ${
+            className={`text-body-xs font-semibold px-2 py-1 min-h-[44px] rounded-md cursor-pointer border flex items-center gap-1 transition-colors ${
               soundOn
-                ? "bg-[#1a1a35] border-[#2a2a50] text-emerald-400"
-                : "bg-[#1a1a35] border-[#2a2a50] text-[#64748b]"
+                ? "bg-bw-cockpit-surface border-[var(--color-bw-cockpit-border)] text-emerald-400"
+                : "bg-bw-cockpit-surface border-[var(--color-bw-cockpit-border)] text-bw-cockpit-muted"
             }`}
           >
             {soundOn ? "🔊" : "🔇"} {soundOn ? "Son" : "Muet"}
@@ -49,7 +49,7 @@ export function V6ActivityFeed({ items, onClear }: V6ActivityFeedProps) {
           {onClear && (
             <button
               onClick={onClear}
-              className="text-[11px] font-semibold px-2 py-1 min-h-[44px] rounded-md bg-red-500/8 border border-red-500/20 text-red-400 cursor-pointer hover:bg-red-500/15 transition-colors"
+              className="text-body-xs font-semibold px-2 py-1 min-h-[44px] rounded-md bg-bw-danger/8 border border-bw-danger/20 text-bw-danger cursor-pointer hover:bg-bw-danger/15 transition-colors"
             >
               Effacer tout
             </button>
@@ -62,11 +62,11 @@ export function V6ActivityFeed({ items, onClear }: V6ActivityFeedProps) {
         {items.slice(0, 10).map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-[#1a1a35]/50 hover:bg-[#1a1a35] transition-colors"
+            className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-bw-cockpit-surface/50 hover:bg-bw-cockpit-surface transition-colors"
           >
             <span className="text-sm flex-shrink-0">{item.icon}</span>
-            <span className="text-[11px] text-[#94a3b8] flex-1 truncate">{item.text}</span>
-            <span className="text-[11px] text-[#64748b] flex-shrink-0 tabular-nums">{item.time}</span>
+            <span className="text-body-xs text-bw-cockpit-muted flex-1 truncate">{item.text}</span>
+            <span className="text-body-xs text-bw-cockpit-muted/70 flex-shrink-0 tabular-nums">{item.time}</span>
           </div>
         ))}
       </div>

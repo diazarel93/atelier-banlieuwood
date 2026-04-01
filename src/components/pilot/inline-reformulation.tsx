@@ -39,7 +39,7 @@ export function InlineReformulation({ response, onValidate, onCancel, isPending 
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={3}
-          className="bg-bw-surface border-[#2a2a50] text-bw-heading placeholder:text-bw-muted focus:border-bw-primary resize-none"
+          className="bg-bw-surface border-bw-border text-bw-heading placeholder:text-bw-muted focus:border-bw-primary resize-none"
           placeholder="Reformule ici..."
           autoFocus
         />
@@ -49,7 +49,7 @@ export function InlineReformulation({ response, onValidate, onCancel, isPending 
             variant="secondary"
             size="sm"
             onClick={onCancel}
-            className="flex-1 bg-bw-surface text-bw-muted border-[#2a2a50]"
+            className="flex-1 bg-bw-surface text-bw-muted border-bw-border"
           >
             Annuler
           </Button>

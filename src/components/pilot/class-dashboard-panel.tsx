@@ -224,7 +224,7 @@ function ClassDashboardPanelInner({
               aria-label={`Participation ${stats.respondedN}/${stats.online}`}
             >
               <svg width="100%" height="100%" viewBox="0 0 100 100" className="transform -rotate-90">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#2a2a50" strokeWidth="8" />
+                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth="8" />
                 {donutSegments.map((seg, i) => {
                   if (seg.pct <= 0) return null;
                   return (
@@ -267,7 +267,7 @@ function ClassDashboardPanelInner({
                 >
                   {stats.respondedN}/{stats.online}
                 </motion.span>
-                <span className="text-[7px] sm:text-[8px] font-bold uppercase tracking-wider text-[#B0A99E] mt-0.5">
+                <span className="text-[7px] sm:text-[8px] font-bold uppercase tracking-wider text-bw-muted mt-0.5">
                   {stats.respondedN > 0 && stats.respondedN === stats.online
                     ? "complet !"
                     : stats.online > 0 && stats.respondedN < stats.online * 0.5
@@ -375,7 +375,7 @@ function ClassDashboardPanelInner({
               className="flex items-center justify-between px-3.5 py-2.5"
               style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}
             >
-              <span className="text-[12px] font-bold text-[#E88D2A] flex items-center gap-1.5">
+              <span className="text-body-xs font-bold text-bw-amber flex items-center gap-1.5">
                 <span className="text-sm">✋</span> Mains levees ({hands.length})
               </span>
             </div>
@@ -405,7 +405,7 @@ function ClassDashboardPanelInner({
                     {/* Name + duration */}
                     <div className="flex-1 min-w-0 text-left">
                       <p className="text-[12px] font-semibold text-bw-heading truncate">{s.display_name}</p>
-                      <p className="text-[10px] text-[#B0A99E]">✋ depuis {durationLabel}</p>
+                      <p className="text-[10px] text-bw-muted">✋ depuis {durationLabel}</p>
                     </div>
                     {/* Lower hand button */}
                     <button
@@ -415,7 +415,7 @@ function ClassDashboardPanelInner({
                       }}
                       disabled={lowerHand.isPending}
                       title="Baisser la main"
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] text-[#B0A99E] hover:text-[#4CAF50] hover:bg-[#F0FAF4] cursor-pointer transition-colors disabled:opacity-40 flex-shrink-0 opacity-0 group-hover:opacity-100"
+                      className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] text-bw-muted hover:text-emerald-600 hover:bg-emerald-50 cursor-pointer transition-colors disabled:opacity-40 flex-shrink-0 opacity-0 group-hover:opacity-100"
                     >
                       ✓
                     </button>
@@ -531,7 +531,7 @@ function ClassDashboardPanelInner({
               className="flex items-center justify-between px-3.5 py-2.5"
               style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}
             >
-              <span className="text-[12px] font-bold text-[#C62828] flex items-center gap-1.5">
+              <span className="text-body-xs font-bold text-bw-danger flex items-center gap-1.5">
                 <span className="text-sm">⚠️</span> En difficulte ({stuckWithAvatars.length})
               </span>
             </div>
@@ -551,7 +551,7 @@ function ClassDashboardPanelInner({
                   </div>
                   <div className="flex-1 min-w-0 text-left">
                     <p className="text-[12px] font-semibold text-bw-heading truncate">{s.display_name}</p>
-                    <p className="text-[10px] text-[#C62828]">Bloque</p>
+                    <p className="text-[10px] text-bw-danger">Bloque</p>
                   </div>
                   <svg
                     width="14"
@@ -568,7 +568,7 @@ function ClassDashboardPanelInner({
                 </button>
               ))}
               {stuckWithAvatars.length > 6 && (
-                <p className="text-[10px] text-[#C62828] text-center py-1">+{stuckWithAvatars.length - 6} autres</p>
+                <p className="text-[10px] text-bw-danger text-center py-1">+{stuckWithAvatars.length - 6} autres</p>
               )}
             </div>
           </GlassCard>
@@ -578,9 +578,7 @@ function ClassDashboardPanelInner({
         {cognitiveOptions && cognitiveTotal && cognitiveTotal >= 3 && (
           <GlassCard className="!p-0 overflow-hidden">
             <div className="px-3.5 py-2.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#B0A99E]">
-                Consistance cognitive
-              </span>
+              <span className="label-caps text-bw-muted">Consistance cognitive</span>
             </div>
             <div className="px-2.5 pb-2.5">
               <CognitiveMap options={cognitiveOptions} total={cognitiveTotal} />

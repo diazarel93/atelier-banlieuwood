@@ -93,7 +93,7 @@ export function FocusQuestionCard({
             <button
               onClick={onPrev}
               disabled={currentIndex <= 0}
-              className="w-11 h-11 rounded-full bg-bw-cockpit-canvas hover:bg-bw-cockpit-surface disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
+              className="w-11 h-11 rounded-full bg-bw-cockpit-surface hover:bg-bw-cockpit-elevated disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
             >
               <svg
                 width="12"
@@ -114,7 +114,7 @@ export function FocusQuestionCard({
               onClick={() => hasQuestionList && setShowList(!showList)}
               className={`text-body-xs font-bold tabular-nums min-w-[32px] text-center rounded-full px-2 py-0.5 transition-colors ${
                 hasQuestionList
-                  ? "text-bw-cockpit-muted hover:bg-bw-cockpit-canvas cursor-pointer"
+                  ? "text-bw-cockpit-muted hover:bg-bw-cockpit-surface cursor-pointer"
                   : "text-bw-cockpit-muted cursor-default"
               }`}
               title={hasQuestionList ? "Voir toutes les questions" : undefined}
@@ -138,7 +138,7 @@ export function FocusQuestionCard({
             <button
               onClick={onNext}
               disabled={currentIndex >= maxSituations - 1}
-              className="w-11 h-11 rounded-full bg-bw-cockpit-canvas hover:bg-bw-cockpit-surface disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
+              className="w-11 h-11 rounded-full bg-bw-cockpit-surface hover:bg-bw-cockpit-elevated disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
             >
               <svg
                 width="12"
@@ -177,7 +177,7 @@ export function FocusQuestionCard({
                             setShowList(false);
                           }}
                           className={`w-full text-left flex items-start gap-2.5 px-3 py-2 rounded-lg transition-colors cursor-pointer ${
-                            isCurrent ? "bg-bw-primary/10 border border-bw-primary/30" : "hover:bg-bw-cockpit-canvas"
+                            isCurrent ? "bg-bw-primary/10 border border-bw-primary/30" : "hover:bg-bw-cockpit-surface"
                           }`}
                         >
                           {/* Index circle */}
@@ -187,7 +187,7 @@ export function FocusQuestionCard({
                                 ? "bg-orange-500 text-white"
                                 : isPast
                                   ? "bg-emerald-900/30 text-emerald-400"
-                                  : "bg-bw-cockpit-canvas text-bw-cockpit-muted"
+                                  : "bg-bw-cockpit-surface text-bw-cockpit-muted"
                             }`}
                           >
                             {isPast ? (
