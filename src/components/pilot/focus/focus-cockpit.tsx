@@ -259,7 +259,7 @@ export function FocusCockpit() {
     return (
       <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-bw-cockpit-canvas">
         <div className="h-10 w-48 rounded-lg bg-bw-cockpit-surface animate-pulse" />
-        <div className="rounded-2xl border border-[rgba(245,245,244,0.08)] bg-bw-cockpit-surface p-6 space-y-4">
+        <div className="rounded-2xl border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-surface p-6 space-y-4">
           <div className="h-4 w-24 rounded bg-bw-cockpit-elevated animate-pulse" />
           <div className="h-6 w-3/4 rounded bg-bw-cockpit-elevated animate-pulse" />
           <div className="h-2 w-full rounded-full bg-bw-cockpit-elevated animate-pulse" />
@@ -365,7 +365,7 @@ export function FocusCockpit() {
       <div className="flex-1 overflow-y-auto">
         <div className="px-5 py-5 space-y-4">
           {/* ═══ MODULE SECTION CARD ═══ */}
-          <section className="rounded-2xl border border-[rgba(245,245,244,0.08)] bg-bw-cockpit-surface overflow-hidden">
+          <section className="rounded-2xl border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-surface overflow-hidden">
             {/* Top accent bar */}
             <div className="h-1" style={{ background: `linear-gradient(90deg, ${moduleColor}, ${moduleColor}66)` }} />
 
@@ -507,15 +507,15 @@ export function FocusCockpit() {
 
                 {/* Stats cards */}
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="bg-bw-cockpit-surface rounded-xl border border-[rgba(245,245,244,0.08)] p-3 text-center">
+                  <div className="bg-bw-cockpit-surface rounded-xl border border-[var(--color-bw-cockpit-border)] p-3 text-center">
                     <p className="text-2xl font-bold text-emerald-600 tabular-nums">{activeStudents.length}</p>
                     <p className="label-caps text-bw-cockpit-muted mt-0.5">Élèves</p>
                   </div>
-                  <div className="bg-bw-cockpit-surface rounded-xl border border-[rgba(245,245,244,0.08)] p-3 text-center">
+                  <div className="bg-bw-cockpit-surface rounded-xl border border-[var(--color-bw-cockpit-border)] p-3 text-center">
                     <p className="text-2xl font-bold text-orange-500 tabular-nums">{responses.length}</p>
                     <p className="label-caps text-bw-cockpit-muted mt-0.5">Réponses</p>
                   </div>
-                  <div className="bg-bw-cockpit-surface rounded-xl border border-[rgba(245,245,244,0.08)] p-3 text-center">
+                  <div className="bg-bw-cockpit-surface rounded-xl border border-[var(--color-bw-cockpit-border)] p-3 text-center">
                     <p className="text-2xl font-bold text-purple-500 tabular-nums">
                       {responses.filter((r) => r.is_highlighted).length}
                     </p>
@@ -729,7 +729,7 @@ export function FocusCockpit() {
                   animate={{ x: 0 }}
                   exit={{ x: "100%" }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="w-full max-w-md h-full bg-bw-cockpit-surface border-l border-[rgba(245,245,244,0.08)] shadow-2xl overflow-y-auto"
+                  className="w-full max-w-md h-full bg-bw-cockpit-surface border-l border-[var(--color-bw-cockpit-border)] shadow-2xl overflow-y-auto"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <StudentFiche

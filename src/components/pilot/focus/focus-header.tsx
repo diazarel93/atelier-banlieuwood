@@ -77,7 +77,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
   waiting: {
     label: "ATTENTE",
     color: "text-bw-cockpit-muted",
-    bg: "bg-bw-cockpit-surface border-[rgba(245,245,244,0.08)]",
+    bg: "bg-bw-cockpit-surface border-[var(--color-bw-cockpit-border)]",
     dot: "bg-bw-cockpit-muted",
   },
   paused: {
@@ -89,7 +89,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
   done: {
     label: "TERMINE",
     color: "text-bw-cockpit-muted",
-    bg: "bg-bw-cockpit-surface border-[rgba(245,245,244,0.08)]",
+    bg: "bg-bw-cockpit-surface border-[var(--color-bw-cockpit-border)]",
     dot: "bg-bw-cockpit-muted",
   },
 };
@@ -179,7 +179,7 @@ export function FocusHeader({
   return (
     <div className="shrink-0">
       {/* ══ BAR 1: Main header ══ */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-[rgba(245,245,244,0.08)] bg-bw-cockpit-canvas/90 backdrop-blur-md">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas/90 backdrop-blur-md">
         {/* Left: Logo + info */}
         <div className="flex items-center gap-3 min-w-0">
           <span className="text-xl flex-shrink-0">🎬</span>
@@ -405,7 +405,7 @@ export function FocusHeader({
       </div>
 
       {/* ══ BAR 2: Module rail P1-P8 ══ */}
-      <nav className="flex items-center gap-1 px-4 py-2 overflow-x-auto border-b border-[rgba(245,245,244,0.08)] bg-bw-cockpit-canvas/60 backdrop-blur-sm">
+      <nav className="flex items-center gap-1 px-4 py-2 overflow-x-auto border-b border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas/60 backdrop-blur-sm">
         {moduleRail.map((m, i) => (
           <div key={m.id} className="flex items-center">
             {/* Connecting line */}
@@ -413,7 +413,7 @@ export function FocusHeader({
               <div
                 className="w-4 h-[2px] mx-0.5 rounded-sm flex-shrink-0"
                 style={{
-                  background: m.isDone || moduleRail[i - 1]?.isDone ? "#34d399" : "rgba(245,245,244,0.08)",
+                  background: m.isDone || moduleRail[i - 1]?.isDone ? "#34d399" : "var(--color-bw-cockpit-border)",
                 }}
               />
             )}
