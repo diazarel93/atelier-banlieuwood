@@ -25,22 +25,22 @@ export function SiteFooter() {
             {
               title: "Produit",
               links: [
-                { label: "A Propos", href: "/projet" },
+                { label: "À Propos", href: "/projet" },
                 { label: "Festival", href: "/festival" },
                 { label: "Ressources", href: "/docs" },
                 { label: "Contact", href: "/contact" },
               ],
             },
             {
-              title: "Legal",
+              title: "Légal",
               links: [
-                { label: "Mentions legales", href: "/legal/cgu" },
-                { label: "Confidentialite", href: "/legal/privacy" },
-                { label: "Accessibilite", href: "/legal/accessibility" },
+                { label: "Mentions légales", href: "/legal/cgu" },
+                { label: "Confidentialité", href: "/legal/privacy" },
+                { label: "Accessibilité", href: "/legal/accessibility" },
               ],
             },
             {
-              title: "Communaute",
+              title: "Communauté",
               links: [
                 { label: "Instagram", href: "#" },
                 { label: "LinkedIn", href: "#" },
