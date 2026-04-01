@@ -72,22 +72,33 @@ const MODULES = [
 export default function ProjetPage() {
   return (
     <div
-      className="min-h-dvh bg-[#0a0a16] text-[#f0f0f8]"
+      className="min-h-dvh bg-[#0d0b09] text-[#f0f0f8]"
       style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
     >
       <SiteNavbar />
       {/* ══ Hero ══ */}
-      <section className="pt-28 pb-20 px-6">
-        <div className="max-w-[800px] mx-auto text-center">
-          <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#FF8C5A] mb-2">NOTRE MISSION</div>
-          <h1 className="text-[clamp(36px,5.5vw,64px)] font-black leading-[1.05] tracking-tight mb-6">
+      <section className="relative pt-32 pb-24 px-6 overflow-hidden">
+        {/* Ambient blobs */}
+        <div className="absolute top-[-180px] left-[-120px] w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: "#FF6B35", opacity: 0.08, filter: "blur(140px)" }} />
+        <div className="absolute bottom-[-100px] right-[-80px] w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: "#D4A843", opacity: 0.07, filter: "blur(120px)" }} />
+        {/* Film grain */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.022]" xmlns="http://www.w3.org/2000/svg">
+          <filter id="grain-projet"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" /><feColorMatrix type="saturate" values="0" /></filter>
+          <rect width="100%" height="100%" filter="url(#grain-projet)" />
+        </svg>
+        <div className="relative max-w-[800px] mx-auto text-center">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B35]" />
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#FF6B35]">NOTRE MISSION</span>
+          </div>
+          <h1 className="font-cinema text-[clamp(42px,6vw,76px)] leading-[1.0] uppercase tracking-wide mb-6">
             Democratiser la creation
             <br />
-            <span className="bg-gradient-to-r from-[#FF6B35] to-[#4ECDC4] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#FF6B35] via-[#D4A843] to-[#4ECDC4] bg-clip-text text-transparent">
               cinematographique en classe
             </span>
           </h1>
-          <p className="text-[clamp(15px,2vw,18px)] text-[#94a3b8] leading-relaxed max-w-[600px] mx-auto">
+          <p className="text-[clamp(15px,2vw,18px)] text-[#94a3b8] leading-[1.52] tracking-[-0.01em] max-w-[580px] mx-auto">
             Banlieuwood croit que chaque eleve est un createur. Pas de notes, pas de classement — juste la joie de creer
             ensemble, avec les outils du cinema professionnel.
           </p>
@@ -95,7 +106,7 @@ export default function ProjetPage() {
       </section>
 
       {/* ══ Doctrine ══ */}
-      <section className="py-20 bg-[#111127]">
+      <section className="py-20 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div>
@@ -120,7 +131,7 @@ export default function ProjetPage() {
                 ))}
               </div>
             </div>
-            <div className="rounded-2xl bg-[#141430] border border-[#252550] p-8 text-center">
+            <div className="rounded-2xl bg-[#141210] border border-[#2a2420] p-8 text-center">
               <div className="text-[64px] mb-4">🎭</div>
               <blockquote className="text-[16px] italic text-[#94a3b8] leading-relaxed">
                 &ldquo;Si une fonctionnalite permet a un adulte d&apos;identifier un eleve et de l&apos;evaluer a partir
@@ -137,13 +148,13 @@ export default function ProjetPage() {
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#FF6B35] mb-2">NOS CONVICTIONS</div>
-            <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold">Ce que nous croyons</h2>
+            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">Ce que nous croyons</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {CONVICTIONS.map((c) => (
               <div
                 key={c.title}
-                className="rounded-2xl bg-[#141430] border border-[#252550] p-7 hover:border-[#FF6B35]/30 transition-all"
+                className="rounded-2xl bg-[#141210] border border-[#2a2420] p-7 ring-1 ring-white/[0.04] hover:ring-[#FF6B35]/20 hover:border-[#FF6B35]/30 transition-all duration-200"
               >
                 <h3 className="text-[16px] font-bold mb-2">{c.title}</h3>
                 <p className="text-[13px] text-[#94a3b8] leading-relaxed">{c.text}</p>
@@ -154,13 +165,13 @@ export default function ProjetPage() {
       </section>
 
       {/* ══ PEAC Alignment ══ */}
-      <section className="py-20 bg-[#111127]">
+      <section className="py-20 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#34d399] mb-2">
               ALIGNEMENT EDUCATION NATIONALE
             </div>
-            <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold">Ancre dans les programmes officiels</h2>
+            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">Ancre dans les programmes officiels</h2>
             <p className="text-[clamp(15px,2vw,18px)] text-[#94a3b8] max-w-[560px] mx-auto mt-3">
               Chaque module est concu en reference aux textes officiels de l&apos;Education Nationale.
             </p>
@@ -188,7 +199,7 @@ export default function ProjetPage() {
             ].map((p) => (
               <div
                 key={p.title}
-                className="rounded-2xl bg-[#141430] border border-[#252550] p-7"
+                className="rounded-2xl bg-[#141210] border border-[#2a2420] p-7"
                 style={{ borderLeftWidth: 4, borderLeftColor: p.color }}
               >
                 <div className="text-[28px] mb-3">{p.icon}</div>
@@ -227,13 +238,13 @@ export default function ProjetPage() {
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">NOTRE METHODE</div>
-            <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold">4 principes pedagogiques</h2>
+            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">4 principes pedagogiques</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {PEDAGOGIE_POINTS.map((p) => (
               <div
                 key={p.num}
-                className="rounded-2xl bg-[#141430] border border-[#252550] p-7 hover:border-[#FF6B35]/30 transition-all"
+                className="rounded-2xl bg-[#141210] border border-[#2a2420] p-7 ring-1 ring-white/[0.04] hover:ring-[#FF6B35]/20 hover:border-[#FF6B35]/30 transition-all duration-200"
               >
                 <div className="flex items-center gap-4 mb-3">
                   <div
@@ -252,19 +263,19 @@ export default function ProjetPage() {
       </section>
 
       {/* ══ Modules clickables ══ */}
-      <section className="py-16 bg-[#111127]">
+      <section className="py-16 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-8">
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">
               MODULES DETAILLES
             </div>
-            <h2 className="text-[22px] font-bold">8 modules, un parcours complet</h2>
+            <h2 className="font-cinema text-[clamp(22px,3vw,32px)] uppercase leading-tight">8 modules, un parcours complet</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {MODULES.map((m) => (
               <div
                 key={m.id}
-                className="rounded-2xl bg-[#141430] border border-[#252550] p-4 text-center hover:border-[#FF6B35]/30 hover:-translate-y-1 transition-all"
+                className="rounded-2xl bg-[#141210] border border-[#2a2420] p-4 text-center ring-1 ring-white/[0.05] hover:ring-[#FF6B35]/25 hover:border-[#FF6B35]/30 hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200 group"
                 style={{ borderTopWidth: 3, borderTopColor: m.color }}
               >
                 <div className="text-[28px] mb-2">{m.icon}</div>
@@ -282,29 +293,29 @@ export default function ProjetPage() {
       <section className="py-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-8">
-            <h2 className="text-[22px] font-bold">Comparatif des Formules</h2>
+            <h2 className="font-cinema text-[clamp(22px,3vw,32px)] uppercase leading-tight">Comparatif des Formules</h2>
           </div>
-          <div className="overflow-x-auto rounded-2xl border border-[#252550]">
+          <div className="overflow-x-auto rounded-2xl border border-[#2a2420]">
             <table className="w-full text-[13px]" style={{ borderCollapse: "collapse" }}>
               <thead>
                 <tr>
-                  <th className="p-3 text-left text-[11px] uppercase tracking-wider text-[#64748b] bg-[#181838] border-b border-[#252550]">
+                  <th className="p-3 text-left text-[11px] uppercase tracking-wider text-[#64748b] bg-[#181838] border-b border-[#2a2420]">
                     Module
                   </th>
-                  <th className="p-3 text-center text-[11px] uppercase tracking-wider text-[#64748b] bg-[#181838] border-b border-[#252550]">
+                  <th className="p-3 text-center text-[11px] uppercase tracking-wider text-[#64748b] bg-[#181838] border-b border-[#2a2420]">
                     F0 (1h)
                   </th>
-                  <th className="p-3 text-center text-[11px] uppercase tracking-wider text-[#64748b] bg-[#181838] border-b border-[#252550]">
+                  <th className="p-3 text-center text-[11px] uppercase tracking-wider text-[#64748b] bg-[#181838] border-b border-[#2a2420]">
                     F1 (3h)
                   </th>
-                  <th className="p-3 text-center text-[11px] uppercase tracking-wider text-[#64748b] bg-[#181838] border-b border-[#252550]">
+                  <th className="p-3 text-center text-[11px] uppercase tracking-wider text-[#64748b] bg-[#181838] border-b border-[#2a2420]">
                     F2 (8h)
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {MODULES.map((m, i) => (
-                  <tr key={m.id} className="border-b border-[#252550] last:border-b-0 hover:bg-[#FF6B35]/[0.03]">
+                  <tr key={m.id} className="border-b border-[#2a2420] last:border-b-0 hover:bg-[#FF6B35]/[0.03]">
                     <td className="p-3">
                       {m.id} — {m.name}
                     </td>
@@ -326,22 +337,22 @@ export default function ProjetPage() {
       </section>
 
       {/* ══ CTA ══ */}
-      <section className="py-20 bg-[#111127]">
+      <section className="py-20 bg-[#110e0b]">
         <div className="max-w-[600px] mx-auto px-6 text-center">
-          <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold mb-4">Pret a tourner ?</h2>
+          <h2 className="font-cinema text-[clamp(36px,5vw,64px)] uppercase leading-[1.0] mb-4">Pret a tourner ?</h2>
           <p className="text-[clamp(15px,2vw,18px)] text-[#94a3b8] mb-8">
             Lancez votre premier atelier en quelques minutes.
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Link
               href={ROUTES.requestAccess}
-              className="px-9 py-4 rounded-[14px] text-base font-bold text-white bg-gradient-to-r from-[#FF6B35] to-[#4ECDC4] shadow-[0_4px_20px_rgba(255,107,53,0.3)] hover:shadow-[0_8px_32px_rgba(255,107,53,0.3)] transition-all"
+              className="px-9 py-4 rounded-[14px] text-base font-bold text-white shadow-[0_4px_20px_rgba(255,107,53,0.35)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.55)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out" style={{ background: "#FF6B35" }}
             >
               Creer un compte
             </Link>
             <Link
               href="/contact"
-              className="px-9 py-4 rounded-[14px] text-base font-bold text-[#f0f0f8] bg-[#181838] border border-[#252550] hover:border-[#FF6B35] transition-all"
+              className="px-9 py-4 rounded-[14px] text-base font-bold text-[#f0f0f8] bg-[#181838] border border-[#2a2420] hover:border-[#FF6B35] transition-all"
             >
               Nous contacter
             </Link>

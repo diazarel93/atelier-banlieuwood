@@ -147,7 +147,7 @@ export default function DashboardV2Page() {
 
           {/* Séances du jour — masquée si session active unique (le Hero la couvre déjà) */}
           {data?.todaySessions && data.todaySessions.length > 0 && !(activeSession && data.todaySessions.length === 1) && (
-            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-sm p-5">
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md p-5">
               <h3 className="label-caps mb-3">Aujourd&apos;hui</h3>
               <div className="space-y-2">
                 {data.todaySessions.map((s, i) => (
@@ -318,7 +318,7 @@ export default function DashboardV2Page() {
           {data?.recentSessions && data.recentSessions.length > 0 && (
             <div>
               <h3 className="label-caps text-bw-muted mb-3">Séances récentes</h3>
-              <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-sm scrollbar-thin">
+              <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md scrollbar-thin">
                 <table className="w-full text-body-sm" style={{ borderCollapse: "collapse" }}>
                   <thead>
                     <tr>
@@ -392,7 +392,7 @@ export default function DashboardV2Page() {
         <div className="lg:col-span-4 space-y-5">
           {/* Quoi de neuf */}
           {activeSessions.length > 0 && (
-            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-sm p-4">
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md p-4">
               <h3 className="label-caps text-bw-muted mb-3">En direct</h3>
               <div className="space-y-2">
                 <div
@@ -430,7 +430,7 @@ export default function DashboardV2Page() {
 
           {/* Actions requises */}
           {data?.recentSessions?.filter((s) => s.status === "done").length ? (
-            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-sm p-4">
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md p-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="label-caps text-bw-muted">Actions requises</h3>
                 <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-bw-primary text-white text-body-xs font-bold px-1.5">
@@ -456,7 +456,7 @@ export default function DashboardV2Page() {
           ) : null}
 
           {/* Modules progression */}
-          <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-sm p-4">
+          <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md p-4">
             <h3 className="label-caps text-bw-muted mb-3">Modules</h3>
             <div className="flex flex-col gap-3">
               {mainPhases.map((phase) => {
@@ -496,7 +496,7 @@ export default function DashboardV2Page() {
           </div>
 
           {/* Agenda calendrier */}
-          <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-sm p-4">
+          <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md p-4">
             <h3 className="label-caps text-bw-muted mb-3">Agenda</h3>
             <MiniCalendar sessionDates={(data?.sessionDates || []).map((d) => new Date(d))} />
           </div>

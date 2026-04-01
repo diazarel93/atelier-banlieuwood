@@ -128,7 +128,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
+        <nav className="flex-1 px-3 py-4 space-y-1.5">
           {visibleNavItems.map((item) => {
             const isActive =
               item.href === ROUTES.dashboard ? pathname === ROUTES.dashboard : pathname.startsWith(item.href);
@@ -164,7 +164,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         </nav>
 
         {/* Bottom nav */}
-        <div className="px-3 pb-4 space-y-0.5 border-t border-[var(--sidebar-border)] pt-3">
+        <div className="px-3 pb-4 space-y-1.5 border-t border-[var(--sidebar-border)] pt-3">
           {isAdmin && (
             <Link
               href={ROUTES.admin}
@@ -259,7 +259,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           <div className="text-body-sm font-bold text-[var(--sidebar-foreground)]">{firstName || "Utilisateur"}</div>
           <div className="text-body-xs text-[var(--sidebar-muted-foreground)]">{role}</div>
         </div>
-        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
           {visibleNavItems.map((item) => {
             const isActive =
               item.href === ROUTES.dashboard ? pathname === ROUTES.dashboard : pathname.startsWith(item.href);

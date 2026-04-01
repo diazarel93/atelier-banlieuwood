@@ -2,7 +2,9 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-[#111127] border-t border-[#252550] pt-16 pb-6">
+    <footer className="relative bg-[#0d0b09] border-t border-[#2a2420] pt-16 pb-6">
+      {/* Cinema accent line */}
+      <div className="absolute top-0 left-0 right-0 h-[1px]" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(255,107,53,0.35) 30%, rgba(212,168,67,0.35) 60%, transparent 100%)" }} />
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
           <div className="col-span-2 md:col-span-1">
@@ -60,7 +62,7 @@ export function SiteFooter() {
             </div>
           ))}
         </div>
-        <div className="flex justify-between items-center pt-6 border-t border-[#252550] text-[12px] text-[#64748b]">
+        <div className="flex justify-between items-center pt-6 border-t border-[#2a2420] text-[12px] text-[#64748b]">
           <span>&copy; 2026 Banlieuwood. Tous droits reserves.</span>
           <span>Fait avec 🧡 pour les ecoles de France</span>
         </div>

@@ -203,7 +203,7 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.85, ease: SNAP }}
-                  className="font-cinema text-[clamp(52px,7.5vw,96px)] leading-[0.92] uppercase mb-6"
+                  className="font-cinema text-[clamp(52px,7.5vw,96px)] leading-[1.05] uppercase mb-6"
                 >
                   Transformez la classe
                   <br />
@@ -223,7 +223,7 @@ export default function Home() {
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 0.7, ease: SNAP }}
-                  className="text-[clamp(15px,2vw,18px)] text-white/55 leading-relaxed max-w-[520px] mb-10"
+                  className="text-[clamp(15px,2vw,18px)] text-white/72 leading-[1.52] tracking-[-0.01em] max-w-[520px] mb-10"
                 >
                   Les eleves imaginent, ecrivent, pitchent, votent et produisent un court-metrage — ensemble. De
                   l&apos;idee au festival, tout est collaboratif.
@@ -238,23 +238,14 @@ export default function Home() {
                 >
                   <Link
                     href={ROUTES.requestAccess}
-                    className="px-9 py-4 rounded-[14px] text-base font-bold text-white transition-all hover:-translate-y-0.5"
-                    style={{
-                      background: "#FF6B35",
-                      boxShadow: "0 4px 24px rgba(255,107,53,0.4)",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 8px 40px rgba(255,107,53,0.58)";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 24px rgba(255,107,53,0.4)";
-                    }}
+                    className="px-9 py-4 rounded-[14px] text-base font-bold text-white shadow-[0_4px_24px_rgba(255,107,53,0.4)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.58)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out"
+                    style={{ background: "#FF6B35" }}
                   >
                     Commencer gratuitement
                   </Link>
                   <Link
                     href="/projet"
-                    className="px-9 py-4 rounded-[14px] text-base font-bold text-white/75 bg-white/[0.05] border border-white/10 hover:border-[#FF6B35]/40 hover:text-white transition-all"
+                    className="px-9 py-4 rounded-[14px] text-base font-bold text-white/85 bg-white/[0.05] border border-white/10 hover:border-[#FF6B35]/40 hover:text-white transition-all"
                   >
                     Decouvrir le parcours
                   </Link>
@@ -338,7 +329,7 @@ export default function Home() {
       </div>
 
       {/* ══════════ VALUE PROPS ══════════ */}
-      <section className="py-24 bg-[#0d0b09]">
+      <section className="py-20 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#D4A843" }}>
@@ -373,7 +364,7 @@ export default function Home() {
               <Reveal key={card.title} delay={i * 0.1}>
                 <div className="relative overflow-hidden rounded-2xl p-8 text-center hover:-translate-y-1 transition-all group ring-1 ring-white/[0.07] hover:ring-white/14 bg-white/[0.025]">
                   <div
-                    className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-0 left-0 right-0 h-[2px] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out"
                     style={{ background: `linear-gradient(90deg, transparent, ${card.color}, transparent)` }}
                   />
                   <div
@@ -392,7 +383,7 @@ export default function Home() {
       </section>
 
       {/* ══════════ TIMELINE ══════════ */}
-      <section className="py-24 bg-[#110e0b]">
+      <section className="py-28 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-14">
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#4ECDC4" }}>
@@ -490,7 +481,7 @@ export default function Home() {
       </section>
 
       {/* ══════════ FORMULES ══════════ */}
-      <section className="py-24 bg-[#110e0b]">
+      <section className="py-28 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#D4A843" }}>
@@ -581,7 +572,7 @@ export default function Home() {
       </section>
 
       {/* ══════════ TEMOIGNAGES ══════════ */}
-      <section className="py-24 bg-[#0d0b09]">
+      <section className="py-20 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#FF6B35" }}>
