@@ -86,7 +86,7 @@ function EnergyDonut({
 
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" className="-rotate-90 flex-shrink-0">
-      <circle cx="10" cy="10" r={r} fill="none" stroke="#2a2a50" strokeWidth="3" />
+      <circle cx="10" cy="10" r={r} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="3" />
       {segments.map((seg, i) => {
         if (seg.pct <= 0) return null;
         const dash = seg.pct * c;
@@ -138,7 +138,7 @@ function TimerCountdown({ endsAt }: { endsAt: string }) {
 
   return (
     <span
-      className={`text-[13px] font-bold tabular-nums px-2 py-0.5 rounded-full flex-shrink-0 ${
+      className={`text-body-sm font-bold tabular-nums px-2 py-0.5 rounded-full flex-shrink-0 ${
         pulse ? "animate-pulse" : ""
       }`}
       style={{ backgroundColor: `${color}18`, color }}
@@ -241,7 +241,7 @@ export function CockpitHeader({
           Cockpit
         </span>
         {sessionStartedAt && (
-          <span className="text-[11px] font-medium text-bw-muted tabular-nums flex-shrink-0 hidden sm:block">
+          <span className="text-body-xs font-medium text-bw-muted tabular-nums flex-shrink-0 hidden sm:block">
             <ElapsedTimer startedAt={sessionStartedAt} variant="plain" />
           </span>
         )}
@@ -284,7 +284,7 @@ export function CockpitHeader({
           )}
 
           {/* Student count */}
-          <span className="text-[13px] font-medium text-bw-muted tabular-nums flex-shrink-0 hidden xl:block">
+          <span className="text-body-sm font-medium text-bw-muted tabular-nums flex-shrink-0 hidden xl:block">
             {activeStudentCount} élève{activeStudentCount !== 1 ? "s" : ""}
           </span>
         </div>
@@ -318,7 +318,7 @@ export function CockpitHeader({
               <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
               <line x1="12" y1="18" x2="12.01" y2="18" />
             </svg>
-            <span className="hidden xl:inline text-[13px] font-medium">Vue élève</span>
+            <span className="hidden xl:inline text-body-sm font-medium">Vue élève</span>
           </button>
         )}
 
@@ -349,7 +349,7 @@ export function CockpitHeader({
               {/* Auto-advance */}
               <button
                 onClick={onToggleAuto}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-body-sm font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
               >
                 <div
                   className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${autoAdvance ? "bg-bw-teal" : "bg-black/10"}`}
@@ -368,9 +368,9 @@ export function CockpitHeader({
                   onPause();
                   setControlsOpen(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors text-bw-text"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-body-sm font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors text-bw-text"
               >
-                <span className="text-[12px]">⏸</span>
+                <span>⏸</span>
                 Pause
               </button>
               {/* Screen — open projector */}
@@ -379,7 +379,7 @@ export function CockpitHeader({
                   onScreen();
                   setControlsOpen(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors text-bw-text"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-body-sm font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors text-bw-text"
               >
                 <svg
                   width="14"
@@ -403,7 +403,7 @@ export function CockpitHeader({
                 <>
                   <div className="border-t border-bw-border/50 my-1" />
                   <div className="px-3 py-1">
-                    <span className="text-[11px] font-semibold text-bw-muted uppercase tracking-wider">Mode écran</span>
+                    <span className="label-caps text-bw-muted">Mode écran</span>
                   </div>
                   <div className="space-y-0.5 px-1">
                     {(
@@ -419,7 +419,7 @@ export function CockpitHeader({
                         onClick={() => {
                           onSetScreenMode(mode);
                         }}
-                        className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[12px] font-medium cursor-pointer transition-colors ${
+                        className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-body-xs font-medium cursor-pointer transition-colors ${
                           (screenMode || "default") === mode
                             ? "bg-bw-primary/10 text-bw-primary"
                             : "text-bw-text hover:bg-bw-surface-dim"
@@ -440,7 +440,7 @@ export function CockpitHeader({
               {onToggleFreeze && (
                 <button
                   onClick={onToggleFreeze}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-body-sm font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
                 >
                   <div
                     className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${screenFrozen ? "bg-blue-500" : "bg-black/10"}`}
@@ -460,7 +460,7 @@ export function CockpitHeader({
                 <>
                   <div className="border-t border-bw-border/50 my-1" />
                   <div className="px-3 py-1">
-                    <span className="text-[11px] font-semibold text-bw-muted uppercase tracking-wider">Timer</span>
+                    <span className="label-caps text-bw-muted">Timer</span>
                   </div>
                   <div className="flex flex-wrap gap-1 px-3 pb-1">
                     {[30, 60, 90].map((s) => (
@@ -504,10 +504,10 @@ export function CockpitHeader({
               {onToggleDark && (
                 <button
                   onClick={onToggleDark}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-body-sm font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
                 >
                   <div
-                    className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${isDarkMode ? "bg-indigo-500" : "bg-black/10"}`}
+                    className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${isDarkMode ? "bg-bw-violet" : "bg-black/10"}`}
                   >
                     <div
                       className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${isDarkMode ? "left-2" : "left-px"}`}
