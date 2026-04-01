@@ -210,7 +210,7 @@ export default function Home() {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.42, duration: 0.6, ease: SNAP }}
-                  className="font-cinema text-[clamp(13px,1.6vw,17px)] tracking-[0.08em] uppercase mb-4"
+                  className="font-cinema text-[clamp(15px,1.6vw,18px)] tracking-[0.08em] uppercase mb-4"
                   style={{ color: "#D4A843" }}
                 >
                   Nous sommes là où le cinéma ne nous attend pas.
@@ -371,7 +371,7 @@ export default function Home() {
               },
             ].map((card, i) => (
               <Reveal key={card.title} delay={i * 0.1}>
-                <div className="relative overflow-hidden rounded-2xl p-8 text-center hover:-translate-y-1 transition-all group ring-1 ring-white/[0.07] hover:ring-white/14 bg-white/[0.025]">
+                <div className="relative overflow-hidden rounded-2xl p-5 md:p-8 text-center hover:-translate-y-1 transition-all group ring-1 ring-white/[0.07] hover:ring-white/14 bg-white/[0.025]">
                   <div
                     className="absolute top-0 left-0 right-0 h-[2px] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out"
                     style={{ background: `linear-gradient(90deg, transparent, ${card.color}, transparent)` }}
@@ -591,7 +591,7 @@ export default function Home() {
             ].map((f, i) => (
               <Reveal key={f.badge} delay={i * 0.1}>
                 <div
-                  className="rounded-2xl bg-white/[0.025] ring-1 ring-white/[0.07] p-7 relative overflow-hidden hover:ring-white/14 hover:-translate-y-1 transition-all"
+                  className="rounded-2xl bg-white/[0.025] ring-1 ring-white/[0.07] p-4 md:p-7 relative overflow-hidden hover:ring-white/14 hover:-translate-y-1 transition-all"
                   style={{ borderTop: `2px solid ${f.badgeColor}` }}
                 >
                   {f.popular && (
@@ -669,7 +669,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {TESTIMONIALS.map((t, i) => (
               <Reveal key={t.author} delay={i * 0.1}>
-                <div className="rounded-2xl bg-white/[0.025] ring-1 ring-white/[0.07] p-7 relative hover:ring-white/14 hover:-translate-y-0.5 transition-all">
+                <div className="rounded-2xl bg-white/[0.025] ring-1 ring-white/[0.07] p-4 md:p-7 relative hover:ring-white/14 hover:-translate-y-0.5 transition-all">
                   <div
                     className="absolute top-2 left-5 text-[56px] font-black leading-none select-none"
                     style={{ color: "rgba(255,107,53,0.12)" }}
