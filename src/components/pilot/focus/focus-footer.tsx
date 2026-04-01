@@ -44,12 +44,12 @@ export function FocusFooter({
 
   // CTA logic
   let ctaLabel = "";
-  let ctaGradient = "from-[#2a2a50] to-[#1a1a35]";
+  let ctaGradient = "from-bw-cockpit-surface to-bw-cockpit-canvas";
   let ctaAction = onNextAction;
   let ctaDisabled = false;
   let showCountChip = false;
   let countChipText = "";
-  let countChipColor = "bg-[#1a1a35] text-[#94a3b8] border border-[#2a2a50]";
+  let countChipColor = "bg-bw-cockpit-canvas text-bw-cockpit-muted border border-[var(--color-bw-cockpit-border)]";
   let showQuickVote = false;
 
   if (isStandardQA && sessionStatus === "responding") {
@@ -57,10 +57,10 @@ export function FocusFooter({
     countChipText = `${respondedCount}/${totalStudents}`;
     countChipColor = allResponded
       ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-      : "bg-[#1a1a35] text-[#94a3b8] border border-[#2a2a50]";
+      : "bg-bw-cockpit-canvas text-bw-cockpit-muted border border-[var(--color-bw-cockpit-border)]";
     if (voteOptionCount < 2) {
       ctaLabel = `${voteOptionCount}/2 min — selectionner`;
-      ctaGradient = "from-[#2a2a50] to-[#1a1a35]";
+      ctaGradient = "from-bw-cockpit-surface to-bw-cockpit-canvas";
       ctaDisabled = true;
       ctaAction = onSelectionBarAction;
       showQuickVote = respondedCount >= 2;
@@ -83,7 +83,7 @@ export function FocusFooter({
     ctaAction = onSelectionBarAction;
   } else if (nextAction?.action) {
     ctaLabel = nextAction.label;
-    ctaGradient = "from-[#2a2a50] to-[#1a1a35]";
+    ctaGradient = "from-bw-cockpit-surface to-bw-cockpit-canvas";
     ctaDisabled = !!nextAction.disabled;
     showCountChip = sessionStatus === "responding";
     countChipText = `${respondedCount}/${totalStudents}`;
@@ -96,7 +96,7 @@ export function FocusFooter({
     <>
       <div
         ref={footerRef}
-        className="shrink-0 border-t border-[#2a2a50] bg-[#13132a]/90 backdrop-blur-md"
+        className="shrink-0 border-t border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas/90 backdrop-blur-md"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 8px)" }}
       >
         <div className="flex items-center gap-2 px-4 py-2.5 max-w-2xl mx-auto">
@@ -154,8 +154,8 @@ export function FocusFooter({
           {/* Project button */}
           <button
             onClick={onProjectResponses}
-            className="shrink-0 flex items-center justify-center w-11 h-11 rounded-xl bg-[#1a1a35] hover:bg-[#2a2a50] border border-[#2a2a50] transition-colors cursor-pointer"
-            title="Projeter les reponses"
+            aria-label="Projeter les réponses"
+            className="shrink-0 flex items-center justify-center min-h-[44px] min-w-[44px] rounded-xl bg-bw-cockpit-canvas hover:bg-bw-cockpit-surface border border-[var(--color-bw-cockpit-border)] transition-colors cursor-pointer"
           >
             <svg
               width="16"
@@ -174,8 +174,8 @@ export function FocusFooter({
           {/* Plus menu */}
           <button
             onClick={onOpenPlus}
-            className="shrink-0 flex items-center justify-center w-11 h-11 rounded-xl bg-[#1a1a35] hover:bg-[#2a2a50] border border-[#2a2a50] transition-colors cursor-pointer"
-            title="Plus d'actions"
+            aria-label="Plus d'actions"
+            className="shrink-0 flex items-center justify-center min-h-[44px] min-w-[44px] rounded-xl bg-bw-cockpit-canvas hover:bg-bw-cockpit-surface border border-[var(--color-bw-cockpit-border)] transition-colors cursor-pointer"
           >
             <svg
               width="18"
