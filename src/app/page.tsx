@@ -200,16 +200,15 @@ export default function Home() {
                   transition={{ delay: 0.3, duration: 0.85, ease: SNAP }}
                   className="font-cinema text-[clamp(52px,7.5vw,96px)] leading-[1.05] uppercase mb-6"
                 >
-                  Transformez la classe
+                  Spectateurs hier.
                   <br />
-                  en{" "}
                   <span
                     className="bg-clip-text text-transparent"
                     style={{
                       backgroundImage: "linear-gradient(90deg, #FF6B35 0%, #D4A843 55%, #4ECDC4 100%)",
                     }}
                   >
-                    plateau de cinéma
+                    Réalisateurs aujourd&apos;hui.
                   </span>
                 </motion.h1>
 
@@ -218,17 +217,33 @@ export default function Home() {
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 0.7, ease: SNAP }}
-                  className="text-[clamp(15px,2vw,18px)] text-white/72 leading-[1.52] tracking-[-0.01em] max-w-[520px] mb-10"
+                  className="text-[clamp(15px,2vw,18px)] text-white/72 leading-[1.52] tracking-[-0.01em] max-w-[520px] mb-8"
                 >
-                  Les élèves imaginent, écrivent, pitchent, votent et produisent un court-métrage — ensemble. De
-                  l&apos;idée au festival, tout est collaboratif.
+                  Banlieuwood transforme n&apos;importe quelle classe en studio de cinéma — sans notes, sans classement,
+                  sans jugement. 8 modules pour créer ensemble le premier film de sa vie.
                 </motion.p>
+
+                {/* Social proof hero — avant CTA */}
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.58, duration: 0.6, ease: SNAP }}
+                  className="flex items-center gap-3 mb-8"
+                >
+                  <span
+                    className="text-[11px] leading-snug text-white/50 italic max-w-[340px] border-l-2 pl-3"
+                    style={{ borderColor: "#FF6B35" }}
+                  >
+                    &ldquo;Les élèves qui ne participaient jamais se sont révélés — 15 ans de carrière, jamais vu ça.&rdquo;
+                    <span className="not-italic text-white/30 block mt-0.5">— Sophie Martin, Collège Jean Moulin, Bondy</span>
+                  </span>
+                </motion.div>
 
                 {/* CTAs */}
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.65, duration: 0.7, ease: SNAP }}
+                  transition={{ delay: 0.7, duration: 0.7, ease: SNAP }}
                   className="flex items-center gap-4 flex-wrap mb-7"
                 >
                   <Link
@@ -236,20 +251,20 @@ export default function Home() {
                     className="px-9 py-4 rounded-xl text-base font-bold text-white shadow-[0_4px_24px_rgba(255,107,53,0.4)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.58)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out"
                     style={{ background: "#FF6B35" }}
                   >
-                    Commencer gratuitement
+                    Lancer mon premier atelier
                   </Link>
                   <Link
                     href="/projet"
                     className="px-9 py-4 rounded-xl text-base font-bold text-white/85 bg-white/[0.05] border border-white/10 hover:border-[#FF6B35]/40 hover:text-white hover:shadow-[0_4px_20px_rgba(255,107,53,0.18)] transition-all duration-200"
                   >
-                    Découvrir le parcours
+                    Voir la méthode
                   </Link>
                 </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.85, ease: SNAP }}
+                  transition={{ delay: 0.9, ease: SNAP }}
                   className="flex items-center gap-6 text-[13px] text-white/55"
                 >
                   <span>✓ Gratuit pour les écoles</span>
@@ -370,6 +385,16 @@ export default function Home() {
               </Reveal>
             ))}
           </div>
+          {/* CTA intermédiaire */}
+          <Reveal className="text-center mt-10">
+            <Link
+              href={ROUTES.requestAccess}
+              className="inline-flex items-center gap-2 text-[13px] font-bold text-white/60 hover:text-[#FF6B35] transition-colors group"
+            >
+              Rejoignez 32 établissements qui créent autrement
+              <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
+            </Link>
+          </Reveal>
         </div>
       </section>
 
@@ -454,17 +479,35 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
             {MODULES.map((m, i) => (
               <Reveal key={m.id} delay={i * 0.05}>
-                <div className="rounded-2xl bg-white/[0.025] ring-1 ring-white/[0.07] p-5 text-center cursor-pointer hover:ring-white/16 hover:-translate-y-1 transition-all relative overflow-hidden group">
+                <motion.div
+                  className="rounded-2xl p-5 text-center cursor-pointer relative overflow-hidden"
+                  style={{
+                    background: "rgba(255,255,255,0.025)",
+                    boxShadow: "0 0 0 1px rgba(255,255,255,0.07)",
+                  }}
+                  whileHover={{
+                    y: -4,
+                    background: `${m.color}0d`,
+                    boxShadow: `0 0 0 1px ${m.color}40, 0 8px 32px ${m.color}1a`,
+                  }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
+                >
                   <div
-                    className="absolute top-0 left-0 right-0 h-[2px] opacity-55 group-hover:opacity-100 transition-opacity"
-                    style={{ backgroundColor: m.color }}
+                    className="absolute top-0 left-0 right-0 h-[2px]"
+                    style={{ backgroundColor: m.color, opacity: 0.55 }}
                   />
-                  <div className="text-[30px] mb-2.5 mt-1">{m.icon}</div>
+                  <motion.div
+                    className="text-[30px] mb-2.5 mt-1"
+                    whileHover={{ scale: 1.15 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    {m.icon}
+                  </motion.div>
                   <div className="text-[13px] font-bold mb-1">
                     <span style={{ color: m.color }}>{m.id}</span> — {m.name}
                   </div>
                   <div className="text-[11px] text-white/38">{m.desc}</div>
-                </div>
+                </motion.div>
               </Reveal>
             ))}
           </div>
