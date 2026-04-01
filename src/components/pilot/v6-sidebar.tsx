@@ -43,7 +43,7 @@ const STUCK_DOT_COLORS: Record<StuckLevel, string> = {
 type StudentFilter = "all" | "active" | "idle" | "off" | "responding";
 
 const NOTE_TAGS = [
-  { id: "obs", label: "Observation", color: "#8b5cf6" },
+  { id: "obs", label: "Observation", color: "var(--color-bw-violet)" },
   { id: "rev", label: "A revoir", color: "#f87171" },
   { id: "idee", label: "Idee", color: "#34d399" },
 ];

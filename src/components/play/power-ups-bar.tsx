@@ -29,28 +29,28 @@ const POWER_UP_DEFS: Omit<PowerUp, "count">[] = [
     name: "Double Temps",
     icon: "⏳",
     description: "+30 secondes pour repondre",
-    color: "#4ECDC4",
+    color: "var(--color-bw-teal)",
   },
   {
     id: "indice",
     name: "Indice",
     icon: "💡",
     description: "Recois un indice de l'IA",
-    color: "#8B5CF6",
+    color: "var(--color-bw-violet)",
   },
   {
     id: "coup_de_pouce",
     name: "Coup de Pouce",
     icon: "🤝",
     description: "Vois la reponse d'un coequipier",
-    color: "#FF6B35",
+    color: "var(--color-bw-primary)",
   },
   {
     id: "bouclier",
     name: "Bouclier",
     icon: "🛡️",
     description: "Protege ta serie en cas d'erreur",
-    color: "#D4A843",
+    color: "var(--color-bw-gold)",
   },
 ];
 

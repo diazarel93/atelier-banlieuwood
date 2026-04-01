@@ -273,7 +273,7 @@ function FilmTab({ data }: { data: BiblioData }) {
       </div>
 
       {story.map((choice) => {
-        const color = CATEGORY_COLORS[choice.category] || "#FF6B35";
+        const color = CATEGORY_COLORS[choice.category] || "var(--color-bw-primary)";
         const showCategoryHeader = choice.category !== currentCategory;
         currentCategory = choice.category;
 

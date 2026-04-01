@@ -23,34 +23,34 @@ type RevealPhase = "blackout" | "fade" | "slide" | "celebrate";
 
 // Deterministic particles — no Math.random to avoid SSR hydration mismatch
 const CONFETTI_PARTICLES = [
-  { id: 0, dx: -280, dy: -220, color: "#FF6B35", duration: 0.9, rotate: 240 },
-  { id: 1, dx: 180, dy: -300, color: "#D4A843", duration: 1.1, rotate: -160 },
-  { id: 2, dx: 310, dy: -120, color: "#4ECDC4", duration: 0.8, rotate: 320 },
-  { id: 3, dx: -140, dy: 260, color: "#8B5CF6", duration: 1.0, rotate: -80 },
+  { id: 0, dx: -280, dy: -220, color: "var(--color-bw-primary)", duration: 0.9, rotate: 240 },
+  { id: 1, dx: 180, dy: -300, color: "var(--color-bw-gold)", duration: 1.1, rotate: -160 },
+  { id: 2, dx: 310, dy: -120, color: "var(--color-bw-teal)", duration: 0.8, rotate: 320 },
+  { id: 3, dx: -140, dy: 260, color: "var(--color-bw-violet)", duration: 1.0, rotate: -80 },
   { id: 4, dx: 240, dy: 200, color: "#F59E0B", duration: 0.75, rotate: 180 },
   { id: 5, dx: -320, dy: 60, color: "#10B981", duration: 1.2, rotate: -300 },
-  { id: 6, dx: 80, dy: 290, color: "#FF6B35", duration: 0.65, rotate: 120 },
-  { id: 7, dx: -200, dy: -280, color: "#D4A843", duration: 1.0, rotate: 280 },
-  { id: 8, dx: 260, dy: -240, color: "#4ECDC4", duration: 0.85, rotate: -200 },
-  { id: 9, dx: -100, dy: 310, color: "#8B5CF6", duration: 1.15, rotate: 360 },
+  { id: 6, dx: 80, dy: 290, color: "var(--color-bw-primary)", duration: 0.65, rotate: 120 },
+  { id: 7, dx: -200, dy: -280, color: "var(--color-bw-gold)", duration: 1.0, rotate: 280 },
+  { id: 8, dx: 260, dy: -240, color: "var(--color-bw-teal)", duration: 0.85, rotate: -200 },
+  { id: 9, dx: -100, dy: 310, color: "var(--color-bw-violet)", duration: 1.15, rotate: 360 },
   { id: 10, dx: 300, dy: 90, color: "#F59E0B", duration: 0.7, rotate: -140 },
   { id: 11, dx: -260, dy: 180, color: "#10B981", duration: 0.95, rotate: 220 },
-  { id: 12, dx: 130, dy: -310, color: "#FF6B35", duration: 1.05, rotate: -40 },
-  { id: 13, dx: -310, dy: -100, color: "#D4A843", duration: 0.8, rotate: 300 },
-  { id: 14, dx: 200, dy: 270, color: "#4ECDC4", duration: 1.1, rotate: -260 },
-  { id: 15, dx: -60, dy: -290, color: "#8B5CF6", duration: 0.9, rotate: 80 },
+  { id: 12, dx: 130, dy: -310, color: "var(--color-bw-primary)", duration: 1.05, rotate: -40 },
+  { id: 13, dx: -310, dy: -100, color: "var(--color-bw-gold)", duration: 0.8, rotate: 300 },
+  { id: 14, dx: 200, dy: 270, color: "var(--color-bw-teal)", duration: 1.1, rotate: -260 },
+  { id: 15, dx: -60, dy: -290, color: "var(--color-bw-violet)", duration: 0.9, rotate: 80 },
   { id: 16, dx: 280, dy: -180, color: "#F59E0B", duration: 0.75, rotate: -320 },
   { id: 17, dx: -220, dy: 240, color: "#10B981", duration: 1.0, rotate: 160 },
-  { id: 18, dx: 160, dy: 300, color: "#FF6B35", duration: 0.85, rotate: -100 },
-  { id: 19, dx: -290, dy: -160, color: "#D4A843", duration: 1.2, rotate: 260 },
-  { id: 20, dx: 320, dy: 150, color: "#4ECDC4", duration: 0.65, rotate: -180 },
-  { id: 21, dx: -80, dy: 280, color: "#8B5CF6", duration: 1.05, rotate: 340 },
+  { id: 18, dx: 160, dy: 300, color: "var(--color-bw-primary)", duration: 0.85, rotate: -100 },
+  { id: 19, dx: -290, dy: -160, color: "var(--color-bw-gold)", duration: 1.2, rotate: 260 },
+  { id: 20, dx: 320, dy: 150, color: "var(--color-bw-teal)", duration: 0.65, rotate: -180 },
+  { id: 21, dx: -80, dy: 280, color: "var(--color-bw-violet)", duration: 1.05, rotate: 340 },
   { id: 22, dx: 240, dy: -270, color: "#F59E0B", duration: 0.9, rotate: -60 },
   { id: 23, dx: -190, dy: -50, color: "#10B981", duration: 0.75, rotate: 200 },
 ];
 
 export function ResultState({ collectiveChoice, isMyResponseChosen, comboCount, onReveal }: ResultStateProps) {
-  const categoryColor = CATEGORY_COLORS[collectiveChoice.category] || "#FF6B35";
+  const categoryColor = CATEGORY_COLORS[collectiveChoice.category] || "var(--color-bw-primary)";
   const [phase, setPhase] = useState<RevealPhase>("blackout");
 
   useEffect(() => {

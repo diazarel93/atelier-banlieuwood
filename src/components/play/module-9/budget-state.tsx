@@ -184,7 +184,10 @@ export function BudgetState({ sessionId, studentId, storyContext, onDone }: Budg
         }`}
         style={
           canSubmit
-            ? { background: "linear-gradient(135deg, #FF6B35, #D4A843)", boxShadow: "0 4px 15px rgba(255,107,53,0.3)" }
+            ? {
+                background: "linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))",
+                boxShadow: "0 4px 15px rgba(255,107,53,0.3)",
+              }
             : undefined
         }
       >

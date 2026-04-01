@@ -37,37 +37,37 @@ const PEDAGOGIE_POINTS = [
     num: "01",
     title: "Vivre l\u2019expérience complète",
     text: "Plutôt que de commencer directement par un tournage, les élèves passent par toutes les étapes : observer, imaginer, structurer, écrire, mettre en scène, préparer le tournage.",
-    color: "#FF6B35",
+    color: "var(--color-bw-primary)",
   },
   {
     num: "02",
     title: "Apprendre en expérimentant",
     text: "Banlieuwood ne se présente pas comme un cours. Chaque module propose une situation concrète : interpréter une image, inventer une idée, transformer une idée en pitch, construire une histoire collective.",
-    color: "#4ECDC4",
+    color: "var(--color-bw-teal)",
   },
   {
     num: "03",
     title: "Le collectif avant tout",
     text: "Les idées individuelles deviennent progressivement les éléments d\u2019une création commune. Les élèves apprennent à écouter, à défendre une idée, à accepter des compromis et à construire ensemble.",
-    color: "#D4A843",
+    color: "var(--color-bw-gold)",
   },
   {
     num: "04",
     title: "Un outil qui accompagne sans remplacer",
     text: "L\u2019outil numérique structure les activités, collecte les idées et facilite les votes collectifs. Mais il ne remplace jamais l\u2019intervenant. Les discussions, les débats et les décisions restent humaines.",
-    color: "#4ECDC4",
+    color: "var(--color-bw-teal)",
   },
 ];
 
 const MODULES = [
-  { id: "M1", name: "Le Regard", icon: "👁️", desc: "Analyse d'images", color: "#FF6B35" },
-  { id: "M2", name: "Les Émotions", icon: "🎭", desc: "Identifier et nommer", color: "#D4A843" },
-  { id: "M3", name: "Et si...", icon: "💡", desc: "Brainstorm collectif", color: "#4ECDC4" },
+  { id: "M1", name: "Le Regard", icon: "👁️", desc: "Analyse d'images", color: "var(--color-bw-primary)" },
+  { id: "M2", name: "Les Émotions", icon: "🎭", desc: "Identifier et nommer", color: "var(--color-bw-gold)" },
+  { id: "M3", name: "Et si...", icon: "💡", desc: "Brainstorm collectif", color: "var(--color-bw-teal)" },
   { id: "M4", name: "Le Pitch", icon: "🎙️", desc: "Présenter son idée", color: "#FF8C5A" },
   { id: "M5", name: "Le Vote", icon: "🏆", desc: "Choix démocratique", color: "#E8B84B" },
   { id: "M6", name: "Le Scénario", icon: "📝", desc: "Écriture collaborative", color: "#5DD6CF" },
-  { id: "M7", name: "Storyboard", icon: "🎞️", desc: "Plans et cadrage", color: "#FF6B35" },
-  { id: "M8", name: "L'Équipe", icon: "⭐", desc: "Rôles et talents", color: "#D4A843" },
+  { id: "M7", name: "Storyboard", icon: "🎞️", desc: "Plans et cadrage", color: "var(--color-bw-primary)" },
+  { id: "M8", name: "L'Équipe", icon: "⭐", desc: "Rôles et talents", color: "var(--color-bw-gold)" },
 ];
 
 export default function ProjetPage() {
@@ -83,11 +83,11 @@ export default function ProjetPage() {
         {/* Ambient blobs */}
         <div
           className="absolute top-[-180px] left-[-120px] w-[600px] h-[600px] rounded-full pointer-events-none"
-          style={{ background: "#FF6B35", opacity: 0.08, filter: "blur(140px)" }}
+          style={{ background: "var(--color-bw-primary)", opacity: 0.08, filter: "blur(140px)" }}
         />
         <div
           className="absolute bottom-[-100px] right-[-80px] w-[400px] h-[400px] rounded-full pointer-events-none"
-          style={{ background: "#D4A843", opacity: 0.07, filter: "blur(120px)" }}
+          style={{ background: "var(--color-bw-gold)", opacity: 0.07, filter: "blur(120px)" }}
         />
         {/* Film grain */}
         <svg
@@ -102,13 +102,13 @@ export default function ProjetPage() {
         </svg>
         <div className="relative max-w-[800px] mx-auto text-center">
           <div className="inline-flex items-center gap-2 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B35]" />
-            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#FF6B35]">NOTRE MISSION</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-bw-primary" />
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-bw-primary">NOTRE MISSION</span>
           </div>
           <h1 className="font-cinema text-[clamp(42px,6vw,76px)] leading-[1.0] uppercase tracking-wide mb-6">
             Démocratiser la création
             <br />
-            <span className="bg-gradient-to-r from-[#FF6B35] via-[#D4A843] to-[#4ECDC4] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-bw-primary via-bw-gold to-bw-teal bg-clip-text text-transparent">
               cinématographique en classe
             </span>
           </h1>
@@ -124,7 +124,7 @@ export default function ProjetPage() {
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div>
-              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#D4A843] mb-2">PÉDAGOGIE</div>
+              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-bw-gold mb-2">PÉDAGOGIE</div>
               <h2 className="font-cinema text-[clamp(22px,3vw,36px)] uppercase leading-tight mb-4">
                 La donnée au service de la création, pas du jugement
               </h2>
@@ -140,7 +140,7 @@ export default function ProjetPage() {
                 {["Anonymisation des métriques", "Pas de XP visible", "Conforme RGPD"].map((b) => (
                   <span
                     key={b}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-[#4ECDC4]/15 text-[#4ECDC4]"
+                    className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-bw-teal/15 text-bw-teal"
                   >
                     ✓ {b}
                   </span>
@@ -163,7 +163,9 @@ export default function ProjetPage() {
       <section className="py-20 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#FF6B35] mb-2">NOS CONVICTIONS</div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-bw-primary mb-2">
+              NOS CONVICTIONS
+            </div>
             <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">
               Ce que nous croyons vraiment
             </h2>
@@ -172,7 +174,7 @@ export default function ProjetPage() {
             {CONVICTIONS.map((c) => (
               <div
                 key={c.title}
-                className="rounded-2xl bg-[#141210] border border-[#2a2420] p-7 ring-1 ring-white/[0.04] hover:ring-[#FF6B35]/20 hover:border-[#FF6B35]/30 transition-all duration-200"
+                className="rounded-2xl bg-[#141210] border border-[#2a2420] p-7 ring-1 ring-white/[0.04] hover:ring-bw-primary/20 hover:border-bw-primary/30 transition-all duration-200"
               >
                 <h3 className="text-[16px] font-bold mb-2">{c.title}</h3>
                 <p className="text-[13px] text-white/60 leading-relaxed">{c.text}</p>
@@ -186,7 +188,7 @@ export default function ProjetPage() {
       <section className="py-20 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">
+            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-bw-teal mb-2">
               ALIGNEMENT ÉDUCATION NATIONALE
             </div>
             <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">
@@ -201,19 +203,19 @@ export default function ProjetPage() {
               {
                 icon: "🔍",
                 title: "Rencontrer",
-                color: "#FF6B35",
+                color: "var(--color-bw-primary)",
                 text: "Fréquenter les œuvres, développer une culture artistique personnelle. Modules M1 (Le Regard) et M2 (Les Émotions) — analyse filmique, lecture d'image, vocabulaire cinématographique.",
               },
               {
                 icon: "🎨",
                 title: "Pratiquer",
-                color: "#4ECDC4",
+                color: "var(--color-bw-teal)",
                 text: "S'engager dans un processus de création. Modules M3 à M7 — brainstorm, pitch oral, écriture scénariste, storyboard. Les élèves pratiquent tous les métiers du cinéma.",
               },
               {
                 icon: "💡",
                 title: "S'approprier",
-                color: "#D4A843",
+                color: "var(--color-bw-gold)",
                 text: "Construire un jugement esthétique. Module M5 (Le Vote) et M8 (L'Équipe) — argumenter ses choix, s'exprimer devant un groupe, assumer un rôle créatif.",
               },
             ].map((p) => (
@@ -233,19 +235,19 @@ export default function ProjetPage() {
           <div className="flex flex-wrap gap-2 justify-center mt-8">
             {["Socle Commun D1.1", "Socle Commun D1.4", "Socle Commun D2", "Socle Commun D3", "Socle Commun D5"].map(
               (b) => (
-                <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#FF6B35]/15 text-[#FF8C5A]">
+                <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-bw-primary/15 text-[#FF8C5A]">
                   {b}
                 </span>
               ),
             )}
             {["Arts Plastiques Cycle 3", "Arts Plastiques Cycle 4"].map((b) => (
-              <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#4ECDC4]/15 text-[#4ECDC4]">
+              <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-bw-teal/15 text-bw-teal">
                 {b}
               </span>
             ))}
-            <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#D4A843]/15 text-[#D4A843]">PEAC</span>
+            <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-bw-gold/15 text-bw-gold">PEAC</span>
             {["École et cinéma", "Collège au cinéma"].map((b) => (
-              <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#4ECDC4]/15 text-[#4ECDC4]">
+              <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-bw-teal/15 text-bw-teal">
                 {b}
               </span>
             ))}
@@ -257,7 +259,7 @@ export default function ProjetPage() {
       <section className="py-20 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">NOTRE MÉTHODE</div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-bw-teal mb-2">NOTRE MÉTHODE</div>
             <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">
               4 principes pédagogiques
             </h2>
@@ -266,7 +268,7 @@ export default function ProjetPage() {
             {PEDAGOGIE_POINTS.map((p) => (
               <div
                 key={p.num}
-                className="rounded-2xl bg-[#141210] border border-[#2a2420] p-7 ring-1 ring-white/[0.04] hover:ring-[#FF6B35]/20 hover:border-[#FF6B35]/30 transition-all duration-200"
+                className="rounded-2xl bg-[#141210] border border-[#2a2420] p-7 ring-1 ring-white/[0.04] hover:ring-bw-primary/20 hover:border-bw-primary/30 transition-all duration-200"
               >
                 <div className="flex items-center gap-4 mb-3">
                   <div
@@ -288,9 +290,7 @@ export default function ProjetPage() {
       <section className="py-16 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-8">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">
-              MODULES DÉTAILLÉS
-            </div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-bw-teal mb-2">MODULES DÉTAILLÉS</div>
             <h2 className="font-cinema text-[clamp(22px,3vw,32px)] uppercase leading-tight">
               8 modules, un parcours complet
             </h2>
@@ -299,7 +299,7 @@ export default function ProjetPage() {
             {MODULES.map((m) => (
               <div
                 key={m.id}
-                className="rounded-2xl bg-[#141210] border border-[#2a2420] p-4 text-center ring-1 ring-white/[0.05] hover:ring-[#FF6B35]/25 hover:border-[#FF6B35]/30 hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200 group"
+                className="rounded-2xl bg-[#141210] border border-[#2a2420] p-4 text-center ring-1 ring-white/[0.05] hover:ring-bw-primary/25 hover:border-bw-primary/30 hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200 group"
                 style={{ borderTopWidth: 3, borderTopColor: m.color }}
               >
                 <div className="text-[28px] mb-2">{m.icon}</div>
@@ -317,7 +317,7 @@ export default function ProjetPage() {
       <section className="py-16 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-8">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#D4A843] mb-2">DURÉE & MODULES</div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-bw-gold mb-2">DURÉE & MODULES</div>
             <h2 className="font-cinema text-[clamp(22px,3vw,32px)] uppercase leading-tight">Comparatif des formules</h2>
           </div>
           <div className="overflow-x-auto rounded-2xl border border-[#2a2420]">
@@ -340,18 +340,18 @@ export default function ProjetPage() {
               </thead>
               <tbody>
                 {MODULES.map((m, i) => (
-                  <tr key={m.id} className="border-b border-[#2a2420] last:border-b-0 hover:bg-[#FF6B35]/[0.03]">
+                  <tr key={m.id} className="border-b border-[#2a2420] last:border-b-0 hover:bg-bw-primary/[0.03]">
                     <td className="p-3">
                       {m.id} — {m.name}
                     </td>
                     <td className="p-3 text-center">
-                      {i === 0 ? <span className="text-[#4ECDC4]">✓</span> : <span className="text-white/40">—</span>}
+                      {i === 0 ? <span className="text-bw-teal">✓</span> : <span className="text-white/40">—</span>}
                     </td>
                     <td className="p-3 text-center">
-                      {i < 3 ? <span className="text-[#4ECDC4]">✓</span> : <span className="text-white/40">—</span>}
+                      {i < 3 ? <span className="text-bw-teal">✓</span> : <span className="text-white/40">—</span>}
                     </td>
                     <td className="p-3 text-center">
-                      <span className="text-[#4ECDC4]">✓</span>
+                      <span className="text-bw-teal">✓</span>
                     </td>
                   </tr>
                 ))}
@@ -372,13 +372,13 @@ export default function ProjetPage() {
             <Link
               href={ROUTES.requestAccess}
               className="px-9 py-4 rounded-xl text-base font-bold text-white shadow-[0_4px_20px_rgba(255,107,53,0.35)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.55)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out"
-              style={{ background: "#FF6B35" }}
+              style={{ background: "var(--color-bw-primary)" }}
             >
               Créer un compte
             </Link>
             <Link
               href="/contact"
-              className="px-9 py-4 rounded-xl text-base font-bold text-white bg-[#141210] border border-[#2a2420] hover:border-[#FF6B35] hover:shadow-[0_4px_16px_rgba(255,107,53,0.18)] transition-all duration-200"
+              className="px-9 py-4 rounded-xl text-base font-bold text-white bg-[#141210] border border-[#2a2420] hover:border-bw-primary hover:shadow-[0_4px_16px_rgba(255,107,53,0.18)] transition-all duration-200"
             >
               Nous contacter
             </Link>

@@ -88,25 +88,30 @@ export function ProjectionCenter({ sessionStartedAt }: ProjectionCenterProps) {
   // CTA contextuel selon l'état
   let cta: { label: string; action: () => void; color: string } | null = null;
   if (isResponding) {
-    cta = { label: "Révéler les réponses", action: handleReveal, color: "#FF6B35" };
+    cta = { label: "Révéler les réponses", action: handleReveal, color: "var(--color-bw-primary)" };
   } else if (isVoting) {
     cta = {
       label: `Voir les résultats (${voteData?.totalVotes ?? 0} votes)`,
       action: handleRevealVoteResults,
-      color: "#4ECDC4",
+      color: "var(--color-bw-teal)",
     };
   } else if (isReviewing && isVoteModule && !hasVoteResults) {
-    cta = { label: "Lancer le vote", action: handleOpenVote, color: "#D4A843" };
+    cta = { label: "Lancer le vote", action: handleOpenVote, color: "var(--color-bw-gold)" };
   } else if (isReviewing) {
     cta = { label: isLastQuestion ? "Terminer le module" : "Suivant →", action: handleNext, color: "#2C2C2C" };
   }
 
   // Gradient + glow par couleur CTA
   function ctaStyle(color: string): React.CSSProperties {
-    if (color === "#FF6B35")
-      return { background: "linear-gradient(135deg, #FF6B35, #D4A843)", boxShadow: "0 4px 20px rgba(255,107,53,0.35)" };
-    if (color === "#4ECDC4") return { background: "linear-gradient(135deg, #4ECDC4, #2db8af)" };
-    if (color === "#D4A843") return { background: "linear-gradient(135deg, #D4A843, #FF6B35)" };
+    if (color === "var(--color-bw-primary)")
+      return {
+        background: "linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))",
+        boxShadow: "0 4px 20px rgba(255,107,53,0.35)",
+      };
+    if (color === "var(--color-bw-teal)")
+      return { background: "linear-gradient(135deg, var(--color-bw-teal), #2db8af)" };
+    if (color === "var(--color-bw-gold)")
+      return { background: "linear-gradient(135deg, var(--color-bw-gold), var(--color-bw-primary))" };
     return { backgroundColor: color };
   }
 
@@ -125,7 +130,10 @@ export function ProjectionCenter({ sessionStartedAt }: ProjectionCenterProps) {
         <div className="h-2 rounded-full bg-[#E8DFD2] overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-500"
-            style={{ width: `${progressPct}%`, background: "linear-gradient(90deg, #FF6B35, #D4A843)" }}
+            style={{
+              width: `${progressPct}%`,
+              background: "linear-gradient(90deg, var(--color-bw-primary), var(--color-bw-gold))",
+            }}
           />
         </div>
         <p className="text-center text-sm text-[#4A4A4A]">
@@ -139,9 +147,9 @@ export function ProjectionCenter({ sessionStartedAt }: ProjectionCenterProps) {
       {/* KPI row — 4 colonnes: Répondu / Attente / Taux / Temps */}
       <div className="grid grid-cols-4 gap-2">
         {[
-          { v: String(respondedCount), l: "Répondu", c: "#FF6B35" },
-          { v: String(enAttente), l: "Attente", c: "#D4A843" },
-          { v: `${progressPct}%`, l: "Taux", c: "#4ECDC4" },
+          { v: String(respondedCount), l: "Répondu", c: "var(--color-bw-primary)" },
+          { v: String(enAttente), l: "Attente", c: "var(--color-bw-gold)" },
+          { v: `${progressPct}%`, l: "Taux", c: "var(--color-bw-teal)" },
           { v: formatElapsed(elapsed), l: "Temps", c: "#a89e8e" },
         ].map((k) => (
           <div key={k.l} className="flex flex-col items-center py-3 rounded-xl" style={{ background: `${k.c}14` }}>
@@ -171,7 +179,7 @@ export function ProjectionCenter({ sessionStartedAt }: ProjectionCenterProps) {
             className="flex-1 min-h-11 rounded-2xl text-white font-black uppercase tracking-wider text-sm cursor-pointer"
             style={ctaStyle(cta.color)}
             animate={
-              cta.color === "#FF6B35"
+              cta.color === "var(--color-bw-primary)"
                 ? {
                     boxShadow: [
                       "0 4px 20px rgba(255,107,53,0.35)",

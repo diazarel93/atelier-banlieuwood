@@ -163,7 +163,7 @@ function LoginPageInner() {
               height="28"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#4ECDC4"
+              stroke="var(--color-bw-teal)"
               strokeWidth="2"
               strokeLinecap="round"
             >
@@ -241,7 +241,7 @@ function LoginPageInner() {
             className="rounded-xl border p-3 text-center"
             style={{ background: "rgba(78,205,196,0.08)", borderColor: "rgba(78,205,196,0.25)" }}
           >
-            <p className="text-sm font-medium" style={{ color: "#4ECDC4" }}>
+            <p className="text-sm font-medium" style={{ color: "var(--color-bw-teal)" }}>
               Invitation detectee — votre compte sera active immediatement
             </p>
           </motion.div>

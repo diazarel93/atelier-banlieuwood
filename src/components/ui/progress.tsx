@@ -17,7 +17,7 @@ function Progress({ className, value, ...props }: React.ComponentProps<typeof Pr
         className="h-full w-full flex-1 rounded-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
         style={{
           transform: `translateX(-${100 - (value || 0)}%)`,
-          background: "linear-gradient(90deg, #FF6B35, #D4A843)",
+          background: "linear-gradient(90deg, var(--color-bw-primary), var(--color-bw-gold))",
           boxShadow: "0 0 12px rgba(255, 107, 53, 0.4), 0 0 4px rgba(212, 168, 67, 0.3)",
         }}
       />

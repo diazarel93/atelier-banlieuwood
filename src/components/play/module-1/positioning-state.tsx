@@ -66,7 +66,7 @@ export function PositioningState({
             height="28"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#4ECDC4"
+            stroke="var(--color-bw-teal)"
             strokeWidth="2.5"
             strokeLinecap="round"
           >

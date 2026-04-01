@@ -43,7 +43,7 @@ export function SiteNavbar() {
       >
         <Link href="/" className="flex items-center gap-2.5">
           <span className="text-2xl">🎬</span>
-          <span className="text-base font-extrabold bg-gradient-to-r from-[#FF6B35] to-[#D4A843] bg-clip-text text-transparent">
+          <span className="text-base font-extrabold bg-gradient-to-r from-bw-primary to-bw-gold bg-clip-text text-transparent">
             BANLIEUWOOD
           </span>
         </Link>
@@ -55,7 +55,7 @@ export function SiteNavbar() {
               key={link.href}
               href={link.href}
               className={`px-4 min-h-[44px] flex items-center rounded-lg text-[13px] font-medium transition-colors ${
-                pathname === link.href ? "text-[#FF6B35] bg-[#FF6B35]/[0.08]" : "text-white/55 hover:text-white"
+                pathname === link.href ? "text-bw-primary bg-bw-primary/[0.08]" : "text-white/55 hover:text-white"
               }`}
             >
               {link.label}
@@ -66,13 +66,13 @@ export function SiteNavbar() {
         <div className="flex items-center gap-2">
           <Link
             href={ROUTES.login}
-            className="hidden sm:inline-flex px-4 py-2 rounded-lg text-[13px] font-medium text-white bg-[#141210] border border-[#2a2420] hover:border-[#FF6B35] transition-all"
+            className="hidden sm:inline-flex px-4 py-2 rounded-lg text-[13px] font-medium text-white bg-[#141210] border border-[#2a2420] hover:border-bw-primary transition-all"
           >
             Connexion
           </Link>
           <Link
             href={ROUTES.requestAccess}
-            className="px-5 py-2 rounded-xl text-[13px] font-bold text-white bg-gradient-to-r from-[#FF6B35] to-[#D4A843] shadow-[0_4px_20px_rgba(255,107,53,0.38)] hover:shadow-[0_6px_28px_rgba(255,107,53,0.52)] hover:scale-[1.03] transition-all"
+            className="px-5 py-2 rounded-xl text-[13px] font-bold text-white bg-gradient-to-r from-bw-primary to-bw-gold shadow-[0_4px_20px_rgba(255,107,53,0.38)] hover:shadow-[0_6px_28px_rgba(255,107,53,0.52)] hover:scale-[1.03] transition-all"
           >
             S&apos;inscrire
           </Link>
@@ -114,7 +114,7 @@ export function SiteNavbar() {
                 href={link.href}
                 className={`flex items-center min-h-[48px] px-4 rounded-xl text-[15px] font-medium mb-1 transition-colors ${
                   pathname === link.href
-                    ? "text-[#FF6B35] bg-[#FF6B35]/[0.08]"
+                    ? "text-bw-primary bg-bw-primary/[0.08]"
                     : "text-white/70 hover:text-white hover:bg-white/[0.05]"
                 }`}
               >
@@ -130,7 +130,7 @@ export function SiteNavbar() {
               </Link>
               <Link
                 href={ROUTES.requestAccess}
-                className="flex-1 flex items-center justify-center min-h-[48px] rounded-xl text-[14px] font-bold text-white bg-gradient-to-r from-[#FF6B35] to-[#D4A843]"
+                className="flex-1 flex items-center justify-center min-h-[48px] rounded-xl text-[14px] font-bold text-white bg-gradient-to-r from-bw-primary to-bw-gold"
               >
                 S&apos;inscrire
               </Link>

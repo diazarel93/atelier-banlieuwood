@@ -29,7 +29,7 @@ const HAIR_COLORS: Record<string, { main: string; highlight: string }> = {
   boucle: { main: "#3D2314", highlight: "#6B4530" },
   tresse: { main: "#1A1A2E", highlight: "#2E2E4A" },
   rase: { main: "#4A4A4A", highlight: "#6A6A6A" },
-  colore: { main: "#8B5CF6", highlight: "#A78BFA" },
+  colore: { main: "var(--color-bw-violet)", highlight: "#A78BFA" },
 };
 
 // ── Eye color palette ──

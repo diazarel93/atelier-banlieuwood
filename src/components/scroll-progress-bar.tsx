@@ -21,7 +21,9 @@ export function ScrollProgressBar() {
     <div
       ref={ref}
       className="fixed top-0 left-0 h-[2px] z-[400] w-0 pointer-events-none"
-      style={{ background: "linear-gradient(90deg, #FF6B35, #D4A843, #4ECDC4)" }}
+      style={{
+        background: "linear-gradient(90deg, var(--color-bw-primary), var(--color-bw-gold), var(--color-bw-teal))",
+      }}
     />
   );
 }

@@ -19,8 +19,8 @@ interface FacilitatorTimelineProps {
 
 const STATUS_DOTS: Record<string, { color: string; label: string }> = {
   done: { color: "var(--color-bw-green, #10B981)", label: "Terminée" },
-  results: { color: "var(--color-bw-violet, #8B5CF6)", label: "Résultats" },
-  responding: { color: "var(--color-bw-teal, #4ECDC4)", label: "En cours" },
+  results: { color: "var(--color-bw-violet, var(--color-bw-violet))", label: "Résultats" },
+  responding: { color: "var(--color-bw-teal, var(--color-bw-teal))", label: "En cours" },
   reviewing: { color: "var(--color-bw-amber, #F59E0B)", label: "En cours" },
   voting: { color: "var(--color-bw-amber, #F59E0B)", label: "En cours" },
   waiting: { color: "var(--color-bw-placeholder, #94A3B8)", label: "En attente" },

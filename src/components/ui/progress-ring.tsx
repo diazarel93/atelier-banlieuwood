@@ -37,7 +37,7 @@ const sizeConfig: Record<string, { px: number; fontSize: number; labelSize: numb
 export function ProgressRing({
   value,
   size = "md",
-  color = "#FF6B35",
+  color = "var(--color-bw-primary)",
   trackColor = "rgba(255,255,255,0.06)",
   strokeWidth = 3,
   showValue = false,
@@ -89,8 +89,8 @@ export function ProgressRing({
         {gradient && (
           <defs>
             <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#FF6B35" />
-              <stop offset="100%" stopColor="#D4A843" />
+              <stop offset="0%" stopColor="var(--color-bw-primary)" />
+              <stop offset="100%" stopColor="var(--color-bw-gold)" />
             </linearGradient>
           </defs>
         )}

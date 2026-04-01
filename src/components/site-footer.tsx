@@ -16,7 +16,7 @@ export function SiteFooter() {
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-2xl">🎬</span>
-              <span className="text-base font-extrabold bg-gradient-to-r from-[#FF6B35] to-[#D4A843] bg-clip-text text-transparent">
+              <span className="text-base font-extrabold bg-gradient-to-r from-bw-primary to-bw-gold bg-clip-text text-transparent">
                 BANLIEUWOOD
               </span>
             </div>
@@ -60,7 +60,7 @@ export function SiteFooter() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="block text-[13px] text-white/40 mb-2 hover:text-[#FF6B35] transition-colors"
+                  className="block text-[13px] text-white/40 mb-2 hover:text-bw-primary transition-colors"
                 >
                   {link.label}
                 </Link>

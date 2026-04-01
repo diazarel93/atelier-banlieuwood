@@ -18,7 +18,7 @@ interface SpotlightViewProps {
   moduleColor?: string;
 }
 
-export function SpotlightView({ responses, moduleColor = "#FF6B35" }: SpotlightViewProps) {
+export function SpotlightView({ responses, moduleColor = "var(--color-bw-primary)" }: SpotlightViewProps) {
   if (!responses || responses.length === 0) return null;
 
   // Show the most recently highlighted response as the spotlight

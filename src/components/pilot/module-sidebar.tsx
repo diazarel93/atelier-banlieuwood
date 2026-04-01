@@ -144,7 +144,7 @@ function ModuleSidebarInner({
               background:
                 globalDone === allMods.length && globalDone > 0
                   ? "linear-gradient(90deg, #4CAF50, #66BB6A)"
-                  : "linear-gradient(90deg, #FF6B35, #FF8F5E)",
+                  : "linear-gradient(90deg, var(--color-bw-primary), #FF8F5E)",
             }}
           />
         </div>

@@ -199,7 +199,7 @@ export default function ProfilePage() {
       <div className="relative z-10 max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Back link */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }}>
-          <Link href="/" className="text-sm text-[#9898aa] hover:text-[#D4A843] transition-colors">
+          <Link href="/" className="text-sm text-[#9898aa] hover:text-bw-gold transition-colors">
             ← Retour
           </Link>
         </motion.div>
@@ -219,7 +219,7 @@ export default function ProfilePage() {
               style={{
                 background: "linear-gradient(135deg, #1a1a2e, #2a2a44)",
                 border: profile.avatarFrame
-                  ? `3px solid ${TIER_HEX[profile.avatarFrame] || "#D4A843"}`
+                  ? `3px solid ${TIER_HEX[profile.avatarFrame] || "var(--color-bw-gold)"}`
                   : "3px solid rgba(255,255,255,0.12)",
               }}
             >
@@ -239,14 +239,14 @@ export default function ProfilePage() {
 
           {/* Name + Title */}
           <div>
-            <h1 className="font-cinema text-2xl tracking-wider text-[#D4A843] uppercase">{profile.displayName}</h1>
+            <h1 className="font-cinema text-2xl tracking-wider text-bw-gold uppercase">{profile.displayName}</h1>
             {profile.customTitle && <p className="text-sm text-[#9898aa] mt-0.5">{profile.customTitle}</p>}
           </div>
 
           {/* Level badge */}
-          <div className="inline-flex items-center gap-2 bg-[#D4A843]/15 px-3 py-1.5 rounded-full border border-[#D4A843]/20">
-            <span className="text-xs font-bold text-[#D4A843]">Nv.{level.level}</span>
-            <span className="text-sm font-cinema tracking-wider text-[#D4A843] uppercase">{level.name}</span>
+          <div className="inline-flex items-center gap-2 bg-bw-gold/15 px-3 py-1.5 rounded-full border border-bw-gold/20">
+            <span className="text-xs font-bold text-bw-gold">Nv.{level.level}</span>
+            <span className="text-sm font-cinema tracking-wider text-bw-gold uppercase">{level.name}</span>
           </div>
 
           {/* XP Bar */}
@@ -268,7 +268,7 @@ export default function ProfilePage() {
               <motion.div
                 className="h-full rounded-full relative"
                 style={{
-                  background: "linear-gradient(90deg, #D4A843, #FF6B35)",
+                  background: "linear-gradient(90deg, var(--color-bw-gold), var(--color-bw-primary))",
                 }}
                 initial={{ width: 0 }}
                 animate={{
@@ -335,7 +335,7 @@ export default function ProfilePage() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="space-y-4"
         >
-          <h2 className="font-cinema text-xl tracking-wider text-[#D4A843] uppercase">Mes Badges</h2>
+          <h2 className="font-cinema text-xl tracking-wider text-bw-gold uppercase">Mes Badges</h2>
 
           {/* Category tabs */}
           <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
@@ -384,10 +384,10 @@ export default function ProfilePage() {
             transition={{ duration: 0.5, delay: 0.25 }}
           >
             <div
-              className="rounded-2xl border border-white/[0.08] p-4 border-l-4 border-l-[#4ECDC4]"
+              className="rounded-2xl border border-white/[0.08] p-4 border-l-4 border-l-bw-teal"
               style={{ background: "rgba(255,255,255,0.04)" }}
             >
-              <p className="text-xs text-[#4ECDC4] font-cinema tracking-wider uppercase">Prochaine session</p>
+              <p className="text-xs text-bw-teal font-cinema tracking-wider uppercase">Prochaine session</p>
               <p className="font-semibold text-[#f0f0f5] mt-1">{nextSession.title}</p>
               <p className="text-sm text-[#9898aa]">
                 {new Date(nextSession.scheduledAt).toLocaleDateString("fr-FR", {
@@ -410,7 +410,7 @@ export default function ProfilePage() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="space-y-3"
           >
-            <h2 className="font-cinema text-xl tracking-wider text-[#D4A843] uppercase">Mes Sessions</h2>
+            <h2 className="font-cinema text-xl tracking-wider text-bw-gold uppercase">Mes Sessions</h2>
             <div className="space-y-2">
               {sessionHistory.map((s, i) => (
                 <motion.div
@@ -421,11 +421,11 @@ export default function ProfilePage() {
                   className="rounded-2xl border border-white/[0.08] p-4 flex items-center gap-3"
                   style={{ background: "rgba(255,255,255,0.04)" }}
                 >
-                  <div className="w-10 h-10 rounded-lg bg-[#D4A843]/15 flex items-center justify-center text-lg shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-bw-gold/15 flex items-center justify-center text-lg shrink-0">
                     🎬
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#D4A843] truncate">{s.title}</p>
+                    <p className="text-sm font-medium text-bw-gold truncate">{s.title}</p>
                     <div className="flex items-center gap-2 text-xs text-[#9898aa]">
                       <span>{formatDate(s.date)}</span>
                       {s.classLabel && (
@@ -458,7 +458,7 @@ function StatCard({ icon, label, value, delay }: { icon: string; label: string; 
       style={{ background: "rgba(255,255,255,0.04)" }}
     >
       <span className="text-2xl">{icon}</span>
-      <p className="text-2xl font-bold text-[#D4A843] tabular-nums">{value}</p>
+      <p className="text-2xl font-bold text-bw-gold tabular-nums">{value}</p>
       <p className="text-xs text-[#9898aa]">{label}</p>
     </motion.div>
   );
@@ -506,7 +506,7 @@ function AchievementCard({
       </div>
 
       {/* Name */}
-      <p className="text-sm font-semibold text-[#D4A843] leading-tight">{def.name}</p>
+      <p className="text-sm font-semibold text-bw-gold leading-tight">{def.name}</p>
 
       {/* Description */}
       <p className="text-[11px] text-[#9898aa] leading-snug">{def.description}</p>
@@ -543,8 +543,8 @@ function FilterTab({ label, active, onClick }: { label: string; active: boolean;
       aria-pressed={active}
       className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
         active
-          ? "bg-[#D4A843]/15 text-[#D4A843] border border-[#D4A843]/30"
-          : "bg-white/[0.06] text-[#9898aa] border border-white/[0.08] hover:border-[#D4A843]/20"
+          ? "bg-bw-gold/15 text-bw-gold border border-bw-gold/30"
+          : "bg-white/[0.06] text-[#9898aa] border border-white/[0.08] hover:border-bw-gold/20"
       }`}
     >
       {label}
@@ -568,7 +568,7 @@ function NoProfile() {
       >
         <div className="text-6xl">🎬</div>
         <div className="space-y-2">
-          <h1 className="font-cinema text-2xl tracking-wider text-[#D4A843] uppercase">Profil Joueur</h1>
+          <h1 className="font-cinema text-2xl tracking-wider text-bw-gold uppercase">Profil Joueur</h1>
           <p className="text-sm text-[#9898aa] leading-relaxed">
             Joue ta première session pour créer ton profil et débloquer des badges !
           </p>

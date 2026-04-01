@@ -62,7 +62,7 @@ export interface ContextDocksProps extends ContextPanelProps {
 }
 
 const STATE_COLORS: Record<StudentStateValue, string> = {
-  responded: "#4ECDC4",
+  responded: "var(--color-bw-teal)",
   active: "#F5A45B",
   stuck: "#F59E0B",
   disconnected: "#444",
@@ -208,11 +208,11 @@ export function ContextDocks(props: ContextDocksProps) {
             active={upperOpen === "stats"}
             onClick={() => toggleUpper("stats")}
             title="Statistiques (S)"
-            color="#8B5CF6"
+            color="var(--color-bw-violet)"
             emoji="📊"
             shortcut="S"
             badge={upperOpen !== "stats" && pct > 0 ? `${pct}%` : undefined}
-            badgeColor={pct === 100 ? "#10B981" : "#8B5CF6"}
+            badgeColor={pct === 100 ? "#10B981" : "var(--color-bw-violet)"}
             pulse={statsPulse}
           />
 
@@ -264,11 +264,11 @@ export function ContextDocks(props: ContextDocksProps) {
             active={lowerOpen === "students"}
             onClick={() => toggleLower("students")}
             title="Élèves (E)"
-            color="#4ECDC4"
+            color="var(--color-bw-teal)"
             emoji="👥"
             shortcut="E"
             badge={lowerOpen !== "students" && props.totalStudents > 0 ? String(props.totalStudents) : undefined}
-            badgeColor="#4ECDC4"
+            badgeColor="var(--color-bw-teal)"
             alertDot={stuckCount > 0 && lowerOpen !== "students"}
             alertColor="#F59E0B"
           />
@@ -578,12 +578,12 @@ function StatsContent({
               strokeLinecap="round"
               strokeDasharray={`${pct * 0.974} 100`}
               className="transition-all duration-500"
-              style={{ stroke: pct === 100 ? "#10B981" : "#4ECDC4" }}
+              style={{ stroke: pct === 100 ? "#10B981" : "var(--color-bw-teal)" }}
             />
           </svg>
           <span
             className="absolute inset-0 flex items-center justify-center text-xs font-bold tabular-nums"
-            style={{ color: pct === 100 ? "#10B981" : "#4ECDC4" }}
+            style={{ color: pct === 100 ? "#10B981" : "var(--color-bw-teal)" }}
           >
             {pct}%
           </span>
@@ -1171,8 +1171,8 @@ export function ContextPanel(props: ContextPanelProps) {
           <div className="flex items-center gap-0.5">
             {[
               { id: "guide" as const, label: "Guide", icon: "📖", activeColor: "#F5A45B" },
-              { id: "students" as const, label: "Élèves", icon: "👥", activeColor: "#4ECDC4" },
-              { id: "stats" as const, label: "Stats", icon: "📊", activeColor: "#8B5CF6" },
+              { id: "students" as const, label: "Élèves", icon: "👥", activeColor: "var(--color-bw-teal)" },
+              { id: "stats" as const, label: "Stats", icon: "📊", activeColor: "var(--color-bw-violet)" },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -1217,12 +1217,12 @@ export function ContextPanel(props: ContextPanelProps) {
                     strokeLinecap="round"
                     strokeDasharray={`${pct * 0.974} 100`}
                     className="transition-all duration-500"
-                    style={{ stroke: pct === 100 ? "#10B981" : "#4ECDC4" }}
+                    style={{ stroke: pct === 100 ? "#10B981" : "var(--color-bw-teal)" }}
                   />
                 </svg>
                 <span
                   className="absolute inset-0 flex items-center justify-center text-xs font-bold tabular-nums"
-                  style={{ color: pct === 100 ? "#10B981" : "#4ECDC4" }}
+                  style={{ color: pct === 100 ? "#10B981" : "var(--color-bw-teal)" }}
                 >
                   {pct}%
                 </span>

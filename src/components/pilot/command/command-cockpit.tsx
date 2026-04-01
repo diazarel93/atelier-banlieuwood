@@ -214,7 +214,7 @@ export function CommandCockpit() {
       {!sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(true)}
-          className="lg:hidden fixed bottom-20 right-4 z-30 w-12 h-12 flex items-center justify-center rounded-full bg-[#8b5cf6] text-white shadow-lg hover:bg-[#7c3aed] active:scale-95 transition-all cursor-pointer"
+          className="lg:hidden fixed bottom-20 right-4 z-30 w-12 h-12 flex items-center justify-center rounded-full bg-bw-violet text-white shadow-lg hover:bg-[#7c3aed] active:scale-95 transition-all cursor-pointer"
           aria-label="Ouvrir le panneau élèves"
         >
           <svg

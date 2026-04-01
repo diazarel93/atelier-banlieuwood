@@ -74,7 +74,11 @@ export default function StudentLoginPage() {
             </p>
             <p className="text-xs mt-4" style={{ color: "#9CA3AF" }}>
               Pas recu ? Verifie les spams ou{" "}
-              <button onClick={() => setSent(false)} className="underline cursor-pointer" style={{ color: "#FF6B35" }}>
+              <button
+                onClick={() => setSent(false)}
+                className="underline cursor-pointer"
+                style={{ color: "var(--color-bw-primary)" }}
+              >
                 reessaie
               </button>
             </p>
@@ -165,7 +169,7 @@ export default function StudentLoginPage() {
                 type="submit"
                 disabled={sending || !email}
                 className="w-full py-3.5 rounded-xl text-sm font-bold text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                style={{ background: "#FF6B35", boxShadow: "0 4px 12px rgba(255,107,53,0.25)" }}
+                style={{ background: "var(--color-bw-primary)", boxShadow: "0 4px 12px rgba(255,107,53,0.25)" }}
               >
                 {sending ? "Envoi en cours..." : "Recevoir mon lien magique ✨"}
               </button>
@@ -174,7 +178,7 @@ export default function StudentLoginPage() {
         )}
 
         <div className="text-center mt-6 space-y-2">
-          <Link href={ROUTES.join} className="text-sm font-semibold block" style={{ color: "#FF6B35" }}>
+          <Link href={ROUTES.join} className="text-sm font-semibold block" style={{ color: "var(--color-bw-primary)" }}>
             Rejoindre une session sans compte →
           </Link>
           <Link href="/" className="text-xs block" style={{ color: "#9CA3AF" }}>

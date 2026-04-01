@@ -29,7 +29,7 @@ export function SituationState({ situation, onSubmit, submitting, playSound }: S
   }, [text]);
 
   // Category color
-  const catColor = CATEGORY_COLORS[situation.category] || "#FF6B35";
+  const catColor = CATEGORY_COLORS[situation.category] || "var(--color-bw-primary)";
   const catLabel = CATEGORY_LABELS[situation.category] || situation.category;
 
   // Auto-focus when typewriter finishes
@@ -166,7 +166,7 @@ export function SituationState({ situation, onSubmit, submitting, playSound }: S
             style={
               text.trim() && !submitting
                 ? {
-                    background: "linear-gradient(135deg, #FF6B35, #D4A843)",
+                    background: "linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))",
                     boxShadow: "0 4px 15px rgba(255,107,53,0.3)",
                   }
                 : undefined
@@ -190,7 +190,7 @@ export function SituationState({ situation, onSubmit, submitting, playSound }: S
             height="14"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#4ECDC4"
+            stroke="var(--color-bw-teal)"
             strokeWidth="2"
             strokeLinecap="round"
             className="mt-0.5 flex-shrink-0"

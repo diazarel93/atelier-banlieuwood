@@ -44,7 +44,7 @@ const EVENT_STYLES: Record<string, { icon: string; color: string; bg: string }> 
   broadcast_sent: { icon: "📢", color: "#8B4513", bg: "#FFF3E0" },
   nudge_sent: { icon: "🚀", color: "#3B5998", bg: "#EEF3FF" },
   module_completed: { icon: "✅", color: "#4CAF50", bg: "#E8F5E9" },
-  phase_changed: { icon: "➡️", color: "#8B5CF6", bg: "#F3E5F5" },
+  phase_changed: { icon: "➡️", color: "var(--color-bw-violet)", bg: "#F3E5F5" },
 };
 
 function formatTime(timestamp: number, sessionStart: number): string {

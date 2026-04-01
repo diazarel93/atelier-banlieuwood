@@ -32,7 +32,7 @@ export default function PlayError({ error, reset }: { error: Error & { digest?: 
           <button
             onClick={reset}
             style={{
-              background: "linear-gradient(135deg, #FF6B35, #D4A843)",
+              background: "linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))",
               color: "white",
               border: "none",
               padding: "0.75rem 1.5rem",

@@ -21,7 +21,7 @@ const STATE_CONFIG: Record<
     bg: "#FFF5EF",
     border: "#FFE0CE",
     text: "#B84B1A",
-    accent: "#FF6B35",
+    accent: "var(--color-bw-primary)",
     label: "Pret a lancer",
     sub: "Ouvrez les reponses quand vous etes pret",
   },

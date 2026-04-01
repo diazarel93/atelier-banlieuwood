@@ -135,7 +135,7 @@ export function SceneBuilderState({ sessionId, studentId, module5, onDone }: Sce
               height="24"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#4ECDC4"
+              stroke="var(--color-bw-teal)"
               strokeWidth="2"
               strokeLinecap="round"
             >

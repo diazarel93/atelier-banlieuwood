@@ -51,7 +51,7 @@ export default function RequestAccessPage() {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-sm rounded-2xl bg-[#141210] border border-[#2a2420] p-8 text-center space-y-6"
         >
-          <div className="w-16 h-16 rounded-full bg-[#4ECDC4]/10 mx-auto flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-bw-teal/10 mx-auto flex items-center justify-center">
             <svg
               width="28"
               height="28"
@@ -141,7 +141,7 @@ export default function RequestAccessPage() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={3}
-                className="w-full rounded-xl border border-[#2a2420] bg-[#1a1510] text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/20 resize-none placeholder:text-white/30"
+                className="w-full rounded-xl border border-[#2a2420] bg-[#1a1510] text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-bw-primary/20 resize-none placeholder:text-white/30"
                 placeholder="Pourquoi souhaitez-vous utiliser Banlieuwood ?"
               />
             </div>

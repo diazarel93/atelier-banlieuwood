@@ -36,7 +36,7 @@ export default function PilotError({ error, reset }: { error: Error & { digest?:
           <button
             onClick={reset}
             style={{
-              background: "#FF6B35",
+              background: "var(--color-bw-primary)",
               color: "white",
               border: "none",
               padding: "0.75rem 1.5rem",

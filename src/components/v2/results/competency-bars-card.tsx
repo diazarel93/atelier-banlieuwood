@@ -19,7 +19,7 @@ export function CompetencyBarsCard({ feedback }: CompetencyBarsCardProps) {
             label="Score"
             color={
               feedback.overallScore >= 60
-                ? "var(--color-bw-teal, #4ECDC4)"
+                ? "var(--color-bw-teal, var(--color-bw-teal))"
                 : feedback.overallScore >= 30
                   ? "var(--color-bw-amber, #F59E0B)"
                   : "var(--color-bw-danger, #EF4444)"
@@ -75,7 +75,7 @@ export function CompetencyBarsCard({ feedback }: CompetencyBarsCardProps) {
                   width: `${comp.score}%`,
                   backgroundColor:
                     comp.score >= 60
-                      ? "var(--color-bw-teal, #4ECDC4)"
+                      ? "var(--color-bw-teal, var(--color-bw-teal))"
                       : comp.score >= 30
                         ? "var(--color-bw-amber, #F59E0B)"
                         : "var(--color-bw-muted, #999)",
