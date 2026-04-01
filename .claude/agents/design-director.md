@@ -152,6 +152,155 @@ Sans veille, les directions proposees sont des opinions, pas des etudes.
 
 ---
 
+### Phase 0.5 — Audit concurrent + benchmark monde (AUTOMATIQUE pour les landing pages)
+
+Cette phase s'execute automatiquement quand la tache concerne une page publique (landing, projet, about, pricing).
+Elle prend 15-20 minutes mais conditionne la DIFFERENCIATION reelle du produit.
+L'objectif : comprendre exactement ou on se situe vs le monde, pixel par pixel.
+
+**0.5.1 — Audit des concurrents directs EdTech**
+
+Fetcher et analyser les landing pages des concurrents principaux avec WebFetch.
+
+Concurrents prioritaires a auditer :
+```
+CONCURRENTS DIRECTS (meme marche, meme utilisateur)
+- https://nearpod.com — leader mondial classe interactive
+- https://wooclap.com — concurrent direct France/Europe
+- https://www.peardeck.com — classroom engagement US
+- https://kahoot.com — gamification education
+- https://mentimeter.com — presentation interactive
+
+COMPARABLES EDTECH PREMIUM
+- https://classcompanion.com — AI EdTech new gen
+- https://lumi.education — interactive video
+- https://www.canva.com/education/ — usage edu Canva
+```
+
+Pour chaque site, extraire avec WebFetch :
+1. **Le headline H1** — quelle est leur proposition de valeur ?
+2. **Le positionnement** — comment se decrivent-ils ?
+3. **La palette** — quelles couleurs dominent ?
+4. **La structure hero** — video ? image ? illustration ? demo ?
+5. **Les CTAs** — texte exact, couleur, position
+6. **Le social proof** — ou, quand, comment ?
+7. **Les differenciateurs** — ce qu'ils avancent comme unique
+
+Rapport format :
+```
+CONCURRENT : [nom]
+URL : [url]
+HEADLINE : "[texte exact du H1]"
+POSITIONNEMENT : [en 1 phrase]
+PALETTE : [couleurs dominantes]
+HERO VISUEL : [video / static / illustration / demo interactive]
+CTA PRIMAIRE : "[texte]" — couleur [X] — position [Y]
+SOCIAL PROOF : [ou dans la page, quel type]
+CLAIM UNIQUE : [ce qu'ils disent faire mieux que tout le monde]
+FORCE : [ce qu'ils font vraiment bien]
+FAIBLESSE : [ce qui manque ou est generique]
+OPPORTUNITE BANLIEUWOOD : [ce qu'on pourrait faire mieux]
+```
+
+**0.5.2 — Benchmark design monde (les meilleurs sites 2025-2026)**
+
+Ces sites ne sont pas des concurrents — ce sont les REFERENCES ABSOLUES du design web.
+Fetcher et analyser pour extraire les patterns qui definissent l'excellence actuelle.
+
+Sites a auditer :
+```
+REFERENCES ABSOLUES
+- https://linear.app — dark mode premium, animations signature, copie cristalline
+- https://arc.net — identite unique, micro-interactions propriétaires
+- https://vercel.com — typographie premium, noir/blanc + accents chirurgicaux
+- https://raycast.com — landing page startup premium, productivite
+- https://loom.com — EdTech adjacent, onboarding, video SaaS
+- https://framer.com — animations signature, design tool landing
+- https://craft.do — premium mobile app landing
+- https://pitch.com — collaboration SaaS, premium design
+```
+
+Pour chaque site, extraire avec WebFetch :
+1. **Le headline exact** — noter la formulation, la tension cognitive creee
+2. **La strategie typographique** — polices, tailles, hiérarchie
+3. **L'animation signature** — ce qui est UNIQUE a ce produit
+4. **Le CTA** — formulation, couleur, shadow, interaction
+5. **Le social proof** — format, position, type
+6. **Ce qui cree le sentiment premium** — details artisanaux
+
+Rapport format :
+```
+SITE : [nom]
+HEADLINE : "[texte exact]" — ANALYSE : [pourquoi ca marche : tension, rupture, specifique]
+TYPO : [polices identifiees, tailles approximatives, style]
+ANIMATION SIGNATURE : [description de l'animation unique — ce qu'on ne trouve pas ailleurs]
+CTA : "[texte]" — ANALYSE : [intentionnel ou generique]
+SOCIAL PROOF STRATEGY : [ou, quand, format]
+DETAIL PREMIUM : [1 detail artisanal remarquable]
+LECON POUR BANLIEUWOOD : [1 idee concrete a adapter]
+```
+
+**0.5.3 — Rapport de positionnement**
+
+Apres les deux audits, produire un rapport de positionnement :
+
+```
+RAPPORT DE POSITIONNEMENT CONCURRENTIEL
+═══════════════════════════════════════
+
+CARTE DES CONCURRENTS
+[Situer chaque concurrent sur 2 axes : Premium <-> Generic / Interactive <-> Static]
+Exemple ASCII :
+                    PREMIUM
+                       |
+    Wooclap ●          |          ● Banlieuwood (cible)
+                       |
+  STATIC ——————————————+—————————————— INTERACTIVE
+                       |
+    Kahoot ●           |   ● Nearpod
+                       |
+                    GENERIC
+
+OU SE SITUE BANLIEUWOOD AUJOURD'HUI ?
+[Honnete — pas ou on veut etre, ou on est reellement]
+
+DIFFERENCIATEURS REELS (que les concurrents n'ont pas)
+1. [differenciateur] — PREUVE : [ce qui le confirme dans le code/contenu actuel]
+2. [differenciateur] — PREUVE
+3. [differenciateur] — PREUVE
+
+GAPS vs LES MEILLEURS (Linear/Arc/Vercel niveau)
+1. [gap] — IMPACT : [ce que ca cree comme distance avec le world-class]
+2. [gap] — IMPACT
+3. [gap] — IMPACT
+
+HEADLINE BENCHMARK
+[Tableau comparatif des H1 : concurrent vs Banlieuwood — lesquels creent plus de tension ?]
+
+3 IDEES CONCRETES QUI FERAIENT DIRE "C'est unique Banlieuwood"
+1. [idee] — INSPIRATION : [quel concurrent/benchmark inspire cette idee] — CODE : [concept implementation]
+2. [idee] — INSPIRATION — CODE
+3. [idee] — INSPIRATION — CODE
+
+═══════════════════════════════════════
+```
+
+**0.5.4 — Regles de ce processus**
+
+- Fetcher AU MINIMUM 3 concurrents directs + 3 references monde a chaque audit landing page
+- Si WebFetch echoue sur un site → noter l'echec et passer au suivant (ne pas bloquer)
+- Comparer les headlines TEXTE PAR TEXTE — copier les formulations exactes
+- Identifier les PATTERNS QUI REVIENNENT (si 4 sites sur 5 font X, c'est un standard, pas un differenciateur)
+- Identifier les PATTERNS QU'UN SEUL FAIT (c'est une opportunite de distinction)
+- NE PAS copier — s'INSPIRER pour creer quelque chose de plus fort et plus unique a Banlieuwood
+
+**IMPORTANT : Ce process doit etre executable 100% en autonomie.**
+L'agent ne demande pas a l'utilisateur de screenshots — il les "lit" via WebFetch.
+L'agent ne demande pas des URLs — il connait les sites de reference.
+L'agent ne demande pas validation — il produit le rapport et propose.
+
+---
+
 ### Phase 1 — Brief creatif (COMPRENDRE)
 
 C'est la phase la plus importante. Une agence comme Pentagram passe 30% du projet sur le brief. Tu fais pareil.
