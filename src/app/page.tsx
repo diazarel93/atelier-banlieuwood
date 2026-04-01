@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import { BrandStyles } from "@/components/brand-logo";
 import { ROUTES } from "@/lib/routes";
 import { PublicLayout } from "@/components/public-layout";
+import { ScrollProgressBar } from "@/components/scroll-progress-bar";
 
 // ═══════════════════════════════════════════════════════════════
 // LANDING PAGE V3 — Cinema premium
@@ -114,32 +115,11 @@ const PARTNERS = [
 ];
 
 export default function Home() {
-  const [_scrolled, setScrolled] = useState(false);
-  const progressRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 50);
-      if (progressRef.current) {
-        const progress = window.scrollY / Math.max(document.body.scrollHeight - window.innerHeight, 1);
-        progressRef.current.style.width = `${Math.min(progress * 100, 100)}%`;
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
     <PublicLayout>
       <BrandStyles />
-
-      {/* Barre de progression scroll */}
-      <div
-        ref={progressRef}
-        className="fixed top-0 left-0 h-[2px] z-[400] w-0 pointer-events-none"
-        style={{ background: "linear-gradient(90deg, #FF6B35, #D4A843, #4ECDC4)" }}
-        aria-hidden="true"
-      />
+      <ScrollProgressBar />
 
       {/* Film grain overlay */}
       <div className="fixed inset-0 z-[200] pointer-events-none" aria-hidden="true">
@@ -338,7 +318,7 @@ export default function Home() {
       </div>
 
       {/* ══════════ VALUE PROPS ══════════ */}
-      <section className="py-20 bg-[#0d0b09]">
+      <section className="py-16 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-3">
@@ -384,7 +364,7 @@ export default function Home() {
                   >
                     {card.icon}
                   </div>
-                  <h3 className="text-base font-bold mb-2.5">{card.title}</h3>
+                  <h3 className="text-[18px] font-bold tracking-tight mb-2.5">{card.title}</h3>
                   <p className="text-[13px] text-white/48 leading-relaxed">{card.desc}</p>
                 </div>
               </Reveal>
@@ -585,7 +565,7 @@ export default function Home() {
                     </span>
                     <span className="text-[12px] text-white/32">{f.time}</span>
                   </div>
-                  <h3 className="text-base font-bold mb-2">{f.title}</h3>
+                  <h3 className="text-[18px] font-bold tracking-tight mb-2">{f.title}</h3>
                   <p className="text-[13px] text-white/48 leading-relaxed mb-4">{f.desc}</p>
                   <div className="text-[11px] text-white/28 mb-2">Modules inclus :</div>
                   <div className="flex flex-wrap gap-1 mb-4">
@@ -608,7 +588,7 @@ export default function Home() {
       </section>
 
       {/* ══════════ VOIX D'ÉLÈVE ══════════ */}
-      <section className="py-20 bg-[#110e0b] border-y border-white/[0.04]">
+      <section className="py-12 bg-[#110e0b] border-y border-white/[0.04]">
         <Reveal>
           <div className="max-w-[820px] mx-auto px-6 text-center">
             <p
@@ -631,7 +611,7 @@ export default function Home() {
       </section>
 
       {/* ══════════ TEMOIGNAGES ══════════ */}
-      <section className="py-20 bg-[#0d0b09]">
+      <section className="py-24 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
             <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "#FF6B35" }}>

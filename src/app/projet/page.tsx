@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
 import { SiteNavbar } from "@/components/site-navbar";
 import { SiteFooter } from "@/components/site-footer";
+import { ScrollProgressBar } from "@/components/scroll-progress-bar";
 
 export const metadata: Metadata = {
   title: "Le Projet — Banlieuwood",
@@ -76,6 +77,7 @@ export default function ProjetPage() {
       style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
     >
       <SiteNavbar />
+      <ScrollProgressBar />
       {/* ══ Hero ══ */}
       <section className="relative pt-32 pb-24 px-6 overflow-hidden">
         {/* Ambient blobs */}
