@@ -43,9 +43,7 @@ function HeroActive({ session, isProfesseur }: { session: SessionSummary; isProf
               <span className="animate-ping absolute h-full w-full rounded-full bg-[var(--color-bw-teal)] opacity-60" />
               <span className="relative rounded-full h-2.5 w-2.5 bg-[var(--color-bw-teal)]" />
             </span>
-            <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--color-bw-teal-readable,#2ab5a8)]">
-              En cours
-            </span>
+            <span className="label-caps text-[var(--color-bw-teal-readable,#2ab5a8)]">En cours</span>
           </div>
 
           <h2 className="text-heading-sm font-bold text-bw-heading">{session.title}</h2>

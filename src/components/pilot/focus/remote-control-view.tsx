@@ -190,7 +190,7 @@ export function RemoteControlView({
       {/* Exit button */}
       <button
         onClick={onExit}
-        className="absolute top-4 right-4 text-[11px] font-medium text-gray-400 hover:text-gray-600 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+        className="absolute top-4 right-4 text-body-xs font-medium text-gray-400 hover:text-gray-600 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
       >
         Quitter le mode tablette
       </button>
@@ -208,7 +208,7 @@ export function RemoteControlView({
 
       {/* Question preview (truncated) */}
       {questionText && (
-        <p className="text-center text-[15px] font-medium text-gray-700 leading-snug max-w-md mb-8 line-clamp-2">
+        <p className="text-center text-body-md font-medium text-gray-700 leading-snug max-w-md mb-8 line-clamp-2">
           {questionText}
         </p>
       )}
@@ -229,7 +229,7 @@ export function RemoteControlView({
             }}
           >
             <span className="text-3xl">{btn.icon}</span>
-            <span className="text-[13px] font-bold">{btn.label}</span>
+            <span className="text-body-sm font-bold">{btn.label}</span>
           </motion.button>
         ))}
       </div>
@@ -242,7 +242,7 @@ export function RemoteControlView({
           className="mt-6 px-4 py-3 rounded-xl text-center max-w-sm w-full"
           style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)" }}
         >
-          <span className="text-[13px] font-medium text-red-600">
+          <span className="text-body-sm font-medium text-red-600">
             {stuckCount} eleve{stuckCount > 1 ? "s" : ""} en attente de reponse
           </span>
         </motion.div>

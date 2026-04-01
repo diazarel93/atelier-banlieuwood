@@ -18,10 +18,10 @@ const STATE_CONFIG: Record<
   { bg: string; border: string; text: string; accent: string; label: string; sub: string }
 > = {
   waiting: {
-    bg: "#F5F0FF",
-    border: "#E8DFFF",
-    text: "#6B4DC7",
-    accent: "#8B5CF6",
+    bg: "#FFF5EF",
+    border: "#FFE0CE",
+    text: "#B84B1A",
+    accent: "#FF6B35",
     label: "Pret a lancer",
     sub: "Ouvrez les reponses quand vous etes pret",
   },
@@ -110,13 +110,13 @@ export function SessionStateBanner({
           />
 
           {/* Label */}
-          <span className="text-[12px] font-semibold whitespace-nowrap" style={{ color: config.text }}>
+          <span className="text-body-xs font-semibold whitespace-nowrap" style={{ color: config.text }}>
             {config.label}
           </span>
 
           {/* Counter */}
           {counterText && (
-            <span className="text-[12px] font-medium tabular-nums" style={{ color: `${config.text}CC` }}>
+            <span className="text-body-xs font-medium tabular-nums" style={{ color: `${config.text}CC` }}>
               {counterText}
             </span>
           )}
@@ -125,7 +125,7 @@ export function SessionStateBanner({
           {status === "paused" && onTogglePause && (
             <button
               onClick={onTogglePause}
-              className="h-6 px-2 rounded-md text-[11px] font-semibold cursor-pointer transition-colors"
+              className="h-6 px-2 rounded-md text-body-xs font-semibold cursor-pointer transition-colors"
               style={{ background: config.accent, color: "#fff" }}
             >
               Reprendre
@@ -134,7 +134,7 @@ export function SessionStateBanner({
           {status === "done" && onViewResults && (
             <button
               onClick={onViewResults}
-              className="h-6 px-2 rounded-md text-[11px] font-semibold cursor-pointer transition-colors"
+              className="h-6 px-2 rounded-md text-body-xs font-semibold cursor-pointer transition-colors"
               style={{ background: config.accent, color: "#fff" }}
             >
               Resultats
@@ -171,10 +171,10 @@ export function SessionStateBanner({
 
         {/* Label + sub */}
         <div className="flex items-baseline gap-2 min-w-0">
-          <span className="text-[14px] font-semibold" style={{ color: config.text }}>
+          <span className="text-body-sm font-semibold" style={{ color: config.text }}>
             {config.label}
           </span>
-          <span className="text-[12px]" style={{ color: `${config.text}99` }}>
+          <span className="text-body-xs" style={{ color: `${config.text}99` }}>
             {subText}
           </span>
         </div>
@@ -200,7 +200,7 @@ export function SessionStateBanner({
                 transition={{ duration: 0.6, ease: "easeOut" }}
               />
             </svg>
-            <span className="text-[18px] font-bold tabular-nums" style={{ color: config.text }}>
+            <span className="text-heading-md font-bold tabular-nums" style={{ color: config.text }}>
               {respondedCount}/{totalStudents}
             </span>
           </div>
@@ -208,7 +208,7 @@ export function SessionStateBanner({
 
         {/* Counter — voting */}
         {status === "voting" && (
-          <span className="text-[16px] font-bold tabular-nums flex-shrink-0" style={{ color: config.text }}>
+          <span className="text-body-md font-bold tabular-nums flex-shrink-0" style={{ color: config.text }}>
             {voteCount} votes
           </span>
         )}
@@ -217,7 +217,7 @@ export function SessionStateBanner({
         {status === "paused" && onTogglePause && (
           <button
             onClick={onTogglePause}
-            className="h-7 px-3 rounded-[8px] text-[12px] font-semibold cursor-pointer transition-colors"
+            className="h-7 px-3 rounded-[8px] text-body-xs font-semibold cursor-pointer transition-colors"
             style={{ background: config.accent, color: "#fff" }}
           >
             Reprendre
@@ -228,7 +228,7 @@ export function SessionStateBanner({
         {status === "done" && onViewResults && (
           <button
             onClick={onViewResults}
-            className="h-7 px-3 rounded-[8px] text-[12px] font-semibold cursor-pointer transition-colors"
+            className="h-7 px-3 rounded-[8px] text-body-xs font-semibold cursor-pointer transition-colors"
             style={{ background: config.accent, color: "#fff" }}
           >
             Resultats →

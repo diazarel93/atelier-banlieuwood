@@ -153,7 +153,7 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
                         <span className="text-[10px] font-bold tabular-nums text-bw-muted">
                           {formatTime(event.timestamp, sessionStartedAt)}
                         </span>
-                        <span className="text-[11px] font-semibold truncate" style={{ color: style.color }}>
+                        <span className="text-body-xs font-semibold truncate" style={{ color: style.color }}>
                           {event.label}
                         </span>
                       </div>
@@ -172,7 +172,7 @@ export function SessionTimeline({ events, sessionStartedAt, maxVisible = 50 }: S
         <div className="px-3 py-2">
           <div className="flex items-center gap-2">
             <span className="text-[10px]">{EVENT_STYLES[events[events.length - 1].type]?.icon}</span>
-            <span className="text-[11px] text-bw-text truncate">{events[events.length - 1].label}</span>
+            <span className="text-body-xs text-bw-text truncate">{events[events.length - 1].label}</span>
             <span className="text-[10px] text-bw-muted ml-auto">
               {formatTime(events[events.length - 1].timestamp, sessionStartedAt)}
             </span>

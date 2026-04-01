@@ -55,7 +55,7 @@ export function ProjectionQuestionCard({
             {categoryLabel}
           </span>
           {hasNav && (
-            <span className="text-[13px] font-semibold text-[#4A4A4A] tabular-nums">
+            <span className="text-body-sm font-semibold text-[#4A4A4A] tabular-nums">
               {currentIndex + 1} / {maxSituations}
             </span>
           )}

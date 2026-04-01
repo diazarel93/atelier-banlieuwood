@@ -145,55 +145,76 @@ export default function DashboardV2Page() {
           {/* Hero — point focal P1 : session active ou prochaine séance */}
           <HeroNextSession activeSession={activeSession} nextSession={nextSession} isProfesseur={isProfesseur} />
 
-          {/* Séances du jour */}
-          {data?.todaySessions && data.todaySessions.length > 0 && (
-            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-5">
-              <h3 className="label-caps mb-3">Aujourd&apos;hui</h3>
-              <div className="space-y-2">
-                {data.todaySessions.map((s, i) => (
-                  <div
-                    key={s.id}
-                    className="flex items-center gap-3 py-2 pl-3 rounded-xl hover:bg-bw-primary/[0.025] transition-colors duration-150 relative animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both"
-                    style={{ animationDelay: `${i * 60}ms` }}
-                  >
+          {/* Séances du jour — masquée si session active unique (le Hero la couvre déjà) */}
+          {data?.todaySessions &&
+            data.todaySessions.length > 0 &&
+            !(activeSession && data.todaySessions.length === 1) && (
+              <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md p-5">
+                <h3 className="label-caps mb-3">Aujourd&apos;hui</h3>
+                <div className="space-y-2">
+                  {data.todaySessions.map((s, i) => (
                     <div
-                      className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
-                      style={{
-                        backgroundColor:
-                          s.status === "done"
-                            ? "var(--color-bw-green)"
-                            : s.status === "waiting" || s.status === "draft"
-                              ? "var(--color-bw-amber)"
-                              : "var(--color-bw-teal)",
-                      }}
-                    />
-                    <span className="text-xs font-medium text-bw-muted tabular-nums w-10 shrink-0">
-                      {new Date(s.scheduledAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-heading-xs text-bw-heading truncate">{s.title}</p>
-                      <span className="text-body-xs text-bw-muted">
-                        {s.classLabel} — {s.studentCount} élève{s.studentCount !== 1 ? "s" : ""}
-                      </span>
-                    </div>
-                    <Link
-                      href={ROUTES.pilot(s.id)}
-                      prefetch={false}
-                      className="shrink-0 inline-flex items-center rounded-lg bg-bw-primary px-3 min-h-[44px] text-xs font-semibold text-white hover:bg-bw-primary-500 btn-hover"
+                      key={s.id}
+                      className="flex items-center gap-3 py-2 pl-3 rounded-xl hover:bg-bw-primary/[0.025] transition-colors duration-150 relative animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both"
+                      style={{ animationDelay: `${i * 60}ms` }}
                     >
-                      Lancer
-                    </Link>
-                  </div>
-                ))}
+                      <div
+                        className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
+                        style={{
+                          backgroundColor:
+                            s.status === "done"
+                              ? "var(--color-bw-green)"
+                              : s.status === "waiting" || s.status === "draft"
+                                ? "var(--color-bw-amber)"
+                                : "var(--color-bw-teal)",
+                        }}
+                      />
+                      <span className="text-xs font-medium text-bw-muted tabular-nums w-10 shrink-0">
+                        {new Date(s.scheduledAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-heading-xs text-bw-heading truncate">{s.title}</p>
+                        <span className="text-body-xs text-bw-muted">
+                          {s.classLabel} — {s.studentCount} élève{s.studentCount !== 1 ? "s" : ""}
+                        </span>
+                      </div>
+                      {s.status === "done" ? (
+                        <Link
+                          href={ROUTES.seanceResults(s.id)}
+                          prefetch={false}
+                          className="shrink-0 inline-flex items-center rounded-lg bg-[var(--color-bw-surface-dim)] px-3 min-h-[44px] text-xs font-semibold text-bw-muted hover:text-bw-heading transition-colors"
+                        >
+                          Voir résultats
+                        </Link>
+                      ) : s.status === "responding" || s.status === "voting" || s.status === "waiting" ? (
+                        <Link
+                          href={ROUTES.pilot(s.id)}
+                          prefetch={false}
+                          className="shrink-0 inline-flex items-center rounded-lg px-3 min-h-[44px] text-xs font-semibold text-white btn-hover"
+                          style={{ background: "var(--color-bw-teal)", boxShadow: "0 2px 12px rgba(78,205,196,0.3)" }}
+                        >
+                          Retourner →
+                        </Link>
+                      ) : (
+                        <Link
+                          href={ROUTES.pilot(s.id)}
+                          prefetch={false}
+                          className="shrink-0 inline-flex items-center rounded-lg bg-bw-primary px-3 min-h-[44px] text-xs font-semibold text-white hover:bg-bw-primary-500 btn-hover"
+                        >
+                          Lancer
+                        </Link>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  href={ROUTES.seanceNew}
+                  className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-bw-primary/[0.06] py-3 text-sm font-medium text-bw-primary hover:bg-bw-primary/[0.10] transition-all"
+                >
+                  + Nouvelle séance
+                </Link>
               </div>
-              <Link
-                href={ROUTES.seanceNew}
-                className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-bw-primary/[0.06] py-3 text-sm font-medium text-bw-primary hover:bg-bw-primary/[0.10] transition-all"
-              >
-                + Nouvelle séance
-              </Link>
-            </div>
-          )}
+            )}
 
           {/* 4 KPI en grille 2×2 */}
           <div className="grid grid-cols-2 gap-4">
@@ -202,32 +223,36 @@ export default function DashboardV2Page() {
                 icon: "✓",
                 value: stats?.doneSessions || 0,
                 label: "Séances animées",
-                color: "var(--color-axis-comprehension, #6366F1)",
+                color: "#FF6B35",
               },
               {
                 icon: "⏱",
                 value: stats?.activeSessions || 0,
                 label: "En cours",
-                color: "var(--color-axis-engagement, var(--color-bw-amber))",
+                color: "#4ECDC4",
               },
               {
                 icon: "≡",
                 value: stats?.totalSessions || 0,
                 label: "Total séances",
-                color: "var(--color-axis-creativite, #8B5CF6)",
+                color: "#D4A843",
               },
               {
                 icon: "👥",
                 value: stats?.totalStudents || 0,
                 label: "Élèves touchés",
-                color: "var(--color-axis-expression, #EC4899)",
+                color: "#FF9B6A",
               },
-            ].map((kpi) => (
-              <div
+            ].map((kpi, i) => (
+              <motion.div
                 key={kpi.label}
-                className="relative overflow-hidden p-6 rounded-2xl border border-[var(--color-bw-border-subtle)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(139,92,246,0.12)]"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.07, duration: 0.45, ease: [0.19, 1, 0.22, 1] }}
+                className="relative overflow-hidden p-6 rounded-2xl border border-[var(--color-bw-border-subtle)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
                 style={{
-                  background: `linear-gradient(135deg, ${kpi.color}08 0%, transparent 60%)`,
+                  background: `linear-gradient(135deg, ${kpi.color}07 0%, transparent 60%)`,
+                  ["--tw-shadow-color" as string]: `${kpi.color}25`,
                 }}
               >
                 <div
@@ -239,7 +264,7 @@ export default function DashboardV2Page() {
                 />
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col gap-2">
-                    <span className="text-[11px] font-bold text-bw-text uppercase tracking-[0.06em]">{kpi.label}</span>
+                    <span className="label-caps">{kpi.label}</span>
                     <span className="text-3xl font-black tabular-nums text-bw-heading">{kpi.value}</span>
                   </div>
                   <div
@@ -282,15 +307,15 @@ export default function DashboardV2Page() {
                   </div>
                 </div>
                 {/* Trends will be added when API supports them */}
-              </div>
+              </motion.div>
             ))}
           </div>
 
           {/* Séances récentes (table) */}
           {data?.recentSessions && data.recentSessions.length > 0 && (
             <div>
-              <h3 className="text-sm font-bold text-bw-heading mb-3">Séances récentes</h3>
-              <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border-subtle)] scrollbar-thin">
+              <h3 className="label-caps text-bw-muted mb-3">Séances récentes</h3>
+              <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md scrollbar-thin">
                 <table className="w-full text-body-sm" style={{ borderCollapse: "collapse" }}>
                   <thead>
                     <tr>
@@ -329,22 +354,20 @@ export default function DashboardV2Page() {
                               {new Date(s.scheduledAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                             </div>
                           </td>
-                          <td className="p-3">
+                          <td className="p-2">
                             <div className="flex flex-col">
                               <span className="font-semibold text-bw-heading truncate max-w-[200px]">{s.title}</span>
                               {s.classLabel && <span className="text-body-xs text-bw-muted">{s.classLabel}</span>}
                             </div>
                           </td>
-                          <td className="p-3">
+                          <td className="p-2">
                             <span className="inline-flex px-2.5 py-0.5 rounded-full text-body-xs font-bold bg-bw-primary/10 text-bw-primary">
                               {levelLabel}
                             </span>
                           </td>
-                          <td className="p-3 text-bw-heading tabular-nums">{s.studentCount}</td>
-                          <td className="p-3 text-bw-green font-semibold tabular-nums">
-                            {s.studentCount > 0 ? "96%" : "—"}
-                          </td>
-                          <td className="p-3">
+                          <td className="p-2 text-bw-heading tabular-nums">{s.studentCount}</td>
+                          <td className="p-2 text-bw-muted tabular-nums">—</td>
+                          <td className="p-2">
                             <Link
                               href={ROUTES.seanceResults(s.id)}
                               className="inline-flex items-center px-3 min-h-[44px] rounded-lg text-body-xs font-medium text-bw-primary bg-bw-primary/8 hover:bg-bw-primary/15 transition-colors duration-150"
@@ -366,12 +389,21 @@ export default function DashboardV2Page() {
         <div className="lg:col-span-4 space-y-5">
           {/* Quoi de neuf */}
           {activeSessions.length > 0 && (
-            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
-              <h3 className="label-caps text-bw-muted mb-3">Quoi de neuf</h3>
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md p-4">
+              <h3 className="label-caps text-bw-muted mb-3">En direct</h3>
               <div className="space-y-2">
-                <div className="flex items-start gap-2.5 rounded-lg px-3 py-2 text-sm bg-bw-danger-100/50">
-                  <span className="text-base mt-0.5">🔴</span>
-                  <span className="text-bw-heading font-medium">
+                <div
+                  className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm border"
+                  style={{
+                    background: "rgba(78,205,196,0.07)",
+                    borderColor: "rgba(78,205,196,0.22)",
+                  }}
+                >
+                  <span className="relative flex h-2.5 w-2.5 shrink-0">
+                    <span className="animate-ping absolute h-full w-full rounded-full bg-[var(--color-bw-teal)] opacity-60" />
+                    <span className="relative rounded-full h-2.5 w-2.5 bg-[var(--color-bw-teal)]" />
+                  </span>
+                  <span className="font-medium" style={{ color: "var(--color-bw-teal-readable, #1a9e93)" }}>
                     {activeSessions.length} séance{activeSessions.length > 1 ? "s" : ""} en cours
                   </span>
                 </div>
@@ -395,7 +427,7 @@ export default function DashboardV2Page() {
 
           {/* Actions requises */}
           {data?.recentSessions?.filter((s) => s.status === "done").length ? (
-            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
+            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md p-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="label-caps text-bw-muted">Actions requises</h3>
                 <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-bw-primary text-white text-body-xs font-bold px-1.5">
@@ -421,7 +453,7 @@ export default function DashboardV2Page() {
           ) : null}
 
           {/* Modules progression */}
-          <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
+          <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md p-4">
             <h3 className="label-caps text-bw-muted mb-3">Modules</h3>
             <div className="flex flex-col gap-3">
               {mainPhases.map((phase) => {
@@ -461,7 +493,7 @@ export default function DashboardV2Page() {
           </div>
 
           {/* Agenda calendrier */}
-          <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] p-4">
+          <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md p-4">
             <h3 className="label-caps text-bw-muted mb-3">Agenda</h3>
             <MiniCalendar sessionDates={(data?.sessionDates || []).map((d) => new Date(d))} />
           </div>
@@ -474,7 +506,7 @@ export default function DashboardV2Page() {
           <motion.div
             animate={prefersReducedMotion ? {} : { y: [0, -10, 0], rotate: [0, -3, 3, 0] }}
             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-            className="text-8xl mb-6 drop-shadow-[0_0_24px_rgba(139,92,246,0.3)]"
+            className="text-8xl mb-6 drop-shadow-[0_0_28px_rgba(255,107,53,0.4)]"
           >
             🎬
           </motion.div>

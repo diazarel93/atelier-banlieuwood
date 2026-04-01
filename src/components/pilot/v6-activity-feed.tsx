@@ -31,7 +31,7 @@ export function V6ActivityFeed({ items, onClear }: V6ActivityFeedProps) {
         <div className="flex items-center gap-2.5">
           <span className="text-base">📻</span>
           <span className="text-body-sm font-bold text-white">Activite</span>
-          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-bw-violet/10 text-bw-violet">
+          <span className="text-body-xs font-bold px-2 py-0.5 rounded-full bg-bw-violet/10 text-bw-violet">
             {items.length}
           </span>
         </div>

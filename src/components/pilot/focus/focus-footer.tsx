@@ -74,7 +74,7 @@ export function FocusFooter({
     countChipText = `${totalVotes}/${totalStudents} votes`;
     countChipColor = "bg-orange-500/10 text-orange-400 border border-orange-500/30";
     ctaLabel = "VOIR RESULTATS";
-    ctaGradient = "from-purple-500 to-purple-600";
+    ctaGradient = "from-amber-500 to-orange-500";
     ctaAction = onSelectionBarAction;
     ctaDisabled = totalVotes === 0;
   } else if (isStandardQA && sessionStatus === "reviewing") {
@@ -111,7 +111,7 @@ export function FocusFooter({
           {showQuickVote && (
             <motion.button
               onClick={onQuickVote}
-              className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-white cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 shadow-sm"
+              className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-body-xs font-bold text-white cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 shadow-sm"
               whileTap={{ scale: 0.95 }}
               title="Vote rapide (top 2)"
             >
@@ -135,7 +135,7 @@ export function FocusFooter({
             <motion.button
               onClick={ctaAction}
               disabled={ctaDisabled || isPending}
-              className={`flex-1 h-11 rounded-xl text-[13px] font-bold tracking-wide cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed text-white shadow-md bg-gradient-to-r ${ctaGradient} ${
+              className={`flex-1 h-11 rounded-xl text-body-sm font-bold tracking-wide cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed text-white shadow-md bg-gradient-to-r ${ctaGradient} ${
                 allResponded && !ctaDisabled ? "ring-2 ring-emerald-400/40" : ""
               }`}
               whileTap={ctaDisabled ? {} : { scale: 0.97 }}

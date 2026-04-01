@@ -87,7 +87,7 @@ export function SelectionBar({
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <div className="flex items-center gap-3 text-[13px]">
+      <div className="flex items-center gap-3 text-body-sm">
         {leftText && <span className="text-bw-text font-medium tabular-nums">{leftText}</span>}
         {status === "responding" && selectedCount > 0 && (
           <span className="text-[#6B8CFF] font-bold tabular-nums">{selectedCount} select.</span>
@@ -99,7 +99,7 @@ export function SelectionBar({
             onClick={onQuickVote}
             disabled={isPending}
             title="Vote rapide : auto-selection + lancer"
-            className="flex items-center gap-1.5 h-11 px-4 rounded-[12px] text-[13px] font-bold cursor-pointer transition-all hover:brightness-105 disabled:opacity-40 disabled:cursor-not-allowed text-white"
+            className="flex items-center gap-1.5 h-11 px-4 rounded-[12px] text-body-sm font-bold cursor-pointer transition-all hover:brightness-105 disabled:opacity-40 disabled:cursor-not-allowed text-white"
             style={{ background: "#F5A45B", boxShadow: "0 4px 12px rgba(245,164,91,0.25)" }}
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.02 }}

@@ -70,9 +70,9 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
   },
   reviewing: {
     label: "RESULTATS",
-    color: "text-purple-400",
-    bg: "bg-purple-500/10 border-purple-500/30",
-    dot: "bg-purple-500",
+    color: "text-amber-400",
+    bg: "bg-amber-500/10 border-amber-500/30",
+    dot: "bg-amber-500",
   },
   waiting: {
     label: "ATTENTE",
@@ -184,8 +184,10 @@ export function FocusHeader({
         <div className="flex items-center gap-3 min-w-0">
           <span className="text-xl flex-shrink-0">🎬</span>
           <div className="min-w-0">
-            <div className="text-[14px] font-extrabold text-bw-violet-main leading-tight">BANLIEUWOOD</div>
-            <div className="text-[11px] text-bw-cockpit-muted truncate">
+            <div className="text-[14px] font-extrabold leading-tight" style={{ color: "#FF6B35" }}>
+              BANLIEUWOOD
+            </div>
+            <div className="text-body-xs text-bw-cockpit-muted truncate">
               {classLabel || sessionTitle} — P{moduleLabel}
             </div>
           </div>
@@ -195,7 +197,7 @@ export function FocusHeader({
         <div className="hidden sm:flex items-center gap-3 flex-1 justify-center">
           {/* LIVE/PAUSE pill */}
           <span
-            className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider border ${statusCfg.bg} ${statusCfg.color}`}
+            className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-body-xs font-bold uppercase tracking-wider border ${statusCfg.bg} ${statusCfg.color}`}
           >
             <motion.span
               className={`w-2 h-2 rounded-full ${statusCfg.dot}`}
@@ -318,7 +320,7 @@ export function FocusHeader({
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.3-4.3" />
               </svg>
-              <kbd className="font-mono text-[11px]">⌘K</kbd>
+              <kbd className="font-mono text-body-xs">⌘K</kbd>
             </button>
           )}
 
@@ -428,8 +430,9 @@ export function FocusHeader({
                   : m.isDone
                     ? "rgba(52,211,153,0.3)"
                     : "var(--color-bw-cockpit-border)",
-                background: m.isActive ? `${m.color}15` : m.isDone ? "rgba(52,211,153,0.05)" : "transparent",
+                background: m.isActive ? `${m.color}18` : m.isDone ? "rgba(52,211,153,0.05)" : "transparent",
                 color: m.isActive ? m.color : m.isDone ? "#34d399" : "var(--color-bw-cockpit-muted)",
+                boxShadow: m.isActive ? `0 0 12px ${m.color}28` : undefined,
               }}
             >
               <span>{m.isLocked ? "🔒" : m.isDone ? "✅" : m.emoji}</span>

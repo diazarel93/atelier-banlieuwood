@@ -197,7 +197,7 @@ export function V6Sidebar({
                   value={studentSearch}
                   onChange={(e) => setStudentSearch(e.target.value)}
                   placeholder="Chercher un eleve..."
-                  className="w-full pl-8 pr-3 py-2 text-[11px] rounded-lg border border-bw-cockpit-border bg-bw-cockpit-surface text-bw-violet-main outline-none focus:border-bw-violet-main/40 placeholder:text-bw-cockpit-muted"
+                  className="w-full pl-8 pr-3 py-2 text-body-xs rounded-lg border border-bw-cockpit-border bg-bw-cockpit-surface text-bw-violet-main outline-none focus:border-bw-violet-main/40 placeholder:text-bw-cockpit-muted"
                 />
               </div>
             </div>
@@ -236,11 +236,19 @@ export function V6Sidebar({
                 const level = stuckLevels.get(student.id) || "ok";
                 const dotColor = !isOnline ? "#475569" : responded ? "#22C55E" : STUCK_DOT_COLORS[level];
 
+                const rowAccent = !isOnline
+                  ? "border-l-2 border-red-500/40 bg-red-500/[0.02]"
+                  : responded
+                    ? "border-l-2 border-emerald-500/45 bg-emerald-500/[0.03]"
+                    : level === "stuck" || level === "slow"
+                      ? "border-l-2 border-orange-500/40 bg-orange-500/[0.02]"
+                      : "border-l-transparent border-l-2";
+
                 return (
                   <button
                     key={student.id}
                     onClick={() => onSelectStudent(student)}
-                    className="w-full flex items-center gap-3 px-3 py-2 hover:bg-bw-cockpit-surface transition-colors cursor-pointer text-left border-b border-bw-cockpit-border/50 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
+                    className={`w-full flex items-center gap-3 px-3 py-2 hover:bg-bw-cockpit-surface transition-colors cursor-pointer text-left border-b border-bw-cockpit-border/50 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2 ${rowAccent}`}
                   >
                     {/* Avatar */}
                     <span className="text-lg flex-shrink-0">{student.avatar || "👤"}</span>
@@ -263,7 +271,7 @@ export function V6Sidebar({
                       </div>
                       {/* Status label — doctrine: no XP/scores/levels */}
                       <span
-                        className={`text-[11px] mt-0.5 ${
+                        className={`text-body-xs mt-0.5 ${
                           !isOnline ? "text-red-400 font-semibold uppercase" : "text-bw-cockpit-muted"
                         }`}
                       >
@@ -292,7 +300,7 @@ export function V6Sidebar({
                           e.stopPropagation();
                           onNudgeStudent(student.id);
                         }}
-                        className="text-[11px] px-3 py-2 min-h-[44px] rounded bg-orange-900/20 text-orange-400 border border-orange-500/30 hover:bg-orange-900/40 cursor-pointer flex-shrink-0 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
+                        className="text-body-xs px-3 py-2 min-h-[44px] rounded bg-orange-900/20 text-orange-400 border border-orange-500/30 hover:bg-orange-900/40 cursor-pointer flex-shrink-0 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
                         title="Relancer"
                       >
                         🔔
@@ -304,7 +312,7 @@ export function V6Sidebar({
                           e.stopPropagation();
                           onEncourageStudent(student.id);
                         }}
-                        className="text-[11px] px-3 py-2 min-h-[44px] rounded bg-emerald-900/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-900/40 cursor-pointer flex-shrink-0 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
+                        className="text-body-xs px-3 py-2 min-h-[44px] rounded bg-emerald-900/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-900/40 cursor-pointer flex-shrink-0 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
                         title="Encourager"
                       >
                         👏

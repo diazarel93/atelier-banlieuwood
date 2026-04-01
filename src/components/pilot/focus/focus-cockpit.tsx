@@ -327,7 +327,7 @@ export function FocusCockpit() {
     <div className="flex-1 flex flex-col overflow-hidden bg-bw-cockpit-canvas text-bw-cockpit-text">
       {/* ── CONNECTION LOST BANNER ── */}
       {!isOnline && (
-        <div className="sticky top-0 z-40 flex items-center justify-center gap-3 px-4 py-2 bg-red-500/90 text-white text-[13px] text-center">
+        <div className="sticky top-0 z-40 flex items-center justify-center gap-3 px-4 py-2 bg-red-500/90 text-white text-body-sm text-center">
           <span>Connexion perdue — les données ne sont plus à jour</span>
           <button
             onClick={() => queryClient.invalidateQueries()}

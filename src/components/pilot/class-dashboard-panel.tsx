@@ -260,7 +260,7 @@ function ClassDashboardPanelInner({
                   initial={{ scale: 1.2 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 15 }}
-                  className="text-[14px] sm:text-[16px] lg:text-[18px] font-extrabold tabular-nums leading-none"
+                  className="text-[14px] sm:text-[16px] lg:text-heading-md font-extrabold tabular-nums leading-none"
                   style={{
                     color: stats.responsePct >= 70 ? "#4CAF50" : stats.responsePct >= 30 ? "#F2C94C" : "#B0A99E",
                   }}
@@ -292,14 +292,14 @@ function ClassDashboardPanelInner({
                       className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full flex-shrink-0"
                       style={{ background: item.color }}
                     />
-                    <span className="text-[10px] sm:text-[11px] lg:text-[12px] font-semibold text-bw-text flex-1 truncate">
+                    <span className="text-[10px] sm:text-body-xs lg:text-[12px] font-semibold text-bw-text flex-1 truncate">
                       {item.label}
                     </span>
                     <motion.span
                       key={`${item.label}-${item.count}`}
                       initial={{ scale: 1.2 }}
                       animate={{ scale: 1 }}
-                      className="text-[11px] sm:text-[12px] lg:text-[13px] font-bold tabular-nums"
+                      className="text-body-xs sm:text-[12px] lg:text-body-sm font-bold tabular-nums"
                       style={{ color: item.color }}
                     >
                       {item.count}
@@ -318,7 +318,7 @@ function ClassDashboardPanelInner({
               style={{ background: suggestion.bg, border: `1px solid ${suggestion.color}20` }}
             >
               <span className="text-xs flex-shrink-0">{suggestion.icon}</span>
-              <p className="text-[11px] font-medium leading-snug" style={{ color: suggestion.color }}>
+              <p className="text-body-xs font-medium leading-snug" style={{ color: suggestion.color }}>
                 {suggestion.text}
               </p>
             </div>
@@ -341,7 +341,7 @@ function ClassDashboardPanelInner({
                 <button
                   key={s.id}
                   onClick={() => setFicheStudentId(s.id)}
-                  className="flex items-center gap-1.5 h-7 px-2.5 rounded-full text-[11px] font-medium cursor-pointer transition-all hover:bg-bw-primary-50 border border-bw-border"
+                  className="flex items-center gap-1.5 h-7 px-2.5 rounded-full text-body-xs font-medium cursor-pointer transition-all hover:bg-bw-primary-50 border border-bw-border"
                   style={{ background: "rgba(255,248,240,0.6)" }}
                 >
                   <span className="text-xs">{s.avatar}</span>
@@ -349,7 +349,7 @@ function ClassDashboardPanelInner({
                 </button>
               ))}
               {notRespondedStudents.length > 8 && (
-                <span className="flex items-center h-7 px-2 text-[11px] font-semibold text-bw-muted">
+                <span className="flex items-center h-7 px-2 text-body-xs font-semibold text-bw-muted">
                   +{notRespondedStudents.length - 8}
                 </span>
               )}
@@ -443,7 +443,7 @@ function ClassDashboardPanelInner({
         {stats.respondedN > 0 && (
           <GlassCard>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-bw-muted">Pouls de classe</span>
+              <span className="text-body-xs font-bold uppercase tracking-wider text-bw-muted">Pouls de classe</span>
             </div>
             <div className="flex justify-center">
               <EmotionalRadar axes={radarAxes} size={140} />
@@ -458,7 +458,7 @@ function ClassDashboardPanelInner({
               onClick={() => setMapExpanded((v) => !v)}
               className="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
             >
-              <span className="text-[11px] font-bold uppercase tracking-wider text-bw-muted">
+              <span className="text-body-xs font-bold uppercase tracking-wider text-bw-muted">
                 {mapView === "grid" ? "Plan de classe" : "Constellation"}
               </span>
               <svg

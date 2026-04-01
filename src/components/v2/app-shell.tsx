@@ -108,7 +108,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       {/* Skip to content */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:rounded-lg focus:bg-[var(--color-bw-violet)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:rounded-lg focus:bg-[var(--color-bw-primary)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
       >
         Aller au contenu principal
       </a>
@@ -128,7 +128,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
+        <nav className="flex-1 px-3 py-4 space-y-1.5">
           {visibleNavItems.map((item) => {
             const isActive =
               item.href === ROUTES.dashboard ? pathname === ROUTES.dashboard : pathname.startsWith(item.href);
@@ -164,7 +164,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         </nav>
 
         {/* Bottom nav */}
-        <div className="px-3 pb-4 space-y-0.5 border-t border-[var(--sidebar-border)] pt-3">
+        <div className="px-3 pb-4 space-y-1.5 border-t border-[var(--sidebar-border)] pt-2">
           {isAdmin && (
             <Link
               href={ROUTES.admin}
@@ -259,7 +259,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
           <div className="text-body-sm font-bold text-[var(--sidebar-foreground)]">{firstName || "Utilisateur"}</div>
           <div className="text-body-xs text-[var(--sidebar-muted-foreground)]">{role}</div>
         </div>
-        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
           {visibleNavItems.map((item) => {
             const isActive =
               item.href === ROUTES.dashboard ? pathname === ROUTES.dashboard : pathname.startsWith(item.href);
@@ -317,7 +317,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             <NotificationBell />
             {/* Avatar */}
             <div className="flex items-center gap-2 pl-2 border-l border-[var(--color-bw-border)]">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] flex items-center justify-center text-white text-body-xs font-bold">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-bw-primary)] to-[var(--color-bw-gold)] flex items-center justify-center text-white text-body-xs font-bold shadow-[0_0_10px_rgba(255,107,53,0.3)]">
                 {firstName?.charAt(0)?.toUpperCase() || "U"}
               </div>
               <span className="text-body-sm font-medium text-[var(--color-bw-heading)] hidden xl:inline">

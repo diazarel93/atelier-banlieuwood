@@ -78,10 +78,10 @@ function EnergyDonut({
 
   let offset = 0;
   const segments = [
-    { pct: respondedPct, color: "#4CAF50" },
-    { pct: activePct, color: "#F2C94C" },
-    { pct: stuckPct, color: "#EB5757" },
-    { pct: 1 - respondedPct - activePct - stuckPct, color: "#D5CFC6" },
+    { pct: respondedPct, color: "#4ECDC4" },
+    { pct: activePct, color: "#D4A843" },
+    { pct: stuckPct, color: "#ef4444" },
+    { pct: 1 - respondedPct - activePct - stuckPct, color: "rgba(245,245,244,0.15)" },
   ];
 
   return (
@@ -133,7 +133,7 @@ function TimerCountdown({ endsAt }: { endsAt: string }) {
   const display = minutes > 0 ? `${minutes}:${String(seconds).padStart(2, "0")}` : `${seconds}s`;
 
   // Color thresholds: green > 60s, orange > 30s, red < 30s, pulse < 10s
-  const color = remaining > 60 ? "#4CAF50" : remaining > 30 ? "#F59E0B" : "#EB5757";
+  const color = remaining > 60 ? "#4ECDC4" : remaining > 30 ? "#D4A843" : "#ef4444";
   const pulse = remaining <= 10;
 
   return (
@@ -235,7 +235,7 @@ export function CockpitHeader({
           </svg>
         </button>
         <span
-          className="text-[15px] font-bold tracking-wider text-bw-heading flex-shrink-0 uppercase"
+          className="text-body-md font-bold tracking-wider text-bw-heading flex-shrink-0 uppercase"
           style={{ fontFamily: "var(--font-cinema, inherit)" }}
         >
           Cockpit
@@ -251,7 +251,7 @@ export function CockpitHeader({
         <div className="flex items-center gap-2.5 min-w-0 flex-shrink-0">
           {/* Module badge — pill shape */}
           <span
-            className="px-3 py-1 rounded-full text-[13px] font-medium truncate max-w-[160px]"
+            className="px-3 py-1 rounded-full text-body-sm font-medium truncate max-w-[160px]"
             style={{
               background: `${moduleColor}12`,
               color: moduleColor,
@@ -443,13 +443,13 @@ export function CockpitHeader({
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-body-sm font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
                 >
                   <div
-                    className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${screenFrozen ? "bg-blue-500" : "bg-black/10"}`}
+                    className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${screenFrozen ? "bg-bw-teal" : "bg-black/10"}`}
                   >
                     <div
                       className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${screenFrozen ? "left-2" : "left-px"}`}
                     />
                   </div>
-                  <span className={screenFrozen ? "text-blue-600" : "text-bw-text"}>
+                  <span className={screenFrozen ? "text-bw-teal" : "text-bw-text"}>
                     {screenFrozen ? "❄️ Ecran gelé" : "❄️ Geler l'écran"}
                   </span>
                 </button>
@@ -507,7 +507,7 @@ export function CockpitHeader({
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-body-sm font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
                 >
                   <div
-                    className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${isDarkMode ? "bg-bw-violet" : "bg-black/10"}`}
+                    className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${isDarkMode ? "bg-bw-primary" : "bg-black/10"}`}
                   >
                     <div
                       className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${isDarkMode ? "left-2" : "left-px"}`}

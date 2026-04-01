@@ -84,7 +84,7 @@ export function SpotlightModal({
                     </span>
                     {isHighlighted && (
                       <span
-                        className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                        className="text-body-xs font-semibold px-2 py-0.5 rounded-full"
                         style={{ background: "rgba(251,146,60,0.1)", color: "#F5A45B" }}
                       >
                         Mis en avant
@@ -92,7 +92,7 @@ export function SpotlightModal({
                     )}
                     {teacherScore && (
                       <span
-                        className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                        className="text-body-xs font-semibold px-2 py-0.5 rounded-full"
                         style={{ background: "#FFF8E6", color: "#D4A017" }}
                       >
                         {"★".repeat(teacherScore)}
@@ -138,7 +138,7 @@ export function SpotlightModal({
 
               {/* Footer hint */}
               <div className="px-8 pb-5 flex items-center justify-between">
-                <span className="text-[11px] text-bw-muted">Appuyez Echap ou cliquez pour fermer</span>
+                <span className="text-body-xs text-bw-muted">Appuyez Echap ou cliquez pour fermer</span>
                 <span className="text-display-sm text-bw-muted" style={{ fontSize: 11, letterSpacing: "0.1em" }}>
                   PROJECTION
                 </span>

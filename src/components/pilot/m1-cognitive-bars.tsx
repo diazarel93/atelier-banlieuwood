@@ -72,11 +72,11 @@ function CognitiveMapInner({ options, total }: CognitiveMapProps) {
           return (
             <div key={opt.key}>
               <div className="flex items-center justify-between mb-1">
-                <span className="flex items-center gap-1.5 text-[13px] font-semibold text-bw-text">
+                <span className="flex items-center gap-1.5 text-body-sm font-semibold text-bw-text">
                   <span>{style.emoji}</span>
                   {style.label}
                 </span>
-                <span className="text-[13px] font-bold tabular-nums text-bw-heading">{pct}%</span>
+                <span className="text-body-sm font-bold tabular-nums text-bw-heading">{pct}%</span>
               </div>
               <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(239,232,221,0.5)" }}>
                 <motion.div
@@ -89,7 +89,7 @@ function CognitiveMapInner({ options, total }: CognitiveMapProps) {
                   }}
                 />
               </div>
-              <p className="text-[11px] text-bw-muted mt-0.5">
+              <p className="text-body-xs text-bw-muted mt-0.5">
                 {opt.count} eleve{opt.count > 1 ? "s" : ""}
               </p>
             </div>

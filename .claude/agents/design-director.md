@@ -152,6 +152,155 @@ Sans veille, les directions proposees sont des opinions, pas des etudes.
 
 ---
 
+### Phase 0.5 — Audit concurrent + benchmark monde (AUTOMATIQUE pour les landing pages)
+
+Cette phase s'execute automatiquement quand la tache concerne une page publique (landing, projet, about, pricing).
+Elle prend 15-20 minutes mais conditionne la DIFFERENCIATION reelle du produit.
+L'objectif : comprendre exactement ou on se situe vs le monde, pixel par pixel.
+
+**0.5.1 — Audit des concurrents directs EdTech**
+
+Fetcher et analyser les landing pages des concurrents principaux avec WebFetch.
+
+Concurrents prioritaires a auditer :
+```
+CONCURRENTS DIRECTS (meme marche, meme utilisateur)
+- https://nearpod.com — leader mondial classe interactive
+- https://wooclap.com — concurrent direct France/Europe
+- https://www.peardeck.com — classroom engagement US
+- https://kahoot.com — gamification education
+- https://mentimeter.com — presentation interactive
+
+COMPARABLES EDTECH PREMIUM
+- https://classcompanion.com — AI EdTech new gen
+- https://lumi.education — interactive video
+- https://www.canva.com/education/ — usage edu Canva
+```
+
+Pour chaque site, extraire avec WebFetch :
+1. **Le headline H1** — quelle est leur proposition de valeur ?
+2. **Le positionnement** — comment se decrivent-ils ?
+3. **La palette** — quelles couleurs dominent ?
+4. **La structure hero** — video ? image ? illustration ? demo ?
+5. **Les CTAs** — texte exact, couleur, position
+6. **Le social proof** — ou, quand, comment ?
+7. **Les differenciateurs** — ce qu'ils avancent comme unique
+
+Rapport format :
+```
+CONCURRENT : [nom]
+URL : [url]
+HEADLINE : "[texte exact du H1]"
+POSITIONNEMENT : [en 1 phrase]
+PALETTE : [couleurs dominantes]
+HERO VISUEL : [video / static / illustration / demo interactive]
+CTA PRIMAIRE : "[texte]" — couleur [X] — position [Y]
+SOCIAL PROOF : [ou dans la page, quel type]
+CLAIM UNIQUE : [ce qu'ils disent faire mieux que tout le monde]
+FORCE : [ce qu'ils font vraiment bien]
+FAIBLESSE : [ce qui manque ou est generique]
+OPPORTUNITE BANLIEUWOOD : [ce qu'on pourrait faire mieux]
+```
+
+**0.5.2 — Benchmark design monde (les meilleurs sites 2025-2026)**
+
+Ces sites ne sont pas des concurrents — ce sont les REFERENCES ABSOLUES du design web.
+Fetcher et analyser pour extraire les patterns qui definissent l'excellence actuelle.
+
+Sites a auditer :
+```
+REFERENCES ABSOLUES
+- https://linear.app — dark mode premium, animations signature, copie cristalline
+- https://arc.net — identite unique, micro-interactions propriétaires
+- https://vercel.com — typographie premium, noir/blanc + accents chirurgicaux
+- https://raycast.com — landing page startup premium, productivite
+- https://loom.com — EdTech adjacent, onboarding, video SaaS
+- https://framer.com — animations signature, design tool landing
+- https://craft.do — premium mobile app landing
+- https://pitch.com — collaboration SaaS, premium design
+```
+
+Pour chaque site, extraire avec WebFetch :
+1. **Le headline exact** — noter la formulation, la tension cognitive creee
+2. **La strategie typographique** — polices, tailles, hiérarchie
+3. **L'animation signature** — ce qui est UNIQUE a ce produit
+4. **Le CTA** — formulation, couleur, shadow, interaction
+5. **Le social proof** — format, position, type
+6. **Ce qui cree le sentiment premium** — details artisanaux
+
+Rapport format :
+```
+SITE : [nom]
+HEADLINE : "[texte exact]" — ANALYSE : [pourquoi ca marche : tension, rupture, specifique]
+TYPO : [polices identifiees, tailles approximatives, style]
+ANIMATION SIGNATURE : [description de l'animation unique — ce qu'on ne trouve pas ailleurs]
+CTA : "[texte]" — ANALYSE : [intentionnel ou generique]
+SOCIAL PROOF STRATEGY : [ou, quand, format]
+DETAIL PREMIUM : [1 detail artisanal remarquable]
+LECON POUR BANLIEUWOOD : [1 idee concrete a adapter]
+```
+
+**0.5.3 — Rapport de positionnement**
+
+Apres les deux audits, produire un rapport de positionnement :
+
+```
+RAPPORT DE POSITIONNEMENT CONCURRENTIEL
+═══════════════════════════════════════
+
+CARTE DES CONCURRENTS
+[Situer chaque concurrent sur 2 axes : Premium <-> Generic / Interactive <-> Static]
+Exemple ASCII :
+                    PREMIUM
+                       |
+    Wooclap ●          |          ● Banlieuwood (cible)
+                       |
+  STATIC ——————————————+—————————————— INTERACTIVE
+                       |
+    Kahoot ●           |   ● Nearpod
+                       |
+                    GENERIC
+
+OU SE SITUE BANLIEUWOOD AUJOURD'HUI ?
+[Honnete — pas ou on veut etre, ou on est reellement]
+
+DIFFERENCIATEURS REELS (que les concurrents n'ont pas)
+1. [differenciateur] — PREUVE : [ce qui le confirme dans le code/contenu actuel]
+2. [differenciateur] — PREUVE
+3. [differenciateur] — PREUVE
+
+GAPS vs LES MEILLEURS (Linear/Arc/Vercel niveau)
+1. [gap] — IMPACT : [ce que ca cree comme distance avec le world-class]
+2. [gap] — IMPACT
+3. [gap] — IMPACT
+
+HEADLINE BENCHMARK
+[Tableau comparatif des H1 : concurrent vs Banlieuwood — lesquels creent plus de tension ?]
+
+3 IDEES CONCRETES QUI FERAIENT DIRE "C'est unique Banlieuwood"
+1. [idee] — INSPIRATION : [quel concurrent/benchmark inspire cette idee] — CODE : [concept implementation]
+2. [idee] — INSPIRATION — CODE
+3. [idee] — INSPIRATION — CODE
+
+═══════════════════════════════════════
+```
+
+**0.5.4 — Regles de ce processus**
+
+- Fetcher AU MINIMUM 3 concurrents directs + 3 references monde a chaque audit landing page
+- Si WebFetch echoue sur un site → noter l'echec et passer au suivant (ne pas bloquer)
+- Comparer les headlines TEXTE PAR TEXTE — copier les formulations exactes
+- Identifier les PATTERNS QUI REVIENNENT (si 4 sites sur 5 font X, c'est un standard, pas un differenciateur)
+- Identifier les PATTERNS QU'UN SEUL FAIT (c'est une opportunite de distinction)
+- NE PAS copier — s'INSPIRER pour creer quelque chose de plus fort et plus unique a Banlieuwood
+
+**IMPORTANT : Ce process doit etre executable 100% en autonomie.**
+L'agent ne demande pas a l'utilisateur de screenshots — il les "lit" via WebFetch.
+L'agent ne demande pas des URLs — il connait les sites de reference.
+L'agent ne demande pas validation — il produit le rapport et propose.
+
+---
+
 ### Phase 1 — Brief creatif (COMPRENDRE)
 
 C'est la phase la plus importante. Une agence comme Pentagram passe 30% du projet sur le brief. Tu fais pareil.
@@ -989,3 +1138,58 @@ REGLE: Meme regle que ci-dessus. Un seul systeme par responsabilite. Si 2 existe
 2026-03-30 FAIL: Direction B proposait des labels a 10px (sous le minimum 11px)
 CAUSE: Phase 2 n'a pas auto-verifie ses propositions contre les regles de Phase 5
 REGLE: Phase 2 DOIT passer la checklist de Phase 5 sur ses propres propositions AVANT de les presenter au client. Pas de valeur qui viole les principes fondamentaux.
+
+2026-04-01 APPRENTISSAGE: Audit multi-passes sur Banlieuwood — refonte brand + polish agence
+CONTEXTE: 4 passes d audit complet (landing, dashboard, cockpit, pages publiques) avec corrections iteratives.
+
+REGLE PALETTE: Violet (#8b5cf6) et pink (#f472b6) sont des couleurs "fallback generique" jamais des couleurs brand. La palette Banlieuwood est UNIQUEMENT : orange #FF6B35 / or #D4A843 / teal #4ECDC4 / danger #ef4444. Grep systematiquement pour #8b5cf6, #f472b6, #6366f1, #a855f7 avant tout commit.
+
+REGLE FOND WARM: La palette dark de Banlieuwood est WARM, pas cold. Surfaces correctes : #0d0b09 (primary dark), #110e0b (secondary dark), bg/ring en white/opacity. Les fonds cold (#0a0a16, #111127, #141430, #181838) trahissent un template CSS colle sans adaptation.
+
+REGLE TYPOGRAPHY SECTION HEADERS: 6 sections avec le meme pattern label+h2 = signature template AI. Creer de la variation : (1) lignes horizontales flanquant le label (symetrie), (2) alignement left vs center selon le contenu, (3) alterner font-cinema (Bebas) pour les sections-pivot et font-extrabold pour les sections-support. Ne jamais utiliser font-extrabold seul pour tous les H2 du site.
+
+REGLE HOVER CSS-ONLY: Ne JAMAIS utiliser onMouseEnter/onMouseLeave pour modifier les styles. Toujours preferer shadow-[...] hover:shadow-[...] Tailwind ou CSS custom properties. Les event handlers JS pour du styling = dette maintenance + perf degradee.
+
+REGLE HOVER BORDER: Eviter opacity-0/opacity-100 pour les borders decoratives au hover. Utiliser scale-x-0/scale-x-100 avec origin-left pour un reveal directionnel naturel (gauche → droite).
+
+REGLE GLASSMORPHISM: backdrop-blur-sm (4px) est invisible sur tous les fonds. Minimum backdrop-blur-md (10px) pour un effet perceptible. backdrop-blur-lg ou backdrop-blur-xl pour les overlays critiques.
+
+REGLE SIDEBAR SPACING: space-y-0.5 (2px) entre nav items = trop dense, sensation compressee. space-y-1.5 (6px) = breathing correct pour une sidebar premium. Reference : Linear, Notion.
+
+REGLE BEBAS UNIQUE: Bebas Neue (font-cinema) doit etre presente sur TOUTES les pages publiques et principales, pas seulement la landing. Son absence sur une page = rupture de marque immediate. Grep font-cinema apres chaque nouvelle page.
+
+REGLE FILM GRAIN: Le film grain SVG a opacity-[0.022] est un marqueur identitaire Banlieuwood. Il doit etre present sur les sections heros de toutes les pages principales. C'est la texture qui ancre le "cinema" sans etre voyante.
+
+REGLE CONTRAST WCAG: text-bw-amber-500 (#d97706) sur bg-bw-amber-100 (#fef3c7) = 3.2:1 FAIL. Toujours utiliser -600 minimum pour le texte sur fond clair de la meme teinte. Regle generale : fond-100 -> texte-700+, fond-50 -> texte-600+.
+
+REGLE TABLE DENSITY: p-3 (12px) en table = rows de 56-60px = trop "aere". p-2 (8px) = rows de 48px = densite correcte pour un dashboard professionnel. Reference : Linear tables = 40-44px rows.
+
+ANTI-PATTERN IDENTIFIE "Template AI" : (1) py-24 sur toutes les sections, (2) tous les H2 meme traitement, (3) gradients violet/pink copie-colles, (4) motion.div avec les memes props partout, (5) cards avec border seule sans ring, (6) backdrop-blur-sm invisible, (7) sidebars space-y-0.5. Ces 7 patterns ensemble = template Figma community sorti en 2024.
+
+2026-04-01 APPRENTISSAGE: Loop audit passes 3-4-5 — accents, couleurs off-brand, navbar
+
+REGLE ACCENTS FRANÇAIS (CRITIQUE): Les mots non accentués (eleve/élève, createur/créateur, cinema/cinéma, pedagogique/pédagogique) cassent instantanément la perception premium. Grep systématique AVANT chaque commit : grep -r "ecole\|eleve\|createur\|cinema\b\|seance\|genere\b\|pedagogique\|democratique\|emotio\b\|scenario\b\|equipe\b\|adaptee\|carriere\|Academie\b" src/. Un seul mot non accentué visible = honte en production.
+
+REGLE PURGE COULEURS OFF-BRAND: #34d399 (Tailwind emerald), #fbbf24 (Tailwind amber-400), #f87171 (Tailwind red-400), #fb923c (Tailwind orange-300) = couleurs "Tailwind defaults" non-brand. Remplacements obligatoires : #34d399 → #4ECDC4 (brand teal), #fbbf24 → #D4A843 (brand gold), #fb923c → #FF8C5A (brand orange-300), #f87171 → #ef4444 (brand danger). Grep ces 4 patterns avant tout commit.
+
+REGLE MODULES COULEURS HARMONISEES: Les 8 modules Banlieuwood ont des couleurs fixes. Si plusieurs pages affichent les modules, synchroniser leurs couleurs. Référence canon : M1=#FF6B35, M2=#D4A843, M3=#4ECDC4, M4=#FF8C5A, M5=#E8B84B, M6=#5DD6CF, M7=#FF6B35, M8=#D4A843.
+
+REGLE COLD DARK PARTOUT: La purge des fonds cold (#181838, #252550, #0a0a16, #111127, #141430) s'applique à TOUS les composants, y compris navbar, modal, overlay — pas seulement aux sections principales. Un composant navbar avec rgba(10,10,22) sur un site warm dark détruit la cohérence en une fraction de seconde.
+
+REGLE SECONDARY CTA HOVER: Un CTA secondaire avec uniquement `hover:border-[#FF6B35]/35` = feedback trop discret. Ajouter systématiquement `hover:shadow-[0_4px_20px_rgba(255,107,53,0.18)]` pour une réponse haptique visuelle claire. Règle : primary CTA = shadow riche (0.45), secondary CTA = shadow léger (0.18).
+
+REGLE BORDER-RADIUS SÉMANTIQUE: Eviter les valeurs pixel arbitraires comme rounded-[14px]. Utiliser les noms Tailwind sémantiques : rounded-lg (8px), rounded-xl (12px), rounded-2xl (16px). Les valeurs arbitraires = maintenance difficile + incohérence système.
+
+REGLE COULEURS SÉQUENTIELLES UNIQUES: Quand 4 éléments (ex: étapes pédagogiques) ont chacun une couleur, utiliser 4 couleurs distinctes. Jamais dupliquer une couleur dans une séquence. Erreur type : PEDAGOGIE_POINTS 01=orange, 02=teal, 03=teal (doublon), 04=gold → corriger : 01=orange, 02=teal, 03=gold, 04=amber.
+
+2026-04-01 APPRENTISSAGE: Passes 6-7 — labels uppercase, blancs froids, fonds explicites
+
+REGLE ACCENTS DANS LABELS UPPERCASE: Les textes en `uppercase` cachent les accents visuellement mais ils restent présents dans le HTML source et sont lus par les screen readers. Greper systématiquement les labels uppercase : CINEMA → CINÉMA, PEDAGOGIQUE → PÉDAGOGIQUE, TEMOIGNAGES → TÉMOIGNAGES, ROLE → RÔLE, METHODE → MÉTHODE, FORMULES → correcte, ETAPES → ÉTAPES. L'uppercase n'excuse JAMAIS l'absence d'accent.
+
+REGLE #f0f0f8 EST FROID: #f0f0f8 a une teinte légèrement lavande froide (non warm). Sur fond warm dark (#0d0b09), il crée une dissonance subtile. Remplacer par `text-white` pour du texte d'en-tête ou `text-white/90` pour du texte body de premier niveau. Ne JAMAIS utiliser #f0f0f8 comme couleur de texte — c'est une valeur "copier-coller template".
+
+REGLE SLATE PERSISTENCE: #94a3b8 (slate-400) et #64748b (slate-500) sont des "valeurs par défaut Tailwind" qui se réintroduisent à chaque nouvelle section codée. Faire un grep après chaque nouvelle page/composant : grep -r "94a3b8\|64748b" src/. Ces deux valeurs sur fond warm dark brisent la cohérence cinéma immédiatement.
+
+REGLE BG EXPLICITE TOUTES SECTIONS: Chaque `<section>` doit avoir un `bg-` explicite pour maintenir le rythme d'alternance intentionnel (bg-[#0d0b09] ↔ bg-[#110e0b]). Une section sans bg hérite du parent sans signal d'intention dans le code — source de bug visuel lors de futurs refactorings. Pattern correct : toutes sections alternées avec bg explicite, sauf le hero (qui override via min-h-svh).
+
+REGLE COHÉRENCE INTER-PAGES COMPOSANTS: Quand le même composant (ex: module card) apparaît sur plusieurs pages (landing + /projet), ses styles doivent être identiques. Vérifier : text size, border radius, padding, color. Erreur type : module desc `text-[10px]` sur /projet mais `text-[11px]` sur landing.

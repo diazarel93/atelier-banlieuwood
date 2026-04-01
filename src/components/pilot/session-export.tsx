@@ -329,7 +329,7 @@ export function SessionExport({
                   </button>
                 </div>
                 {exportMode === "full" && fullStats && (
-                  <span className="text-[11px] text-bw-muted ml-auto">
+                  <span className="text-body-xs text-bw-muted ml-auto">
                     {fullStats.totalResponses} réponses, {fullStats.highlightedCount} mises en avant
                   </span>
                 )}

@@ -44,12 +44,12 @@ export function Module11Cockpit({ module11Data, isPreviewing }: Module11CockpitP
       {/* Theme + type badges */}
       <div className="flex items-center gap-2 flex-wrap">
         <span
-          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-white"
+          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-body-xs font-bold text-white"
           style={{ backgroundColor: themeColor }}
         >
           {themeLabel}
         </span>
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gray-100 text-gray-600">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-body-xs font-medium bg-gray-100 text-gray-600">
           {TYPE_ICONS[module11Data.type]}{" "}
           {module11Data.type === "citation"
             ? "Citation"
@@ -68,7 +68,7 @@ export function Module11Cockpit({ module11Data, isPreviewing }: Module11CockpitP
             <span className="absolute top-1 left-2 text-2xl opacity-20" style={{ color: themeColor }}>
               &ldquo;
             </span>
-            <p className="text-[15px] font-medium text-gray-900 italic pl-4 leading-relaxed">{module11Data.text}</p>
+            <p className="text-body-md font-medium text-gray-900 italic pl-4 leading-relaxed">{module11Data.text}</p>
           </div>
           {module11Data.author && (
             <div className="flex items-center gap-3">
@@ -81,8 +81,8 @@ export function Module11Cockpit({ module11Data, isPreviewing }: Module11CockpitP
                 />
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-bold text-gray-900">{module11Data.author}</p>
-                {module11Data.authorRole && <p className="text-[11px] text-gray-500">{module11Data.authorRole}</p>}
+                <p className="text-body-sm font-bold text-gray-900">{module11Data.author}</p>
+                {module11Data.authorRole && <p className="text-body-xs text-gray-500">{module11Data.authorRole}</p>}
               </div>
             </div>
           )}
@@ -117,7 +117,7 @@ export function Module11Cockpit({ module11Data, isPreviewing }: Module11CockpitP
             </div>
           )}
           {module11Data.sourceTitle && (
-            <p className="text-[11px] text-gray-500 text-center">
+            <p className="text-body-xs text-gray-500 text-center">
               {module11Data.sourceTitle} {module11Data.sourceYear ? `(${module11Data.sourceYear})` : ""}
             </p>
           )}
@@ -137,11 +137,11 @@ export function Module11Cockpit({ module11Data, isPreviewing }: Module11CockpitP
             </div>
           )}
           {module11Data.sourceTitle && (
-            <p className="text-[11px] text-gray-500 text-center">
+            <p className="text-body-xs text-gray-500 text-center">
               {module11Data.sourceTitle} {module11Data.sourceYear ? `(${module11Data.sourceYear})` : ""}
             </p>
           )}
-          <p className="text-[13px] text-gray-700 leading-relaxed">{module11Data.text}</p>
+          <p className="text-body-sm text-gray-700 leading-relaxed">{module11Data.text}</p>
         </div>
       )}
 
@@ -149,21 +149,21 @@ export function Module11Cockpit({ module11Data, isPreviewing }: Module11CockpitP
       {module11Data.type === "debat" && (
         <div className="space-y-3">
           <div className="px-4 py-3 rounded-xl bg-gray-50 border border-gray-100">
-            <p className="text-[15px] font-medium text-gray-900 italic leading-relaxed">{module11Data.text}</p>
+            <p className="text-body-md font-medium text-gray-900 italic leading-relaxed">{module11Data.text}</p>
           </div>
           {module11Data.debatOptions && (
             <div className="flex gap-2">
               {module11Data.debatOptions.map((opt) => (
                 <span
                   key={opt.key}
-                  className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-gray-100 text-gray-600"
+                  className="px-2.5 py-1 rounded-full text-body-xs font-medium bg-gray-100 text-gray-600"
                 >
                   {opt.key === "daccord" ? "👍" : opt.key === "pasdaccord" ? "👎" : "🤔"} {opt.label}
                 </span>
               ))}
             </div>
           )}
-          <p className="text-[11px] text-gray-400">Les eleves choisissent leur position puis justifient.</p>
+          <p className="text-body-xs text-gray-400">Les eleves choisissent leur position puis justifient.</p>
         </div>
       )}
     </motion.div>

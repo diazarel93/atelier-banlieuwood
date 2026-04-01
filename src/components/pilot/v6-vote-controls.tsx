@@ -35,7 +35,7 @@ export function V6VoteControls({
         <h3 className="text-body-sm font-bold text-white">Controles Vote</h3>
         <div className="flex items-center gap-2">
           {voteState === "open" && (
-            <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-pulse">
+            <span className="text-body-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-pulse">
               {totalVotes} votes
             </span>
           )}

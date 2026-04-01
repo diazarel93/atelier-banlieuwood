@@ -2,43 +2,51 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-[#111127] border-t border-[#252550] pt-16 pb-6">
+    <footer className="relative bg-[#0d0b09] border-t border-[#2a2420] pt-16 pb-6">
+      {/* Cinema accent line */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[1px]"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(255,107,53,0.35) 30%, rgba(212,168,67,0.35) 60%, transparent 100%)",
+        }}
+      />
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-2xl">🎬</span>
-              <span className="text-base font-extrabold bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] bg-clip-text text-transparent">
+              <span className="text-base font-extrabold bg-gradient-to-r from-[#FF6B35] to-[#D4A843] bg-clip-text text-transparent">
                 BANLIEUWOOD
               </span>
             </div>
-            <p className="text-[13px] text-[#64748b] leading-relaxed mb-4">
-              Atelier de cinema collaboratif pour les ecoles. Chaque eleve est un createur.
+            <p className="text-[13px] text-white/40 leading-relaxed mb-4">
+              Atelier de cinéma collaboratif pour les écoles. Chaque élève est un créateur.
             </p>
-            <p className="text-[11px] text-[#64748b]">
-              Aligne sur le PEAC, le Socle Commun et les programmes d&apos;Arts Plastiques Cycles 3-4.
+            <p className="text-[11px] text-white/40">
+              Aligné sur le PEAC, le Socle Commun et les programmes d&apos;Arts Plastiques Cycles 3-4.
             </p>
           </div>
           {[
             {
               title: "Produit",
               links: [
-                { label: "A Propos", href: "/projet" },
+                { label: "À Propos", href: "/projet" },
                 { label: "Festival", href: "/festival" },
                 { label: "Ressources", href: "/docs" },
                 { label: "Contact", href: "/contact" },
               ],
             },
             {
-              title: "Legal",
+              title: "Légal",
               links: [
-                { label: "Mentions legales", href: "/legal/cgu" },
-                { label: "Confidentialite", href: "/legal/privacy" },
-                { label: "Accessibilite", href: "/legal/accessibility" },
+                { label: "Mentions légales", href: "/legal/cgu" },
+                { label: "Confidentialité", href: "/legal/privacy" },
+                { label: "Accessibilité", href: "/legal/accessibility" },
               ],
             },
             {
-              title: "Communaute",
+              title: "Communauté",
               links: [
                 { label: "Instagram", href: "#" },
                 { label: "LinkedIn", href: "#" },
@@ -47,12 +55,12 @@ export function SiteFooter() {
             },
           ].map((col) => (
             <div key={col.title}>
-              <h4 className="text-[13px] font-bold text-[#f0f0f8] mb-4">{col.title}</h4>
+              <h4 className="text-[13px] font-bold text-white mb-4">{col.title}</h4>
               {col.links.map((link) => (
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="block text-[13px] text-[#64748b] mb-2 hover:text-[#c4b5fd] transition-colors"
+                  className="block text-[13px] text-white/40 mb-2 hover:text-[#FF6B35] transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -60,9 +68,9 @@ export function SiteFooter() {
             </div>
           ))}
         </div>
-        <div className="flex justify-between items-center pt-6 border-t border-[#252550] text-[12px] text-[#64748b]">
-          <span>&copy; 2026 Banlieuwood. Tous droits reserves.</span>
-          <span>Fait avec 💜 pour les ecoles de France</span>
+        <div className="flex justify-between items-center pt-6 border-t border-[#2a2420] text-[12px] text-white/40">
+          <span>&copy; 2026 Banlieuwood. Tous droits réservés.</span>
+          <span>Fait avec 🧡 pour les écoles de France</span>
         </div>
       </div>
     </footer>

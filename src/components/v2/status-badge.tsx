@@ -18,7 +18,7 @@ const STATUS_CONFIG: Record<SessionStatus, { label: string; style: string; dot: 
   },
   waiting: {
     label: "En attente",
-    style: "bg-bw-amber-100 text-bw-amber-500 ring-1 ring-inset ring-bw-amber/20",
+    style: "bg-bw-amber-100 text-bw-amber-600 ring-1 ring-inset ring-bw-amber/20",
     dot: "bg-bw-amber",
     pulse: true,
   },
@@ -30,7 +30,7 @@ const STATUS_CONFIG: Record<SessionStatus, { label: string; style: string; dot: 
   },
   paused: {
     label: "En pause",
-    style: "bg-bw-amber-100 text-bw-amber-500 ring-1 ring-inset ring-bw-amber/20",
+    style: "bg-bw-amber-100 text-bw-amber-600 ring-1 ring-inset ring-bw-amber/20",
     dot: "bg-bw-amber-500",
     pulse: false,
   },
