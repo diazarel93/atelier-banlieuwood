@@ -140,9 +140,7 @@ export function CockpitFooterBar({
             <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 overflow-x-auto">
               {/* Stimulation */}
               <div className="flex flex-col items-center gap-0.5">
-                <span className="text-[8px] font-bold uppercase tracking-wider text-bw-muted hidden sm:flex items-center gap-1">
-                  💡 Stimulation
-                </span>
+                <span className="label-caps text-bw-muted hidden sm:flex items-center gap-1">💡 Stimulation</span>
                 <div
                   className="flex items-center gap-1 px-1.5 py-1 rounded-xl"
                   style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}
@@ -192,9 +190,7 @@ export function CockpitFooterBar({
               <div className="w-px h-6 hidden sm:block" style={{ background: "rgba(255,255,255,0.4)" }} />
               {/* Interaction */}
               <div className="flex flex-col items-center gap-0.5">
-                <span className="text-[8px] font-bold uppercase tracking-wider text-bw-muted hidden sm:flex items-center gap-1">
-                  💬 Interaction
-                </span>
+                <span className="label-caps text-bw-muted hidden sm:flex items-center gap-1">💬 Interaction</span>
                 <div
                   className="flex items-center gap-1 px-1.5 py-1 rounded-xl"
                   style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}
@@ -252,9 +248,7 @@ export function CockpitFooterBar({
               <div className="w-px h-6 hidden sm:block" style={{ background: "rgba(255,255,255,0.4)" }} />
               {/* Analyse */}
               <div className="flex flex-col items-center gap-0.5">
-                <span className="text-[8px] font-bold uppercase tracking-wider text-bw-muted hidden sm:flex items-center gap-1">
-                  📊 Analyse
-                </span>
+                <span className="label-caps text-bw-muted hidden sm:flex items-center gap-1">📊 Analyse</span>
                 <div
                   className="flex items-center gap-1 px-1.5 py-1 rounded-xl"
                   style={{ background: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.3)" }}
@@ -311,7 +305,7 @@ export function CockpitFooterBar({
                 onClick={prevSituation}
                 disabled={updateSession.isPending}
                 title="Question précédente"
-                className="h-11 px-3.5 rounded-[12px] flex items-center justify-center text-bw-text bg-white border border-[#2a2a50] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0 text-[13px] font-medium gap-1.5"
+                className="h-11 px-3.5 rounded-[12px] flex items-center justify-center text-bw-text bg-white border border-bw-border cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0 text-body-sm font-medium gap-1.5"
               >
                 <svg
                   width="14"
@@ -347,11 +341,7 @@ export function CockpitFooterBar({
                     }
                   }}
                   disabled={updateSession.isPending}
-                  className="w-full h-11 px-6 rounded-[12px] font-bold text-[14px] cursor-pointer transition-all duration-300 disabled:opacity-50 text-white"
-                  style={{
-                    backgroundColor: isPreviewing ? "#F5A45B" : "#2C2C2C",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                  }}
+                  className={`w-full h-11 px-6 rounded-[12px] font-bold text-body-sm cursor-pointer transition-all duration-300 disabled:opacity-50 text-white shadow-md ${isPreviewing ? "bg-bw-primary" : "bg-bw-heading"}`}
                 >
                   {isPreviewing ? `Lancer Q${displayIndex + 1}` : "Ouvrir les réponses"}
                 </motion.button>
@@ -381,12 +371,7 @@ export function CockpitFooterBar({
                         updateSession.mutate({ status: "reviewing", reveal_phase: 0, timer_ends_at: null })
                       }
                       disabled={updateSession.isPending}
-                      className="w-full h-9 rounded-lg text-[13px] font-medium cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed border"
-                      style={{
-                        color: "var(--color-bw-violet)",
-                        borderColor: "rgba(139,92,246,0.12)",
-                        background: "rgba(139,92,246,0.03)",
-                      }}
+                      className="w-full h-9 rounded-lg text-body-sm font-medium cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed border text-bw-violet border-bw-violet/12 bg-bw-violet/5"
                     >
                       <span className="flex items-center justify-center gap-1.5">
                         <svg
@@ -412,12 +397,7 @@ export function CockpitFooterBar({
                   whileHover={{ scale: 1.01 }}
                   onClick={handleNextAction}
                   disabled={updateSession.isPending || !!(nextAction as { disabled?: boolean }).disabled}
-                  className="w-full h-11 rounded-xl font-bold text-[14px] cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{
-                    background: "linear-gradient(135deg, #E53935 0%, #D81B60 100%)",
-                    color: "white",
-                    boxShadow: "0 4px 14px rgba(229,57,53,0.3)",
-                  }}
+                  className="w-full h-11 rounded-xl font-bold text-body-sm cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-white bg-gradient-to-br from-bw-primary to-bw-gold shadow-md hover:shadow-lg"
                 >
                   {nextAction.label}{" "}
                   {nextAction.shortcut && (
@@ -535,7 +515,7 @@ export function CockpitFooterBar({
                 title={helpEnabled ? "Aide élève activée" : "Aide élève désactivée"}
                 className={`w-11 h-11 rounded-[10px] flex items-center justify-center transition-all cursor-pointer border ${
                   helpEnabled
-                    ? "bg-purple-500/15 text-purple-500 border-purple-500/30"
+                    ? "bg-bw-violet/15 text-bw-violet border-bw-violet/30"
                     : "text-bw-text hover:text-bw-heading bg-white border-bw-border"
                 }`}
               >
