@@ -36,19 +36,19 @@ const PEDAGOGIE_POINTS = [
     num: "01",
     title: "Vivre l\u2019experience complete",
     text: "Plutot que de commencer directement par un tournage, les eleves passent par toutes les etapes : observer, imaginer, structurer, ecrire, mettre en scene, preparer le tournage.",
-    color: "#8b5cf6",
+    color: "#FF6B35",
   },
   {
     num: "02",
     title: "Apprendre en experimentant",
     text: "Banlieuwood ne se presente pas comme un cours. Chaque module propose une situation concrete : interpreter une image, inventer une idee, transformer une idee en pitch, construire une histoire collective.",
-    color: "#f472b6",
+    color: "#4ECDC4",
   },
   {
     num: "03",
     title: "Le collectif avant tout",
     text: "Les idees individuelles deviennent progressivement les elements d\u2019une creation commune. Les eleves apprennent a ecouter, a defendre une idee, a accepter des compromis et a construire ensemble.",
-    color: "#22d3ee",
+    color: "#4ECDC4",
   },
   {
     num: "04",
@@ -59,11 +59,11 @@ const PEDAGOGIE_POINTS = [
 ];
 
 const MODULES = [
-  { id: "M1", name: "Le Regard", icon: "\ud83d\udc41\ufe0f", desc: "Analyse d'images", color: "#8b5cf6" },
-  { id: "M2", name: "Les Emotions", icon: "\ud83c\udfad", desc: "Identifier et nommer", color: "#f472b6" },
+  { id: "M1", name: "Le Regard", icon: "\ud83d\udc41\ufe0f", desc: "Analyse d'images", color: "#FF6B35" },
+  { id: "M2", name: "Les Emotions", icon: "\ud83c\udfad", desc: "Identifier et nommer", color: "#4ECDC4" },
   { id: "M3", name: "Et si...", icon: "\ud83d\udca1", desc: "Brainstorm collectif", color: "#fbbf24" },
   { id: "M4", name: "Le Pitch", icon: "\ud83c\udf99\ufe0f", desc: "Presenter son idee", color: "#34d399" },
-  { id: "M5", name: "Le Vote", icon: "\ud83c\udfc6", desc: "Choix democratique", color: "#22d3ee" },
+  { id: "M5", name: "Le Vote", icon: "\ud83c\udfc6", desc: "Choix democratique", color: "#4ECDC4" },
   { id: "M6", name: "Le Scenario", icon: "\ud83d\udcdd", desc: "Ecriture collaborative", color: "#fb923c" },
   { id: "M7", name: "Storyboard", icon: "\ud83c\udf9e\ufe0f", desc: "Plans et cadrage", color: "#f87171" },
   { id: "M8", name: "L'Equipe", icon: "\u2b50", desc: "Roles et talents", color: "#fbbf24" },
@@ -79,11 +79,11 @@ export default function ProjetPage() {
       {/* ══ Hero ══ */}
       <section className="pt-28 pb-20 px-6">
         <div className="max-w-[800px] mx-auto text-center">
-          <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#c4b5fd] mb-2">NOTRE MISSION</div>
+          <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#FF8C5A] mb-2">NOTRE MISSION</div>
           <h1 className="text-[clamp(36px,5.5vw,64px)] font-black leading-[1.05] tracking-tight mb-6">
             Democratiser la creation
             <br />
-            <span className="bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#FF6B35] to-[#4ECDC4] bg-clip-text text-transparent">
               cinematographique en classe
             </span>
           </h1>
@@ -136,14 +136,14 @@ export default function ProjetPage() {
       <section className="py-20">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#8b5cf6] mb-2">NOS CONVICTIONS</div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#FF6B35] mb-2">NOS CONVICTIONS</div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold">Ce que nous croyons</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {CONVICTIONS.map((c) => (
               <div
                 key={c.title}
-                className="rounded-2xl bg-[#141430] border border-[#252550] p-7 hover:border-[#8b5cf6]/30 transition-all"
+                className="rounded-2xl bg-[#141430] border border-[#252550] p-7 hover:border-[#FF6B35]/30 transition-all"
               >
                 <h3 className="text-[16px] font-bold mb-2">{c.title}</h3>
                 <p className="text-[13px] text-[#94a3b8] leading-relaxed">{c.text}</p>
@@ -170,13 +170,13 @@ export default function ProjetPage() {
               {
                 icon: "🔍",
                 title: "Rencontrer",
-                color: "#8b5cf6",
+                color: "#FF6B35",
                 text: "Frequenter les oeuvres, developper une culture artistique personnelle. Modules M1 (Le Regard) et M2 (Les Emotions) — analyse filmique, lecture d'image, vocabulaire cinematographique.",
               },
               {
                 icon: "🎨",
                 title: "Pratiquer",
-                color: "#f472b6",
+                color: "#4ECDC4",
                 text: "S'engager dans un processus de creation. Modules M3 a M7 — brainstorm, pitch oral, ecriture scenariste, storyboard. Les eleves pratiquent tous les metiers du cinema.",
               },
               {
@@ -202,13 +202,13 @@ export default function ProjetPage() {
           <div className="flex flex-wrap gap-2 justify-center mt-8">
             {["Socle Commun D1.1", "Socle Commun D1.4", "Socle Commun D2", "Socle Commun D3", "Socle Commun D5"].map(
               (b) => (
-                <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#8b5cf6]/15 text-[#c4b5fd]">
+                <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#FF6B35]/15 text-[#FF8C5A]">
                   {b}
                 </span>
               ),
             )}
             {["Arts Plastiques Cycle 3", "Arts Plastiques Cycle 4"].map((b) => (
-              <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#f472b6]/15 text-[#f472b6]">
+              <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#4ECDC4]/15 text-[#4ECDC4]">
                 {b}
               </span>
             ))}
@@ -226,14 +226,14 @@ export default function ProjetPage() {
       <section className="py-20">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#f472b6] mb-2">NOTRE METHODE</div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">NOTRE METHODE</div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold">4 principes pedagogiques</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {PEDAGOGIE_POINTS.map((p) => (
               <div
                 key={p.num}
-                className="rounded-2xl bg-[#141430] border border-[#252550] p-7 hover:border-[#8b5cf6]/30 transition-all"
+                className="rounded-2xl bg-[#141430] border border-[#252550] p-7 hover:border-[#FF6B35]/30 transition-all"
               >
                 <div className="flex items-center gap-4 mb-3">
                   <div
@@ -255,7 +255,7 @@ export default function ProjetPage() {
       <section className="py-16 bg-[#111127]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-8">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#22d3ee] mb-2">
+            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">
               MODULES DETAILLES
             </div>
             <h2 className="text-[22px] font-bold">8 modules, un parcours complet</h2>
@@ -264,7 +264,7 @@ export default function ProjetPage() {
             {MODULES.map((m) => (
               <div
                 key={m.id}
-                className="rounded-2xl bg-[#141430] border border-[#252550] p-4 text-center hover:border-[#8b5cf6]/30 hover:-translate-y-1 transition-all"
+                className="rounded-2xl bg-[#141430] border border-[#252550] p-4 text-center hover:border-[#FF6B35]/30 hover:-translate-y-1 transition-all"
                 style={{ borderTopWidth: 3, borderTopColor: m.color }}
               >
                 <div className="text-[28px] mb-2">{m.icon}</div>
@@ -304,7 +304,7 @@ export default function ProjetPage() {
               </thead>
               <tbody>
                 {MODULES.map((m, i) => (
-                  <tr key={m.id} className="border-b border-[#252550] last:border-b-0 hover:bg-[#8b5cf6]/[0.03]">
+                  <tr key={m.id} className="border-b border-[#252550] last:border-b-0 hover:bg-[#FF6B35]/[0.03]">
                     <td className="p-3">
                       {m.id} — {m.name}
                     </td>
@@ -335,13 +335,13 @@ export default function ProjetPage() {
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Link
               href={ROUTES.requestAccess}
-              className="px-9 py-4 rounded-[14px] text-base font-bold text-white bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] shadow-[0_4px_20px_rgba(139,92,246,0.3)] hover:shadow-[0_8px_32px_rgba(139,92,246,0.5)] transition-all"
+              className="px-9 py-4 rounded-[14px] text-base font-bold text-white bg-gradient-to-r from-[#FF6B35] to-[#4ECDC4] shadow-[0_4px_20px_rgba(255,107,53,0.3)] hover:shadow-[0_8px_32px_rgba(255,107,53,0.3)] transition-all"
             >
               Creer un compte
             </Link>
             <Link
               href="/contact"
-              className="px-9 py-4 rounded-[14px] text-base font-bold text-[#f0f0f8] bg-[#181838] border border-[#252550] hover:border-[#8b5cf6] transition-all"
+              className="px-9 py-4 rounded-[14px] text-base font-bold text-[#f0f0f8] bg-[#181838] border border-[#252550] hover:border-[#FF6B35] transition-all"
             >
               Nous contacter
             </Link>

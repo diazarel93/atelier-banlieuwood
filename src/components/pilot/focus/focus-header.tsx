@@ -70,9 +70,9 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
   },
   reviewing: {
     label: "RESULTATS",
-    color: "text-purple-400",
-    bg: "bg-purple-500/10 border-purple-500/30",
-    dot: "bg-purple-500",
+    color: "text-amber-400",
+    bg: "bg-amber-500/10 border-amber-500/30",
+    dot: "bg-amber-500",
   },
   waiting: {
     label: "ATTENTE",

@@ -74,7 +74,7 @@ export function FocusFooter({
     countChipText = `${totalVotes}/${totalStudents} votes`;
     countChipColor = "bg-orange-500/10 text-orange-400 border border-orange-500/30";
     ctaLabel = "VOIR RESULTATS";
-    ctaGradient = "from-purple-500 to-purple-600";
+    ctaGradient = "from-amber-500 to-orange-500";
     ctaAction = onSelectionBarAction;
     ctaDisabled = totalVotes === 0;
   } else if (isStandardQA && sessionStatus === "reviewing") {

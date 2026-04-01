@@ -108,7 +108,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
       {/* Skip to content */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:rounded-lg focus:bg-[var(--color-bw-violet)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:rounded-lg focus:bg-[var(--color-bw-primary)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
       >
         Aller au contenu principal
       </a>

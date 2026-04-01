@@ -8,7 +8,7 @@ export function SiteFooter() {
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-2xl">🎬</span>
-              <span className="text-base font-extrabold bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] bg-clip-text text-transparent">
+              <span className="text-base font-extrabold bg-gradient-to-r from-[#FF6B35] to-[#D4A843] bg-clip-text text-transparent">
                 BANLIEUWOOD
               </span>
             </div>
@@ -52,7 +52,7 @@ export function SiteFooter() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="block text-[13px] text-[#64748b] mb-2 hover:text-[#c4b5fd] transition-colors"
+                  className="block text-[13px] text-[#64748b] mb-2 hover:text-[#FF6B35] transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -62,7 +62,7 @@ export function SiteFooter() {
         </div>
         <div className="flex justify-between items-center pt-6 border-t border-[#252550] text-[12px] text-[#64748b]">
           <span>&copy; 2026 Banlieuwood. Tous droits reserves.</span>
-          <span>Fait avec 💜 pour les ecoles de France</span>
+          <span>Fait avec 🧡 pour les ecoles de France</span>
         </div>
       </div>
     </footer>

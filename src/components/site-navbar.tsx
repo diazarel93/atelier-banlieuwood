@@ -34,7 +34,7 @@ export function SiteNavbar() {
     >
       <Link href="/" className="flex items-center gap-2.5">
         <span className="text-2xl">🎬</span>
-        <span className="text-base font-extrabold bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] bg-clip-text text-transparent">
+        <span className="text-base font-extrabold bg-gradient-to-r from-[#FF6B35] to-[#D4A843] bg-clip-text text-transparent">
           BANLIEUWOOD
         </span>
       </Link>
@@ -52,13 +52,13 @@ export function SiteNavbar() {
       <div className="flex items-center gap-2">
         <Link
           href={ROUTES.login}
-          className="px-4 py-2 rounded-lg text-[13px] font-medium text-[#f0f0f8] bg-[#181838] border border-[#252550] hover:border-[#8b5cf6] transition-all"
+          className="px-4 py-2 rounded-lg text-[13px] font-medium text-[#f0f0f8] bg-[#181838] border border-[#252550] hover:border-[#FF6B35] transition-all"
         >
           Connexion
         </Link>
         <Link
           href={ROUTES.requestAccess}
-          className="px-5 py-2 rounded-lg text-[13px] font-bold text-white bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] shadow-[0_4px_16px_rgba(139,92,246,0.3)] hover:shadow-[0_6px_24px_rgba(139,92,246,0.4)] hover:scale-[1.03] transition-all"
+          className="px-5 py-2 rounded-lg text-[13px] font-bold text-white bg-gradient-to-r from-[#FF6B35] to-[#D4A843] shadow-[0_4px_16px_rgba(255,107,53,0.3)] hover:shadow-[0_6px_24px_rgba(255,107,53,0.4)] hover:scale-[1.03] transition-all"
         >
           S&apos;inscrire
         </Link>

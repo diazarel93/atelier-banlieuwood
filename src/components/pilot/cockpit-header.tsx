@@ -443,13 +443,13 @@ export function CockpitHeader({
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-body-sm font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
                 >
                   <div
-                    className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${screenFrozen ? "bg-blue-500" : "bg-black/10"}`}
+                    className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${screenFrozen ? "bg-bw-teal" : "bg-black/10"}`}
                   >
                     <div
                       className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${screenFrozen ? "left-2" : "left-px"}`}
                     />
                   </div>
-                  <span className={screenFrozen ? "text-blue-600" : "text-bw-text"}>
+                  <span className={screenFrozen ? "text-bw-teal" : "text-bw-text"}>
                     {screenFrozen ? "❄️ Ecran gelé" : "❄️ Geler l'écran"}
                   </span>
                 </button>
@@ -507,7 +507,7 @@ export function CockpitHeader({
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-body-sm font-medium hover:bg-bw-surface-dim cursor-pointer transition-colors"
                 >
                   <div
-                    className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${isDarkMode ? "bg-bw-violet" : "bg-black/10"}`}
+                    className={`w-5 h-3 rounded-full transition-all relative flex-shrink-0 ${isDarkMode ? "bg-bw-primary" : "bg-black/10"}`}
                   >
                     <div
                       className={`absolute top-px w-2.5 h-2.5 rounded-full bg-white transition-all shadow-sm ${isDarkMode ? "left-2" : "left-px"}`}
