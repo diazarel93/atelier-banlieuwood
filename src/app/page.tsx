@@ -169,6 +169,44 @@ export default function Home() {
           <div className="max-w-[1200px] mx-auto">
             <div className="flex items-center gap-10 flex-wrap">
               <div className="flex-1 min-w-[300px]">
+                {/* Pellicule signature — 8 frames M1-M8 */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1, ease: SNAP }}
+                  className="flex items-center gap-[2px] mb-5"
+                  aria-hidden="true"
+                >
+                  <div className="flex flex-col gap-[2px] mr-0.5">
+                    {[0, 1, 2].map((i) => (
+                      <div key={i} className="w-[3px] h-[3px] rounded-sm bg-white/[0.12]" />
+                    ))}
+                  </div>
+                  {MODULES.map((m, i) => (
+                    <motion.div
+                      key={m.id}
+                      className="w-[18px] h-[13px] rounded-[1px]"
+                      style={{ border: `1px solid ${m.color}22`, backgroundColor: `${m.color}08` }}
+                      animate={{
+                        backgroundColor: [`${m.color}08`, `${m.color}30`, `${m.color}08`],
+                        borderColor: [`${m.color}22`, `${m.color}70`, `${m.color}22`],
+                      }}
+                      transition={{
+                        duration: 0.55,
+                        delay: i * 0.22,
+                        repeat: Infinity,
+                        repeatDelay: MODULES.length * 0.22 + 1.2,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  ))}
+                  <div className="flex flex-col gap-[2px] ml-0.5">
+                    {[0, 1, 2].map((i) => (
+                      <div key={i} className="w-[3px] h-[3px] rounded-sm bg-white/[0.12]" />
+                    ))}
+                  </div>
+                </motion.div>
+
                 {/* Badge */}
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
@@ -279,22 +317,72 @@ export default function Home() {
                 </motion.div>
               </div>
 
-              {/* Play button */}
+              {/* Cockpit preview — CSS mockup */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.82 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1, duration: 0.85, ease: SNAP }}
-                className="flex-shrink-0 text-center hidden lg:block"
+                className="flex-shrink-0 hidden lg:block w-[260px]"
+                aria-hidden="true"
               >
-                <Link
-                  href="/projet"
-                  className="w-[80px] h-[80px] rounded-full border border-white/18 bg-white/[0.04] backdrop-blur-sm text-white text-2xl flex items-center justify-center mx-auto hover:bg-[#FF6B35]/15 hover:border-[#FF6B35]/55 hover:scale-110 transition-all relative group"
-                >
-                  <span className="absolute inset-[-8px] rounded-full border border-[#FF6B35]/18 group-hover:border-[#FF6B35]/38 transition-colors" />
-                  <span className="absolute inset-[-18px] rounded-full border border-[#FF6B35]/08 group-hover:border-[#FF6B35]/18 transition-colors" />
-                  ▶
-                </Link>
-                <div className="text-[12px] text-white/32 mt-3">Voir le parcours</div>
+                <div className="rounded-2xl overflow-hidden border border-white/[0.1] bg-black/50 backdrop-blur-xl shadow-[0_32px_80px_rgba(0,0,0,0.55)]">
+                  {/* Header LIVE */}
+                  <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-white/[0.07] bg-white/[0.03]">
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#4ECDC4] animate-pulse" />
+                      <span className="text-[10px] font-bold tracking-[0.14em] text-white/70 uppercase">
+                        Session en cours
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-cinema tracking-widest text-[#FF6B35]">24:12</span>
+                  </div>
+                  {/* Module card */}
+                  <div className="px-3.5 py-3">
+                    <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/35 mb-2">
+                      Module 3 · Vote en cours
+                    </div>
+                    <div className="text-[12px] font-bold text-white/90 mb-3 leading-snug">
+                      Quel genre pour notre film ?
+                    </div>
+                    {[
+                      { label: "Comédie", pct: 58, color: "#4ECDC4" },
+                      { label: "Drame", pct: 28, color: "#D4A843" },
+                      { label: "Thriller", pct: 14, color: "#FF6B35" },
+                    ].map((opt) => (
+                      <div key={opt.label} className="mb-1.5">
+                        <div className="flex justify-between text-[9px] text-white/50 mb-0.5">
+                          <span>{opt.label}</span>
+                          <span style={{ color: opt.color }}>{opt.pct}%</span>
+                        </div>
+                        <div className="h-[4px] rounded-full bg-white/[0.07] overflow-hidden">
+                          <motion.div
+                            className="h-full rounded-full"
+                            style={{ background: opt.color }}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${opt.pct}%` }}
+                            transition={{ delay: 1.4, duration: 0.9, ease: SNAP }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Student dots */}
+                  <div className="px-3.5 pb-3 flex items-center gap-1.5">
+                    {["#FF6B35", "#D4A843", "#4ECDC4", "#FF8C5A", "#E8B84B", "#5DD6CF", "#FF6B35", "#D4A843"].map(
+                      (c, i) => (
+                        <div
+                          key={i}
+                          className="w-4 h-4 rounded-full border border-black/40 flex items-center justify-center text-[7px] font-bold text-black"
+                          style={{ background: c }}
+                        >
+                          {String.fromCharCode(65 + i)}
+                        </div>
+                      ),
+                    )}
+                    <span className="text-[9px] text-white/30 ml-1">+19</span>
+                  </div>
+                </div>
+                <div className="text-[11px] text-white/28 mt-2 text-center tracking-wide">Cockpit intervenant →</div>
               </motion.div>
             </div>
 
@@ -322,6 +410,9 @@ export default function Home() {
                 </div>
               ))}
             </motion.div>
+            <div className="text-center mt-3 text-[10px] text-white/20 tracking-wide">
+              Données mars 2026 · Île-de-France
+            </div>
           </div>
         </div>
       </section>
@@ -731,7 +822,7 @@ export default function Home() {
                 className="px-10 py-4 rounded-xl text-base font-bold text-white shadow-[0_4px_28px_rgba(255,107,53,0.45)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.58)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out"
                 style={{ background: "#FF6B35" }}
               >
-                Créer un compte
+                Lancer mon premier atelier
               </Link>
               <Link
                 href="/contact"
