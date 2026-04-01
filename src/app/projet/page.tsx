@@ -81,11 +81,23 @@ export default function ProjetPage() {
       {/* ══ Hero ══ */}
       <section className="relative pt-32 pb-24 px-6 overflow-hidden">
         {/* Ambient blobs */}
-        <div className="absolute top-[-180px] left-[-120px] w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: "#FF6B35", opacity: 0.08, filter: "blur(140px)" }} />
-        <div className="absolute bottom-[-100px] right-[-80px] w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: "#D4A843", opacity: 0.07, filter: "blur(120px)" }} />
+        <div
+          className="absolute top-[-180px] left-[-120px] w-[600px] h-[600px] rounded-full pointer-events-none"
+          style={{ background: "#FF6B35", opacity: 0.08, filter: "blur(140px)" }}
+        />
+        <div
+          className="absolute bottom-[-100px] right-[-80px] w-[400px] h-[400px] rounded-full pointer-events-none"
+          style={{ background: "#D4A843", opacity: 0.07, filter: "blur(120px)" }}
+        />
         {/* Film grain */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.022]" xmlns="http://www.w3.org/2000/svg">
-          <filter id="grain-projet"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" /><feColorMatrix type="saturate" values="0" /></filter>
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.022]"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <filter id="grain-projet">
+            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
           <rect width="100%" height="100%" filter="url(#grain-projet)" />
         </svg>
         <div className="relative max-w-[800px] mx-auto text-center">
@@ -113,7 +125,9 @@ export default function ProjetPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div>
               <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#D4A843] mb-2">PÉDAGOGIE</div>
-              <h2 className="font-cinema text-[clamp(22px,3vw,36px)] uppercase leading-tight mb-4">La donnée au service de la création, pas du jugement</h2>
+              <h2 className="font-cinema text-[clamp(22px,3vw,36px)] uppercase leading-tight mb-4">
+                La donnée au service de la création, pas du jugement
+              </h2>
               <p className="text-[14px] text-white/60 leading-relaxed mb-4">
                 Chez Banlieuwood, les données des élèves sont pédagogiques, pas performatives. L&apos;intervenant pilote
                 la séance — il ne juge pas les élèves.
@@ -150,7 +164,9 @@ export default function ProjetPage() {
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#FF6B35] mb-2">NOS CONVICTIONS</div>
-            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">Ce que nous croyons vraiment</h2>
+            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">
+              Ce que nous croyons vraiment
+            </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {CONVICTIONS.map((c) => (
@@ -173,7 +189,9 @@ export default function ProjetPage() {
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">
               ALIGNEMENT ÉDUCATION NATIONALE
             </div>
-            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">Ancré dans les programmes officiels</h2>
+            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">
+              Ancré dans les programmes officiels
+            </h2>
             <p className="text-[clamp(15px,2vw,18px)] text-white/60 max-w-[560px] mx-auto mt-3">
               Chaque module est conçu en référence aux textes officiels de l&apos;Éducation Nationale.
             </p>
@@ -240,7 +258,9 @@ export default function ProjetPage() {
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">NOTRE MÉTHODE</div>
-            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">4 principes pédagogiques</h2>
+            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">
+              4 principes pédagogiques
+            </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {PEDAGOGIE_POINTS.map((p) => (
@@ -271,7 +291,9 @@ export default function ProjetPage() {
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">
               MODULES DÉTAILLÉS
             </div>
-            <h2 className="font-cinema text-[clamp(22px,3vw,32px)] uppercase leading-tight">8 modules, un parcours complet</h2>
+            <h2 className="font-cinema text-[clamp(22px,3vw,32px)] uppercase leading-tight">
+              8 modules, un parcours complet
+            </h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {MODULES.map((m) => (
@@ -349,7 +371,8 @@ export default function ProjetPage() {
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Link
               href={ROUTES.requestAccess}
-              className="px-9 py-4 rounded-xl text-base font-bold text-white shadow-[0_4px_20px_rgba(255,107,53,0.35)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.55)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out" style={{ background: "#FF6B35" }}
+              className="px-9 py-4 rounded-xl text-base font-bold text-white shadow-[0_4px_20px_rgba(255,107,53,0.35)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.55)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out"
+              style={{ background: "#FF6B35" }}
             >
               Créer un compte
             </Link>

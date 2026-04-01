@@ -115,7 +115,6 @@ const PARTNERS = [
 ];
 
 export default function Home() {
-
   return (
     <PublicLayout>
       <BrandStyles />
@@ -223,7 +222,8 @@ export default function Home() {
                   transition={{ delay: 0.5, duration: 0.7, ease: SNAP }}
                   className="text-[clamp(15px,2vw,18px)] text-white/60 leading-[1.52] tracking-[-0.01em] max-w-[520px] mb-8"
                 >
-                  Sans notes, sans classement, sans jugement. 8 modules pour qu&apos;une classe entière crée son premier film — du brainstorm au festival.
+                  Sans notes, sans classement, sans jugement. 8 modules pour qu&apos;une classe entière crée son premier
+                  film — du brainstorm au festival.
                 </motion.p>
 
                 {/* Social proof hero — avant CTA */}
@@ -237,8 +237,11 @@ export default function Home() {
                     className="text-[11px] leading-snug text-white/50 italic max-w-[340px] border-l-2 pl-3"
                     style={{ borderColor: "#FF6B35" }}
                   >
-                    &ldquo;Les élèves qui ne participaient jamais se sont révélés — 15 ans de carrière, jamais vu ça.&rdquo;
-                    <span className="not-italic text-white/30 block mt-0.5">— Sophie Martin, Collège Jean Moulin, Bondy</span>
+                    &ldquo;Les élèves qui ne participaient jamais se sont révélés — 15 ans de carrière, jamais vu
+                    ça.&rdquo;
+                    <span className="not-italic text-white/30 block mt-0.5">
+                      — Sophie Martin, Collège Jean Moulin, Bondy
+                    </span>
                   </span>
                 </motion.div>
 
@@ -309,7 +312,10 @@ export default function Home() {
                 { value: 94, label: "Taux d&apos;engagement", color: "#ffffff", suffix: "%" },
               ].map((stat) => (
                 <div key={stat.label} className="px-6 md:px-8 py-6 text-center">
-                  <div className="font-cinema text-[clamp(40px,5vw,72px)] leading-none mb-1" style={{ color: stat.color }}>
+                  <div
+                    className="font-cinema text-[clamp(40px,5vw,72px)] leading-none mb-1"
+                    style={{ color: stat.color }}
+                  >
                     <CountUp target={stat.value} suffix={stat.suffix} />
                   </div>
                   <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/35">{stat.label}</div>
@@ -326,10 +332,7 @@ export default function Home() {
           {[...PARTNERS, ...PARTNERS].map((p, i) => (
             <span key={i} className="flex-shrink-0 flex items-center gap-6 px-8 text-[13px] font-medium text-white/28">
               {p}
-              <span
-                className="w-1 h-1 rounded-full flex-shrink-0"
-                style={{ background: "rgba(255,107,53,0.4)" }}
-              />
+              <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: "rgba(255,107,53,0.4)" }} />
             </span>
           ))}
         </div>
@@ -341,7 +344,9 @@ export default function Home() {
           <Reveal className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-3">
               <span className="inline-block w-6 h-[1.5px] rounded-full" style={{ background: "#D4A843" }} />
-              <span className="text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: "#D4A843" }}>POUR CHAQUE RÔLE</span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: "#D4A843" }}>
+                POUR CHAQUE RÔLE
+              </span>
               <span className="inline-block w-6 h-[1.5px] rounded-full" style={{ background: "#D4A843" }} />
             </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">Un outil pour chaque acteur</h2>
@@ -408,7 +413,9 @@ export default function Home() {
             <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "#4ECDC4" }}>
               COMMENT ÇA MARCHE
             </div>
-            <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">4 étapes pour créer un film</h2>
+            <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">
+              4 étapes pour créer un film
+            </h2>
           </Reveal>
           <div className="max-w-[680px] mx-auto">
             {[
@@ -473,7 +480,9 @@ export default function Home() {
             <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "#FF6B35" }}>
               PARCOURS PÉDAGOGIQUE
             </div>
-            <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">8 modules, un parcours complet</h2>
+            <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">
+              8 modules, un parcours complet
+            </h2>
             <p className="text-[clamp(15px,2vw,18px)] text-white/48 max-w-[560px] mx-auto mt-3">
               Chaque module développe des compétences du Parcours d&apos;Éducation Artistique et Culturelle (PEAC) et du
               Socle Commun.
@@ -637,10 +646,7 @@ export default function Home() {
       <section className="py-12 bg-[#110e0b] border-y border-white/[0.04]">
         <Reveal>
           <div className="max-w-[820px] mx-auto px-6 text-center">
-            <p
-              className="font-cinema uppercase leading-[1.12] mb-6"
-              style={{ fontSize: "clamp(26px,4.5vw,56px)" }}
-            >
+            <p className="font-cinema uppercase leading-[1.12] mb-6" style={{ fontSize: "clamp(26px,4.5vw,56px)" }}>
               <span className="text-white/35">&ldquo;J&apos;avais jamais tenu une caméra.</span>
               <br />
               <span style={{ color: "#FF6B35" }}>J&apos;ai filmé ma première scène.&rdquo;</span>
@@ -663,8 +669,13 @@ export default function Home() {
             <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "#FF6B35" }}>
               TÉMOIGNAGES
             </div>
-            <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight mb-3">Ils en parlent mieux que nous</h2>
-            <div className="mx-auto w-16 h-[2px] rounded-full" style={{ background: "linear-gradient(90deg, transparent, #FF6B35, transparent)" }} />
+            <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight mb-3">
+              Ils en parlent mieux que nous
+            </h2>
+            <div
+              className="mx-auto w-16 h-[2px] rounded-full"
+              style={{ background: "linear-gradient(90deg, transparent, #FF6B35, transparent)" }}
+            />
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {TESTIMONIALS.map((t, i) => (
@@ -708,7 +719,9 @@ export default function Home() {
             <div className="font-cinema text-[13px] tracking-[0.25em] mb-4" style={{ color: "#FF6B35" }}>
               PRÊT À TOURNER ?
             </div>
-            <h2 className="text-[clamp(32px,5vw,60px)] font-extrabold leading-tight mb-4">Prêt à créer votre premier film ?</h2>
+            <h2 className="text-[clamp(32px,5vw,60px)] font-extrabold leading-tight mb-4">
+              Prêt à créer votre premier film ?
+            </h2>
             <p className="text-[clamp(15px,2vw,18px)] text-white/55 leading-relaxed mb-10">
               Lancez votre atelier en quelques minutes. Gratuit pour tous les établissements scolaires publics.
             </p>

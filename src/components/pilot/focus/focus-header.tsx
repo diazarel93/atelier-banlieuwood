@@ -184,7 +184,9 @@ export function FocusHeader({
         <div className="flex items-center gap-3 min-w-0">
           <span className="text-xl flex-shrink-0">🎬</span>
           <div className="min-w-0">
-            <div className="text-[14px] font-extrabold leading-tight" style={{ color: "#FF6B35" }}>BANLIEUWOOD</div>
+            <div className="text-[14px] font-extrabold leading-tight" style={{ color: "#FF6B35" }}>
+              BANLIEUWOOD
+            </div>
             <div className="text-body-xs text-bw-cockpit-muted truncate">
               {classLabel || sessionTitle} — P{moduleLabel}
             </div>

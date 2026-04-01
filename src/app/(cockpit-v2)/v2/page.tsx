@@ -146,73 +146,75 @@ export default function DashboardV2Page() {
           <HeroNextSession activeSession={activeSession} nextSession={nextSession} isProfesseur={isProfesseur} />
 
           {/* Séances du jour — masquée si session active unique (le Hero la couvre déjà) */}
-          {data?.todaySessions && data.todaySessions.length > 0 && !(activeSession && data.todaySessions.length === 1) && (
-            <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md p-5">
-              <h3 className="label-caps mb-3">Aujourd&apos;hui</h3>
-              <div className="space-y-2">
-                {data.todaySessions.map((s, i) => (
-                  <div
-                    key={s.id}
-                    className="flex items-center gap-3 py-2 pl-3 rounded-xl hover:bg-bw-primary/[0.025] transition-colors duration-150 relative animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both"
-                    style={{ animationDelay: `${i * 60}ms` }}
-                  >
+          {data?.todaySessions &&
+            data.todaySessions.length > 0 &&
+            !(activeSession && data.todaySessions.length === 1) && (
+              <div className="rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-md p-5">
+                <h3 className="label-caps mb-3">Aujourd&apos;hui</h3>
+                <div className="space-y-2">
+                  {data.todaySessions.map((s, i) => (
                     <div
-                      className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
-                      style={{
-                        backgroundColor:
-                          s.status === "done"
-                            ? "var(--color-bw-green)"
-                            : s.status === "waiting" || s.status === "draft"
-                              ? "var(--color-bw-amber)"
-                              : "var(--color-bw-teal)",
-                      }}
-                    />
-                    <span className="text-xs font-medium text-bw-muted tabular-nums w-10 shrink-0">
-                      {new Date(s.scheduledAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-heading-xs text-bw-heading truncate">{s.title}</p>
-                      <span className="text-body-xs text-bw-muted">
-                        {s.classLabel} — {s.studentCount} élève{s.studentCount !== 1 ? "s" : ""}
+                      key={s.id}
+                      className="flex items-center gap-3 py-2 pl-3 rounded-xl hover:bg-bw-primary/[0.025] transition-colors duration-150 relative animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both"
+                      style={{ animationDelay: `${i * 60}ms` }}
+                    >
+                      <div
+                        className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
+                        style={{
+                          backgroundColor:
+                            s.status === "done"
+                              ? "var(--color-bw-green)"
+                              : s.status === "waiting" || s.status === "draft"
+                                ? "var(--color-bw-amber)"
+                                : "var(--color-bw-teal)",
+                        }}
+                      />
+                      <span className="text-xs font-medium text-bw-muted tabular-nums w-10 shrink-0">
+                        {new Date(s.scheduledAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                       </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-heading-xs text-bw-heading truncate">{s.title}</p>
+                        <span className="text-body-xs text-bw-muted">
+                          {s.classLabel} — {s.studentCount} élève{s.studentCount !== 1 ? "s" : ""}
+                        </span>
+                      </div>
+                      {s.status === "done" ? (
+                        <Link
+                          href={ROUTES.seanceResults(s.id)}
+                          prefetch={false}
+                          className="shrink-0 inline-flex items-center rounded-lg bg-[var(--color-bw-surface-dim)] px-3 min-h-[44px] text-xs font-semibold text-bw-muted hover:text-bw-heading transition-colors"
+                        >
+                          Voir résultats
+                        </Link>
+                      ) : s.status === "responding" || s.status === "voting" || s.status === "waiting" ? (
+                        <Link
+                          href={ROUTES.pilot(s.id)}
+                          prefetch={false}
+                          className="shrink-0 inline-flex items-center rounded-lg px-3 min-h-[44px] text-xs font-semibold text-white btn-hover"
+                          style={{ background: "var(--color-bw-teal)", boxShadow: "0 2px 12px rgba(78,205,196,0.3)" }}
+                        >
+                          Retourner →
+                        </Link>
+                      ) : (
+                        <Link
+                          href={ROUTES.pilot(s.id)}
+                          prefetch={false}
+                          className="shrink-0 inline-flex items-center rounded-lg bg-bw-primary px-3 min-h-[44px] text-xs font-semibold text-white hover:bg-bw-primary-500 btn-hover"
+                        >
+                          Lancer
+                        </Link>
+                      )}
                     </div>
-                    {s.status === "done" ? (
-                      <Link
-                        href={ROUTES.seanceResults(s.id)}
-                        prefetch={false}
-                        className="shrink-0 inline-flex items-center rounded-lg bg-[var(--color-bw-surface-dim)] px-3 min-h-[44px] text-xs font-semibold text-bw-muted hover:text-bw-heading transition-colors"
-                      >
-                        Voir résultats
-                      </Link>
-                    ) : s.status === "responding" || s.status === "voting" || s.status === "waiting" ? (
-                      <Link
-                        href={ROUTES.pilot(s.id)}
-                        prefetch={false}
-                        className="shrink-0 inline-flex items-center rounded-lg px-3 min-h-[44px] text-xs font-semibold text-white btn-hover"
-                        style={{ background: "var(--color-bw-teal)", boxShadow: "0 2px 12px rgba(78,205,196,0.3)" }}
-                      >
-                        Retourner →
-                      </Link>
-                    ) : (
-                      <Link
-                        href={ROUTES.pilot(s.id)}
-                        prefetch={false}
-                        className="shrink-0 inline-flex items-center rounded-lg bg-bw-primary px-3 min-h-[44px] text-xs font-semibold text-white hover:bg-bw-primary-500 btn-hover"
-                      >
-                        Lancer
-                      </Link>
-                    )}
-                  </div>
-                ))}
+                  ))}
+                </div>
+                <Link
+                  href={ROUTES.seanceNew}
+                  className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-bw-primary/[0.06] py-3 text-sm font-medium text-bw-primary hover:bg-bw-primary/[0.10] transition-all"
+                >
+                  + Nouvelle séance
+                </Link>
               </div>
-              <Link
-                href={ROUTES.seanceNew}
-                className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-bw-primary/[0.06] py-3 text-sm font-medium text-bw-primary hover:bg-bw-primary/[0.10] transition-all"
-              >
-                + Nouvelle séance
-              </Link>
-            </div>
-          )}
+            )}
 
           {/* 4 KPI en grille 2×2 */}
           <div className="grid grid-cols-2 gap-4">

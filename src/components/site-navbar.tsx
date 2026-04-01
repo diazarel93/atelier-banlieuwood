@@ -55,9 +55,7 @@ export function SiteNavbar() {
               key={link.href}
               href={link.href}
               className={`px-4 min-h-[44px] flex items-center rounded-lg text-[13px] font-medium transition-colors ${
-                pathname === link.href
-                  ? "text-[#FF6B35] bg-[#FF6B35]/[0.08]"
-                  : "text-white/55 hover:text-white"
+                pathname === link.href ? "text-[#FF6B35] bg-[#FF6B35]/[0.08]" : "text-white/55 hover:text-white"
               }`}
             >
               {link.label}
@@ -100,10 +98,7 @@ export function SiteNavbar() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div
-          className="fixed inset-0 z-40 md:hidden"
-          onClick={() => setMobileOpen(false)}
-        >
+        <div className="fixed inset-0 z-40 md:hidden" onClick={() => setMobileOpen(false)}>
           <div
             className="absolute top-0 left-0 right-0 pt-[60px] pb-5 px-4"
             style={{

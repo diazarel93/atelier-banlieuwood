@@ -70,7 +70,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Banlieuwood — Atelier de cinéma collaboratif",
-    description: "Transformez votre classe en studio de cinéma. 8 modules pédagogiques alignés PEAC. Gratuit pour les écoles.",
+    description:
+      "Transformez votre classe en studio de cinéma. 8 modules pédagogiques alignés PEAC. Gratuit pour les écoles.",
   },
   robots: {
     index: true,

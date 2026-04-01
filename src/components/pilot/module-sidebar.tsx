@@ -363,7 +363,10 @@ function ModuleSidebarInner({
                                   </motion.span>
                                 )}
                                 {elapsed && (
-                                  <span className="text-body-xs tabular-nums font-semibold" style={{ color: "#F5A45B" }}>
+                                  <span
+                                    className="text-body-xs tabular-nums font-semibold"
+                                    style={{ color: "#F5A45B" }}
+                                  >
                                     {elapsed}
                                   </span>
                                 )}
