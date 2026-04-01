@@ -115,9 +115,16 @@ const PARTNERS = [
 
 export default function Home() {
   const [_scrolled, setScrolled] = useState(false);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 50);
+      if (progressRef.current) {
+        const progress = window.scrollY / Math.max(document.body.scrollHeight - window.innerHeight, 1);
+        progressRef.current.style.width = `${Math.min(progress * 100, 100)}%`;
+      }
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -125,6 +132,14 @@ export default function Home() {
   return (
     <PublicLayout>
       <BrandStyles />
+
+      {/* Barre de progression scroll */}
+      <div
+        ref={progressRef}
+        className="fixed top-0 left-0 h-[2px] z-[400] w-0 pointer-events-none"
+        style={{ background: "linear-gradient(90deg, #FF6B35, #D4A843, #4ECDC4)" }}
+        aria-hidden="true"
+      />
 
       {/* Film grain overlay */}
       <div className="fixed inset-0 z-[200] pointer-events-none" aria-hidden="true">
@@ -282,30 +297,24 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* Stats strip */}
+            {/* Stats panel cinéma */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.1, duration: 0.85, ease: SNAP }}
-              className="flex gap-4 flex-wrap justify-center mt-16"
+              className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/[0.07] mt-16 rounded-2xl overflow-hidden border border-white/[0.08] bg-black/20 backdrop-blur-md"
             >
               {[
-                { icon: "🎬", value: 87, label: "Films produits", color: "#FF6B35" },
-                { icon: "👥", value: 1247, label: "Élèves participants", color: "#D4A843" },
-                { icon: "🏫", value: 32, label: "Établissements", color: "#4ECDC4" },
-                { icon: "⭐", value: 94, label: "Engagement", suffix: "%", color: "#ffffff" },
+                { value: 87, label: "Films produits", color: "#FF6B35", suffix: "" },
+                { value: 1247, label: "Élèves participants", color: "#D4A843", suffix: "" },
+                { value: 32, label: "Établissements", color: "#4ECDC4", suffix: "" },
+                { value: 94, label: "Taux d&apos;engagement", color: "#ffffff", suffix: "%" },
               ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="flex items-center gap-3 px-7 py-4 rounded-2xl bg-white/[0.04] backdrop-blur-xl ring-1 ring-white/[0.07] hover:ring-[#FF6B35]/22 transition-all"
-                >
-                  <span className="text-[28px]">{stat.icon}</span>
-                  <div>
-                    <div className="text-2xl font-black" style={{ color: stat.color }}>
-                      <CountUp target={stat.value} suffix={stat.suffix} />
-                    </div>
-                    <div className="text-[11px] text-white/35">{stat.label}</div>
+                <div key={stat.label} className="px-6 md:px-8 py-6 text-center">
+                  <div className="font-cinema text-[clamp(40px,5vw,72px)] leading-none mb-1" style={{ color: stat.color }}>
+                    <CountUp target={stat.value} suffix={stat.suffix} />
                   </div>
+                  <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/35">{stat.label}</div>
                 </div>
               ))}
             </motion.div>
@@ -388,7 +397,7 @@ export default function Home() {
       <section className="py-28 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="mb-14">
-            <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#4ECDC4" }}>
+            <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "#4ECDC4" }}>
               COMMENT ÇA MARCHE
             </div>
             <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">4 étapes pour créer un film</h2>
@@ -453,7 +462,7 @@ export default function Home() {
       <section className="py-24 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#FF6B35" }}>
+            <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "#FF6B35" }}>
               PARCOURS PÉDAGOGIQUE
             </div>
             <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">8 modules, un parcours complet</h2>
@@ -482,11 +491,36 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ══════════ BREAK CINÉMA — 87 FILMS ══════════ */}
+      <section className="py-20 bg-[#0d0b09] overflow-hidden relative flex items-center justify-center min-h-[200px]">
+        <Reveal>
+          <div className="text-center relative z-[1] px-6">
+            {/* Chiffre fantôme derrière */}
+            <div
+              className="font-cinema absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 leading-none select-none pointer-events-none"
+              style={{ fontSize: "clamp(120px,22vw,280px)", color: "rgba(255,107,53,0.04)" }}
+              aria-hidden="true"
+            >
+              87
+            </div>
+            <div
+              className="font-cinema uppercase leading-none relative"
+              style={{ fontSize: "clamp(48px,8vw,110px)", color: "#FF6B35" }}
+            >
+              87 films
+            </div>
+            <div className="text-[13px] text-white/35 mt-3 tracking-[0.08em]">
+              produits depuis le premier atelier à Bondy
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
       {/* ══════════ FORMULES ══════════ */}
       <section className="py-28 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#D4A843" }}>
+            <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "#D4A843" }}>
               FORMULES
             </div>
             <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">
@@ -573,11 +607,34 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ══════════ VOIX D'ÉLÈVE ══════════ */}
+      <section className="py-20 bg-[#110e0b] border-y border-white/[0.04]">
+        <Reveal>
+          <div className="max-w-[820px] mx-auto px-6 text-center">
+            <p
+              className="font-cinema uppercase leading-[1.12] mb-6"
+              style={{ fontSize: "clamp(26px,4.5vw,56px)" }}
+            >
+              <span className="text-white/35">&ldquo;J&apos;avais jamais tenu une caméra.</span>
+              <br />
+              <span style={{ color: "#FF6B35" }}>J&apos;ai filmé ma première scène.&rdquo;</span>
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              <span className="w-8 h-px bg-[#FF6B35]/30" />
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-white/35">
+                Yanis, 13 ans · Cadreur · Collège Jean Moulin, Bondy
+              </span>
+              <span className="w-8 h-px bg-[#FF6B35]/30" />
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
       {/* ══════════ TEMOIGNAGES ══════════ */}
       <section className="py-20 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#FF6B35" }}>
+            <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "#FF6B35" }}>
               TÉMOIGNAGES
             </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight mb-3">Ils en parlent mieux que nous</h2>
@@ -622,7 +679,7 @@ export default function Home() {
         />
         <div className="max-w-[600px] mx-auto px-6 text-center relative z-[1]">
           <Reveal>
-            <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-4" style={{ color: "#FF6B35" }}>
+            <div className="font-cinema text-[13px] tracking-[0.25em] mb-4" style={{ color: "#FF6B35" }}>
               PRÊT À TOURNER ?
             </div>
             <h2 className="text-[clamp(32px,5vw,60px)] font-extrabold leading-tight mb-4">Prêt à créer votre premier film ?</h2>
