@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { toast } from "sonner";
 import { useFocusCockpitState } from "@/hooks/use-focus-cockpit-state";
 import { useCockpitActions, useCockpitData } from "@/components/pilot/cockpit-context";
@@ -36,6 +36,7 @@ import type { ResponseCardResponse } from "@/components/pilot/response-card";
 import type { Response } from "@/hooks/use-pilot-session";
 
 export function FocusCockpit() {
+  const prefersReducedMotion = useReducedMotion();
   const [remoteMode, setRemoteMode] = useState(false);
   const [showVoteSelection, setShowVoteSelection] = useState(false);
   const isOnline = useOnlineStatus();
@@ -371,7 +372,7 @@ export function FocusCockpit() {
             {/* Module header */}
             <div className="px-5 pt-5 pb-3">
               <div className="flex items-center gap-3 mb-2">
-                <div className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: moduleColor }}>
+                <div className="label-caps" style={{ color: moduleColor }}>
                   Phase — Q{currentQIndex + 1}/{moduleFlags.maxSituations}
                 </div>
               </div>
@@ -380,10 +381,10 @@ export function FocusCockpit() {
               {/* Progress bar */}
               {session.status === "responding" && activeStudents.length > 0 && (
                 <div className="flex items-center gap-3 mt-3">
-                  <span className="text-[11px] font-semibold text-[#94a3b8]">
+                  <span className="label-caps text-bw-cockpit-muted">
                     {unifiedRespondedCount}/{activeStudents.length} ont repondu
                   </span>
-                  <div className="flex-1 h-2 rounded-full bg-[#1a1a35] overflow-hidden">
+                  <div className="flex-1 h-2 rounded-full bg-bw-cockpit-canvas overflow-hidden">
                     <motion.div
                       className="h-full rounded-full"
                       style={{ backgroundColor: moduleColor }}
@@ -508,17 +509,17 @@ export function FocusCockpit() {
                 <div className="grid grid-cols-3 gap-2">
                   <div className="bg-bw-cockpit-surface rounded-xl border border-[rgba(245,245,244,0.08)] p-3 text-center">
                     <p className="text-2xl font-bold text-emerald-600 tabular-nums">{activeStudents.length}</p>
-                    <p className="text-[11px] text-[#94a3b8] uppercase tracking-wider mt-0.5">Élèves</p>
+                    <p className="label-caps text-bw-cockpit-muted mt-0.5">Élèves</p>
                   </div>
                   <div className="bg-bw-cockpit-surface rounded-xl border border-[rgba(245,245,244,0.08)] p-3 text-center">
                     <p className="text-2xl font-bold text-orange-500 tabular-nums">{responses.length}</p>
-                    <p className="text-[11px] text-[#94a3b8] uppercase tracking-wider mt-0.5">Réponses</p>
+                    <p className="label-caps text-bw-cockpit-muted mt-0.5">Réponses</p>
                   </div>
                   <div className="bg-bw-cockpit-surface rounded-xl border border-[rgba(245,245,244,0.08)] p-3 text-center">
                     <p className="text-2xl font-bold text-purple-500 tabular-nums">
                       {responses.filter((r) => r.is_highlighted).length}
                     </p>
-                    <p className="text-[11px] text-[#94a3b8] uppercase tracking-wider mt-0.5">Mises en avant</p>
+                    <p className="label-caps text-bw-cockpit-muted mt-0.5">Mises en avant</p>
                   </div>
                 </div>
 
@@ -684,7 +685,7 @@ export function FocusCockpit() {
               <button
                 key={s.id}
                 onClick={() => handleSelectStudent(s)}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-[#1a1a35] transition-colors cursor-pointer text-left"
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-bw-cockpit-canvas transition-colors cursor-pointer text-left"
               >
                 <span className="text-2xl">{s.avatar}</span>
                 <span className="flex-1 text-[14px] font-medium text-bw-cockpit-text truncate">{s.display_name}</span>
@@ -694,12 +695,14 @@ export function FocusCockpit() {
                   </span>
                 )}
                 <span
-                  className={`w-2.5 h-2.5 rounded-full shrink-0 ${hasResponded ? "bg-emerald-500" : "bg-[#64748b]"}`}
+                  className={`w-2.5 h-2.5 rounded-full shrink-0 ${hasResponded ? "bg-emerald-500" : "bg-bw-cockpit-muted"}`}
                 />
               </button>
             );
           })}
-          {studentList.length === 0 && <p className="text-center text-sm text-[#94a3b8] py-4">Aucun élève connecté</p>}
+          {studentList.length === 0 && (
+            <p className="text-center text-sm text-bw-cockpit-muted py-4">Aucun élève connecté</p>
+          )}
         </div>
       </BottomSheet>
 
