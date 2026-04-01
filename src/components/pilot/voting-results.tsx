@@ -40,12 +40,10 @@ export function VotingResults({ voteData, sessionStatus, onValidateWinner }: Vot
     <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748b]">Resultats du vote</span>
+        <span className="label-caps text-bw-cockpit-muted">Resultats du vote</span>
         <div className="flex items-center gap-2">
-          <span className="text-xl font-extrabold text-[#f0f0f8] tabular-nums">{voteData.totalVotes}</span>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748b]">
-            vote{voteData.totalVotes > 1 ? "s" : ""}
-          </span>
+          <span className="text-xl font-extrabold text-white tabular-nums">{voteData.totalVotes}</span>
+          <span className="label-caps text-bw-cockpit-muted">vote{voteData.totalVotes > 1 ? "s" : ""}</span>
         </div>
       </div>
 
@@ -60,7 +58,7 @@ export function VotingResults({ voteData, sessionStatus, onValidateWinner }: Vot
             transition={{ duration: 0.4, ease: "easeOut" }}
             className="flex items-center justify-center py-12"
           >
-            <span className="text-7xl font-extrabold text-[#8b5cf6]">{countdown}</span>
+            <span className="text-7xl font-extrabold text-bw-primary">{countdown}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -69,7 +67,7 @@ export function VotingResults({ voteData, sessionStatus, onValidateWinner }: Vot
       {!showResults && countdown === null && sessionStatus === "voting" && voteData.totalVotes > 0 && (
         <motion.button
           onClick={startReveal}
-          className="w-full py-4 rounded-xl bg-gradient-to-r from-[#8b5cf6] to-[#ec4899] text-white text-[14px] font-bold cursor-pointer shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+          className="w-full py-4 rounded-xl bg-gradient-to-r from-bw-primary to-bw-gold text-white text-body-sm font-bold cursor-pointer shadow-md"
           whileTap={{ scale: 0.97 }}
         >
           ✨ Reveler les resultats
@@ -90,7 +88,9 @@ export function VotingResults({ voteData, sessionStatus, onValidateWinner }: Vot
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.15, duration: 0.4, ease: "easeOut" }}
               className={`rounded-xl p-4 border transition-all ${
-                isWinner ? "border-[#8b5cf6]/40 bg-[#8b5cf6]/8" : "border-[#2a2a50] bg-[#161633]"
+                isWinner
+                  ? "border-bw-primary/40 bg-bw-primary/8"
+                  : "border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas"
               }`}
               style={
                 isWinner
@@ -107,14 +107,14 @@ export function VotingResults({ voteData, sessionStatus, onValidateWinner }: Vot
                   className="flex items-center gap-1.5 mb-2"
                 >
                   <span className="text-sm">🏆</span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#fbbf24]">Gagnant</span>
+                  <span className="label-caps text-bw-amber">Gagnant</span>
                 </motion.div>
               )}
 
               <div className="flex justify-between items-start mb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-base">{vr.response.students?.avatar}</span>
-                  <span className="text-[13px] font-medium text-[#f0f0f8]">{vr.response.students?.display_name}</span>
+                  <span className="text-body-sm font-medium text-white">{vr.response.students?.display_name}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="text-[13px] font-bold tabular-nums" style={{ color: barColor }}>
@@ -126,10 +126,10 @@ export function VotingResults({ voteData, sessionStatus, onValidateWinner }: Vot
                 </div>
               </div>
 
-              <p className="text-[13px] mb-3 text-[#94a3b8] leading-relaxed">{vr.response.text}</p>
+              <p className="text-body-sm mb-3 text-bw-cockpit-muted leading-relaxed">{vr.response.text}</p>
 
               {/* Progress bar */}
-              <div className="w-full h-2.5 rounded-full bg-[#1a1a35] overflow-hidden mb-2">
+              <div className="w-full h-2.5 rounded-full bg-bw-cockpit-canvas overflow-hidden mb-2">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${pct}%` }}
@@ -152,7 +152,9 @@ export function VotingResults({ voteData, sessionStatus, onValidateWinner }: Vot
                       </span>
                     ))}
                   </div>
-                  {vr.voters.length > 5 && <span className="text-[10px] text-[#64748b]">+{vr.voters.length - 5}</span>}
+                  {vr.voters.length > 5 && (
+                    <span className="text-[10px] text-bw-cockpit-muted">+{vr.voters.length - 5}</span>
+                  )}
                 </div>
               )}
 
@@ -163,7 +165,7 @@ export function VotingResults({ voteData, sessionStatus, onValidateWinner }: Vot
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
                   onClick={() => onValidateWinner(vr.response.id, vr.response.text, vr.response.students)}
-                  className="mt-3 px-4 py-2.5 bg-[#8b5cf6] text-white rounded-xl text-[12px] font-bold cursor-pointer transition-all hover:bg-[#7c3aed] shadow-[0_0_12px_rgba(139,92,246,0.25)]"
+                  className="mt-3 px-4 py-2.5 bg-bw-primary text-white rounded-xl text-body-xs font-bold cursor-pointer transition-all hover:brightness-90 shadow-[0_0_12px_rgba(139,92,246,0.25)]"
                 >
                   Valider comme choix collectif
                 </motion.button>

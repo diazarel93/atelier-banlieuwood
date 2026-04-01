@@ -63,7 +63,9 @@ export function FocusQuestionCard({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       className={`rounded-2xl border-l-4 border p-5 shadow-lg ${
-        isPreviewing ? "border-amber-400 bg-amber-900/20" : "bg-[#161633] border-[#2a2a50]"
+        isPreviewing
+          ? "border-amber-400 bg-amber-900/20"
+          : "bg-bw-cockpit-canvas border-[var(--color-bw-cockpit-border)]"
       }`}
       style={{ borderLeftColor: isPreviewing ? undefined : catColor }}
     >
@@ -74,13 +76,13 @@ export function FocusQuestionCard({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span
-            className="inline-flex items-center px-3 py-1 rounded-lg text-[11px] font-bold text-white shadow-sm"
+            className="inline-flex items-center px-3 py-1 rounded-lg text-body-xs font-bold text-white shadow-sm"
             style={{ backgroundColor: catColor }}
           >
             {categoryLabel}
           </span>
           {hasNav && (
-            <span className="text-[11px] font-semibold text-[#64748b] tabular-nums">
+            <span className="text-body-xs font-semibold text-bw-cockpit-muted tabular-nums">
               Q{currentIndex + 1}/{maxSituations}
             </span>
           )}
@@ -91,7 +93,7 @@ export function FocusQuestionCard({
             <button
               onClick={onPrev}
               disabled={currentIndex <= 0}
-              className="w-11 h-11 rounded-full bg-[#1a1a35] hover:bg-[#2a2a50] disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
+              className="w-11 h-11 rounded-full bg-bw-cockpit-canvas hover:bg-bw-cockpit-surface disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
             >
               <svg
                 width="12"
@@ -110,8 +112,10 @@ export function FocusQuestionCard({
             {/* Tappable question counter — opens list */}
             <button
               onClick={() => hasQuestionList && setShowList(!showList)}
-              className={`text-[12px] font-bold tabular-nums min-w-[32px] text-center rounded-full px-2 py-0.5 transition-colors ${
-                hasQuestionList ? "text-[#94a3b8] hover:bg-[#1a1a35] cursor-pointer" : "text-[#64748b] cursor-default"
+              className={`text-body-xs font-bold tabular-nums min-w-[32px] text-center rounded-full px-2 py-0.5 transition-colors ${
+                hasQuestionList
+                  ? "text-bw-cockpit-muted hover:bg-bw-cockpit-canvas cursor-pointer"
+                  : "text-bw-cockpit-muted cursor-default"
               }`}
               title={hasQuestionList ? "Voir toutes les questions" : undefined}
             >
@@ -134,7 +138,7 @@ export function FocusQuestionCard({
             <button
               onClick={onNext}
               disabled={currentIndex >= maxSituations - 1}
-              className="w-11 h-11 rounded-full bg-[#1a1a35] hover:bg-[#2a2a50] disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
+              className="w-11 h-11 rounded-full bg-bw-cockpit-canvas hover:bg-bw-cockpit-surface disabled:opacity-30 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
             >
               <svg
                 width="12"
@@ -158,7 +162,7 @@ export function FocusQuestionCard({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -4, scale: 0.95 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute right-0 top-full mt-2 w-[300px] sm:w-[360px] max-h-[320px] overflow-y-auto bg-[#161633] rounded-xl border border-[#2a2a50] shadow-lg z-30"
+                  className="absolute right-0 top-full mt-2 w-[300px] sm:w-[360px] max-h-[320px] overflow-y-auto bg-bw-cockpit-canvas rounded-xl border border-[var(--color-bw-cockpit-border)] shadow-lg z-30"
                 >
                   <div className="p-2 space-y-0.5">
                     {allSituations!.map((sit, i) => {
@@ -173,7 +177,7 @@ export function FocusQuestionCard({
                             setShowList(false);
                           }}
                           className={`w-full text-left flex items-start gap-2.5 px-3 py-2 rounded-lg transition-colors cursor-pointer ${
-                            isCurrent ? "bg-orange-900/20 border border-orange-500/30" : "hover:bg-[#1a1a35]"
+                            isCurrent ? "bg-bw-primary/10 border border-bw-primary/30" : "hover:bg-bw-cockpit-canvas"
                           }`}
                         >
                           {/* Index circle */}
@@ -183,7 +187,7 @@ export function FocusQuestionCard({
                                 ? "bg-orange-500 text-white"
                                 : isPast
                                   ? "bg-emerald-900/30 text-emerald-400"
-                                  : "bg-[#1a1a35] text-[#94a3b8]"
+                                  : "bg-bw-cockpit-canvas text-bw-cockpit-muted"
                             }`}
                           >
                             {isPast ? (
@@ -207,13 +211,13 @@ export function FocusQuestionCard({
                           <div className="flex-1 min-w-0">
                             <p
                               className={`text-[13px] leading-snug line-clamp-2 ${
-                                isCurrent ? "font-bold text-[#f0f0f8]" : "font-medium text-[#c4b5fd]"
+                                isCurrent ? "font-bold text-white" : "font-medium text-bw-cockpit-muted"
                               }`}
                             >
                               {sit.prompt}
                             </p>
                             {sit.category && (
-                              <span className="text-[11px] text-[#64748b] uppercase tracking-wider">
+                              <span className="label-caps text-bw-cockpit-muted">
                                 {sit.restitutionLabel || sit.category}
                               </span>
                             )}
@@ -250,7 +254,7 @@ export function FocusQuestionCard({
       )}
 
       {/* Question text */}
-      <p className="text-[18px] sm:text-[22px] font-bold text-[#f0f0f8] leading-snug mt-1">{questionText}</p>
+      <p className="text-[18px] sm:text-[22px] font-bold text-white leading-snug mt-1">{questionText}</p>
     </motion.div>
   );
 }
