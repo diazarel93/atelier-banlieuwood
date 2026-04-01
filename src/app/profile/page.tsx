@@ -300,7 +300,7 @@ export default function ProfilePage() {
           {/* Streak info */}
           {profile.currentStreak > 0 ? (
             <p className="text-sm text-orange-400 font-medium">
-              🔥 {profile.currentStreak} session{profile.currentStreak > 1 ? "s" : ""} d&apos;affilee
+              🔥 {profile.currentStreak} session{profile.currentStreak > 1 ? "s" : ""} d&apos;affilée
             </p>
           ) : (
             <p className="text-xs text-[#9898aa]">Pas de streak actif</p>
@@ -323,7 +323,7 @@ export default function ProfilePage() {
           className="grid grid-cols-2 gap-3"
         >
           <StatCard icon="🎬" label="Sessions" value={profile.sessionsPlayed} delay={0.15} />
-          <StatCard icon="✍️" label="Reponses" value={profile.totalResponses} delay={0.2} />
+          <StatCard icon="✍️" label="Réponses" value={profile.totalResponses} delay={0.2} />
           <StatCard icon="🏆" label="Retenues" value={profile.retainedCount} delay={0.25} />
           <StatCard icon="🔥" label="Meilleur Streak" value={profile.bestStreak} delay={0.3} />
         </motion.section>
@@ -360,7 +360,7 @@ export default function ProfilePage() {
             >
               <p className="text-3xl">{"\uD83C\uDFAF"}</p>
               <p className="text-sm text-[#9898aa] leading-relaxed">
-                Continue a jouer pour debloquer ton premier badge !
+                Continue à jouer pour débloquer ton premier badge !
               </p>
             </motion.div>
           )}
@@ -570,12 +570,12 @@ function NoProfile() {
         <div className="space-y-2">
           <h1 className="font-cinema text-2xl tracking-wider text-[#D4A843] uppercase">Profil Joueur</h1>
           <p className="text-sm text-[#9898aa] leading-relaxed">
-            Joue ta premiere session pour creer ton profil et debloquer des badges !
+            Joue ta première session pour créer ton profil et débloquer des badges !
           </p>
         </div>
         <Link
           href="/join"
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-[#D4A843] to-[#FF6B35] text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-bw-gold to-bw-primary text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all"
         >
           Rejoindre une session
         </Link>

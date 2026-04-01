@@ -25,7 +25,7 @@ export default function AdminDashboardPage() {
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 space-y-8">
       <div>
         <h1 className="text-display-sm text-bw-heading font-cinema">Administration</h1>
-        <p className="text-sm text-bw-muted mt-1">Gestion des utilisateurs et des acces</p>
+        <p className="text-sm text-bw-muted mt-1">Gestion des utilisateurs et des accès</p>
       </div>
 
       {/* Stats cards */}
@@ -64,7 +64,7 @@ export default function AdminDashboardPage() {
               </div>
               <div>
                 <p className="font-semibold text-bw-heading">Utilisateurs</p>
-                <p className="text-sm text-bw-muted">Gerer les comptes et les roles</p>
+                <p className="text-sm text-bw-muted">Gérer les comptes et les rôles</p>
               </div>
               {stats && stats.pendingUsers > 0 && (
                 <span className="ml-auto inline-flex items-center justify-center h-6 min-w-6 rounded-full bg-bw-primary text-white text-xs font-bold px-2">

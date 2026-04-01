@@ -17,7 +17,7 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-dvh flex items-center justify-center bg-[#0a0a16]">
+        <div className="min-h-dvh flex items-center justify-center bg-[#0d0b09]">
           <div className="w-8 h-8 border-2 border-bw-primary border-t-transparent rounded-full animate-spin" />
         </div>
       }
@@ -149,7 +149,7 @@ function LoginPageInner() {
   // Reset sent confirmation
   if (resetSent) {
     return (
-      <div className="min-h-dvh bg-[#0a0a16] flex flex-col items-center justify-center px-4 relative overflow-hidden">
+      <div className="min-h-dvh bg-[#0d0b09] flex flex-col items-center justify-center px-4 relative overflow-hidden">
         <div className="film-grain absolute inset-0 pointer-events-none" />
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -192,7 +192,7 @@ function LoginPageInner() {
   }
 
   return (
-    <div className="min-h-dvh bg-[#0a0a16] flex flex-col items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-dvh bg-[#0d0b09] flex flex-col items-center justify-center px-4 relative overflow-hidden">
       {/* Film grain overlay */}
       <div className="film-grain absolute inset-0 pointer-events-none" />
 
@@ -238,9 +238,10 @@ function LoginPageInner() {
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-xl bg-green-50 border border-green-200 p-3 text-center"
+            className="rounded-xl border p-3 text-center"
+            style={{ background: "rgba(78,205,196,0.08)", borderColor: "rgba(78,205,196,0.25)" }}
           >
-            <p className="text-sm text-green-700 font-medium">
+            <p className="text-sm font-medium" style={{ color: "#4ECDC4" }}>
               Invitation detectee — votre compte sera active immediatement
             </p>
           </motion.div>
@@ -324,7 +325,7 @@ function LoginPageInner() {
                           : "border-white/[0.08] text-bw-muted hover:border-white/[0.15]"
                       }`}
                     >
-                      Intervenant BW
+                      Intervenant cinéma
                     </button>
                     <button
                       type="button"
@@ -335,7 +336,7 @@ function LoginPageInner() {
                           : "border-white/[0.08] text-bw-muted hover:border-white/[0.15]"
                       }`}
                     >
-                      Enseignant
+                      Professeur référent
                     </button>
                   </div>
 

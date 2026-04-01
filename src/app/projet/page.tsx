@@ -55,7 +55,7 @@ const PEDAGOGIE_POINTS = [
     num: "04",
     title: "Un outil qui accompagne sans remplacer",
     text: "L\u2019outil numérique structure les activités, collecte les idées et facilite les votes collectifs. Mais il ne remplace jamais l\u2019intervenant. Les discussions, les débats et les décisions restent humaines.",
-    color: "#D4A843",
+    color: "#4ECDC4",
   },
 ];
 

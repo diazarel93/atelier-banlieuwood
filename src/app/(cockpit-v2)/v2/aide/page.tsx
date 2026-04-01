@@ -24,7 +24,7 @@ const FAQ_ITEMS: FaqItem[] = [
   {
     question: "Puis-je modifier les réponses des élèves ?",
     answer:
-      "Vous ne pouvez pas modifier les réponses directement, mais vous pouvez les noter, les mettre en avant (highlight) ou ajouter un tag pédagogique depuis le cockpit de pilotage. Les annotations sont visibles dans le profil de l'élève.",
+      "Vous ne pouvez pas modifier les réponses directement, mais vous pouvez les annoter, les mettre en avant (highlight) ou ajouter un tag pédagogique depuis le cockpit de pilotage. Les annotations sont visibles dans le profil de l'élève.",
   },
   {
     question: "Comment archiver une séance terminée ?",
@@ -34,7 +34,7 @@ const FAQ_ITEMS: FaqItem[] = [
   {
     question: "Les données sont-elles sauvegardées automatiquement ?",
     answer:
-      "Oui, toutes les réponses et scores sont sauvegardés en temps réel. Les notes enseignant, les annotations et les paramètres de séance sont également persistés automatiquement.",
+      "Oui, toutes les réponses sont sauvegardées en temps réel. Les annotations, les tags pédagogiques et les paramètres de séance sont également persistés automatiquement.",
   },
 ];
 
@@ -50,7 +50,7 @@ const GUIDE_ITEMS: GuideItem[] = [
   {
     title: "Tableau de bord",
     description:
-      "Vue d'ensemble de vos séances actives, à venir et récentes. Les KPIs affichent le nombre total d'élèves, de séances et les scores moyens de la classe.",
+      "Vue d'ensemble de vos séances actives, à venir et récentes. Les KPIs affichent le nombre total d'élèves, de séances et les données de participation.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <rect x="1" y="1" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="1.5" />
@@ -99,7 +99,7 @@ const GUIDE_ITEMS: GuideItem[] = [
   {
     title: "Statistiques",
     description:
-      "Analysez les performances par classe, par séance ou par module. Les graphiques montrent l'évolution des scores et la répartition des compétences.",
+      "Analysez la participation par classe, par séance ou par module. Les graphiques montrent l'évolution et la répartition des activités créatives.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <path d="M3 15V8M7 15V5M11 15V9M15 15V3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -261,7 +261,7 @@ export default function AidePage() {
           <h2 className="label-caps mb-3">Contact et support</h2>
           <div className="flex flex-col gap-2">
             <p className="text-sm text-bw-muted leading-relaxed">
-              Besoin d'aide supplementaire ? Contactez l'equipe Banlieuwood :
+              Besoin d&apos;aide supplémentaire ? Contactez l&apos;équipe Banlieuwood :
             </p>
             <a
               href="mailto:support@banlieuwood.fr"
@@ -283,6 +283,9 @@ export default function AidePage() {
               support@banlieuwood.fr
             </a>
             <p className="text-xs text-bw-muted mt-1">Nous répondons généralement sous 24 heures en jours ouvrables.</p>
+            <a href="/contact" className="text-xs text-bw-muted hover:text-bw-primary transition-colors mt-1">
+              Voir la page contact →
+            </a>
           </div>
         </GlassCardV2>
       </div>

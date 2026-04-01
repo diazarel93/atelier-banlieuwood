@@ -187,7 +187,7 @@ export default function StudioPage() {
           className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6"
         >
           <StatCard icon="🎬" value={profile.sessions_played} label="Sessions" color="#FF6B35" />
-          <StatCard icon="✍️" value={profile.total_responses} label="Reponses" color="#4ECDC4" />
+          <StatCard icon="✍️" value={profile.total_responses} label="Réponses" color="#4ECDC4" />
           <StatCard icon="🗳️" value={profile.total_votes} label="Votes" color="#8B5CF6" />
           <StatCard icon="🏆" value={unlockedCount} label="Badges" color="#D4A843" />
         </motion.div>
@@ -307,7 +307,7 @@ function OverviewTab({ profile, achievements }: { profile: StudentProfile; achie
         style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
       >
         <h3 className="text-sm font-bold uppercase tracking-wider mb-4" style={{ color: "#6B7280" }}>
-          Ta Carriere Cinema
+          Ta Carrière Cinéma
         </h3>
         <div className="grid grid-cols-2 gap-4">
           <div className="flex items-center gap-3">
@@ -317,7 +317,7 @@ function OverviewTab({ profile, achievements }: { profile: StudentProfile; achie
                 {profile.total_responses}
               </p>
               <p className="text-xs" style={{ color: "#6B7280" }}>
-                Reponses ecrites
+                Réponses écrites
               </p>
             </div>
           </div>
@@ -328,7 +328,7 @@ function OverviewTab({ profile, achievements }: { profile: StudentProfile; achie
                 {profile.total_votes}
               </p>
               <p className="text-xs" style={{ color: "#6B7280" }}>
-                Votes donnes
+                Votes donnés
               </p>
             </div>
           </div>
@@ -504,7 +504,7 @@ function MissionsTab({ profileId }: { profileId: string }) {
             Pas de missions pour le moment
           </p>
           <p className="text-sm mt-1" style={{ color: "#6B7280" }}>
-            Reviens bientot, de nouvelles missions arrivent chaque semaine !
+            Reviens bientôt, de nouvelles missions arrivent chaque semaine !
           </p>
         </div>
       ) : (
@@ -597,7 +597,7 @@ function PortfolioTab({ profileId }: { profileId: string }) {
             Ton portfolio est vide
           </p>
           <p className="text-sm mt-1" style={{ color: "#6B7280" }}>
-            Joue des sessions et publie tes meilleures creations au Festival !
+            Joue des sessions et publie tes meilleures créations au Festival !
           </p>
           <Link
             href={ROUTES.join}
@@ -717,7 +717,7 @@ function GuestStudio() {
             Le Studio
           </h1>
           <p className="text-sm mt-2" style={{ color: "#6B7280" }}>
-            Ton espace personnel de creation cinematographique.
+            Ton espace personnel de création cinématographique.
             <br />
             Connecte-toi pour sauvegarder ta progression.
           </p>
@@ -731,10 +731,10 @@ function GuestStudio() {
           >
             <span className="text-4xl">📧</span>
             <p className="font-bold mt-3" style={{ color: "#1A1A2E" }}>
-              Lien magique envoye !
+              Lien magique envoyé !
             </p>
             <p className="text-sm mt-1" style={{ color: "#6B7280" }}>
-              Verifie ta boite mail et clique sur le lien pour te connecter.
+              Vérifie ta boîte mail et clique sur le lien pour te connecter.
             </p>
           </motion.div>
         ) : (

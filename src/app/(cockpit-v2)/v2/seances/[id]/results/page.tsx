@@ -33,8 +33,10 @@ function ResultsPageInner() {
   const sessionId = params.id as string;
   const searchParams = useSearchParams();
 
-  // Tab from URL or default
-  const initialTab = (searchParams.get("tab") as ResultsTab) || "synthese";
+  // Tab from URL or default — validate to prevent arbitrary input
+  const VALID_TABS: ResultsTab[] = ["synthese", "competences", "outils-ia", "le-film"];
+  const rawTab = searchParams.get("tab") as ResultsTab;
+  const initialTab = VALID_TABS.includes(rawTab) ? rawTab : "synthese";
   const [activeTab, setActiveTab] = useState<ResultsTab>(initialTab);
 
   const data = useResultsData(sessionId);

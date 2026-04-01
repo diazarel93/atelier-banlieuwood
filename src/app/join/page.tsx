@@ -264,7 +264,7 @@ function JoinForm() {
                 aria-live="assertive"
                 className="text-xs text-bw-danger text-center mt-1"
               >
-                Code invalide, verifie et reessaie
+                Code invalide, vérifie et réessaie
               </motion.p>
             )}
           </div>

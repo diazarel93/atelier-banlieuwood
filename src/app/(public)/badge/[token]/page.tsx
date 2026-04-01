@@ -228,7 +228,7 @@ export default function BadgePage() {
             if (!badgeRef.current) return;
             await exportElementAsImage(badgeRef.current, `badge-${data.displayName}.png`);
           }}
-          className="rounded-lg bg-gradient-to-r from-[#D4A843] to-[#FF6B35] px-5 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+          className="rounded-lg bg-gradient-to-r from-bw-gold to-bw-primary px-5 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity"
         >
           Télécharger le badge
         </button>

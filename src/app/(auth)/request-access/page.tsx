@@ -45,13 +45,13 @@ export default function RequestAccessPage() {
 
   if (sent) {
     return (
-      <div className="min-h-dvh bg-[#0a0a16] flex items-center justify-center px-4">
+      <div className="min-h-dvh bg-[#0d0b09] flex items-center justify-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-sm rounded-2xl bg-white border border-bw-border p-8 text-center space-y-6 shadow-sm"
+          className="w-full max-w-sm rounded-2xl bg-[#141210] border border-[#2a2420] p-8 text-center space-y-6"
         >
-          <div className="w-16 h-16 rounded-full bg-green-50 mx-auto flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-[#4ECDC4]/10 mx-auto flex items-center justify-center">
             <svg
               width="28"
               height="28"
@@ -64,8 +64,8 @@ export default function RequestAccessPage() {
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-bw-heading">Demande envoyee</h2>
-          <p className="text-sm text-bw-muted">
+          <h2 className="text-xl font-bold text-white">Demande envoyée</h2>
+          <p className="text-sm text-white/55">
             Nous avons bien recu votre demande d&apos;acces. Un administrateur l&apos;examinera dans les plus brefs
             delais.
           </p>
@@ -78,19 +78,20 @@ export default function RequestAccessPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-[#0a0a16] flex items-center justify-center px-4">
+    <div className="min-h-dvh bg-[#0d0b09] flex items-center justify-center px-4">
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm space-y-8">
         <div className="text-center space-y-4">
           <div className="flex justify-center">
             <BrandLogo size="lg" color="cinema" />
           </div>
-          <p className="text-sm text-bw-muted">Demander un acces etablissement</p>
+          <p className="text-sm text-white/45">Demander un accès établissement</p>
+          <p className="text-[11px] text-white/30">Gratuit · Activation sous 24h</p>
         </div>
 
-        <div className="rounded-2xl bg-white border border-bw-border p-6 space-y-5 shadow-sm">
+        <div className="rounded-2xl bg-[#141210] border border-[#2a2420] p-6 space-y-5">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="req-name" className="block text-sm font-medium text-bw-heading mb-1">
+              <label htmlFor="req-name" className="block text-sm font-medium text-white/80 mb-1">
                 Nom complet
               </label>
               <Input
@@ -104,7 +105,7 @@ export default function RequestAccessPage() {
             </div>
 
             <div>
-              <label htmlFor="req-email" className="block text-sm font-medium text-bw-heading mb-1">
+              <label htmlFor="req-email" className="block text-sm font-medium text-white/80 mb-1">
                 Email professionnel
               </label>
               <Input
@@ -118,7 +119,7 @@ export default function RequestAccessPage() {
             </div>
 
             <div>
-              <label htmlFor="req-institution" className="block text-sm font-medium text-bw-heading mb-1">
+              <label htmlFor="req-institution" className="block text-sm font-medium text-white/80 mb-1">
                 Etablissement
               </label>
               <Input
@@ -132,7 +133,7 @@ export default function RequestAccessPage() {
             </div>
 
             <div>
-              <label htmlFor="req-message" className="block text-sm font-medium text-bw-heading mb-1">
+              <label htmlFor="req-message" className="block text-sm font-medium text-white/80 mb-1">
                 Message (optionnel)
               </label>
               <textarea
@@ -140,7 +141,7 @@ export default function RequestAccessPage() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={3}
-                className="w-full rounded-xl border border-bw-border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-bw-primary/20 resize-none"
+                className="w-full rounded-xl border border-[#2a2420] bg-[#1a1510] text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/20 resize-none placeholder:text-white/30"
                 placeholder="Pourquoi souhaitez-vous utiliser Banlieuwood ?"
               />
             </div>
@@ -157,8 +158,8 @@ export default function RequestAccessPage() {
         </div>
 
         <div className="text-center">
-          <Link href={ROUTES.login} className="text-sm text-bw-muted hover:text-bw-heading">
-            Deja un compte ? Se connecter
+          <Link href={ROUTES.login} className="text-sm text-white/40 hover:text-white transition-colors">
+            Déjà un compte ? Se connecter
           </Link>
         </div>
       </motion.div>

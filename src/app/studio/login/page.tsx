@@ -39,13 +39,7 @@ export default function StudentLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#FAFAF8" }}>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `document.documentElement.classList.add('light');document.documentElement.classList.remove('dark');`,
-        }}
-      />
-
+    <div className="min-h-screen flex items-center justify-center px-4 light" style={{ background: "#FAFAF8" }}>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">

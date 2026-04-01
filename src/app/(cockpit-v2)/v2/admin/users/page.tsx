@@ -21,7 +21,7 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   active: { label: "Actif", color: "bg-bw-teal-50 text-bw-teal-700" },
   pending: { label: "En attente", color: "bg-bw-amber-100 text-bw-amber-500" },
   rejected: { label: "Refusé", color: "bg-bw-danger-100 text-bw-danger" },
-  deactivated: { label: "Desactive", color: "bg-[var(--color-bw-surface-dim)] text-bw-muted" },
+  deactivated: { label: "Désactivé", color: "bg-[var(--color-bw-surface-dim)] text-bw-muted" },
 };
 
 const ROLE_LABELS: Record<string, string> = {
@@ -60,13 +60,13 @@ export default function AdminUsersPage() {
     },
     onSuccess: (_data, vars) => {
       toast.success(
-        `Utilisateur ${vars.action === "validate" ? "valide" : vars.action === "reject" ? "refuse" : "mis a jour"}`,
+        `Utilisateur ${vars.action === "validate" ? "validé" : vars.action === "reject" ? "refusé" : "mis à jour"}`,
       );
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
     },
     onError: () => {
-      toast.error("Erreur lors de la mise a jour");
+      toast.error("Erreur lors de la mise à jour");
     },
   });
 
@@ -136,7 +136,7 @@ export default function AdminUsersPage() {
           className="rounded-xl border border-bw-border bg-card px-3 py-2 text-sm"
           aria-label="Filtrer par role"
         >
-          <option value="">Tous les roles</option>
+          <option value="">Tous les rôles</option>
           <option value="admin">Admin</option>
           <option value="intervenant">Intervenant</option>
           <option value="client">Client</option>
@@ -150,8 +150,8 @@ export default function AdminUsersPage() {
           <option value="">Tous les statuts</option>
           <option value="pending">En attente</option>
           <option value="active">Actif</option>
-          <option value="rejected">Refuse</option>
-          <option value="deactivated">Desactive</option>
+          <option value="rejected">Refusé</option>
+          <option value="deactivated">Désactivé</option>
         </select>
       </div>
 
@@ -171,7 +171,7 @@ export default function AdminUsersPage() {
             ))}
           </div>
         ) : users.length === 0 ? (
-          <div className="p-8 text-center text-bw-muted text-sm">Aucun utilisateur trouve</div>
+          <div className="p-8 text-center text-bw-muted text-sm">Aucun utilisateur trouvé</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">

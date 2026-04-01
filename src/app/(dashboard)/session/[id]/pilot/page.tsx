@@ -11,7 +11,7 @@ import { useConfirmAction } from "@/hooks/use-confirm-action";
 import { useUndoStack } from "@/hooks/use-undo-stack";
 import { useOnlineStatus } from "@/hooks/use-online-status";
 import { logAudit } from "@/lib/audit-log";
-import { useQueryClient } from "@tanstack/react-query";
+
 import { getSeanceMax } from "@/lib/constants";
 import dynamic from "next/dynamic";
 
@@ -47,21 +47,19 @@ const ProjectionCockpit = dynamic(
 export default function PilotPage() {
   const { id: sessionId } = useParams<{ id: string }>();
   const router = useRouter();
-  const _queryClient = useQueryClient();
   const { status: connectionStatus } = useRealtimeInvalidation(sessionId);
   const isOnline = useOnlineStatus();
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [actorId, setActorId] = useState<string>("system");
-  const [_codeCopied, setCodeCopied] = useState(false);
+  const [, setCodeCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
-  const [_showStudents, setShowStudents] = useState(false);
-  const [_sidebarOpen, setSidebarOpen] = useState(false);
-  const [_mobileContextOpen, _setMobileContextOpen] = useState(false);
+  const [, setShowStudents] = useState(false);
+  const [, setSidebarOpen] = useState(false);
   const [cmdOpen, setCmdOpen] = useState(false);
   const [pendingModuleSwitch, setPendingModuleSwitch] = useState<{ moduleId: string; isQuickLaunch: boolean } | null>(
     null,
   );
-  const { play: _playSound } = useSound();
+  useSound();
 
   // Confirmation dialog for destructive actions (#1)
   const confirmAction = useConfirmAction();
@@ -70,12 +68,9 @@ export default function PilotPage() {
   const undoStack = useUndoStack();
 
   // Briefing / cockpit flow
-  const [_moduleView, setModuleView] = useState<"briefing" | "cockpit">("cockpit");
-  const [_selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
-  const [_selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
-  // Right panel removed — floating docks handle their own state
-
-  const _sidebarWidth = 0; // Sidebar is now overlay, no offset needed
+  const [, setModuleView] = useState<"briefing" | "cockpit">("cockpit");
+  const [, setSelectedModuleId] = useState<string | null>(null);
+  const [, setSelectedStudentId] = useState<string | null>(null);
 
   // Effective connection status: combine navigator.onLine + channel status (#2)
   const effectiveConnectionStatus = !isOnline ? ("disconnected" as const) : connectionStatus;
@@ -114,7 +109,6 @@ export default function PilotPage() {
     sessionLoading,
     teams,
     situationData,
-    situation: _situation,
     responses,
     voteData,
     collectiveChoices,
@@ -184,8 +178,6 @@ export default function PilotPage() {
   );
 
   // State for comment popover
-  const [_commentingResponse, _setCommentingResponse] = useState<string | null>(null);
-  const [_commentText, _setCommentText] = useState("");
 
   const copyCode = useCallback(() => {
     if (!session) return;
@@ -193,11 +185,6 @@ export default function PilotPage() {
     setCodeCopied(true);
     setTimeout(() => setCodeCopied(false), 2000);
   }, [session]);
-
-  // R4: Module selection — directly launches module (no briefing)
-  function _handleSelectModule(moduleId: string) {
-    doLaunchModule(moduleId, true);
-  }
 
   // Actually perform the module switch
   function doLaunchModule(moduleId: string, isQuickLaunch: boolean) {

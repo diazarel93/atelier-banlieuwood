@@ -7,6 +7,7 @@
 "use client";
 
 import { useState } from "react";
+import { notFound } from "next/navigation";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -2154,6 +2155,8 @@ function ComparativeTab() {
 // ─── PAGE PRINCIPALE ────────────────────────────────────────────────────────
 
 export default function DesignPreviewPage() {
+  if (process.env.NODE_ENV === "production") notFound();
+
   const [tab, setTab] = useState<"rapports" | "directions" | "comparative">("rapports");
 
   return (
