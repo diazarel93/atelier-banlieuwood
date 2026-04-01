@@ -60,7 +60,7 @@ export function SessionNotesPanel() {
       <div className="flex gap-1.5 flex-wrap">
         <button
           onClick={insertTimestamp}
-          className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold bg-[var(--color-bw-surface-dim)] text-bw-muted hover:text-bw-heading transition-colors cursor-pointer border border-[var(--color-bw-border)]"
+          className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold bg-[var(--color-bw-surface-dim)] text-bw-muted hover:text-bw-heading transition-colors cursor-pointer border border-[var(--color-bw-cockpit-border)]"
         >
           <svg
             width="10"
@@ -95,7 +95,7 @@ export function SessionNotesPanel() {
         value={notes}
         onChange={(e) => handleChange(e.target.value)}
         placeholder="Notes de session (sauvegarde auto)..."
-        className="w-full min-h-[200px] p-3 rounded-xl border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)] text-bw-heading text-xs font-mono leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-bw-primary/30 placeholder:text-bw-muted/50"
+        className="w-full min-h-[200px] p-3 rounded-xl border border-[var(--color-bw-cockpit-border)] bg-[var(--color-bw-surface-dim)] text-bw-heading text-xs font-mono leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-bw-primary/30 placeholder:text-bw-muted/50"
       />
       <p className="text-[9px] text-bw-muted text-right">Sauvegarde automatique</p>
     </div>

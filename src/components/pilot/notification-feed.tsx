@@ -37,8 +37,8 @@ export function NotificationFeed({ notifications, onClear }: NotificationFeedPro
   };
 
   return (
-    <div className="rounded-2xl border border-[var(--color-bw-border)] bg-card overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--color-bw-border)]">
+    <div className="rounded-2xl border border-[var(--color-bw-cockpit-border)] bg-card overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--color-bw-cockpit-border)]">
         <div className="flex items-center gap-2">
           <span className="text-sm">📻</span>
           <span className="text-xs font-bold text-bw-heading">Activite</span>
@@ -51,7 +51,7 @@ export function NotificationFeed({ notifications, onClear }: NotificationFeedPro
         <div className="flex gap-2">
           <button
             onClick={toggleSound}
-            className="text-[10px] font-semibold px-2 py-1 rounded-md border border-[var(--color-bw-border)] bg-[var(--color-bw-surface-dim)] cursor-pointer transition-colors"
+            className="text-[10px] font-semibold px-2 py-1 rounded-md border border-[var(--color-bw-cockpit-border)] bg-[var(--color-bw-surface-dim)] cursor-pointer transition-colors"
             style={{ color: soundOn ? "var(--color-bw-green, #10B981)" : "var(--color-bw-muted)" }}
           >
             {soundOn ? "🔊 Son" : "🔇 Muet"}
@@ -82,7 +82,7 @@ export function NotificationFeed({ notifications, onClear }: NotificationFeedPro
               key={n.id}
               initial={i === 0 ? { opacity: 0, y: -10 } : false}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-2.5 px-4 py-2 text-xs border-b border-[var(--color-bw-border-subtle)] last:border-0"
+              className="flex items-center gap-2.5 px-4 py-2 text-xs border-b border-[var(--color-bw-cockpit-border-subtle)] last:border-0"
               style={{
                 borderLeftWidth: 3,
                 borderLeftStyle: "solid",

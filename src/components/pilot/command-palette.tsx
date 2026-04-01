@@ -151,10 +151,10 @@ export function CommandPalette({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.98 }}
           transition={{ duration: 0.15 }}
-          className="w-full max-w-[540px] bg-bw-bg border border-[var(--color-bw-border)] rounded-2xl shadow-2xl overflow-hidden"
+          className="w-full max-w-[540px] bg-bw-bg border border-[var(--color-bw-cockpit-border)] rounded-2xl shadow-2xl overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex items-center gap-3 px-4 py-3 border-b border-[var(--color-bw-border)]">
+          <div className="flex items-center gap-3 px-4 py-3 border-b border-[var(--color-bw-cockpit-border)]">
             <svg
               width="18"
               height="18"
@@ -175,7 +175,7 @@ export function CommandPalette({
               placeholder="Commande..."
               className="flex-1 bg-transparent border-none text-bw-heading text-body-md font-medium placeholder:text-bw-muted/50 outline-none"
             />
-            <kbd className="px-2 py-0.5 rounded-md text-body-xs font-mono bg-[var(--color-bw-surface-dim)] text-bw-muted border border-[var(--color-bw-border)]">
+            <kbd className="px-2 py-0.5 rounded-md text-body-xs font-mono bg-[var(--color-bw-surface-dim)] text-bw-muted border border-[var(--color-bw-cockpit-border)]">
               ESC
             </kbd>
           </div>
