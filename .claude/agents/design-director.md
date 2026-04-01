@@ -1032,3 +1032,15 @@ REGLE SECONDARY CTA HOVER: Un CTA secondaire avec uniquement `hover:border-[#FF6
 REGLE BORDER-RADIUS SÉMANTIQUE: Eviter les valeurs pixel arbitraires comme rounded-[14px]. Utiliser les noms Tailwind sémantiques : rounded-lg (8px), rounded-xl (12px), rounded-2xl (16px). Les valeurs arbitraires = maintenance difficile + incohérence système.
 
 REGLE COULEURS SÉQUENTIELLES UNIQUES: Quand 4 éléments (ex: étapes pédagogiques) ont chacun une couleur, utiliser 4 couleurs distinctes. Jamais dupliquer une couleur dans une séquence. Erreur type : PEDAGOGIE_POINTS 01=orange, 02=teal, 03=teal (doublon), 04=gold → corriger : 01=orange, 02=teal, 03=gold, 04=amber.
+
+2026-04-01 APPRENTISSAGE: Passes 6-7 — labels uppercase, blancs froids, fonds explicites
+
+REGLE ACCENTS DANS LABELS UPPERCASE: Les textes en `uppercase` cachent les accents visuellement mais ils restent présents dans le HTML source et sont lus par les screen readers. Greper systématiquement les labels uppercase : CINEMA → CINÉMA, PEDAGOGIQUE → PÉDAGOGIQUE, TEMOIGNAGES → TÉMOIGNAGES, ROLE → RÔLE, METHODE → MÉTHODE, FORMULES → correcte, ETAPES → ÉTAPES. L'uppercase n'excuse JAMAIS l'absence d'accent.
+
+REGLE #f0f0f8 EST FROID: #f0f0f8 a une teinte légèrement lavande froide (non warm). Sur fond warm dark (#0d0b09), il crée une dissonance subtile. Remplacer par `text-white` pour du texte d'en-tête ou `text-white/90` pour du texte body de premier niveau. Ne JAMAIS utiliser #f0f0f8 comme couleur de texte — c'est une valeur "copier-coller template".
+
+REGLE SLATE PERSISTENCE: #94a3b8 (slate-400) et #64748b (slate-500) sont des "valeurs par défaut Tailwind" qui se réintroduisent à chaque nouvelle section codée. Faire un grep après chaque nouvelle page/composant : grep -r "94a3b8\|64748b" src/. Ces deux valeurs sur fond warm dark brisent la cohérence cinéma immédiatement.
+
+REGLE BG EXPLICITE TOUTES SECTIONS: Chaque `<section>` doit avoir un `bg-` explicite pour maintenir le rythme d'alternance intentionnel (bg-[#0d0b09] ↔ bg-[#110e0b]). Une section sans bg hérite du parent sans signal d'intention dans le code — source de bug visuel lors de futurs refactorings. Pattern correct : toutes sections alternées avec bg explicite, sauf le hero (qui override via min-h-svh).
+
+REGLE COHÉRENCE INTER-PAGES COMPOSANTS: Quand le même composant (ex: module card) apparaît sur plusieurs pages (landing + /projet), ses styles doivent être identiques. Vérifier : text size, border radius, padding, color. Erreur type : module desc `text-[10px]` sur /projet mais `text-[11px]` sur landing.
