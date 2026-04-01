@@ -1016,3 +1016,19 @@ REGLE CONTRAST WCAG: text-bw-amber-500 (#d97706) sur bg-bw-amber-100 (#fef3c7) =
 REGLE TABLE DENSITY: p-3 (12px) en table = rows de 56-60px = trop "aere". p-2 (8px) = rows de 48px = densite correcte pour un dashboard professionnel. Reference : Linear tables = 40-44px rows.
 
 ANTI-PATTERN IDENTIFIE "Template AI" : (1) py-24 sur toutes les sections, (2) tous les H2 meme traitement, (3) gradients violet/pink copie-colles, (4) motion.div avec les memes props partout, (5) cards avec border seule sans ring, (6) backdrop-blur-sm invisible, (7) sidebars space-y-0.5. Ces 7 patterns ensemble = template Figma community sorti en 2024.
+
+2026-04-01 APPRENTISSAGE: Loop audit passes 3-4-5 — accents, couleurs off-brand, navbar
+
+REGLE ACCENTS FRANÇAIS (CRITIQUE): Les mots non accentués (eleve/élève, createur/créateur, cinema/cinéma, pedagogique/pédagogique) cassent instantanément la perception premium. Grep systématique AVANT chaque commit : grep -r "ecole\|eleve\|createur\|cinema\b\|seance\|genere\b\|pedagogique\|democratique\|emotio\b\|scenario\b\|equipe\b\|adaptee\|carriere\|Academie\b" src/. Un seul mot non accentué visible = honte en production.
+
+REGLE PURGE COULEURS OFF-BRAND: #34d399 (Tailwind emerald), #fbbf24 (Tailwind amber-400), #f87171 (Tailwind red-400), #fb923c (Tailwind orange-300) = couleurs "Tailwind defaults" non-brand. Remplacements obligatoires : #34d399 → #4ECDC4 (brand teal), #fbbf24 → #D4A843 (brand gold), #fb923c → #FF8C5A (brand orange-300), #f87171 → #ef4444 (brand danger). Grep ces 4 patterns avant tout commit.
+
+REGLE MODULES COULEURS HARMONISEES: Les 8 modules Banlieuwood ont des couleurs fixes. Si plusieurs pages affichent les modules, synchroniser leurs couleurs. Référence canon : M1=#FF6B35, M2=#D4A843, M3=#4ECDC4, M4=#FF8C5A, M5=#E8B84B, M6=#5DD6CF, M7=#FF6B35, M8=#D4A843.
+
+REGLE COLD DARK PARTOUT: La purge des fonds cold (#181838, #252550, #0a0a16, #111127, #141430) s'applique à TOUS les composants, y compris navbar, modal, overlay — pas seulement aux sections principales. Un composant navbar avec rgba(10,10,22) sur un site warm dark détruit la cohérence en une fraction de seconde.
+
+REGLE SECONDARY CTA HOVER: Un CTA secondaire avec uniquement `hover:border-[#FF6B35]/35` = feedback trop discret. Ajouter systématiquement `hover:shadow-[0_4px_20px_rgba(255,107,53,0.18)]` pour une réponse haptique visuelle claire. Règle : primary CTA = shadow riche (0.45), secondary CTA = shadow léger (0.18).
+
+REGLE BORDER-RADIUS SÉMANTIQUE: Eviter les valeurs pixel arbitraires comme rounded-[14px]. Utiliser les noms Tailwind sémantiques : rounded-lg (8px), rounded-xl (12px), rounded-2xl (16px). Les valeurs arbitraires = maintenance difficile + incohérence système.
+
+REGLE COULEURS SÉQUENTIELLES UNIQUES: Quand 4 éléments (ex: étapes pédagogiques) ont chacun une couleur, utiliser 4 couleurs distinctes. Jamais dupliquer une couleur dans une séquence. Erreur type : PEDAGOGIE_POINTS 01=orange, 02=teal, 03=teal (doublon), 04=gold → corriger : 01=orange, 02=teal, 03=gold, 04=amber.
