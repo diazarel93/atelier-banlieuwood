@@ -68,7 +68,7 @@ export default function ResetPasswordPage() {
             transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
             className="w-8 h-8 border-2 border-bw-primary border-t-transparent rounded-full mx-auto"
           />
-          <p className="text-sm text-bw-muted">Verification du lien...</p>
+          <p className="text-sm text-bw-muted">Vérification du lien...</p>
         </div>
       </div>
     );
@@ -156,7 +156,7 @@ export default function ResetPasswordPage() {
             )}
 
             <Button type="submit" disabled={loading || !password || password !== confirm} size="xl" className="w-full">
-              {loading ? "Mise a jour..." : "Valider"}
+              {loading ? "Mise à jour..." : "Valider"}
             </Button>
           </form>
         </div>

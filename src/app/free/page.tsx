@@ -33,8 +33,8 @@ const SOLO_FEATURES = [
         <rect x="1" y="5" width="15" height="14" rx="2" />
       </svg>
     ),
-    title: "Cree ton film",
-    desc: "Invente une histoire unique de A a Z",
+    title: "Crée ton film",
+    desc: "Invente une histoire unique de A à Z",
   },
   {
     icon: (
@@ -50,8 +50,8 @@ const SOLO_FEATURES = [
         <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
       </svg>
     ),
-    title: "Ecris le scenario",
-    desc: "Developpe tes personnages et tes scenes",
+    title: "Écris le scénario",
+    desc: "Développe tes personnages et tes scènes",
   },
   {
     icon: (
@@ -68,7 +68,7 @@ const SOLO_FEATURES = [
         <polygon points="10 8 16 12 10 16 10 8" />
       </svg>
     ),
-    title: "Joue a ton rythme",
+    title: "Joue à ton rythme",
     desc: "Pas de limite de temps, explore librement",
   },
 ];
@@ -176,7 +176,7 @@ export default function FreePage() {
             transition={{ delay: 0.25 }}
             className="text-sm text-bw-muted"
           >
-            Explorez le jeu en solo -- sans compte, sans code
+            Joue en solo — sans compte, sans code
           </motion.p>
           <motion.div
             initial={{ opacity: 0, scaleX: 0 }}
@@ -316,7 +316,11 @@ export default function FreePage() {
             }`}
             disabled={!canSubmit || loading}
           >
-            <motion.button whileTap={canSubmit ? { scale: 0.97 } : {}} onClick={handleStart}>
+            <motion.button
+              whileTap={canSubmit ? { scale: 0.97 } : {}}
+              onClick={handleStart}
+              disabled={!canSubmit || loading}
+            >
               {loading ? "Creation..." : "C'est parti"}
             </motion.button>
           </Button>

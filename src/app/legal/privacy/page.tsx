@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Politique de Confidentialite",
+  title: "Politique de Confidentialité",
+  description: "Comment Banlieuwood collecte, utilise et protège vos données personnelles.",
 };
 
 export default function PrivacyPage() {
   return (
     <article className="max-w-none">
-      <h1 className="text-3xl font-bold text-bw-heading mb-2">Politique de Confidentialite</h1>
-      <p className="text-bw-muted text-sm mb-10">Derniere mise a jour : Mars 2026</p>
+      <h1 className="text-3xl font-bold text-bw-heading mb-2">Politique de Confidentialité</h1>
+      <p className="text-bw-muted text-sm mb-10">Dernière mise à jour : Mars 2026</p>
 
       <section className="space-y-6">
         <div>

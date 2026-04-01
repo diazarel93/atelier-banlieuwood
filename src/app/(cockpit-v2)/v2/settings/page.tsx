@@ -12,8 +12,8 @@ import { IconSettings, IconLogout } from "@/components/v2/icons";
 
 const LEVEL_OPTIONS = [
   { value: "primaire", label: "Primaire" },
-  { value: "college", label: "College" },
-  { value: "lycee", label: "Lycee" },
+  { value: "college", label: "Collège" },
+  { value: "lycee", label: "Lycée" },
 ] as const;
 
 const LS_KEY_LEVEL = "bw-default-level";
@@ -281,9 +281,9 @@ export default function SettingsPage() {
             <button
               type="button"
               onClick={() => {
-                if (window.confirm("Supprimer définitivement votre compte ? Cette action est irréversible.")) {
-                  toast.error("Contactez support@banlieuwood.fr pour supprimer votre compte (RGPD).");
-                }
+                toast("Pour supprimer votre compte (RGPD), contactez support@banlieuwood.fr", {
+                  duration: 8000,
+                });
               }}
               className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-bw-border)] px-4 py-2 text-sm font-medium text-bw-muted hover:text-[var(--color-bw-danger)] hover:border-[var(--color-bw-danger)]/30 transition-all"
             >
