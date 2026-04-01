@@ -47,16 +47,16 @@ export default function AdminInvitationsPage() {
     onSuccess: (data) => {
       const token = data.invitation?.token;
       const inviteUrl = `${window.location.origin}/login?token=${token}`;
-      toast.success("Invitation creee");
+      toast.success("Invitation créée");
       navigator.clipboard.writeText(inviteUrl).then(() => {
-        toast.info("Lien copie dans le presse-papier");
+        toast.info("Lien copié dans le presse-papier");
       });
       setEmail("");
       setInstitution("");
       queryClient.invalidateQueries({ queryKey: ["admin-invitations"] });
     },
     onError: () => {
-      toast.error("Erreur lors de la creation");
+      toast.error("Erreur lors de la création");
     },
   });
 
