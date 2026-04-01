@@ -76,13 +76,13 @@ export function FocusQuestionCard({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span
-            className="inline-flex items-center px-3 py-1 rounded-lg text-[11px] font-bold text-white shadow-sm"
+            className="inline-flex items-center px-3 py-1 rounded-lg text-body-xs font-bold text-white shadow-sm"
             style={{ backgroundColor: catColor }}
           >
             {categoryLabel}
           </span>
           {hasNav && (
-            <span className="text-[11px] font-semibold text-bw-cockpit-muted tabular-nums">
+            <span className="text-body-xs font-semibold text-bw-cockpit-muted tabular-nums">
               Q{currentIndex + 1}/{maxSituations}
             </span>
           )}
@@ -112,10 +112,10 @@ export function FocusQuestionCard({
             {/* Tappable question counter — opens list */}
             <button
               onClick={() => hasQuestionList && setShowList(!showList)}
-              className={`text-[12px] font-bold tabular-nums min-w-[32px] text-center rounded-full px-2 py-0.5 transition-colors ${
+              className={`text-body-xs font-bold tabular-nums min-w-[32px] text-center rounded-full px-2 py-0.5 transition-colors ${
                 hasQuestionList
                   ? "text-bw-cockpit-muted hover:bg-bw-cockpit-surface cursor-pointer"
-                  : "text-bw-cockpit-muted/60 cursor-default"
+                  : "text-bw-cockpit-muted cursor-default"
               }`}
               title={hasQuestionList ? "Voir toutes les questions" : undefined}
             >
@@ -177,7 +177,7 @@ export function FocusQuestionCard({
                             setShowList(false);
                           }}
                           className={`w-full text-left flex items-start gap-2.5 px-3 py-2 rounded-lg transition-colors cursor-pointer ${
-                            isCurrent ? "bg-orange-900/20 border border-orange-500/30" : "hover:bg-bw-cockpit-surface"
+                            isCurrent ? "bg-bw-primary/10 border border-bw-primary/30" : "hover:bg-bw-cockpit-surface"
                           }`}
                         >
                           {/* Index circle */}
@@ -211,13 +211,13 @@ export function FocusQuestionCard({
                           <div className="flex-1 min-w-0">
                             <p
                               className={`text-[13px] leading-snug line-clamp-2 ${
-                                isCurrent ? "font-bold text-[#f0f0f8]" : "font-medium text-[#c4b5fd]"
+                                isCurrent ? "font-bold text-white" : "font-medium text-bw-cockpit-muted"
                               }`}
                             >
                               {sit.prompt}
                             </p>
                             {sit.category && (
-                              <span className="text-[11px] text-bw-cockpit-muted uppercase tracking-wider">
+                              <span className="label-caps text-bw-cockpit-muted">
                                 {sit.restitutionLabel || sit.category}
                               </span>
                             )}
@@ -254,7 +254,7 @@ export function FocusQuestionCard({
       )}
 
       {/* Question text */}
-      <p className="text-[18px] sm:text-[22px] font-bold text-[#f0f0f8] leading-snug mt-1">{questionText}</p>
+      <p className="text-[18px] sm:text-[22px] font-bold text-white leading-snug mt-1">{questionText}</p>
     </motion.div>
   );
 }

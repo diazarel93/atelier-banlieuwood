@@ -57,13 +57,13 @@ export function V6ControlPanels({
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {/* ── Ecran Projection ── */}
       <section className="rounded-2xl border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas p-4">
-        <h3 className="text-[13px] font-bold text-[#f0f0f8] mb-3 flex items-center gap-2">
+        <h3 className="text-body-sm font-bold text-white mb-3 flex items-center gap-2">
           <svg
             width="16"
             height="16"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#8b5cf6"
+            stroke="var(--color-bw-primary)"
             strokeWidth="2"
             strokeLinecap="round"
           >
@@ -80,17 +80,17 @@ export function V6ControlPanels({
               setProjActive(!projActive);
               if (!projActive) window.open(ROUTES.screen(sessionId), "bw-screen");
             }}
-            className={`flex-1 py-2 rounded-lg text-[11px] font-semibold transition-colors cursor-pointer border ${
+            className={`flex-1 py-2 rounded-lg text-body-xs font-semibold transition-colors cursor-pointer border ${
               projActive
-                ? "bg-[#8b5cf6] text-white border-[#8b5cf6]"
-                : "bg-bw-cockpit-surface text-bw-cockpit-muted border-[var(--color-bw-cockpit-border)] hover:bg-bw-cockpit-elevated"
+                ? "bg-bw-primary text-white border-bw-primary"
+                : "bg-bw-cockpit-canvas text-bw-cockpit-muted border-[var(--color-bw-cockpit-border)] hover:bg-bw-cockpit-surface"
             }`}
           >
             {projActive ? "Actif" : "Inactif"}
           </button>
           <button
             onClick={() => window.open(ROUTES.screen(sessionId), "bw-screen")}
-            className="w-9 h-9 rounded-lg border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-surface hover:bg-bw-cockpit-elevated text-bw-cockpit-muted flex items-center justify-center cursor-pointer transition-colors"
+            className="w-9 h-9 rounded-lg border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas hover:bg-bw-cockpit-surface text-bw-cockpit-muted flex items-center justify-center cursor-pointer transition-colors"
             title="Ouvrir dans nouvel onglet"
           >
             <svg
@@ -130,7 +130,7 @@ export function V6ControlPanels({
         <select
           value={currentScreenMode}
           onChange={(e) => onScreenModeChange?.(e.target.value)}
-          className="w-full py-2 px-3 rounded-lg border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-surface text-white text-[11px] font-medium mb-3 outline-none focus:border-bw-violet/40 cursor-pointer"
+          className="w-full py-2 px-3 rounded-lg border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas text-white text-body-xs font-medium mb-3 outline-none focus:border-bw-primary/40 cursor-pointer"
         >
           {PROJECTION_MODES.map((m) => (
             <option key={m.value} value={m.value}>
@@ -143,10 +143,10 @@ export function V6ControlPanels({
         <div className="flex items-center gap-2 mb-3">
           <button
             onClick={() => setAutoSync(!autoSync)}
-            className={`text-[10px] font-semibold px-2.5 py-1 rounded-lg cursor-pointer flex items-center gap-1 border transition-colors ${
+            className={`text-body-xs font-semibold px-2.5 py-1 rounded-lg cursor-pointer flex items-center gap-1 border transition-colors ${
               autoSync
                 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                : "bg-bw-cockpit-surface border-[var(--color-bw-cockpit-border)] text-bw-cockpit-muted"
+                : "bg-bw-cockpit-canvas border-[var(--color-bw-cockpit-border)] text-bw-cockpit-muted"
             }`}
           >
             {autoSync ? "✓" : "✗"} Auto-sync
@@ -157,7 +157,7 @@ export function V6ControlPanels({
         {/* Mode Noir */}
         <button
           onClick={onLockScreen}
-          className="w-full py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 text-[11px] font-semibold cursor-pointer hover:bg-red-500/15 transition-colors flex items-center justify-center gap-1.5"
+          className="w-full py-2 rounded-lg border border-bw-danger/30 bg-bw-danger/10 text-bw-danger text-body-xs font-semibold cursor-pointer hover:bg-bw-danger/15 transition-colors flex items-center justify-center gap-1.5"
         >
           <svg
             width="12"
@@ -177,13 +177,13 @@ export function V6ControlPanels({
 
       {/* ── Notes & Gestion ── */}
       <section className="rounded-2xl border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas p-4">
-        <h3 className="text-[13px] font-bold text-[#f0f0f8] mb-3 flex items-center gap-2">
+        <h3 className="text-body-sm font-bold text-white mb-3 flex items-center gap-2">
           <svg
             width="16"
             height="16"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#8b5cf6"
+            stroke="var(--color-bw-primary)"
             strokeWidth="2"
             strokeLinecap="round"
           >
@@ -199,13 +199,13 @@ export function V6ControlPanels({
             onNotesChange?.(e.target.value);
           }}
           placeholder="Notes de session..."
-          className="w-full min-h-[100px] p-3 rounded-lg border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-surface text-[12px] text-bw-cockpit-muted resize-y outline-none focus:border-bw-violet/40 placeholder:text-bw-cockpit-muted/50 mb-3"
+          className="w-full min-h-[100px] p-3 rounded-lg border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas text-body-xs text-bw-cockpit-muted resize-y outline-none focus:border-bw-primary/40 placeholder:text-bw-cockpit-muted/50 mb-3"
         />
 
         <div className="flex gap-2">
           <button
             onClick={onLockScreen}
-            className="flex-1 py-2.5 rounded-lg border border-[#fbbf24]/30 bg-[#fbbf24]/10 text-[#fbbf24] text-[11px] font-semibold cursor-pointer hover:bg-[#fbbf24]/15 transition-colors flex items-center justify-center gap-1.5"
+            className="flex-1 py-2.5 rounded-lg border border-bw-amber/30 bg-bw-amber/10 text-bw-amber text-body-xs font-semibold cursor-pointer hover:bg-bw-amber/15 transition-colors flex items-center justify-center gap-1.5"
           >
             <svg
               width="12"
@@ -229,7 +229,7 @@ export function V6ControlPanels({
                 setConfirmEnd(true);
               }
             }}
-            className={`flex-1 py-2.5 rounded-lg border text-[11px] font-semibold cursor-pointer transition-colors flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-2.5 rounded-lg border text-body-xs font-semibold cursor-pointer transition-colors flex items-center justify-center gap-1.5 ${
               confirmEnd
                 ? "border-red-500 bg-red-500/30 text-red-300 animate-pulse"
                 : "border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/15"

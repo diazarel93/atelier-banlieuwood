@@ -40,16 +40,16 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-[14px] font-bold text-white">Sélection pour le vote</h3>
-          <p className="text-[11px] text-bw-cockpit-muted mt-0.5">
+          <h3 className="text-body-sm font-bold text-white">Sélection pour le vote</h3>
+          <p className="text-body-xs text-bw-cockpit-muted mt-0.5">
             Choisis {MIN_SELECTIONS}–{MAX_SELECTIONS} réponses
           </p>
         </div>
         <span
-          className={`text-[13px] font-bold px-3 py-1 rounded-lg border transition-colors ${
+          className={`text-body-sm font-bold px-3 py-1 rounded-lg border transition-colors ${
             canConfirm
               ? "bg-bw-violet/10 text-bw-violet border-bw-violet/30"
-              : "bg-bw-cockpit-surface text-bw-cockpit-muted border-[var(--color-bw-cockpit-border)]"
+              : "bg-bw-cockpit-canvas text-bw-cockpit-muted border-[var(--color-bw-cockpit-border)]"
           }`}
         >
           {selectedCount}/{MAX_SELECTIONS}
@@ -60,7 +60,7 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
       <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
         <AnimatePresence initial={false}>
           {responses.length === 0 && (
-            <p className="text-[12px] text-bw-cockpit-muted text-center py-4">Aucune réponse à afficher.</p>
+            <p className="text-body-xs text-bw-cockpit-muted text-center py-4">Aucune réponse à afficher.</p>
           )}
           {responses.map((r, i) => {
             const isSelected = r.is_vote_option;
@@ -84,7 +84,7 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
                 {/* Checkbox indicator */}
                 <div
                   className={`w-5 h-5 rounded-md flex-shrink-0 mt-0.5 flex items-center justify-center border-2 transition-colors ${
-                    isSelected ? "bg-bw-violet border-bw-violet" : "border-[#3a3a60]"
+                    isSelected ? "bg-bw-violet border-bw-violet" : "border-[var(--color-bw-cockpit-border)]"
                   }`}
                 >
                   {isSelected && (
@@ -103,7 +103,7 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[12px] leading-relaxed ${isSelected ? "text-white" : "text-bw-cockpit-muted"}`}>
+                  <p className={`text-body-xs leading-relaxed ${isSelected ? "text-white" : "text-bw-cockpit-muted"}`}>
                     {r.text}
                   </p>
                   <p className="text-[10px] text-bw-cockpit-muted/70 mt-0.5">{r.students.display_name}</p>
@@ -118,17 +118,17 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
       <div className="flex gap-2 pt-1">
         <button
           onClick={onCancel}
-          className="flex-1 min-h-[44px] py-2.5 rounded-xl text-[12px] font-semibold border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas text-bw-cockpit-muted hover:text-bw-cockpit-text cursor-pointer transition-colors"
+          className="flex-1 min-h-[44px] py-2.5 rounded-xl text-body-xs font-semibold border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas text-bw-cockpit-muted hover:text-white cursor-pointer transition-colors"
         >
           Annuler
         </button>
         <button
           onClick={onConfirm}
           disabled={!canConfirm}
-          className={`flex-[2] min-h-[44px] py-2.5 rounded-xl text-[12px] font-bold transition-all ${
+          className={`flex-[2] min-h-[44px] py-2.5 rounded-xl text-body-xs font-bold transition-all ${
             canConfirm
               ? "bg-bw-violet text-white cursor-pointer hover:brightness-110"
-              : "bg-bw-cockpit-surface text-bw-cockpit-muted/50 cursor-not-allowed"
+              : "bg-bw-cockpit-canvas text-bw-cockpit-muted/50 cursor-not-allowed"
           }`}
         >
           {canConfirm ? `Ouvrir le vote (${selectedCount})` : `Sélectionne encore ${MIN_SELECTIONS - selectedCount}`}
