@@ -147,22 +147,15 @@ export default function Home() {
           style={{ background: "#4ECDC4", opacity: 0.07, filter: "blur(100px)" }}
         />
 
-        {/* Video bg */}
-        <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover opacity-25"
-            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%230d0b09' width='1920' height='1080'/%3E%3C/svg%3E"
-          >
-            <source
-              src="https://cdn.coverr.co/videos/coverr-a-man-filming-with-a-camera-on-a-tripod-1584/1080p.mp4"
-              type="video/mp4"
-            />
-          </video>
-        </div>
+        {/* Fond cinéma CSS animé — en attente vidéo terrain */}
+        <div
+          className="absolute inset-0 z-0 gradient-animate"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 60% at 20% 40%, rgba(255,107,53,0.12) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 75% 60%, rgba(212,168,67,0.09) 0%, transparent 55%), radial-gradient(ellipse 50% 40% at 50% 20%, rgba(78,205,196,0.06) 0%, transparent 50%), #0d0b09",
+            backgroundSize: "200% 200%",
+          }}
+        />
 
         {/* Vignette */}
         <div
@@ -212,15 +205,25 @@ export default function Home() {
                   </span>
                 </motion.h1>
 
+                {/* Tagline officiel */}
+                <motion.p
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.42, duration: 0.6, ease: SNAP }}
+                  className="font-cinema text-[clamp(13px,1.6vw,17px)] tracking-[0.08em] uppercase mb-4"
+                  style={{ color: "#D4A843" }}
+                >
+                  Nous sommes là où le cinéma ne nous attend pas.
+                </motion.p>
+
                 {/* Subtitle */}
                 <motion.p
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 0.7, ease: SNAP }}
-                  className="text-[clamp(15px,2vw,18px)] text-white/72 leading-[1.52] tracking-[-0.01em] max-w-[520px] mb-8"
+                  className="text-[clamp(15px,2vw,18px)] text-white/60 leading-[1.52] tracking-[-0.01em] max-w-[520px] mb-8"
                 >
-                  Banlieuwood transforme n&apos;importe quelle classe en studio de cinéma — sans notes, sans classement,
-                  sans jugement. 8 modules pour créer ensemble le premier film de sa vie.
+                  Sans notes, sans classement, sans jugement. 8 modules pour qu&apos;une classe entière crée son premier film — du brainstorm au festival.
                 </motion.p>
 
                 {/* Social proof hero — avant CTA */}
