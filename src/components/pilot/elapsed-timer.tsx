@@ -32,7 +32,7 @@ export function ElapsedTimer({ startedAt, variant = "badge" }: ElapsedTimerProps
 
   // ── Plain variant: just text ──
   if (variant === "plain") {
-    return <span className="text-[13px] font-medium text-[#7D828A] tabular-nums">{timeStr}</span>;
+    return <span className="text-body-sm font-medium text-[#7D828A] tabular-nums">{timeStr}</span>;
   }
 
   // ── Pill variant: colored rounded pill ──
@@ -45,7 +45,7 @@ export function ElapsedTimer({ startedAt, variant = "badge" }: ElapsedTimerProps
 
     return (
       <span
-        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[13px] font-semibold tabular-nums"
+        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-body-sm font-semibold tabular-nums"
         style={{ color, background: bg, border: `1px solid ${border}` }}
       >
         {timeStr}

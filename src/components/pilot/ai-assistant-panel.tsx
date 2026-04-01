@@ -589,13 +589,13 @@ function AIAssistantPanelInner({
                   <div key={opt.key}>
                     <div className="flex items-center gap-2 mb-1.5">
                       <span
-                        className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0"
+                        className="w-5 h-5 rounded-full flex items-center justify-center text-body-xs font-bold text-white flex-shrink-0"
                         style={{ background: color }}
                       >
                         {opt.key.toUpperCase()}
                       </span>
                       <span className="text-body-xs font-semibold text-bw-text truncate">{opt.label}</span>
-                      <span className="text-[11px] font-bold tabular-nums ml-auto flex-shrink-0" style={{ color }}>
+                      <span className="text-body-xs font-bold tabular-nums ml-auto flex-shrink-0" style={{ color }}>
                         {voters.length}
                       </span>
                     </div>

@@ -128,7 +128,7 @@ export function ClassDynamicsRadar({ scores, size = 160 }: ClassDynamicsRadarPro
       {/* Header */}
       <div className="flex items-center gap-1.5 self-start">
         <span className="text-[10px]">📡</span>
-        <span className="text-[11px] font-bold text-[#2C2C2C]">Dynamique de classe</span>
+        <span className="text-body-xs font-bold text-[#2C2C2C]">Dynamique de classe</span>
       </div>
 
       <BaseRadar

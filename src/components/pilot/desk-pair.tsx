@@ -13,7 +13,7 @@ const SIZE = {
     seat: "w-[72px]",
     empty: "w-[72px]",
     avatar: "w-6 h-6 text-xs",
-    name: "text-[11px] max-w-[38px]",
+    name: "text-body-xs max-w-[38px]",
     px: "px-1.5 py-1.5",
     gap: "gap-1.5",
   },
@@ -29,7 +29,7 @@ const SIZE = {
     seat: "w-[120px]",
     empty: "w-[120px]",
     avatar: "w-9 h-9 text-base",
-    name: "text-[13px] max-w-[68px]",
+    name: "text-body-sm max-w-[68px]",
     px: "px-3 py-2.5",
     gap: "gap-2.5",
   },
@@ -245,9 +245,9 @@ function DeskSeat({
           >
             <div className="flex items-center gap-2 mb-1.5">
               <span className="text-sm">{student.avatar}</span>
-              <span className="text-[13px] font-semibold text-[#2C2C2C]">{student.display_name}</span>
+              <span className="text-body-sm font-semibold text-[#2C2C2C]">{student.display_name}</span>
             </div>
-            <p className="text-[13px] text-[#5B5B5B] leading-snug line-clamp-4">{response}</p>
+            <p className="text-body-sm text-[#5B5B5B] leading-snug line-clamp-4">{response}</p>
             {/* Arrow */}
             <div
               className="absolute top-full left-1/2 -translate-x-1/2 w-2.5 h-2.5 rotate-45 -mt-1.5"

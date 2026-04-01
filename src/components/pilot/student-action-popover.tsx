@@ -114,7 +114,7 @@ export function StudentActionPopover({
               {student.avatar}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[15px] font-semibold text-bw-heading truncate">{student.display_name}</p>
+              <p className="text-body-md font-semibold text-bw-heading truncate">{student.display_name}</p>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stateInfo.color }} />
@@ -161,7 +161,7 @@ export function StudentActionPopover({
               className="mx-3.5 mb-2.5 rounded-[10px] p-3"
               style={{ background: "#F0FAF4", border: "1px solid #C6E9D0" }}
             >
-              <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: "#4CAF50" }}>
+              <p className="text-body-xs uppercase tracking-wider font-bold mb-1" style={{ color: "#4CAF50" }}>
                 Reponse
               </p>
               <p className="text-body-sm text-bw-heading leading-relaxed">{lastResponse}</p>
@@ -229,7 +229,7 @@ export function StudentActionPopover({
                         if (e.key === "Escape") setShowNudgeInput(false);
                       }}
                       placeholder="Message personnalise..."
-                      className="flex-1 rounded-[8px] px-3 py-2 text-[13px] outline-none transition-colors"
+                      className="flex-1 rounded-[8px] px-3 py-2 text-body-sm outline-none transition-colors"
                       style={{
                         background: "#FAF6EE",
                         border: "1px solid rgba(61,43,16,0.12)",
@@ -245,7 +245,7 @@ export function StudentActionPopover({
                     <button
                       onClick={() => handleSendNudge()}
                       disabled={!nudgeText.trim()}
-                      className="px-3.5 py-2 rounded-[8px] text-[13px] font-semibold text-white cursor-pointer transition-all disabled:opacity-30"
+                      className="px-3.5 py-2 rounded-[8px] text-body-sm font-semibold text-white cursor-pointer transition-all disabled:opacity-30"
                       style={{ background: "var(--color-bw-heading)" }}
                     >
                       Envoyer

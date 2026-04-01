@@ -63,7 +63,7 @@ function MenuItem({
       }`}
     >
       <span className="text-xl">{icon}</span>
-      <span className="text-[11px] font-medium leading-tight text-center">{label}</span>
+      <span className="text-body-xs font-medium leading-tight text-center">{label}</span>
     </motion.button>
   );
 }
@@ -86,7 +86,7 @@ function ToggleItem({
     >
       <div className="flex items-center gap-2">
         <span className="text-lg">{icon}</span>
-        <span className="text-[13px] font-medium text-gray-800">{label}</span>
+        <span className="text-body-sm font-medium text-gray-800">{label}</span>
       </div>
       <div className={`w-10 h-6 rounded-full transition-colors relative ${active ? "bg-emerald-500" : "bg-gray-300"}`}>
         <div
@@ -131,7 +131,7 @@ export function PlusMenuContent({
     <div className="space-y-5">
       {/* Stimulation */}
       <div>
-        <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Stimulation</h4>
+        <h4 className="text-body-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Stimulation</h4>
         <div className="grid grid-cols-4 gap-2">
           <MenuItem icon="💡" label="Indice" onClick={() => doAndClose(onHint)} />
           <MenuItem icon="🚀" label="Relancer" onClick={() => doAndClose(onNudge)} />
@@ -142,7 +142,7 @@ export function PlusMenuContent({
 
       {/* Interaction */}
       <div>
-        <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Interaction</h4>
+        <h4 className="text-body-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Interaction</h4>
         <div className="grid grid-cols-4 gap-2">
           <MenuItem icon="💬" label="Débat" onClick={() => doAndClose(onDebate)} />
           <MenuItem icon="❓" label="Q. libre" onClick={() => doAndClose(onFreeQuestion)} />
@@ -153,7 +153,7 @@ export function PlusMenuContent({
 
       {/* Analyse */}
       <div>
-        <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Analyse</h4>
+        <h4 className="text-body-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Analyse</h4>
         <div className="grid grid-cols-4 gap-2">
           <MenuItem icon="📋" label="Export" onClick={() => doAndClose(onExport)} />
           <MenuItem icon="⌨️" label="Raccourcis" onClick={() => doAndClose(onShortcuts)} />
@@ -162,7 +162,7 @@ export function PlusMenuContent({
 
       {/* Contrôles */}
       <div>
-        <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Contrôles</h4>
+        <h4 className="text-body-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Contrôles</h4>
         <div className="space-y-2">
           <ToggleItem icon="⚡" label="Auto-avance" active={autoAdvance} onToggle={onToggleAutoAdvance} />
           <ToggleItem icon="🌙" label="Mode sombre" active={isDarkMode} onToggle={onToggleDarkMode} />
@@ -173,7 +173,7 @@ export function PlusMenuContent({
       {/* Écran projeté */}
       {onSetScreenMode && (
         <div>
-          <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Écran projeté</h4>
+          <h4 className="text-body-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Écran projeté</h4>
           <div className="grid grid-cols-4 gap-2 mb-2">
             {(
               [
@@ -195,7 +195,7 @@ export function PlusMenuContent({
                 }`}
               >
                 <span className="text-xl">{icon}</span>
-                <span className="text-[11px] font-medium leading-tight text-center">{label}</span>
+                <span className="text-body-xs font-medium leading-tight text-center">{label}</span>
               </motion.button>
             ))}
           </div>
@@ -207,13 +207,13 @@ export function PlusMenuContent({
 
       {/* Timer */}
       <div>
-        <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Timer</h4>
+        <h4 className="text-body-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Timer</h4>
         <div className="flex items-center gap-2">
           {[30, 60, 90].map((s) => (
             <button
               key={s}
               onClick={() => doAndClose(() => onSetTimer(s))}
-              className="flex-1 h-10 rounded-xl bg-gray-50 hover:bg-gray-100 text-[13px] font-bold text-gray-700 transition-colors cursor-pointer"
+              className="flex-1 h-10 rounded-xl bg-gray-50 hover:bg-gray-100 text-body-sm font-bold text-gray-700 transition-colors cursor-pointer"
             >
               {s}s
             </button>
@@ -221,7 +221,7 @@ export function PlusMenuContent({
           {timerActive && (
             <button
               onClick={() => doAndClose(onClearTimer)}
-              className="flex-1 h-10 rounded-xl bg-red-50 hover:bg-red-100 text-[13px] font-bold text-red-600 transition-colors cursor-pointer"
+              className="flex-1 h-10 rounded-xl bg-red-50 hover:bg-red-100 text-body-sm font-bold text-red-600 transition-colors cursor-pointer"
             >
               Stop
             </button>

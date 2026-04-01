@@ -121,9 +121,9 @@ function ModuleSidebarInner({
       {/* ── Header ── */}
       <div className="px-5 pt-5 pb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-[13px] font-bold uppercase tracking-[0.15em] text-white/40">Parcours</h2>
+          <h2 className="text-body-sm font-bold uppercase tracking-[0.15em] text-white/40">Parcours</h2>
           <span
-            className="text-[13px] font-bold tabular-nums px-2.5 py-1 rounded-lg"
+            className="text-body-sm font-bold tabular-nums px-2.5 py-1 rounded-lg"
             style={{
               background:
                 globalDone === allMods.length && globalDone > 0 ? "rgba(76,175,80,0.15)" : "rgba(255,255,255,0.06)",
@@ -223,7 +223,7 @@ function ModuleSidebarInner({
 
                 {/* Label + count */}
                 <div className="flex-1 min-w-0">
-                  <div className="text-[15px] font-semibold text-white/90 leading-tight group-hover:text-white transition-colors">
+                  <div className="text-body-md font-semibold text-white/90 leading-tight group-hover:text-white transition-colors">
                     {phase.label}
                   </div>
                   <div className="flex items-center gap-2 mt-1">
@@ -244,7 +244,7 @@ function ModuleSidebarInner({
                         />
                       ))}
                     </div>
-                    <span className="text-[11px] tabular-nums text-white/30 font-medium">
+                    <span className="text-body-xs tabular-nums text-white/30 font-medium">
                       {done}/{total}
                     </span>
                   </div>
@@ -337,7 +337,7 @@ function ModuleSidebarInner({
 
                               {/* Duration */}
                               {!isActive && (
-                                <span className="text-[11px] text-white/20 flex-shrink-0 tabular-nums font-medium">
+                                <span className="text-body-xs text-white/20 flex-shrink-0 tabular-nums font-medium">
                                   {mod.duration}
                                 </span>
                               )}
@@ -356,14 +356,14 @@ function ModuleSidebarInner({
                                     key={responsesCount}
                                     initial={{ scale: 1.4, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
-                                    className="text-[11px] font-bold tabular-nums px-2 py-0.5 rounded-full"
+                                    className="text-body-xs font-bold tabular-nums px-2 py-0.5 rounded-full"
                                     style={{ background: "rgba(76,175,80,0.15)", color: "#66BB6A" }}
                                   >
                                     {responsesCount} rep.
                                   </motion.span>
                                 )}
                                 {elapsed && (
-                                  <span className="text-[11px] tabular-nums font-semibold" style={{ color: "#F5A45B" }}>
+                                  <span className="text-body-xs tabular-nums font-semibold" style={{ color: "#F5A45B" }}>
                                     {elapsed}
                                   </span>
                                 )}

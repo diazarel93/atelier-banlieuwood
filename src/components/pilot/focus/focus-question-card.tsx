@@ -182,7 +182,7 @@ export function FocusQuestionCard({
                         >
                           {/* Index circle */}
                           <span
-                            className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold mt-0.5 ${
+                            className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-body-xs font-bold mt-0.5 ${
                               isLive
                                 ? "bg-orange-500 text-white"
                                 : isPast
@@ -210,7 +210,7 @@ export function FocusQuestionCard({
                           {/* Question text */}
                           <div className="flex-1 min-w-0">
                             <p
-                              className={`text-[13px] leading-snug line-clamp-2 ${
+                              className={`text-body-sm leading-snug line-clamp-2 ${
                                 isCurrent ? "font-bold text-white" : "font-medium text-bw-cockpit-muted"
                               }`}
                             >
@@ -235,7 +235,7 @@ export function FocusQuestionCard({
 
       {/* Preview badge */}
       {isPreviewing && (
-        <span className="inline-flex items-center gap-1 mb-2 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[11px] font-bold">
+        <span className="inline-flex items-center gap-1 mb-2 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-body-xs font-bold">
           <svg
             width="10"
             height="10"
@@ -254,7 +254,7 @@ export function FocusQuestionCard({
       )}
 
       {/* Question text */}
-      <p className="text-[18px] sm:text-[22px] font-bold text-white leading-snug mt-1">{questionText}</p>
+      <p className="text-heading-md sm:text-[22px] font-bold text-white leading-snug mt-1">{questionText}</p>
     </motion.div>
   );
 }

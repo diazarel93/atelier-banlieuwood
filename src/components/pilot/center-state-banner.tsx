@@ -183,7 +183,7 @@ export function CenterStateBanner({
           {bannerState.text}
         </p>
         {bannerState.sub && (
-          <p className="text-[11px] font-medium mt-0.5" style={{ color: styles.color, opacity: 0.6 }}>
+          <p className="text-body-xs font-medium mt-0.5" style={{ color: styles.color, opacity: 0.6 }}>
             {bannerState.sub}
           </p>
         )}

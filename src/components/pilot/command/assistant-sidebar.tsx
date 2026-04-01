@@ -130,7 +130,7 @@ export function AssistantSidebar({
     <div className="flex flex-col h-full bg-bw-cockpit-canvas">
       {/* ── Header ── */}
       <div className="px-3 py-3 border-b border-[var(--color-bw-cockpit-border)]">
-        <h3 className="text-[11px] font-bold uppercase tracking-wider text-bw-cockpit-muted">Assistant</h3>
+        <h3 className="text-body-xs font-bold uppercase tracking-wider text-bw-cockpit-muted">Assistant</h3>
       </div>
 
       <div className="flex-1 overflow-y-auto">

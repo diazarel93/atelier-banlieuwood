@@ -116,7 +116,7 @@ export function ClassCognitiveState({ studentStates, optionDistribution, optionL
       style={{ background: styles.bg, border: `1px solid ${styles.border}` }}
     >
       <span className="text-sm flex-shrink-0">{state.icon}</span>
-      <p className="text-[11px] font-semibold leading-snug" style={{ color: styles.color }}>
+      <p className="text-body-xs font-semibold leading-snug" style={{ color: styles.color }}>
         {state.text}
       </p>
     </div>

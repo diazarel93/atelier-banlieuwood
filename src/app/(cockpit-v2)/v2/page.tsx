@@ -317,7 +317,7 @@ export default function DashboardV2Page() {
           {/* Séances récentes (table) */}
           {data?.recentSessions && data.recentSessions.length > 0 && (
             <div>
-              <h3 className="text-sm font-bold text-bw-heading mb-3">Séances récentes</h3>
+              <h3 className="label-caps text-bw-muted mb-3">Séances récentes</h3>
               <div className="overflow-x-auto rounded-2xl border border-[var(--color-bw-border-subtle)] bg-white/60 backdrop-blur-sm scrollbar-thin">
                 <table className="w-full text-body-sm" style={{ borderCollapse: "collapse" }}>
                   <thead>

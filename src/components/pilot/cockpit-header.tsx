@@ -235,7 +235,7 @@ export function CockpitHeader({
           </svg>
         </button>
         <span
-          className="text-[15px] font-bold tracking-wider text-bw-heading flex-shrink-0 uppercase"
+          className="text-body-md font-bold tracking-wider text-bw-heading flex-shrink-0 uppercase"
           style={{ fontFamily: "var(--font-cinema, inherit)" }}
         >
           Cockpit
@@ -251,7 +251,7 @@ export function CockpitHeader({
         <div className="flex items-center gap-2.5 min-w-0 flex-shrink-0">
           {/* Module badge — pill shape */}
           <span
-            className="px-3 py-1 rounded-full text-[13px] font-medium truncate max-w-[160px]"
+            className="px-3 py-1 rounded-full text-body-sm font-medium truncate max-w-[160px]"
             style={{
               background: `${moduleColor}12`,
               color: moduleColor,

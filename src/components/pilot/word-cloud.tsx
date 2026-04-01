@@ -403,13 +403,13 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                                   className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                                   style={{ background: cluster.color }}
                                 />
-                                <span className="text-[13px] font-bold" style={{ color: cluster.color }}>
+                                <span className="text-body-sm font-bold" style={{ color: cluster.color }}>
                                   {cluster.label}
                                 </span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <span
-                                  className="text-[11px] font-bold tabular-nums px-2 py-0.5 rounded-full"
+                                  className="text-body-xs font-bold tabular-nums px-2 py-0.5 rounded-full"
                                   style={{ background: `${cluster.color}12`, color: cluster.color }}
                                 >
                                   {cluster.responses.length} eleve{cluster.responses.length > 1 ? "s" : ""}
@@ -552,7 +552,7 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                             {words.slice(0, 10).map((entry) => (
                               <span
                                 key={entry.word}
-                                className="text-[11px] px-2.5 py-1 rounded-full"
+                                className="text-body-xs px-2.5 py-1 rounded-full"
                                 style={{
                                   background: `${entry.color}10`,
                                   border: `1px solid ${entry.color}20`,

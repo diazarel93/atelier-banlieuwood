@@ -125,7 +125,7 @@ export function SessionStateBanner({
           {status === "paused" && onTogglePause && (
             <button
               onClick={onTogglePause}
-              className="h-6 px-2 rounded-md text-[11px] font-semibold cursor-pointer transition-colors"
+              className="h-6 px-2 rounded-md text-body-xs font-semibold cursor-pointer transition-colors"
               style={{ background: config.accent, color: "#fff" }}
             >
               Reprendre
@@ -134,7 +134,7 @@ export function SessionStateBanner({
           {status === "done" && onViewResults && (
             <button
               onClick={onViewResults}
-              className="h-6 px-2 rounded-md text-[11px] font-semibold cursor-pointer transition-colors"
+              className="h-6 px-2 rounded-md text-body-xs font-semibold cursor-pointer transition-colors"
               style={{ background: config.accent, color: "#fff" }}
             >
               Resultats
@@ -200,7 +200,7 @@ export function SessionStateBanner({
                 transition={{ duration: 0.6, ease: "easeOut" }}
               />
             </svg>
-            <span className="text-[18px] font-bold tabular-nums" style={{ color: config.text }}>
+            <span className="text-heading-md font-bold tabular-nums" style={{ color: config.text }}>
               {respondedCount}/{totalStudents}
             </span>
           </div>

@@ -458,7 +458,7 @@ export function ModuleBriefing({
                 className="px-5 py-3"
                 style={{ background: `linear-gradient(180deg, ${module.color}08, transparent)` }}
               >
-                <p className="text-[13px] text-bw-heading leading-relaxed">{activity.detail}</p>
+                <p className="text-body-sm text-bw-heading leading-relaxed">{activity.detail}</p>
               </div>
 
               {/* Type-specific visual preview */}
@@ -611,7 +611,7 @@ export function ModuleBriefing({
                                   {q.restitutionLabel || q.category}
                                 </span>
                               </div>
-                              <p className="text-[15px] text-bw-heading leading-relaxed font-medium">{q.prompt}</p>
+                              <p className="text-body-md text-bw-heading leading-relaxed font-medium">{q.prompt}</p>
                               {q.nudgeText && (
                                 <p
                                   className="text-xs text-bw-muted italic border-l-2 pl-3 ml-1"
@@ -665,7 +665,7 @@ export function ModuleBriefing({
                                 <span className="text-xs font-medium uppercase tracking-wider" style={{ color }}>
                                   {q.restitutionLabel || q.category}
                                 </span>
-                                <p className="text-[13px] text-bw-heading leading-relaxed mt-1">{q.prompt}</p>
+                                <p className="text-body-sm text-bw-heading leading-relaxed mt-1">{q.prompt}</p>
                                 {q.nudgeText && <p className="text-xs text-bw-muted italic mt-1.5">💡 {q.nudgeText}</p>}
                               </div>
                             </motion.div>

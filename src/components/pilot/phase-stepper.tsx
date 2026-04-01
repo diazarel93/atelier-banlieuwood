@@ -101,7 +101,7 @@ export function PhaseStepper({
                       boxShadow: `0 0 0 3px var(--color-bw-cockpit-canvas), 0 0 20px ${phase.color}40`,
                     }}
                   >
-                    <span className="font-cinema text-white text-[10px] md:text-[15px] font-normal tracking-wider">
+                    <span className="font-cinema text-white text-[10px] md:text-body-md font-normal tracking-wider">
                       {idx + 1}
                     </span>
                     <span

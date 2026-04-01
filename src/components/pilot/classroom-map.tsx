@@ -144,7 +144,7 @@ function FreeStudentChip({
           </motion.span>
         )}
       </div>
-      <span className="text-[11px] font-semibold truncate max-w-[56px] leading-tight" style={{ color: s.text }}>
+      <span className="text-body-xs font-semibold truncate max-w-[56px] leading-tight" style={{ color: s.text }}>
         {student.display_name.split(" ")[0]}
       </span>
 
@@ -588,7 +588,7 @@ export function ClassroomMap({
           {total === 0 && (
             <div className="text-center py-10 space-y-2">
               <span className="text-2xl">🪑</span>
-              <p className="text-[13px] text-[#B0A99E]">Aucun eleve connecte</p>
+              <p className="text-body-sm text-[#B0A99E]">Aucun eleve connecte</p>
             </div>
           )}
 
@@ -629,7 +629,7 @@ export function ClassroomMap({
 
       {/* Legend */}
       <div
-        className="flex items-center justify-center gap-4 text-[11px] text-[#B0A99E]"
+        className="flex items-center justify-center gap-4 text-body-xs text-[#B0A99E]"
         role="list"
         aria-label="Legende des etats"
       >

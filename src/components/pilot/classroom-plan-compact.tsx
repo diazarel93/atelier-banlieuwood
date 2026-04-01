@@ -80,7 +80,7 @@ function SeatChip({ student, onClick }: { student: PlanStudent; onClick: () => v
         <motion.span
           animate={{ y: [0, -2, 0] }}
           transition={{ repeat: Infinity, duration: 0.8 }}
-          className="absolute -top-2 -right-2 text-[11px]"
+          className="absolute -top-2 -right-2 text-body-xs"
         >
           ✋
         </motion.span>

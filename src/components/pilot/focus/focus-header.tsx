@@ -185,7 +185,7 @@ export function FocusHeader({
           <span className="text-xl flex-shrink-0">🎬</span>
           <div className="min-w-0">
             <div className="text-[14px] font-extrabold leading-tight" style={{ color: "#FF6B35" }}>BANLIEUWOOD</div>
-            <div className="text-[11px] text-bw-cockpit-muted truncate">
+            <div className="text-body-xs text-bw-cockpit-muted truncate">
               {classLabel || sessionTitle} — P{moduleLabel}
             </div>
           </div>
@@ -195,7 +195,7 @@ export function FocusHeader({
         <div className="hidden sm:flex items-center gap-3 flex-1 justify-center">
           {/* LIVE/PAUSE pill */}
           <span
-            className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider border ${statusCfg.bg} ${statusCfg.color}`}
+            className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-body-xs font-bold uppercase tracking-wider border ${statusCfg.bg} ${statusCfg.color}`}
           >
             <motion.span
               className={`w-2 h-2 rounded-full ${statusCfg.dot}`}
@@ -318,7 +318,7 @@ export function FocusHeader({
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.3-4.3" />
               </svg>
-              <kbd className="font-mono text-[11px]">⌘K</kbd>
+              <kbd className="font-mono text-body-xs">⌘K</kbd>
             </button>
           )}
 

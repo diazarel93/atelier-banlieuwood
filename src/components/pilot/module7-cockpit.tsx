@@ -43,7 +43,7 @@ function PlansView({ module7 }: { module7: Module7Data }) {
                 <div className="w-5 h-5 rounded-md" style={{ background: color }} />
               </div>
               <p className="text-sm font-semibold text-bw-heading">{plan.label}</p>
-              <p className="text-[11px] text-bw-muted mt-1">{plan.question}</p>
+              <p className="text-body-xs text-bw-muted mt-1">{plan.question}</p>
               <p className="text-[10px] text-bw-muted/60 mt-1 line-clamp-2">{plan.description}</p>
             </motion.div>
           );

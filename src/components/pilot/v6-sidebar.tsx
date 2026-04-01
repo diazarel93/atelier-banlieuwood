@@ -197,7 +197,7 @@ export function V6Sidebar({
                   value={studentSearch}
                   onChange={(e) => setStudentSearch(e.target.value)}
                   placeholder="Chercher un eleve..."
-                  className="w-full pl-8 pr-3 py-2 text-[11px] rounded-lg border border-bw-cockpit-border bg-bw-cockpit-surface text-bw-violet-main outline-none focus:border-bw-violet-main/40 placeholder:text-bw-cockpit-muted"
+                  className="w-full pl-8 pr-3 py-2 text-body-xs rounded-lg border border-bw-cockpit-border bg-bw-cockpit-surface text-bw-violet-main outline-none focus:border-bw-violet-main/40 placeholder:text-bw-cockpit-muted"
                 />
               </div>
             </div>
@@ -271,7 +271,7 @@ export function V6Sidebar({
                       </div>
                       {/* Status label — doctrine: no XP/scores/levels */}
                       <span
-                        className={`text-[11px] mt-0.5 ${
+                        className={`text-body-xs mt-0.5 ${
                           !isOnline ? "text-red-400 font-semibold uppercase" : "text-bw-cockpit-muted"
                         }`}
                       >
@@ -300,7 +300,7 @@ export function V6Sidebar({
                           e.stopPropagation();
                           onNudgeStudent(student.id);
                         }}
-                        className="text-[11px] px-3 py-2 min-h-[44px] rounded bg-orange-900/20 text-orange-400 border border-orange-500/30 hover:bg-orange-900/40 cursor-pointer flex-shrink-0 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
+                        className="text-body-xs px-3 py-2 min-h-[44px] rounded bg-orange-900/20 text-orange-400 border border-orange-500/30 hover:bg-orange-900/40 cursor-pointer flex-shrink-0 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
                         title="Relancer"
                       >
                         🔔
@@ -312,7 +312,7 @@ export function V6Sidebar({
                           e.stopPropagation();
                           onEncourageStudent(student.id);
                         }}
-                        className="text-[11px] px-3 py-2 min-h-[44px] rounded bg-emerald-900/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-900/40 cursor-pointer flex-shrink-0 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
+                        className="text-body-xs px-3 py-2 min-h-[44px] rounded bg-emerald-900/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-900/40 cursor-pointer flex-shrink-0 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
                         title="Encourager"
                       >
                         👏

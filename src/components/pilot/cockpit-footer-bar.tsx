@@ -147,7 +147,7 @@ export function CockpitFooterBar({
                 >
                   <button
                     onClick={() => openBroadcastWith("Indice : ", "Envoyer un indice", "💡")}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-body-sm font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
                     style={{
                       background: "rgba(255,240,230,0.8)",
                       border: "1px solid rgba(230,219,207,0.6)",
@@ -159,7 +159,7 @@ export function CockpitFooterBar({
                   <button
                     onClick={handleNudgeAllStuck}
                     disabled={notRespondedStudents.length === 0}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-body-sm font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
                     style={{
                       background: "rgba(235,242,255,0.8)",
                       border: "1px solid rgba(230,219,207,0.6)",
@@ -176,7 +176,7 @@ export function CockpitFooterBar({
                   </button>
                   <button
                     onClick={() => openBroadcastWith("Exemple : ", "Proposer un exemple", "📝")}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-body-sm font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
                     style={{
                       background: "rgba(255,252,245,0.8)",
                       border: "1px solid rgba(230,219,207,0.6)",
@@ -197,7 +197,7 @@ export function CockpitFooterBar({
                 >
                   <button
                     onClick={() => openBroadcastWith("Question pour la classe : ", "Lancer une discussion", "💬")}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-body-sm font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
                     style={{
                       background: "rgba(232,245,242,0.8)",
                       border: "1px solid rgba(230,219,207,0.6)",
@@ -208,7 +208,7 @@ export function CockpitFooterBar({
                   </button>
                   <button
                     onClick={() => openBroadcastWith("Question ouverte : ", "Question libre", "✋")}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-body-sm font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
                     style={{
                       background: "rgba(255,243,232,0.8)",
                       border: "1px solid rgba(230,219,207,0.6)",
@@ -223,7 +223,7 @@ export function CockpitFooterBar({
                       addTimelineEvent("debate_launched", "Debat lance", undefined, "highlight");
                     }}
                     disabled={visibleResponses.length < 1}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-body-sm font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
                     style={{
                       background: "rgba(240,236,248,0.8)",
                       border: "1px solid rgba(230,219,207,0.6)",
@@ -234,7 +234,7 @@ export function CockpitFooterBar({
                   </button>
                   <button
                     onClick={() => openBroadcastWith("Sondage rapide : ", "Lancer un sondage", "🗳️")}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-body-sm font-semibold cursor-pointer transition-all whitespace-nowrap hover:shadow-sm"
                     style={{
                       background: "rgba(245,240,255,0.8)",
                       border: "1px solid rgba(230,219,207,0.6)",
@@ -258,7 +258,7 @@ export function CockpitFooterBar({
                       if (visibleResponses.length >= 2) setShowCompare(true);
                     }}
                     disabled={visibleResponses.length < 2}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-body-sm font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
                     style={{
                       background: "rgba(255,248,230,0.8)",
                       border: "1px solid rgba(230,219,207,0.6)",
@@ -270,7 +270,7 @@ export function CockpitFooterBar({
                   <button
                     onClick={() => setShowWordCloud(true)}
                     disabled={visibleResponses.length < 3}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-body-sm font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
                     style={{
                       background: "rgba(240,248,255,0.8)",
                       border: "1px solid rgba(230,219,207,0.6)",
@@ -282,7 +282,7 @@ export function CockpitFooterBar({
                   <button
                     onClick={() => openBroadcastWith("Synthese : ", "Synthese collective", "📋")}
                     disabled={visibleResponses.length < 2}
-                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
+                    className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl text-[12px] sm:text-body-sm font-semibold cursor-pointer transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-sm"
                     style={{
                       background: "rgba(245,255,250,0.8)",
                       border: "1px solid rgba(230,219,207,0.6)",
@@ -401,7 +401,7 @@ export function CockpitFooterBar({
                 >
                   {nextAction.label}{" "}
                   {nextAction.shortcut && (
-                    <kbd className="inline-flex items-center justify-center w-5 h-5 ml-1.5 rounded bg-black/[0.08] text-[11px] font-mono">
+                    <kbd className="inline-flex items-center justify-center w-5 h-5 ml-1.5 rounded bg-black/[0.08] text-body-xs font-mono">
                       {nextAction.shortcut}
                     </kbd>
                   )}
@@ -441,7 +441,7 @@ export function CockpitFooterBar({
                 onClick={skipSituation}
                 disabled={updateSession.isPending}
                 title="Passer cette question"
-                className="h-11 px-3.5 rounded-xl flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-all flex-shrink-0 text-[13px] font-medium gap-1.5 hover:shadow-sm"
+                className="h-11 px-3.5 rounded-xl flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-all flex-shrink-0 text-body-sm font-medium gap-1.5 hover:shadow-sm"
                 style={{
                   background: "rgba(255,255,255,0.7)",
                   border: "1px solid rgba(255,255,255,0.5)",

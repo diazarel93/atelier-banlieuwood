@@ -117,7 +117,7 @@ export function VotingResults({ voteData, sessionStatus, onValidateWinner }: Vot
                   <span className="text-body-sm font-medium text-white">{vr.response.students?.display_name}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[13px] font-bold tabular-nums" style={{ color: barColor }}>
+                  <span className="text-body-sm font-bold tabular-nums" style={{ color: barColor }}>
                     {vr.count}
                   </span>
                   <span className="text-lg font-extrabold tabular-nums" style={{ color: barColor }}>

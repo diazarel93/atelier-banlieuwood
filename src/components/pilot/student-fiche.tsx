@@ -206,7 +206,7 @@ export function StudentFiche({
             >
               <span className="text-[10px]">{isFast ? "⚡" : isSlow ? "🐢" : "⏱️"}</span>
               <span
-                className="text-[11px] font-semibold"
+                className="text-body-xs font-semibold"
                 style={{ color: isFast ? "#2E7D32" : isSlow ? "#C62828" : "#3B5998" }}
               >
                 Temps de reponse : {secs}s

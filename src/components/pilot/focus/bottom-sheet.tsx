@@ -53,7 +53,7 @@ export function BottomSheet({ open, onClose, title, children }: BottomSheetProps
 
             {title && (
               <div className="px-5 pt-1 pb-3">
-                <h3 className="text-[15px] font-bold text-[#f0f0f8]">{title}</h3>
+                <h3 className="text-body-md font-bold text-[#f0f0f8]">{title}</h3>
               </div>
             )}
 
