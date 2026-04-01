@@ -48,25 +48,25 @@ const PEDAGOGIE_POINTS = [
     num: "03",
     title: "Le collectif avant tout",
     text: "Les idées individuelles deviennent progressivement les éléments d\u2019une création commune. Les élèves apprennent à écouter, à défendre une idée, à accepter des compromis et à construire ensemble.",
-    color: "#4ECDC4",
+    color: "#D4A843",
   },
   {
     num: "04",
     title: "Un outil qui accompagne sans remplacer",
     text: "L\u2019outil numérique structure les activités, collecte les idées et facilite les votes collectifs. Mais il ne remplace jamais l\u2019intervenant. Les discussions, les débats et les décisions restent humaines.",
-    color: "#fbbf24",
+    color: "#D4A843",
   },
 ];
 
 const MODULES = [
   { id: "M1", name: "Le Regard", icon: "👁️", desc: "Analyse d'images", color: "#FF6B35" },
-  { id: "M2", name: "Les Émotions", icon: "🎭", desc: "Identifier et nommer", color: "#4ECDC4" },
-  { id: "M3", name: "Et si...", icon: "💡", desc: "Brainstorm collectif", color: "#fbbf24" },
-  { id: "M4", name: "Le Pitch", icon: "🎙️", desc: "Présenter son idée", color: "#34d399" },
-  { id: "M5", name: "Le Vote", icon: "🏆", desc: "Choix démocratique", color: "#4ECDC4" },
-  { id: "M6", name: "Le Scénario", icon: "📝", desc: "Écriture collaborative", color: "#fb923c" },
-  { id: "M7", name: "Storyboard", icon: "🎞️", desc: "Plans et cadrage", color: "#f87171" },
-  { id: "M8", name: "L'Équipe", icon: "⭐", desc: "Rôles et talents", color: "#fbbf24" },
+  { id: "M2", name: "Les Émotions", icon: "🎭", desc: "Identifier et nommer", color: "#D4A843" },
+  { id: "M3", name: "Et si...", icon: "💡", desc: "Brainstorm collectif", color: "#4ECDC4" },
+  { id: "M4", name: "Le Pitch", icon: "🎙️", desc: "Présenter son idée", color: "#FF8C5A" },
+  { id: "M5", name: "Le Vote", icon: "🏆", desc: "Choix démocratique", color: "#E8B84B" },
+  { id: "M6", name: "Le Scénario", icon: "📝", desc: "Écriture collaborative", color: "#5DD6CF" },
+  { id: "M7", name: "Storyboard", icon: "🎞️", desc: "Plans et cadrage", color: "#FF6B35" },
+  { id: "M8", name: "L'Équipe", icon: "⭐", desc: "Rôles et talents", color: "#D4A843" },
 ];
 
 export default function ProjetPage() {
@@ -110,7 +110,7 @@ export default function ProjetPage() {
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div>
-              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#fbbf24] mb-2">PÉDAGOGIE</div>
+              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#D4A843] mb-2">PÉDAGOGIE</div>
               <h2 className="font-cinema text-[clamp(22px,3vw,36px)] uppercase leading-tight mb-4">La donnée au service de la création, pas du jugement</h2>
               <p className="text-[14px] text-[#94a3b8] leading-relaxed mb-4">
                 Chez Banlieuwood, les données des élèves sont pédagogiques, pas performatives. L&apos;intervenant pilote
@@ -124,7 +124,7 @@ export default function ProjetPage() {
                 {["Anonymisation des metriques", "Pas de XP visible", "Conforme RGPD"].map((b) => (
                   <span
                     key={b}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-[#34d399]/15 text-[#34d399]"
+                    className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-[#4ECDC4]/15 text-[#4ECDC4]"
                   >
                     ✓ {b}
                   </span>
@@ -168,7 +168,7 @@ export default function ProjetPage() {
       <section className="py-20 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#34d399] mb-2">
+            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">
               ALIGNEMENT ÉDUCATION NATIONALE
             </div>
             <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">Ancré dans les programmes officiels</h2>
@@ -193,7 +193,7 @@ export default function ProjetPage() {
               {
                 icon: "💡",
                 title: "S'approprier",
-                color: "#fbbf24",
+                color: "#D4A843",
                 text: "Construire un jugement esthétique. Module M5 (Le Vote) et M8 (L'Équipe) — argumenter ses choix, s'exprimer devant un groupe, assumer un rôle créatif.",
               },
             ].map((p) => (
@@ -223,9 +223,9 @@ export default function ProjetPage() {
                 {b}
               </span>
             ))}
-            <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#fbbf24]/15 text-[#fbbf24]">PEAC</span>
+            <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#D4A843]/15 text-[#D4A843]">PEAC</span>
             {["Ecole et cinema", "College au cinema"].map((b) => (
-              <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#34d399]/15 text-[#34d399]">
+              <span key={b} className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#4ECDC4]/15 text-[#4ECDC4]">
                 {b}
               </span>
             ))}
@@ -320,13 +320,13 @@ export default function ProjetPage() {
                       {m.id} — {m.name}
                     </td>
                     <td className="p-3 text-center">
-                      {i === 0 ? <span className="text-[#34d399]">✓</span> : <span className="text-[#64748b]">—</span>}
+                      {i === 0 ? <span className="text-[#4ECDC4]">✓</span> : <span className="text-[#64748b]">—</span>}
                     </td>
                     <td className="p-3 text-center">
-                      {i < 3 ? <span className="text-[#34d399]">✓</span> : <span className="text-[#64748b]">—</span>}
+                      {i < 3 ? <span className="text-[#4ECDC4]">✓</span> : <span className="text-[#64748b]">—</span>}
                     </td>
                     <td className="p-3 text-center">
-                      <span className="text-[#34d399]">✓</span>
+                      <span className="text-[#4ECDC4]">✓</span>
                     </td>
                   </tr>
                 ))}
