@@ -14,10 +14,10 @@ export function SiteFooter() {
                 BANLIEUWOOD
               </span>
             </div>
-            <p className="text-[13px] text-[#64748b] leading-relaxed mb-4">
+            <p className="text-[13px] text-white/40 leading-relaxed mb-4">
               Atelier de cinéma collaboratif pour les écoles. Chaque élève est un créateur.
             </p>
-            <p className="text-[11px] text-[#64748b]">
+            <p className="text-[11px] text-white/40">
               Aligné sur le PEAC, le Socle Commun et les programmes d&apos;Arts Plastiques Cycles 3-4.
             </p>
           </div>
@@ -54,7 +54,7 @@ export function SiteFooter() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="block text-[13px] text-[#64748b] mb-2 hover:text-[#FF6B35] transition-colors"
+                  className="block text-[13px] text-white/40 mb-2 hover:text-[#FF6B35] transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -62,7 +62,7 @@ export function SiteFooter() {
             </div>
           ))}
         </div>
-        <div className="flex justify-between items-center pt-6 border-t border-[#2a2420] text-[12px] text-[#64748b]">
+        <div className="flex justify-between items-center pt-6 border-t border-[#2a2420] text-[12px] text-white/40">
           <span>&copy; 2026 Banlieuwood. Tous droits réservés.</span>
           <span>Fait avec 🧡 pour les écoles de France</span>
         </div>

@@ -178,7 +178,7 @@ export default function Home() {
           }}
         />
 
-        <div className="relative z-[3] w-full px-6 pt-36 pb-28">
+        <div className="relative z-[3] w-full px-6 pt-28 md:pt-36 pb-28">
           <div className="max-w-[1200px] mx-auto">
             <div className="flex items-center gap-10 flex-wrap">
               <div className="flex-1 min-w-[300px]">
@@ -255,7 +255,7 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.85, ease: SNAP }}
-                  className="flex items-center gap-6 text-[12px] text-white/38"
+                  className="flex items-center gap-6 text-[13px] text-white/55"
                 >
                   <span>✓ Gratuit pour les écoles</span>
                   <span>✓ Conforme RGPD & PEAC</span>
@@ -389,7 +389,7 @@ export default function Home() {
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="mb-14">
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#4ECDC4" }}>
-              COMMENT CA MARCHE
+              COMMENT ÇA MARCHE
             </div>
             <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">4 etapes pour creer un film</h2>
           </Reveal>
@@ -565,7 +565,7 @@ export default function Home() {
                       </span>
                     ))}
                   </div>
-                  <div className="text-[11px] text-white/28">Competences PEAC : {f.peac}</div>
+                  <div className="text-[11px] text-white/40">Compétences PEAC : {f.peac}</div>
                 </div>
               </Reveal>
             ))}
@@ -623,11 +623,11 @@ export default function Home() {
         <div className="max-w-[600px] mx-auto px-6 text-center relative z-[1]">
           <Reveal>
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-4" style={{ color: "#FF6B35" }}>
-              PRET A TOURNER ?
+              PRÊT À TOURNER ?
             </div>
-            <h2 className="text-[clamp(32px,5vw,60px)] font-extrabold leading-tight mb-4">Lancez votre atelier</h2>
-            <p className="text-[clamp(15px,2vw,18px)] text-white/48 leading-relaxed mb-10">
-              Lancez votre premier atelier en quelques minutes. Gratuit pour tous les établissements scolaires publics.
+            <h2 className="text-[clamp(32px,5vw,60px)] font-extrabold leading-tight mb-4">Prêt à créer votre premier film ?</h2>
+            <p className="text-[clamp(15px,2vw,18px)] text-white/55 leading-relaxed mb-10">
+              Lancez votre atelier en quelques minutes. Gratuit pour tous les établissements scolaires publics.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link
