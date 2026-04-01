@@ -288,7 +288,7 @@ function FilmVivant({ story, revealedCount, title }: { story: StoryChoice[]; rev
   if (story.length === 0) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
-        <p className="text-bw-muted">L&apos;histoire n&apos;a pas encore commence...</p>
+        <p className="text-bw-muted">L&apos;histoire n&apos;a pas encore commencé...</p>
       </motion.div>
     );
   }
@@ -315,7 +315,7 @@ function FilmVivant({ story, revealedCount, title }: { story: StoryChoice[]; rev
           </svg>
         </div>
         <h1 className="text-xl font-bold">{title || "Notre Film"}</h1>
-        <p className="text-xs text-bw-muted">L&apos;histoire ecrite par la classe</p>
+        <p className="text-xs text-bw-muted">L&apos;histoire écrite par la classe</p>
       </motion.div>
 
       {/* Story choices — progressive reveal */}
@@ -349,7 +349,7 @@ function FilmVivant({ story, revealedCount, title }: { story: StoryChoice[]; rev
             >
               {choice.isMine && (
                 <span className="absolute -top-2 right-3 text-xs font-bold text-bw-amber bg-bw-amber/20 px-2 py-0.5 rounded-full">
-                  Ton idee
+                  Ton idée
                 </span>
               )}
               <p className="text-sm leading-relaxed">{choice.chosenText}</p>
@@ -454,7 +454,7 @@ function Contributions({
   if (myResponses.length === 0) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
-        <p className="text-bw-muted">Aucune contribution trouvee</p>
+        <p className="text-bw-muted">Aucune contribution trouvée</p>
       </motion.div>
     );
   }
@@ -477,7 +477,7 @@ function Contributions({
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-bw-elevated rounded-xl p-3 text-center border border-white/[0.06]">
           <p className="text-2xl font-bold text-bw-primary">{myResponses.length}</p>
-          <p className="text-xs text-bw-muted mt-0.5">Reponses</p>
+          <p className="text-xs text-bw-muted mt-0.5">Réponses</p>
         </div>
         <div className="bg-bw-elevated rounded-xl p-3 text-center border border-white/[0.06]">
           <p className="text-2xl font-bold text-bw-amber">{myChosenCount}</p>
