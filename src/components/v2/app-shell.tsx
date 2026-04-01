@@ -317,7 +317,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
             <NotificationBell />
             {/* Avatar */}
             <div className="flex items-center gap-2 pl-2 border-l border-[var(--color-bw-border)]">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-bw-violet)] to-[var(--color-bw-pink)] flex items-center justify-center text-white text-body-xs font-bold">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-bw-primary)] to-[var(--color-bw-gold)] flex items-center justify-center text-white text-body-xs font-bold shadow-[0_0_10px_rgba(255,107,53,0.3)]">
                 {firstName?.charAt(0)?.toUpperCase() || "U"}
               </div>
               <span className="text-body-sm font-medium text-[var(--color-bw-heading)] hidden xl:inline">

@@ -236,11 +236,19 @@ export function V6Sidebar({
                 const level = stuckLevels.get(student.id) || "ok";
                 const dotColor = !isOnline ? "#475569" : responded ? "#22C55E" : STUCK_DOT_COLORS[level];
 
+                const rowAccent = !isOnline
+                  ? "border-l-2 border-red-500/40 bg-red-500/[0.02]"
+                  : responded
+                    ? "border-l-2 border-emerald-500/45 bg-emerald-500/[0.03]"
+                    : level === "stuck" || level === "slow"
+                      ? "border-l-2 border-orange-500/40 bg-orange-500/[0.02]"
+                      : "border-l-transparent border-l-2";
+
                 return (
                   <button
                     key={student.id}
                     onClick={() => onSelectStudent(student)}
-                    className="w-full flex items-center gap-3 px-3 py-2 hover:bg-bw-cockpit-surface transition-colors cursor-pointer text-left border-b border-bw-cockpit-border/50 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2"
+                    className={`w-full flex items-center gap-3 px-3 py-2 hover:bg-bw-cockpit-surface transition-colors cursor-pointer text-left border-b border-bw-cockpit-border/50 focus-visible:ring-2 focus-visible:ring-bw-violet-main focus-visible:ring-offset-2 ${rowAccent}`}
                   >
                     {/* Avatar */}
                     <span className="text-lg flex-shrink-0">{student.avatar || "👤"}</span>

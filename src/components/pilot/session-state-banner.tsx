@@ -18,10 +18,10 @@ const STATE_CONFIG: Record<
   { bg: string; border: string; text: string; accent: string; label: string; sub: string }
 > = {
   waiting: {
-    bg: "#F5F0FF",
-    border: "#E8DFFF",
-    text: "#6B4DC7",
-    accent: "#8B5CF6",
+    bg: "#FFF5EF",
+    border: "#FFE0CE",
+    text: "#B84B1A",
+    accent: "#FF6B35",
     label: "Pret a lancer",
     sub: "Ouvrez les reponses quand vous etes pret",
   },

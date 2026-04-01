@@ -8,11 +8,13 @@ import { ROUTES } from "@/lib/routes";
 import { PublicLayout } from "@/components/public-layout";
 
 // ═══════════════════════════════════════════════════════════════
-// LANDING PAGE V2 — Banlieuwood Site
-// Dark cinema theme matching BanlieuWood_Site_V2.html maquette
+// LANDING PAGE V3 — Cinema premium
+// Brand palette orange #FF6B35 / amber #D4A843 / teal #4ECDC4
+// Warm dark cinema — purge lavande
 // ═══════════════════════════════════════════════════════════════
 
-// ── Scroll Reveal ──
+const SNAP = [0.19, 1, 0.22, 1] as [number, number, number, number];
+
 function Reveal({
   children,
   className = "",
@@ -24,10 +26,10 @@ function Reveal({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] }}
+      transition={{ duration: 0.75, delay, ease: SNAP }}
       className={className}
     >
       {children}
@@ -35,7 +37,6 @@ function Reveal({
   );
 }
 
-// ── Count Up ──
 function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -72,16 +73,15 @@ function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
   );
 }
 
-// ── Module data ──
 const MODULES = [
-  { id: "M1", name: "Le Regard", icon: "👁️", desc: "Analyse d'images & cinema", color: "#8b5cf6" },
-  { id: "M2", name: "Les Emotions", icon: "🎭", desc: "Identifier & exprimer", color: "#f472b6" },
-  { id: "M3", name: "Et si...", icon: "💡", desc: "Brainstorm collectif", color: "#fbbf24" },
-  { id: "M4", name: "Le Pitch", icon: "🎤", desc: "Presenter son idee", color: "#34d399" },
-  { id: "M5", name: "Le Vote", icon: "🏆", desc: "Choix democratique", color: "#22d3ee" },
-  { id: "M6", name: "Le Scenario", icon: "📝", desc: "Ecriture collaborative", color: "#fb923c" },
-  { id: "M7", name: "Storyboard", icon: "🎞️", desc: "Plans & cadrage", color: "#f87171" },
-  { id: "M8", name: "L'Equipe", icon: "⭐", desc: "Roles & talents", color: "#fbbf24" },
+  { id: "M1", name: "Le Regard", icon: "👁️", desc: "Analyse d'images & cinema", color: "#FF6B35" },
+  { id: "M2", name: "Les Emotions", icon: "🎭", desc: "Identifier & exprimer", color: "#D4A843" },
+  { id: "M3", name: "Et si...", icon: "💡", desc: "Brainstorm collectif", color: "#4ECDC4" },
+  { id: "M4", name: "Le Pitch", icon: "🎤", desc: "Presenter son idee", color: "#FF8C5A" },
+  { id: "M5", name: "Le Vote", icon: "🏆", desc: "Choix democratique", color: "#E8B84B" },
+  { id: "M6", name: "Le Scenario", icon: "📝", desc: "Ecriture collaborative", color: "#5DD6CF" },
+  { id: "M7", name: "Storyboard", icon: "🎞️", desc: "Plans & cadrage", color: "#FF6B35" },
+  { id: "M8", name: "L'Equipe", icon: "⭐", desc: "Roles & talents", color: "#D4A843" },
 ];
 
 const TESTIMONIALS = [
@@ -103,14 +103,14 @@ const TESTIMONIALS = [
 ];
 
 const PARTNERS = [
-  "🏫 Academie de Creteil",
-  "🏫 Academie de Versailles",
-  "🏫 Academie de Paris",
-  "🎬 CNC — Education a l'image",
-  "📚 Education Nationale — PEAC",
-  "🎭 DRAC Ile-de-France",
-  "🏛️ Mairie de Bondy",
-  "🏛️ Mairie de Saint-Denis",
+  "Academie de Creteil",
+  "Academie de Versailles",
+  "Academie de Paris",
+  "CNC — Education a l'image",
+  "Education Nationale — PEAC",
+  "DRAC Ile-de-France",
+  "Mairie de Bondy",
+  "Mairie de Saint-Denis",
 ];
 
 export default function Home() {
@@ -126,8 +126,32 @@ export default function Home() {
     <PublicLayout>
       <BrandStyles />
 
+      {/* Film grain overlay */}
+      <div className="fixed inset-0 z-[200] pointer-events-none" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" className="opacity-[0.022]">
+          <filter id="bw-grain">
+            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#bw-grain)" />
+        </svg>
+      </div>
+
       {/* ══════════ HERO — Video Background ══════════ */}
-      <section className="relative overflow-hidden min-h-svh flex items-center">
+      <section className="relative overflow-hidden min-h-svh flex items-center bg-[#0d0b09]">
+        {/* Ambient gradient mesh blobs */}
+        <div
+          className="absolute top-[-250px] left-[-200px] w-[750px] h-[750px] rounded-full pointer-events-none"
+          style={{ background: "#FF6B35", opacity: 0.06, filter: "blur(160px)" }}
+        />
+        <div
+          className="absolute bottom-[-150px] right-[-150px] w-[550px] h-[550px] rounded-full pointer-events-none"
+          style={{ background: "#D4A843", opacity: 0.045, filter: "blur(130px)" }}
+        />
+        <div
+          className="absolute top-[45%] right-[22%] w-[320px] h-[320px] rounded-full pointer-events-none"
+          style={{ background: "#4ECDC4", opacity: 0.03, filter: "blur(100px)" }}
+        />
+
         {/* Video bg */}
         <div className="absolute inset-0 z-0">
           <video
@@ -135,8 +159,8 @@ export default function Home() {
             muted
             loop
             playsInline
-            className="w-full h-full object-cover"
-            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%230a0a16' width='1920' height='1080'/%3E%3C/svg%3E"
+            className="w-full h-full object-cover opacity-25"
+            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%230d0b09' width='1920' height='1080'/%3E%3C/svg%3E"
           >
             <source
               src="https://cdn.coverr.co/videos/coverr-a-man-filming-with-a-camera-on-a-tripod-1584/1080p.mp4"
@@ -144,41 +168,52 @@ export default function Home() {
             />
           </video>
         </div>
-        {/* Overlay gradient */}
+
+        {/* Vignette */}
         <div
           className="absolute inset-0 z-[1]"
           style={{
             background:
-              "linear-gradient(180deg, rgba(10,10,22,0.6) 0%, rgba(10,10,22,0.4) 30%, rgba(10,10,22,0.5) 60%, rgba(10,10,22,0.95) 100%)",
+              "linear-gradient(180deg, rgba(13,11,9,0.55) 0%, rgba(13,11,9,0.15) 30%, rgba(13,11,9,0.45) 65%, rgba(13,11,9,0.97) 100%)",
           }}
         />
 
         <div className="relative z-[3] w-full px-6 pt-36 pb-28">
           <div className="max-w-[1200px] mx-auto">
-            <div className="flex items-center gap-8 flex-wrap">
+            <div className="flex items-center gap-10 flex-wrap">
               <div className="flex-1 min-w-[300px]">
                 {/* Badge */}
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#8b5cf6]/12 border border-[#8b5cf6]/25 text-[12px] font-semibold text-[#c4b5fd] mb-5"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, ease: SNAP }}
+                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-[11px] font-bold tracking-[0.12em] uppercase mb-6"
+                  style={{
+                    background: "rgba(255,107,53,0.08)",
+                    borderColor: "rgba(255,107,53,0.25)",
+                    color: "#FF6B35",
+                  }}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#34d399] animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#4ECDC4] animate-pulse" />
                   ATELIER DE CINEMA COLLABORATIF
                 </motion.div>
 
-                {/* Title */}
+                {/* H1 — Bebas Neue cinema */}
                 <motion.h1
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                  className="text-[clamp(36px,5.5vw,64px)] font-black leading-[1.05] tracking-tight mb-6"
+                  transition={{ delay: 0.3, duration: 0.85, ease: SNAP }}
+                  className="font-cinema text-[clamp(52px,7.5vw,96px)] leading-[0.92] uppercase mb-6"
                 >
                   Transformez la classe
                   <br />
                   en{" "}
-                  <span className="bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] bg-clip-text text-transparent bg-[length:200%_200%] animate-[gradientShift_4s_ease_infinite]">
+                  <span
+                    className="bg-clip-text text-transparent"
+                    style={{
+                      backgroundImage: "linear-gradient(90deg, #FF6B35 0%, #D4A843 55%, #4ECDC4 100%)",
+                    }}
+                  >
                     plateau de cinema
                   </span>
                 </motion.h1>
@@ -187,8 +222,8 @@ export default function Home() {
                 <motion.p
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.6 }}
-                  className="text-[clamp(15px,2vw,18px)] text-[#94a3b8] leading-relaxed max-w-[520px] mb-8"
+                  transition={{ delay: 0.5, duration: 0.7, ease: SNAP }}
+                  className="text-[clamp(15px,2vw,18px)] text-white/55 leading-relaxed max-w-[520px] mb-10"
                 >
                   Les eleves imaginent, ecrivent, pitchent, votent et produisent un court-metrage — ensemble. De
                   l&apos;idee au festival, tout est collaboratif.
@@ -198,18 +233,28 @@ export default function Home() {
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7, duration: 0.6 }}
-                  className="flex items-center gap-4 flex-wrap mb-5"
+                  transition={{ delay: 0.65, duration: 0.7, ease: SNAP }}
+                  className="flex items-center gap-4 flex-wrap mb-7"
                 >
                   <Link
                     href={ROUTES.requestAccess}
-                    className="px-9 py-4 rounded-[14px] text-base font-bold text-white bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] shadow-[0_4px_20px_rgba(139,92,246,0.3)] hover:shadow-[0_8px_32px_rgba(139,92,246,0.5)] hover:-translate-y-0.5 transition-all"
+                    className="px-9 py-4 rounded-[14px] text-base font-bold text-white transition-all hover:-translate-y-0.5"
+                    style={{
+                      background: "#FF6B35",
+                      boxShadow: "0 4px 24px rgba(255,107,53,0.4)",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 8px 40px rgba(255,107,53,0.58)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 24px rgba(255,107,53,0.4)";
+                    }}
                   >
                     Commencer gratuitement
                   </Link>
                   <Link
                     href="/projet"
-                    className="px-9 py-4 rounded-[14px] text-base font-bold text-[#f0f0f8] bg-[#181838] border border-[#252550] hover:border-[#8b5cf6] hover:bg-[#8b5cf6]/6 transition-all"
+                    className="px-9 py-4 rounded-[14px] text-base font-bold text-white/75 bg-white/[0.05] border border-white/10 hover:border-[#FF6B35]/40 hover:text-white transition-all"
                   >
                     Decouvrir le parcours
                   </Link>
@@ -218,8 +263,8 @@ export default function Home() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.9 }}
-                  className="flex items-center gap-6 text-[12px] text-[#94a3b8]"
+                  transition={{ delay: 0.85, ease: SNAP }}
+                  className="flex items-center gap-6 text-[12px] text-white/38"
                 >
                   <span>✓ Gratuit pour les ecoles</span>
                   <span>✓ Conforme RGPD & PEAC</span>
@@ -229,19 +274,20 @@ export default function Home() {
 
               {/* Play button */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.82 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1, duration: 0.6 }}
+                transition={{ delay: 1, duration: 0.85, ease: SNAP }}
                 className="flex-shrink-0 text-center hidden lg:block"
               >
                 <Link
                   href="/projet"
-                  className="w-[72px] h-[72px] rounded-full border-2 border-white/30 bg-[#8b5cf6]/20 backdrop-blur-sm text-white text-2xl flex items-center justify-center mx-auto hover:bg-[#8b5cf6]/40 hover:border-[#8b5cf6] hover:scale-110 transition-all relative"
+                  className="w-[80px] h-[80px] rounded-full border border-white/18 bg-white/[0.04] backdrop-blur-sm text-white text-2xl flex items-center justify-center mx-auto hover:bg-[#FF6B35]/15 hover:border-[#FF6B35]/55 hover:scale-110 transition-all relative group"
                 >
-                  <span className="absolute inset-[-6px] rounded-full border border-[#8b5cf6]/30 animate-[breathe_2s_ease_infinite]" />
+                  <span className="absolute inset-[-8px] rounded-full border border-[#FF6B35]/18 group-hover:border-[#FF6B35]/38 transition-colors" />
+                  <span className="absolute inset-[-18px] rounded-full border border-[#FF6B35]/08 group-hover:border-[#FF6B35]/18 transition-colors" />
                   ▶
                 </Link>
-                <div className="text-[12px] text-[#94a3b8] mt-3">Voir le parcours</div>
+                <div className="text-[12px] text-white/32 mt-3">Voir le parcours</div>
               </motion.div>
             </div>
 
@@ -249,61 +295,57 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2, duration: 0.6 }}
-              className="flex gap-8 flex-wrap justify-center mt-16"
+              transition={{ delay: 1.1, duration: 0.85, ease: SNAP }}
+              className="flex gap-4 flex-wrap justify-center mt-16"
             >
               {[
-                { icon: "🎬", value: 87, label: "Films produits", color: "" },
-                { icon: "👥", value: 1247, label: "Eleves participants", color: "text-[#fbbf24]" },
-                { icon: "🏫", value: 32, label: "Etablissements", color: "text-[#34d399]" },
+                { icon: "🎬", value: 87, label: "Films produits", color: "#FF6B35" },
+                { icon: "👥", value: 1247, label: "Eleves participants", color: "#D4A843" },
+                { icon: "🏫", value: 32, label: "Etablissements", color: "#4ECDC4" },
+                { icon: "⭐", value: 94, label: "Engagement", suffix: "%", color: "#ffffff" },
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className="flex items-center gap-3 px-7 py-4 rounded-2xl bg-[#141430]/60 backdrop-blur-xl border border-[#8b5cf6]/15 hover:border-[#8b5cf6]/40 transition-all"
+                  className="flex items-center gap-3 px-7 py-4 rounded-2xl bg-white/[0.04] backdrop-blur-xl ring-1 ring-white/[0.07] hover:ring-[#FF6B35]/22 transition-all"
                 >
                   <span className="text-[28px]">{stat.icon}</span>
                   <div>
-                    <div
-                      className={`text-[22px] font-black ${stat.color || "bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] bg-clip-text text-transparent"}`}
-                    >
-                      <CountUp target={stat.value} />
+                    <div className="text-[22px] font-black" style={{ color: stat.color }}>
+                      <CountUp target={stat.value} suffix={stat.suffix} />
                     </div>
-                    <div className="text-[11px] text-[#64748b]">{stat.label}</div>
+                    <div className="text-[11px] text-white/35">{stat.label}</div>
                   </div>
                 </div>
               ))}
-              <div className="flex items-center gap-3 px-7 py-4 rounded-2xl bg-[#141430]/60 backdrop-blur-xl border border-[#8b5cf6]/15">
-                <span className="text-[28px]">⭐</span>
-                <div>
-                  <div className="text-[22px] font-black text-[#f472b6]">94%</div>
-                  <div className="text-[11px] text-[#64748b]">Engagement</div>
-                </div>
-              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* ══════════ MARQUEE PARTENAIRES ══════════ */}
-      <div className="overflow-hidden py-6 border-y border-[#252550] bg-[#111127]">
+      <div className="overflow-hidden py-5 border-y border-white/[0.06] bg-[#110e0b]">
         <div className="flex animate-[marquee_40s_linear_infinite] w-max">
           {[...PARTNERS, ...PARTNERS].map((p, i) => (
-            <span key={i} className="flex-shrink-0 px-10 text-[14px] font-semibold text-[#64748b]/60">
+            <span key={i} className="flex-shrink-0 flex items-center gap-6 px-8 text-[13px] font-medium text-white/28">
               {p}
+              <span
+                className="w-1 h-1 rounded-full flex-shrink-0"
+                style={{ background: "rgba(255,107,53,0.4)" }}
+              />
             </span>
           ))}
         </div>
       </div>
 
       {/* ══════════ VALUE PROPS ══════════ */}
-      <section className="py-24 bg-[#111127]">
+      <section className="py-24 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#fbbf24] mb-2">
+            <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#D4A843" }}>
               POUR CHAQUE ROLE
             </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">Un outil pour chaque acteur</h2>
-            <p className="text-[clamp(15px,2vw,18px)] text-[#94a3b8] max-w-[500px] mx-auto mt-3">
+            <p className="text-[clamp(15px,2vw,18px)] text-white/48 max-w-[500px] mx-auto mt-3">
               Banlieuwood s&apos;adapte a chaque utilisateur avec une interface dediee.
             </p>
           </Reveal>
@@ -313,32 +355,35 @@ export default function Home() {
                 icon: "🎬",
                 title: "Pour les Intervenants",
                 desc: "Cockpit temps reel avec modules M1-M8, orchestration de seance, projection multi-vues, command palette, et pilotage complet.",
-                color: "#8b5cf6",
+                color: "#FF6B35",
               },
               {
                 icon: "✏️",
                 title: "Pour les Eleves",
                 desc: "Interface tablette intuitive, vote democratique, creation collaborative, roles attribues naturellement — pas de notes, pas de jugement.",
-                color: "#f472b6",
+                color: "#D4A843",
               },
               {
                 icon: "📊",
                 title: "Pour les Enseignants",
                 desc: "Donnees pedagogiques anonymisees, historique par classe, statistiques collectives, suivi sans jugement individuel. Aligne PEAC.",
-                color: "#34d399",
+                color: "#4ECDC4",
               },
             ].map((card, i) => (
               <Reveal key={card.title} delay={i * 0.1}>
-                <div className="relative overflow-hidden rounded-2xl bg-[#141430] border border-[#252550] p-8 text-center hover:border-[#8b5cf6]/30 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all group">
-                  <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative overflow-hidden rounded-2xl p-8 text-center hover:-translate-y-1 transition-all group ring-1 ring-white/[0.07] hover:ring-white/14 bg-white/[0.025]">
                   <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center text-[32px] mx-auto mb-4"
-                    style={{ background: `${card.color}15` }}
+                    className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{ background: `linear-gradient(90deg, transparent, ${card.color}, transparent)` }}
+                  />
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center text-[32px] mx-auto mb-5"
+                    style={{ background: `${card.color}14` }}
                   >
                     {card.icon}
                   </div>
-                  <h3 className="text-base font-bold mb-2">{card.title}</h3>
-                  <p className="text-[13px] text-[#94a3b8] leading-relaxed">{card.desc}</p>
+                  <h3 className="text-base font-bold mb-2.5">{card.title}</h3>
+                  <p className="text-[13px] text-white/48 leading-relaxed">{card.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -346,64 +391,64 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══════════ TIMELINE — 4 etapes ══════════ */}
-      <section className="py-24">
+      {/* ══════════ TIMELINE ══════════ */}
+      <section className="py-24 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
-          <Reveal className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#34d399] mb-2">
+          <Reveal className="text-center mb-14">
+            <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#4ECDC4" }}>
               COMMENT CA MARCHE
             </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">4 etapes pour creer un film</h2>
           </Reveal>
-          <div className="max-w-[700px] mx-auto">
+          <div className="max-w-[680px] mx-auto">
             {[
               {
                 n: "1",
                 title: "Creez la session",
                 desc: "L'intervenant choisit la classe, la formule (F0/F1/F2) et genere un QR code. En un clic, l'atelier est pret.",
-                color: "#8b5cf6",
-                next: "#f472b6",
+                color: "#FF6B35",
+                next: "#D4A843",
               },
               {
                 n: "2",
                 title: "Les eleves rejoignent",
                 desc: "Scan du QR code sur tablette. Pas de compte, pas de mot de passe. En 10 secondes, toute la classe est connectee.",
-                color: "#f472b6",
-                next: "#fbbf24",
+                color: "#D4A843",
+                next: "#4ECDC4",
               },
               {
                 n: "3",
                 title: "Creez ensemble",
                 desc: "8 modules progressifs : analyser des images, explorer les emotions, brainstormer, pitcher, voter, ecrire le scenario, dessiner le storyboard, former l'equipe.",
-                color: "#fbbf24",
-                next: "#34d399",
+                color: "#4ECDC4",
+                next: "#FF6B35",
               },
               {
                 n: "4",
                 title: "Festival !",
                 desc: "Projection du film, celebration collective, roles attribues. Chaque eleve est un createur reconnu.",
-                color: "#34d399",
+                color: "#FF6B35",
                 next: "",
               },
             ].map((step, i) => (
-              <Reveal key={step.n} delay={i * 0.1} className="flex gap-4 pb-8 relative">
+              <Reveal key={step.n} delay={i * 0.12} className="flex gap-5 pb-10 relative">
                 <div className="flex-shrink-0">
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-[14px] font-extrabold border-2"
-                    style={{ background: `${step.color}15`, borderColor: step.color, color: step.color }}
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-[15px] font-black border"
+                    style={{ background: `${step.color}14`, borderColor: `${step.color}48`, color: step.color }}
                   >
                     {step.n}
                   </div>
                   {step.next && (
                     <div
-                      className="absolute left-[15px] top-[44px] bottom-0 w-[2px]"
+                      className="absolute left-[17px] top-[48px] bottom-0 w-[2px] opacity-35"
                       style={{ background: `linear-gradient(${step.color}, ${step.next})` }}
                     />
                   )}
                 </div>
-                <div>
-                  <h4 className="text-base font-bold mb-2">{step.title}</h4>
-                  <p className="text-[13px] text-[#94a3b8] leading-relaxed">{step.desc}</p>
+                <div className="pt-1.5">
+                  <h4 className="text-[16px] font-bold mb-1.5">{step.title}</h4>
+                  <p className="text-[13px] text-white/48 leading-relaxed">{step.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -412,14 +457,14 @@ export default function Home() {
       </section>
 
       {/* ══════════ MODULES M1-M8 ══════════ */}
-      <section className="py-24 bg-[#111127]">
+      <section className="py-24 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#22d3ee] mb-2">
+            <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#FF6B35" }}>
               PARCOURS PEDAGOGIQUE
             </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">8 modules, un parcours complet</h2>
-            <p className="text-[clamp(15px,2vw,18px)] text-[#94a3b8] max-w-[560px] mx-auto mt-3">
+            <p className="text-[clamp(15px,2vw,18px)] text-white/48 max-w-[560px] mx-auto mt-3">
               Chaque module developpe des competences du Parcours d&apos;Education Artistique et Culturelle (PEAC) et du
               Socle Commun.
             </p>
@@ -427,15 +472,16 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
             {MODULES.map((m, i) => (
               <Reveal key={m.id} delay={i * 0.05}>
-                <div
-                  className="rounded-2xl bg-[#141430] border border-[#252550] p-5 text-center cursor-pointer hover:border-[#8b5cf6]/30 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all relative overflow-hidden"
-                  style={{ borderTopWidth: 3, borderTopColor: m.color }}
-                >
-                  <div className="text-[32px] mb-2.5">{m.icon}</div>
+                <div className="rounded-2xl bg-white/[0.025] ring-1 ring-white/[0.07] p-5 text-center cursor-pointer hover:ring-white/16 hover:-translate-y-1 transition-all relative overflow-hidden group">
+                  <div
+                    className="absolute top-0 left-0 right-0 h-[2px] opacity-55 group-hover:opacity-100 transition-opacity"
+                    style={{ backgroundColor: m.color }}
+                  />
+                  <div className="text-[30px] mb-2.5 mt-1">{m.icon}</div>
                   <div className="text-[13px] font-bold mb-1">
-                    {m.id} — {m.name}
+                    <span style={{ color: m.color }}>{m.id}</span> — {m.name}
                   </div>
-                  <div className="text-[11px] text-[#64748b]">{m.desc}</div>
+                  <div className="text-[11px] text-white/38">{m.desc}</div>
                 </div>
               </Reveal>
             ))}
@@ -444,14 +490,16 @@ export default function Home() {
       </section>
 
       {/* ══════════ FORMULES ══════════ */}
-      <section className="py-24">
+      <section className="py-24 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#f472b6] mb-2">FORMULES</div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#D4A843" }}>
+              FORMULES
+            </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">
               3 formules adaptees a votre temps
             </h2>
-            <p className="text-[clamp(15px,2vw,18px)] text-[#94a3b8] max-w-[500px] mx-auto mt-3">
+            <p className="text-[clamp(15px,2vw,18px)] text-white/48 max-w-[500px] mx-auto mt-3">
               De la decouverte d&apos;1 heure au cycle complet de 8 heures.
             </p>
           </Reveal>
@@ -459,25 +507,27 @@ export default function Home() {
             {[
               {
                 badge: "F0 — DECOUVERTE",
-                badgeColor: "#f472b6",
+                badgeColor: "#4ECDC4",
                 time: "1 heure",
                 title: "Decouverte",
                 desc: "Introduction a l'analyse d'images et au langage cinematographique. Ideal pour une premiere immersion.",
                 modules: ["M1 Le Regard"],
                 peac: "Rencontrer",
+                popular: false,
               },
               {
                 badge: "F1 — LEGERE",
-                badgeColor: "#fbbf24",
+                badgeColor: "#D4A843",
                 time: "3 heures",
                 title: "Legere",
                 desc: "Analyse, emotions et brainstorm. Les eleves decouvrent le processus creatif collectif.",
                 modules: ["M1", "M2", "M3"],
                 peac: "Rencontrer + Pratiquer",
+                popular: false,
               },
               {
                 badge: "F2 — COMPLETE",
-                badgeColor: "#8b5cf6",
+                badgeColor: "#FF6B35",
                 time: "8 heures",
                 title: "Complete",
                 desc: "Cycle integral — de l'analyse au festival. Les eleves vivent tout le processus de creation d'un film.",
@@ -488,37 +538,41 @@ export default function Home() {
             ].map((f, i) => (
               <Reveal key={f.badge} delay={i * 0.1}>
                 <div
-                  className="rounded-2xl bg-[#141430] border border-[#252550] p-7 relative overflow-hidden hover:border-[#8b5cf6]/30 hover:-translate-y-1 transition-all"
-                  style={{ borderTopWidth: 3, borderTopColor: f.badgeColor }}
+                  className="rounded-2xl bg-white/[0.025] ring-1 ring-white/[0.07] p-7 relative overflow-hidden hover:ring-white/14 hover:-translate-y-1 transition-all"
+                  style={{ borderTop: `2px solid ${f.badgeColor}` }}
                 >
                   {f.popular && (
-                    <div className="absolute top-3 right-3 px-3 py-0.5 rounded-full bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] text-white text-[10px] font-bold">
+                    <div
+                      className="absolute top-3 right-3 px-3 py-0.5 rounded-full text-white text-[10px] font-bold"
+                      style={{ background: "#FF6B35" }}
+                    >
                       POPULAIRE
                     </div>
                   )}
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-5">
                     <span
                       className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold"
-                      style={{ background: `${f.badgeColor}15`, color: f.badgeColor }}
+                      style={{ background: `${f.badgeColor}14`, color: f.badgeColor }}
                     >
                       {f.badge}
                     </span>
-                    <span className="text-[12px] text-[#64748b]">{f.time}</span>
+                    <span className="text-[12px] text-white/32">{f.time}</span>
                   </div>
                   <h3 className="text-base font-bold mb-2">{f.title}</h3>
-                  <p className="text-[13px] text-[#94a3b8] leading-relaxed mb-4">{f.desc}</p>
-                  <div className="text-[11px] text-[#64748b] mb-2">Modules inclus :</div>
+                  <p className="text-[13px] text-white/48 leading-relaxed mb-4">{f.desc}</p>
+                  <div className="text-[11px] text-white/28 mb-2">Modules inclus :</div>
                   <div className="flex flex-wrap gap-1 mb-4">
                     {f.modules.map((m) => (
                       <span
                         key={m}
-                        className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#8b5cf6]/15 text-[#c4b5fd]"
+                        className="px-2.5 py-0.5 rounded-full text-[11px] font-bold"
+                        style={{ background: `${f.badgeColor}14`, color: f.badgeColor }}
                       >
                         {m}
                       </span>
                     ))}
                   </div>
-                  <div className="text-[11px] text-[#64748b]">Competences PEAC : {f.peac}</div>
+                  <div className="text-[11px] text-white/28">Competences PEAC : {f.peac}</div>
                 </div>
               </Reveal>
             ))}
@@ -527,22 +581,37 @@ export default function Home() {
       </section>
 
       {/* ══════════ TEMOIGNAGES ══════════ */}
-      <section className="py-24 bg-[#111127]">
+      <section className="py-24 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#c4b5fd] mb-2">TEMOIGNAGES</div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#FF6B35" }}>
+              TEMOIGNAGES
+            </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">Ils en parlent mieux que nous</h2>
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {TESTIMONIALS.map((t, i) => (
               <Reveal key={t.author} delay={i * 0.1}>
-                <div className="rounded-2xl bg-[#141430] border border-[#252550] p-7 relative hover:border-[#8b5cf6]/30 transition-all">
-                  <div className="absolute top-3 left-5 text-[48px] font-black text-[#8b5cf6]/15 leading-none">
+                <div className="rounded-2xl bg-white/[0.025] ring-1 ring-white/[0.07] p-7 relative hover:ring-white/14 hover:-translate-y-0.5 transition-all">
+                  <div
+                    className="absolute top-2 left-5 text-[56px] font-black leading-none select-none"
+                    style={{ color: "rgba(255,107,53,0.12)" }}
+                  >
                     &ldquo;
                   </div>
-                  <p className="text-[14px] text-[#94a3b8] leading-relaxed italic mb-4 pt-2">{t.text}</p>
-                  <div className="text-[12px] font-semibold">{t.author}</div>
-                  <div className="text-[11px] text-[#64748b]">{t.role}</div>
+                  <p className="text-[14px] text-white/52 leading-relaxed italic mb-5 pt-3 relative z-[1]">{t.text}</p>
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-[13px] font-bold text-white"
+                      style={{ background: "linear-gradient(135deg, #FF6B35, #D4A843)" }}
+                    >
+                      {t.author[0]}
+                    </div>
+                    <div>
+                      <div className="text-[13px] font-semibold">{t.author}</div>
+                      <div className="text-[11px] text-white/32">{t.role}</div>
+                    </div>
+                  </div>
                 </div>
               </Reveal>
             ))}
@@ -551,23 +620,35 @@ export default function Home() {
       </section>
 
       {/* ══════════ CTA FINAL ══════════ */}
-      <section className="py-24">
-        <div className="max-w-[600px] mx-auto px-6 text-center">
+      <section className="py-28 bg-[#110e0b] relative overflow-hidden">
+        {/* Ambient orange glow */}
+        <div
+          className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none"
+          style={{ height: 400, background: "#FF6B35", opacity: 0.04, filter: "blur(130px)" }}
+        />
+        <div className="max-w-[600px] mx-auto px-6 text-center relative z-[1]">
           <Reveal>
-            <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight mb-4">Pret a tourner ?</h2>
-            <p className="text-[clamp(15px,2vw,18px)] text-[#94a3b8] leading-relaxed mb-8">
+            <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-4" style={{ color: "#FF6B35" }}>
+              PRET A TOURNER ?
+            </div>
+            <h2 className="text-[clamp(32px,5vw,60px)] font-extrabold leading-tight mb-4">Lancez votre atelier</h2>
+            <p className="text-[clamp(15px,2vw,18px)] text-white/48 leading-relaxed mb-10">
               Lancez votre premier atelier en quelques minutes. Gratuit pour tous les etablissements scolaires publics.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link
                 href={ROUTES.requestAccess}
-                className="px-9 py-4 rounded-[14px] text-base font-bold text-white bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] shadow-[0_4px_20px_rgba(139,92,246,0.3)] hover:shadow-[0_8px_32px_rgba(139,92,246,0.5)] hover:-translate-y-0.5 transition-all"
+                className="px-10 py-4 rounded-[14px] text-base font-bold text-white transition-all hover:-translate-y-0.5"
+                style={{
+                  background: "#FF6B35",
+                  boxShadow: "0 4px 28px rgba(255,107,53,0.45)",
+                }}
               >
                 Creer un compte
               </Link>
               <Link
                 href="/contact"
-                className="px-9 py-4 rounded-[14px] text-base font-bold text-[#f0f0f8] bg-[#181838] border border-[#252550] hover:border-[#8b5cf6] transition-all"
+                className="px-10 py-4 rounded-[14px] text-base font-bold text-white/65 bg-white/[0.04] border border-white/10 hover:border-[#FF6B35]/35 hover:text-white transition-all"
               >
                 Nous contacter
               </Link>

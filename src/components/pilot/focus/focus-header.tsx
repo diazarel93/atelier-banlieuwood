@@ -184,7 +184,7 @@ export function FocusHeader({
         <div className="flex items-center gap-3 min-w-0">
           <span className="text-xl flex-shrink-0">🎬</span>
           <div className="min-w-0">
-            <div className="text-[14px] font-extrabold text-bw-violet-main leading-tight">BANLIEUWOOD</div>
+            <div className="text-[14px] font-extrabold leading-tight" style={{ color: "#FF6B35" }}>BANLIEUWOOD</div>
             <div className="text-[11px] text-bw-cockpit-muted truncate">
               {classLabel || sessionTitle} — P{moduleLabel}
             </div>
@@ -428,8 +428,9 @@ export function FocusHeader({
                   : m.isDone
                     ? "rgba(52,211,153,0.3)"
                     : "var(--color-bw-cockpit-border)",
-                background: m.isActive ? `${m.color}15` : m.isDone ? "rgba(52,211,153,0.05)" : "transparent",
+                background: m.isActive ? `${m.color}18` : m.isDone ? "rgba(52,211,153,0.05)" : "transparent",
                 color: m.isActive ? m.color : m.isDone ? "#34d399" : "var(--color-bw-cockpit-muted)",
+                boxShadow: m.isActive ? `0 0 12px ${m.color}28` : undefined,
               }}
             >
               <span>{m.isLocked ? "🔒" : m.isDone ? "✅" : m.emoji}</span>
