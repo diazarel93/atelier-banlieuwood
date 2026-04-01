@@ -73,7 +73,7 @@ export function SpatialClassroomGrid({ studentStates, onStudentClick }: SpatialC
         <div className="h-[3px] rounded-full" style={{ width: "55%", background: "#D9CFC0" }} />
       </div>
       <div className="text-center mb-2.5">
-        <span className="text-[9px] font-bold uppercase tracking-widest text-[#C4BDB2]">Tableau</span>
+        <span className="text-[9px] font-bold uppercase tracking-widest text-bw-muted">Tableau</span>
       </div>
 
       {/* Desk layout: columns separated by aisles */}
@@ -108,7 +108,7 @@ export function SpatialClassroomGrid({ studentStates, onStudentClick }: SpatialC
         {LEGEND.map((item) => (
           <div key={item.state} className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: item.color }} />
-            <span className="text-[9px] font-semibold text-[#B0A99E]">{item.label}</span>
+            <span className="text-[9px] font-semibold text-bw-muted">{item.label}</span>
           </div>
         ))}
       </div>
@@ -136,7 +136,7 @@ function StudentCircle({
     <motion.button
       onClick={onClick}
       title={`${student.display_name} — ${LEGEND.find((l) => l.state === student.state)?.label || "Absent"}`}
-      className="relative flex items-center justify-center rounded-full cursor-pointer focus-visible:ring-2 focus-visible:ring-[#6B8CFF] outline-none"
+      className="relative flex items-center justify-center rounded-full cursor-pointer focus-visible:ring-2 focus-visible:ring-bw-violet outline-none"
       style={{
         width: size,
         height: size,
