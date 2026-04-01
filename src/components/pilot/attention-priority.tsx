@@ -328,7 +328,7 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
           className="rounded-lg px-3 py-2"
           style={{ background: "rgba(0,0,0,0.02)", border: "1px solid rgba(0,0,0,0.04)" }}
         >
-          <span className="text-[10px] font-bold uppercase tracking-wider text-bw-muted">Alertes recentes</span>
+          <span className="label-caps text-bw-muted">Alertes recentes</span>
           <div className="mt-1 space-y-0.5">
             {recentHistory.map((h, i) => {
               const ago = Math.floor((Date.now() - h.dismissedAt) / 60000);
@@ -401,10 +401,10 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
             <div className="flex items-start gap-2.5">
               <span className="text-lg flex-shrink-0 mt-0.5">{primary.icon}</span>
               <div className="flex-1 min-w-0">
-                <span className="text-[13px] font-bold leading-tight block" style={{ color: style.titleColor }}>
+                <span className="text-body-sm font-bold leading-tight block" style={{ color: style.titleColor }}>
                   {primary.title}
                 </span>
-                <p className="text-[11px] leading-relaxed mt-0.5" style={{ color: style.subtitleColor }}>
+                <p className="text-body-xs leading-relaxed mt-0.5" style={{ color: style.subtitleColor }}>
                   {primary.subtitle}
                 </p>
               </div>
@@ -415,7 +415,7 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 onClick={() => onAction(primary.action!.actionId)}
-                className="w-full mt-2.5 px-3 py-2 rounded-lg text-[12px] font-semibold cursor-pointer transition-all hover:brightness-110"
+                className="w-full mt-2.5 px-3 py-2 rounded-lg text-body-xs font-semibold cursor-pointer transition-all hover:brightness-110"
                 style={{ background: style.actionBg, color: style.actionText }}
               >
                 {primary.action.label}
@@ -487,7 +487,7 @@ export function AttentionPriority({ signals, onAction, showSecondary = true }: A
                     >
                       {cat.label}
                     </span>
-                    <span className="text-[11px] font-semibold truncate" style={{ color: s.titleColor }}>
+                    <span className="text-body-xs font-semibold truncate" style={{ color: s.titleColor }}>
                       {alert.title}
                     </span>
                   </div>
