@@ -79,7 +79,7 @@ function CollapsibleRadar({
       >
         <div className="flex items-center gap-2">
           <span className="text-sm">{icon}</span>
-          <span className="text-[12px] font-bold" style={{ color }}>
+          <span className="text-body-xs font-bold" style={{ color }}>
             {label}
           </span>
         </div>
@@ -299,24 +299,22 @@ function AIAssistantPanelInner({
             style={{ borderBottom: "1px solid rgba(255,255,255,0.4)" }}
           >
             <span className="text-sm">🔔</span>
-            <span className="text-[12px] font-bold text-[#8B4513] uppercase tracking-wider">
-              {hasPrimaryAttention ? "Details" : "Alertes"}
-            </span>
+            <span className="label-caps text-bw-muted">{hasPrimaryAttention ? "Details" : "Alertes"}</span>
           </div>
           <div className="px-3.5 py-2 space-y-1.5">
             {/* Hands raised with duration — always show for detail */}
             {sortedHands.map((h, i) => (
-              <div key={i} className="flex items-center gap-2 text-[12px]">
+              <div key={i} className="flex items-center gap-2 text-body-xs">
                 <span className="text-sm flex-shrink-0">✋</span>
-                <span className="font-semibold text-[#8B4513]">{h.name}</span>
-                <span className="text-[10px] text-[#B0A99E]">{h.duration}</span>
+                <span className="font-semibold text-bw-muted">{h.name}</span>
+                <span className="text-[10px] text-bw-muted/70">{h.duration}</span>
               </div>
             ))}
             {/* Stuck names */}
             {context.stuckNames && context.stuckNames.length > 0 && sortedHands.length === 0 && (
-              <div className="flex items-center gap-2 text-[12px]">
+              <div className="flex items-center gap-2 text-body-xs">
                 <span className="text-sm flex-shrink-0">⚠️</span>
-                <span className="font-semibold text-[#C62828]">
+                <span className="font-semibold text-bw-danger">
                   {context.stuckNames.slice(0, 3).join(", ")}
                   {context.stuckCount > 3 ? ` +${context.stuckCount - 3}` : ""} bloque
                   {context.stuckCount > 1 ? "s" : ""}
@@ -335,17 +333,17 @@ function AIAssistantPanelInner({
         >
           <div className="flex items-center gap-2 mb-2">
             <span className="text-sm">✨</span>
-            <span className="text-[12px] font-bold text-[#3B5998]">Analyse en direct</span>
+            <span className="text-body-xs font-bold text-bw-text">Analyse en direct</span>
           </div>
           <div className="space-y-2">
             {/* Cognitive state phrase — skip "reflexion active" (already shown in left panel suggestion) */}
             {cognitiveState && cognitiveState.severity !== "calm" && (
-              <p className="text-[12px] font-semibold leading-relaxed" style={{ color: "#4A6FA5" }}>
+              <p className="text-body-xs font-semibold leading-relaxed text-bw-text">
                 {cognitiveState.icon} {cognitiveState.text}
               </p>
             )}
             {/* Contextual pedagogical advice — skips alerts already covered by AttentionPriority */}
-            <p className="text-[12px] text-[#4A6FA5] leading-relaxed">
+            <p className="text-body-xs text-bw-muted leading-relaxed">
               {context.responsesCount === 0 && context.elapsedSeconds < 30
                 ? "Les eleves decouvrent la question. Laissez-les lire."
                 : context.responsesCount === 0 && context.elapsedSeconds >= 30 && context.elapsedSeconds < 90
@@ -374,12 +372,12 @@ function AIAssistantPanelInner({
             </p>
             {/* Actionable micro-suggestion — only when AttentionPriority doesn't cover it */}
             {!hasPrimaryAttention && context.stuckCount > 0 && context.stuckCount < 3 && (
-              <p className="text-[11px] italic" style={{ color: "#7B9BD4" }}>
+              <p className="text-body-xs italic text-bw-muted/80">
                 Conseil : cliquez sur un eleve bloque pour lui envoyer un indice prive.
               </p>
             )}
             {!hasPrimaryAttention && context.responsesCount > 0 && context.responsesCount === context.totalStudents && (
-              <p className="text-[11px] italic" style={{ color: "#7B9BD4" }}>
+              <p className="text-body-xs italic text-bw-muted/80">
                 Conseil : comparez les reponses ou lancez un debat.
               </p>
             )}
@@ -464,10 +462,8 @@ function AIAssistantPanelInner({
             return (
               <div key={groupKey}>
                 <div className="flex items-center gap-1.5 mb-1.5 px-0.5">
-                  <span className="text-[10px]">{groupInfo.icon}</span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#B0A99E]">
-                    {groupInfo.label}
-                  </span>
+                  <span>{groupInfo.icon}</span>
+                  <span className="label-caps text-bw-muted">{groupInfo.label}</span>
                 </div>
                 <div className="space-y-1.5">
                   {items.map((suggestion, i) => {
@@ -496,7 +492,7 @@ function AIAssistantPanelInner({
                           </span>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-0.5">
-                              <span className="text-[12px] font-bold" style={{ color }}>
+                              <span className="text-body-xs font-bold" style={{ color }}>
                                 {suggestion.actionLabel}
                               </span>
                               <svg
@@ -512,7 +508,7 @@ function AIAssistantPanelInner({
                                 <path d="M9 18l6-6-6-6" />
                               </svg>
                             </div>
-                            <p className="text-[11px] text-[#7A7A7A] leading-relaxed line-clamp-2">
+                            <p className="text-body-xs text-bw-muted leading-relaxed line-clamp-2">
                               {suggestion.message}
                             </p>
                           </div>
@@ -532,10 +528,10 @@ function AIAssistantPanelInner({
                       >
                         <div className="flex items-start gap-2">
                           <span className="text-sm flex-shrink-0 mt-0.5">{SUGGESTION_ICONS[suggestion.type]}</span>
-                          <p className="flex-1 text-[12px] text-[#4A4A4A] leading-relaxed">{suggestion.message}</p>
+                          <p className="flex-1 text-body-xs text-bw-text leading-relaxed">{suggestion.message}</p>
                           <button
                             onClick={() => dismiss(suggestion.id)}
-                            className="text-[#B0A99E] hover:text-[#7A7A7A] text-xs cursor-pointer flex-shrink-0"
+                            className="text-bw-muted hover:text-bw-text text-xs cursor-pointer flex-shrink-0"
                           >
                             ✕
                           </button>
@@ -560,10 +556,9 @@ function AIAssistantPanelInner({
             className="px-4 py-2.5 flex items-center justify-between"
             style={{ borderBottom: "1px solid rgba(255,255,255,0.5)" }}
           >
-            <span className="text-[13px] font-semibold text-[#2C2C2C]">Qui a vote quoi</span>
+            <span className="text-body-sm font-semibold text-bw-heading">Qui a vote quoi</span>
             <span
-              className="text-[13px] font-bold tabular-nums"
-              style={{ color: qcmVoteData.totalVotes > 0 ? "#4CAF50" : "#B0A99E" }}
+              className={`text-body-sm font-bold tabular-nums ${qcmVoteData.totalVotes > 0 ? "text-bw-teal-readable" : "text-bw-muted"}`}
             >
               {qcmVoteData.totalVotes}/{qcmVoteData.totalStudents}
             </span>
@@ -582,14 +577,14 @@ function AIAssistantPanelInner({
                     />
                   ))}
                 </div>
-                <p className="text-[12px] text-[#B0A99E]">En attente des votes...</p>
+                <p className="text-body-xs text-bw-muted">En attente des votes...</p>
               </div>
             ) : (
               qcmVoteData.options.map((opt) => {
                 const voters = qcmVoteData.votesByOption[opt.key] || [];
                 if (voters.length === 0) return null;
                 const color = VOTE_COLORS[opt.key] || "#7A7A7A";
-                const bg = VOTE_BG[opt.key] || "#1a1a35";
+                const bg = VOTE_BG[opt.key] || "rgba(247,243,234,0.6)";
                 return (
                   <div key={opt.key}>
                     <div className="flex items-center gap-2 mb-1.5">
@@ -599,7 +594,7 @@ function AIAssistantPanelInner({
                       >
                         {opt.key.toUpperCase()}
                       </span>
-                      <span className="text-[12px] font-semibold text-[#4A4A4A] truncate">{opt.label}</span>
+                      <span className="text-body-xs font-semibold text-bw-text truncate">{opt.label}</span>
                       <span className="text-[11px] font-bold tabular-nums ml-auto flex-shrink-0" style={{ color }}>
                         {voters.length}
                       </span>
@@ -611,8 +606,8 @@ function AIAssistantPanelInner({
                           initial={{ scale: 0.8, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
                           onClick={() => onStudentClick?.(v.id)}
-                          className="flex items-center gap-1 h-6 px-2 rounded-full text-[11px] font-medium cursor-pointer transition-colors hover:brightness-95"
-                          style={{ background: bg, border: `1px solid ${color}30`, color: "#4A4A4A" }}
+                          className="flex items-center gap-1 h-6 px-2 rounded-full text-body-xs font-medium cursor-pointer transition-colors hover:brightness-95 text-bw-text"
+                          style={{ background: bg, border: `1px solid ${color}30` }}
                         >
                           <span className="text-xs">{v.avatar}</span>
                           <span>{v.name.split(" ")[0]}</span>
@@ -636,17 +631,14 @@ function AIAssistantPanelInner({
             border: "1px solid rgba(235,87,87,0.12)",
           }}
         >
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#C62828] mb-2 block">
-            En difficulte ({context.stuckCount})
-          </span>
+          <span className="label-caps text-bw-danger mb-2 block">En difficulte ({context.stuckCount})</span>
           <div className="flex flex-wrap gap-1.5">
             {context.stuckNames.slice(0, 6).map((name, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-1 h-6 px-2 rounded-lg text-[11px] font-medium"
+                className="inline-flex items-center gap-1 h-6 px-2 rounded-lg text-body-xs font-medium text-bw-danger"
                 style={{
                   background: "rgba(255,255,255,0.7)",
-                  color: "#C62828",
                   border: "1px solid rgba(235,87,87,0.15)",
                 }}
               >
@@ -654,7 +646,7 @@ function AIAssistantPanelInner({
               </span>
             ))}
             {context.stuckCount > 6 && (
-              <span className="text-[11px] text-[#C62828] self-center">+{context.stuckCount - 6}</span>
+              <span className="text-body-xs text-bw-danger self-center">+{context.stuckCount - 6}</span>
             )}
           </div>
         </div>
