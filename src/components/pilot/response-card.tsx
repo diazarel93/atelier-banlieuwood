@@ -110,11 +110,11 @@ function ResponseCardInner({
   );
 
   const borderColor = response.is_highlighted
-    ? "#F5A45B"
+    ? "var(--color-bw-primary)"
     : state === "selected"
       ? "var(--color-bw-violet)"
       : state === "winner"
-        ? "#57C4B6"
+        ? "var(--color-bw-teal)"
         : "rgba(255,255,255,0.5)";
 
   const hasInteractions = !!(onComment && onHighlight && onNudge && onWarn && onScore);
@@ -168,7 +168,7 @@ function ResponseCardInner({
       dragElastic={0.3}
       onDragEnd={handleDragEnd}
       className={`rounded-[14px] border p-4 transition-all duration-200 card-paper-hover ${hierarchyClass}
-      ${swiped === "left" ? "border-[#EB5757]/40" : swiped === "right" ? "border-bw-violet/40" : ""}
+      ${swiped === "left" ? "border-bw-danger/40" : swiped === "right" ? "border-bw-violet/40" : ""}
       ${response.reset_at ? "opacity-50" : ""}`}
     >
       {/* Header: avatar + name + time + status buttons */}
@@ -177,11 +177,11 @@ function ResponseCardInner({
           <div className="flex items-center gap-3 mb-1.5">
             <span className="text-lg">{response.students?.avatar}</span>
             <span
-              className={`text-[14px] font-semibold ${state === "hidden" ? "line-through text-[#94a3b8]" : "text-bw-heading"}`}
+              className={`text-[14px] font-semibold ${state === "hidden" ? "line-through text-bw-muted" : "text-bw-heading"}`}
             >
               {response.students?.display_name}
             </span>
-            <span className="text-[12px] text-[#94a3b8]">{relativeTime(response.submitted_at)}</span>
+            <span className="text-body-xs text-bw-muted">{relativeTime(response.submitted_at)}</span>
             {response.reset_at && (
               <span className="text-xs px-1.5 py-px rounded-full bg-bw-amber/15 text-bw-amber border border-bw-amber/20">
                 relancé
@@ -189,7 +189,7 @@ function ResponseCardInner({
             )}
           </div>
           <p
-            className={`text-[14px] leading-relaxed ${state === "hidden" ? "line-through text-[#94a3b8]" : response.reset_at ? "line-through text-[#94a3b8]" : "text-bw-text"}`}
+            className={`text-[14px] leading-relaxed ${state === "hidden" ? "line-through text-bw-muted" : response.reset_at ? "line-through text-bw-muted" : "text-bw-text"}`}
           >
             {response.text}
           </p>
@@ -223,10 +223,10 @@ function ResponseCardInner({
               disabled={isPending}
               aria-label={state === "selected" ? "Retirer du vote" : "Sélectionner pour le vote"}
               aria-pressed={state === "selected"}
-              className={`h-11 min-w-[44px] px-3 text-[12px] rounded-[9px] cursor-pointer transition-all duration-200 font-semibold focus-visible:ring-2 focus-visible:ring-bw-violet focus-visible:outline-none ${
+              className={`h-11 min-w-[44px] px-3 text-body-xs rounded-[9px] cursor-pointer transition-all duration-200 font-semibold focus-visible:ring-2 focus-visible:ring-bw-violet focus-visible:outline-none ${
                 state === "selected"
                   ? "bg-bw-violet text-white border border-bw-violet"
-                  : "hover:bg-bw-violet/10 hover:text-bw-violet text-[#94a3b8] border border-[rgba(245,245,244,0.08)]"
+                  : "hover:bg-bw-violet/10 hover:text-bw-violet text-bw-muted border border-[rgba(245,245,244,0.08)]"
               }`}
             >
               {state === "selected" ? "Au vote" : "Select."}
@@ -237,7 +237,7 @@ function ResponseCardInner({
               onClick={onHide}
               disabled={isPending}
               aria-label={state === "hidden" ? "Montrer la réponse" : "Masquer la réponse"}
-              className="h-11 min-w-[44px] px-3 text-[12px] rounded-[9px] hover:bg-[#1a1a35] hover:text-bw-heading cursor-pointer transition-all duration-200 text-[#94a3b8] border border-[rgba(245,245,244,0.08)] font-medium focus-visible:ring-2 focus-visible:ring-bw-violet focus-visible:outline-none active:scale-95"
+              className="h-11 min-w-[44px] px-3 text-body-xs rounded-[9px] hover:bg-black/5 hover:text-bw-heading cursor-pointer transition-all duration-200 text-bw-muted border border-[rgba(245,245,244,0.08)] font-medium focus-visible:ring-2 focus-visible:ring-bw-violet focus-visible:outline-none active:scale-95"
             >
               {state === "hidden" ? "Montrer" : "Masquer"}
             </button>
@@ -257,7 +257,7 @@ function ResponseCardInner({
             <button
               onClick={onSpotlight}
               aria-label="Projeter cette réponse"
-              className="h-11 min-w-[44px] px-3 text-[12px] rounded-[9px] hover:bg-[rgba(251,146,60,0.1)] hover:text-[#F5A45B] cursor-pointer transition-all duration-200 text-[#94a3b8] border border-[rgba(245,245,244,0.08)] font-medium focus-visible:ring-2 focus-visible:ring-[#F5A45B] focus-visible:outline-none active:scale-95"
+              className="h-11 min-w-[44px] px-3 text-body-xs rounded-[9px] hover:bg-bw-primary/10 hover:text-bw-primary cursor-pointer transition-all duration-200 text-bw-muted border border-[rgba(245,245,244,0.08)] font-medium focus-visible:ring-2 focus-visible:ring-bw-primary focus-visible:outline-none active:scale-95"
               title="Projeter en grand"
             >
               🔦

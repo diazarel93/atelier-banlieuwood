@@ -327,30 +327,30 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
             >
               <div className="flex items-center gap-2.5">
                 <span className="text-lg">💡</span>
-                <h3 className="text-[14px] font-bold text-[#2C2C2C]">Nuage d&apos;idees de la classe</h3>
-                <span className="text-[11px] text-[#B0A99E] font-medium">
+                <h3 className="text-[14px] font-bold text-bw-heading">Nuage d&apos;idees de la classe</h3>
+                <span className="text-body-xs text-bw-muted font-medium">
                   {responses.length} reponse{responses.length > 1 ? "s" : ""}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 {/* View toggle */}
-                <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid #2a2a50" }}>
+                <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid rgba(61,43,16,0.12)" }}>
                   <button
                     onClick={() => setViewMode("ideas")}
-                    className="px-2.5 py-1 text-[11px] font-semibold cursor-pointer transition-colors"
+                    className="px-2.5 py-1 text-body-xs font-semibold cursor-pointer transition-colors"
                     style={{
-                      background: viewMode === "ideas" ? "#3B5998" : "transparent",
-                      color: viewMode === "ideas" ? "#fff" : "#7A7A7A",
+                      background: viewMode === "ideas" ? "var(--color-bw-primary)" : "transparent",
+                      color: viewMode === "ideas" ? "#fff" : "var(--color-bw-muted)",
                     }}
                   >
                     Idees
                   </button>
                   <button
                     onClick={() => setViewMode("words")}
-                    className="px-2.5 py-1 text-[11px] font-semibold cursor-pointer transition-colors"
+                    className="px-2.5 py-1 text-body-xs font-semibold cursor-pointer transition-colors"
                     style={{
-                      background: viewMode === "words" ? "#3B5998" : "transparent",
-                      color: viewMode === "words" ? "#fff" : "#7A7A7A",
+                      background: viewMode === "words" ? "var(--color-bw-primary)" : "transparent",
+                      color: viewMode === "words" ? "#fff" : "var(--color-bw-muted)",
                     }}
                   >
                     Mots
@@ -358,7 +358,7 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                 </div>
                 <button
                   onClick={onClose}
-                  className="text-[#B0A99E] hover:text-[#2C2C2C] text-sm cursor-pointer transition-colors"
+                  className="text-bw-muted hover:text-bw-heading text-sm cursor-pointer transition-colors"
                 >
                   ✕
                 </button>
@@ -378,7 +378,7 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                   >
                     {clusters.length === 0 ? (
                       <div className="text-center py-8">
-                        <p className="text-[13px] text-[#B0A99E]">Pas assez de reponses pour regrouper.</p>
+                        <p className="text-body-sm text-bw-muted">Pas assez de reponses pour regrouper.</p>
                       </div>
                     ) : (
                       clusters.map((cluster, i) => (
@@ -394,7 +394,7 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                             style={{
                               background:
                                 expandedCluster === cluster.id ? `${cluster.color}10` : "rgba(255,255,255,0.7)",
-                              border: `1px solid ${expandedCluster === cluster.id ? `${cluster.color}30` : "#2a2a50"}`,
+                              border: `1px solid ${expandedCluster === cluster.id ? `${cluster.color}30` : "rgba(232,223,210,0.6)"}`,
                             }}
                           >
                             <div className="flex items-center justify-between">
@@ -435,7 +435,7 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                                   <span
                                     key={kw}
                                     className="text-[10px] px-1.5 py-0.5 rounded"
-                                    style={{ background: `${cluster.color}08`, color: "#7A7A7A" }}
+                                    style={{ background: `${cluster.color}08`, color: "var(--color-bw-muted)" }}
                                   >
                                     {kw}
                                   </span>
@@ -469,11 +469,11 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                                       )}
                                       <div className="flex-1 min-w-0">
                                         {r.students && (
-                                          <span className="text-[11px] font-semibold text-[#2C2C2C]">
+                                          <span className="text-body-xs font-semibold text-bw-heading">
                                             {r.students.display_name}
                                           </span>
                                         )}
-                                        <p className="text-[12px] text-[#5B5B5B] leading-snug mt-0.5 line-clamp-3">
+                                        <p className="text-body-xs text-bw-muted leading-snug mt-0.5 line-clamp-3">
                                           {r.text}
                                         </p>
                                       </div>
@@ -493,9 +493,7 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                         className="flex items-center gap-3 pt-2"
                         style={{ borderTop: "1px solid rgba(232,223,210,0.4)" }}
                       >
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#B0A99E]">
-                          Repartition
-                        </span>
+                        <span className="label-caps text-bw-muted">Repartition</span>
                         <div className="flex-1 flex h-3 rounded-full overflow-hidden">
                           {clusters.map((c) => (
                             <div
@@ -523,7 +521,7 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                   >
                     {words.length === 0 ? (
                       <div className="text-center py-8">
-                        <p className="text-[13px] text-[#B0A99E]">Pas assez de mots pour generer un nuage.</p>
+                        <p className="text-body-sm text-bw-muted">Pas assez de mots pour generer un nuage.</p>
                       </div>
                     ) : (
                       <>
@@ -549,7 +547,7 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
 
                         {/* Top words list */}
                         <div className="pt-4 mt-4" style={{ borderTop: "1px solid rgba(232,223,210,0.4)" }}>
-                          <p className="text-[10px] text-[#B0A99E] font-bold uppercase tracking-wider mb-2">Top 10</p>
+                          <p className="label-caps text-bw-muted mb-2">Top 10</p>
                           <div className="flex flex-wrap gap-1.5">
                             {words.slice(0, 10).map((entry) => (
                               <span
@@ -561,7 +559,7 @@ export function WordCloud({ open, onClose, responses }: WordCloudProps) {
                                   color: entry.color,
                                 }}
                               >
-                                <strong>{entry.word}</strong> <span style={{ color: "#B0A99E" }}>×{entry.count}</span>
+                                <strong>{entry.word}</strong> <span className="text-bw-muted">×{entry.count}</span>
                               </span>
                             ))}
                           </div>
