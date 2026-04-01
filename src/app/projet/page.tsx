@@ -72,7 +72,7 @@ const MODULES = [
 export default function ProjetPage() {
   return (
     <div
-      className="min-h-dvh bg-[#0d0b09] text-[#f0f0f8]"
+      className="min-h-dvh bg-[#0d0b09] text-white"
       style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
     >
       <SiteNavbar />
@@ -144,7 +144,7 @@ export default function ProjetPage() {
       </section>
 
       {/* ══ Convictions ══ */}
-      <section className="py-20">
+      <section className="py-20 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#FF6B35] mb-2">NOS CONVICTIONS</div>
@@ -234,7 +234,7 @@ export default function ProjetPage() {
       </section>
 
       {/* ══ Pedagogie 4 points ══ */}
-      <section className="py-20">
+      <section className="py-20 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">NOTRE MÉTHODE</div>
@@ -282,7 +282,7 @@ export default function ProjetPage() {
                 <div className="text-[12px] font-bold">
                   {m.id} — {m.name}
                 </div>
-                <div className="text-[10px] text-white/40 mt-1">{m.desc}</div>
+                <div className="text-[11px] text-white/40 mt-1">{m.desc}</div>
               </div>
             ))}
           </div>
@@ -290,7 +290,7 @@ export default function ProjetPage() {
       </section>
 
       {/* ══ Comparatif formules ══ */}
-      <section className="py-16">
+      <section className="py-16 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-8">
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#D4A843] mb-2">DURÉE & MODULES</div>
@@ -353,7 +353,7 @@ export default function ProjetPage() {
             </Link>
             <Link
               href="/contact"
-              className="px-9 py-4 rounded-xl text-base font-bold text-[#f0f0f8] bg-[#141210] border border-[#2a2420] hover:border-[#FF6B35] hover:shadow-[0_4px_16px_rgba(255,107,53,0.18)] transition-all duration-200"
+              className="px-9 py-4 rounded-xl text-base font-bold text-white bg-[#141210] border border-[#2a2420] hover:border-[#FF6B35] hover:shadow-[0_4px_16px_rgba(255,107,53,0.18)] transition-all duration-200"
             >
               Nous contacter
             </Link>

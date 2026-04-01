@@ -195,7 +195,7 @@ export default function Home() {
                   }}
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[#4ECDC4] animate-pulse" />
-                  ATELIER DE CINEMA COLLABORATIF
+                  ATELIER DE CINÉMA COLLABORATIF
                 </motion.div>
 
                 {/* H1 — Bebas Neue cinema */}
@@ -301,7 +301,7 @@ export default function Home() {
                 >
                   <span className="text-[28px]">{stat.icon}</span>
                   <div>
-                    <div className="text-[22px] font-black" style={{ color: stat.color }}>
+                    <div className="text-2xl font-black" style={{ color: stat.color }}>
                       <CountUp target={stat.value} suffix={stat.suffix} />
                     </div>
                     <div className="text-[11px] text-white/35">{stat.label}</div>
@@ -334,7 +334,7 @@ export default function Home() {
           <Reveal className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-3">
               <span className="inline-block w-6 h-[1.5px] rounded-full" style={{ background: "#D4A843" }} />
-              <span className="text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: "#D4A843" }}>POUR CHAQUE ROLE</span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: "#D4A843" }}>POUR CHAQUE RÔLE</span>
               <span className="inline-block w-6 h-[1.5px] rounded-full" style={{ background: "#D4A843" }} />
             </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">Un outil pour chaque acteur</h2>
@@ -391,7 +391,7 @@ export default function Home() {
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#4ECDC4" }}>
               COMMENT ÇA MARCHE
             </div>
-            <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">4 etapes pour creer un film</h2>
+            <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">4 étapes pour créer un film</h2>
           </Reveal>
           <div className="max-w-[680px] mx-auto">
             {[
@@ -454,7 +454,7 @@ export default function Home() {
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#FF6B35" }}>
-              PARCOURS PEDAGOGIQUE
+              PARCOURS PÉDAGOGIQUE
             </div>
             <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">8 modules, un parcours complet</h2>
             <p className="text-[clamp(15px,2vw,18px)] text-white/48 max-w-[560px] mx-auto mt-3">
@@ -578,7 +578,7 @@ export default function Home() {
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#FF6B35" }}>
-              TEMOIGNAGES
+              TÉMOIGNAGES
             </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight mb-3">Ils en parlent mieux que nous</h2>
             <div className="mx-auto w-16 h-[2px] rounded-full" style={{ background: "linear-gradient(90deg, transparent, #FF6B35, transparent)" }} />

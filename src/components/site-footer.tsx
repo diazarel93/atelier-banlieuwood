@@ -49,7 +49,7 @@ export function SiteFooter() {
             },
           ].map((col) => (
             <div key={col.title}>
-              <h4 className="text-[13px] font-bold text-[#f0f0f8] mb-4">{col.title}</h4>
+              <h4 className="text-[13px] font-bold text-white mb-4">{col.title}</h4>
               {col.links.map((link) => (
                 <Link
                   key={link.label}
