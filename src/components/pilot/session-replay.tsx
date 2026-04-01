@@ -180,7 +180,7 @@ export function SessionReplay({
 
       {/* Summary */}
       <div className="px-3 py-2.5 rounded-[10px] bg-black/[0.03] border border-black/[0.06]">
-        <p className="text-[11px] text-[#5B5B5B] leading-relaxed">{replaySummary}</p>
+        <p className="text-body-xs text-bw-muted leading-relaxed">{replaySummary}</p>
       </div>
 
       {/* Timeline */}
@@ -282,10 +282,10 @@ export function SessionReplay({
           >
             <span className="text-sm">{activeKeyMoment.icon}</span>
             <div>
-              <p className="text-[11px] font-semibold" style={{ color: activeKeyMoment.color }}>
+              <p className="text-body-xs font-semibold" style={{ color: activeKeyMoment.color }}>
                 {activeKeyMoment.label}
               </p>
-              <p className="text-[10px] text-[#5B5B5B]">{activeKeyMoment.detail}</p>
+              <p className="text-body-xs text-bw-muted">{activeKeyMoment.detail}</p>
             </div>
           </motion.div>
         )}
@@ -297,7 +297,7 @@ export function SessionReplay({
           {/* Current question */}
           {currentQuestion && (
             <div className="space-y-1">
-              <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-muted">Question active</p>
+              <p className="label-caps text-bw-muted">Question active</p>
               <div className="bg-black/[0.03] rounded-lg px-3 py-2">
                 <p className="text-xs text-bw-text">
                   Module {String(currentQuestion.payload.module)} — Séance {String(currentQuestion.payload.seance)} — Q
@@ -309,9 +309,7 @@ export function SessionReplay({
 
           {/* Responses feed */}
           <div className="space-y-1">
-            <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-muted">
-              Réponses ({visibleResponses.length})
-            </p>
+            <p className="label-caps text-bw-muted">Réponses ({visibleResponses.length})</p>
             <div className="max-h-48 overflow-y-auto space-y-1">
               {visibleResponses
                 .slice(-10)
@@ -354,9 +352,7 @@ export function SessionReplay({
 
         {/* Key moments panel */}
         <div className="glass-card p-4 space-y-3">
-          <p className="text-[10px] uppercase tracking-wider font-semibold text-bw-muted">
-            Moments clés ({keyMoments.length})
-          </p>
+          <p className="label-caps text-bw-muted">Moments clés ({keyMoments.length})</p>
 
           {keyMoments.length === 0 ? (
             <p className="text-[10px] text-bw-muted text-center py-4">
@@ -379,7 +375,7 @@ export function SessionReplay({
                       <p className="text-[10px] font-semibold" style={{ color: m.color }}>
                         {m.label}
                       </p>
-                      <p className="text-[9px] text-[#8894A0] truncate">{m.detail}</p>
+                      <p className="text-[9px] text-bw-muted truncate">{m.detail}</p>
                     </div>
                     <span className="text-[9px] font-mono text-bw-muted flex-shrink-0">
                       {formatReplayTime(m.offsetMs)}
