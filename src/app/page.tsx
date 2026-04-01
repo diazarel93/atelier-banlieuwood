@@ -74,41 +74,41 @@ function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
 }
 
 const MODULES = [
-  { id: "M1", name: "Le Regard", icon: "👁️", desc: "Analyse d'images & cinema", color: "#FF6B35" },
-  { id: "M2", name: "Les Emotions", icon: "🎭", desc: "Identifier & exprimer", color: "#D4A843" },
+  { id: "M1", name: "Le Regard", icon: "👁️", desc: "Analyse d'images & cinéma", color: "#FF6B35" },
+  { id: "M2", name: "Les Émotions", icon: "🎭", desc: "Identifier & exprimer", color: "#D4A843" },
   { id: "M3", name: "Et si...", icon: "💡", desc: "Brainstorm collectif", color: "#4ECDC4" },
-  { id: "M4", name: "Le Pitch", icon: "🎤", desc: "Presenter son idee", color: "#FF8C5A" },
-  { id: "M5", name: "Le Vote", icon: "🏆", desc: "Choix democratique", color: "#E8B84B" },
-  { id: "M6", name: "Le Scenario", icon: "📝", desc: "Ecriture collaborative", color: "#5DD6CF" },
+  { id: "M4", name: "Le Pitch", icon: "🎤", desc: "Présenter son idée", color: "#FF8C5A" },
+  { id: "M5", name: "Le Vote", icon: "🏆", desc: "Choix démocratique", color: "#E8B84B" },
+  { id: "M6", name: "Le Scénario", icon: "📝", desc: "Écriture collaborative", color: "#5DD6CF" },
   { id: "M7", name: "Storyboard", icon: "🎞️", desc: "Plans & cadrage", color: "#FF6B35" },
-  { id: "M8", name: "L'Equipe", icon: "⭐", desc: "Roles & talents", color: "#D4A843" },
+  { id: "M8", name: "L'Équipe", icon: "⭐", desc: "Rôles & talents", color: "#D4A843" },
 ];
 
 const TESTIMONIALS = [
   {
-    text: "Les eleves qui ne participent jamais se sont reveles. Le vote democratique les a rendus fiers de leur contribution. C'est du jamais vu en 15 ans de carriere.",
+    text: "Les élèves qui ne participent jamais se sont révélés. Le vote démocratique les a rendus fiers de leur contribution. C'est du jamais vu en 15 ans de carrière.",
     author: "Sophie Martin",
-    role: "Professeure de francais, College Jean Moulin, Bondy",
+    role: "Professeure de français, Collège Jean Moulin, Bondy",
   },
   {
-    text: "L'interface est parfaite pour les ateliers. Je pilote tout depuis le cockpit, et les gamins sont a fond sur les tablettes. Le pitch timer cree une energie dingue.",
+    text: "L'interface est parfaite pour les ateliers. Je pilote tout depuis le cockpit, et les gamins sont à fond sur les tablettes. Le pitch timer crée une énergie dingue.",
     author: "Karim Benziani",
-    role: "Intervenant cinema, Association Ecran Libre",
+    role: "Intervenant cinéma, Association Écran Libre",
   },
   {
-    text: "Enfin un outil pedagogique qui respecte les eleves. Pas de notes, pas de classement, juste de la creation collective. Les donnees sont anonymisees, c'est exemplaire.",
+    text: "Enfin un outil pédagogique qui respecte les élèves. Pas de notes, pas de classement, juste de la création collective. Les données sont anonymisées, c'est exemplaire.",
     author: "Claire Dubois",
-    role: "Coordinatrice PEAC, Academie de Creteil",
+    role: "Coordinatrice PEAC, Académie de Créteil",
   },
 ];
 
 const PARTNERS = [
-  "Academie de Creteil",
-  "Academie de Versailles",
-  "Academie de Paris",
-  "CNC — Education a l'image",
-  "Education Nationale — PEAC",
-  "DRAC Ile-de-France",
+  "Académie de Créteil",
+  "Académie de Versailles",
+  "Académie de Paris",
+  "CNC — Éducation à l'image",
+  "Éducation Nationale — PEAC",
+  "DRAC Île-de-France",
   "Mairie de Bondy",
   "Mairie de Saint-Denis",
 ];
@@ -225,8 +225,8 @@ export default function Home() {
                   transition={{ delay: 0.5, duration: 0.7, ease: SNAP }}
                   className="text-[clamp(15px,2vw,18px)] text-white/72 leading-[1.52] tracking-[-0.01em] max-w-[520px] mb-10"
                 >
-                  Les eleves imaginent, ecrivent, pitchent, votent et produisent un court-metrage — ensemble. De
-                  l&apos;idee au festival, tout est collaboratif.
+                  Les élèves imaginent, écrivent, pitchent, votent et produisent un court-métrage — ensemble. De
+                  l&apos;idée au festival, tout est collaboratif.
                 </motion.p>
 
                 {/* CTAs */}
@@ -238,16 +238,16 @@ export default function Home() {
                 >
                   <Link
                     href={ROUTES.requestAccess}
-                    className="px-9 py-4 rounded-[14px] text-base font-bold text-white shadow-[0_4px_24px_rgba(255,107,53,0.4)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.58)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out"
+                    className="px-9 py-4 rounded-xl text-base font-bold text-white shadow-[0_4px_24px_rgba(255,107,53,0.4)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.58)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out"
                     style={{ background: "#FF6B35" }}
                   >
                     Commencer gratuitement
                   </Link>
                   <Link
                     href="/projet"
-                    className="px-9 py-4 rounded-[14px] text-base font-bold text-white/85 bg-white/[0.05] border border-white/10 hover:border-[#FF6B35]/40 hover:text-white transition-all"
+                    className="px-9 py-4 rounded-xl text-base font-bold text-white/85 bg-white/[0.05] border border-white/10 hover:border-[#FF6B35]/40 hover:text-white hover:shadow-[0_4px_20px_rgba(255,107,53,0.18)] transition-all duration-200"
                   >
-                    Decouvrir le parcours
+                    Découvrir le parcours
                   </Link>
                 </motion.div>
 
@@ -257,9 +257,9 @@ export default function Home() {
                   transition={{ delay: 0.85, ease: SNAP }}
                   className="flex items-center gap-6 text-[12px] text-white/38"
                 >
-                  <span>✓ Gratuit pour les ecoles</span>
+                  <span>✓ Gratuit pour les écoles</span>
                   <span>✓ Conforme RGPD & PEAC</span>
-                  <span>✓ iPad optimise</span>
+                  <span>✓ iPad optimisé</span>
                 </motion.div>
               </div>
 
@@ -291,8 +291,8 @@ export default function Home() {
             >
               {[
                 { icon: "🎬", value: 87, label: "Films produits", color: "#FF6B35" },
-                { icon: "👥", value: 1247, label: "Eleves participants", color: "#D4A843" },
-                { icon: "🏫", value: 32, label: "Etablissements", color: "#4ECDC4" },
+                { icon: "👥", value: 1247, label: "Élèves participants", color: "#D4A843" },
+                { icon: "🏫", value: 32, label: "Établissements", color: "#4ECDC4" },
                 { icon: "⭐", value: 94, label: "Engagement", suffix: "%", color: "#ffffff" },
               ].map((stat) => (
                 <div
@@ -339,7 +339,7 @@ export default function Home() {
             </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">Un outil pour chaque acteur</h2>
             <p className="text-[clamp(15px,2vw,18px)] text-white/48 max-w-[500px] mx-auto mt-3">
-              Banlieuwood s&apos;adapte a chaque utilisateur avec une interface dediee.
+              Banlieuwood s&apos;adapte à chaque utilisateur avec une interface dédiée.
             </p>
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -347,19 +347,19 @@ export default function Home() {
               {
                 icon: "🎬",
                 title: "Pour les Intervenants",
-                desc: "Cockpit temps reel avec modules M1-M8, orchestration de seance, projection multi-vues, command palette, et pilotage complet.",
+                desc: "Cockpit temps réel avec modules M1-M8, orchestration de séance, projection multi-vues, command palette, et pilotage complet.",
                 color: "#FF6B35",
               },
               {
                 icon: "✏️",
-                title: "Pour les Eleves",
-                desc: "Interface tablette intuitive, vote democratique, creation collaborative, roles attribues naturellement — pas de notes, pas de jugement.",
+                title: "Pour les Élèves",
+                desc: "Interface tablette intuitive, vote démocratique, création collaborative, rôles attribués naturellement — pas de notes, pas de jugement.",
                 color: "#D4A843",
               },
               {
                 icon: "📊",
                 title: "Pour les Enseignants",
-                desc: "Donnees pedagogiques anonymisees, historique par classe, statistiques collectives, suivi sans jugement individuel. Aligne PEAC.",
+                desc: "Données pédagogiques anonymisées, historique par classe, statistiques collectives, suivi sans jugement individuel. Aligné PEAC.",
                 color: "#4ECDC4",
               },
             ].map((card, i) => (
@@ -397,29 +397,29 @@ export default function Home() {
             {[
               {
                 n: "1",
-                title: "Creez la session",
-                desc: "L'intervenant choisit la classe, la formule (F0/F1/F2) et genere un QR code. En un clic, l'atelier est pret.",
+                title: "Créez la session",
+                desc: "L'intervenant choisit la classe, la formule (F0/F1/F2) et génère un QR code. En un clic, l'atelier est prêt.",
                 color: "#FF6B35",
                 next: "#D4A843",
               },
               {
                 n: "2",
-                title: "Les eleves rejoignent",
-                desc: "Scan du QR code sur tablette. Pas de compte, pas de mot de passe. En 10 secondes, toute la classe est connectee.",
+                title: "Les élèves rejoignent",
+                desc: "Scan du QR code sur tablette. Pas de compte, pas de mot de passe. En 10 secondes, toute la classe est connectée.",
                 color: "#D4A843",
                 next: "#4ECDC4",
               },
               {
                 n: "3",
-                title: "Creez ensemble",
-                desc: "8 modules progressifs : analyser des images, explorer les emotions, brainstormer, pitcher, voter, ecrire le scenario, dessiner le storyboard, former l'equipe.",
+                title: "Créez ensemble",
+                desc: "8 modules progressifs : analyser des images, explorer les émotions, brainstormer, pitcher, voter, écrire le scénario, dessiner le storyboard, former l'équipe.",
                 color: "#4ECDC4",
                 next: "#FF6B35",
               },
               {
                 n: "4",
                 title: "Festival !",
-                desc: "Projection du film, celebration collective, roles attribues. Chaque eleve est un createur reconnu.",
+                desc: "Projection du film, célébration collective, rôles attribués. Chaque élève est un créateur reconnu.",
                 color: "#FF6B35",
                 next: "",
               },
@@ -458,7 +458,7 @@ export default function Home() {
             </div>
             <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">8 modules, un parcours complet</h2>
             <p className="text-[clamp(15px,2vw,18px)] text-white/48 max-w-[560px] mx-auto mt-3">
-              Chaque module developpe des competences du Parcours d&apos;Education Artistique et Culturelle (PEAC) et du
+              Chaque module développe des compétences du Parcours d&apos;Éducation Artistique et Culturelle (PEAC) et du
               Socle Commun.
             </p>
           </Reveal>
@@ -490,40 +490,40 @@ export default function Home() {
               FORMULES
             </div>
             <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">
-              3 formules adaptees a votre temps
+              3 formules adaptées à votre temps
             </h2>
             <p className="text-[clamp(15px,2vw,18px)] text-white/48 max-w-[500px] mx-auto mt-3">
-              De la decouverte d&apos;1 heure au cycle complet de 8 heures.
+              De la découverte d&apos;1 heure au cycle complet de 8 heures.
             </p>
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               {
-                badge: "F0 — DECOUVERTE",
+                badge: "F0 — DÉCOUVERTE",
                 badgeColor: "#4ECDC4",
                 time: "1 heure",
-                title: "Decouverte",
-                desc: "Introduction a l'analyse d'images et au langage cinematographique. Ideal pour une premiere immersion.",
+                title: "Découverte",
+                desc: "Introduction à l'analyse d'images et au langage cinématographique. Idéal pour une première immersion.",
                 modules: ["M1 Le Regard"],
                 peac: "Rencontrer",
                 popular: false,
               },
               {
-                badge: "F1 — LEGERE",
+                badge: "F1 — LÉGÈRE",
                 badgeColor: "#D4A843",
                 time: "3 heures",
-                title: "Legere",
-                desc: "Analyse, emotions et brainstorm. Les eleves decouvrent le processus creatif collectif.",
+                title: "Légère",
+                desc: "Analyse, émotions et brainstorm. Les élèves découvrent le processus créatif collectif.",
                 modules: ["M1", "M2", "M3"],
                 peac: "Rencontrer + Pratiquer",
                 popular: false,
               },
               {
-                badge: "F2 — COMPLETE",
+                badge: "F2 — COMPLÈTE",
                 badgeColor: "#FF6B35",
                 time: "8 heures",
-                title: "Complete",
-                desc: "Cycle integral — de l'analyse au festival. Les eleves vivent tout le processus de creation d'un film.",
+                title: "Complète",
+                desc: "Cycle intégral — de l'analyse au festival. Les élèves vivent tout le processus de création d'un film.",
                 modules: ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"],
                 peac: "Rencontrer + Pratiquer + S'approprier",
                 popular: true,
@@ -627,22 +627,19 @@ export default function Home() {
             </div>
             <h2 className="text-[clamp(32px,5vw,60px)] font-extrabold leading-tight mb-4">Lancez votre atelier</h2>
             <p className="text-[clamp(15px,2vw,18px)] text-white/48 leading-relaxed mb-10">
-              Lancez votre premier atelier en quelques minutes. Gratuit pour tous les etablissements scolaires publics.
+              Lancez votre premier atelier en quelques minutes. Gratuit pour tous les établissements scolaires publics.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link
                 href={ROUTES.requestAccess}
-                className="px-10 py-4 rounded-[14px] text-base font-bold text-white transition-all hover:-translate-y-0.5"
-                style={{
-                  background: "#FF6B35",
-                  boxShadow: "0 4px 28px rgba(255,107,53,0.45)",
-                }}
+                className="px-10 py-4 rounded-xl text-base font-bold text-white shadow-[0_4px_28px_rgba(255,107,53,0.45)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.58)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out"
+                style={{ background: "#FF6B35" }}
               >
-                Creer un compte
+                Créer un compte
               </Link>
               <Link
                 href="/contact"
-                className="px-10 py-4 rounded-[14px] text-base font-bold text-white/65 bg-white/[0.04] border border-white/10 hover:border-[#FF6B35]/35 hover:text-white transition-all"
+                className="px-10 py-4 rounded-xl text-base font-bold text-white/65 bg-white/[0.04] border border-white/10 hover:border-[#FF6B35]/35 hover:text-white hover:shadow-[0_4px_20px_rgba(255,107,53,0.18)] transition-all duration-200"
               >
                 Nous contacter
               </Link>

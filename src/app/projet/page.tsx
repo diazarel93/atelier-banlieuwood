@@ -7,66 +7,66 @@ import { SiteFooter } from "@/components/site-footer";
 export const metadata: Metadata = {
   title: "Le Projet — Banlieuwood",
   description:
-    "Banlieuwood : ateliers pedagogiques de creation cinematographique. Decouvrez notre manifeste, notre methode et notre vision.",
+    "Banlieuwood : ateliers pédagogiques de création cinématographique. Découvrez notre manifeste, notre méthode et notre vision.",
 };
 
 /* ── Data ── */
 
 const CONVICTIONS = [
   {
-    title: "De spectateur a createur",
-    text: "Les jeunes ne doivent pas etre seulement des consommateurs d\u2019images. Ils peuvent aussi devenir des createurs. Creer une image, raconter une histoire, construire un film\u2026 ce sont des experiences qui changent la maniere dont on regarde le monde.",
+    title: "De spectateur à créateur",
+    text: "Les jeunes ne doivent pas être seulement des consommateurs d\u2019images. Ils peuvent aussi devenir des créateurs. Créer une image, raconter une histoire, construire un film\u2026 ce sont des expériences qui changent la manière dont on regarde le monde.",
   },
   {
-    title: "Le cinema comme outil",
-    text: "Le cinema est un langage universel. Il melange images, emotions, personnages et situations. A travers le cinema, les jeunes decouvrent que raconter une histoire demande de reflechir, d\u2019imaginer et de collaborer.",
+    title: "Le cinéma comme outil",
+    text: "Le cinéma est un langage universel. Il mélange images, émotions, personnages et situations. À travers le cinéma, les jeunes découvrent que raconter une histoire demande de réfléchir, d\u2019imaginer et de collaborer.",
   },
   {
     title: "Une aventure collective",
-    text: "Faire un film n\u2019est jamais une aventure solitaire. C\u2019est un travail collectif. Certains inventent l\u2019histoire, d\u2019autres jouent devant la camera, d\u2019autres encore organisent ou filment. Chaque role compte.",
+    text: "Faire un film n\u2019est jamais une aventure solitaire. C\u2019est un travail collectif. Certains inventent l\u2019histoire, d\u2019autres jouent devant la caméra, d\u2019autres encore organisent ou filment. Chaque rôle compte.",
   },
   {
     title: "Redonner confiance",
-    text: "Beaucoup de jeunes pensent qu\u2019ils ne sont pas creatifs. L\u2019experience montre souvent l\u2019inverse. Quand on leur donne un cadre, un espace et une occasion d\u2019imaginer, les idees apparaissent.",
+    text: "Beaucoup de jeunes pensent qu\u2019ils ne sont pas créatifs. L\u2019expérience montre souvent l\u2019inverse. Quand on leur donne un cadre, un espace et une occasion d\u2019imaginer, les idées apparaissent.",
   },
 ];
 
 const PEDAGOGIE_POINTS = [
   {
     num: "01",
-    title: "Vivre l\u2019experience complete",
-    text: "Plutot que de commencer directement par un tournage, les eleves passent par toutes les etapes : observer, imaginer, structurer, ecrire, mettre en scene, preparer le tournage.",
+    title: "Vivre l\u2019expérience complète",
+    text: "Plutôt que de commencer directement par un tournage, les élèves passent par toutes les étapes : observer, imaginer, structurer, écrire, mettre en scène, préparer le tournage.",
     color: "#FF6B35",
   },
   {
     num: "02",
-    title: "Apprendre en experimentant",
-    text: "Banlieuwood ne se presente pas comme un cours. Chaque module propose une situation concrete : interpreter une image, inventer une idee, transformer une idee en pitch, construire une histoire collective.",
+    title: "Apprendre en expérimentant",
+    text: "Banlieuwood ne se présente pas comme un cours. Chaque module propose une situation concrète : interpréter une image, inventer une idée, transformer une idée en pitch, construire une histoire collective.",
     color: "#4ECDC4",
   },
   {
     num: "03",
     title: "Le collectif avant tout",
-    text: "Les idees individuelles deviennent progressivement les elements d\u2019une creation commune. Les eleves apprennent a ecouter, a defendre une idee, a accepter des compromis et a construire ensemble.",
+    text: "Les idées individuelles deviennent progressivement les éléments d\u2019une création commune. Les élèves apprennent à écouter, à défendre une idée, à accepter des compromis et à construire ensemble.",
     color: "#4ECDC4",
   },
   {
     num: "04",
     title: "Un outil qui accompagne sans remplacer",
-    text: "L\u2019outil numerique structure les activites, collecte les idees et facilite les votes collectifs. Mais il ne remplace jamais l\u2019intervenant. Les discussions, les debats et les decisions restent humaines.",
+    text: "L\u2019outil numérique structure les activités, collecte les idées et facilite les votes collectifs. Mais il ne remplace jamais l\u2019intervenant. Les discussions, les débats et les décisions restent humaines.",
     color: "#fbbf24",
   },
 ];
 
 const MODULES = [
-  { id: "M1", name: "Le Regard", icon: "\ud83d\udc41\ufe0f", desc: "Analyse d'images", color: "#FF6B35" },
-  { id: "M2", name: "Les Emotions", icon: "\ud83c\udfad", desc: "Identifier et nommer", color: "#4ECDC4" },
-  { id: "M3", name: "Et si...", icon: "\ud83d\udca1", desc: "Brainstorm collectif", color: "#fbbf24" },
-  { id: "M4", name: "Le Pitch", icon: "\ud83c\udf99\ufe0f", desc: "Presenter son idee", color: "#34d399" },
-  { id: "M5", name: "Le Vote", icon: "\ud83c\udfc6", desc: "Choix democratique", color: "#4ECDC4" },
-  { id: "M6", name: "Le Scenario", icon: "\ud83d\udcdd", desc: "Ecriture collaborative", color: "#fb923c" },
-  { id: "M7", name: "Storyboard", icon: "\ud83c\udf9e\ufe0f", desc: "Plans et cadrage", color: "#f87171" },
-  { id: "M8", name: "L'Equipe", icon: "\u2b50", desc: "Roles et talents", color: "#fbbf24" },
+  { id: "M1", name: "Le Regard", icon: "👁️", desc: "Analyse d'images", color: "#FF6B35" },
+  { id: "M2", name: "Les Émotions", icon: "🎭", desc: "Identifier et nommer", color: "#4ECDC4" },
+  { id: "M3", name: "Et si...", icon: "💡", desc: "Brainstorm collectif", color: "#fbbf24" },
+  { id: "M4", name: "Le Pitch", icon: "🎙️", desc: "Présenter son idée", color: "#34d399" },
+  { id: "M5", name: "Le Vote", icon: "🏆", desc: "Choix démocratique", color: "#4ECDC4" },
+  { id: "M6", name: "Le Scénario", icon: "📝", desc: "Écriture collaborative", color: "#fb923c" },
+  { id: "M7", name: "Storyboard", icon: "🎞️", desc: "Plans et cadrage", color: "#f87171" },
+  { id: "M8", name: "L'Équipe", icon: "⭐", desc: "Rôles et talents", color: "#fbbf24" },
 ];
 
 export default function ProjetPage() {
@@ -92,15 +92,15 @@ export default function ProjetPage() {
             <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#FF6B35]">NOTRE MISSION</span>
           </div>
           <h1 className="font-cinema text-[clamp(42px,6vw,76px)] leading-[1.0] uppercase tracking-wide mb-6">
-            Democratiser la creation
+            Démocratiser la création
             <br />
             <span className="bg-gradient-to-r from-[#FF6B35] via-[#D4A843] to-[#4ECDC4] bg-clip-text text-transparent">
-              cinematographique en classe
+              cinématographique en classe
             </span>
           </h1>
           <p className="text-[clamp(15px,2vw,18px)] text-[#94a3b8] leading-[1.52] tracking-[-0.01em] max-w-[580px] mx-auto">
-            Banlieuwood croit que chaque eleve est un createur. Pas de notes, pas de classement — juste la joie de creer
-            ensemble, avec les outils du cinema professionnel.
+            Banlieuwood croit que chaque élève est un créateur. Pas de notes, pas de classement — juste la joie de créer
+            ensemble, avec les outils du cinéma professionnel.
           </p>
         </div>
       </section>
@@ -110,15 +110,15 @@ export default function ProjetPage() {
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div>
-              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#fbbf24] mb-2">PEDAGOGIE</div>
-              <h2 className="font-cinema text-[clamp(22px,3vw,36px)] uppercase leading-tight mb-4">La donnee au service de la creation, pas du jugement</h2>
+              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#fbbf24] mb-2">PÉDAGOGIE</div>
+              <h2 className="font-cinema text-[clamp(22px,3vw,36px)] uppercase leading-tight mb-4">La donnée au service de la création, pas du jugement</h2>
               <p className="text-[14px] text-[#94a3b8] leading-relaxed mb-4">
-                Chez Banlieuwood, les donnees des eleves sont pedagogiques, pas performatives. L&apos;intervenant pilote
-                la seance — il ne juge pas les eleves.
+                Chez Banlieuwood, les données des élèves sont pédagogiques, pas performatives. L&apos;intervenant pilote
+                la séance — il ne juge pas les élèves.
               </p>
               <p className="text-[14px] text-[#94a3b8] leading-relaxed mb-4">
                 Pas de scores individuels visibles. Pas de classement. Pas de profilage comportemental. Juste des taux
-                de participation collectifs et des creations a celebrer.
+                de participation collectifs et des créations à célébrer.
               </p>
               <div className="flex gap-2 flex-wrap">
                 {["Anonymisation des metriques", "Pas de XP visible", "Conforme RGPD"].map((b) => (
@@ -134,8 +134,8 @@ export default function ProjetPage() {
             <div className="rounded-2xl bg-[#141210] border border-[#2a2420] p-8 text-center">
               <div className="text-[64px] mb-4">🎭</div>
               <blockquote className="text-[16px] italic text-[#94a3b8] leading-relaxed">
-                &ldquo;Si une fonctionnalite permet a un adulte d&apos;identifier un eleve et de l&apos;evaluer a partir
-                de ses donnees, cette fonctionnalite ne doit pas exister.&rdquo;
+                &ldquo;Si une fonctionnalité permet à un adulte d&apos;identifier un élève et de l&apos;évaluer à partir
+                de ses données, cette fonctionnalité ne doit pas exister.&rdquo;
               </blockquote>
               <div className="text-[12px] text-[#64748b] mt-3">— Doctrine Banlieuwood</div>
             </div>
@@ -148,7 +148,7 @@ export default function ProjetPage() {
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#FF6B35] mb-2">NOS CONVICTIONS</div>
-            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">Ce que nous croyons</h2>
+            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">Ce que nous croyons vraiment</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {CONVICTIONS.map((c) => (
@@ -169,11 +169,11 @@ export default function ProjetPage() {
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#34d399] mb-2">
-              ALIGNEMENT EDUCATION NATIONALE
+              ALIGNEMENT ÉDUCATION NATIONALE
             </div>
-            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">Ancre dans les programmes officiels</h2>
+            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">Ancré dans les programmes officiels</h2>
             <p className="text-[clamp(15px,2vw,18px)] text-[#94a3b8] max-w-[560px] mx-auto mt-3">
-              Chaque module est concu en reference aux textes officiels de l&apos;Education Nationale.
+              Chaque module est conçu en référence aux textes officiels de l&apos;Éducation Nationale.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -182,19 +182,19 @@ export default function ProjetPage() {
                 icon: "🔍",
                 title: "Rencontrer",
                 color: "#FF6B35",
-                text: "Frequenter les oeuvres, developper une culture artistique personnelle. Modules M1 (Le Regard) et M2 (Les Emotions) — analyse filmique, lecture d'image, vocabulaire cinematographique.",
+                text: "Fréquenter les œuvres, développer une culture artistique personnelle. Modules M1 (Le Regard) et M2 (Les Émotions) — analyse filmique, lecture d'image, vocabulaire cinématographique.",
               },
               {
                 icon: "🎨",
                 title: "Pratiquer",
                 color: "#4ECDC4",
-                text: "S'engager dans un processus de creation. Modules M3 a M7 — brainstorm, pitch oral, ecriture scenariste, storyboard. Les eleves pratiquent tous les metiers du cinema.",
+                text: "S'engager dans un processus de création. Modules M3 à M7 — brainstorm, pitch oral, écriture scénariste, storyboard. Les élèves pratiquent tous les métiers du cinéma.",
               },
               {
                 icon: "💡",
                 title: "S'approprier",
                 color: "#fbbf24",
-                text: "Construire un jugement esthetique. Module M5 (Le Vote) et M8 (L'Equipe) — argumenter ses choix, s'exprimer devant un groupe, assumer un role creatif.",
+                text: "Construire un jugement esthétique. Module M5 (Le Vote) et M8 (L'Équipe) — argumenter ses choix, s'exprimer devant un groupe, assumer un rôle créatif.",
               },
             ].map((p) => (
               <div
@@ -237,8 +237,8 @@ export default function ProjetPage() {
       <section className="py-20">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">NOTRE METHODE</div>
-            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">4 principes pedagogiques</h2>
+            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">NOTRE MÉTHODE</div>
+            <h2 className="font-cinema text-[clamp(28px,4vw,48px)] uppercase leading-tight">4 principes pédagogiques</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {PEDAGOGIE_POINTS.map((p) => (
@@ -267,7 +267,7 @@ export default function ProjetPage() {
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-8">
             <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#4ECDC4] mb-2">
-              MODULES DETAILLES
+              MODULES DÉTAILLÉS
             </div>
             <h2 className="font-cinema text-[clamp(22px,3vw,32px)] uppercase leading-tight">8 modules, un parcours complet</h2>
           </div>
@@ -293,22 +293,22 @@ export default function ProjetPage() {
       <section className="py-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-8">
-            <h2 className="font-cinema text-[clamp(22px,3vw,32px)] uppercase leading-tight">Comparatif des Formules</h2>
+            <h2 className="font-cinema text-[clamp(22px,3vw,32px)] uppercase leading-tight">Comparatif des formules</h2>
           </div>
           <div className="overflow-x-auto rounded-2xl border border-[#2a2420]">
             <table className="w-full text-[13px]" style={{ borderCollapse: "collapse" }}>
               <thead>
                 <tr>
-                  <th className="p-3 text-left text-[11px] uppercase tracking-wider text-[#64748b] bg-[#181838] border-b border-[#2a2420]">
+                  <th className="p-3 text-left text-[11px] uppercase tracking-wider text-[#64748b] bg-[#141210] border-b border-[#2a2420]">
                     Module
                   </th>
-                  <th className="p-3 text-center text-[11px] uppercase tracking-wider text-[#64748b] bg-[#181838] border-b border-[#2a2420]">
+                  <th className="p-3 text-center text-[11px] uppercase tracking-wider text-[#64748b] bg-[#141210] border-b border-[#2a2420]">
                     F0 (1h)
                   </th>
-                  <th className="p-3 text-center text-[11px] uppercase tracking-wider text-[#64748b] bg-[#181838] border-b border-[#2a2420]">
+                  <th className="p-3 text-center text-[11px] uppercase tracking-wider text-[#64748b] bg-[#141210] border-b border-[#2a2420]">
                     F1 (3h)
                   </th>
-                  <th className="p-3 text-center text-[11px] uppercase tracking-wider text-[#64748b] bg-[#181838] border-b border-[#2a2420]">
+                  <th className="p-3 text-center text-[11px] uppercase tracking-wider text-[#64748b] bg-[#141210] border-b border-[#2a2420]">
                     F2 (8h)
                   </th>
                 </tr>
@@ -339,20 +339,20 @@ export default function ProjetPage() {
       {/* ══ CTA ══ */}
       <section className="py-20 bg-[#110e0b]">
         <div className="max-w-[600px] mx-auto px-6 text-center">
-          <h2 className="font-cinema text-[clamp(36px,5vw,64px)] uppercase leading-[1.0] mb-4">Pret a tourner ?</h2>
+          <h2 className="font-cinema text-[clamp(36px,5vw,64px)] uppercase leading-[1.0] mb-4">Prêt à tourner ?</h2>
           <p className="text-[clamp(15px,2vw,18px)] text-[#94a3b8] mb-8">
             Lancez votre premier atelier en quelques minutes.
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Link
               href={ROUTES.requestAccess}
-              className="px-9 py-4 rounded-[14px] text-base font-bold text-white shadow-[0_4px_20px_rgba(255,107,53,0.35)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.55)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out" style={{ background: "#FF6B35" }}
+              className="px-9 py-4 rounded-xl text-base font-bold text-white shadow-[0_4px_20px_rgba(255,107,53,0.35)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.55)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out" style={{ background: "#FF6B35" }}
             >
-              Creer un compte
+              Créer un compte
             </Link>
             <Link
               href="/contact"
-              className="px-9 py-4 rounded-[14px] text-base font-bold text-[#f0f0f8] bg-[#181838] border border-[#2a2420] hover:border-[#FF6B35] transition-all"
+              className="px-9 py-4 rounded-xl text-base font-bold text-[#f0f0f8] bg-[#141210] border border-[#2a2420] hover:border-[#FF6B35] hover:shadow-[0_4px_16px_rgba(255,107,53,0.18)] transition-all duration-200"
             >
               Nous contacter
             </Link>
