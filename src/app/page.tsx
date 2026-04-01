@@ -141,15 +141,15 @@ export default function Home() {
         {/* Ambient gradient mesh blobs */}
         <div
           className="absolute top-[-250px] left-[-200px] w-[750px] h-[750px] rounded-full pointer-events-none"
-          style={{ background: "#FF6B35", opacity: 0.06, filter: "blur(160px)" }}
+          style={{ background: "#FF6B35", opacity: 0.13, filter: "blur(160px)" }}
         />
         <div
           className="absolute bottom-[-150px] right-[-150px] w-[550px] h-[550px] rounded-full pointer-events-none"
-          style={{ background: "#D4A843", opacity: 0.045, filter: "blur(130px)" }}
+          style={{ background: "#D4A843", opacity: 0.09, filter: "blur(130px)" }}
         />
         <div
           className="absolute top-[45%] right-[22%] w-[320px] h-[320px] rounded-full pointer-events-none"
-          style={{ background: "#4ECDC4", opacity: 0.03, filter: "blur(100px)" }}
+          style={{ background: "#4ECDC4", opacity: 0.07, filter: "blur(100px)" }}
         />
 
         {/* Video bg */}

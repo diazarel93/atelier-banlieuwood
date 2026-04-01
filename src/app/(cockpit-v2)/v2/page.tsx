@@ -239,7 +239,7 @@ export default function DashboardV2Page() {
                 icon: "👥",
                 value: stats?.totalStudents || 0,
                 label: "Élèves touchés",
-                color: "#FF8C5A",
+                color: "#FF9B6A",
               },
             ].map((kpi, i) => (
               <motion.div
@@ -267,7 +267,7 @@ export default function DashboardV2Page() {
                 />
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col gap-2">
-                    <span className="text-[11px] font-bold text-bw-text uppercase tracking-[0.06em]">{kpi.label}</span>
+                    <span className="label-caps">{kpi.label}</span>
                     <span className="text-3xl font-black tabular-nums text-bw-heading">{kpi.value}</span>
                   </div>
                   <div
