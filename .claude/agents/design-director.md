@@ -989,3 +989,30 @@ REGLE: Meme regle que ci-dessus. Un seul systeme par responsabilite. Si 2 existe
 2026-03-30 FAIL: Direction B proposait des labels a 10px (sous le minimum 11px)
 CAUSE: Phase 2 n'a pas auto-verifie ses propositions contre les regles de Phase 5
 REGLE: Phase 2 DOIT passer la checklist de Phase 5 sur ses propres propositions AVANT de les presenter au client. Pas de valeur qui viole les principes fondamentaux.
+
+2026-04-01 APPRENTISSAGE: Audit multi-passes sur Banlieuwood — refonte brand + polish agence
+CONTEXTE: 4 passes d audit complet (landing, dashboard, cockpit, pages publiques) avec corrections iteratives.
+
+REGLE PALETTE: Violet (#8b5cf6) et pink (#f472b6) sont des couleurs "fallback generique" jamais des couleurs brand. La palette Banlieuwood est UNIQUEMENT : orange #FF6B35 / or #D4A843 / teal #4ECDC4 / danger #ef4444. Grep systematiquement pour #8b5cf6, #f472b6, #6366f1, #a855f7 avant tout commit.
+
+REGLE FOND WARM: La palette dark de Banlieuwood est WARM, pas cold. Surfaces correctes : #0d0b09 (primary dark), #110e0b (secondary dark), bg/ring en white/opacity. Les fonds cold (#0a0a16, #111127, #141430, #181838) trahissent un template CSS colle sans adaptation.
+
+REGLE TYPOGRAPHY SECTION HEADERS: 6 sections avec le meme pattern label+h2 = signature template AI. Creer de la variation : (1) lignes horizontales flanquant le label (symetrie), (2) alignement left vs center selon le contenu, (3) alterner font-cinema (Bebas) pour les sections-pivot et font-extrabold pour les sections-support. Ne jamais utiliser font-extrabold seul pour tous les H2 du site.
+
+REGLE HOVER CSS-ONLY: Ne JAMAIS utiliser onMouseEnter/onMouseLeave pour modifier les styles. Toujours preferer shadow-[...] hover:shadow-[...] Tailwind ou CSS custom properties. Les event handlers JS pour du styling = dette maintenance + perf degradee.
+
+REGLE HOVER BORDER: Eviter opacity-0/opacity-100 pour les borders decoratives au hover. Utiliser scale-x-0/scale-x-100 avec origin-left pour un reveal directionnel naturel (gauche → droite).
+
+REGLE GLASSMORPHISM: backdrop-blur-sm (4px) est invisible sur tous les fonds. Minimum backdrop-blur-md (10px) pour un effet perceptible. backdrop-blur-lg ou backdrop-blur-xl pour les overlays critiques.
+
+REGLE SIDEBAR SPACING: space-y-0.5 (2px) entre nav items = trop dense, sensation compressee. space-y-1.5 (6px) = breathing correct pour une sidebar premium. Reference : Linear, Notion.
+
+REGLE BEBAS UNIQUE: Bebas Neue (font-cinema) doit etre presente sur TOUTES les pages publiques et principales, pas seulement la landing. Son absence sur une page = rupture de marque immediate. Grep font-cinema apres chaque nouvelle page.
+
+REGLE FILM GRAIN: Le film grain SVG a opacity-[0.022] est un marqueur identitaire Banlieuwood. Il doit etre present sur les sections heros de toutes les pages principales. C'est la texture qui ancre le "cinema" sans etre voyante.
+
+REGLE CONTRAST WCAG: text-bw-amber-500 (#d97706) sur bg-bw-amber-100 (#fef3c7) = 3.2:1 FAIL. Toujours utiliser -600 minimum pour le texte sur fond clair de la meme teinte. Regle generale : fond-100 -> texte-700+, fond-50 -> texte-600+.
+
+REGLE TABLE DENSITY: p-3 (12px) en table = rows de 56-60px = trop "aere". p-2 (8px) = rows de 48px = densite correcte pour un dashboard professionnel. Reference : Linear tables = 40-44px rows.
+
+ANTI-PATTERN IDENTIFIE "Template AI" : (1) py-24 sur toutes les sections, (2) tous les H2 meme traitement, (3) gradients violet/pink copie-colles, (4) motion.div avec les memes props partout, (5) cards avec border seule sans ring, (6) backdrop-blur-sm invisible, (7) sidebars space-y-0.5. Ces 7 patterns ensemble = template Figma community sorti en 2024.

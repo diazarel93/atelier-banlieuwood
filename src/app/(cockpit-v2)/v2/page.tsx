@@ -247,15 +247,10 @@ export default function DashboardV2Page() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.07, duration: 0.45, ease: [0.19, 1, 0.22, 1] }}
-                className="relative overflow-hidden p-6 rounded-2xl border border-[var(--color-bw-border-subtle)] transition-all duration-200 hover:-translate-y-1"
+                className="relative overflow-hidden p-6 rounded-2xl border border-[var(--color-bw-border-subtle)] transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
                 style={{
                   background: `linear-gradient(135deg, ${kpi.color}07 0%, transparent 60%)`,
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 32px ${kpi.color}20`;
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = "";
+                  ["--tw-shadow-color" as string]: `${kpi.color}25`,
                 }}
               >
                 <div
@@ -357,20 +352,20 @@ export default function DashboardV2Page() {
                               {new Date(s.scheduledAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                             </div>
                           </td>
-                          <td className="p-3">
+                          <td className="p-2">
                             <div className="flex flex-col">
                               <span className="font-semibold text-bw-heading truncate max-w-[200px]">{s.title}</span>
                               {s.classLabel && <span className="text-body-xs text-bw-muted">{s.classLabel}</span>}
                             </div>
                           </td>
-                          <td className="p-3">
+                          <td className="p-2">
                             <span className="inline-flex px-2.5 py-0.5 rounded-full text-body-xs font-bold bg-bw-primary/10 text-bw-primary">
                               {levelLabel}
                             </span>
                           </td>
-                          <td className="p-3 text-bw-heading tabular-nums">{s.studentCount}</td>
-                          <td className="p-3 text-bw-muted tabular-nums">—</td>
-                          <td className="p-3">
+                          <td className="p-2 text-bw-heading tabular-nums">{s.studentCount}</td>
+                          <td className="p-2 text-bw-muted tabular-nums">—</td>
+                          <td className="p-2">
                             <Link
                               href={ROUTES.seanceResults(s.id)}
                               className="inline-flex items-center px-3 min-h-[44px] rounded-lg text-body-xs font-medium text-bw-primary bg-bw-primary/8 hover:bg-bw-primary/15 transition-colors duration-150"

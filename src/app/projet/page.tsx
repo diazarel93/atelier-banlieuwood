@@ -111,7 +111,7 @@ export default function ProjetPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div>
               <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#fbbf24] mb-2">PEDAGOGIE</div>
-              <h2 className="text-[22px] font-bold mb-4">La donnee au service de la creation, pas du jugement</h2>
+              <h2 className="font-cinema text-[clamp(22px,3vw,36px)] uppercase leading-tight mb-4">La donnee au service de la creation, pas du jugement</h2>
               <p className="text-[14px] text-[#94a3b8] leading-relaxed mb-4">
                 Chez Banlieuwood, les donnees des eleves sont pedagogiques, pas performatives. L&apos;intervenant pilote
                 la seance — il ne juge pas les eleves.

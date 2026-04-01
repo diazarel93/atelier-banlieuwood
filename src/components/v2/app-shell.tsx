@@ -164,7 +164,7 @@ export function AppShellV2({ children }: { children: React.ReactNode }) {
         </nav>
 
         {/* Bottom nav */}
-        <div className="px-3 pb-4 space-y-1.5 border-t border-[var(--sidebar-border)] pt-3">
+        <div className="px-3 pb-4 space-y-1.5 border-t border-[var(--sidebar-border)] pt-2">
           {isAdmin && (
             <Link
               href={ROUTES.admin}

@@ -332,8 +332,10 @@ export default function Home() {
       <section className="py-20 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#D4A843" }}>
-              POUR CHAQUE ROLE
+            <div className="inline-flex items-center gap-2 mb-3">
+              <span className="inline-block w-6 h-[1.5px] rounded-full" style={{ background: "#D4A843" }} />
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: "#D4A843" }}>POUR CHAQUE ROLE</span>
+              <span className="inline-block w-6 h-[1.5px] rounded-full" style={{ background: "#D4A843" }} />
             </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">Un outil pour chaque acteur</h2>
             <p className="text-[clamp(15px,2vw,18px)] text-white/48 max-w-[500px] mx-auto mt-3">
@@ -385,11 +387,11 @@ export default function Home() {
       {/* ══════════ TIMELINE ══════════ */}
       <section className="py-28 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
-          <Reveal className="text-center mb-14">
+          <Reveal className="mb-14">
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#4ECDC4" }}>
               COMMENT CA MARCHE
             </div>
-            <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">4 etapes pour creer un film</h2>
+            <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">4 etapes pour creer un film</h2>
           </Reveal>
           <div className="max-w-[680px] mx-auto">
             {[
@@ -454,7 +456,7 @@ export default function Home() {
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#FF6B35" }}>
               PARCOURS PEDAGOGIQUE
             </div>
-            <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">8 modules, un parcours complet</h2>
+            <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">8 modules, un parcours complet</h2>
             <p className="text-[clamp(15px,2vw,18px)] text-white/48 max-w-[560px] mx-auto mt-3">
               Chaque module developpe des competences du Parcours d&apos;Education Artistique et Culturelle (PEAC) et du
               Socle Commun.
@@ -487,7 +489,7 @@ export default function Home() {
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#D4A843" }}>
               FORMULES
             </div>
-            <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">
+            <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">
               3 formules adaptees a votre temps
             </h2>
             <p className="text-[clamp(15px,2vw,18px)] text-white/48 max-w-[500px] mx-auto mt-3">
@@ -578,7 +580,8 @@ export default function Home() {
             <div className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3" style={{ color: "#FF6B35" }}>
               TEMOIGNAGES
             </div>
-            <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">Ils en parlent mieux que nous</h2>
+            <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight mb-3">Ils en parlent mieux que nous</h2>
+            <div className="mx-auto w-16 h-[2px] rounded-full" style={{ background: "linear-gradient(90deg, transparent, #FF6B35, transparent)" }} />
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {TESTIMONIALS.map((t, i) => (
