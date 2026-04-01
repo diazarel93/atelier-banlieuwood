@@ -2363,12 +2363,20 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
   .float,
   .float-slow,
   .shimmer,
+  .led-pulse,
+  .glow-breathe,
+  .flame-dance,
+  .celebration-glow,
   .spotlight-sweep::before {
     animation: none !important;
+  }
+  .film-grain::after {
+    display: none !important;
   }
   body::after {
     display: none;
@@ -2465,18 +2473,5 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   REDUCED MOTION — respect user preference
+   REDUCED MOTION — consolidé dans le bloc principal ci-dessus
    ═══════════════════════════════════════════════════════════════ */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-  .film-grain::after {
-    display: none !important;
-  }
-}
