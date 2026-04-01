@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
@@ -32,11 +32,6 @@ export default function SessionDetailPage() {
   const [projectionMode, setProjectionMode] = useState(false);
   const [checklistDismissed, setChecklistDismissed] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
-
-  // Diagnostic: log mount for iPad debugging
-  useEffect(() => {
-    console.log("[SessionDetailPage] mounted", { id, ua: navigator.userAgent });
-  }, [id]);
 
   const {
     session,
