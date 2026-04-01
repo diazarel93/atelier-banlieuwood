@@ -161,7 +161,7 @@ export default function EleveDetailPage() {
               {/* Attendance history */}
               {profile.sessionHistory.length > 0 && (
                 <GlassCardV2 className="p-5">
-                  <h2 className="label-caps mb-3">Historique de presence</h2>
+                  <h2 className="label-caps mb-3">Historique de présence</h2>
                   <div className="flex flex-col gap-2">
                     {profile.sessionHistory.map((sh) => (
                       <div
@@ -189,7 +189,7 @@ export default function EleveDetailPage() {
                               strokeLinejoin="round"
                             />
                           </svg>
-                          Present
+                          Présent
                         </span>
                       </div>
                     ))}
