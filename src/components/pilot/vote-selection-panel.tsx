@@ -35,13 +35,13 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 8 }}
-      className="rounded-2xl border-2 border-bw-violet-border bg-[#161633] p-5 shadow-[0_0_20px_rgba(139,92,246,0.08)] space-y-4"
+      className="rounded-2xl border-2 border-bw-violet-border bg-bw-cockpit-canvas p-5 shadow-[0_0_20px_rgba(139,92,246,0.08)] space-y-4"
     >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-[14px] font-bold text-[#f0f0f8]">Sélection pour le vote</h3>
-          <p className="text-[11px] text-[#64748b] mt-0.5">
+          <h3 className="text-[14px] font-bold text-white">Sélection pour le vote</h3>
+          <p className="text-[11px] text-bw-cockpit-muted mt-0.5">
             Choisis {MIN_SELECTIONS}–{MAX_SELECTIONS} réponses
           </p>
         </div>
@@ -49,7 +49,7 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
           className={`text-[13px] font-bold px-3 py-1 rounded-lg border transition-colors ${
             canConfirm
               ? "bg-bw-violet/10 text-bw-violet border-bw-violet/30"
-              : "bg-[#1a1a35] text-[#64748b] border-[#2a2a50]"
+              : "bg-bw-cockpit-surface text-bw-cockpit-muted border-[var(--color-bw-cockpit-border)]"
           }`}
         >
           {selectedCount}/{MAX_SELECTIONS}
@@ -60,7 +60,7 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
       <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
         <AnimatePresence initial={false}>
           {responses.length === 0 && (
-            <p className="text-[12px] text-[#64748b] text-center py-4">Aucune réponse à afficher.</p>
+            <p className="text-[12px] text-bw-cockpit-muted text-center py-4">Aucune réponse à afficher.</p>
           )}
           {responses.map((r, i) => {
             const isSelected = r.is_vote_option;
@@ -77,8 +77,8 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
                   isSelected
                     ? "border-bw-violet bg-bw-violet/10"
                     : isDisabled
-                      ? "border-[#1a1a35] bg-[#0e0e1f] opacity-40 cursor-not-allowed"
-                      : "border-[#2a2a50] bg-[#0e0e1f] hover:border-bw-violet/40"
+                      ? "border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas opacity-40 cursor-not-allowed"
+                      : "border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas hover:border-bw-violet/40"
                 }`}
               >
                 {/* Checkbox indicator */}
@@ -103,10 +103,10 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[12px] leading-relaxed ${isSelected ? "text-[#f0f0f8]" : "text-[#94a3b8]"}`}>
+                  <p className={`text-[12px] leading-relaxed ${isSelected ? "text-white" : "text-bw-cockpit-muted"}`}>
                     {r.text}
                   </p>
-                  <p className="text-[10px] text-[#475569] mt-0.5">{r.students.display_name}</p>
+                  <p className="text-[10px] text-bw-cockpit-muted/70 mt-0.5">{r.students.display_name}</p>
                 </div>
               </motion.button>
             );
@@ -118,7 +118,7 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
       <div className="flex gap-2 pt-1">
         <button
           onClick={onCancel}
-          className="flex-1 min-h-[44px] py-2.5 rounded-xl text-[12px] font-semibold border border-[#2a2a50] bg-[#0e0e1f] text-[#64748b] hover:text-[#94a3b8] cursor-pointer transition-colors"
+          className="flex-1 min-h-[44px] py-2.5 rounded-xl text-[12px] font-semibold border border-[var(--color-bw-cockpit-border)] bg-bw-cockpit-canvas text-bw-cockpit-muted hover:text-bw-cockpit-text cursor-pointer transition-colors"
         >
           Annuler
         </button>
@@ -128,7 +128,7 @@ export function VoteSelectionPanel({ responses, onConfirm, onCancel }: VoteSelec
           className={`flex-[2] min-h-[44px] py-2.5 rounded-xl text-[12px] font-bold transition-all ${
             canConfirm
               ? "bg-bw-violet text-white cursor-pointer hover:brightness-110"
-              : "bg-[#1a1a35] text-[#475569] cursor-not-allowed"
+              : "bg-bw-cockpit-surface text-bw-cockpit-muted/50 cursor-not-allowed"
           }`}
         >
           {canConfirm ? `Ouvrir le vote (${selectedCount})` : `Sélectionne encore ${MIN_SELECTIONS - selectedCount}`}

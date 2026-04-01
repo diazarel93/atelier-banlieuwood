@@ -88,7 +88,7 @@ function ToggleItem({
         <span className="text-lg">{icon}</span>
         <span className="text-[13px] font-medium text-gray-800">{label}</span>
       </div>
-      <div className={`w-10 h-6 rounded-full transition-colors relative ${active ? "bg-emerald-500" : "bg-[#2a2a50]"}`}>
+      <div className={`w-10 h-6 rounded-full transition-colors relative ${active ? "bg-emerald-500" : "bg-gray-300"}`}>
         <div
           className={`absolute top-0.5 w-5 h-5 rounded-full bg-[#f0f0f8] shadow transition-transform ${active ? "translate-x-4" : "translate-x-0.5"}`}
         />

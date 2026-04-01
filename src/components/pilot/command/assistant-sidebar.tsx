@@ -127,10 +127,10 @@ export function AssistantSidebar({
   }, [session.status, respondedStudentIds.size, activeStudents.length]);
 
   return (
-    <div className="flex flex-col h-full bg-[#0c0c18]">
+    <div className="flex flex-col h-full bg-bw-cockpit-canvas">
       {/* ── Header ── */}
-      <div className="px-3 py-3 border-b border-[#2a2a50]">
-        <h3 className="text-[11px] font-bold uppercase tracking-wider text-[#64748b]">Assistant</h3>
+      <div className="px-3 py-3 border-b border-[var(--color-bw-cockpit-border)]">
+        <h3 className="text-[11px] font-bold uppercase tracking-wider text-bw-cockpit-muted">Assistant</h3>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -146,7 +146,7 @@ export function AssistantSidebar({
             >
               <div className="flex items-start gap-2.5">
                 <span className="text-base flex-shrink-0">{suggestion.icon}</span>
-                <p className="text-[12px] leading-relaxed text-[#94a3b8]">{suggestion.text}</p>
+                <p className="text-[12px] leading-relaxed text-bw-cockpit-muted">{suggestion.text}</p>
               </div>
             </div>
           )}

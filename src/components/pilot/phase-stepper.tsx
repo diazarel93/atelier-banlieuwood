@@ -98,7 +98,7 @@ export function PhaseStepper({
                     className="relative flex items-center justify-center rounded-full w-7 h-7 md:w-[44px] md:h-[44px] glow-breathe"
                     style={{
                       background: phase.color,
-                      boxShadow: `0 0 0 3px #0c0c18, 0 0 20px ${phase.color}40`,
+                      boxShadow: `0 0 0 3px var(--color-bw-cockpit-canvas), 0 0 20px ${phase.color}40`,
                     }}
                   >
                     <span className="font-cinema text-white text-[10px] md:text-[15px] font-normal tracking-wider">
@@ -112,7 +112,7 @@ export function PhaseStepper({
                 ) : status === "completed" ? (
                   <div
                     className="flex items-center justify-center rounded-full w-7 h-7 md:w-[44px] md:h-[44px]"
-                    style={{ background: phase.color, boxShadow: "0 0 0 3px #0c0c18" }}
+                    style={{ background: phase.color, boxShadow: "0 0 0 3px var(--color-bw-cockpit-canvas)" }}
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -129,13 +129,13 @@ export function PhaseStepper({
                   <div
                     className="flex items-center justify-center rounded-full w-7 h-7 md:w-[44px] md:h-[44px]"
                     style={{
-                      border: "2px dashed #2a2a50",
-                      background: "rgba(26,26,53,0.5)",
-                      boxShadow: "0 0 0 2px #0c0c18",
+                      border: "2px dashed var(--color-bw-cockpit-border)",
+                      background: "var(--color-bw-cockpit-surface)",
+                      boxShadow: "0 0 0 2px var(--color-bw-cockpit-canvas)",
                       opacity: 0.5,
                     }}
                   >
-                    <span className="font-cinema text-[#64748b] text-[10px] md:text-[14px] tracking-wider">
+                    <span className="font-cinema text-bw-cockpit-muted text-[10px] md:text-[14px] tracking-wider">
                       {idx + 1}
                     </span>
                   </div>
@@ -147,7 +147,12 @@ export function PhaseStepper({
                   <span
                     className="font-cinema uppercase text-center truncate transition-colors leading-tight"
                     style={{
-                      color: status === "active" ? phase.color : status === "completed" ? phase.color : "#64748b",
+                      color:
+                        status === "active"
+                          ? phase.color
+                          : status === "completed"
+                            ? phase.color
+                            : "var(--color-bw-cockpit-muted)",
                       fontSize: 11,
                       letterSpacing: "0.06em",
                       opacity: status === "upcoming" ? 0.6 : 1,
@@ -166,7 +171,7 @@ export function PhaseStepper({
                             key={i}
                             className="w-2 h-1 rounded-sm transition-colors"
                             style={{
-                              background: i < progress.done ? phase.color : "#2a2a50",
+                              background: i < progress.done ? phase.color : "var(--color-bw-cockpit-border)",
                               opacity: i < progress.done ? 0.8 : 0.5,
                             }}
                           />
@@ -204,7 +209,7 @@ export function PhaseStepper({
                   ) : lineActive ? (
                     <div
                       className="flex-1 h-[3px] hidden md:block rounded-sm overflow-hidden"
-                      style={{ background: "#2a2a50" }}
+                      style={{ background: "var(--color-bw-cockpit-border)" }}
                     >
                       <div
                         className="h-full rounded-sm"
@@ -225,7 +230,7 @@ export function PhaseStepper({
                       background:
                         lineCompleted || lineActive
                           ? `linear-gradient(to right, ${phase.color}, ${nextPhase.color})`
-                          : "#2a2a50",
+                          : "var(--color-bw-cockpit-border)",
                       opacity: lineCompleted || lineActive ? 0.5 : 0.4,
                     }}
                   />

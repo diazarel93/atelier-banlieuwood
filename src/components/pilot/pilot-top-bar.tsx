@@ -195,7 +195,7 @@ export function PilotTopBar({
           {/* Projection */}
           <button
             onClick={onOpenScreen}
-            className="hidden md:inline-flex px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-black/[0.06] hover:border-[#2a2a50] hover:bg-black/[0.05] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-bw-heading transition-colors duration-200"
+            className="hidden md:inline-flex px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-black/[0.06] hover:border-bw-border hover:bg-black/[0.05] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-bw-heading transition-colors duration-200"
             title="Ouvrir l'ecran de projection"
           >
             Ecran ↗
@@ -205,7 +205,7 @@ export function PilotTopBar({
           {onOpenMobileContext && moduleView === "cockpit" && activeModuleLabel && (
             <button
               onClick={onOpenMobileContext}
-              className="lg:hidden px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-black/[0.06] hover:border-[#2a2a50] hover:bg-black/[0.05] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-bw-heading transition-colors duration-200"
+              className="lg:hidden px-2.5 py-1.5 bg-bw-elevated rounded-xl border border-black/[0.06] hover:border-bw-border hover:bg-black/[0.05] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-bw-heading transition-colors duration-200"
               title="Panneau contexte"
             >
               <svg
@@ -227,7 +227,7 @@ export function PilotTopBar({
           <div className="relative">
             <button
               onClick={() => setKebabOpen(!kebabOpen)}
-              className="hidden md:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-black/[0.06] hover:border-[#2a2a50] hover:bg-black/[0.05] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-bw-heading transition-colors duration-200"
+              className="hidden md:inline-flex px-2 py-1.5 bg-bw-elevated rounded-xl border border-black/[0.06] hover:border-bw-border hover:bg-black/[0.05] active:scale-95 text-xs cursor-pointer text-bw-muted hover:text-bw-heading transition-colors duration-200"
               title="Plus d'options"
             >
               ⋯

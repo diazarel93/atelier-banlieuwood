@@ -123,7 +123,7 @@ export function ResponseStream({ responses, winnerResponseId, onValidate, onSpot
           {selected.length > 0 && sessionStatus === "responding" && (
             <>
               {selected.map(renderCardWithMotion)}
-              {rest.length > 0 && <div className="border-t border-[#2a2a50] my-2" />}
+              {rest.length > 0 && <div className="border-t border-bw-border my-2" />}
             </>
           )}
           {/* Rest of responses (paginated) */}

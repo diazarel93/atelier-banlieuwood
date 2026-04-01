@@ -43,12 +43,12 @@ export function BottomSheet({ open, onClose, title, children }: BottomSheetProps
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 400 }}
-            className="fixed inset-x-0 bottom-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-[20px] bg-[#161633] border-t border-[#2a2a50] shadow-[0_-8px_40px_rgba(0,0,0,0.4)]"
+            className="fixed inset-x-0 bottom-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-[20px] bg-bw-cockpit-canvas border-t border-[var(--color-bw-cockpit-border)] shadow-[0_-8px_40px_rgba(0,0,0,0.4)]"
             style={{ paddingBottom: "env(safe-area-inset-bottom, 16px)" }}
           >
             {/* Drag handle */}
-            <div className="sticky top-0 z-10 flex justify-center pt-3 pb-1 bg-[#161633] rounded-t-[20px]">
-              <div className="w-10 h-1 rounded-full bg-[#2a2a50]" />
+            <div className="sticky top-0 z-10 flex justify-center pt-3 pb-1 bg-bw-cockpit-canvas rounded-t-[20px]">
+              <div className="w-10 h-1 rounded-full bg-bw-cockpit-elevated" />
             </div>
 
             {title && (
