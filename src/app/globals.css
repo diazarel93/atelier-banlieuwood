@@ -244,13 +244,14 @@
   --chart-3: #6b8cff;
   --chart-4: #f5a45b;
   --chart-5: #ec4899;
-  --sidebar: #faf6ee;
-  --sidebar-foreground: #2c2c2c;
+  --sidebar: #1c1917;
+  --sidebar-foreground: #f0e8db;
+  --sidebar-muted-foreground: #8a7d6b;
   --sidebar-primary: #ff6b35;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f0ebe0;
-  --sidebar-accent-foreground: #2c2c2c;
-  --sidebar-border: #e8dfd2;
+  --sidebar-accent: #2d261e;
+  --sidebar-accent-foreground: #f0e8db;
+  --sidebar-border: #3a3028;
   --sidebar-ring: #ff6b35;
 }
 
