@@ -167,8 +167,8 @@ export default function Home() {
 
         <div className="relative z-[3] w-full px-6 pt-28 md:pt-36 pb-28">
           <div className="max-w-[1200px] mx-auto">
-            <div className="flex items-center gap-10 flex-wrap">
-              <div className="flex-1 min-w-[300px]">
+            <div className="flex items-start gap-8 lg:gap-12 md:flex-nowrap flex-wrap">
+              <div className="flex-1 min-w-0">
                 {/* Pellicule signature — 8 frames M1-M8 */}
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -292,10 +292,11 @@ export default function Home() {
                 >
                   <Link
                     href={ROUTES.requestAccess}
-                    className="px-9 py-4 rounded-xl text-base font-bold text-white shadow-[0_4px_24px_rgba(255,107,53,0.4)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.58)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out"
+                    className="px-9 py-3.5 rounded-xl text-base font-bold text-white shadow-[0_4px_24px_rgba(255,107,53,0.4)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.58)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out flex flex-col items-center leading-tight"
                     style={{ background: "#FF6B35" }}
                   >
-                    Lancer mon premier atelier
+                    <span>Lancer mon premier atelier</span>
+                    <span className="text-[11px] font-normal text-white/70 mt-0.5">Gratuit · Accès immédiat</span>
                   </Link>
                   <Link
                     href="/projet"
@@ -322,7 +323,7 @@ export default function Home() {
                 initial={{ opacity: 0, x: 24 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1, duration: 0.85, ease: SNAP }}
-                className="flex-shrink-0 hidden lg:block w-[260px]"
+                className="flex-shrink-0 hidden md:block w-[240px] lg:w-[280px]"
                 aria-hidden="true"
               >
                 <div className="rounded-2xl overflow-hidden border border-white/[0.1] bg-black/50 backdrop-blur-xl shadow-[0_32px_80px_rgba(0,0,0,0.55)]">
@@ -778,7 +779,14 @@ export default function Home() {
                   >
                     &ldquo;
                   </div>
-                  <p className="text-[14px] text-white/52 leading-relaxed italic mb-5 pt-3 relative z-[1]">{t.text}</p>
+                  <div className="flex items-center gap-0.5 mb-2 relative z-[1]">
+                    {[...Array(5)].map((_, s) => (
+                      <svg key={s} className="w-3 h-3" viewBox="0 0 12 12" fill="#D4A843">
+                        <path d="M6 1l1.4 2.8L10.5 4 8.25 6.2l.5 3.3L6 8l-2.75 1.5.5-3.3L1.5 4l3.1-.2z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-[14px] text-white/52 leading-relaxed italic mb-5 pt-1 relative z-[1]">{t.text}</p>
                   <div className="flex items-center gap-3">
                     <div
                       className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-[13px] font-bold text-white"
