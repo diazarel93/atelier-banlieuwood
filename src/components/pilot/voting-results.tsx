@@ -40,7 +40,7 @@ export function VotingResults({ voteData, sessionStatus, onValidateWinner }: Vot
     <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <span className="label-caps text-bw-cockpit-muted">Resultats du vote</span>
+        <span className="label-caps text-bw-cockpit-muted">Résultats du vote</span>
         <div className="flex items-center gap-2">
           <span className="text-xl font-extrabold text-white tabular-nums">{voteData.totalVotes}</span>
           <span className="label-caps text-bw-cockpit-muted">vote{voteData.totalVotes > 1 ? "s" : ""}</span>
@@ -70,7 +70,7 @@ export function VotingResults({ voteData, sessionStatus, onValidateWinner }: Vot
           className="w-full py-4 rounded-xl bg-gradient-to-r from-bw-primary to-bw-gold text-white text-body-sm font-bold cursor-pointer shadow-md"
           whileTap={{ scale: 0.97 }}
         >
-          ✨ Reveler les resultats
+          ✨ Révéler les résultats
         </motion.button>
       )}
 

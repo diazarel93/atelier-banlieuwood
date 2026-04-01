@@ -69,8 +69,8 @@ export function MancheVoteState({ module12, sessionId, studentId, onVote }: Manc
       {/* Cards grid */}
       {!module12.poolReady ? (
         <div className="text-center text-white/50 py-12">
-          <p>Les cartes ne sont pas encore pretes.</p>
-          <p className="text-sm mt-2">Le prof prepare les cartes...</p>
+          <p>Les cartes ne sont pas encore prêtes.</p>
+          <p className="text-sm mt-2">L&apos;intervenant prépare les cartes...</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-3 w-full">
@@ -133,7 +133,7 @@ export function MancheVoteState({ module12, sessionId, studentId, onVote }: Manc
       {/* Status messages */}
       {hasVoted && !hasWinner && (
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-teal-400 text-sm text-center">
-          Vote enregistre ! En attente du resultat...
+          Vote enregistré ! En attente du résultat...
         </motion.p>
       )}
 

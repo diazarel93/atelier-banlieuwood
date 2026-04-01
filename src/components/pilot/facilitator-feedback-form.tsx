@@ -11,10 +11,10 @@ interface FacilitatorFeedbackFormProps {
 }
 
 const QUESTIONS = [
-  { key: "energyLevel", label: "Niveau d'energie du groupe", low: "Tres calme", high: "Tres dynamique" },
-  { key: "participationQuality", label: "Qualite de participation", low: "Faible", high: "Excellente" },
-  { key: "toolEase", label: "Facilite d'utilisation de l'outil", low: "Difficile", high: "Tres facile" },
-  { key: "wouldRedo", label: "Je referais cette seance", low: "Pas du tout", high: "Absolument" },
+  { key: "energyLevel", label: "Niveau d'énergie du groupe", low: "Très calme", high: "Très dynamique" },
+  { key: "participationQuality", label: "Qualité de participation", low: "Faible", high: "Excellente" },
+  { key: "toolEase", label: "Facilité d'utilisation de l'outil", low: "Difficile", high: "Très facile" },
+  { key: "wouldRedo", label: "Je referais cette séance", low: "Pas du tout", high: "Absolument" },
 ] as const;
 
 export function FacilitatorFeedbackForm({ sessionId, onComplete, onSkip }: FacilitatorFeedbackFormProps) {
@@ -54,7 +54,7 @@ export function FacilitatorFeedbackForm({ sessionId, onComplete, onSkip }: Facil
       className="w-full max-w-md mx-auto space-y-5"
     >
       <div className="text-center space-y-1">
-        <h2 className="text-lg font-semibold text-bw-heading">Retour de seance</h2>
+        <h2 className="text-lg font-semibold text-bw-heading">Retour de séance</h2>
         <p className="text-xs text-bw-muted">2 minutes — optionnel et confidentiel</p>
       </div>
 
@@ -98,7 +98,7 @@ export function FacilitatorFeedbackForm({ sessionId, onComplete, onSkip }: Facil
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          placeholder="Ce qui s'est passe en salle, signaux faibles, dynamiques de groupe..."
+          placeholder="Ce qui s'est passé en salle, signaux faibles, dynamiques de groupe..."
           maxLength={1000}
           rows={3}
           className="w-full rounded-xl border border-[var(--color-bw-border)] bg-card px-3 py-2 text-sm text-bw-heading placeholder:text-bw-muted/50 resize-none focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
