@@ -156,10 +156,7 @@ export default function Home() {
           playsInline
         />
         {/* Overlay teinté cinéma par-dessus la vidéo */}
-        <div
-          className="absolute inset-0 z-[1]"
-          style={{ background: "rgba(13,11,9,0.45)" }}
-        />
+        <div className="absolute inset-0 z-[1]" style={{ background: "rgba(13,11,9,0.45)" }} />
 
         {/* Vignette */}
         <div
