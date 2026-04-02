@@ -22,7 +22,7 @@ export function ProjectionClasseDrawer() {
         </div>
         <div className="h-1.5 rounded-full bg-[#E8DFD2] overflow-hidden">
           <div
-            className="h-full rounded-full bg-[#4ECDC4] transition-all duration-500"
+            className="h-full rounded-full bg-bw-teal transition-all duration-500"
             style={{ width: `${progressPct}%` }}
           />
         </div>
@@ -37,7 +37,7 @@ export function ProjectionClasseDrawer() {
               {/* Badge statut — AUCUN score, AUCUN classement (doctrine Banlieuwood) */}
               <span
                 className="flex-shrink-0 w-2.5 h-2.5 rounded-full"
-                style={{ backgroundColor: hasResponded ? "#4ECDC4" : "#D4A843" }}
+                style={{ backgroundColor: hasResponded ? "var(--color-bw-teal)" : "var(--color-bw-gold)" }}
                 title={hasResponded ? "A répondu" : "En attente"}
               />
               <span className="text-sm text-[#2C2C2C] truncate">{student.display_name}</span>

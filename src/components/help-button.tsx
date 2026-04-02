@@ -94,7 +94,7 @@ export function HelpButton({ pageKey, tips }: HelpButtonProps) {
           >
             <div
               className="absolute top-0 inset-x-0 h-[2px]"
-              style={{ background: "linear-gradient(90deg, transparent, #FF6B35, transparent)" }}
+              style={{ background: "linear-gradient(90deg, transparent, var(--color-bw-primary), transparent)" }}
             />
             <div className="p-4 space-y-3">
               <div className="flex items-center justify-between">
@@ -134,7 +134,11 @@ export function HelpButton({ pageKey, tips }: HelpButtonProps) {
                     style={{
                       width: i === step ? 16 : 6,
                       backgroundColor:
-                        i === step ? "#FF6B35" : i < step ? "rgba(255,107,53,0.4)" : "rgba(255,255,255,0.1)",
+                        i === step
+                          ? "var(--color-bw-primary)"
+                          : i < step
+                            ? "rgba(255,107,53,0.4)"
+                            : "rgba(255,255,255,0.1)",
                     }}
                   />
                 ))}
@@ -143,7 +147,7 @@ export function HelpButton({ pageKey, tips }: HelpButtonProps) {
                 <button
                   onClick={handleNext}
                   className="px-3 py-1.5 rounded-xl text-xs font-semibold text-white cursor-pointer"
-                  style={{ background: "linear-gradient(135deg, #FF6B35, #E85D26)" }}
+                  style={{ background: "linear-gradient(135deg, var(--color-bw-primary), #E85D26)" }}
                 >
                   {step < tips.length - 1 ? "Suivant" : "Compris !"}
                 </button>

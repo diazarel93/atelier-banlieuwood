@@ -99,10 +99,10 @@ export function FicheCoursSection({ fiche, loading, provider, onGenerate, onDown
               const isOpen = openDomaine === key;
               const color =
                 key === "domaine1"
-                  ? "var(--color-bw-teal, #4ECDC4)"
+                  ? "var(--color-bw-teal, var(--color-bw-teal))"
                   : key === "domaine3"
                     ? "var(--color-bw-green, #10B981)"
-                    : "var(--color-bw-violet, #8B5CF6)";
+                    : "var(--color-bw-violet, var(--color-bw-violet))";
               return (
                 <div key={key} className="border-t border-[var(--color-bw-border)]">
                   <button

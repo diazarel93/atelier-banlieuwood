@@ -31,7 +31,7 @@ export function NotificationFeed({ notifications, onClear }: NotificationFeedPro
 
   const catColor: Record<string, string> = {
     response: "var(--color-bw-primary)",
-    vote: "var(--color-bw-gold, #D4A843)",
+    vote: "var(--color-bw-gold, var(--color-bw-gold))",
     system: "var(--color-bw-green, #10B981)",
     technique: "var(--color-bw-danger, #EF4444)",
   };

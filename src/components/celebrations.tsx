@@ -48,7 +48,7 @@ export function getCelebrationConfig(level: number): CelebrationConfig {
     return {
       particles: 150,
       spread: 80,
-      colors: ["#FFD700", "#FF6B35", "#FFC800", "#D4A843"],
+      colors: ["#FFD700", "var(--color-bw-primary)", "#FFC800", "var(--color-bw-gold)"],
       shake: true,
       shakeDuration: 300,
       spotlight: true,
@@ -268,7 +268,7 @@ export function CelebrationBanner({
   title,
   subtitle,
   icon,
-  color = "#FF6B35",
+  color = "var(--color-bw-primary)",
   visible,
   onDismiss,
   autoHide = 4000,
@@ -288,7 +288,7 @@ export function CelebrationBanner({
           particleCount: 150,
           spread: 100,
           origin: { y: 0.5 },
-          colors: ["#FF6B35", "#D4A843", "#4ECDC4", "#8B5CF6"],
+          colors: ["var(--color-bw-primary)", "var(--color-bw-gold)", "var(--color-bw-teal)", "var(--color-bw-violet)"],
         });
       } else if (type === "achievement") {
         confetti({ particleCount: 50, angle: 60, spread: 55, origin: { x: 0, y: 0.7 } });
@@ -306,11 +306,11 @@ export function CelebrationBanner({
   }, [visible, fireConfetti]);
 
   const backgrounds: Record<string, string> = {
-    achievement: "linear-gradient(135deg, #D4A843, #F5ECCE)",
-    level_up: "linear-gradient(135deg, #FF6B35, #D4A843)",
-    streak: "linear-gradient(135deg, #EF4444, #FF6B35)",
-    retained: "linear-gradient(135deg, #4ECDC4, #2B9A93)",
-    combo: "linear-gradient(135deg, #8B5CF6, #EC4899)",
+    achievement: "linear-gradient(135deg, var(--color-bw-gold), #F5ECCE)",
+    level_up: "linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))",
+    streak: "linear-gradient(135deg, #EF4444, var(--color-bw-primary))",
+    retained: "linear-gradient(135deg, var(--color-bw-teal), #2B9A93)",
+    combo: "linear-gradient(135deg, var(--color-bw-violet), #EC4899)",
   };
 
   const defaultIcons: Record<string, string> = {
@@ -385,7 +385,7 @@ export function XPDelta({ amount, visible }: { amount: number; visible: boolean 
           exit={{ opacity: 0 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
           className="fixed top-4 right-4 z-50 text-lg font-black pointer-events-none"
-          style={{ color: "#FF6B35", textShadow: "0 2px 8px rgba(255,107,53,0.4)" }}
+          style={{ color: "var(--color-bw-primary)", textShadow: "0 2px 8px rgba(255,107,53,0.4)" }}
         >
           +{amount} pts
         </motion.span>

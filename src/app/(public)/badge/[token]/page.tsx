@@ -103,7 +103,13 @@ export default function BadgePage() {
           {/* Studio header */}
           <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
             <div
-              style={{ fontSize: 10, letterSpacing: 4, textTransform: "uppercase", color: "#D4A843", fontWeight: 600 }}
+              style={{
+                fontSize: 10,
+                letterSpacing: 4,
+                textTransform: "uppercase",
+                color: "var(--color-bw-gold)",
+                fontWeight: 600,
+              }}
             >
               Banlieuwood Atelier
             </div>
@@ -115,7 +121,7 @@ export default function BadgePage() {
             <div style={{ fontSize: 48, marginBottom: 8 }}>{data.avatar || "🎬"}</div>
             <div style={{ fontSize: 22, fontWeight: 700, color: "#F1F5F9" }}>{data.displayName}</div>
             {profile && (
-              <div style={{ fontSize: 13, color: "#D4A843", marginTop: 4, fontWeight: 500 }}>
+              <div style={{ fontSize: 13, color: "var(--color-bw-gold)", marginTop: 4, fontWeight: 500 }}>
                 {profile.emoji} {profile.label}
               </div>
             )}
@@ -123,7 +129,12 @@ export default function BadgePage() {
 
           {/* Separator */}
           <div
-            style={{ width: 60, height: 2, background: "linear-gradient(90deg, #D4A843, #FF6B35)", borderRadius: 2 }}
+            style={{
+              width: 60,
+              height: 2,
+              background: "linear-gradient(90deg, var(--color-bw-gold), var(--color-bw-primary))",
+              borderRadius: 2,
+            }}
           />
 
           {/* Session info */}
@@ -137,13 +148,13 @@ export default function BadgePage() {
           {/* Stats */}
           <div style={{ display: "flex", gap: 20, position: "relative", zIndex: 1 }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 28, fontWeight: 700, color: "#D4A843" }}>{data.responses}</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: "var(--color-bw-gold)" }}>{data.responses}</div>
               <div style={{ fontSize: 10, color: "#64748B", textTransform: "uppercase", letterSpacing: 1 }}>
                 Réponses
               </div>
             </div>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 28, fontWeight: 700, color: "#FF6B35" }}>{data.retained}</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: "var(--color-bw-primary)" }}>{data.retained}</div>
               <div style={{ fontSize: 10, color: "#64748B", textTransform: "uppercase", letterSpacing: 1 }}>
                 Retenues
               </div>
@@ -195,7 +206,7 @@ export default function BadgePage() {
                     padding: "3px 10px",
                     borderRadius: 12,
                     background: "rgba(212,168,67,0.12)",
-                    color: "#D4A843",
+                    color: "var(--color-bw-gold)",
                     fontWeight: 500,
                   }}
                 >

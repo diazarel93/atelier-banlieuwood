@@ -107,7 +107,7 @@ export function RemoteControlView({
             icon: "📊",
             label: "Resultats",
             action: () => updateSession.mutate({ status: "reviewing", timer_ends_at: null }),
-            color: "#8B5CF6",
+            color: "var(--color-bw-violet)",
           },
           {
             icon: "⏱️",
@@ -122,7 +122,7 @@ export function RemoteControlView({
       case "reviewing":
         return [
           { icon: "🎭", label: "Debat", action: () => toast("Lancez le debat a l'oral !", { icon: "🎭" }) },
-          { icon: "⏭️", label: "Suivante", action: onNextAction, color: "#FF6B35" },
+          { icon: "⏭️", label: "Suivante", action: onNextAction, color: "var(--color-bw-primary)" },
           {
             icon: "📊",
             label: "Comparer",
@@ -168,7 +168,7 @@ export function RemoteControlView({
         ];
       default:
         return [
-          { icon: "📊", label: "Resultats", action: onNextAction, color: "#8B5CF6" },
+          { icon: "📊", label: "Resultats", action: onNextAction, color: "var(--color-bw-violet)" },
           { icon: "📢", label: "Message", action: onOpenBroadcast },
           {
             icon: "📺",

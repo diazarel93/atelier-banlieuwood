@@ -18,7 +18,7 @@ interface ApplauseMeterProps {
   topN?: number;
 }
 
-export function ApplauseMeter({ entries, accentColor = "#FF6B35", topN = 5 }: ApplauseMeterProps) {
+export function ApplauseMeter({ entries, accentColor = "var(--color-bw-primary)", topN = 5 }: ApplauseMeterProps) {
   const sorted = useMemo(() => {
     const s = [...entries].sort((a, b) => b.clapCount - a.clapCount);
     return topN > 0 ? s.slice(0, topN) : s;

@@ -68,10 +68,10 @@ const FilmPoster = forwardRef<HTMLDivElement, FilmPosterProps>(
               style={{
                 width: 30,
                 height: 18,
-                borderLeft: "2px solid #D4A843",
-                borderRight: "2px solid #D4A843",
-                borderTop: "3px solid #D4A843",
-                borderBottom: "3px solid #D4A843",
+                borderLeft: "2px solid var(--color-bw-gold)",
+                borderRight: "2px solid var(--color-bw-gold)",
+                borderTop: "3px solid var(--color-bw-gold)",
+                borderBottom: "3px solid var(--color-bw-gold)",
                 background: i % 2 === 0 ? "rgba(212,168,67,0.08)" : "transparent",
               }}
             />
@@ -97,8 +97,8 @@ const FilmPoster = forwardRef<HTMLDivElement, FilmPosterProps>(
                   display: "inline-block",
                   padding: "4px 18px",
                   borderRadius: 999,
-                  border: "1px solid #D4A843",
-                  color: "#D4A843",
+                  border: "1px solid var(--color-bw-gold)",
+                  color: "var(--color-bw-gold)",
                   fontSize: 11,
                   fontWeight: 700,
                   letterSpacing: 3,
@@ -118,7 +118,8 @@ const FilmPoster = forwardRef<HTMLDivElement, FilmPosterProps>(
                 lineHeight: 1.1,
                 letterSpacing: 2,
                 textTransform: "uppercase",
-                background: "linear-gradient(135deg, #FFFFFF 0%, #D4A843 50%, #FF6B35 100%)",
+                background:
+                  "linear-gradient(135deg, #FFFFFF 0%, var(--color-bw-gold) 50%, var(--color-bw-primary) 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -134,7 +135,7 @@ const FilmPoster = forwardRef<HTMLDivElement, FilmPosterProps>(
               style={{
                 width: 120,
                 height: 2,
-                background: "linear-gradient(90deg, transparent, #D4A843, transparent)",
+                background: "linear-gradient(90deg, transparent, var(--color-bw-gold), transparent)",
                 margin: "16px auto 0",
               }}
             />
@@ -179,7 +180,7 @@ const FilmPoster = forwardRef<HTMLDivElement, FilmPosterProps>(
                     fontWeight: 700,
                     letterSpacing: 4,
                     textTransform: "uppercase",
-                    color: "#D4A843",
+                    color: "var(--color-bw-gold)",
                   }}
                 >
                   Synopsis
@@ -196,7 +197,7 @@ const FilmPoster = forwardRef<HTMLDivElement, FilmPosterProps>(
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {storyBeats.map((choice, i) => {
                   const catLabel = CATEGORY_LABELS[choice.category] || choice.category;
-                  const catColor = CATEGORY_COLORS[choice.category] || "#D4A843";
+                  const catColor = CATEGORY_COLORS[choice.category] || "var(--color-bw-gold)";
                   return (
                     <div
                       key={i}
@@ -272,7 +273,7 @@ const FilmPoster = forwardRef<HTMLDivElement, FilmPosterProps>(
                     fontWeight: 700,
                     letterSpacing: 4,
                     textTransform: "uppercase",
-                    color: "#D4A843",
+                    color: "var(--color-bw-gold)",
                   }}
                 >
                   Distribution
@@ -339,7 +340,7 @@ const FilmPoster = forwardRef<HTMLDivElement, FilmPosterProps>(
                 fontWeight: 800,
                 letterSpacing: 6,
                 textTransform: "uppercase",
-                background: "linear-gradient(135deg, #D4A843, #FF6B35)",
+                background: "linear-gradient(135deg, var(--color-bw-gold), var(--color-bw-primary))",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -370,10 +371,10 @@ const FilmPoster = forwardRef<HTMLDivElement, FilmPosterProps>(
               style={{
                 width: 30,
                 height: 18,
-                borderLeft: "2px solid #D4A843",
-                borderRight: "2px solid #D4A843",
-                borderTop: "3px solid #D4A843",
-                borderBottom: "3px solid #D4A843",
+                borderLeft: "2px solid var(--color-bw-gold)",
+                borderRight: "2px solid var(--color-bw-gold)",
+                borderTop: "3px solid var(--color-bw-gold)",
+                borderBottom: "3px solid var(--color-bw-gold)",
                 background: i % 2 === 0 ? "rgba(212,168,67,0.08)" : "transparent",
               }}
             />
@@ -388,7 +389,8 @@ const FilmPoster = forwardRef<HTMLDivElement, FilmPosterProps>(
             top: 18,
             bottom: 18,
             width: 4,
-            background: "linear-gradient(180deg, #D4A843 0%, rgba(212,168,67,0.2) 50%, #D4A843 100%)",
+            background:
+              "linear-gradient(180deg, var(--color-bw-gold) 0%, rgba(212,168,67,0.2) 50%, var(--color-bw-gold) 100%)",
           }}
         />
         {/* Side film-strip accents (right) */}
@@ -399,7 +401,8 @@ const FilmPoster = forwardRef<HTMLDivElement, FilmPosterProps>(
             top: 18,
             bottom: 18,
             width: 4,
-            background: "linear-gradient(180deg, #D4A843 0%, rgba(212,168,67,0.2) 50%, #D4A843 100%)",
+            background:
+              "linear-gradient(180deg, var(--color-bw-gold) 0%, rgba(212,168,67,0.2) 50%, var(--color-bw-gold) 100%)",
           }}
         />
       </div>

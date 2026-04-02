@@ -56,7 +56,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
                 height="28"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#D4A843"
+                stroke="var(--color-bw-gold)"
                 strokeWidth="2"
                 strokeLinecap="round"
                 aria-hidden="true"

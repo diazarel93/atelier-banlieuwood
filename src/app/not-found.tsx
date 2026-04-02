@@ -13,13 +13,13 @@ export default function NotFound() {
         <div className="flex items-center justify-center gap-3">
           <Link
             href="/"
-            className="px-6 py-3 rounded-xl text-[14px] font-bold text-white bg-gradient-to-r from-[#8b5cf6] to-[#f472b6] shadow-[0_4px_20px_rgba(139,92,246,0.3)] hover:shadow-[0_8px_32px_rgba(139,92,246,0.5)] transition-all"
+            className="px-6 py-3 rounded-xl text-[14px] font-bold text-white bg-gradient-to-r from-bw-violet to-[#f472b6] shadow-[0_4px_20px_rgba(139,92,246,0.3)] hover:shadow-[0_8px_32px_rgba(139,92,246,0.5)] transition-all"
           >
             Retour a l&apos;accueil
           </Link>
           <Link
             href="/contact"
-            className="px-6 py-3 rounded-xl text-[14px] font-bold text-[#f0f0f8] bg-[#181838] border border-[#252550] hover:border-[#8b5cf6] transition-all"
+            className="px-6 py-3 rounded-xl text-[14px] font-bold text-[#f0f0f8] bg-[#181838] border border-[#252550] hover:border-bw-violet transition-all"
           >
             Contacter le support
           </Link>

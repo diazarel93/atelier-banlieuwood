@@ -78,8 +78,8 @@ function EnergyDonut({
 
   let offset = 0;
   const segments = [
-    { pct: respondedPct, color: "#4ECDC4" },
-    { pct: activePct, color: "#D4A843" },
+    { pct: respondedPct, color: "var(--color-bw-teal)" },
+    { pct: activePct, color: "var(--color-bw-gold)" },
     { pct: stuckPct, color: "#ef4444" },
     { pct: 1 - respondedPct - activePct - stuckPct, color: "rgba(245,245,244,0.15)" },
   ];
@@ -133,7 +133,7 @@ function TimerCountdown({ endsAt }: { endsAt: string }) {
   const display = minutes > 0 ? `${minutes}:${String(seconds).padStart(2, "0")}` : `${seconds}s`;
 
   // Color thresholds: green > 60s, orange > 30s, red < 30s, pulse < 10s
-  const color = remaining > 60 ? "#4ECDC4" : remaining > 30 ? "#D4A843" : "#ef4444";
+  const color = remaining > 60 ? "var(--color-bw-teal)" : remaining > 30 ? "var(--color-bw-gold)" : "#ef4444";
   const pulse = remaining <= 10;
 
   return (

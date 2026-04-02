@@ -98,7 +98,7 @@ export default function StudioPage() {
             <Link
               href={ROUTES.join}
               className="px-4 py-2 rounded-xl text-sm font-semibold text-white"
-              style={{ background: "#FF6B35" }}
+              style={{ background: "var(--color-bw-primary)" }}
             >
               Rejoindre une session
             </Link>
@@ -124,7 +124,7 @@ export default function StudioPage() {
             {/* Level badge */}
             <div
               className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-white"
-              style={{ background: "linear-gradient(135deg, #FF6B35, #D4A843)" }}
+              style={{ background: "linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))" }}
             >
               {levelInfo.level}
             </div>
@@ -135,7 +135,7 @@ export default function StudioPage() {
             <h1 className="text-2xl font-bold" style={{ color: "#1A1A2E" }}>
               {profile.display_name}
             </h1>
-            <p className="text-sm font-medium" style={{ color: "#FF6B35" }}>
+            <p className="text-sm font-medium" style={{ color: "var(--color-bw-primary)" }}>
               {profile.custom_title || levelInfo.name}
             </p>
 
@@ -169,7 +169,7 @@ export default function StudioPage() {
               className="flex flex-col items-center gap-1 px-4 py-3 rounded-2xl bg-orange-50 border border-orange-200"
             >
               <span className="streak-flame text-2xl">🔥</span>
-              <span className="text-lg font-black" style={{ color: "#FF6B35" }}>
+              <span className="text-lg font-black" style={{ color: "var(--color-bw-primary)" }}>
                 {profile.current_streak}
               </span>
               <span className="text-xs font-medium" style={{ color: "#6B7280" }}>
@@ -186,10 +186,10 @@ export default function StudioPage() {
           transition={{ delay: 0.2 }}
           className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6"
         >
-          <StatCard icon="🎬" value={profile.sessions_played} label="Sessions" color="#FF6B35" />
-          <StatCard icon="✍️" value={profile.total_responses} label="Réponses" color="#4ECDC4" />
-          <StatCard icon="🗳️" value={profile.total_votes} label="Votes" color="#8B5CF6" />
-          <StatCard icon="🏆" value={unlockedCount} label="Badges" color="#D4A843" />
+          <StatCard icon="🎬" value={profile.sessions_played} label="Sessions" color="var(--color-bw-primary)" />
+          <StatCard icon="✍️" value={profile.total_responses} label="Réponses" color="var(--color-bw-teal)" />
+          <StatCard icon="🗳️" value={profile.total_votes} label="Votes" color="var(--color-bw-violet)" />
+          <StatCard icon="🏆" value={unlockedCount} label="Badges" color="var(--color-bw-gold)" />
         </motion.div>
       </section>
 
@@ -263,9 +263,27 @@ function OverviewTab({ profile, achievements }: { profile: StudentProfile; achie
     >
       {/* Quick Actions */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        <QuickAction href={ROUTES.join} icon="🎮" title="Rejoindre" subtitle="Une session en cours" color="#FF6B35" />
-        <QuickAction href="/studio/missions" icon="🎯" title="Mission Solo" subtitle="Gagne du XP" color="#8B5CF6" />
-        <QuickAction href="/festival" icon="🏆" title="Festival" subtitle="Galerie & votes" color="#D4A843" />
+        <QuickAction
+          href={ROUTES.join}
+          icon="🎮"
+          title="Rejoindre"
+          subtitle="Une session en cours"
+          color="var(--color-bw-primary)"
+        />
+        <QuickAction
+          href="/studio/missions"
+          icon="🎯"
+          title="Mission Solo"
+          subtitle="Gagne du XP"
+          color="var(--color-bw-violet)"
+        />
+        <QuickAction
+          href="/festival"
+          icon="🏆"
+          title="Festival"
+          subtitle="Galerie & votes"
+          color="var(--color-bw-gold)"
+        />
       </div>
 
       {/* Recent Badges */}
@@ -313,7 +331,7 @@ function OverviewTab({ profile, achievements }: { profile: StudentProfile; achie
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center text-lg">✍️</div>
             <div>
-              <p className="text-lg font-black" style={{ color: "#4ECDC4" }}>
+              <p className="text-lg font-black" style={{ color: "var(--color-bw-teal)" }}>
                 {profile.total_responses}
               </p>
               <p className="text-xs" style={{ color: "#6B7280" }}>
@@ -324,7 +342,7 @@ function OverviewTab({ profile, achievements }: { profile: StudentProfile; achie
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center text-lg">🗳️</div>
             <div>
-              <p className="text-lg font-black" style={{ color: "#8B5CF6" }}>
+              <p className="text-lg font-black" style={{ color: "var(--color-bw-violet)" }}>
                 {profile.total_votes}
               </p>
               <p className="text-xs" style={{ color: "#6B7280" }}>
@@ -335,7 +353,7 @@ function OverviewTab({ profile, achievements }: { profile: StudentProfile; achie
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-lg">🏆</div>
             <div>
-              <p className="text-lg font-black" style={{ color: "#D4A843" }}>
+              <p className="text-lg font-black" style={{ color: "var(--color-bw-gold)" }}>
                 {profile.retained_count}
               </p>
               <p className="text-xs" style={{ color: "#6B7280" }}>
@@ -346,7 +364,7 @@ function OverviewTab({ profile, achievements }: { profile: StudentProfile; achie
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-lg">🔥</div>
             <div>
-              <p className="text-lg font-black" style={{ color: "#FF6B35" }}>
+              <p className="text-lg font-black" style={{ color: "var(--color-bw-primary)" }}>
                 {profile.best_streak}
               </p>
               <p className="text-xs" style={{ color: "#6B7280" }}>
@@ -544,7 +562,7 @@ function MissionsTab({ profileId }: { profileId: string }) {
                 <span className="text-xs font-semibold" style={{ color: "#6B7280" }}>
                   ⏱ {mission.time_limit_minutes} min
                 </span>
-                <span className="text-sm font-bold" style={{ color: "#FF6B35" }}>
+                <span className="text-sm font-bold" style={{ color: "var(--color-bw-primary)" }}>
                   +{Math.round(mission.xp_reward * 0.5)} XP
                 </span>
                 {completed ? (
@@ -552,7 +570,7 @@ function MissionsTab({ profileId }: { profileId: string }) {
                 ) : (
                   <button
                     className="px-4 py-2 rounded-xl text-sm font-bold text-white cursor-pointer"
-                    style={{ background: "#8B5CF6" }}
+                    style={{ background: "var(--color-bw-violet)" }}
                   >
                     Jouer
                   </button>
@@ -602,7 +620,7 @@ function PortfolioTab({ profileId }: { profileId: string }) {
           <Link
             href={ROUTES.join}
             className="inline-block mt-4 px-6 py-3 rounded-xl text-sm font-bold text-white"
-            style={{ background: "#FF6B35" }}
+            style={{ background: "var(--color-bw-primary)" }}
           >
             Rejoindre une session
           </Link>
@@ -770,7 +788,7 @@ function GuestStudio() {
               type="submit"
               disabled={sending || !email}
               className="w-full py-3 rounded-xl text-sm font-bold text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ background: "#FF6B35" }}
+              style={{ background: "var(--color-bw-primary)" }}
             >
               {sending ? "Envoi..." : "Recevoir mon lien magique ✨"}
             </button>
@@ -778,7 +796,7 @@ function GuestStudio() {
         )}
 
         <div className="text-center mt-6">
-          <Link href={ROUTES.join} className="text-sm font-semibold" style={{ color: "#FF6B35" }}>
+          <Link href={ROUTES.join} className="text-sm font-semibold" style={{ color: "var(--color-bw-primary)" }}>
             Ou rejoins directement une session →
           </Link>
         </div>

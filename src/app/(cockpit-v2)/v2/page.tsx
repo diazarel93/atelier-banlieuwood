@@ -223,19 +223,19 @@ export default function DashboardV2Page() {
                 icon: "✓",
                 value: stats?.doneSessions || 0,
                 label: "Séances animées",
-                color: "#FF6B35",
+                color: "var(--color-bw-primary)",
               },
               {
                 icon: "⏱",
                 value: stats?.activeSessions || 0,
                 label: "En cours",
-                color: "#4ECDC4",
+                color: "var(--color-bw-teal)",
               },
               {
                 icon: "≡",
                 value: stats?.totalSessions || 0,
                 label: "Total séances",
-                color: "#D4A843",
+                color: "var(--color-bw-gold)",
               },
               {
                 icon: "👥",

@@ -20,7 +20,7 @@ export interface VoteStateProps {
 export function VoteState({ voteOptions, situation, sessionId, studentId, onVote, voting, playSound }: VoteStateProps) {
   const [votedId, setVotedId] = useState<string | null>(null);
   const [reactions, setReactions] = useState<Record<string, ReactionCounts>>({});
-  const categoryColor = CATEGORY_COLORS[situation.category] || "#FF6B35";
+  const categoryColor = CATEGORY_COLORS[situation.category] || "var(--color-bw-primary)";
   const letters = ["A", "B", "C", "D", "E", "F"];
 
   // Fetch reactions

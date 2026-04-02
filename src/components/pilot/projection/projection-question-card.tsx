@@ -26,7 +26,7 @@ export function ProjectionQuestionCard({
 }: ProjectionQuestionCardProps) {
   if (!questionText) return null;
 
-  const catColor = CATEGORY_COLORS[categoryLabel as keyof typeof CATEGORY_COLORS] || "#FF6B35";
+  const catColor = CATEGORY_COLORS[categoryLabel as keyof typeof CATEGORY_COLORS] || "var(--color-bw-primary)";
   const hasNav = maxSituations > 1;
 
   return (

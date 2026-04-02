@@ -136,7 +136,9 @@ export function PreSessionChecklistV2({
               className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${(checkedCount / items.length) * 100}%`,
-                backgroundColor: allChecked ? "var(--color-bw-teal, #4ECDC4)" : "var(--color-bw-primary, #FF6B35)",
+                backgroundColor: allChecked
+                  ? "var(--color-bw-teal, var(--color-bw-teal))"
+                  : "var(--color-bw-primary, var(--color-bw-primary))",
               }}
             />
           </div>

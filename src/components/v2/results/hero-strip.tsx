@@ -22,23 +22,23 @@ export function HeroStrip({ exportData, feedback, onCopy, onCsv, onPdf, onDownlo
     {
       value: studentsCount,
       label: "Élèves",
-      color: "var(--color-bw-teal, #4ECDC4)",
+      color: "var(--color-bw-teal, var(--color-bw-teal))",
     },
     {
       value: stats?.totalResponses ?? choicesCount,
       label: "Réponses",
-      color: "var(--color-bw-violet, #8B5CF6)",
+      color: "var(--color-bw-violet, var(--color-bw-violet))",
     },
     {
       value: stats?.participationRate ?? 0,
       label: "Participation",
-      color: "var(--color-bw-primary, #FF6B35)",
+      color: "var(--color-bw-primary, var(--color-bw-primary))",
       isPercent: true,
     },
     {
       value: feedback?.overallScore ?? 0,
       label: "Score global",
-      color: "var(--color-bw-gold, #D4A843)",
+      color: "var(--color-bw-gold, var(--color-bw-gold))",
       isPercent: true,
     },
   ];

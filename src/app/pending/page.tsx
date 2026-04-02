@@ -27,13 +27,13 @@ export default function PendingPage() {
           <BrandLogo size="md" color="cinema" />
         </div>
 
-        <div className="w-16 h-16 rounded-full bg-[#D4A843]/10 mx-auto flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full bg-bw-gold/10 mx-auto flex items-center justify-center">
           <svg
             width="28"
             height="28"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#D4A843"
+            stroke="var(--color-bw-gold)"
             strokeWidth="2"
             strokeLinecap="round"
           >
@@ -55,7 +55,7 @@ export default function PendingPage() {
           <a
             href="mailto:contact@banlieuwood.fr"
             className="block text-sm font-medium transition-colors hover:underline"
-            style={{ color: "#FF6B35" }}
+            style={{ color: "var(--color-bw-primary)" }}
           >
             Contacter Banlieuwood
           </a>

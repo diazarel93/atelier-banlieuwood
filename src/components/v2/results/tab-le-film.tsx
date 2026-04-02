@@ -59,10 +59,10 @@ function FilmStripBar({ prefix }: { prefix: string }) {
           style={{
             width: 30,
             height: 18,
-            borderLeft: "2px solid #D4A843",
-            borderRight: "2px solid #D4A843",
-            borderTop: "3px solid #D4A843",
-            borderBottom: "3px solid #D4A843",
+            borderLeft: "2px solid var(--color-bw-gold)",
+            borderRight: "2px solid var(--color-bw-gold)",
+            borderTop: "3px solid var(--color-bw-gold)",
+            borderBottom: "3px solid var(--color-bw-gold)",
             background: i % 2 === 0 ? "rgba(212,168,67,0.08)" : "transparent",
           }}
         />
@@ -81,7 +81,7 @@ function GoldDivider({ label }: { label: string }) {
           fontWeight: 700,
           letterSpacing: 5,
           textTransform: "uppercase" as const,
-          color: "#D4A843",
+          color: "var(--color-bw-gold)",
         }}
       >
         {label}
@@ -95,7 +95,10 @@ function StarRow({ filled, total = 5 }: { filled: number; total?: number }) {
   return (
     <span>
       {Array.from({ length: total }).map((_, i) => (
-        <span key={i} style={{ color: i < filled ? "#D4A843" : "#334155", fontSize: 14, letterSpacing: 2 }}>
+        <span
+          key={i}
+          style={{ color: i < filled ? "var(--color-bw-gold)" : "#334155", fontSize: 14, letterSpacing: 2 }}
+        >
           {"\u2605"}
         </span>
       ))}
@@ -108,23 +111,32 @@ function ClapperboardSvg() {
   return (
     <svg width="120" height="100" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* Clapper top (angled stripes) */}
-      <path d="M10 30 L110 30 L105 8 L15 8 Z" fill="#1A1D26" stroke="#D4A843" strokeWidth="1.5" />
+      <path d="M10 30 L110 30 L105 8 L15 8 Z" fill="#1A1D26" stroke="var(--color-bw-gold)" strokeWidth="1.5" />
       {/* Stripe diagonals */}
-      <line x1="30" y1="8" x2="25" y2="30" stroke="#D4A843" strokeWidth="2" opacity="0.6" />
-      <line x1="50" y1="8" x2="45" y2="30" stroke="#D4A843" strokeWidth="2" opacity="0.6" />
-      <line x1="70" y1="8" x2="65" y2="30" stroke="#D4A843" strokeWidth="2" opacity="0.6" />
-      <line x1="90" y1="8" x2="85" y2="30" stroke="#D4A843" strokeWidth="2" opacity="0.6" />
+      <line x1="30" y1="8" x2="25" y2="30" stroke="var(--color-bw-gold)" strokeWidth="2" opacity="0.6" />
+      <line x1="50" y1="8" x2="45" y2="30" stroke="var(--color-bw-gold)" strokeWidth="2" opacity="0.6" />
+      <line x1="70" y1="8" x2="65" y2="30" stroke="var(--color-bw-gold)" strokeWidth="2" opacity="0.6" />
+      <line x1="90" y1="8" x2="85" y2="30" stroke="var(--color-bw-gold)" strokeWidth="2" opacity="0.6" />
       {/* Board body */}
-      <rect x="10" y="30" width="100" height="60" rx="3" fill="#0F1219" stroke="#D4A843" strokeWidth="1.5" />
+      <rect
+        x="10"
+        y="30"
+        width="100"
+        height="60"
+        rx="3"
+        fill="#0F1219"
+        stroke="var(--color-bw-gold)"
+        strokeWidth="1.5"
+      />
       {/* Text lines */}
-      <rect x="20" y="42" width="50" height="3" rx="1.5" fill="#D4A843" opacity="0.5" />
-      <rect x="20" y="52" width="35" height="3" rx="1.5" fill="#D4A843" opacity="0.3" />
-      <rect x="20" y="62" width="45" height="3" rx="1.5" fill="#D4A843" opacity="0.3" />
+      <rect x="20" y="42" width="50" height="3" rx="1.5" fill="var(--color-bw-gold)" opacity="0.5" />
+      <rect x="20" y="52" width="35" height="3" rx="1.5" fill="var(--color-bw-gold)" opacity="0.3" />
+      <rect x="20" y="62" width="45" height="3" rx="1.5" fill="var(--color-bw-gold)" opacity="0.3" />
       {/* Circle accent */}
-      <circle cx="90" cy="60" r="12" fill="none" stroke="#D4A843" strokeWidth="1" opacity="0.4" />
-      <circle cx="90" cy="60" r="5" fill="#D4A843" opacity="0.2" />
+      <circle cx="90" cy="60" r="12" fill="none" stroke="var(--color-bw-gold)" strokeWidth="1" opacity="0.4" />
+      <circle cx="90" cy="60" r="5" fill="var(--color-bw-gold)" opacity="0.2" />
       {/* Hinge circle */}
-      <circle cx="15" cy="30" r="4" fill="#1A1D26" stroke="#D4A843" strokeWidth="1.5" />
+      <circle cx="15" cy="30" r="4" fill="#1A1D26" stroke="var(--color-bw-gold)" strokeWidth="1.5" />
     </svg>
   );
 }
@@ -210,7 +222,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
         <button
           onClick={handleExportPdf}
           disabled={exporting}
-          className="inline-flex items-center gap-2 rounded-lg border border-[#D4A843]/30 bg-transparent px-4 py-2 text-sm font-medium text-[#D4A843] transition-opacity hover:bg-[#D4A843]/10 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg border border-bw-gold/30 bg-transparent px-4 py-2 text-sm font-medium text-bw-gold transition-opacity hover:bg-bw-gold/10 disabled:opacity-50"
         >
           <svg
             width="16"
@@ -232,7 +244,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
         <button
           onClick={handleExport}
           disabled={exporting}
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#D4A843] to-[#FF6B35] px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-bw-gold to-bw-primary px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {exporting ? (
             <>
@@ -352,7 +364,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                 <div
                   style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 4 }}
                 >
-                  <span style={{ color: "#D4A843", fontSize: 8 }}>
+                  <span style={{ color: "var(--color-bw-gold)", fontSize: 8 }}>
                     {"\u2726"} {"\u2726"} {"\u2726"}
                   </span>
                   <span
@@ -361,12 +373,12 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                       fontWeight: 800,
                       letterSpacing: 8,
                       textTransform: "uppercase",
-                      color: "#D4A843",
+                      color: "var(--color-bw-gold)",
                     }}
                   >
                     Banlieuwood
                   </span>
-                  <span style={{ color: "#D4A843", fontSize: 8 }}>
+                  <span style={{ color: "var(--color-bw-gold)", fontSize: 8 }}>
                     {"\u2726"} {"\u2726"} {"\u2726"}
                   </span>
                 </div>
@@ -397,7 +409,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                       borderRadius: 999,
                       border: "1px solid rgba(212,168,67,0.5)",
                       background: "rgba(212,168,67,0.06)",
-                      color: "#D4A843",
+                      color: "var(--color-bw-gold)",
                       fontSize: 10,
                       fontWeight: 700,
                       letterSpacing: 3,
@@ -430,7 +442,8 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                       lineHeight: 1.05,
                       letterSpacing: 3,
                       textTransform: "uppercase",
-                      background: "linear-gradient(135deg, #FFFFFF 0%, #F5E6B8 30%, #D4A843 60%, #FF6B35 100%)",
+                      background:
+                        "linear-gradient(135deg, #FFFFFF 0%, #F5E6B8 30%, var(--color-bw-gold) 60%, var(--color-bw-primary) 100%)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                       backgroundClip: "text",
@@ -453,9 +466,21 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                     margin: "20px 0 0",
                   }}
                 >
-                  <div style={{ width: 50, height: 1, background: "linear-gradient(90deg, transparent, #D4A843)" }} />
-                  <span style={{ color: "#D4A843", fontSize: 10 }}>{"\u2726"}</span>
-                  <div style={{ width: 50, height: 1, background: "linear-gradient(90deg, #D4A843, transparent)" }} />
+                  <div
+                    style={{
+                      width: 50,
+                      height: 1,
+                      background: "linear-gradient(90deg, transparent, var(--color-bw-gold))",
+                    }}
+                  />
+                  <span style={{ color: "var(--color-bw-gold)", fontSize: 10 }}>{"\u2726"}</span>
+                  <div
+                    style={{
+                      width: 50,
+                      height: 1,
+                      background: "linear-gradient(90deg, var(--color-bw-gold), transparent)",
+                    }}
+                  />
                 </div>
 
                 {/* Thematique */}
@@ -484,7 +509,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                     {collectiveChoices.slice(0, 8).map((choice, i) => {
                       const catLabel = CATEGORY_LABELS[choice.category] || choice.category;
-                      const catColor = CATEGORY_COLORS[choice.category] || "#D4A843";
+                      const catColor = CATEGORY_COLORS[choice.category] || "var(--color-bw-gold)";
                       return (
                         <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                           <div
@@ -574,7 +599,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                               style={{
                                 fontSize: 8,
                                 fontWeight: 700,
-                                color: "#FF6B35",
+                                color: "var(--color-bw-primary)",
                                 textTransform: "uppercase",
                                 letterSpacing: 1.5,
                                 textAlign: "center",
@@ -607,7 +632,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                         top: 6,
                         bottom: 6,
                         width: 1,
-                        background: "linear-gradient(180deg, #D4A843, rgba(212,168,67,0.15))",
+                        background: "linear-gradient(180deg, var(--color-bw-gold), rgba(212,168,67,0.15))",
                       }}
                     />
                     {construction.map((c, idx) => {
@@ -633,12 +658,18 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                               height: 10,
                               borderRadius: "50%",
                               background: "#0F1219",
-                              border: "2px solid #D4A843",
+                              border: "2px solid var(--color-bw-gold)",
                               boxShadow: "0 0 6px rgba(212,168,67,0.3)",
                             }}
                           />
                           <span
-                            style={{ fontSize: 11, fontWeight: 800, color: "#D4A843", minWidth: 24, flexShrink: 0 }}
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 800,
+                              color: "var(--color-bw-gold)",
+                              minWidth: 24,
+                              flexShrink: 0,
+                            }}
                           >
                             {roman}
                           </span>
@@ -722,7 +753,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                       border: "1px solid rgba(212,168,67,0.2)",
                       background: "rgba(212,168,67,0.05)",
                       fontSize: 10,
-                      color: "#D4A843",
+                      color: "var(--color-bw-gold)",
                       fontWeight: 600,
                     }}
                   >
@@ -738,7 +769,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                       border: "1px solid rgba(212,168,67,0.2)",
                       background: "rgba(212,168,67,0.05)",
                       fontSize: 10,
-                      color: "#D4A843",
+                      color: "var(--color-bw-gold)",
                       fontWeight: 600,
                     }}
                   >
@@ -759,7 +790,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                       background: "linear-gradient(90deg, transparent, rgba(212,168,67,0.3))",
                     }}
                   />
-                  <span style={{ color: "#D4A843", fontSize: 6 }}>{"\u2726"}</span>
+                  <span style={{ color: "var(--color-bw-gold)", fontSize: 6 }}>{"\u2726"}</span>
                   <div
                     style={{
                       width: 60,
@@ -774,7 +805,7 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                     fontWeight: 900,
                     letterSpacing: 8,
                     textTransform: "uppercase",
-                    background: "linear-gradient(135deg, #D4A843 0%, #FF6B35 100%)",
+                    background: "linear-gradient(135deg, var(--color-bw-gold) 0%, var(--color-bw-primary) 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
@@ -802,7 +833,8 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                 top: 18,
                 bottom: 18,
                 width: 4,
-                background: "linear-gradient(180deg, #D4A843 0%, rgba(212,168,67,0.15) 50%, #D4A843 100%)",
+                background:
+                  "linear-gradient(180deg, var(--color-bw-gold) 0%, rgba(212,168,67,0.15) 50%, var(--color-bw-gold) 100%)",
               }}
             />
             <div
@@ -812,7 +844,8 @@ export function TabLeFilm({ filmData }: TabLeFilmProps) {
                 top: 18,
                 bottom: 18,
                 width: 4,
-                background: "linear-gradient(180deg, #D4A843 0%, rgba(212,168,67,0.15) 50%, #D4A843 100%)",
+                background:
+                  "linear-gradient(180deg, var(--color-bw-gold) 0%, rgba(212,168,67,0.15) 50%, var(--color-bw-gold) 100%)",
               }}
             />
           </div>

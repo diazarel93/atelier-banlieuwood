@@ -61,7 +61,7 @@ export function SessionCardV2({
             {moduleLabel && (
               <span
                 className="inline-flex items-center rounded-md px-2 py-0.5 text-body-xs font-semibold text-white"
-                style={{ backgroundColor: moduleColor || "#FF6B35" }}
+                style={{ backgroundColor: moduleColor || "var(--color-bw-primary)" }}
               >
                 {moduleLabel}
               </span>

@@ -50,7 +50,7 @@ export function RelanceState({ relanceText, onSubmit, onSkip }: RelanceStateProp
             height="20"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#4ECDC4"
+            stroke="var(--color-bw-teal)"
             strokeWidth="2"
             strokeLinecap="round"
           >

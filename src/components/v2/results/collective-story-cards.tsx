@@ -15,7 +15,7 @@ export function CollectiveStoryCards({ markdownLines }: CollectiveStoryCardsProp
       if (!match) return null;
       const [, label, text] = match;
       const cat = Object.keys(CATEGORY_COLORS).find((c) => label.toLowerCase().includes(c)) || "personnage";
-      const color = CATEGORY_COLORS[cat] || "#FF6B35";
+      const color = CATEGORY_COLORS[cat] || "var(--color-bw-primary)";
       return { label, text, color };
     })
     .filter(Boolean) as { label: string; text: string; color: string }[];

@@ -61,9 +61,9 @@ const FILMS = [
 ];
 
 const FORMULA_COLORS: Record<string, string> = {
-  F0: "#FF6B35",
-  F1: "#D4A843",
-  F2: "#4ECDC4",
+  F0: "var(--color-bw-primary)",
+  F1: "var(--color-bw-gold)",
+  F2: "var(--color-bw-teal)",
 };
 
 const FILTERS = ["Tous", "2026", "2025", "Collège", "Lycée"];
@@ -79,7 +79,10 @@ export default function FestivalPage() {
         <div className="max-w-[1200px] mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <div className="text-[11px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: "#FF6B35" }}>
+            <div
+              className="text-[11px] font-bold uppercase tracking-[0.2em] mb-3"
+              style={{ color: "var(--color-bw-primary)" }}
+            >
               FESTIVAL BANLIEUWOOD 2026
             </div>
             <h1 className="font-cinema text-[clamp(40px,6vw,72px)] leading-[1.05] uppercase mb-4">
@@ -87,7 +90,8 @@ export default function FestivalPage() {
               <span
                 className="bg-clip-text text-transparent"
                 style={{
-                  backgroundImage: "linear-gradient(90deg, #FF6B35 0%, #D4A843 55%, #4ECDC4 100%)",
+                  backgroundImage:
+                    "linear-gradient(90deg, var(--color-bw-primary) 0%, var(--color-bw-gold) 55%, var(--color-bw-teal) 100%)",
                 }}
               >
                 de nos élèves
@@ -108,7 +112,11 @@ export default function FestivalPage() {
                   }`}
                   style={
                     activeFilter === f
-                      ? { background: "rgba(255,107,53,0.12)", borderColor: "rgba(255,107,53,0.4)", color: "#FF6B35" }
+                      ? {
+                          background: "rgba(255,107,53,0.12)",
+                          borderColor: "rgba(255,107,53,0.4)",
+                          color: "var(--color-bw-primary)",
+                        }
                       : undefined
                   }
                 >
@@ -123,7 +131,7 @@ export default function FestivalPage() {
             {FILMS.map((film) => (
               <div
                 key={film.title}
-                className="rounded-2xl overflow-hidden border border-[#2a2420] bg-[#141210] hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(255,107,53,0.12)] hover:border-[#FF6B35]/20 transition-all"
+                className="rounded-2xl overflow-hidden border border-[#2a2420] bg-[#141210] hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(255,107,53,0.12)] hover:border-bw-primary/20 transition-all"
               >
                 <div
                   className={`w-full h-[200px] bg-gradient-to-br ${film.gradient} flex items-center justify-center text-[48px] relative overflow-hidden`}
@@ -138,13 +146,13 @@ export default function FestivalPage() {
                     <span
                       className="px-2.5 py-0.5 rounded-full text-[11px] font-bold"
                       style={{
-                        background: `${FORMULA_COLORS[film.formula] || "#FF6B35"}15`,
-                        color: FORMULA_COLORS[film.formula] || "#FF6B35",
+                        background: `${FORMULA_COLORS[film.formula] || "var(--color-bw-primary)"}15`,
+                        color: FORMULA_COLORS[film.formula] || "var(--color-bw-primary)",
                       }}
                     >
                       {film.formula}
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#D4A843]/15 text-[#D4A843]">
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-bw-gold/15 text-bw-gold">
                       {film.date}
                     </span>
                   </div>
@@ -156,9 +164,9 @@ export default function FestivalPage() {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-[640px] mx-auto mt-14 text-center border border-[#2a2420] rounded-2xl overflow-hidden bg-black/20">
             {[
-              { value: "87", label: "Films", color: "#FF6B35" },
-              { value: "32", label: "Établissements", color: "#D4A843" },
-              { value: "1 247", label: "Élèves", color: "#4ECDC4" },
+              { value: "87", label: "Films", color: "var(--color-bw-primary)" },
+              { value: "32", label: "Établissements", color: "var(--color-bw-gold)" },
+              { value: "1 247", label: "Élèves", color: "var(--color-bw-teal)" },
               { value: "48h", label: "De création", color: "#FF8C5A" },
             ].map((s, i) => (
               <div key={s.label} className={`py-6 ${i < 3 ? "border-r border-[#2a2420]" : ""}`}>

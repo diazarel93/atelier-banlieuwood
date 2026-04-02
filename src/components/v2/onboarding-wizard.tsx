@@ -13,17 +13,34 @@ const STEPS = [
       "La plateforme d'écriture cinématographique collaborative. Pilotez des séances interactives où 5 à 30 élèves créent un court-métrage ensemble.",
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-        <rect x="6" y="20" width="36" height="20" rx="3" fill="#F3F4F6" stroke="#FF6B35" strokeWidth="1.5" />
+        <rect
+          x="6"
+          y="20"
+          width="36"
+          height="20"
+          rx="3"
+          fill="#F3F4F6"
+          stroke="var(--color-bw-primary)"
+          strokeWidth="1.5"
+        />
         <path
           d="M6 20L14 6H34L42 20"
-          fill="#FF6B35"
+          fill="var(--color-bw-primary)"
           fillOpacity="0.15"
-          stroke="#FF6B35"
+          stroke="var(--color-bw-primary)"
           strokeWidth="1.5"
           strokeLinejoin="round"
         />
-        <line x1="18" y1="10" x2="15" y2="18" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="26" y1="8" x2="23" y2="18" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
+        <line
+          x1="18"
+          y1="10"
+          x2="15"
+          y2="18"
+          stroke="var(--color-bw-primary)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <line x1="26" y1="8" x2="23" y2="18" stroke="var(--color-bw-primary)" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     ),
     cta: null,
@@ -40,9 +57,9 @@ const STEPS = [
           width="16"
           height="14"
           rx="3"
-          fill="#FF6B35"
+          fill="var(--color-bw-primary)"
           fillOpacity="0.15"
-          stroke="#FF6B35"
+          stroke="var(--color-bw-primary)"
           strokeWidth="1.5"
         />
         <rect
@@ -51,9 +68,9 @@ const STEPS = [
           width="16"
           height="14"
           rx="3"
-          fill="#8B5CF6"
+          fill="var(--color-bw-violet)"
           fillOpacity="0.15"
-          stroke="#8B5CF6"
+          stroke="var(--color-bw-violet)"
           strokeWidth="1.5"
         />
         <rect
@@ -62,9 +79,9 @@ const STEPS = [
           width="16"
           height="14"
           rx="3"
-          fill="#D4A843"
+          fill="var(--color-bw-gold)"
           fillOpacity="0.15"
-          stroke="#D4A843"
+          stroke="var(--color-bw-gold)"
           strokeWidth="1.5"
         />
         <rect
@@ -73,9 +90,9 @@ const STEPS = [
           width="16"
           height="14"
           rx="3"
-          fill="#4ECDC4"
+          fill="var(--color-bw-teal)"
           fillOpacity="0.15"
-          stroke="#4ECDC4"
+          stroke="var(--color-bw-teal)"
           strokeWidth="1.5"
         />
       </svg>
@@ -88,8 +105,16 @@ const STEPS = [
       "Choisissez un niveau, un module, et lancez ! Un code unique est genere pour que vos eleves rejoignent la session depuis leur appareil.",
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-        <circle cx="24" cy="24" r="18" fill="#4ECDC4" fillOpacity="0.1" stroke="#4ECDC4" strokeWidth="1.5" />
-        <path d="M24 16v16M16 24h16" stroke="#4ECDC4" strokeWidth="2" strokeLinecap="round" />
+        <circle
+          cx="24"
+          cy="24"
+          r="18"
+          fill="var(--color-bw-teal)"
+          fillOpacity="0.1"
+          stroke="var(--color-bw-teal)"
+          strokeWidth="1.5"
+        />
+        <path d="M24 16v16M16 24h16" stroke="var(--color-bw-teal)" strokeWidth="2" strokeLinecap="round" />
       </svg>
     ),
     cta: { label: "Creer une seance", href: ROUTES.seanceNew },
@@ -100,7 +125,12 @@ const STEPS = [
       "Suivez les reponses, lancez les votes, gerez le rythme. Tout est synchronise en direct. Vos eleves n'ont besoin d'aucun compte.",
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-        <path d="M10 38V20M18 38V14M26 38V24M34 38V10" stroke="#FF6B35" strokeWidth="2.5" strokeLinecap="round" />
+        <path
+          d="M10 38V20M18 38V14M26 38V24M34 38V10"
+          stroke="var(--color-bw-primary)"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
       </svg>
     ),
     cta: { label: "Voir le dashboard", href: ROUTES.dashboard },

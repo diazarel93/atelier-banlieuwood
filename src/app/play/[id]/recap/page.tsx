@@ -320,7 +320,7 @@ function FilmVivant({ story, revealedCount, title }: { story: StoryChoice[]; rev
 
       {/* Story choices — progressive reveal */}
       {story.slice(0, revealedCount).map((choice, _i) => {
-        const color = CATEGORY_COLORS[choice.category] || "#FF6B35";
+        const color = CATEGORY_COLORS[choice.category] || "var(--color-bw-primary)";
         const showCategoryHeader = choice.category !== currentCategory;
         currentCategory = choice.category;
 

@@ -282,7 +282,7 @@ export default function ScreenPage() {
         particleCount: 150,
         spread: 100,
         origin: { y: 0.6 },
-        colors: ["#FF6B35", "#F59E0B", "#8B5CF6", "#22C55E"],
+        colors: ["var(--color-bw-primary)", "#F59E0B", "var(--color-bw-violet)", "#22C55E"],
       });
       // Second burst slightly delayed for a richer effect
       setTimeout(() => mod.default({ particleCount: 80, spread: 120, origin: { y: 0.4, x: 0.3 } }), 300);
@@ -307,7 +307,12 @@ export default function ScreenPage() {
     if (!data?.collectiveChoice?.id) return;
     if (prevChoiceId.current !== null && prevChoiceId.current !== data.collectiveChoice.id) {
       import("canvas-confetti").then((mod) =>
-        mod.default({ particleCount: 80, spread: 60, origin: { y: 0.5 }, colors: ["#FF6B35", "#F59E0B", "#8B5CF6"] }),
+        mod.default({
+          particleCount: 80,
+          spread: 60,
+          origin: { y: 0.5 },
+          colors: ["var(--color-bw-primary)", "#F59E0B", "var(--color-bw-violet)"],
+        }),
       );
     }
     prevChoiceId.current = data.collectiveChoice.id;
@@ -340,7 +345,7 @@ export default function ScreenPage() {
   }
 
   const { session, situation, collectiveChoice, connectedCount, responsesCount, budgetStats } = data;
-  const categoryColor = CATEGORY_COLORS[situation?.category || ""] || "#FF6B35";
+  const categoryColor = CATEGORY_COLORS[situation?.category || ""] || "var(--color-bw-primary)";
   const joinUrl = typeof window !== "undefined" ? `${window.location.origin}/join?code=${session.joinCode || ""}` : "";
   const templateInfo = session.template ? TEMPLATE_LABELS[session.template] : null;
 
@@ -386,7 +391,7 @@ export default function ScreenPage() {
 
   // Module info for header + ambient
   const moduleDef = !noModuleSelected ? getModuleByDb(session.currentModule, currentSeance) : undefined;
-  const moduleColor = moduleDef?.color || seanceIntro?.color || "#FF6B35";
+  const moduleColor = moduleDef?.color || seanceIntro?.color || "var(--color-bw-primary)";
 
   // Cinema fun facts for waiting screen
   const CINEMA_FACTS = [
@@ -591,7 +596,7 @@ export default function ScreenPage() {
                   transition={{ repeat: Infinity, duration: 4 }}
                   className="w-24 h-24 rounded-2xl mx-auto flex items-center justify-center"
                   style={{
-                    background: "linear-gradient(135deg, #FF6B35, #D4A843)",
+                    background: "linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))",
                     boxShadow: "0 12px 48px rgba(255,107,53,0.35), 0 0 80px rgba(255,107,53,0.15)",
                   }}
                 >
@@ -881,7 +886,12 @@ export default function ScreenPage() {
                       {data.module1.questions[session.currentSituationIndex || 0].options!.map((opt, i) => {
                         const count = data.module1!.optionDistribution?.[opt.key] || 0;
                         const pct = connectedCount > 0 ? Math.round((count / connectedCount) * 100) : 0;
-                        const colors = ["#8B5CF6", "#4ECDC4", "#FF6B35", "#F59E0B"];
+                        const colors = [
+                          "var(--color-bw-violet)",
+                          "var(--color-bw-teal)",
+                          "var(--color-bw-primary)",
+                          "#F59E0B",
+                        ];
                         const color = colors[i % colors.length];
                         return (
                           <motion.div
@@ -2440,7 +2450,12 @@ export default function ScreenPage() {
                         const total =
                           data.module1!.responseCounts?.[session.currentSituationIndex || 0] || connectedCount;
                         const pct = total > 0 ? Math.round((count / total) * 100) : 0;
-                        const colors = ["#8B5CF6", "#4ECDC4", "#FF6B35", "#F59E0B"];
+                        const colors = [
+                          "var(--color-bw-violet)",
+                          "var(--color-bw-teal)",
+                          "var(--color-bw-primary)",
+                          "#F59E0B",
+                        ];
                         const color = colors[i % colors.length];
                         const isWinner =
                           pct > 0 &&
@@ -2591,7 +2606,7 @@ export default function ScreenPage() {
                       const vr = voteData.results[rank];
                       if (!vr) return null;
                       const heights = [160, 120, 90];
-                      const colors = ["#FF6B35", "#4ECDC4", "#8B5CF6"];
+                      const colors = ["var(--color-bw-primary)", "var(--color-bw-teal)", "var(--color-bw-violet)"];
                       const medals = ["1er", "2e", "3e"];
                       const pct = voteData.totalVotes > 0 ? Math.round((vr.count / voteData.totalVotes) * 100) : 0;
                       return (
@@ -2649,7 +2664,10 @@ export default function ScreenPage() {
                               <span className="text-2xl">{vr.response.students?.avatar}</span>
                               <span className="text-lg">{vr.response.students?.display_name}</span>
                             </div>
-                            <span className="text-3xl font-bold" style={{ color: i === 0 ? "#FF6B35" : "#888" }}>
+                            <span
+                              className="text-3xl font-bold"
+                              style={{ color: i === 0 ? "var(--color-bw-primary)" : "#888" }}
+                            >
                               {pct}%
                             </span>
                           </div>
@@ -2672,7 +2690,7 @@ export default function ScreenPage() {
                               animate={{ width: `${pct}%` }}
                               transition={{ duration: 0.6 }}
                               className="h-full rounded-full"
-                              style={{ backgroundColor: i === 0 ? "#FF6B35" : "#4ECDC4" }}
+                              style={{ backgroundColor: i === 0 ? "var(--color-bw-primary)" : "var(--color-bw-teal)" }}
                             />
                           </div>
                         </motion.div>
@@ -2875,7 +2893,7 @@ export default function ScreenPage() {
                             </div>
                             <span
                               className="text-xl font-bold flex-shrink-0"
-                              style={{ color: i === 0 ? "#FF6B35" : "#888" }}
+                              style={{ color: i === 0 ? "var(--color-bw-primary)" : "#888" }}
                             >
                               {pct}%
                             </span>
@@ -3097,7 +3115,7 @@ export default function ScreenPage() {
               <div className="flex-1 h-2 rounded-full bg-white/[0.06] overflow-hidden">
                 <motion.div
                   className="h-full rounded-full"
-                  style={{ background: "linear-gradient(90deg, #FF6B35, #4ECDC4)" }}
+                  style={{ background: "linear-gradient(90deg, var(--color-bw-primary), var(--color-bw-teal))" }}
                   animate={{ width: `${connectedCount > 0 ? (responsesCount / connectedCount) * 100 : 0}%` }}
                   transition={{ type: "spring", stiffness: 120, damping: 20 }}
                 />

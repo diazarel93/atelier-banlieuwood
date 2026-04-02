@@ -34,7 +34,10 @@ export default function ContactPage() {
       {/* Header */}
       <section className="pt-28 pb-12 px-6">
         <div className="max-w-[900px] mx-auto text-center">
-          <div className="text-[11px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: "#FF6B35" }}>
+          <div
+            className="text-[11px] font-bold uppercase tracking-[0.2em] mb-3"
+            style={{ color: "var(--color-bw-primary)" }}
+          >
             NOUS ÉCRIRE
           </div>
           <h1 className="font-cinema text-[clamp(36px,5vw,64px)] uppercase leading-[1.05] mb-4">Contactez-nous</h1>
@@ -79,7 +82,7 @@ export default function ContactPage() {
                 <Link
                   key={doc.label}
                   href={doc.href}
-                  className="flex items-center gap-2 py-2 text-[13px] text-white/45 hover:text-[#FF6B35] transition-colors border-b border-[#2a2420] last:border-b-0"
+                  className="flex items-center gap-2 py-2 text-[13px] text-white/45 hover:text-bw-primary transition-colors border-b border-[#2a2420] last:border-b-0"
                 >
                   📄 {doc.label}
                 </Link>
@@ -87,7 +90,7 @@ export default function ContactPage() {
             </div>
 
             {/* Réassurance */}
-            <div className="rounded-xl border border-[#2a2420] bg-[#FF6B35]/[0.04] px-5 py-4">
+            <div className="rounded-xl border border-[#2a2420] bg-bw-primary/[0.04] px-5 py-4">
               <p className="text-[12px] text-white/55 leading-relaxed">
                 ✓ Gratuit pour les écoles publiques
                 <br />

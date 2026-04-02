@@ -72,7 +72,7 @@ export function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
 export const STATUS_BAR_COLORS: Record<SessionStatus, string> = {
   draft: "var(--color-bw-muted, #9CA3AF)",
   waiting: "var(--color-bw-amber, #F59E0B)",
-  responding: "var(--color-bw-teal, #4ECDC4)",
+  responding: "var(--color-bw-teal, var(--color-bw-teal))",
   paused: "var(--color-bw-amber, #F59E0B)",
   done: "var(--color-bw-green, #10B981)",
 };

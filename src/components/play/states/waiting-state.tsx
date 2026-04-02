@@ -74,18 +74,18 @@ export function WaitingState({ session, connectedCount, crossSessionStreak, onRe
               height="40"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#FF6B35"
+              stroke="var(--color-bw-primary)"
               strokeWidth="1.5"
               strokeLinecap="round"
             >
               <circle cx="12" cy="12" r="10" />
               <circle cx="12" cy="12" r="3" />
-              <circle cx="12" cy="5" r="1" fill="#D4A843" stroke="none" />
-              <circle cx="17.5" cy="9" r="1" fill="#D4A843" stroke="none" />
-              <circle cx="17.5" cy="15" r="1" fill="#D4A843" stroke="none" />
-              <circle cx="12" cy="19" r="1" fill="#D4A843" stroke="none" />
-              <circle cx="6.5" cy="15" r="1" fill="#D4A843" stroke="none" />
-              <circle cx="6.5" cy="9" r="1" fill="#D4A843" stroke="none" />
+              <circle cx="12" cy="5" r="1" fill="var(--color-bw-gold)" stroke="none" />
+              <circle cx="17.5" cy="9" r="1" fill="var(--color-bw-gold)" stroke="none" />
+              <circle cx="17.5" cy="15" r="1" fill="var(--color-bw-gold)" stroke="none" />
+              <circle cx="12" cy="19" r="1" fill="var(--color-bw-gold)" stroke="none" />
+              <circle cx="6.5" cy="15" r="1" fill="var(--color-bw-gold)" stroke="none" />
+              <circle cx="6.5" cy="9" r="1" fill="var(--color-bw-gold)" stroke="none" />
             </svg>
           </motion.div>
         </motion.div>

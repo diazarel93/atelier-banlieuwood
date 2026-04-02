@@ -54,8 +54,8 @@ export function FlipCounter({ current, total, label = "reponses" }: FlipCounterP
           />
           <defs>
             <linearGradient id="flip-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#4ECDC4" />
-              <stop offset="100%" stopColor="#D4A843" />
+              <stop offset="0%" stopColor="var(--color-bw-teal)" />
+              <stop offset="100%" stopColor="var(--color-bw-gold)" />
             </linearGradient>
           </defs>
         </svg>
