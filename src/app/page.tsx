@@ -146,14 +146,19 @@ export default function Home() {
           style={{ background: "#4ECDC4", opacity: 0.07, filter: "blur(100px)" }}
         />
 
-        {/* Fond cinéma CSS animé — en attente vidéo terrain */}
+        {/* Vidéo hero — Kling AI */}
+        <video
+          className="absolute inset-0 z-0 w-full h-full object-cover"
+          src="/hero.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+        {/* Overlay teinté cinéma par-dessus la vidéo */}
         <div
-          className="absolute inset-0 z-0 gradient-animate"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 60% at 20% 40%, rgba(255,107,53,0.12) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 75% 60%, rgba(212,168,67,0.09) 0%, transparent 55%), radial-gradient(ellipse 50% 40% at 50% 20%, rgba(78,205,196,0.06) 0%, transparent 50%), #0d0b09",
-            backgroundSize: "200% 200%",
-          }}
+          className="absolute inset-0 z-[1]"
+          style={{ background: "rgba(13,11,9,0.45)" }}
         />
 
         {/* Vignette */}
