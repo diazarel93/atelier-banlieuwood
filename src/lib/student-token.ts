@@ -1,6 +1,9 @@
 import { createHmac } from "crypto";
 
-const SECRET = process.env.STUDENT_TOKEN_SECRET || "dev-secret-change-me";
+const SECRET = process.env.STUDENT_TOKEN_SECRET;
+if (!SECRET) {
+  throw new Error("STUDENT_TOKEN_SECRET env var is required — ne pas utiliser sans cette variable en production");
+}
 
 export function signStudentToken(studentId: string, sessionId: string): string {
   const payload = { studentId, sessionId, exp: Date.now() + 24 * 60 * 60 * 1000 };

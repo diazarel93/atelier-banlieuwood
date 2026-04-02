@@ -81,7 +81,7 @@ export const POST = withErrorHandler(async function POST(
   const isStale =
     voteSituation.module !== session.current_module ||
     voteSituation.seance !== session.current_seance ||
-    voteSituation.position !== session.current_situation_index;
+    voteSituation.position !== session.current_situation_index + 1; // position est 1-based, index est 0-based
 
   if (isStale) {
     return NextResponse.json(

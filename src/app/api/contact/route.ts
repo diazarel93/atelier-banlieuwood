@@ -82,7 +82,7 @@ export const POST = withErrorHandler<Record<string, never>>(async function POST(
               </tr>
             </table>
             <div style="margin-top: 16px; padding: 16px; background: #f5f3ef; border-radius: 8px;">
-              <p style="white-space: pre-wrap; margin: 0; color: #1a1a2e;">${message}</p>
+              <p style="white-space: pre-wrap; margin: 0; color: #1a1a2e;">${message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
             </div>
             <p style="margin-top: 24px; font-size: 12px; color: #999;">
               Envoyé depuis le formulaire de contact Banlieuwood — ${new Date().toLocaleDateString("fr-FR")}
