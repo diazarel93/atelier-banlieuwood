@@ -69,6 +69,8 @@ jobs:
 
       - name: Run tests with coverage
         run: npm run test:coverage
+        env:
+          STUDENT_TOKEN_SECRET: test-secret-ci
 
       - uses: actions/upload-artifact@v4
         if: always()
