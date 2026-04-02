@@ -309,7 +309,7 @@ export function StudentFiche({
                 if (e.key === "Escape") setShowHintInput(false);
               }}
               placeholder="Indice prive pour cet eleve..."
-              className="flex-1 bg-bw-bg border border-bw-border rounded-lg px-3 py-2 text-sm text-bw-text placeholder:text-bw-muted/50 outline-none focus:border-[#F5A45B]/40 transition-colors"
+              className="flex-1 bg-bw-bg border border-[var(--color-bw-cockpit-border)] rounded-lg px-3 py-2 text-sm text-bw-text placeholder:text-bw-muted/50 outline-none focus:border-[#F5A45B]/40 transition-colors"
             />
             <button
               onClick={handleSendHint}

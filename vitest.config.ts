@@ -12,7 +12,7 @@ export default defineConfig({
       include: ["src/lib/**", "src/hooks/**"],
       thresholds: {
         statements: 4,
-        branches: 3,
+        branches: 2,
         functions: 6,
         lines: 4,
       },

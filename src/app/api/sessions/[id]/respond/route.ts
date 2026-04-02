@@ -102,7 +102,7 @@ export const POST = withErrorHandler(async function POST(
     const isStale =
       responseSituation.module !== sessionModule ||
       responseSituation.seance !== sessionSeance ||
-      responseSituation.position !== sessionIdx;
+      responseSituation.position !== sessionIdx + 1; // position est 1-based, index est 0-based
 
     if (isStale) {
       return NextResponse.json(

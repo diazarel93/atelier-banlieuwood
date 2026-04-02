@@ -101,7 +101,7 @@ export function FacilitatorFeedbackForm({ sessionId, onComplete, onSkip }: Facil
           placeholder="Ce qui s'est passé en salle, signaux faibles, dynamiques de groupe..."
           maxLength={1000}
           rows={3}
-          className="w-full rounded-xl border border-[var(--color-bw-border)] bg-card px-3 py-2 text-sm text-bw-heading placeholder:text-bw-muted/50 resize-none focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
+          className="w-full rounded-xl border border-[var(--color-bw-cockpit-border)] bg-card px-3 py-2 text-sm text-bw-heading placeholder:text-bw-muted/50 resize-none focus:outline-none focus:ring-2 focus:ring-bw-primary/30"
         />
       </div>
 
@@ -110,7 +110,7 @@ export function FacilitatorFeedbackForm({ sessionId, onComplete, onSkip }: Facil
         <button
           type="button"
           onClick={onSkip}
-          className="flex-1 py-2.5 rounded-xl border border-[var(--color-bw-border)] text-sm font-medium text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors cursor-pointer"
+          className="flex-1 py-2.5 rounded-xl border border-[var(--color-bw-cockpit-border)] text-sm font-medium text-bw-muted hover:text-bw-heading hover:bg-[var(--color-bw-surface-dim)] transition-colors cursor-pointer"
         >
           Passer
         </button>

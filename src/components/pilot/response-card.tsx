@@ -226,7 +226,7 @@ function ResponseCardInner({
               className={`h-11 min-w-[44px] px-3 text-body-xs rounded-[9px] cursor-pointer transition-all duration-200 font-semibold focus-visible:ring-2 focus-visible:ring-bw-violet focus-visible:outline-none ${
                 state === "selected"
                   ? "bg-bw-violet text-white border border-bw-violet"
-                  : "hover:bg-bw-violet/10 hover:text-bw-violet text-bw-muted border border-[rgba(245,245,244,0.08)]"
+                  : "hover:bg-bw-violet/10 hover:text-bw-violet text-bw-muted border border-[var(--color-bw-cockpit-border)]"
               }`}
             >
               {state === "selected" ? "Au vote" : "Select."}
@@ -237,7 +237,7 @@ function ResponseCardInner({
               onClick={onHide}
               disabled={isPending}
               aria-label={state === "hidden" ? "Montrer la réponse" : "Masquer la réponse"}
-              className="h-11 min-w-[44px] px-3 text-body-xs rounded-[9px] hover:bg-black/5 hover:text-bw-heading cursor-pointer transition-all duration-200 text-bw-muted border border-[rgba(245,245,244,0.08)] font-medium focus-visible:ring-2 focus-visible:ring-bw-violet focus-visible:outline-none active:scale-95"
+              className="h-11 min-w-[44px] px-3 text-body-xs rounded-[9px] hover:bg-black/5 hover:text-bw-heading cursor-pointer transition-all duration-200 text-bw-muted border border-[var(--color-bw-cockpit-border)] font-medium focus-visible:ring-2 focus-visible:ring-bw-violet focus-visible:outline-none active:scale-95"
             >
               {state === "hidden" ? "Montrer" : "Masquer"}
             </button>
@@ -257,7 +257,7 @@ function ResponseCardInner({
             <button
               onClick={onSpotlight}
               aria-label="Projeter cette réponse"
-              className="h-11 min-w-[44px] px-3 text-body-xs rounded-[9px] hover:bg-bw-primary/10 hover:text-bw-primary cursor-pointer transition-all duration-200 text-bw-muted border border-[rgba(245,245,244,0.08)] font-medium focus-visible:ring-2 focus-visible:ring-bw-primary focus-visible:outline-none active:scale-95"
+              className="h-11 min-w-[44px] px-3 text-body-xs rounded-[9px] hover:bg-bw-primary/10 hover:text-bw-primary cursor-pointer transition-all duration-200 text-bw-muted border border-[var(--color-bw-cockpit-border)] font-medium focus-visible:ring-2 focus-visible:ring-bw-primary focus-visible:outline-none active:scale-95"
               title="Projeter en grand"
             >
               🔦

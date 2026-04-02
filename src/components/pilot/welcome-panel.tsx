@@ -62,7 +62,7 @@ export function WelcomePanel({
             {(sessionTitle || "Session").replace(/\s*[-—]\s*$/, "")}
           </h1>
           <div className="flex items-center justify-center gap-2 flex-wrap">
-            <span className="label-caps px-3 py-1 rounded-lg bg-bw-surface border border-[var(--color-bw-border)] text-bw-muted">
+            <span className="label-caps px-3 py-1 rounded-lg bg-bw-surface border border-[var(--color-bw-cockpit-border)] text-bw-muted">
               {level}
             </span>
             {classLabel && (
@@ -120,7 +120,7 @@ export function WelcomePanel({
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: prefersReducedMotion ? 0 : 0.3 + i * 0.06 }}
-                        className="w-10 h-12 rounded-xl flex items-center justify-center text-xl font-black font-mono text-bw-primary bg-bw-surface border border-[var(--color-bw-border)] group-hover:border-bw-primary/50 transition-colors"
+                        className="w-10 h-12 rounded-xl flex items-center justify-center text-xl font-black font-mono text-bw-primary bg-bw-surface border border-[var(--color-bw-cockpit-border)] group-hover:border-bw-primary/50 transition-colors"
                       >
                         {char}
                       </motion.span>
@@ -154,7 +154,7 @@ export function WelcomePanel({
               </div>
 
               {/* Progress bar */}
-              <div className="w-full h-2 rounded-full bg-bw-surface border border-[var(--color-bw-border-subtle)] overflow-hidden mb-3">
+              <div className="w-full h-2 rounded-full bg-bw-surface border border-[var(--color-bw-cockpit-border-subtle)] overflow-hidden mb-3">
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-bw-teal-readable to-bw-primary"
                   animate={{ width: `${Math.min(pct, 100)}%` }}
@@ -182,7 +182,7 @@ export function WelcomePanel({
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: prefersReducedMotion ? 0 : i * 0.03 }}
-                      className="text-body-xs px-2.5 py-1 rounded-lg flex items-center gap-1 font-medium bg-bw-surface border border-[var(--color-bw-border)] text-bw-text"
+                      className="text-body-xs px-2.5 py-1 rounded-lg flex items-center gap-1 font-medium bg-bw-surface border border-[var(--color-bw-cockpit-border)] text-bw-text"
                     >
                       <span className="text-sm">{s.avatar}</span>
                       {s.display_name}

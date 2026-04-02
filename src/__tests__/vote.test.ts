@@ -11,7 +11,7 @@ let studentResult: { data: unknown; error: unknown | null } = {
   error: null,
 };
 let situationResult: { data: unknown; error: unknown | null } = {
-  data: { position: 0, module: 3, seance: 1 },
+  data: { position: 1, module: 3, seance: 1 },
   error: null,
 };
 let responseResult: { data: unknown; error: unknown | null } = {
@@ -79,7 +79,7 @@ describe("POST /api/sessions/[id]/vote", () => {
       data: { status: "voting", current_module: 3, current_seance: 1, current_situation_index: 0 },
       error: null,
     };
-    situationResult = { data: { position: 0, module: 3, seance: 1 }, error: null };
+    situationResult = { data: { position: 1, module: 3, seance: 1 }, error: null };
     studentResult = { data: { id: "stu-001" }, error: null };
     responseResult = { data: { id: "resp-001" }, error: null };
     voteResult = {
