@@ -1,7 +1,10 @@
 ---
 name: code-reviewer
-description: Senior code reviewer — invoke before any push, PR, or when asking "est-ce que ce code est bon ?", "review ce fichier", "qu'est-ce qui cloche ?", or "pret a pusher ?". Reviews security, patterns, performance, and TypeScript quality.
+description: Senior code reviewer — invoke before any push, PR, or when asking "est-ce que ce code est bon ?", "review ce fichier", "qu'est-ce qui cloche ?", or "pret a pusher ?". Reviews security, patterns, performance, and TypeScript quality. Use proactively after writing or modifying code.
 model: sonnet
+memory: project
+effort: medium
+isolation: worktree
 tools:
   - Read
   - Glob

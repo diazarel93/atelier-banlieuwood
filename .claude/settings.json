@@ -1,0 +1,207 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git stash:*)",
+      "Bash(git merge:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(git remote:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git show:*)",
+      "Bash(git tag:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(pnpm:*)",
+      "Bash(bun:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(pip:*)",
+      "Bash(pip3:*)",
+      "Bash(uvicorn:*)",
+      "Bash(ruff:*)",
+      "Bash(pytest:*)",
+      "Bash(docker:*)",
+      "Bash(gh:*)",
+      "Bash(supabase:*)",
+      "Bash(prettier:*)",
+      "Bash(vitest:*)",
+      "Bash(playwright:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(cd:*)",
+      "Bash(pwd)",
+      "Bash(which:*)",
+      "Bash(echo:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(sed:*)",
+      "Bash(awk:*)",
+      "Bash(wc:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(sort:*)",
+      "Bash(diff:*)",
+      "Bash(stat:*)",
+      "Bash(date:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(touch:*)",
+      "Bash(open:*)",
+      "Bash(make:*)",
+      "Bash(brew:*)",
+      "Bash(curl:*)",
+      "Bash(tar:*)",
+      "Bash(unzip:*)",
+      "Bash(zip:*)",
+      "Bash(lsof:*)",
+      "Bash(sleep:*)",
+      "Bash(source:*)",
+      "Bash(set:*)",
+      "Bash(export:*)",
+      "Bash(md-to-pdf:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git reset:*)",
+      "Bash(rm:*)",
+      "Bash(kill:*)",
+      "Bash(chmod:*)",
+      "Bash(supabase db push:*)",
+      "Bash(vercel:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "BRANCH=$(git branch --show-current 2>/dev/null || echo 'N/A'); PROJECT=$(basename $(pwd)); CC_VERSION=$(npm show @anthropic-ai/claude-code version 2>/dev/null || echo '?'); echo \"{\\\"additionalContext\\\": \\\"Branch: $BRANCH | Project: $PROJECT | Claude Code latest: v$CC_VERSION | Date: $(date '+%Y-%m-%d') | RAPPEL: Haiku 3 retraite le 19/04/2026, migrer vers Haiku 4.5\\\"}\"",
+            "timeout": 8
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); CMD=$(echo \"$INPUT\" | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('tool_input',{}).get('command',''))\" 2>/dev/null || echo ''); if echo \"$CMD\" | grep -qE '(rm -rf|DROP TABLE|git reset --hard|git clean -f)'; then echo \"[HOOK SECURITE] Commande dangereuse bloquee : $CMD\" >&2; exit 2; fi; exit 0"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('tool_input',{}).get('file_path',''))\" 2>/dev/null || echo ''); if [[ \"$FILE\" =~ \\.(ts|tsx|css|json)$ ]]; then npx prettier --write \"$FILE\" 2>/dev/null; fi; exit 0"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('tool_input',{}).get('file_path',''))\" 2>/dev/null || echo ''); if [[ \"$FILE\" =~ \\.(ts|tsx)$ ]]; then npx tsc --noEmit 2>&1 | head -10; fi; exit 0",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); FILE=$(echo \"$INPUT\" | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('tool_input',{}).get('file_path',''))\" 2>/dev/null || echo ''); PROJECT=$(basename $(pwd)); /Users/diazarel/.nvm/versions/node/v20.19.5/bin/node /Users/diazarel/starter-kit/tools/telegram-bot/midcoach.js \"$FILE\" \"$PROJECT\" &",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); ACTIVE=$(echo \"$INPUT\" | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('stop_hook_active', False))\" 2>/dev/null || echo 'False'); if [ \"$ACTIVE\" = 'True' ]; then exit 0; fi; bash /Users/diazarel/starter-kit/tools/telegram-bot/run-coach.sh; exit 0",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude Code a besoin de toi\" with title \"Claude Code\" sound name \"Ping\"' 2>/dev/null; exit 0",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); AGENT=$(echo \"$INPUT\" | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('agent_name','unknown'))\" 2>/dev/null || echo 'unknown'); echo \"[$(date '+%H:%M:%S')] Subagent démarré : $AGENT\" >> .claude/subagent.log; exit 0",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); AGENT=$(echo \"$INPUT\" | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('agent_name','unknown'))\" 2>/dev/null || echo 'unknown'); echo \"[$(date '+%H:%M:%S')] Subagent terminé : $AGENT\" >> .claude/subagent.log; exit 0",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"{\\\"additionalContext\\\": \\\"Contexte compressé. Rappels : jamais push sur main, toujours check-all avant push, Haiku 3 déprécié le 19 avril 2026.\\\"}\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "env": {
+    "CLAUDE_CODE_NO_FLICKER": "1"
+  },
+  "autoMemoryEnabled": true,
+  "autoDreamEnabled": true,
+  "effortLevel": "medium",
+  "showThinkingSummaries": true,
+  "autoUpdatesChannel": "latest",
+  "worktree": {
+    "symlinkDirectories": ["node_modules", ".cache", ".next"]
+  },
+  "includeGitInstructions": true
+}

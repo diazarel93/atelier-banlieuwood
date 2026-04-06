@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Banlieuwood — Choix de direction cockpit</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: #111; color: #fff; padding: 40px; }
+  h1 { font-size: 28px; margin-bottom: 8px; color: #FF6B35; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; }
+  h2 { font-size: 18px; margin: 40px 0 16px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; }
+  h3 { font-size: 15px; margin-bottom: 12px; }
+  p { font-size: 13px; color: #94a3b8; margin-bottom: 8px; line-height: 1.5; }
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card { border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.08); }
+
+  /* ═══════════════════════════════════════
+     QUESTION 1 — Émotion
+  ═══════════════════════════════════════ */
+  .emo-a { background: #1c1917; border-color: rgba(255,107,53,0.2); }
+  .emo-b { background: #0f1117; border-color: rgba(139,92,246,0.2); }
+  .emo-c { background: #0a0a0a; border-color: rgba(148,163,184,0.15); }
+
+  .cockpit-header {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.05); padding: 10px 14px;
+    border-radius: 8px; margin-bottom: 12px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-green { background: #4ECDC4; box-shadow: 0 0 6px #4ECDC4; }
+  .dot-orange { background: #FF6B35; box-shadow: 0 0 6px #FF6B35; }
+  .dot-blue { background: #60a5fa; box-shadow: 0 0 6px #60a5fa; }
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; }
+  .title { font-size: 14px; font-weight: 600; }
+
+  .pill {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .pill-warm { background: rgba(255,107,53,0.15); color: #FF6B35; border: 1px solid rgba(255,107,53,0.3); }
+  .pill-cool { background: rgba(139,92,246,0.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,0.3); }
+  .pill-neutral { background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.2); }
+
+  .meter { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin: 8px 0; }
+  .meter-fill { height: 100%; border-radius: 2px; }
+  .fill-orange { background: #FF6B35; width: 65%; }
+  .fill-violet { background: #8B5CF6; width: 65%; }
+  .fill-teal { background: #4ECDC4; width: 65%; }
+
+  .student-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 12px;
+  }
+  .avatar { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; font-weight: 700; }
+
+  /* ═══════════════════════════════════════
+     QUESTION 2 — Brun chaud vs Bleu nuit
+  ═══════════════════════════════════════ */
+  .theme-warm { background: #1c1917; }
+  .theme-cold { background: #1a1a35; }
+  .surface-warm { background: #292524; border: 1px solid rgba(255,255,255,0.08); }
+  .surface-cold { background: #2a2a50; border: 1px solid rgba(255,255,255,0.08); }
+  .elevated-warm { background: #44403c; }
+  .elevated-cold { background: #3a3a6a; }
+
+  .swatch { height: 60px; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: flex-end; padding: 8px; }
+  .swatch-label { font-size: 10px; color: rgba(255,255,255,0.5); font-family: monospace; }
+
+  .text-warm-primary { color: #f5f5f4; }
+  .text-warm-muted { color: #a8a29e; }
+  .text-cold-primary { color: #f0f0f8; }
+  .text-cold-muted { color: #94a3b8; }
+
+  /* ═══════════════════════════════════════
+     QUESTION 3 — Références
+  ═══════════════════════════════════════ */
+  .ref-linear { background: #1c1c1e; }
+  .ref-datadog { background: #101014; }
+  .ref-cinema { background: #1c1917; }
+
+  .sidebar-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; border-radius: 6px; font-size: 12px; color: #9ca3af;
+    cursor: default;
+  }
+  .sidebar-item.active-linear { background: rgba(255,255,255,0.08); color: #fff; border-left: 2px solid #6366f1; padding-left: 8px; }
+  .sidebar-item.active-dd { background: rgba(255,255,255,0.06); color: #fff; border-bottom: 2px solid #632ca6; padding-bottom: 4px; }
+  .sidebar-item.active-cinema { background: rgba(255,107,53,0.1); color: #FF6B35; border-left: 2px solid #FF6B35; padding-left: 8px; }
+
+  .surface-dd { background: #1C1C22; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+  .surface-dd-elevated { background: #26262E; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 8px; }
+
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  .badge-purple { background: rgba(99,44,166,0.2); color: #a78bfa; border: 1px solid rgba(99,44,166,0.3); }
+  .badge-orange { background: rgba(255,107,53,0.15); color: #FF6B35; border: 1px solid rgba(255,107,53,0.3); }
+  .badge-teal { background: rgba(78,205,196,0.15); color: #4ECDC4; border: 1px solid rgba(78,205,196,0.3); }
+
+  .bar { height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; margin: 4px 0; }
+  .bar-fill { height: 100%; border-radius: 2px; }
+
+  .question-card { border-radius: 8px; padding: 14px; margin-bottom: 8px; }
+  .qc-linear { background: #27272a; border: 1px solid rgba(255,255,255,0.07); }
+  .qc-dd { background: #1C1C22; border: 1px solid rgba(255,255,255,0.06); }
+  .qc-cinema { background: rgba(255,107,53,0.06); border: 1px solid rgba(255,107,53,0.15); }
+
+  .kpi { text-align: center; padding: 12px; border-radius: 8px; }
+  .kpi-val { font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+  .kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #6b7280; }
+
+  .tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 8px;
+  }
+  .tag-recommended { background: rgba(78,205,196,0.15); color: #4ECDC4; }
+  .tag-cold { background: rgba(96,165,250,0.1); color: #60a5fa; }
+  .tag-cinema { background: rgba(212,168,67,0.15); color: #D4A843; }
+
+  /* ═══════════════════════════════════════
+     MARQUAGES DA SENIOR
+  ═══════════════════════════════════════ */
+  .da-recommended {
+    border: 2px solid #22c55e !important;
+    box-shadow: 0 0 20px rgba(34,197,94,0.15), inset 0 0 30px rgba(34,197,94,0.03);
+  }
+  .badge-da {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 20px;
+    background: rgba(34,197,94,0.15); color: #22c55e;
+    border: 1px solid rgba(34,197,94,0.4);
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  .da-justif {
+    margin-top: 12px; padding: 10px 12px;
+    background: rgba(34,197,94,0.05); border-left: 2px solid rgba(34,197,94,0.4);
+    border-radius: 0 6px 6px 0; font-size: 11px; color: #86efac; line-height: 1.5;
+  }
+  .da-justif-reject {
+    margin-top: 12px; padding: 10px 12px;
+    background: rgba(255,255,255,0.03); border-left: 2px solid rgba(255,255,255,0.1);
+    border-radius: 0 6px 6px 0; font-size: 11px; color: #6b7280; line-height: 1.5;
+  }
+
+  .section-title {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    color: #4b5563; margin-bottom: 16px; padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .choice-number {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(255,107,53,0.15); color: #FF6B35;
+    font-size: 12px; font-weight: 700; margin-right: 8px;
+  }
+</style>
+</head>
+<body>
+
+<h1>BANLIEUWOOD — COCKPIT DIRECTION</h1>
+<p style="color:#6b7280; font-size:13px; margin-bottom:8px;">3 choix a faire avant de coder la Phase 2</p>
+<p style="color:#4b5563; font-size:11px;">Ouvre ce fichier dans ton navigateur pour voir les options visuellement</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- QUESTION 1 — ÉMOTION                       -->
+<!-- ═══════════════════════════════════════════ -->
+
+<h2><span class="choice-number">1</span> Quelle ambiance pour le cockpit ?</h2>
+<div class="grid grid-3">
+
+  <!-- Option A — Maitrise cinema -->
+  <div class="card emo-a da-recommended">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <h3>A — "Maîtrise cinéma"</h3>
+      <span class="badge-da">✓ Recommandé DA</span>
+    </div>
+    <p style="margin-bottom:8px;">Cabine de projection. Chaud, professionnel, concentré. Comme regarder une régie de cinéma.</p>
+    <div class="da-justif">A24 (9/10) et Criterion (9/10) utilisent exactement ce registre : chaleur organique + densité professionnelle. Le brun #1c1917 est introuvable dans le SaaS — différenciation maximale par rapport à Linear ou Notion.</div>
+
+    <div class="cockpit-header">
+      <div class="dot dot-green"></div>
+      <div>
+        <div class="label" style="color:#a8a29e;">SEANCE EN COURS</div>
+        <div class="title">M6 — Cadreur / Rôles plateau</div>
+      </div>
+      <div style="margin-left:auto;"><span class="pill pill-warm">24 élèves</span></div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px;">
+      <div class="kpi" style="background:rgba(255,107,53,0.08);">
+        <div class="kpi-val" style="color:#FF6B35;">18</div>
+        <div class="kpi-label">répondu</div>
+      </div>
+      <div class="kpi" style="background:rgba(212,168,67,0.08);">
+        <div class="kpi-val" style="color:#D4A843;">3</div>
+        <div class="kpi-label">en attente</div>
+      </div>
+      <div class="kpi" style="background:rgba(78,205,196,0.08);">
+        <div class="kpi-val" style="color:#4ECDC4;">75%</div>
+        <div class="kpi-label">participation</div>
+      </div>
+    </div>
+
+    <div class="question-card qc-cinema">
+      <div class="label" style="color:#FF6B35; margin-bottom:6px;">QUESTION 3/8</div>
+      <div style="font-size:14px; font-weight:600; line-height:1.4;">Quel est le rôle du cadreur dans la mise en scène ?</div>
+    </div>
+  </div>
+
+  <!-- Option B — Régie TV live -->
+  <div class="card emo-b">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <h3>B — "Régie TV live"</h3>
+      <span class="tag tag-cold">Énergique</span>
+    </div>
+    <p style="margin-bottom:8px;">Plus dynamique, violet dominant. Comme une régie de direct TV. Tension positive.</p>
+    <div class="da-justif-reject">Violet = code Twitch/gaming. Risque de confusion avec les outils de live streaming. Pas dans l'ADN Banlieuwood cinéma.</div>
+
+    <div class="cockpit-header" style="background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.2);">
+      <div class="dot" style="background:#a78bfa; box-shadow:0 0 6px #8B5CF6;"></div>
+      <div>
+        <div class="label" style="color:#a78bfa;">LIVE</div>
+        <div class="title">M6 — Cadreur / Rôles plateau</div>
+      </div>
+      <div style="margin-left:auto;"><span class="pill pill-cool">24 élèves</span></div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px;">
+      <div class="kpi" style="background:rgba(139,92,246,0.1);">
+        <div class="kpi-val" style="color:#8B5CF6;">18</div>
+        <div class="kpi-label">répondu</div>
+      </div>
+      <div class="kpi" style="background:rgba(139,92,246,0.06);">
+        <div class="kpi-val" style="color:#a78bfa;">3</div>
+        <div class="kpi-label">en attente</div>
+      </div>
+      <div class="kpi" style="background:rgba(139,92,246,0.06);">
+        <div class="kpi-val" style="color:#c4b5fd;">75%</div>
+        <div class="kpi-label">participation</div>
+      </div>
+    </div>
+
+    <div class="question-card" style="background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.2);">
+      <div class="label" style="color:#8B5CF6; margin-bottom:6px;">QUESTION 3/8</div>
+      <div style="font-size:14px; font-weight:600; line-height:1.4;">Quel est le rôle du cadreur dans la mise en scène ?</div>
+    </div>
+  </div>
+
+  <!-- Option C — Salle de contrôle discrète -->
+  <div class="card emo-c" style="border-color:rgba(148,163,184,0.1);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <h3>C — "Salle de contrôle"</h3>
+      <span class="tag" style="background:rgba(148,163,184,0.1); color:#6b7280;">Minimaliste</span>
+    </div>
+    <p style="margin-bottom:8px;">Maximum discret. Noir profond, blanc pur, zéro couleur sauf pour les alertes critiques.</p>
+    <div class="da-justif-reject">Minimalisme sans identité = SaaS générique. Kinfolk (9/10) prouve qu'un minimalisme fort exige une typographie premium — sans Bebas Neue mis en avant, cette option perd son âme.</div>
+
+    <div class="cockpit-header" style="background:rgba(255,255,255,0.04);">
+      <div class="dot dot-green"></div>
+      <div>
+        <div class="label" style="color:#6b7280;">SESSION ACTIVE</div>
+        <div class="title">M6 — Cadreur / Rôles plateau</div>
+      </div>
+      <div style="margin-left:auto;"><span class="pill pill-neutral">24</span></div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px;">
+      <div class="kpi" style="background:rgba(255,255,255,0.03);">
+        <div class="kpi-val" style="color:#f9fafb;">18</div>
+        <div class="kpi-label">répondu</div>
+      </div>
+      <div class="kpi" style="background:rgba(255,255,255,0.02);">
+        <div class="kpi-val" style="color:#9ca3af;">3</div>
+        <div class="kpi-label">attente</div>
+      </div>
+      <div class="kpi" style="background:rgba(255,255,255,0.02);">
+        <div class="kpi-val" style="color:#d1d5db;">75%</div>
+        <div class="kpi-label">part.</div>
+      </div>
+    </div>
+
+    <div class="question-card" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
+      <div class="label" style="color:#6b7280; margin-bottom:6px;">QUESTION 3/8</div>
+      <div style="font-size:14px; font-weight:600; line-height:1.4; color:#e5e7eb;">Quel est le rôle du cadreur dans la mise en scène ?</div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- QUESTION 2 — COULEUR DE FOND               -->
+<!-- ═══════════════════════════════════════════ -->
+
+<h2><span class="choice-number">2</span> Fond du cockpit : brun chaud (tokens CSS) ou bleu nuit (composants actuels) ?</h2>
+<div class="grid grid-2">
+
+  <!-- Brun chaud -->
+  <div class="card theme-warm da-recommended" style="border:2px solid rgba(255,107,53,0.3);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <h3>Brun chaud <code style="font-size:11px; color:#6b7280;">#1c1917</code></h3>
+      <span class="badge-da">✓ Recommandé DA</span>
+    </div>
+    <p style="margin-bottom:8px;">Correspond à la brand Banlieuwood. Chaud comme du papier, du celluloïd. Cohérent avec le reste du site.</p>
+    <div class="da-justif">MK2, A24 et NEON n'utilisent jamais le bleu nuit — leurs UI calquent la chaleur de la pellicule. La palette #1c1917 + #FF6B35 + #D4A843 est absente des 641 sites SaaS de la KB : différenciation absolue.</div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin: 16px 0;">
+      <div>
+        <div class="swatch" style="background:#1c1917;"><span class="swatch-label">canvas</span></div>
+        <div style="font-size:10px; color:#6b7280; font-family:monospace;">#1c1917</div>
+      </div>
+      <div>
+        <div class="swatch" style="background:#292524;"><span class="swatch-label">surface</span></div>
+        <div style="font-size:10px; color:#6b7280; font-family:monospace;">#292524</div>
+      </div>
+      <div>
+        <div class="swatch" style="background:#44403c;"><span class="swatch-label">elevated</span></div>
+        <div style="font-size:10px; color:#6b7280; font-family:monospace;">#44403c</div>
+      </div>
+    </div>
+
+    <div style="background:#292524; border-radius:8px; padding:14px; border:1px solid rgba(255,255,255,0.08);">
+      <div style="font-size:13px; color:#f5f5f4; font-weight:600; margin-bottom:4px;">Texte principal</div>
+      <div style="font-size:12px; color:#a8a29e; margin-bottom:8px;">Texte secondaire / muted</div>
+      <div style="background:#44403c; padding:8px; border-radius:6px;">
+        <div style="font-size:11px; color:#a8a29e;">Surface élevée (cards, panneaux)</div>
+      </div>
+      <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+        <span class="badge badge-orange">🎬 Séance active</span>
+        <span class="badge badge-teal">✓ 18 réponses</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bleu nuit -->
+  <div class="card theme-cold" style="border:1px solid rgba(96,165,250,0.2);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <h3>Bleu nuit <code style="font-size:11px; color:#6b7280;">#1a1a35</code></h3>
+      <span class="tag tag-cold">Composants actuels</span>
+    </div>
+    <p style="margin-bottom:8px;">Hardcodé dans les composants. Plus "tech" / numérique. Évoque un logiciel d'entreprise.</p>
+    <div class="da-justif-reject">Bleu nuit = code visuel Linear / Liveblocks / Notion. Excellent pour du SaaS B2B générique — catastrophique pour affirmer une identité cinéma. Les studios FR (Murmure, Brest×3) refusent explicitement ces codes.</div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin: 16px 0;">
+      <div>
+        <div class="swatch" style="background:#1a1a35;"><span class="swatch-label">canvas</span></div>
+        <div style="font-size:10px; color:#6b7280; font-family:monospace;">#1a1a35</div>
+      </div>
+      <div>
+        <div class="swatch" style="background:#2a2a50;"><span class="swatch-label">surface</span></div>
+        <div style="font-size:10px; color:#6b7280; font-family:monospace;">#2a2a50</div>
+      </div>
+      <div>
+        <div class="swatch" style="background:#3a3a6a;"><span class="swatch-label">elevated</span></div>
+        <div style="font-size:10px; color:#6b7280; font-family:monospace;">#3a3a6a</div>
+      </div>
+    </div>
+
+    <div style="background:#2a2a50; border-radius:8px; padding:14px; border:1px solid rgba(255,255,255,0.08);">
+      <div style="font-size:13px; color:#f0f0f8; font-weight:600; margin-bottom:4px;">Texte principal</div>
+      <div style="font-size:12px; color:#94a3b8; margin-bottom:8px;">Texte secondaire / muted</div>
+      <div style="background:#3a3a6a; padding:8px; border-radius:6px;">
+        <div style="font-size:11px; color:#94a3b8;">Surface élevée (cards, panneaux)</div>
+      </div>
+      <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+        <span class="badge badge-purple">🎬 Séance active</span>
+        <span class="badge" style="background:rgba(78,205,196,0.1); color:#4ECDC4; border:1px solid rgba(78,205,196,0.2);">✓ 18 réponses</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- QUESTION 3 — RÉFÉRENCES                    -->
+<!-- ═══════════════════════════════════════════ -->
+
+<h2><span class="choice-number">3</span> Quel style de référence pour la structure ?</h2>
+<div class="grid grid-3">
+
+  <!-- Linear -->
+  <div class="card ref-linear" style="border-color:rgba(99,102,241,0.3);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+      <h3>Linear</h3>
+      <span class="tag" style="background:rgba(99,102,241,0.15); color:#818cf8;">Ultra-épuré</span>
+    </div>
+    <p style="margin-bottom:8px;">Dense, propre, chaque pixel compte. Pro sans être froid.</p>
+    <div class="da-justif-reject">Excellent outil, mais code SaaS pur — sidebar indigo + grille froide signalent "software B2B". Collins/Figma (9/10) dit : la clarté sans âme est une occasion manquée.</div>
+
+    <div style="display:flex; gap:12px; height:140px;">
+      <!-- Mini sidebar -->
+      <div style="width:130px; border-right:1px solid rgba(255,255,255,0.06); padding-right:12px;">
+        <div class="sidebar-item active-linear">📋 Questions</div>
+        <div class="sidebar-item">👥 Élèves</div>
+        <div class="sidebar-item">📊 Stats</div>
+        <div class="sidebar-item">⚙️ Actions</div>
+      </div>
+      <!-- Content -->
+      <div style="flex:1;">
+        <div style="font-size:11px; color:#6b7280; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">En cours</div>
+        <div style="font-size:13px; color:#f4f4f5; font-weight:500; margin-bottom:6px;">Q3 — Rôle du cadreur</div>
+        <div class="bar"><div class="bar-fill" style="background:#6366f1; width:75%;"></div></div>
+        <div style="font-size:11px; color:#71717a; margin-top:4px;">18 / 24 réponses</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Datadog -->
+  <div class="card ref-datadog" style="border-color:rgba(99,44,166,0.3);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+      <h3>Datadog</h3>
+      <span class="tag" style="background:rgba(99,44,166,0.15); color:#a78bfa;">3 surfaces</span>
+    </div>
+    <p style="margin-bottom:8px;">Hiérarchie forte, industriel mais lisible. Pour les cockpits de données dense.</p>
+    <div class="da-justif-reject">La hiérarchie 3 surfaces est réutilisable, mais la palette violette + gris froid est 100% monitoring cloud. Brest×3 (9/10) : l'identité forte ne s'emprunte pas à l'observabilité DevOps.</div>
+
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <div class="surface-dd">
+        <div style="font-size:10px; color:#6b7280; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Question active</div>
+        <div class="surface-dd-elevated">
+          <div style="font-size:12px; color:#e2e8f0; font-weight:500;">Q3 — Rôle du cadreur</div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+        <div class="surface-dd" style="text-align:center;">
+          <div style="font-size:20px; font-weight:700; color:#a78bfa;">18</div>
+          <div style="font-size:10px; color:#6b7280;">répondu</div>
+        </div>
+        <div class="surface-dd" style="text-align:center;">
+          <div style="font-size:20px; font-weight:700; color:#4ECDC4;">75%</div>
+          <div style="font-size:10px; color:#6b7280;">taux</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cinéma Banlieuwood -->
+  <div class="card ref-cinema da-recommended" style="border-color:rgba(212,168,67,0.3);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+      <h3>Cinéma Banlieuwood</h3>
+      <span class="badge-da">✓ Recommandé DA</span>
+    </div>
+    <p style="margin-bottom:8px;">Brun chaud + or + orange. Propre à Banlieuwood, aucune référence externe.</p>
+    <div class="da-justif">Sagmeister & Walsh (10/10) et Nosigner (9/10) : l'identité irremplaçable naît quand chaque couleur est motivée par un récit. #FF6B35 + #D4A843 sur #1c1917 = palette pellicule + projecteur — absente de tous les outils SaaS de la KB.</div>
+
+    <div style="background:rgba(255,255,255,0.03); border-radius:8px; padding:10px; border:1px solid rgba(212,168,67,0.15); margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-size:10px; color:#D4A843; text-transform:uppercase; letter-spacing:1.5px;">Séance</span>
+        <span class="badge" style="background:rgba(255,107,53,0.1); color:#FF6B35; border:1px solid rgba(255,107,53,0.2); font-size:10px;">● LIVE</span>
+      </div>
+      <div style="font-size:13px; color:#f5f5f4; font-weight:600; font-family:'Bebas Neue', sans-serif; letter-spacing:1px;">RÔLE DU CADREUR</div>
+      <div class="bar" style="margin-top:8px;"><div class="bar-fill" style="background:linear-gradient(90deg, #FF6B35, #D4A843); width:75%;"></div></div>
+    </div>
+    <div style="display:flex; gap:4px;">
+      <div style="flex:1; text-align:center; padding:6px; background:rgba(255,107,53,0.08); border-radius:6px;">
+        <div style="font-size:16px; font-weight:700; color:#FF6B35;">18</div>
+        <div style="font-size:9px; color:#6b7280; text-transform:uppercase; letter-spacing:1px;">rép.</div>
+      </div>
+      <div style="flex:1; text-align:center; padding:6px; background:rgba(212,168,67,0.08); border-radius:6px;">
+        <div style="font-size:16px; font-weight:700; color:#D4A843;">3</div>
+        <div style="font-size:9px; color:#6b7280; text-transform:uppercase; letter-spacing:1px;">att.</div>
+      </div>
+      <div style="flex:1; text-align:center; padding:6px; background:rgba(78,205,196,0.08); border-radius:6px;">
+        <div style="font-size:16px; font-weight:700; color:#4ECDC4;">75%</div>
+        <div style="font-size:9px; color:#6b7280; text-transform:uppercase; letter-spacing:1px;">part.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- RÉSUMÉ                                     -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div style="margin-top:48px; padding:24px; background:rgba(255,107,53,0.05); border:1px solid rgba(255,107,53,0.15); border-radius:12px;">
+  <h2 style="margin:0 0 16px; font-size:12px;">TES 3 REPONSES</h2>
+  <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
+    <div>
+      <div style="font-size:11px; color:#6b7280; margin-bottom:8px;">1 — Ambiance</div>
+      <div style="font-size:13px; color:#f5f5f4;">A / B / C ?</div>
+    </div>
+    <div>
+      <div style="font-size:11px; color:#6b7280; margin-bottom:8px;">2 — Fond</div>
+      <div style="font-size:13px; color:#f5f5f4;">Brun chaud / Bleu nuit ?</div>
+    </div>
+    <div>
+      <div style="font-size:11px; color:#6b7280; margin-bottom:8px;">3 — Référence</div>
+      <div style="font-size:13px; color:#f5f5f4;">Linear / Datadog / Cinéma ?</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- VERDICT DA SENIOR                          -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div style="margin-top:32px; padding:28px; background:rgba(34,197,94,0.04); border:2px solid rgba(34,197,94,0.3); border-radius:16px;">
+
+  <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
+    <div style="width:36px; height:36px; border-radius:50%; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.4); display:grid; place-items:center; font-size:16px;">✓</div>
+    <div>
+      <div style="font-size:14px; font-weight:700; color:#22c55e; letter-spacing:1.5px; text-transform:uppercase;">Verdict DA Senior</div>
+      <div style="font-size:11px; color:#4b5563; margin-top:2px;">Basé sur 641 références mondiales — 11 studios world-class audités visuellement</div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-bottom:24px;">
+
+    <div style="padding:16px; background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.2); border-radius:10px;">
+      <div style="font-size:10px; color:#22c55e; text-transform:uppercase; letter-spacing:2px; margin-bottom:8px;">Question 1 — Ambiance</div>
+      <div style="font-size:18px; font-weight:700; color:#f5f5f4; font-family:'Bebas Neue', sans-serif; letter-spacing:1px; margin-bottom:6px;">A — MAÎTRISE CINÉMA</div>
+      <div style="font-size:11px; color:#86efac; line-height:1.5; margin-bottom:10px;">#1c1917 chaud, cabine de projection, concentré — pas de tension anxiogène.</div>
+      <div style="font-size:10px; color:#4b5563; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">
+        Réf. : <span style="color:#6b7280;">A24 (9/10) · NEON (9/10) · Criterion (9/10)</span>
+      </div>
+    </div>
+
+    <div style="padding:16px; background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.2); border-radius:10px;">
+      <div style="font-size:10px; color:#22c55e; text-transform:uppercase; letter-spacing:2px; margin-bottom:8px;">Question 2 — Fond</div>
+      <div style="font-size:18px; font-weight:700; color:#f5f5f4; font-family:'Bebas Neue', sans-serif; letter-spacing:1px; margin-bottom:6px;">BRUN CHAUD #1c1917</div>
+      <div style="font-size:11px; color:#86efac; line-height:1.5; margin-bottom:10px;">Celluloïd, papier photographique — 0% SaaS, 100% cinéma. Tokens CSS déjà en place.</div>
+      <div style="font-size:10px; color:#4b5563; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">
+        Réf. : <span style="color:#6b7280;">Murmure (9/10) · Brest×3 (9/10) · MK2 · Fantastic Man (9/10)</span>
+      </div>
+    </div>
+
+    <div style="padding:16px; background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.2); border-radius:10px;">
+      <div style="font-size:10px; color:#22c55e; text-transform:uppercase; letter-spacing:2px; margin-bottom:8px;">Question 3 — Référence</div>
+      <div style="font-size:18px; font-weight:700; color:#f5f5f4; font-family:'Bebas Neue', sans-serif; letter-spacing:1px; margin-bottom:6px;">CINÉMA BANLIEUWOOD</div>
+      <div style="font-size:11px; color:#86efac; line-height:1.5; margin-bottom:10px;">Palette #FF6B35 + #D4A843 sur #1c1917 — absente des 641 sites SaaS. Identité native, non empruntée.</div>
+      <div style="font-size:10px; color:#4b5563; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">
+        Réf. : <span style="color:#6b7280;">Sagmeister (10/10) · Nosigner (9/10) · Base Design (9/10)</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="padding:14px 18px; background:rgba(255,107,53,0.06); border:1px solid rgba(255,107,53,0.2); border-radius:8px;">
+    <div style="font-size:11px; color:#FF6B35; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:6px;">Principe directeur</div>
+    <div style="font-size:12px; color:#a8a29e; line-height:1.6;">
+      Linear et Liveblocks sont des références excellence pour le SaaS — c'est précisément pourquoi Banlieuwood ne doit pas les copier.
+      L'identité cinéma ne s'emprunte pas : elle se construit par une palette <strong style="color:#f5f5f4;">brun chaud + orange + or</strong> que personne d'autre n'utilise dans l'EdTech.
+      Chaque studio world-class de la KB confirme : la différenciation vraie passe par le refus des codes du secteur dominant.
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
