@@ -1,7 +1,9 @@
 ---
 name: feature-planner
-description: Feature planner — invoke BEFORE coding any non-trivial feature. Use when saying "je veux ajouter X", "comment je fais Y", "par ou je commence pour Z", or "planifie cette feature". Returns a complete implementation plan with ordered tasks, file list, complexity estimate, and model routing recommendation.
+description: Feature planner — invoke BEFORE coding any non-trivial feature. Use when saying "je veux ajouter X", "comment je fais Y", "par ou je commence pour Z", or "planifie cette feature". Returns a complete implementation plan with ordered tasks, file list, complexity estimate, and model routing recommendation. Always use before coding M/L features.
 model: sonnet
+memory: project
+effort: medium
 tools:
   - Read
   - Glob
