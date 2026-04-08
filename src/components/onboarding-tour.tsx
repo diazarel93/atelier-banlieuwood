@@ -271,7 +271,7 @@ export function OnboardingTour() {
                 <div
                   className="absolute top-0 inset-x-0 h-[2px]"
                   style={{
-                    background: "linear-gradient(90deg, transparent, #FF6B35, transparent)",
+                    background: "linear-gradient(90deg, transparent, var(--color-bw-primary), transparent)",
                   }}
                 />
 
@@ -283,7 +283,7 @@ export function OnboardingTour() {
                         className="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold"
                         style={{
                           backgroundColor: "rgba(255,107,53,0.15)",
-                          color: "#FF6B35",
+                          color: "var(--color-bw-primary)",
                         }}
                       >
                         {step + 1}
@@ -329,7 +329,11 @@ export function OnboardingTour() {
                         style={{
                           width: i === step ? 20 : 8,
                           backgroundColor:
-                            i === step ? "#FF6B35" : i < step ? "rgba(255,107,53,0.4)" : "rgba(255,255,255,0.1)",
+                            i === step
+                              ? "var(--color-bw-primary)"
+                              : i < step
+                                ? "rgba(255,107,53,0.4)"
+                                : "rgba(255,255,255,0.1)",
                         }}
                       />
                     ))}
@@ -347,7 +351,7 @@ export function OnboardingTour() {
                       onClick={next}
                       className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-semibold text-white cursor-pointer transition-all duration-200"
                       style={{
-                        background: "linear-gradient(135deg, #FF6B35, #E85D26)",
+                        background: "linear-gradient(135deg, var(--color-bw-primary), #E85D26)",
                         boxShadow: "0 0 16px rgba(255,107,53,0.2), inset 0 1px 0 rgba(255,255,255,0.1)",
                       }}
                       onMouseEnter={(e) => {
@@ -418,7 +422,7 @@ export function OnboardingTour() {
                 <div
                   className="absolute top-0 inset-x-0 h-[2px]"
                   style={{
-                    background: "linear-gradient(90deg, transparent, #FF6B35, transparent)",
+                    background: "linear-gradient(90deg, transparent, var(--color-bw-primary), transparent)",
                   }}
                 />
                 <div className="flex items-center justify-between">
@@ -457,7 +461,7 @@ export function OnboardingTour() {
                     onClick={next}
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-semibold text-white cursor-pointer transition-all duration-200"
                     style={{
-                      background: "linear-gradient(135deg, #FF6B35, #E85D26)",
+                      background: "linear-gradient(135deg, var(--color-bw-primary), #E85D26)",
                       boxShadow: "0 0 16px rgba(255,107,53,0.2), inset 0 1px 0 rgba(255,255,255,0.1)",
                     }}
                   >

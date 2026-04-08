@@ -62,7 +62,7 @@ export function StudentListCard({
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#FF6B35"
+              stroke="var(--color-bw-primary)"
               strokeWidth="2"
               strokeLinecap="round"
               aria-hidden="true"

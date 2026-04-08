@@ -41,7 +41,7 @@ export function ProjectionHeader({ sessionStartedAt }: ProjectionHeaderProps) {
         <motion.span
           animate={{ opacity: [1, 0.5, 1] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FF6B35] text-white text-body-xs font-bold uppercase tracking-wider"
+          className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-bw-primary text-white text-body-xs font-bold uppercase tracking-wider"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-white" />
           LIVE

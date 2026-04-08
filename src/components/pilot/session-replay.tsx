@@ -36,8 +36,8 @@ interface SessionReplayProps {
 
 const EVENT_COLORS: Record<string, string> = {
   question_launched: "#3B82F6",
-  response_received: "#4ECDC4",
-  vote_cast: "#8B5CF6",
+  response_received: "var(--color-bw-teal)",
+  vote_cast: "var(--color-bw-violet)",
   collective_choice: "#F59E0B",
   highlight: "#EC4899",
   status_change: "#6B7280",

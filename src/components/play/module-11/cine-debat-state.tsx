@@ -16,9 +16,9 @@ interface CineDebatStateProps {
 
 // ── Theme colors ──
 const THEME_COLORS: Record<string, string> = {
-  raconter: "#8B5CF6",
+  raconter: "var(--color-bw-violet)",
   émotion: "#EC4899",
-  héros: "#FF6B35",
+  héros: "var(--color-bw-primary)",
   coulisses: "#06B6D4",
 };
 
@@ -244,7 +244,7 @@ function DebatInput({
                 style={
                   justification.trim() && !submitting
                     ? {
-                        background: "linear-gradient(135deg, #FF6B35, #D4A843)",
+                        background: "linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))",
                         boxShadow: "0 4px 15px rgba(255,107,53,0.3)",
                       }
                     : undefined
@@ -287,7 +287,8 @@ function OpenInput({ onSubmit, submitting }: { onSubmit: (text: string) => void;
           className="h-full rounded-full"
           animate={{
             width: `${(text.length / 500) * 100}%`,
-            backgroundColor: text.length >= 480 ? "#EF4444" : text.length >= 400 ? "#F59E0B" : "#FF6B35",
+            backgroundColor:
+              text.length >= 480 ? "#EF4444" : text.length >= 400 ? "#F59E0B" : "var(--color-bw-primary)",
           }}
           transition={{ duration: 0.2 }}
         />
@@ -315,7 +316,7 @@ function OpenInput({ onSubmit, submitting }: { onSubmit: (text: string) => void;
           style={
             text.trim() && !submitting
               ? {
-                  background: "linear-gradient(135deg, #FF6B35, #D4A843)",
+                  background: "linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))",
                   boxShadow: "0 4px 15px rgba(255,107,53,0.3)",
                 }
               : undefined
@@ -331,7 +332,7 @@ function OpenInput({ onSubmit, submitting }: { onSubmit: (text: string) => void;
 // ── Main component ──
 export function CineDebatState({ module11, prompt, nudgeText, onSubmit, submitting }: CineDebatStateProps) {
   const { displayed, done, skip } = useTypewriter(prompt);
-  const themeColor = THEME_COLORS[module11.theme] || "#FF6B35";
+  const themeColor = THEME_COLORS[module11.theme] || "var(--color-bw-primary)";
 
   return (
     <motion.div
@@ -411,7 +412,7 @@ export function CineDebatState({ module11, prompt, nudgeText, onSubmit, submitti
             height="14"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#4ECDC4"
+            stroke="var(--color-bw-teal)"
             strokeWidth="2"
             strokeLinecap="round"
             className="mt-0.5 flex-shrink-0"

@@ -129,7 +129,7 @@ export function PreSessionChecklist({
           <div
             className="absolute top-0 inset-x-0 h-[2px]"
             style={{
-              background: "linear-gradient(90deg, transparent, #FF6B35, transparent)",
+              background: "linear-gradient(90deg, transparent, var(--color-bw-primary), transparent)",
             }}
           />
 
@@ -193,7 +193,7 @@ export function PreSessionChecklist({
                 style={{
                   background: allChecked
                     ? "linear-gradient(90deg, #10B981, #34D399)"
-                    : "linear-gradient(90deg, #FF6B35, #FF8C5A)",
+                    : "linear-gradient(90deg, var(--color-bw-primary), #FF8C5A)",
                 }}
               />
             </div>
@@ -322,7 +322,9 @@ export function PreSessionChecklist({
               disabled={!allChecked}
               className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[13px] font-bold transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
               style={{
-                background: allChecked ? "linear-gradient(135deg, #FF6B35, #E85D26)" : "rgba(255,255,255,0.04)",
+                background: allChecked
+                  ? "linear-gradient(135deg, var(--color-bw-primary), #E85D26)"
+                  : "rgba(255,255,255,0.04)",
                 color: allChecked ? "white" : "rgba(255,255,255,0.25)",
                 border: allChecked ? "none" : "1px solid rgba(255,255,255,0.06)",
                 boxShadow: allChecked ? "0 0 20px rgba(255,107,53,0.25), inset 0 1px 0 rgba(255,255,255,0.1)" : "none",

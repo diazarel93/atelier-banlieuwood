@@ -499,7 +499,7 @@ export default function PlayPage() {
       if (data?.collectiveChoice) {
         const cat = data.collectiveChoice.category;
         const label = data.collectiveChoice.restitution_label || cat;
-        const color = CATEGORY_COLORS[cat] || "#FF6B35";
+        const color = CATEGORY_COLORS[cat] || "var(--color-bw-primary)";
         setCollectedCategories((prev) => {
           if (prev.some((c) => c.key === cat && c.label === label)) return prev;
           return [...prev, { key: cat, label, color }];
@@ -820,7 +820,7 @@ export default function PlayPage() {
               height="28"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#8B5CF6"
+              stroke="var(--color-bw-violet)"
               strokeWidth="2"
               strokeLinecap="round"
             >
@@ -1471,7 +1471,7 @@ export default function PlayPage() {
             height="28"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#FF6B35"
+            stroke="var(--color-bw-primary)"
             strokeWidth="2"
             strokeLinecap="round"
           >
@@ -1863,7 +1863,7 @@ export default function PlayPage() {
               >
                 <motion.div
                   className="h-full rounded-r-full"
-                  style={{ background: "linear-gradient(90deg, #FF6B35, #D4A843)" }}
+                  style={{ background: "linear-gradient(90deg, var(--color-bw-primary), var(--color-bw-gold))" }}
                   animate={{ width: `${pct}%` }}
                   transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
                 />

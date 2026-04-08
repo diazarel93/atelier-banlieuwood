@@ -303,7 +303,12 @@ const glowConfig: Record<string, { blur: number; opacity: [number, number] }> = 
   strong: { blur: 48, opacity: [0.3, 0.55] },
 };
 
-export function GlowPulse({ children, color = "#FF6B35", intensity = "medium", className }: GlowPulseProps) {
+export function GlowPulse({
+  children,
+  color = "var(--color-bw-primary)",
+  intensity = "medium",
+  className,
+}: GlowPulseProps) {
   const reduced = useReducedMotion();
   const config = glowConfig[intensity];
 

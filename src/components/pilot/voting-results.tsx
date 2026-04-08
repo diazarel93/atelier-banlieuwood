@@ -15,7 +15,7 @@ interface VotingResultsProps {
   onValidateWinner: (responseId: string, text: string, students: { display_name: string; avatar: string }) => void;
 }
 
-const BAR_COLORS = ["#8b5cf6", "#f472b6", "#fbbf24", "#22d3ee", "#34d399", "#fb923c"];
+const BAR_COLORS = ["var(--color-bw-violet)", "#f472b6", "#fbbf24", "#22d3ee", "#34d399", "#fb923c"];
 
 export function VotingResults({ voteData, sessionStatus, onValidateWinner }: VotingResultsProps) {
   const [revealed, setRevealed] = useState(false);

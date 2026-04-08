@@ -25,7 +25,7 @@ const SOLO_FEATURES = [
         height="20"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#8B5CF6"
+        stroke="var(--color-bw-violet)"
         strokeWidth="2"
         strokeLinecap="round"
       >
@@ -43,7 +43,7 @@ const SOLO_FEATURES = [
         height="20"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#8B5CF6"
+        stroke="var(--color-bw-violet)"
         strokeWidth="2"
         strokeLinecap="round"
       >
@@ -60,7 +60,7 @@ const SOLO_FEATURES = [
         height="20"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#8B5CF6"
+        stroke="var(--color-bw-violet)"
         strokeWidth="2"
         strokeLinecap="round"
       >

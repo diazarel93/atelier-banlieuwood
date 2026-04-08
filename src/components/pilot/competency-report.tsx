@@ -70,7 +70,7 @@ const LSU_DOMAINS = [
 const LEVEL_LABELS: Record<string, { label: string; color: string; bg: string }> = {
   non_atteint: { label: "Non atteint", color: "#EF4444", bg: "rgba(239,68,68,0.1)" },
   partiellement: { label: "Partiellement", color: "#F59E0B", bg: "rgba(245,158,11,0.1)" },
-  atteint: { label: "Atteint", color: "#4ECDC4", bg: "rgba(78,205,196,0.1)" },
+  atteint: { label: "Atteint", color: "var(--color-bw-teal)", bg: "rgba(78,205,196,0.1)" },
   depasse: { label: "Depasse", color: "#10B981", bg: "rgba(16,185,129,0.1)" },
 };
 

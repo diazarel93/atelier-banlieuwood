@@ -30,7 +30,7 @@ export function XpBar({ xp, showDetails = false }: XpBarProps) {
         <div className="w-16 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
           <motion.div
             className="h-full rounded-full"
-            style={{ background: "linear-gradient(90deg, #D4A843, #FF6B35)" }}
+            style={{ background: "linear-gradient(90deg, var(--color-bw-gold), var(--color-bw-primary))" }}
             animate={{ width: `${Math.max(progress * 100, 2)}%` }}
             transition={{ type: "spring", stiffness: 200, damping: 20 }}
           />
@@ -56,7 +56,7 @@ export function XpBar({ xp, showDetails = false }: XpBarProps) {
       <div className="h-2.5 rounded-full bg-white/[0.06] overflow-hidden relative">
         <motion.div
           className="h-full rounded-full relative"
-          style={{ background: "linear-gradient(90deg, #D4A843, #FF6B35)" }}
+          style={{ background: "linear-gradient(90deg, var(--color-bw-gold), var(--color-bw-primary))" }}
           animate={{ width: `${Math.max(progress * 100, 2)}%` }}
           transition={{ type: "spring", stiffness: 200, damping: 20 }}
         />

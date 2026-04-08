@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { ResponseCard, type ResponseCardResponse } from "./response-card";
 
 const STATE_LABEL: Record<string, { label: string; color: string; bg: string }> = {
-  responded: { label: "A répondu", color: "#4ECDC4", bg: "rgba(78,205,196,0.06)" },
+  responded: { label: "A répondu", color: "var(--color-bw-teal)", bg: "rgba(78,205,196,0.06)" },
   active: { label: "En cours", color: "#8894A0", bg: "rgba(136,148,160,0.06)" },
   stuck: { label: "Bloqué", color: "#EF6461", bg: "rgba(239,100,97,0.06)" },
   disconnected: { label: "Déconnecté", color: "#555", bg: "rgba(80,80,80,0.06)" },

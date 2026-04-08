@@ -68,7 +68,7 @@ export function ProjectionFooter({ onOpenClasse, onOpenReponses, classeCount, re
         </svg>
         Classe
         {classeCount > 0 && (
-          <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#FF6B35] text-white text-[10px] font-bold">
+          <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-bw-primary text-white text-[10px] font-bold">
             {classeCount > totalActive ? totalActive : classeCount}
           </span>
         )}
@@ -78,7 +78,7 @@ export function ProjectionFooter({ onOpenClasse, onOpenReponses, classeCount, re
       {(isResponding || isReviewing) && (
         <button
           onClick={handleCTA}
-          className="min-h-11 px-6 rounded-xl bg-[#FF6B35] hover:bg-[#e55a24] text-white font-bold text-sm transition-colors cursor-pointer"
+          className="min-h-11 px-6 rounded-xl bg-bw-primary hover:bg-[#e55a24] text-white font-bold text-sm transition-colors cursor-pointer"
         >
           {ctaLabel}
         </button>
@@ -103,7 +103,7 @@ export function ProjectionFooter({ onOpenClasse, onOpenReponses, classeCount, re
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
         </svg>
         {reponseCount > 0 && (
-          <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#4ECDC4] text-white text-[10px] font-bold">
+          <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-bw-teal text-white text-[10px] font-bold">
             {reponseCount}
           </span>
         )}

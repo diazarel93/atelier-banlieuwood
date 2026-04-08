@@ -19,7 +19,7 @@ const CINEMA_REFS = [
     year: 2019,
     director: "Ladj Ly",
     theme: "Banlieue & regard",
-    color: "var(--color-bw-primary, #FF6B35)",
+    color: "var(--color-bw-primary, var(--color-bw-primary))",
     poster: "/sOy9Sa9Noro1VjZjdTTh7U3XmcU.jpg",
   },
   {
@@ -27,7 +27,7 @@ const CINEMA_REFS = [
     year: 2016,
     director: "Houda Benyamina",
     theme: "Rêves de grandeur",
-    color: "var(--color-bw-violet, #8B5CF6)",
+    color: "var(--color-bw-violet, var(--color-bw-violet))",
     poster: "/6P12dmdR0XFXXOPx1HsI8kT6yMX.jpg",
   },
   {
@@ -35,7 +35,7 @@ const CINEMA_REFS = [
     year: 2011,
     director: "Nakache & Toledano",
     theme: "Amitié inattendue",
-    color: "var(--color-bw-teal, #4ECDC4)",
+    color: "var(--color-bw-teal, var(--color-bw-teal))",
     poster: "/i97FM40bOMKvKIo3hjQviETE5yf.jpg",
   },
   {
@@ -67,7 +67,7 @@ const CINEMA_REFS = [
     year: 2005,
     director: "Haneke",
     theme: "Secrets & culpabilité",
-    color: "var(--color-bw-violet, #8B5CF6)",
+    color: "var(--color-bw-violet, var(--color-bw-violet))",
     poster: "/vSIGVNCLDnw1NYH8mgSrxC5jYQn.jpg",
   },
 ];

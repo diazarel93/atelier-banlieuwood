@@ -35,7 +35,7 @@ const GAP_MAP: Record<LogoSize, string> = {
 function getColorProps(color: LogoColor) {
   switch (color) {
     case "primary":
-      return { fill: "#FF6B35", gradient: false };
+      return { fill: "var(--color-bw-primary)", gradient: false };
     case "cinema":
       return { fill: "url(#bw-gradient-cinema)", gradient: true };
     case "white":
@@ -74,8 +74,8 @@ export function BrandMark({ size = "md", color = "cinema", className, animated =
     >
       <defs>
         <linearGradient id="bw-gradient-cinema" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#FF6B35" />
-          <stop offset="100%" stopColor="#D4A843" />
+          <stop offset="0%" stopColor="var(--color-bw-primary)" />
+          <stop offset="100%" stopColor="var(--color-bw-gold)" />
         </linearGradient>
         <clipPath id="bw-arm-clip">
           <rect x="6" y="4" width="52" height="14" rx="3" />

@@ -115,7 +115,7 @@ interface WordEntry {
   size: number;
 }
 
-export function WordCloud({ texts, maxWords = 30, accentColor = "#FF6B35" }: WordCloudProps) {
+export function WordCloud({ texts, maxWords = 30, accentColor = "var(--color-bw-primary)" }: WordCloudProps) {
   const words = useMemo(() => {
     const freq = new Map<string, number>();
 

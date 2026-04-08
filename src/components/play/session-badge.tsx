@@ -54,14 +54,14 @@ export function SessionBadge({
     ctx.fill();
 
     // Border
-    ctx.strokeStyle = "#D4A843";
+    ctx.strokeStyle = "var(--color-bw-gold)";
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.roundRect(4, 4, W - 8, H - 8, 16);
     ctx.stroke();
 
     // Inner decorative line
-    ctx.strokeStyle = "#D4A84340";
+    ctx.strokeStyle = "var(--color-bw-gold)40";
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.roundRect(12, 12, W - 24, H - 24, 12);
@@ -76,9 +76,9 @@ export function SessionBadge({
 
     // Gold line
     const lineGrad = ctx.createLinearGradient(W / 2 - 80, 0, W / 2 + 80, 0);
-    lineGrad.addColorStop(0, "#D4A84300");
-    lineGrad.addColorStop(0.5, "#D4A843");
-    lineGrad.addColorStop(1, "#D4A84300");
+    lineGrad.addColorStop(0, "var(--color-bw-gold)00");
+    lineGrad.addColorStop(0.5, "var(--color-bw-gold)");
+    lineGrad.addColorStop(1, "var(--color-bw-gold)00");
     ctx.fillStyle = lineGrad;
     ctx.fillRect(W / 2 - 80, 58, 160, 1.5);
 
@@ -99,7 +99,7 @@ export function SessionBadge({
 
     // Level badge
     ctx.font = "600 13px 'Plus Jakarta Sans', sans-serif";
-    ctx.fillStyle = "#D4A843";
+    ctx.fillStyle = "var(--color-bw-gold)";
     ctx.fillText(`🏆 ${level.name}`, W / 2, 182);
 
     // Stats grid (2x2)

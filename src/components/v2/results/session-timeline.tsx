@@ -17,8 +17,8 @@ interface SessionTimelineProps {
 
 const EVENT_CONFIG: Record<string, { label: string; color: string }> = {
   session_start: { label: "Début de séance", color: "var(--color-bw-muted, #9CA3AF)" },
-  situation_start: { label: "Question", color: "var(--color-bw-primary, #FF6B35)" },
-  vote_start: { label: "Vote", color: "var(--color-bw-violet, #8B5CF6)" },
+  situation_start: { label: "Question", color: "var(--color-bw-primary, var(--color-bw-primary))" },
+  vote_start: { label: "Vote", color: "var(--color-bw-violet, var(--color-bw-violet))" },
   collective_choice: { label: "Choix collectif", color: "var(--color-bw-green, #10B981)" },
   session_end: { label: "Fin de séance", color: "var(--color-bw-muted, #9CA3AF)" },
 };

@@ -4,9 +4,9 @@ import { motion } from "motion/react";
 import type { Module11Data } from "@/hooks/use-session-polling";
 
 const THEME_COLORS: Record<string, string> = {
-  raconter: "#8B5CF6",
+  raconter: "var(--color-bw-violet)",
   émotion: "#EC4899",
-  héros: "#FF6B35",
+  héros: "var(--color-bw-primary)",
   coulisses: "#06B6D4",
 };
 
@@ -30,7 +30,7 @@ interface Module11CockpitProps {
 }
 
 export function Module11Cockpit({ module11Data, isPreviewing }: Module11CockpitProps) {
-  const themeColor = THEME_COLORS[module11Data.theme] || "#FF6B35";
+  const themeColor = THEME_COLORS[module11Data.theme] || "var(--color-bw-primary)";
   const themeLabel = THEME_LABELS[module11Data.theme] || module11Data.theme;
 
   if (isPreviewing) return null;

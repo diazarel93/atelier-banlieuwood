@@ -15,7 +15,7 @@ const SLIDES = [
         height="48"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#FF6B35"
+        stroke="var(--color-bw-primary)"
         strokeWidth="1.5"
         strokeLinecap="round"
       >
@@ -24,7 +24,7 @@ const SLIDES = [
     ),
     title: "RÉPONDS",
     text: "Le prof pose une question.\nÉcris ta meilleure idée !",
-    accent: "#FF6B35",
+    accent: "var(--color-bw-primary)",
     xp: "+10 points par réponse",
   },
   {
@@ -34,7 +34,7 @@ const SLIDES = [
         height="48"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#8B5CF6"
+        stroke="var(--color-bw-violet)"
         strokeWidth="1.5"
         strokeLinecap="round"
       >
@@ -43,7 +43,7 @@ const SLIDES = [
     ),
     title: "VOTE",
     text: "Choisis la meilleure idée\nparmi celles de la classe.",
-    accent: "#8B5CF6",
+    accent: "var(--color-bw-violet)",
     xp: "+5 points par vote",
   },
   {
@@ -53,7 +53,7 @@ const SLIDES = [
         height="48"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#D4A843"
+        stroke="var(--color-bw-gold)"
         strokeWidth="1.5"
         strokeLinecap="round"
       >
@@ -64,7 +64,7 @@ const SLIDES = [
     ),
     title: "GAGNE",
     text: "Si le groupe choisit ton idée : +25 points !\nFais une série pour gagner plus 🔥",
-    accent: "#D4A843",
+    accent: "var(--color-bw-gold)",
     xp: "Passe au niveau suivant !",
   },
 ];
@@ -171,7 +171,7 @@ export function OnboardingSlides({ onComplete }: OnboardingSlidesProps) {
           }}
           className="absolute bottom-24 px-8 py-3 rounded-xl font-bold text-white cursor-pointer"
           style={{
-            background: `linear-gradient(135deg, #FF6B35, #D4A843)`,
+            background: `linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))`,
             boxShadow: "0 4px 15px rgba(255,107,53,0.3)",
           }}
         >

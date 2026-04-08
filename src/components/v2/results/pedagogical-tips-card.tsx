@@ -3,9 +3,9 @@
 import { GlassCardV2 } from "@/components/v2/glass-card";
 
 const MOMENT_COLORS: Record<string, string> = {
-  tournant: "var(--color-bw-primary, #FF6B35)",
-  créatif: "var(--color-bw-violet, #8B5CF6)",
-  collectif: "var(--color-bw-teal, #4ECDC4)",
+  tournant: "var(--color-bw-primary, var(--color-bw-primary))",
+  créatif: "var(--color-bw-violet, var(--color-bw-violet))",
+  collectif: "var(--color-bw-teal, var(--color-bw-teal))",
   tension: "var(--color-bw-danger, #EF4444)",
 };
 

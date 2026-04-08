@@ -36,9 +36,9 @@ const LEVEL_LABELS: Record<string, string> = {
 
 const STATUS_COLORS: Record<string, string> = {
   waiting: "#F59E0B",
-  responding: "#4ECDC4",
-  reviewing: "#8B5CF6",
-  vote: "#FF6B35",
+  responding: "var(--color-bw-teal)",
+  reviewing: "var(--color-bw-violet)",
+  vote: "var(--color-bw-primary)",
   paused: "#555960",
   done: "#10B981",
 };
@@ -114,10 +114,15 @@ export function DashboardAnalytics() {
               <div className="pt-4 space-y-5">
                 {/* KPI row */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <MiniKpi label="Reponses" value={data.totalResponses} color="#FF6B35" />
-                  <MiniKpi label="Votes" value={data.totalVotes} color="#8B5CF6" />
-                  <MiniKpi label="Choix collectifs" value={data.totalChoices} color="#4ECDC4" />
-                  <MiniKpi label="Participation moy." value={data.avgParticipation} suffix="%" color="#D4A843" />
+                  <MiniKpi label="Reponses" value={data.totalResponses} color="var(--color-bw-primary)" />
+                  <MiniKpi label="Votes" value={data.totalVotes} color="var(--color-bw-violet)" />
+                  <MiniKpi label="Choix collectifs" value={data.totalChoices} color="var(--color-bw-teal)" />
+                  <MiniKpi
+                    label="Participation moy."
+                    value={data.avgParticipation}
+                    suffix="%"
+                    color="var(--color-bw-gold)"
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -214,7 +219,7 @@ export function DashboardAnalytics() {
                               transition={{ duration: 0.5, delay: i * 0.05 }}
                               className="flex-1 rounded-sm"
                               style={{
-                                backgroundColor: w.sessions > 0 ? "#4ECDC4" : "rgba(255,255,255,0.04)",
+                                backgroundColor: w.sessions > 0 ? "var(--color-bw-teal)" : "rgba(255,255,255,0.04)",
                                 minHeight: 2,
                               }}
                               title={`${w.week}: ${w.sessions} session${w.sessions > 1 ? "s" : ""}`}

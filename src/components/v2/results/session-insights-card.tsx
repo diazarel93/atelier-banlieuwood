@@ -6,7 +6,7 @@ import type { BilanData } from "@/hooks/use-results-data";
 const COLLAB_COLORS: Record<string, string> = {
   faible: "var(--color-bw-danger, #EF4444)",
   moyen: "var(--color-bw-amber, #F59E0B)",
-  bon: "var(--color-bw-teal, #4ECDC4)",
+  bon: "var(--color-bw-teal, var(--color-bw-teal))",
   excellent: "var(--color-bw-green, #10B981)",
 };
 
@@ -18,7 +18,7 @@ const TREND_ICONS: Record<string, string> = {
 
 const DEPTH_COLORS: Record<string, string> = {
   superficiel: "var(--color-bw-amber, #F59E0B)",
-  correct: "var(--color-bw-teal, #4ECDC4)",
+  correct: "var(--color-bw-teal, var(--color-bw-teal))",
   approfondi: "var(--color-bw-green, #10B981)",
 };
 

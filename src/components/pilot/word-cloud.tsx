@@ -136,7 +136,7 @@ const COLORS = [
   "#6B8CFF",
   "#4CAF50",
   "#EB5757",
-  "#8B5CF6",
+  "var(--color-bw-violet)",
   "#F59E0B",
   "#EC4899",
   "#14B8A6",

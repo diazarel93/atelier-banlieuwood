@@ -202,7 +202,7 @@ export function SentState({
           transition={{ duration: 0.5, delay: 0.3 }}
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#4ECDC4"
+          stroke="var(--color-bw-teal)"
           strokeWidth={3}
           strokeLinecap="round"
           strokeLinejoin="round"

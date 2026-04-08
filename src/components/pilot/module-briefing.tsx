@@ -901,7 +901,7 @@ export function ModuleBriefing({
               onClick={onResume}
               className="btn-glow px-6 py-3 rounded-2xl font-bold text-sm cursor-pointer transition-all text-white shadow-lg"
               style={{
-                background: "linear-gradient(135deg, #4ECDC4, #2BA69F)",
+                background: "linear-gradient(135deg, var(--color-bw-teal), #2BA69F)",
                 boxShadow: "0 4px 15px rgba(78,205,196,0.3)",
               }}
             >

@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 
 // ——— Reusable cinema-themed SVG illustrations ———
 // Optimized for Deep Slate background #08090E.
-// Brand palette: #FF6B35 (orange), #4ECDC4 (teal), #D4A843 (gold), #8B5CF6 (violet).
+// Brand palette: var(--color-bw-primary) (orange), var(--color-bw-teal) (teal), var(--color-bw-gold) (gold), var(--color-bw-violet) (violet).
 
 interface IllustrationProps {
   size?: number;
@@ -16,12 +16,12 @@ export function ClapperboardIllustration({ size = 120, className = "" }: Illustr
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" className={className}>
       <defs>
         <linearGradient id="clap-arm-g" x1="18" y1="18" x2="102" y2="38">
-          <stop stopColor="#FF6B35" />
-          <stop offset="1" stopColor="#D4A843" />
+          <stop stopColor="var(--color-bw-primary)" />
+          <stop offset="1" stopColor="var(--color-bw-gold)" />
         </linearGradient>
         <linearGradient id="clap-body-g" x1="18" y1="42" x2="102" y2="100">
-          <stop stopColor="#FF6B35" stopOpacity="0.9" />
-          <stop offset="1" stopColor="#D4A843" stopOpacity="0.8" />
+          <stop stopColor="var(--color-bw-primary)" stopOpacity="0.9" />
+          <stop offset="1" stopColor="var(--color-bw-gold)" stopOpacity="0.8" />
         </linearGradient>
         <clipPath id="clap-arm-c">
           <rect x="18" y="16" width="84" height="22" rx="4" />
@@ -74,8 +74,8 @@ export function FilmReelIllustration({ size = 120, className = "" }: Illustratio
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" className={className}>
       <defs>
         <linearGradient id="reel-ring" x1="12" y1="12" x2="108" y2="108">
-          <stop stopColor="#FF6B35" />
-          <stop offset="1" stopColor="#D4A843" />
+          <stop stopColor="var(--color-bw-primary)" />
+          <stop offset="1" stopColor="var(--color-bw-gold)" />
         </linearGradient>
       </defs>
       {/* Ambient glow */}
@@ -109,12 +109,12 @@ export function CameraIllustration({ size = 120, className = "" }: IllustrationP
           <stop offset="1" stopColor="rgba(139,92,246,0.25)" />
         </linearGradient>
         <linearGradient id="cam-lens" x1="34" y1="42" x2="70" y2="78">
-          <stop stopColor="#4ECDC4" />
+          <stop stopColor="var(--color-bw-teal)" />
           <stop offset="1" stopColor="#2B9A93" />
         </linearGradient>
         <linearGradient id="cam-flash" x1="30" y1="28" x2="50" y2="38">
-          <stop stopColor="#D4A843" />
-          <stop offset="1" stopColor="#FF6B35" />
+          <stop stopColor="var(--color-bw-gold)" />
+          <stop offset="1" stopColor="var(--color-bw-primary)" />
         </linearGradient>
       </defs>
       {/* Ambient glow */}
@@ -204,16 +204,16 @@ export function StarIllustration({ size = 120, className = "" }: IllustrationPro
       <path d="M60 30L68 50L90 52L73 67L78 90L60 78L42 90L47 67L30 52L52 50L60 30Z" fill="rgba(255,255,255,0.12)" />
       <defs>
         <linearGradient id="star-fill" x1="15" y1="15" x2="105" y2="105">
-          <stop stopColor="#D4A843" />
-          <stop offset="1" stopColor="#FF6B35" />
+          <stop stopColor="var(--color-bw-gold)" />
+          <stop offset="1" stopColor="var(--color-bw-primary)" />
         </linearGradient>
         <linearGradient id="star-stroke" x1="15" y1="15" x2="105" y2="105">
           <stop stopColor="#FFD166" />
-          <stop offset="1" stopColor="#FF6B35" />
+          <stop offset="1" stopColor="var(--color-bw-primary)" />
         </linearGradient>
         <linearGradient id="star-glow" x1="15" y1="15" x2="105" y2="105">
-          <stop stopColor="#D4A843" />
-          <stop offset="1" stopColor="#FF6B35" />
+          <stop stopColor="var(--color-bw-gold)" />
+          <stop offset="1" stopColor="var(--color-bw-primary)" />
         </linearGradient>
         <filter id="star-blur">
           <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
@@ -242,10 +242,10 @@ export function TicketIllustration({ size = 120, className = "" }: IllustrationP
       <rect x="25" y="56" width="12" height="2" rx="1" fill="rgba(255,255,255,0.2)" />
       <rect x="25" y="63" width="15" height="2" rx="1" fill="rgba(255,255,255,0.15)" />
       {/* Star on right side */}
-      <path d="M82 55L85 61L92 62L87 67L88 74L82 70L76 74L77 67L72 62L79 61L82 55Z" fill="#D4A843" />
+      <path d="M82 55L85 61L92 62L87 67L88 74L82 70L76 74L77 67L72 62L79 61L82 55Z" fill="var(--color-bw-gold)" />
       <defs>
         <linearGradient id="ticket-fill" x1="15" y1="35" x2="105" y2="85">
-          <stop stopColor="#8B5CF6" />
+          <stop stopColor="var(--color-bw-violet)" />
           <stop offset="1" stopColor="#6D28D9" />
         </linearGradient>
         <linearGradient id="ticket-stroke" x1="15" y1="35" x2="105" y2="85">

@@ -104,7 +104,7 @@ export function CinematicIntro({ onComplete, sessionTitle, studentName, studentA
                   height="48"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="#D4A843"
+                  stroke="var(--color-bw-gold)"
                   strokeWidth="1.5"
                   strokeLinecap="round"
                 >

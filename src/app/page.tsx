@@ -10,7 +10,7 @@ import { ScrollProgressBar } from "@/components/scroll-progress-bar";
 
 // ═══════════════════════════════════════════════════════════════
 // LANDING PAGE V3 — Cinema premium
-// Brand palette orange #FF6B35 / amber #D4A843 / teal #4ECDC4
+// Brand palette orange var(--color-bw-primary) / amber var(--color-bw-gold) / teal var(--color-bw-teal)
 // Warm dark cinema — purge lavande
 // ═══════════════════════════════════════════════════════════════
 
@@ -75,14 +75,14 @@ function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
 }
 
 const MODULES = [
-  { id: "M1", name: "Le Regard", icon: "👁️", desc: "Analyse d'images & cinéma", color: "#FF6B35" },
-  { id: "M2", name: "Les Émotions", icon: "🎭", desc: "Identifier & exprimer", color: "#D4A843" },
-  { id: "M3", name: "Et si...", icon: "💡", desc: "Brainstorm collectif", color: "#4ECDC4" },
+  { id: "M1", name: "Le Regard", icon: "👁️", desc: "Analyse d'images & cinéma", color: "var(--color-bw-primary)" },
+  { id: "M2", name: "Les Émotions", icon: "🎭", desc: "Identifier & exprimer", color: "var(--color-bw-gold)" },
+  { id: "M3", name: "Et si...", icon: "💡", desc: "Brainstorm collectif", color: "var(--color-bw-teal)" },
   { id: "M4", name: "Le Pitch", icon: "🎤", desc: "Présenter son idée", color: "#FF8C5A" },
   { id: "M5", name: "Le Vote", icon: "🏆", desc: "Choix démocratique", color: "#E8B84B" },
   { id: "M6", name: "Le Scénario", icon: "📝", desc: "Écriture collaborative", color: "#5DD6CF" },
-  { id: "M7", name: "Storyboard", icon: "🎞️", desc: "Plans & cadrage", color: "#FF6B35" },
-  { id: "M8", name: "L'Équipe", icon: "⭐", desc: "Rôles & talents", color: "#D4A843" },
+  { id: "M7", name: "Storyboard", icon: "🎞️", desc: "Plans & cadrage", color: "var(--color-bw-primary)" },
+  { id: "M8", name: "L'Équipe", icon: "⭐", desc: "Rôles & talents", color: "var(--color-bw-gold)" },
 ];
 
 const TESTIMONIALS = [
@@ -135,15 +135,15 @@ export default function Home() {
         {/* Ambient gradient mesh blobs */}
         <div
           className="absolute top-[-250px] left-[-200px] w-[750px] h-[750px] rounded-full pointer-events-none"
-          style={{ background: "#FF6B35", opacity: 0.13, filter: "blur(160px)" }}
+          style={{ background: "var(--color-bw-primary)", opacity: 0.13, filter: "blur(160px)" }}
         />
         <div
           className="absolute bottom-[-150px] right-[-150px] w-[550px] h-[550px] rounded-full pointer-events-none"
-          style={{ background: "#D4A843", opacity: 0.09, filter: "blur(130px)" }}
+          style={{ background: "var(--color-bw-gold)", opacity: 0.09, filter: "blur(130px)" }}
         />
         <div
           className="absolute top-[45%] right-[22%] w-[320px] h-[320px] rounded-full pointer-events-none"
-          style={{ background: "#4ECDC4", opacity: 0.07, filter: "blur(100px)" }}
+          style={{ background: "var(--color-bw-teal)", opacity: 0.07, filter: "blur(100px)" }}
         />
 
         {/* Vidéo hero — Kling AI */}
@@ -218,10 +218,10 @@ export default function Home() {
                   style={{
                     background: "rgba(255,107,53,0.08)",
                     borderColor: "rgba(255,107,53,0.25)",
-                    color: "#FF6B35",
+                    color: "var(--color-bw-primary)",
                   }}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#4ECDC4] animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-bw-teal animate-pulse" />
                   ATELIER DE CINÉMA COLLABORATIF
                 </motion.div>
 
@@ -237,7 +237,8 @@ export default function Home() {
                   <span
                     className="bg-clip-text text-transparent"
                     style={{
-                      backgroundImage: "linear-gradient(90deg, #FF6B35 0%, #D4A843 55%, #4ECDC4 100%)",
+                      backgroundImage:
+                        "linear-gradient(90deg, var(--color-bw-primary) 0%, var(--color-bw-gold) 55%, var(--color-bw-teal) 100%)",
                     }}
                   >
                     Réalisateurs aujourd&apos;hui.
@@ -250,7 +251,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.42, duration: 0.6, ease: SNAP }}
                   className="font-cinema text-[clamp(15px,1.6vw,18px)] tracking-[0.08em] uppercase mb-4"
-                  style={{ color: "#D4A843" }}
+                  style={{ color: "var(--color-bw-gold)" }}
                 >
                   Nous sommes là où le cinéma ne nous attend pas.
                 </motion.p>
@@ -275,7 +276,7 @@ export default function Home() {
                 >
                   <span
                     className="text-[11px] leading-snug text-white/50 italic max-w-[340px] border-l-2 pl-3"
-                    style={{ borderColor: "#FF6B35" }}
+                    style={{ borderColor: "var(--color-bw-primary)" }}
                   >
                     &ldquo;Les élèves qui ne participaient jamais se sont révélés — 15 ans de carrière, jamais vu
                     ça.&rdquo;
@@ -295,14 +296,14 @@ export default function Home() {
                   <Link
                     href={ROUTES.requestAccess}
                     className="px-9 py-3.5 rounded-xl text-base font-bold text-white shadow-[0_4px_24px_rgba(255,107,53,0.4)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.58)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out flex flex-col items-center leading-tight"
-                    style={{ background: "#FF6B35" }}
+                    style={{ background: "var(--color-bw-primary)" }}
                   >
                     <span>Lancer mon premier atelier</span>
                     <span className="text-[11px] font-normal text-white/70 mt-0.5">Gratuit · Accès immédiat</span>
                   </Link>
                   <Link
                     href="/projet"
-                    className="px-9 py-4 rounded-xl text-base font-bold text-white/85 bg-white/[0.05] border border-white/10 hover:border-[#FF6B35]/40 hover:text-white hover:shadow-[0_4px_20px_rgba(255,107,53,0.18)] transition-all duration-200"
+                    className="px-9 py-4 rounded-xl text-base font-bold text-white/85 bg-white/[0.05] border border-white/10 hover:border-bw-primary/40 hover:text-white hover:shadow-[0_4px_20px_rgba(255,107,53,0.18)] transition-all duration-200"
                   >
                     Voir la méthode
                   </Link>
@@ -332,12 +333,12 @@ export default function Home() {
                   {/* Header LIVE */}
                   <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-white/[0.07] bg-white/[0.03]">
                     <div className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#4ECDC4] animate-pulse" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-bw-teal animate-pulse" />
                       <span className="text-[10px] font-bold tracking-[0.14em] text-white/70 uppercase">
                         Session en cours
                       </span>
                     </div>
-                    <span className="text-[10px] font-cinema tracking-widest text-[#FF6B35]">24:12</span>
+                    <span className="text-[10px] font-cinema tracking-widest text-bw-primary">24:12</span>
                   </div>
                   {/* Module card */}
                   <div className="px-3.5 py-3">
@@ -348,9 +349,9 @@ export default function Home() {
                       Quel genre pour notre film ?
                     </div>
                     {[
-                      { label: "Comédie", pct: 58, color: "#4ECDC4" },
-                      { label: "Drame", pct: 28, color: "#D4A843" },
-                      { label: "Thriller", pct: 14, color: "#FF6B35" },
+                      { label: "Comédie", pct: 58, color: "var(--color-bw-teal)" },
+                      { label: "Drame", pct: 28, color: "var(--color-bw-gold)" },
+                      { label: "Thriller", pct: 14, color: "var(--color-bw-primary)" },
                     ].map((opt) => (
                       <div key={opt.label} className="mb-1.5">
                         <div className="flex justify-between text-[9px] text-white/50 mb-0.5">
@@ -371,17 +372,24 @@ export default function Home() {
                   </div>
                   {/* Student dots */}
                   <div className="px-3.5 pb-3 flex items-center gap-1.5">
-                    {["#FF6B35", "#D4A843", "#4ECDC4", "#FF8C5A", "#E8B84B", "#5DD6CF", "#FF6B35", "#D4A843"].map(
-                      (c, i) => (
-                        <div
-                          key={i}
-                          className="w-4 h-4 rounded-full border border-black/40 flex items-center justify-center text-[7px] font-bold text-black"
-                          style={{ background: c }}
-                        >
-                          {String.fromCharCode(65 + i)}
-                        </div>
-                      ),
-                    )}
+                    {[
+                      "var(--color-bw-primary)",
+                      "var(--color-bw-gold)",
+                      "var(--color-bw-teal)",
+                      "#FF8C5A",
+                      "#E8B84B",
+                      "#5DD6CF",
+                      "var(--color-bw-primary)",
+                      "var(--color-bw-gold)",
+                    ].map((c, i) => (
+                      <div
+                        key={i}
+                        className="w-4 h-4 rounded-full border border-black/40 flex items-center justify-center text-[7px] font-bold text-black"
+                        style={{ background: c }}
+                      >
+                        {String.fromCharCode(65 + i)}
+                      </div>
+                    ))}
                     <span className="text-[9px] text-white/30 ml-1">+19</span>
                   </div>
                 </div>
@@ -397,9 +405,9 @@ export default function Home() {
               className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/[0.07] mt-16 rounded-2xl overflow-hidden border border-white/[0.08] bg-black/20 backdrop-blur-md"
             >
               {[
-                { value: 87, label: "Films produits", color: "#FF6B35", suffix: "" },
-                { value: 1247, label: "Élèves participants", color: "#D4A843", suffix: "" },
-                { value: 32, label: "Établissements", color: "#4ECDC4", suffix: "" },
+                { value: 87, label: "Films produits", color: "var(--color-bw-primary)", suffix: "" },
+                { value: 1247, label: "Élèves participants", color: "var(--color-bw-gold)", suffix: "" },
+                { value: 32, label: "Établissements", color: "var(--color-bw-teal)", suffix: "" },
                 { value: 94, label: "Taux d&apos;engagement", color: "#ffffff", suffix: "%" },
               ].map((stat) => (
                 <div key={stat.label} className="px-6 md:px-8 py-6 text-center">
@@ -437,11 +445,20 @@ export default function Home() {
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-3">
-              <span className="inline-block w-6 h-[1.5px] rounded-full" style={{ background: "#D4A843" }} />
-              <span className="text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: "#D4A843" }}>
+              <span
+                className="inline-block w-6 h-[1.5px] rounded-full"
+                style={{ background: "var(--color-bw-gold)" }}
+              />
+              <span
+                className="text-[11px] font-bold uppercase tracking-[0.14em]"
+                style={{ color: "var(--color-bw-gold)" }}
+              >
                 POUR CHAQUE RÔLE
               </span>
-              <span className="inline-block w-6 h-[1.5px] rounded-full" style={{ background: "#D4A843" }} />
+              <span
+                className="inline-block w-6 h-[1.5px] rounded-full"
+                style={{ background: "var(--color-bw-gold)" }}
+              />
             </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight">Un outil pour chaque acteur</h2>
             <p className="text-[clamp(15px,2vw,18px)] text-white/48 max-w-[500px] mx-auto mt-3">
@@ -454,19 +471,19 @@ export default function Home() {
                 icon: "🎬",
                 title: "Pour les Intervenants",
                 desc: "Cockpit temps réel avec modules M1-M8, orchestration de séance, projection multi-vues, command palette, et pilotage complet.",
-                color: "#FF6B35",
+                color: "var(--color-bw-primary)",
               },
               {
                 icon: "✏️",
                 title: "Pour les Élèves",
                 desc: "Interface tablette intuitive, vote démocratique, création collaborative, rôles attribués naturellement — pas de notes, pas de jugement.",
-                color: "#D4A843",
+                color: "var(--color-bw-gold)",
               },
               {
                 icon: "📊",
                 title: "Pour les Enseignants",
                 desc: "Données pédagogiques anonymisées, historique par classe, statistiques collectives, suivi sans jugement individuel. Aligné PEAC.",
-                color: "#4ECDC4",
+                color: "var(--color-bw-teal)",
               },
             ].map((card, i) => (
               <Reveal key={card.title} delay={i * 0.1}>
@@ -491,7 +508,7 @@ export default function Home() {
           <Reveal className="text-center mt-10">
             <Link
               href={ROUTES.requestAccess}
-              className="inline-flex items-center gap-2 text-[13px] font-bold text-white/60 hover:text-[#FF6B35] transition-colors group"
+              className="inline-flex items-center gap-2 text-[13px] font-bold text-white/60 hover:text-bw-primary transition-colors group"
             >
               Rejoignez 32 établissements qui créent autrement
               <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
@@ -504,7 +521,7 @@ export default function Home() {
       <section className="py-28 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="mb-14">
-            <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "#4ECDC4" }}>
+            <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "var(--color-bw-teal)" }}>
               COMMENT ÇA MARCHE
             </div>
             <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">
@@ -517,28 +534,28 @@ export default function Home() {
                 n: "1",
                 title: "Créez la session",
                 desc: "L'intervenant choisit la classe, la formule (F0/F1/F2) et génère un QR code. En un clic, l'atelier est prêt.",
-                color: "#FF6B35",
-                next: "#D4A843",
+                color: "var(--color-bw-primary)",
+                next: "var(--color-bw-gold)",
               },
               {
                 n: "2",
                 title: "Les élèves rejoignent",
                 desc: "Scan du QR code sur tablette. Pas de compte, pas de mot de passe. En 10 secondes, toute la classe est connectée.",
-                color: "#D4A843",
-                next: "#4ECDC4",
+                color: "var(--color-bw-gold)",
+                next: "var(--color-bw-teal)",
               },
               {
                 n: "3",
                 title: "Créez ensemble",
                 desc: "8 modules progressifs : analyser des images, explorer les émotions, brainstormer, pitcher, voter, écrire le scénario, dessiner le storyboard, former l'équipe.",
-                color: "#4ECDC4",
-                next: "#FF6B35",
+                color: "var(--color-bw-teal)",
+                next: "var(--color-bw-primary)",
               },
               {
                 n: "4",
                 title: "Festival !",
                 desc: "Projection du film, célébration collective, rôles attribués. Chaque élève est un créateur reconnu.",
-                color: "#FF6B35",
+                color: "var(--color-bw-primary)",
                 next: "",
               },
             ].map((step, i) => (
@@ -571,7 +588,10 @@ export default function Home() {
       <section className="py-24 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
-            <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "#FF6B35" }}>
+            <div
+              className="font-cinema text-[13px] tracking-[0.25em] mb-3"
+              style={{ color: "var(--color-bw-primary)" }}
+            >
               PARCOURS PÉDAGOGIQUE
             </div>
             <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">
@@ -634,7 +654,7 @@ export default function Home() {
             </div>
             <div
               className="font-cinema uppercase leading-none relative"
-              style={{ fontSize: "clamp(48px,8vw,110px)", color: "#FF6B35" }}
+              style={{ fontSize: "clamp(48px,8vw,110px)", color: "var(--color-bw-primary)" }}
             >
               87 films
             </div>
@@ -649,7 +669,7 @@ export default function Home() {
       <section className="py-28 bg-[#110e0b]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
-            <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "#D4A843" }}>
+            <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "var(--color-bw-gold)" }}>
               FORMULES
             </div>
             <h2 className="font-cinema text-[clamp(32px,5vw,64px)] uppercase leading-[1.0]">
@@ -663,7 +683,7 @@ export default function Home() {
             {[
               {
                 badge: "F0 — DÉCOUVERTE",
-                badgeColor: "#4ECDC4",
+                badgeColor: "var(--color-bw-teal)",
                 time: "1 heure",
                 title: "Découverte",
                 desc: "Introduction à l'analyse d'images et au langage cinématographique. Idéal pour une première immersion.",
@@ -673,7 +693,7 @@ export default function Home() {
               },
               {
                 badge: "F1 — LÉGÈRE",
-                badgeColor: "#D4A843",
+                badgeColor: "var(--color-bw-gold)",
                 time: "3 heures",
                 title: "Légère",
                 desc: "Analyse, émotions et brainstorm. Les élèves découvrent le processus créatif collectif.",
@@ -683,7 +703,7 @@ export default function Home() {
               },
               {
                 badge: "F2 — COMPLÈTE",
-                badgeColor: "#FF6B35",
+                badgeColor: "var(--color-bw-primary)",
                 time: "8 heures",
                 title: "Complète",
                 desc: "Cycle intégral — de l'analyse au festival. Les élèves vivent tout le processus de création d'un film.",
@@ -700,7 +720,7 @@ export default function Home() {
                   {f.popular && (
                     <div
                       className="absolute top-3 right-3 px-3 py-0.5 rounded-full text-white text-[10px] font-bold"
-                      style={{ background: "#FF6B35" }}
+                      style={{ background: "var(--color-bw-primary)" }}
                     >
                       POPULAIRE
                     </div>
@@ -743,14 +763,14 @@ export default function Home() {
             <p className="font-cinema uppercase leading-[1.12] mb-6" style={{ fontSize: "clamp(26px,4.5vw,56px)" }}>
               <span className="text-white/35">&ldquo;J&apos;avais jamais tenu une caméra.</span>
               <br />
-              <span style={{ color: "#FF6B35" }}>J&apos;ai filmé ma première scène.&rdquo;</span>
+              <span style={{ color: "var(--color-bw-primary)" }}>J&apos;ai filmé ma première scène.&rdquo;</span>
             </p>
             <div className="flex items-center justify-center gap-3">
-              <span className="w-8 h-px bg-[#FF6B35]/30" />
+              <span className="w-8 h-px bg-bw-primary/30" />
               <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-white/35">
                 Yanis, 13 ans · Cadreur · Collège Jean Moulin, Bondy
               </span>
-              <span className="w-8 h-px bg-[#FF6B35]/30" />
+              <span className="w-8 h-px bg-bw-primary/30" />
             </div>
           </div>
         </Reveal>
@@ -760,7 +780,10 @@ export default function Home() {
       <section className="py-24 bg-[#0d0b09]">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal className="text-center mb-12">
-            <div className="font-cinema text-[13px] tracking-[0.25em] mb-3" style={{ color: "#FF6B35" }}>
+            <div
+              className="font-cinema text-[13px] tracking-[0.25em] mb-3"
+              style={{ color: "var(--color-bw-primary)" }}
+            >
               TÉMOIGNAGES
             </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-extrabold leading-tight mb-3">
@@ -768,7 +791,7 @@ export default function Home() {
             </h2>
             <div
               className="mx-auto w-16 h-[2px] rounded-full"
-              style={{ background: "linear-gradient(90deg, transparent, #FF6B35, transparent)" }}
+              style={{ background: "linear-gradient(90deg, transparent, var(--color-bw-primary), transparent)" }}
             />
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -783,7 +806,7 @@ export default function Home() {
                   </div>
                   <div className="flex items-center gap-0.5 mb-2 relative z-[1]">
                     {[...Array(5)].map((_, s) => (
-                      <svg key={s} className="w-3 h-3" viewBox="0 0 12 12" fill="#D4A843">
+                      <svg key={s} className="w-3 h-3" viewBox="0 0 12 12" fill="var(--color-bw-gold)">
                         <path d="M6 1l1.4 2.8L10.5 4 8.25 6.2l.5 3.3L6 8l-2.75 1.5.5-3.3L1.5 4l3.1-.2z" />
                       </svg>
                     ))}
@@ -792,7 +815,7 @@ export default function Home() {
                   <div className="flex items-center gap-3">
                     <div
                       className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-[13px] font-bold text-white"
-                      style={{ background: "linear-gradient(135deg, #FF6B35, #D4A843)" }}
+                      style={{ background: "linear-gradient(135deg, var(--color-bw-primary), var(--color-bw-gold))" }}
                     >
                       {t.author[0]}
                     </div>
@@ -813,11 +836,14 @@ export default function Home() {
         {/* Ambient orange glow */}
         <div
           className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none"
-          style={{ height: 400, background: "#FF6B35", opacity: 0.04, filter: "blur(130px)" }}
+          style={{ height: 400, background: "var(--color-bw-primary)", opacity: 0.04, filter: "blur(130px)" }}
         />
         <div className="max-w-[600px] mx-auto px-6 text-center relative z-[1]">
           <Reveal>
-            <div className="font-cinema text-[13px] tracking-[0.25em] mb-4" style={{ color: "#FF6B35" }}>
+            <div
+              className="font-cinema text-[13px] tracking-[0.25em] mb-4"
+              style={{ color: "var(--color-bw-primary)" }}
+            >
               PRÊT À TOURNER ?
             </div>
             <h2 className="text-[clamp(32px,5vw,60px)] font-extrabold leading-tight mb-4">
@@ -830,13 +856,13 @@ export default function Home() {
               <Link
                 href={ROUTES.requestAccess}
                 className="px-10 py-4 rounded-xl text-base font-bold text-white shadow-[0_4px_28px_rgba(255,107,53,0.45)] hover:shadow-[0_10px_40px_rgba(255,107,53,0.58)] hover:-translate-y-1 active:translate-y-0 transition-[transform,box-shadow] duration-200 ease-out"
-                style={{ background: "#FF6B35" }}
+                style={{ background: "var(--color-bw-primary)" }}
               >
                 Lancer mon premier atelier
               </Link>
               <Link
                 href="/contact"
-                className="px-10 py-4 rounded-xl text-base font-bold text-white/65 bg-white/[0.04] border border-white/10 hover:border-[#FF6B35]/35 hover:text-white hover:shadow-[0_4px_20px_rgba(255,107,53,0.18)] transition-all duration-200"
+                className="px-10 py-4 rounded-xl text-base font-bold text-white/65 bg-white/[0.04] border border-white/10 hover:border-bw-primary/35 hover:text-white hover:shadow-[0_4px_20px_rgba(255,107,53,0.18)] transition-all duration-200"
               >
                 Nous contacter
               </Link>

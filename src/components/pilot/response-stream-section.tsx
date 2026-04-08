@@ -421,8 +421,8 @@ export function ResponseStreamSection({
               />
               <defs>
                 <linearGradient id="waitGradient" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#4ECDC4" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.4" />
+                  <stop offset="0%" stopColor="var(--color-bw-teal)" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="var(--color-bw-violet)" stopOpacity="0.4" />
                 </linearGradient>
               </defs>
             </svg>
